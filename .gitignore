@@ -47,3 +47,8 @@ gradle/
 #vim
 *.swp
 *.swo
+
+#intilij
+*.iml
+*.ipr
+*.iws
