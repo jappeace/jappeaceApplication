@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title><g:layoutTitle default="Grails"/></title>
+        <title><g:layoutTitle default="Jappeace Application"/></title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <asset:stylesheet src="application.css"/>
         <asset:javascript src="application.js"/>
@@ -11,9 +11,25 @@
         <g:layoutHead/>
     </head>
     <body>
-        <div id="grailsLogo" role="banner"><a href="http://grails.org"><asset:image src="grails_logo.png" alt="Grails"/></a></div>
-        <g:layoutBody/>
-        <div class="footer" role="contentinfo"></div>
-        <div id="spinner" class="spinner" style="display:none;"><g:message code="spinner.alt" default="Loading&hellip;"/></div>
+        <div class="application">
+        <nav>
+            <h1>jappeace application</h1>
+            <ul>
+                <li>Welcome</li>
+                <li>Curiculum Vitea</li>
+                <li>Blog</li>
+            </ul>
+        </nav>
+        <div class="padded">
+            <div class="content">
+                <g:layoutBody/>
+            </div>
+            <footer>
+                You can use anything on this site without permission.
+                Don't bother notifying me, I'm bussy, you're bussy,
+                everyone is bussy.
+            </footer>
+            </div>
+        </div>
     </body>
 </html>
