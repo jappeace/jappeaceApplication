@@ -4,43 +4,60 @@ margin: 2px;
 padding: 0;
 }
 body{
-    background:lightblue;
+    background:#3465a4;
     text-align:center;
 }
 .application{
     text-align:left;
     margin-left: auto;
     margin-right:auto;
-    background:grey;
-    color:black;
-    border:2px solid black;
+    background:#d3d7cf;
+    color:#2e3436;
+    border:2px solid #474d4d;
     width:800px;
     height:600px;
-}
-h1{
-    color:blue;
-}
-nav{
-    text-align:center;
-    border:2px solid black;
-}
-nav ul{
-    list-style:none;
-
-}
-nav ul li{
-    text-align:left;
-    padding: 2px;
-    display:inline-block;
-    margin:0;
-    border:2px solid black;
-}
-nav ul li:hover{
-    background:purple;
+    font-size:small;
+    overflow: hidden;
 }
 .padded{
     margin:10px;/* hehe, just kidding */
 }
 .content{
-    min-height:400px;
+    min-height:460px;
+}
+h1{
+    font-size: large;
+    color:#729fcf;
+}
+nav{
+    text-align:center;
+    border:2px solid #474d4d;
+}
+nav ul li{
+    padding: 2px;
+    margin:0;
+}
+nav ul li:after{
+    content: '>';
+}
+nav ul li:before{
+    content: '<';
+}
+
+nav ul li:hover{
+    color:#eeeeec;
+    background:#3465a4;
+}
+footer{
+    font-size:xx-small;
+}
+footer ul li{
+    width:49%;
+}
+ul.horizontal{
+    list-style:none;
+}
+ul.horizontal li{
+    text-align:left;
+    display:inline-block;
 }

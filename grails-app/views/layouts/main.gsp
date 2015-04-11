@@ -14,7 +14,7 @@
         <div class="application">
         <nav>
             <h1>jappeace application</h1>
-            <ul>
+            <ul class="horizontal">
                 <li>Welcome</li>
                 <li>Curiculum Vitea</li>
                 <li>Blog</li>
@@ -25,9 +25,19 @@
                 <g:layoutBody/>
             </div>
             <footer>
-                You can use anything on this site without permission.
-                Don't bother notifying me, I'm bussy, you're bussy,
-                everyone is bussy.
+                <ul class="horizontal">
+                    <li>
+                        the source is available at
+                        <a href="https://github.com/jappeace/jappeaceApplication">
+                            here
+                        </a>
+                    </li>
+                    <li>
+                        You can use anything on this site without permission.
+                        Don't bother notifying me, I'm bussy, you're bussy,
+                        everyone is bussy.
+                    </li>
+                </ul>
             </footer>
             </div>
         </div>
