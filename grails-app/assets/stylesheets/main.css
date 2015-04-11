@@ -32,6 +32,7 @@ h1{
 nav{
     text-align:center;
     border:2px solid #474d4d;
+    margin-bottom:1em;
 }
 nav ul li{
     padding: 2px;
@@ -47,6 +48,9 @@ nav ul li:before{
 nav ul li:hover{
     color:#eeeeec;
     background:#3465a4;
+}
+p{
+    margin-bottom:1em;
 }
 footer{
     font-size:xx-small;

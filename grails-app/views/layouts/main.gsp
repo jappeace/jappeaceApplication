@@ -27,7 +27,7 @@
             <footer>
                 <ul class="horizontal">
                     <li>
-                        the source is available at
+                        the source is available
                         <a href="https://github.com/jappeace/jappeaceApplication">
                             here
                         </a>
