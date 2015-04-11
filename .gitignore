@@ -52,3 +52,4 @@ gradle/
 *.iml
 *.ipr
 *.iws
+out/
