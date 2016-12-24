@@ -1,0 +1,6 @@
+
+Got the insperation for a webise from 
+[[http://creativecommons.org/licenses/by-sa/4.0/][eevee]]
+
+So this is powered by [[http://docs.getpelican.com/en/stable/][pelican]].
+(and the org-mode plugin, org mode best mode)

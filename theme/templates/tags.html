@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% import '_lib.html' as lib %}
+🔖
+
+{% block title %}Tags / {{ SITENAME }}{% endblock %}
+
+{% block content %}
+<section class="tags">
+    <h1>Tags</h1>
+    <p>This page sure is exciting, wow!</p>
+
+    <ul>
+        {% for tag, articles in tags %}
+        <li>
+            <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag.name }}</a>
+            — {{ articles | length }}
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

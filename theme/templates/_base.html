@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
+    <meta name="author" content="{{ AUTHOR }}">
+
+    {% if FEED_ATOM %}
+    <link href="{{ FEED_DOMAIN }}/{{ FEED_ATOM }}" type="application/atom+xml" rel="alternate"
+            title="{{ SITENAME }} Atom Feed" />
+    {% endif %}
+    {% if FEED_RSS %}
+    <link href="{{ FEED_DOMAIN }}/{{ FEED_RSS }}" type="application/rss+xml" rel="alternate"
+            title="{{ SITENAME }} RSS Feed" />
+    {% endif %}
+
+    {% if EXTRA_HEADER %}
+        {{ EXTRA_HEADER }}
+    {% endif %}
+
+    <!-- http://t.co/dKP3o1e -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="{{ SITEURL }}/favicon.png" rel="icon">
+    <link href="{{ SITEURL }}/theme/css/all.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+    <link href="https://fonts.googleapis.com/css?family=Lusitana:400,700|Merriweather:400,700,400italic,700italic|Source+Code+Pro:400,700|Love+Ya+Like+A+Sister&subset=latin,latin-ext"
+        rel="stylesheet" type="text/css">
+    {% if article and article.latex %}
+        {{ article.latex }}
+    {% endif %}
+    {% if page and page.latex %}
+        {{ page.latex }}
+    {% endif %}
+
+    {# twitter card stuff #}
+    {% if article %}
+    {% if article.photo_image %}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ SITEURL }}/{{ article.photo_image[1] }}">
+    {% elif article.photo_gallery %}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ SITEURL }}/{{ article.photo_gallery[0][1] }}">
+    {% else %}
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:image" content="{{ SITEURL }}/theme/images/home-eevee.png">
+    {% endif %}
+    <meta name="twitter:site" content="@eevee">
+    <meta name="twitter:title" content="{{ article.title | striptags }}">
+    <meta name="twitter:description" content="{{ article.summary | striptags }}">
+    {% endif %}
+</head>
+
+<body>
+    {% block entirebody %}{% endblock %}
+    <footer role="contentinfo">
+       <small>
+           Themestructure from <a href="https://github.com/eevee/eev.ee">here</a>
+           Therefore all theme stuff is licensed under <a href="http://creativecommons.org/licenses/by/3.0/us/">Creative Commons Attribution 3.0</a>
+            <!-- So legally I have to say thanks lexy munroe -->
+           Powered by <a href="http://docs.getpelican.com/en/3.3.0/">Pelican</a>
+       </small>
+       <small>
+            <a href="https://github.com/jappeace/jappeaceApplication">Source code</a>
+            All other stuff is licensed under GPLv3
+       </small>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% import '_lib.html' as lib with context %}
+
+{% block title %}{{ article.title|striptags }} / {{ SITENAME }}{% endblock %}
+
+{% block content %}
+    <article class="single" role="article">
+        <header>
+            <p class="meta">{{ lib.article_time(article) }}</p>
+            <h1>
+                <a href="{{ SITEURL }}/{{ article.url }}">
+                    {{ lib.category_glyph(article.category) }}
+                    {{ article.title | striptags }}
+                </a>
+            </h1>
+        </header>
+
+        <div class="entry-content">
+            {{ lib.article_illustration(article) }}
+            {{ article.content }}
+        </div>
+
+        {{ lib.article_gallery(article) }}
+
+        <footer>
+            {{ lib.article_footer(article) }}
+            {{ lib.article_social_cruft(article) }}
+        </footer>
+    </article>
+
+    <section class="oh-wow-patreon">
+        <!-- If I ever get this of the ground, here the patreon -->
+    </section>
+
+    {{ lib.article_disqus_comments(article) }}
+{% endblock %}
