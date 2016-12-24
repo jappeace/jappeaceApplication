@@ -1,4 +1,70 @@
+@font-face {
+    font-family: 'Fira Mono'; /*a name to be used later*/
+    src: url('FiraCode_Regular.ttf'); /*URL to font*/
+}
+*{
+font-family: 'Fira Mono', monospace;
+margin: 2px;
+padding: 0;
+}
 body{
+    background:#3465a4;
+    text-align:center;
+}
+.application{
+    text-align:left;
+    margin-left: auto;
+    margin-right:auto;
+    background:#d3d7cf;
+    color:#2e3436;
+    border:2px solid #474d4d;
+    width:800px;
+    font-size:small;
+    overflow: hidden;
+}
+.padded{
+    margin:10px;/* hehe, just kidding */
+}
+.content{
+    min-height:460px;
+}
+h1{
+    font-size: large;
+    color:#729fcf;
+}
+nav{
+    text-align:center;
+    border:2px solid #474d4d;
+    margin-bottom:1em;
+}
+nav ul li{
+    padding: 2px;
+    margin:0;
+}
+nav ul li:after{
+    content: '>';
+}
+nav ul li:before{
+    content: '<';
+}
 
-	background:limegreen;
+nav ul li:hover{
+    color:#eeeeec;
+    background:#3465a4;
+}
+p{
+    margin-bottom:1em;
+}
+footer{
+    font-size:xx-small;
+}
+footer ul li{
+    width:49%;
+}
+ul.horizontal{
+    list-style:none;
+}
+ul.horizontal li{
+    text-align:left;
+    display:inline-block;
 }

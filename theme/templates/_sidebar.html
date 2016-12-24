@@ -12,6 +12,7 @@
         </li>
     {% endmacro %}
 
+   <nav>
     <ul class="eevee-navigation">
         {% for linkdef in LINKS_EX %}
             {{ _render_link(*linkdef) }}
@@ -29,7 +30,8 @@
             {{ _render_link(*linkdef) }}
         {% endfor %}
     </ul>
-
+   </nav>
+    
     <section>
         <h1><a href="{{ SITEURL }}/{{ ARCHIVES_URL }}">Recent stuff</a></h1>
         <ul id="recent_posts">
