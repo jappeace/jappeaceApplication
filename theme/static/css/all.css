@@ -1,3 +1,9 @@
+/* 
+some collours
+yellow: ffff54
+blue: 1818b2
+light blue: 54ffff
+ */
 @font-face {
     font-family: 'Fira Mono'; /*a name to be used later*/
     src: url('FiraCode_Regular.ttf'); /*URL to font*/
@@ -27,6 +33,14 @@ a {
     color: black;
     padding:4px;
     border-radius:3px;
+    display:inline-block;
+}
+a:first-letter, nav li u a h2:first-letter{
+    color: #729fcf;
+}
+a:hover:first-letter, nav li u a h2:hover:first-letter{
+    color: #ffff54;
+    
 }
 a:hover {
     color: white;
@@ -108,8 +122,11 @@ ul.horizontal li{
 }
 #title a{
     font-size:5em;
-    color: #54ffff;
+    color: #ffff54;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+#title a:hover{
+    color: #54ffff;
 }
 #title h1{
     float:right;
@@ -124,4 +141,10 @@ ul.horizontal li{
 #logo span, #logo br{
     margin:0;
 }
-/* ffff54 */
+.category-glyph{
+    height:1em;
+    margin:0;
+}
+footer small a{
+    margin:0;
+}
