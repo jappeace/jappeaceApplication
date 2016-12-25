@@ -1,14 +1,14 @@
 {% import '_lib.html' as lib with context %}
 
-<aside id="sidebar">
+<aside class="window" id="sidebar">
     {% macro _render_link(title, url, desc, class) %}
         <li class="{{ class }}">
+            <h3><</h3>
             <a href="{{ url }}">
-                <div class="-label">
-                    <h2>{{ title }}</h2>
-                    <p class="-details">{{ desc }}</p>
-                </div>
+                <h2>{{ title }}</h2>
+                <p class="description">{{ desc }}</p>
             </a>
+            <h3>></h3>
         </li>
     {% endmacro %}
 

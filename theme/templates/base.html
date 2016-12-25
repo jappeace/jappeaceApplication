@@ -1,14 +1,13 @@
 {% extends '_base.html' %}
 
 {% block entirebody %}
-    <header role="banner">
+    <header id="title" class="window" role="banner">
         <h1><a href="{{ SITEURL }}/">{{ SITENAME }}</a></h1>
-        <nav role="navigation">{% include '_navigation.html' %}</nav>
     </header>
     <div id="main">
-        <div id="content">
+        {% include '_sidebar.html' %}
+        <div class="window" id="content">
             {% block content %}{% endblock %}
         </div>
-        {% include '_sidebar.html' %}
     </div>
 {% endblock %}
