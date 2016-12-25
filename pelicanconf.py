@@ -24,7 +24,7 @@ AUTHOR_FEED_RSS = None
 # the default theme to be 2-tuples, but I need more info.
 LINKS_EX = [(
     'blog',
-    '#',
+    'everything/',
     "Isn't it this site?",
     'blog'
 )]
@@ -48,3 +48,10 @@ DEFAULT_PAGINATION = False
 
 THEME = 'theme'
 
+# For the landing page
+TEMPLATE_PAGES = {
+    '../theme/templates/home.html': 'index.html',
+}
+
+INDEX_SAVE_AS = 'everything/index.html'
+INDEX_URL = 'everything/'
