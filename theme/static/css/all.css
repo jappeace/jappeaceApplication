@@ -8,7 +8,8 @@ margin: 1%; /* so responsive */
 padding: 0;
 }
 body{
-    background:#3465a4;
+    /* 1818b2 */
+    background:#1818b2;
     text-align:center;
 }
 .wrapper{
@@ -21,6 +22,15 @@ body{
     color:#2e3436;
     border:2px solid #474d4d;
     font-size:small;
+}
+a {
+    color: black;
+    padding:4px;
+    border-radius:3px;
+}
+a:hover {
+    color: white;
+    background:#1818b2;
 }
 footer.window{
     text-align:center;
@@ -48,12 +58,13 @@ nav{
     border:2px solid #474d4d;
     margin-bottom:1em;
 }
-nav ul{
+nav ul, #recent_posts{
     list-style:none;
 }
 nav ul li{
     padding: 2px;
     margin:0;
+    overflow:hidden;
 }
 nav ul li .description{
     font-size:xx-small;
@@ -72,7 +83,7 @@ nav ul li h3{
 }
 nav ul li:hover{
     color:#eeeeec;
-    background:#3465a4;
+    background:#1818b2;
 }
 p{
     margin-bottom:1em;
@@ -91,24 +102,26 @@ ul.horizontal li{
     display:inline-block;
 }
 
-#title {
-    text-align:right;
+#title{
+    clear:both;
+    overflow:auto;
 }
-#title h1{
-    font-size:4em;
-    color: yellow;
+#title a{
+    font-size:5em;
+    color: #54ffff;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
-.triangle-right {
-    width: 0;
-    height: 0;
-    border-top: 1em solid transparent;
-    border-left: 2em solid red;
-    border-bottom: 1em solid transparent; }
-.triangle-right {
-    width: 0;
-    height: 0;
-    border-top: 1em solid transparent;
-    border-right: 2em solid red;
-    border-bottom: 1em solid transparent;
+#title h1{
+    float:right;
+    width:50%;
+    text-align:right;
 }
+#logo{
+    float:left;
+   font-size:2.1pt;
+   font-weight: bold;
+}
+#logo span, #logo br{
+    margin:0;
+}
+/* ffff54 */

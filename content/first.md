@@ -1,7 +1,7 @@
 Title: First post
 Date: 2016-12-24 19:43
 Category: Reflection
-Tags: test
+Tags: test, first 
 
 So I'm trying to setup this website and to do this I need some filler text.
 Some people would make prommises about putting something up every week or so.
