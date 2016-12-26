@@ -5,15 +5,15 @@
     {% for article in articles_page.object_list %}
     <article>
         <header>
+            <h1>
+                <a href="{{ SITEURL }}/{{ article.url }}">
+                    {{ article.title | striptags }}
+                </a>
+                {{ lib.category_glyph(article.category) }}
+            </h1>
             <p class="meta">
                 <time datetime="{{ article.date.isoformat() }}" pubdate>{{ article.locale_date }}</time>
             </p>
-            <h1>
-                <a href="{{ SITEURL }}/{{ article.url }}">
-                    {{ lib.category_glyph(article.category) }}
-                    {{ article.title | striptags }}
-                </a>
-            </h1>
         </header>
 
         <div class="entry-content">

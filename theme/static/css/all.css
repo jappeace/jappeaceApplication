@@ -158,3 +158,18 @@ ul.horizontal li{
 footer small a{
     margin:0;
 }
+.entry-content p,
+article header p,
+article header time,
+article header h1,
+article header h1 a,
+article footer,
+article footer a,
+.entry-content {
+    margin:0;
+}
+
+article header{
+    margin:0;
+    margin-top:1%;
+}
