@@ -8,10 +8,13 @@ I finished the css mostly as a beautifull CGA theme.
 In this post I'll discuss my decision making process.
 
 # Why make a site?
-I want to be able to express some opinions, mainly trough videos actually but
-some times having text is better.
-For example when I want to write a guide on what tools I use,
-or if I need to do something well referenced.
+As an extension of my youtube account I will use this website,
+mostly for subjects I can't make videos for.
+Either because of lack of time or because a video format just isn't suited for
+it (for example when talking about a subject involving a bunch of shell
+commands, this site can be a place to put those commands).
+It can also be for themes that need to be well referenced
+(controversial opinions for example).
 
 The main purpose of this is to make money.
 I want to adopt a digital nomad like lifestyle (or something similar),

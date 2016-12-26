@@ -39,7 +39,13 @@ SOCIAL_EX = [(
     'https://github.com/jappeace/',
     "Me telling computers to do stuff",
     'github'
-)]
+),(
+    'patreon',
+    'https://www.patreon.com/user?u=4695714',
+    'Consider supporting my endeavors',
+    'patreon'
+)
+]
 
 DEFAULT_PAGINATION = False
 
