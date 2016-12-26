@@ -3,10 +3,19 @@ some collours
 yellow: ffff54
 blue: 1818b2
 light blue: 54ffff
+grey-ish: 474d4d (used in the borders)
  */
 @font-face {
     font-family: 'Fira Mono'; /*a name to be used later*/
     src: url('FiraCode_Regular.ttf'); /*URL to font*/
+}
+@font-face{
+    font-family: 'PressStart Display';
+    src: url('PressStart2P_Regular.ttf')
+}
+@font-face{
+    font-family: 'BlackOpsOne Display';
+    src: url('BlackOpsOne-Regular.ttf')
 }
 *{
 font-family: 'Fira Mono', monospace;
@@ -36,19 +45,25 @@ a {
     display:inline-block;
     text-decoration:none;
 }
+a.tag, .entry-content a{
+    text-decoration:underline;
+}
 a:first-letter{
     color: #729fcf;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+a.tag:first-letter, .entry-content a:first-letter{ /*to small for textshadow*/
+    color: #1818b2;
+    text-shadow: none;
 }
 a:visited {
     color: #1818b2;
 }
 
-a:hover:first-letter{
+a:hover:first-letter, a.tag:hover:first-letter, .entry-content a:hover:first-letter{
     color: #ffff54;
-    
 }
-a:hover {
+a:hover{
     color: white;
     background:#1818b2;
 }
@@ -72,10 +87,6 @@ footer.window{
 }
 .padded{
     margin:2%;/* hehe, just kidding */
-}
-h1{
-    font-size: large;
-    color:#729fcf;
 }
 nav{
     text-align:center;
@@ -131,16 +142,18 @@ ul.horizontal li{
     overflow:auto;
 }
 #title a{
-    font-size:5em;
+    font-size:4em;
+    font-family:'BlackOpsOne Display';
     color: #ffff54;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 #title a:hover{
     color: #54ffff;
+    
 }
 #title h1{
     float:right;
-    width:50%;
+    width:70%;
     text-align:right;
 }
 #logo{
@@ -158,6 +171,9 @@ ul.horizontal li{
 footer small a{
     margin:0;
 }
+footer {
+    margin-bottom:1%;
+}
 .entry-content p,
 article header p,
 article header time,
@@ -165,6 +181,7 @@ article header h1,
 article header h1 a,
 article footer,
 article footer a,
+.entry-content a,
 .entry-content {
     margin:0;
 }
@@ -172,4 +189,28 @@ article footer a,
 article header{
     margin:0;
     margin-top:1%;
+}
+
+.entry-content img{
+    width:90%;
+    border: 2px #474d4d solid;
+}
+#category-title{
+    font-size:4em;
+}
+h1{
+    font-size: 2em;
+    color:#729fcf;
+}
+article h1{
+    font-size: 1.5em;
+}
+article header h1{
+    font-size: 2em;
+}
+article h2{
+    font-size:1.25em;
+}
+article h3{
+    font-size:1.1em;
 }

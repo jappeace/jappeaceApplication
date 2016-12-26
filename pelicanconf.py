@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 AUTHOR = 'Jappie J. T. Klooster'
-SITENAME = 'Jappie Journal'
+SITENAME = 'J for Jappie'
 SITEURL = ''
 
 PATH = 'content'
@@ -47,3 +47,8 @@ DEFAULT_PAGINATION = False
 #RELATIVE_URLS = True
 
 THEME = 'theme'
+
+PLUGIN_PATHS = ["./pelican-plugins"]
+PLUGINS = [
+    #'optimize_images'
+]
