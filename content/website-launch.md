@@ -113,3 +113,25 @@ Mainly out of privacy concerns but also because this speeds every website
 significantly, especially if you have a poor internet connection.
 Besides I don't imagine my target audience uses facebook that much,
 correct me if I'm wrong.
+
+### Update: I was totally wrong about CDN's (at least for fonts)
+I did some testing, and it turns out there are significant speed improvements
+for using a CDN.
+Ok you win this one, fonts.google.com.
+But I'm still not going to add those like buttons.
+
+Please do not that if you test this stuff that you have to press ctrl+f5 to tell
+the browser not to use a cache.
+
+See the difference in results below:
+
+Testing myself (from the Netherlands)
+![doing delivery from website (testing myself)](/images/2016/cdn-own-before.png)
+![doing delivery from cdn (testing myself)](/images/2016/cdn-own-after.png)
+
+Testing with a test service configured from new york:
+![doing delivery from website (testing with service from newyork)](/images/2016/cdn-service-before.png)
+![doing delivery from cdn (testing with service form newyork)](/images/2016/cdn-service-after.png)
+
+From hong kong I got a ridiculous increase, from 3 seconds down to about 40ms.
+I don't have a screenshot of that though (and to lazy to revert).

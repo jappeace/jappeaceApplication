@@ -5,18 +5,7 @@ blue: 1818b2
 light blue: 54ffff
 grey-ish: 474d4d (used in the borders)
  */
-@font-face {
-    font-family: 'Fira Mono'; /*a name to be used later*/
-    src: url('FiraCode_Regular.ttf'); /*URL to font*/
-}
-@font-face{
-    font-family: 'PressStart Display';
-    src: url('PressStart2P_Regular.ttf')
-}
-@font-face{
-    font-family: 'BlackOpsOne Display';
-    src: url('BlackOpsOne-Regular.ttf')
-}
+@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Fira+Mono');
 *{
 font-family: 'Fira Mono', monospace;
 margin: 1%; /* so responsive */
@@ -143,7 +132,7 @@ ul.horizontal li{
 }
 #title a{
     font-size:4em;
-    font-family:'BlackOpsOne Display';
+    font-family:'Black Ops One', cursive;
     color: #ffff54;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
