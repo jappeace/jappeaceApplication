@@ -112,11 +112,14 @@ nav ul li a{
 nav ul li h3{
     display:inline-block;
     font-size:4em;
-    font-size:3vw;
+    font-size:2.5vw;
+    vertical-align:super; /* I have no idea what this does, but it works */
 }
 nav ul li:hover{
-    color:#eeeeec;
-    background:#1818b2;
+    color:#54ffff;
+}
+nav ul li:hover h3{
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 p{
     margin-bottom:1em;
@@ -213,4 +216,8 @@ article h2{
 }
 article h3{
     font-size:1.1em;
+}
+article.single > footer{
+    border-top: 1px solid black;
+    font-size:0.5vw;
 }

@@ -56,5 +56,6 @@ THEME = 'theme'
 
 PLUGIN_PATHS = ["./pelican-plugins"]
 PLUGINS = [
-    'optimize_images'
+    'optimize_images',
+    'render_math'
 ]
