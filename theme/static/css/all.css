@@ -74,7 +74,7 @@ footer.window{
     vertical-align:top;
 }
 #content{
-    width:60%;
+    width:53%; /* about 80 characters  I guess */
     margin:0;
     margin-right:auto;
     display:inline-block;
