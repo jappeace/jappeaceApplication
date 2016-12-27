@@ -19,7 +19,6 @@ body{
 .wrapper{
     margin-left: auto;
     margin-right:auto;
-    text-align:left;
 }
 .window{
     background:#d3d7cf;
@@ -67,9 +66,20 @@ footer.window{
 }
 #sidebar{
     width:20%;
+    margin:0;
+    margin-left:auto;
+    display:inline-block;
+    margin-right:1%;
+    text-align:left;
+    vertical-align:top;
 }
 #content{
-    width:75%;
+    width:60%;
+    margin:0;
+    margin-right:auto;
+    display:inline-block;
+    text-align:left;
+    vertical-align:top;
 }
 #main, nav ul li{
     clear:both;
@@ -127,27 +137,31 @@ ul.horizontal li{
     overflow:auto;
 }
 #title a{
-    font-size:4em;
+    font-size:3.25em;
     font-family:'Black Ops One', cursive;
     color: #ffff54;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 #title a:hover{
     color: #54ffff;
-    
 }
 #title h1{
     float:right;
-    width:70%;
     text-align:right;
 }
 #logo{
     float:left;
-   font-size:2.1pt;
-   font-weight: bold;
+    font-size:0.25vw;
+    font-weight: bold;
+    /* allows a little more small screen support (header becomes fucked less quickly)*/
+    margin-right:0;
 }
-#logo span, #logo br{
+#logo span, #logo br, #logo pre{
     margin:0;
+}
+#title h1, #title h1 a{
+    /* allows a little more small screen support (header becomes fucked less quickly)*/
+    margin-left:0;
 }
 .category-glyph{
     height:1em;
