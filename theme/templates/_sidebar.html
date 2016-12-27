@@ -3,12 +3,14 @@
 <aside class="window" id="sidebar">
     {% macro _render_link(title, url, desc, class) %}
         <li class="{{ class }}">
-            <h3><</h3>
             <a href="{{ url }}">
+            <h3><</h3>
+            <div class="link">
                 <h2>{{ title }}</h2>
                 <p class="description">{{ desc }}</p>
-            </a>
+            </div>
             <h3>></h3>
+            </a>
         </li>
     {% endmacro %}
 

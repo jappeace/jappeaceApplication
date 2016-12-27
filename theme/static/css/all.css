@@ -144,6 +144,9 @@ ul.horizontal li{
     font-family:'Black Ops One', cursive;
     color: #ffff54;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+/* otherwise some browsers disde to inert a line break*/
+    display:block;
+    width:100%; 
 }
 #title a:hover{
     color: #54ffff;
@@ -220,4 +223,11 @@ article h3{
 article.single > footer{
     border-top: 1px solid black;
     font-size:0.5vw;
+}
+.link {
+    display:inline-block;
+    width:50%;
+}
+.navigation li a{
+    width:100%;
 }
