@@ -26,6 +26,7 @@ body{
     color:#2e3436;
     border:2px solid #474d4d;
     font-size:small;
+    font-size:1vw;
 }
 a {
     color: black;
@@ -89,21 +90,19 @@ nav ul li{
     padding: 2px;
     margin:0;
     overflow:hidden;
+    text-align:center;
 }
 nav ul li .description{
     font-size:xx-small;
-}
-nav ul li a, nav ul li h3, #sidebar, #content{
-    float:left;
+    font-size:0.5vw;
 }
 nav ul li a{
-    width:80%;
-    display:block;
+    display:inline-block;
 }
 nav ul li h3{
-    width:5%;
-    display:block;
-    font-size:3em;
+    display:inline-block;
+    font-size:4em;
+    font-size:3vw;
 }
 nav ul li:hover{
     color:#eeeeec;
@@ -111,9 +110,6 @@ nav ul li:hover{
 }
 p{
     margin-bottom:1em;
-}
-footer{
-    font-size:xx-small;
 }
 footer ul li{
     width:49%;
@@ -186,6 +182,7 @@ article header{
 }
 #category-title{
     font-size:4em;
+    font-size:4vw;
 }
 h1{
     font-size: 2em;
