@@ -84,6 +84,7 @@ footer.window{
 #main, nav ul li{
     clear:both;
     overflow:auto;
+    margin:0;
 }
 .padded{
     margin:2%;/* hehe, just kidding */
@@ -92,22 +93,23 @@ nav{
     text-align:center;
     border:2px solid #474d4d;
     margin-bottom:1em;
+    width:auto; /* makes the menu fit into the center of the aside somehow*/
 }
 nav ul, #recent_posts{
     list-style:none;
 }
 nav ul li{
-    padding: 2px;
-    margin:0;
     overflow:hidden;
     text-align:center;
+    width:100%;
 }
 nav ul li .description{
     font-size:xx-small;
     font-size:0.5vw;
 }
-nav ul li a{
-    display:inline-block;
+.navigation li a{
+    width:auto;
+    display:block;
 }
 nav ul li h3{
     display:inline-block;
@@ -137,7 +139,7 @@ ul.horizontal li{
 
 #title{
     clear:both;
-    overflow:auto;
+    overflow:hidden;
 }
 #title a{
     font-size:3.25em;
@@ -154,6 +156,7 @@ ul.horizontal li{
 #title h1{
     float:right;
     text-align:right;
+    padding-right:1%;
 }
 #logo{
     float:left;
@@ -227,7 +230,4 @@ article.single > footer{
 .link {
     display:inline-block;
     width:50%;
-}
-.navigation li a{
-    width:100%;
 }
