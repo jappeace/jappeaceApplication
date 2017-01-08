@@ -1,0 +1,67 @@
+#+TITLE: Thesis writing tips
+
+So I recently started writing my master thesis and looking at some of my fellow
+master students their work I realized that perhaps many people have trouble with
+managing references, quality control and keeping motivated.
+
+In this post I'll explain how I managed to do it, most of these ideas are
+either directly stolen from my classmates, ripped from reddit
+and a few are my own "invention", but others may already have thought of it.
+
+So perhaps the best way to see this post is as a aggragetion of techniques and
+tools I used to waste less time.
+So my advice to you is to skim this article and look for any ideas that seem
+interesting and try them out.
+
+* General tools
+TO edit my thesis I used spacemacs with org mode as preffered format.
+I use spacemacs specifically because it brings vim bindings to a bunch of
+emacs plugins and modes and also makes extending emacs easy (I don't want to
+learn lisp right now).
+org-mode is a file format / emacs mode, its much more pretty to look at then
+latex, which is important if you have to stare at the text several
+hours per day.
+My basic process is write the stuff in org-mode and then export it to latex,
+then I use perl program call `latexmk` to compile the pdf file whenever I export.
+Any pdf reader that reloads on file change can then be used to view the pdf file
+in my case this is qpdfview.
+
+** Workspaces and wm
+I use a tiling window manager called i3-wm.
+Where one workspace (virtual desktop) is for compiling the latex file
+(just a terminal with latexmk),
+bound to f3 usually.
+Another is for editing and showing the result (in qpdf & emacs) bound to 4 or 3.
+Reference managment is also optionally open at 4 or 5 depending on the editing
+workspace.
+Then I also have the usual workspaces that are filled right on boot, with a
+browser (bound to 9), email (bound to 1)
+and finally system monitor is always open at 0.
+The other workspaces usually tend to get filled up with open papers.
+Note that alt and a specific bound key can be used to switch work spaces.
+The fact that I use a tiling window manager and these work space schemes makes
+it so that I almost never "lose" program windows. I sometimes get lost if I
+deviate from the standard "workspace scheme" and flicker trough a bunch of them
+to find the right one, but this takes less than a second.
+
+The emacs I use runs in deamon mode, with each newly spawned window being a
+client, this allows sharing of buffers in multiple windows, so that I can use i3
+navigation rather than emacs buffer switching
+(i3 is directional which is more natural to work with).
+
+** Version control
+I use git to track the org file of the thesis. Usually I just make a commit on
+the end of every day and push the result as a simple backup system.
+However sometimes I want to change a lot of existing text and before doing that
+I make sure the text I'm about to delete is already in a commit,
+this prevents that annoying moment where you want to recover paragraphs 
+after realizing you just deleted them an hour before.
+This is different from undoing in that it persists to program reboots and
+doesn't need to be linear.
+
+clipboard manager
+is also the backup utility (on github)
+* References
+1. Bibtex, with scholar
+2. Keep a copy local on filesystem, but don't track it.
+3. 
