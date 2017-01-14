@@ -149,7 +149,7 @@ This also helps me reminding what I wrote about.
 Note that the idea of using todonotes I basically stole directly from one of my
 classmates.
 But this significantly made the quality of my documents better.
-Since I can manage my attention much more focussed.
+Since I can manage my attention much more focused.
 Besides looking at the todo list and looking at the document have now become
 the same thing.
 
