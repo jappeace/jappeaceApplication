@@ -9,60 +9,77 @@ either directly stolen from my classmates, ripped from reddit
 and a few are my own "invention", but others may already have thought of it.
 
 So perhaps the best way to see this post is as a aggragetion of techniques and
-tools I used to waste less time.
++tools+ (the tools part will be moved to another post) I used to waste less time.
 So my advice to you is to skim this article and look for any ideas that seem
 interesting and try them out.
 
-* General tools
-TO edit my thesis I used spacemacs with org mode as preffered format.
-I use spacemacs specifically because it brings vim bindings to a bunch of
-emacs plugins and modes and also makes extending emacs easy (I don't want to
-learn lisp right now).
-org-mode is a file format / emacs mode, its much more pretty to look at then
-latex, which is important if you have to stare at the text several
-hours per day.
-My basic process is write the stuff in org-mode and then export it to latex,
-then I use perl program call `latexmk` to compile the pdf file whenever I export.
-Any pdf reader that reloads on file change can then be used to view the pdf file
-in my case this is qpdfview.
+* Reference management
+Reference management seems to be a thing which can be quite tricky. It is
+extremly tedious and dull work, and therefore I obviously don't do it by hand.
+I use bibtex as core platform, I haven't compared the available options but
+since it integrated with org-mode I was happy with it.
 
-** Workspaces and wm
-I use a tiling window manager called i3-wm.
-Where one workspace (virtual desktop) is for compiling the latex file
-(just a terminal with latexmk),
-bound to f3 usually.
-Another is for editing and showing the result (in qpdf & emacs) bound to 4 or 3.
-Reference managment is also optionally open at 4 or 5 depending on the editing
-workspace.
-Then I also have the usual workspaces that are filled right on boot, with a
-browser (bound to 9), email (bound to 1)
-and finally system monitor is always open at 0.
-The other workspaces usually tend to get filled up with open papers.
-Note that alt and a specific bound key can be used to switch work spaces.
-The fact that I use a tiling window manager and these work space schemes makes
-it so that I almost never "lose" program windows. I sometimes get lost if I
-deviate from the standard "workspace scheme" and flicker trough a bunch of them
-to find the right one, but this takes less than a second.
+To find papers I mainly use google scholar trough the university proxy.
+However sometimes papers aren't available for my university, so I'm forced to
+use [[http://sci-hub.io/]] (if that link gets blocked in the future, try the
+[[https://en.wikipedia.org/wiki/Sci-Hub][wikipedia entry]], wikipedia is impartial and will therefore provide a propper
+link (unlike Google)).
 
-The emacs I use runs in deamon mode, with each newly spawned window being a
-client, this allows sharing of buffers in multiple windows, so that I can use i3
-navigation rather than emacs buffer switching
-(i3 is directional which is more natural to work with).
+Once I got access to the paper I will skim trough it to see if there is relevant
+information.
+If so I will make a copy to a paper folder and use google scholar
+to generate the bibtex entry for me, there is a citation option at the bottom of
+the search result, click it and then bibtex.
+That little feature of Google scholar has already saved me probably several
+hours of making bibtex entries.
+The copied paper will have the same name as the bibtex entry key, this is
+important if you want to recheck your reference later again.
+Doing this will also lower the psychological barrier of re-checking
+something since you won't have to go trough the entire obtain paper process
+again.
 
-** Version control
-I use git to track the org file of the thesis. Usually I just make a commit on
-the end of every day and push the result as a simple backup system.
-However sometimes I want to change a lot of existing text and before doing that
-I make sure the text I'm about to delete is already in a commit,
-this prevents that annoying moment where you want to recover paragraphs 
-after realizing you just deleted them an hour before.
-This is different from undoing in that it persists to program reboots and
-doesn't need to be linear.
+Note that you shouldn't track it in your version control, because first of all
+you don't expect it to change, and second of all if you push it to a public
+repository you're breaking the law on a whole other level.
+(distributing rather than just consuming, consuming is more easily ignored by
+law enforcement).
 
-clipboard manager
-is also the backup utility (on github)
+** Books
+I haven't completely solved books. It seems that getting books is a lot more
+tougher than papers, probably because most scientist feel that papers should be
+easy obtainable but don't necessarily feel for books the same way
+(many would have written one or contributed to one).
+I as a programmer feel very deeply about the necessity for freedom of
+information and therefore will share some possible sources.
+It will be up to the reader to decide if they should be using such sources.
+However do note that these sources aren't always successful and you should
+prefer obtaining papers since sci-hub works practically always.
 
-* References
+[[http://gen.lib.rus.ec/][library genesis]] should be your first source of books, it has a crappy interface
+and some mirrors may not work but if you get a result you usually also get a
+book.
 
-1. Bibtex, with scholar
-2. Keep a copy local on filesystem, but don't track it.
+Then if that fails you can try and use IRC, which is described very thoroughly [[https://www.reddit.com/r/Piracy/comments/2oftbu/guide_the_idiot_proof_guide_to_downloading_ebooks/][here]].
+But in short for archiving purposes, go to undernet,
+join bookz (/join #bookz) and then search for your book title (@search).
+Then if you get a result you need to save that file,
+which isn't a book just the query result,
+open that and then if it contains your book use the code to download it.
+
+Finally there is a deseperate method I used one time.
+It takes time but it can be worth the effort.
+There is this concept called digital borrowing, where html drm is used to
+ensure only /n/ copies get borrowed at a time.
+An example of such a website is the [[https://openlibrary.org][open library]].
+The system is kind off dumb since making copies of digital stuff is practically
+free.
+However I do like the fact that some publishers fell for it.
+Anyway if it has your book you can just "borrow" it and make screenshots of each
+page.
+You just bypassed a bunch of html based drm and encryption with a button on your
+keyboard.
+Yes its pretty dumb.
+(not that I disliked the openlibrary initiative or the internet archive,
+in fact I love there effort of tricking the publishers. There work may save some
+books from the copyright abyss, where literature gets lost forever because laws
+prevent copying before the last copy gets lost).
