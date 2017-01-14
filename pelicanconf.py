@@ -57,5 +57,7 @@ THEME = 'theme'
 PLUGIN_PATHS = ["./pelican-plugins"]
 PLUGINS = [
     'optimize_images',
-    'render_math'
+    'render_math',
+    'org_reader'
 ]
+ORG_READER_EMACS_LOCATION = "/usr/bin/emacs"

@@ -61,7 +61,8 @@ doesn't need to be linear.
 
 clipboard manager
 is also the backup utility (on github)
+
 * References
+
 1. Bibtex, with scholar
 2. Keep a copy local on filesystem, but don't track it.
-3. 
