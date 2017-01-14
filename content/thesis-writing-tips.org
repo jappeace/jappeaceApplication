@@ -15,19 +15,19 @@ interesting and try them out.
 
 * Reference management
 Reference management seems to be a thing which can be quite tricky. It is
-extremly tedious and dull work, and therefore I obviously don't do it by hand.
+extremely tedious and dull work, and therefore I obviously don't do it by hand.
 I use bibtex as core platform, I haven't compared the available options but
 since it integrated with org-mode I was happy with it.
 
-To find papers I mainly use google scholar trough the university proxy.
+To find papers I mainly use Google scholar trough the university proxy.
 However sometimes papers aren't available for my university, so I'm forced to
 use [[http://sci-hub.io/]] (if that link gets blocked in the future, try the
-[[https://en.wikipedia.org/wiki/Sci-Hub][wikipedia entry]], wikipedia is impartial and will therefore provide a propper
+[[https://en.wikipedia.org/wiki/Sci-Hub][wikipedia entry]], wikipedia is impartial and will therefore provide a proper
 link (unlike Google)).
 
 Once I got access to the paper I will skim trough it to see if there is relevant
 information.
-If so I will make a copy to a paper folder and use google scholar
+If so I will make a copy to a paper folder and use Google scholar
 to generate the bibtex entry for me, there is a citation option at the bottom of
 the search result, click it and then bibtex.
 That little feature of Google scholar has already saved me probably several
@@ -66,20 +66,79 @@ Then if you get a result you need to save that file,
 which isn't a book just the query result,
 open that and then if it contains your book use the code to download it.
 
-Finally there is a deseperate method I used one time.
+Finally there is a desperate method I used one time.
 It takes time but it can be worth the effort.
-There is this concept called digital borrowing, where html drm is used to
+There is this concept called digital borrowing, where HTML drm is used to
 ensure only /n/ copies get borrowed at a time.
 An example of such a website is the [[https://openlibrary.org][open library]].
 The system is kind off dumb since making copies of digital stuff is practically
 free.
 However I do like the fact that some publishers fell for it.
-Anyway if it has your book you can just "borrow" it and make screenshots of each
+Anyway if it has your book you can just "borrow" it and make screen shots of each
 page.
-You just bypassed a bunch of html based drm and encryption with a button on your
+You just bypassed a bunch of HTML based drm and encryption with a button on your
 keyboard.
 Yes its pretty dumb.
-(not that I disliked the openlibrary initiative or the internet archive,
+(not that I disliked the open library initiative or the internet archive,
 in fact I love there effort of tricking the publishers. There work may save some
 books from the copyright abyss, where literature gets lost forever because laws
 prevent copying before the last copy gets lost).
+
+* Time management
+I have a pretty strict schedule by working 6 hours per day 5 days in the week.
+I won't do any work on the thesis in the weekend.
+I only do 6 hours because personally I feel like those last two hours are
+usually wasted, only when I don't notice the time pass by I will go overtime.
+I start every working day at 9 in the morning to about 3-ish.
+The days where I meet my teacher are of course the least productive. 
+Currently this is on Wednesday, breaking up the week nicely.
+
+I do have to say that when I start there is no distraction.
+I will block websites such as Facebook, reddit and YouTube.
+6 hours is a short time and the personal contract I have with my self is that
+this time will be used productively. 
+
+* TODO management
+Tracking what stuff you have to do is rather quite important.
+What I've found most effective is a latex package called todonotes.
+it allows you to insert todo items in the document itself, which will be shown
+as long as your document class options are drafting, but as soon as you set it to
+final they will be removed from the final document.
+
+This integrates good with org, although misses any sort of highlighting.
+Org also doesn't understand line breaks in todo items.
+Which makes it rather difficult to stay below 80 chars per line for todo items
+(this breaks my heart).
+
+I use the general todo items for feedback from the teacher and also for my own
+thoughts.
+Things I think I should do end up in a todo item, this allows the teacher to see
+what goes on in my mind and also if I understood his feedback correctly.
+
+Then with these notes I create some specialized commands:
+#+BEGIN_src latex 
+  \usepackage[obeyFinal, colorinlistoftodos]{todonotes}
+  \newcommand{\drafting}{\todo[noline, color=gray]{Working draft}}
+  \newcommand{\toReview}{\todo[noline, color=yellow]{To review}}
+  \newcommand{\newlycleared}{
+    \todo[noline, backgroundcolor=white, bordercolor=red]{Newly cleared}
+  }
+  \newcommand{\cleared}{\todo[noline, color=white]{Cleared}}
+#+END_src
+Drafting for paragraphs that are incomplete and should be finished.
+toReview for paragraphs that have been finished but should be checked again at
+a later time for spell/grammar reasons.
+newlycleared for the items that have been cleared but haven't been seen by the
+teacher (he's the guy giving me the grade, so gotta keep him on my side).
+Finally cleared for the items that should be done.
+
+Usually I build up a bunch of toReview items throughout the week and then go on a
+clearing spree the day before meeting the teacher.
+This also helps me reminding what I wrote about.
+
+Note that the idea of using todonotes I basically stole directly from one of my
+classmates.
+But this significantly made the quality of my documents better.
+Since I can manage my attention much more focussed.
+Besides looking at the todo list and looking at the document have now become
+the same thing.
