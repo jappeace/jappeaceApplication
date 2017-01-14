@@ -98,6 +98,16 @@ I will block websites such as Facebook, reddit and YouTube.
 6 hours is a short time and the personal contract I have with my self is that
 this time will be used productively. 
 
+Also note that annexing the weekend to try and finish the thesis a few weeks
+earlier is probably a bad idea.
+I mean focusing for extended amount of times on just one subject can only be
+done so long.
+The best I ever did was a commit streak on a hobby project on github for 3
+weeks, and I had a lot of fun in making that.
+This probably won't be true for all the work in your thesis.
+You may get burned out quickly if you try and do this.
+(Although I personally think it is quite a lot of fun to work on it.
+
 * TODO management
 Tracking what stuff you have to do is rather quite important.
 What I've found most effective is a latex package called todonotes.
@@ -142,3 +152,10 @@ But this significantly made the quality of my documents better.
 Since I can manage my attention much more focussed.
 Besides looking at the todo list and looking at the document have now become
 the same thing.
+
+* In short
+This got way longer than I thought it would. I still even haven't talked
+about editing tools, version control, org mode itself,
+and that awesome UML library called [[http://plantuml.com/][plantuml]] which integrates excellently with org.
+I will discuss these things in a later post.
+I hope these tips can be use full to you.
