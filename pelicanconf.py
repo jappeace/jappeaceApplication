@@ -7,6 +7,7 @@ SITENAME = 'J for Jappie'
 SITEURL = ''
 
 PATH = 'content'
+STATIC_PATHS = ['files']
 
 TIMEZONE = 'Europe/Paris'
 
