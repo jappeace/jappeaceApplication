@@ -4,20 +4,22 @@
 #+Tags: gentoo, optimus, time, wasted, frustration
 
 Using gentoo is a bliss most of the time.
-The package manager portage is one of the most advanced I know off.
-I encountered how much better its than for example apt last week when my old
+The package manager portage is one of the most advanced managers that I've ever
+used.
+Last week I encountered how much better it is than for example apt, when my old
 laptops power supply burned out and I had to resort to a xubuntu machine.
-Apt for example has not the capability to run multiple install processes at the
+Apt has no capability for example to run multiple install processes at the
 same time, whereas portage just goes with that.
 Apt also has no propper versioning system, which makes python 2 and python 3
-seperate packages. Whereas portage can use slots for that.
+seperate packages, but portage can use slots for that.
 This has the advantage that the search tool results become a lot less cluttered.
 
 However using gentoo has also its disadvantages.
 It can demand a lot of time once you start tweaking with it.
 Yesterday I spent about 2 hours figuring out why my card was slow.
 3 hours trying to use the card in a dedicated manner.
-Which failed because documentation sucks and its hard to debug.
+Which failed because documentation is often to technical and its hard to debug,
+because they sort of expect you know how to debug.
 I ended up with the galium driver which upon kvm from vmware??
 That didn't sound right, and indeed this was the software render.
 
