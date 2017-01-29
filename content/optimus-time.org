@@ -16,8 +16,10 @@ This has the advantage that the search tool results become a lot less cluttered.
 
 However using gentoo has also its disadvantages.
 It can demand a lot of time once you start tweaking with it.
-Yesterday I spent about 2 hours figuring out why my card was slow.
-3 hours trying to use the card in a dedicated manner.
+Yesterday I spent about 2 hours figuring out why my graphics card was slow.
+3 hours trying to use the card in a dedicated manner (
+rather than hot switching which the optimus technology does, promises to do, but
+doesn't do).
 Which failed because documentation is often to technical and its hard to debug,
 because they sort of expect you know how to debug.
 I ended up with the galium driver which upon kvm from vmware??
@@ -75,3 +77,6 @@ I mean all these problems were just configuration problems I would've
 encountered too on other distro's I guess.
 But gentoo makes it so easy to go out of your way and play with the
 configurations.
+
+Perhaps next time I should just go with an AMD laptop, I hear they are making
+tons of progress with their opensource drivers.
