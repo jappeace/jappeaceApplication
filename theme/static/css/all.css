@@ -5,7 +5,7 @@ blue: 1818b2
 light blue: 54ffff
 grey-ish: 474d4d (used in the borders)
  */
-@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Fira+Mono');
+@import url('https://fonts.googleapis.com/css?family=Dancing+Script|Fira+Mono');
 *{
 font-family: 'Fira Mono', monospace;
 margin: 1%; /* so responsive */
@@ -72,6 +72,7 @@ footer.window{
     margin-right:1%;
     text-align:left;
     vertical-align:top;
+	padding:0.5;
 }
 #content{
     width:53%; /* about 80 characters  I guess */
@@ -80,6 +81,10 @@ footer.window{
     display:inline-block;
     text-align:left;
     vertical-align:top;
+	padding-left:3%;
+	padding-right:3%;
+	padding-top:2%;
+	padding-bottom:1%;
 }
 #main, nav ul li{
     clear:both;
@@ -143,9 +148,10 @@ ul.horizontal li{
 }
 #title a{
     font-size:3.25em;
-    font-family:'Black Ops One', cursive;
-    color: #ffff54;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    font-family:'Dancing Script', cursive;
+	/* #ffff54 */
+    color: #1818b2;
+    text-shadow: -2px 0 #ffff54, 0 1px #ffff54, 1px 0 #ffff54, 0 -1px #ffff54;
 /* otherwise some browsers disde to inert a line break*/
     display:block;
     width:100%; 
