@@ -199,6 +199,10 @@ article footer a,
 .entry-content {
     margin:0;
 }
+.entry-content p{
+	padding-top:1%;
+	padding-bottom:1%;
+}
 
 article header{
     margin:0;
