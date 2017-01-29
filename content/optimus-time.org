@@ -1,4 +1,4 @@
-#+TITLE: Time wasted on optimus
+#+TITLE: Optimus time!
 #+DATE: 2017-01-29
 #+CATEGORY: tools
 #+Tags: gentoo, optimus, time, wasted, frustration
