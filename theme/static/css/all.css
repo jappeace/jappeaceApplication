@@ -181,6 +181,7 @@ ul.horizontal li{
 .category-glyph{
     height:1em;
     margin:0;
+	vertical-align:middle; /* this works cause its inline?? */
 }
 footer small a{
     margin:0;
