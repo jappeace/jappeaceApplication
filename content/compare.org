@@ -1,0 +1,67 @@
+#+TITLE: Comparing tax in different countries
+#+DATE: 2017-03-2
+#+CATEGORY: reflection
+#+Tags: politics, countries, tax
+Soon I will be graduating from my masters in AI.
+However since I was planning to go abroad I wanted to see how much worse or
+better taxation laws are compared to my own country (The Netherlands).
+
+For starters we will compare with the eastern neighbours (Germany).
+Scale 3 has been removed because its not relevant for me:
+
+| NL | from     | till      | %      |
+|----+----------+-----------+--------|
+|  1 | € 0      | € 19'982  | 36,55% |
+|  2 | € 19'982 | € 67'072  | 40,80% |
+|  4 | € 67'072 | € \infty | 52,00% |
+
+[[http://belastingschijven.net/belastingschijven-2017/][source]]
+
+| DE | from      | till      |   % |
+|----+-----------+-----------+-----|
+|  1 | € 0       | € 7'664   |  0% |
+|  2 | € 7'665   | € 52'153  | 15% |
+|  3 | € 52'154  | € 250'000 | 42% |
+|  4 | € 250'001 | € \infty  | 45% |
+
+[[http://www.cfe-eutax.org/taxation/personal-income-tax/germany][source]]. Just glancing at it and you see a rather big difference.
+However its even worse with Australia:
+
+| AU | from      | till      |     % |
+|----+-----------+-----------+-------|
+|  1 | € 0       | € 13'250  |    0% |
+|  2 | € 13'250  | € 26'934  |  9.7% |
+|  3 | € 26'934  | € 63'347  | 22.8% |
+|  3 | € 63'347  | € 130'995 | 30.1% |
+|  4 | € 130'995 | € \infty |   45% |
+
+[[https://en.wikipedia.org/wiki/Income_tax_in_Australia][source]] (Converted to euros)
+
+So ok, say I earn 3500 euro's per month, which is an entirely reasonable
+assumption since I saw multiple government [[https://www.werkenvoornederland.nl/vacatures?vakgebied=CVG.08&werkdenkniveau=CWD.04][vaccancies]] with my skill set (or lower)
+for around that price and I asked a recruiter too who said around that
+(actually he low-balled me with 3'000-3'500, but I guess that's his job).
+
+So the amount per year is:
+\[3500 \times 12=42'000\],
+
+The tax I would pay in the Netherlands then would be:
+\[19'982\times0.3655+(42'000-19'982)\times0.408=16'286\] or \[16'286/42'000= 39% \] goes to
+taxes from my total income.
+
+For Germany however \[(42'000-7'664)\times0.15=5'150\] or \[5'150/42'000=12\%\].
+That's quite a dramatic difference.
+On top of that the VAT is 2% lower in Germany so you'll have 2% more purchasing
+power.
+
+So now to calculate for Australia.
+
+\[(26'934-13'250)\times0.097+(42'000-26'934)\times0.228=4'762\] or \[4'762/42'000=11\% \] in taxes, 
+Australia also has a lower VAT (just 10%).
+And the amount of money going to 'pensions' is a lot lower in Australia,
+rather than 25% (hard to find a right source on this) of the Netherlands only
+9% goes to it,
+which is by the way redeemable as soon as you leave ([[https://auvisa.org/nl/working-holiday-visum-voor-australie/][source]]).
+Which is perfect, I just go visit family for a week and get a fat paycheck,
+because I didn't want to do pensions anyway in my twenties,
+I have other costs to worry about.

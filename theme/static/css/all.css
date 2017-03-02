@@ -242,3 +242,15 @@ article.single > footer{
     display:inline-block;
     width:50%;
 }
+/*
+make tables less cramped
+*/
+th, td{
+    padding-left: 1em;
+}
+td {
+    padding-right: 1em;
+    padding-top: 0.2em;
+    border-right: dotted;
+    border-bottom: grey solid thin;
+}
