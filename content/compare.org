@@ -46,7 +46,7 @@ So the amount per year is:
 \[3500 \times 12=42'000\],
 
 The tax I would pay in the Netherlands then would be:
-\[19'982\times0.3655+(42'000-19'982)\times0.408=16'286\] or \[16'286/42'000= 39% \] goes to
+\[19'982\times0.3655+(42'000-19'982)\times0.408=16'286\] or \[16'286/42'000= 39\% \] goes to
 taxes from my total income.
 
 For Germany however \[(42'000-7'664)\times0.15=5'150\] or \[5'150/42'000=12\%\].
