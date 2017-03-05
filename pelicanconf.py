@@ -28,7 +28,14 @@ LINKS_EX = [(
     '/',
     "Isn't it this site?",
     'blog'
-)]
+),
+(
+    'resume',
+    '/files/2017/resume-en.pdf',
+    "To convince you to hire me!",
+    'resume'
+),
+]
 
 SOCIAL_EX = [(
     'email',
