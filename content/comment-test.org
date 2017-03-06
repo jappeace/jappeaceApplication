@@ -1,0 +1,18 @@
+#+Title: Comment Test
+#+Date: 2017-03-06 22:00
+#+Category: Reflection
+#+Tags: test, first, comments
+#+PROPERTY: subreddit netherlands
+#+PROPERTY: status draft
+
+So I'm trying to tie in reddit into this website as a comment system.
+Basically I want to specify in pelican which subreddits this post should be on.
+Then use javascript to find the relevant thread and display the comments of
+that thread below this post.
+
+So only stuff would happen on compile time (ie transforming these loosly organized
+*.org files into html), where the treads would be created.
+And at runtime on the user client (ie in the browser).
+I got this idea from the youtube plugin that replaces youtubes horrible 
+commenting system with reddit posts if available.
+I don't want to even bother with an own comment system.
