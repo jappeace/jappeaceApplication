@@ -7,7 +7,7 @@ SITENAME = 'Jappie'
 SITEURL = ''
 
 PATH = 'content'
-STATIC_PATHS = ['files']
+STATIC_PATHS = ['files', 'images']
 
 TIMEZONE = 'Europe/Paris'
 
@@ -64,7 +64,7 @@ THEME = 'theme'
 
 PLUGIN_PATHS = ["./pelican-plugins"]
 PLUGINS = [
-    #'optimize_images',
+    'optimize_images',
     'render_math',
     'org_reader'
 ]
