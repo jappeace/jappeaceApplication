@@ -109,8 +109,14 @@ I've slowly over the years come to realize how terrible my memory is and
 how liberating it is to write stuff down.
 No need to think about something which you've alreade written down.
 Therefore I have a little idea project in which I write down random ideas
-I have for programs or systems, and I have a little todo list of stuff I need
-to do.
+I have for programs or systems.
+To this project I also added a planning file which contains some stuff I
+probably should work on.
+This really helps focusing and narrowing down a direction I want to go in.
+They also provide a dialogue between passed me, current me, and eventually
+future me.
+It was a classmate who brought me up on this idea, but CGPGrey pointed out
+the dialogue aspect.
 
 ## Version controll
 So I use [git](https://git-scm.com/) for version control.
