@@ -118,9 +118,9 @@ future me.
 It was a classmate who brought me up on this idea, but CGPGrey pointed out
 the dialogue aspect.
 
-## Version controll
+## Version control
 So I use [git](https://git-scm.com/) for version control.
-Wait, you may not know what version controll is.
+Wait, you may not know what version control is.
 Think of it as Ctrl+Z on steroids managed by a dedicated program.
 It can track changes over multiple files and directories, and with each
 change you want to save you can add a message.
