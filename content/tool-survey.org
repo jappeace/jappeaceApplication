@@ -1,0 +1,24 @@
+#+TITLE: Tool survey
+#+DATE: 2017-04-01
+#+CATEGORY: tools
+#+Tags: time, efficiency, tweakability, power
+
+Some time ago I started writing about thesis [[ /thesis-writing-tips][writing tips].
+However while writing that a large part started to be about text editing tools
+and version control.
+This became to big for that post alone, so I decided to postpone writing
+about that to keep it more focused.
+This post will be about the things I left out in that post.
+
+All people only care about a niche of tools mostly.
+The reason is that in our world, we have too many choice to form an opinion about each
+of them. Tell me for example about your favorite pickaxe or transport ship.
+In this post I elaborate which tools I care about and why.
+
+Note that isn't enough to form an opinion about a tool to care,
+you actually have to have used it for a while,
+and then switch to another quite different tool to start caring.
+Only once you switch you will form a love for the new one or old one.
+
+Some people care about cars, others about pens,
+but my niche is (digital) text editing and system administration tools.
