@@ -38,15 +38,20 @@ The first two sources have essentially become defunct since I started writing
 the thesis. However I'm expecting a fourth source in the form of colleagues
 once I start working.
 
-I think mandatory content is generally the worst quality.
+I think mandatory school  content is generally the worst quality.
 First of all it lags behind the inovation curve.
 Secondly most people already know how to use that since its mandatory so you'll
 have most competition on that area if you're an expert.
+Finally it doesn't really give you much of opinions on the matter at all.
+Giving dumb reasons for learning the tool "you have to",
+or "this is industry standard" rather than giving a comparison between
+alternatives.
 
 Classmates are a much better source, in fact one of the best I think because
 they can tell you their opinion, and opinions are *so* important.
 Even if you disagree with them, it forces you to defend your position
 and reconsider, which makes your choice stronger.
+Or if you fail you may flip and gain a new experience.
 
 I have mixed feelings about reddit, its a major source of distraction,
 but it has a lot of gems (not even hidden, I mean reddit has search functionality!).
