@@ -181,7 +181,8 @@ Besides now I have the WIFI passwords on my phone too.
 For authentication (making it difficult to steal my identity),
 I went trough the effort of setting up
 [pgp](https://www.gnupg.org/) for email and git.
-For email I use the Thunderbird extension
+For email I use the [Thunderbird](https://www.mozilla.org/en-US/thunderbird/)
+extension
 [enigmail](https://www.enigmail.net/index.php/en/).
 All my git commits and emails are signed now.
 To configure signing in git I followed
@@ -201,3 +202,36 @@ spoofing my email becomes difficult.
 Assuming the recipient checks it, which most people don't,
 but if nobody sets this up nobody will ever start using it.
 So I setup email signing more as a matter of principle I guess.
+Oh and btw, if everyone actually did this,
+spam would've not been a problem at all.
+So shame on you if you don't do this.
+
+I also setup a VPN on the server with [openvpn](https://openvpn.net/),
+mainly in case I want to go to china again,
+I'll just have that around.
+It allows you to visit google there.
+The VPN client is basically a use flag for network manager.
+
+Using a VPN by default won't help you with security much.
+Maybe if you use not encrypted WIFI, but even then if you visit https websites
+the connection is encrypted anyway.
+
+# Other random stuff
+I don't know what to say about most of these.
+
++ [Hostblock](https://github.com/cgag/hostblock)
+  for disabling reddit, youtube and facebook while working on stuff.
+  This is a huge productivity boost
++ [Firefox](https://www.mozilla.org/en-US/firefox/new/?scene=2) for browsing.
+  I think google has enough opurtinity to spy upon me.
+  They won't get my browser.
++ [gnome terminal](https://help.gnome.org/users/gnome-terminal/stable/)
+  as terminal emulator, wait I have a reason for this.
+  It'll rewrap text on screenresizing. [Konsole](https://konsole.kde.org/)
+  won't do that, but konsole renders
+  [firacode](https://github.com/tonsky/FiraCode) litagures correctly.
++ [You complete me](https://github.com/Valloric/YouCompleteMe) to give both
+  Spacemacs and vim better contextual awareness for various languages
++ [org mode](http://orgmode.org/) to write any document in.
++ [Fbreader](https://fbreader.org/) for reading ebooks.
++ [qpdf](http://qpdf.sourceforge.net/) for pdf files.
