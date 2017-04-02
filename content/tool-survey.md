@@ -3,7 +3,7 @@ DATE: 2017-04-01
 CATEGORY: tools
 Tags: time, efficiency, tweakability, power
 
-Some time ago I made a blog post about thesis [writing tips](thesis-writing-tips).
+Some time ago I made a blog post about thesis [writing tips](thesis-writing-tips.html).
 However while writing that a large part started to be about text editing tools
 and version control.
 To keep the thesis writing tips post more focused I postponed writing about
