@@ -3,28 +3,158 @@ DATE: 2017-04-01
 CATEGORY: tools
 Tags: time, efficiency, tweakability, power
 
-Some time ago I started writing about thesis [writing tips](thesis-writing-tips).
+Some time ago I made a blog post about thesis [writing tips](thesis-writing-tips).
 However while writing that a large part started to be about text editing tools
 and version control.
 To keep the thesis writing tips post more focused I postponed writing about
-that until this post.
+that. This post treats my tools of choice.
 
-All people only care about a niche of tools mostly.
-The reason is that in our world, we have too many choice to form an opinion about each
-of them.
+All people will only ever care about a niche of tools.
+The reason is that in our world, we
+have too many choice to form an opinion about each of them.
 Tell me for example about your favorite pick axe or transport ship,
-you probably don't have an opinion,
-which just shows how more complex our society became compared to for example the
+you probably don't have an opinion about these tools.
+Which just shows how more complex our society became compared to for example the
 stone age,
 where everyone had a favorite type of stone.
 
-Note that isn't enough to form an opinion about a tool to care,
+Note that isn't enough to form an opinion about a tool to care about it,
 you actually have to have used it for a while,
 and then switch to another quite different tool to start caring.
-Only once you switch you will form a love for the new one or old one.
+Only once you switch you will form a deeper 'bond' with the new one or old one.
 I think I switch quite often.
 Which brings us to another reason for this post,
-I want to compare with future me.
+I want to compare my current tools of choice with those of future me.
+
+# Operating System
+This is where things will get interesting.
+The main theme of my selection has always been tweakability.
+I want to be able to change things I don't like.
+This is seen most clearly from my OS choice:
+[Gentoo/Linux](https://gentoo.org/),
+this is a source based rolling release distribution.
+Most distributions work with pre-compiled software.
+However software provides often at compile time, flags that enable or disable
+features.
+Gentoo standardizes this and allows you to specify per software package
+which options you want or don't want.
+
+The reason I chose Gentoo initially is more petty, a class mate of my was using
+it, and I didn't even understand what "source based" or "rolling release" meant.
+I wanted to be at least at the same level as my classmates,
+so in my stubbornness I spent about 2 weeks installing it on my own the first
+time, with help of the handbook.
+It took so long because I didn't know anything really about the shell and unix,
+Gentoo really forces you to learn.
+
+Now I stick with Gentoo because it allows me to do customizations,
+while updates won't break these.
+Gentoo's packagemanager is very careful in preserving configuration files.
+Unlike Ubuntu,
+which upgraded me out of my custom alternatively installed desktop environment.
+Gentoo has to be more careful, because of its inherent configurable-ness.
+Whereas Ubuntu provides ease of use, which goes hand in hand with,
+knowing it better than the user.
+
+# Control everything with keyboard
+During my software engineering classes I got introduced to the idea that the
+mouse is pretty slow to work with.
+The key difference between mouse usage and keyboard only usage is that mouse
+usage often involves searching the right place to click, wheareas using the
+keyboard is just doing what you want to do.
+By systematically making the mouse less important,
+working with the computer becomes more like playing an instrument.
+I use several programs that minimize mouse usage:
+
+1. [i3-wm](https://i3wm.org/) or its wayland successor [sway](http://swaywm.org/)
+   (as soon as wayland takes off, it'll probably be some years later)
+   This is the window manager that fills the screen with active window by
+   default, or splits it if there are multiple windows open.
+   It also has work spaces (basically groups of windows under a global tabbing
+   system).
+2. [vim](http://www.vim.org/). This is a text editor with "modes".
+   normal mode is navigation, and insert mode is for typing text.
+   If you work a lot with text its definitely worth learning this.
+   But beware, expect the first two weeks or so of using this program to
+   have lower productivity. (and basically no productivity the first day ;) )
+3. [Spacemacs](http://spacemacs.org/). This is an evil combination of Emacs and
+   vim. I use this for software development and writing larger texts.
+   whereas I use vim for quick and dirty edits (besides vim is available on
+   every Unix system whereas Emacs and especially Spacemacs is not).
+   Oh I also run this in daemon mode so that I can use i3 to move windows rather
+   than the pretty bad buffer navigation of Emacs.
+4. [Ranger](https://github.com/ranger/ranger). This is a file browser that works
+    with vim like bindings, I also have a Spacemacs plugin that does the same
+    inside Spacemacs.
+    Actually if you combine i3 + vim + ranger you have a really solid IDE.
+
+I haven't found a good way to eliminate mouse usage from the browsing experience.
+There are plugins that give vim like navigation,
+but I never really found them compelling to use.
+This maybe just personal taste,
+but I think it also has to do that browsing,
+is usually quite similar to searching.
+
+# Write everything down
+I've slowly over the years come to realize how unreliable my memory is and 
+how liberating it is to write stuff down.
+No need to think about something which you've already written down.
+I have a little idea project in which I write down random ideas
+I have for programs or systems, even political once.
+The reason for doing this is that the idea can then exit my mind without the
+fear of forgetting it,
+often I will later extend it or realize its unfeasible or impractical.
+
+To this project I also added a planning file which contains some stuff I
+probably should work on.
+This really helps focusing and narrowing down a direction I want to go in.
+They also provide a dialogue between passed me, current me, and eventually
+future me.
+It was a classmate who brought me up on this idea, but CGPGrey pointed out
+the dialogue aspect.
+The dialogue aspect also holds true for ideas,
+but ideas are generally not plans yet.
+Plans have some form of commitment too it, you just need to find the time.
+
+## Version control
+I mentioned "projects" before, by this I mean I have the files under version
+control.
+I use [git](https://git-scm.com/) for version control.
+
+Wait, I'll clarify the concept of version control first.
+Think of it as Ctrl+Z on steroids managed by a dedicated program.
+It can track changes over multiple files and directories, and with each
+change you want to save you can add a message.
+It can also send these changes to other machines or 'locations'.
+There are actually a bunch of options for this
+[svn](https://subversion.apache.org/),
+[cvs](http://www.nongnu.org/cvs/),
+[bazaar](http://bazaar.canonical.com/en/) and many more.
+At this point its safe to say however that git crushed all competition,
+the reason for this is that the architecture of git compared to other systems
+is dead simple.
+Also [github](https://github.com/) helped a lot.
+
+However I don't just use git for just  programming projects, no.
+I use also it for important configuration files, my todo list, my idea project
+and of course my thesis.
+Basically most real information I put into my computer that can be represented
+as plain text without to much trouble, I put in git.
+The reason for this is that it has a much nicer history than for example dropbox,
+and provides advanced merge mechanisms.
+Besides with git I don't need to have to trust some external service,
+since its decentralized.
+
+Actually git has slowly become a diary of mine.
+I think future me, or historians if I ever become that important,
+can track most of my life at this point with help of git.
+In the back of my mind I've actually developed an opinion that git usage
+is maybe a basic computer skill and should be thought on schools,
+since it could make collaborative work on documents much easier. 
+Although I know this won't happen in the near future.
+Since it would also require the rejection of binary formats for text processing
+all together. Which is something harder to ask than an open format.
+
 
 # Discovery
 The source of finding new tools is the most important thing to discuss.
@@ -60,104 +190,6 @@ about them and to lurk on those valuable opinions.
 But the hivemind, seriously fuck that politically correct piece of shit...
 <sup><sup>I love you</sup></sup>.
 Our relation is complicated.
-
-# Operating System
-This is where things will get interesting.
-The main theme of my selection has always been tweakability or configurability.
-I want to be able to change things I don't like.
-The thing you can see this most from is my OS choice:
-[Gentoo/Linux](https://gentoo.org/),
-this is a source based rolling release distribution.
-Most distributions work with pre-compiled software.
-However software provides at compile time, flags that enable or disable
-features,
-Gentoo standardizes this and allows you to specify per software package
-which options you want or don't want.
-
-The reason I chose Gentoo initially is more petty, a class mate of my was using
-it, and I didn't even understand what "source based" or "rolling release" meant.
-I wanted to be at least at the same level as my classmates,
-so in my stubbornness I spent about 2 weeks installing it on my own the first
-time, with help of the handbook.
-It took so long because I didn't know anything really about the shell and unix,
-Gentoo really forces you to learn.
-
-# Control everything with keyboard
-During my software engineering classes I got introduced to the idea that the
-mouse is pretty damn slow to work with.
-I use several specialized programs that minimize mouse usage:
-
-1. [i3-wm](https://i3wm.org/) or its wayland successor [sway](http://swaywm.org/)
-   (as soon as wayland takes off, it'll probably be some years later)
-   This is the window manager that fills the screen with active window by
-   default, or splits it if there are multiple windows open.
-   It also has work spaces (basically groups of windows under a global tabbing
-   system).
-2. [vim](http://www.vim.org/). This is a text editor with "modes".
-   normal mode is navigation, and insert mode is for typing text.
-   If you work a lot with text its definitely worth learning this.
-   But beware, expect the first two weeks or so of using this program to
-   have lower productivity. (and basically no productivity the first day ;) )
-3. [Spacemacs](http://spacemacs.org/). This is an evil combination of Emacs and
-   vim. I use this for software development and writing larger texts.
-   whereas I use vim for quick and dirty edits (besides vim is available on
-   every Unix system whereas Emacs and especially Spacemacs is not).
-   Oh I also run this in daemon mode so that I can use i3 to move windows rather
-   than the pretty bad buffer navigation of Emacs.
-4. [Ranger](https://github.com/ranger/ranger). This is a file browser that works
-    with vim like bindings, I also have a Spacemacs plugin that does the same
-    inside Spacemacs.
-    Actually if you combine i3 + vim + ranger you have a really solid IDE.
-
-# Write everything down
-I've slowly over the years come to realize how terrible my memory is and 
-how liberating it is to write stuff down.
-No need to think about something which you've alreade written down.
-Therefore I have a little idea project in which I write down random ideas
-I have for programs or systems.
-To this project I also added a planning file which contains some stuff I
-probably should work on.
-This really helps focusing and narrowing down a direction I want to go in.
-They also provide a dialogue between passed me, current me, and eventually
-future me.
-It was a classmate who brought me up on this idea, but CGPGrey pointed out
-the dialogue aspect.
-
-## Version control
-So I use [git](https://git-scm.com/) for version control.
-Wait, you may not know what version control is.
-Think of it as Ctrl+Z on steroids managed by a dedicated program.
-It can track changes over multiple files and directories, and with each
-change you want to save you can add a message.
-It can also send these changes to other machines or 'locations'.
-There are actually a bunch of options for this
-[svn](https://subversion.apache.org/),
-[cvs](http://www.nongnu.org/cvs/),
-[bazaar](http://bazaar.canonical.com/en/) and many more.
-At this point its safe to say that git crushed all competition,
-the reason for this is that the architecture of git compared to other systems
-is dead simple.
-Also [github](https://github.com/) helped a lot.
-
-However I don't just use git for just  programming projects, no.
-I use also it for important configuration files, my todo list, my idea project
-and of course my thesis.
-Basically most real information I put into my computer that can be represented
-as plain text without to much trouble, I put in git.
-The reason for this is that it has a much nicer history than for example dropbox,
-and provides advanced merge mechanisms.
-Besides with git I don't need to have to trust some external service,
-since its decentralized.
-
-Actually git has slowly become a diary of mine.
-I think future me, or historians if I ever become that important,
-can track most of my life at this point with help of git.
-In the back of my mind I've actually developed an opinion that git usage
-is maybe a basic computer skill and should be thought on schools,
-since it could make collaborative work on documents much easier. 
-Although I know this won't happen in the near future.
-Since it would also require the rejection of binary formats for text processing
-all together. Which is something harder to ask than an open format.
 
 # Paranoia (security)
 I want to say, if you don't know much about computer security, stop reading,
