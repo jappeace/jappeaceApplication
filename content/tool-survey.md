@@ -135,40 +135,46 @@ the reason for this is that the architecture of git compared to other systems
 is dead simple.
 Also [github](https://github.com/) helped a lot.
 
-However I don't just use git for just  programming projects, no.
+However I don't just use git for just programming projects, no.
 I use also it for important configuration files, my todo list, my idea project
 and of course my thesis.
-Basically most real information I put into my computer that can be represented
+Basically most information I put into the computer that can be represented
 as plain text without to much trouble, I put in git.
 The reason for this is that it has a much nicer history than for example dropbox,
 and provides advanced merge mechanisms.
 Besides with git I don't need to have to trust some external service,
 since its decentralized.
 
-Actually git has slowly become a diary of mine.
+Actually git has slowly become a sort of diary of mine.
+For example when I delete items from the planning or ideas they're not truly
+gone, just stored in a previous commit (=ctrl+z log entry),
+with a message why the change happened.
 I think future me, or historians if I ever become that important,
 can track most of my life at this point with help of git.
 In the back of my mind I've actually developed an opinion that git usage
-is maybe a basic computer skill and should be thought on schools,
+is a basic computer skill and should be thought on schools,
 since it could make collaborative work on documents much easier. 
-Although I know this won't happen in the near future.
-Since it would also require the rejection of binary formats for text processing
-all together. Which is something harder to ask than an open format.
-
+Although I know this won't happen in the near future,
+since it would also require the rejection of binary formats for text processing
+all together.
+Which is something harder to ask than replacing with an open format,
+with which entire [foundations](https://www.documentfoundation.org/)
+have trouble pushing upon people and organizations.
 
 # Discovery
-The source of finding new tools is the most important thing to discuss.
+The source of finding new tools is an important thing to discuss.
 I think I had three major sources over the years:
 
 1. School, mandatory content
 2. School, classmates
 3. Reddit
 
-The first two sources have essentially become defunct since I started writing
-the thesis. However I'm expecting a fourth source in the form of colleagues
-once I start working.
+The first two sources have essentially become closed since I started writing
+the thesis and no longer physically are at the school.
+However I'm expecting a fourth source in the form of colleagues once I start
+working.
 
-I think mandatory school  content is generally the worst quality.
+I think mandatory school content is generally the worst quality.
 First of all it lags behind the inovation curve.
 Secondly most people already know how to use that since its mandatory so you'll
 have most competition on that area if you're an expert.
@@ -176,12 +182,17 @@ Finally it doesn't really give you much of opinions on the matter at all.
 Giving dumb reasons for learning the tool "you have to",
 or "this is industry standard" rather than giving a comparison between
 alternatives.
+However I did find that the school of applied science (Windesheim),
+usually was even further behind than the University of Utrecht.
+But maybe it was because I was following a master course rather than a bachelor.
+Note that I'm not really talking about the theory,
+but the *tools* with which you can put theory into practice.
 
 Classmates are a much better source, in fact one of the best I think because
 they can tell you their opinion, and opinions are *so* important.
 Even if you disagree with them, it forces you to defend your position
 and reconsider, which makes your choice stronger.
-Or if you fail you may flip and gain a new experience.
+Or if you fail you may flip and gain a new experience and form new opinions.
 
 I have mixed feelings about reddit, its a major source of distraction,
 but it has a lot of gems (not even hidden, I mean reddit has search functionality!).
@@ -192,27 +203,51 @@ But the hivemind, seriously fuck that politically correct piece of shit...
 Our relation is complicated.
 
 # Paranoia (security)
-I want to say, if you don't know much about computer security, stop reading,
-because its a lot of work and you may never get rewarded for your work.
-Anyway there are some issues I recently addressed to make identity theft harder,
-and my online accounts more difficult to "hack".
+I encountered the abysmal state of computer security first in Windesheim.
+I won't talk about the state of computer security because I don't care.
+What they did on Windesheim, was: They just taught is to hack so that we
+would know how to defend.
+I hated it.
+You may say, oh isn't hacking super exciting?
+No its not.
+Its not really constructive,
+you just need to think in terms of possibilities and try out everything.
+Rather than programming, where you just try out something that comes to
+mind and then later review to see how to improve (or stop once satisfied).
+Then this gets mixed with the idea that paranoia is *good*.
+I know from my experience that under certain circumstances I have paranoid tendencies,
+I don't need to promote that in my life.
+Finally its never enough. Being secure is always a moving target unless you can
+formally proof you're secured, which you can't because that's as [hard as
+programming](https://stackoverflow.com/questions/476959/why-cant-programs-be-proven).
 
-I'll start with the online accounts.
-I use a password manager called [Keepass](http://keepass.info/),
+Since that class, which is now almost 3 to 4 years ago,
+I had several concerns in the back of my mind.
+My weak set of just 3 passwords used rationally. 
+If one got cracked I would lose a third of my online accounts.
+If my email account got cracked I would lose everything.
+And the fact my identity could easily be faked.
+So I addressed these concerns recently (about 3 months ago).
+
+To start with the most important issue, passwords.
+For this I use something called a 'password manager' which called
+[Keepass](http://keepass.info/),
 actually I use the [qt based one](https://keepassxc.org)
 (works better with Linux).
-The reason for this is complicated and explained very well
+I use this one because its opensource, and has a GUI and an android client.
+The reason for using this is complicated and explained very well
 [here](https://www.youtube.com/watch?v=3NjQ9b3pgIg)
-but basically its more safe than memorizing several.
+but basically its more safe than memorizing several and it also  happens to be
+more convenient.
 I use [syncthing](https://syncthing.net/) to share the database with my phone
 and my server, I don't wanna lose that.
 I just have a huge password, I didn't want to do the keyfile, because I'm afraid
 to lose that.
 
 I recommend everyone to use a password manager.
-Its much easier to use,
-it will autofill passwords in your browser and you just have to remember the
-master password.
+Its easier to use,
+it can autofill passwords in [your browser](https://github.com/pfn/keepasshttp)
+and you just have to remember the master password.
 It allows you to have much less "stuff" in your mind and its more secure.
 I even put WIFI passwords in there.
 [Network manager](https://wiki.gnome.org/Projects/NetworkManager)
@@ -240,13 +275,15 @@ I disagree, it makes it much harder to steal my identity,
 without me needing to think about it.
 
 For email I know its a good thing to sign,
-spoofing email is incredibly easy and by signing it,
+spoofing email is [incredibly easy](https://lifehacker.com/how-spammers-spoof-your-email-address-and-how-to-prote-1579478914)
+and by signing it,
 spoofing my email becomes difficult.
 Assuming the recipient checks it, which most people don't,
 but if nobody sets this up nobody will ever start using it.
 So I setup email signing more as a matter of principle I guess.
 Oh and btw, if everyone actually did this,
-spam would've not been a problem at all.
+the life of spammers would become significantly harder,
+since spoofing is no longer an option.
 So shame on you if you don't do this.
 
 I also setup a VPN on the server with [openvpn](https://openvpn.net/),
@@ -256,8 +293,16 @@ It allows you to visit google there.
 The VPN client is basically a use flag for network manager.
 
 Using a VPN by default won't help you with security much.
-Maybe if you use not encrypted WIFI, but even then if you visit https websites
-the connection is encrypted anyway.
+Maybe if you use not encrypted WIFI,
+but even then if you visit https websites the connection is encrypted anyway.
+Using a service for it is especially dumb,
+because now that service provider has always access to your packets.
+If you want to do a VPN you need to setup your own
+[VPS]( http://www.comparevps.com/),
+and then setup your own [VPS](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-openvpn-server-on-ubuntu-16-04).
+I actually host this website and the VPN on the same VPS at
+[Galaxy host plus](https://galaxyhostplus.com).
+with the cheapest offering `VPS OpenVZ Hosting - OVZ - 2016 - LC1`.
 
 # Other random stuff
 I don't know what to say about most of these.
