@@ -1,6 +1,21 @@
-{% if SEARCH_BOX %}
-<form action="{{ SITESEARCH|default('http://google.com/search') }}" method="get" class="site-search" role="search">
-    <input type="hidden" name="q" value="site:{{SITEURL|replace('https://','')|replace('http://','') }}">
-    <input class="search" type="search" name="q" results="0" placeholder="search with google™®™">
-</form>
-{% endif %}
+{% import '_lib.html' as lib with context %}
+
+<nav>
+<ul class="navigation">
+    {% for linkdef in LINKS_EX %}
+        {{ lib.render_link(*linkdef) }}
+    {% endfor %}
+    {% for page in PAGES %}
+        {{ lib.render_link(
+            title=page.metadata.get('home-title', page.title),
+            url=SITEURL + "/" + page.url,
+            color=page.metadata.get('home-color'),
+            image=page.metadata.get('home-image'),
+            desc=page.metadata.get('home-desc', ''),
+        ) }}
+    {% endfor %}
+    {% for linkdef in SOCIAL_EX %}
+        {{ lib.render_link(*linkdef) }}
+    {% endfor %}
+</ul>
+</nav>

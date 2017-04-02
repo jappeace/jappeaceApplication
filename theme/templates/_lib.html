@@ -47,3 +47,16 @@
     {% endif %}
 </ul>
 {% endmacro %}
+
+{% macro render_link(title, url, desc, class) %}
+    <li class="{{ class }}">
+        <a href="{{ url }}">
+        <h3 class="bracket left-bracket">&lt;</h3>
+        <div class="link">
+            <h2>{{ title }}</h2>
+            <p class="description">{{ desc }}</p>
+        </div>
+        <h3 class="bracket right-bracket" >&gt;</h3>
+        </a>
+    </li>
+{% endmacro %}

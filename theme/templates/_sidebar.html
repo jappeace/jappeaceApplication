@@ -1,26 +1,14 @@
 {% import '_lib.html' as lib with context %}
 
 <aside class="window" id="sidebar">
-    {% macro _render_link(title, url, desc, class) %}
-        <li class="{{ class }}">
-            <a href="{{ url }}">
-            <h3><</h3>
-            <div class="link">
-                <h2>{{ title }}</h2>
-                <p class="description">{{ desc }}</p>
-            </div>
-            <h3>></h3>
-            </a>
-        </li>
-    {% endmacro %}
 
    <nav>
     <ul class="navigation">
         {% for linkdef in LINKS_EX %}
-            {{ _render_link(*linkdef) }}
+            {{ lib.render_link(*linkdef) }}
         {% endfor %}
         {% for page in PAGES %}
-            {{ _render_link(
+            {{ lib.render_link(
                 title=page.metadata.get('home-title', page.title),
                 url=SITEURL + "/" + page.url,
                 color=page.metadata.get('home-color'),
@@ -29,7 +17,7 @@
             ) }}
         {% endfor %}
         {% for linkdef in SOCIAL_EX %}
-            {{ _render_link(*linkdef) }}
+            {{ lib.render_link(*linkdef) }}
         {% endfor %}
     </ul>
    </nav>

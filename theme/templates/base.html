@@ -6,10 +6,10 @@
              twas made with jp2a: https://csl.name/jp2a/
             -->
         <div id="logo"><pre>{% include '_logo.html' %}</pre></div>
-        <h1><a href="{{ SITEURL }}/">{{ SITENAME }}</a></h1>
+        <h1><a id="sitename" href="{{ SITEURL }}/">{{ SITENAME }}</a></h1>
+        {% include '_navigation.html' %}
     </header>
     <div id="main">
-        {% include '_sidebar.html' %}
         <div class="window" id="content">
             {% block content %}{% endblock %}
         </div>
