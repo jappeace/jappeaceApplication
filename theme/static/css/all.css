@@ -276,23 +276,28 @@ td {
     border-right: dotted;
     border-bottom: grey solid thin;
 }
-@media (max-width: 1500px) {
-    nav ul li h2 {
-        font-size: 1em;
-    }
+@media (max-width: 1880px) {
     nav ul li .description {
         display: none;
     }
     .bracket{
         vertical-align: baseline;
-        font-size:0.9em;
+    }
+
+}
+@media (max-width: 1625px) {
+    nav ul li h2 {
+        font-size: 0.9em;
+    }
+    .bracket{
+        font-size:0.8em;
     }
     nav{
         width:50%;
         left:24%;
     }
 }
-@media (max-width: 1350px) {
+@media (max-width: 1380px) {
 
     nav{
         width:38%;
@@ -305,7 +310,7 @@ td {
         font-size: 0.8em;
     }
 }
-@media (max-width: 940px) {
+@media (max-width: 1050px) {
     #logo{
         display:none;
     }
