@@ -24,10 +24,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="{{ SITEURL }}/favicon.png" rel="icon">
-    <link href="{{ SITEURL }}/theme/css/all.css" media="screen, projection" rel="stylesheet" type="text/css">
-    {% if not article %}
-    <link href="{{ SITEURL }}/theme/css/double_collumn.css" media="screen, projection" rel="stylesheet" type="text/css">
-    {% endif %}
+   <!-- css -->
+    {% assets filters="cssmin", output="css/style.min.css", "css/all.css", "css/double_collumn.css" if not article else "css/article.css" %}
+        <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
+    {% endassets %}
 
     {% if article and article.latex %}
         {{ article.latex }}
