@@ -4,3 +4,17 @@
     -webkit-column-count: 2;
     column-count: 2;
 }
+
+@media (max-width: 1150px) {
+    #content{
+        -moz-column-count: 1;
+        -webkit-column-count: 1;
+        column-count: 1;
+    }
+}
+
+@media (max-width: 750px) {
+    #content{
+        width:93%;
+    }
+}
