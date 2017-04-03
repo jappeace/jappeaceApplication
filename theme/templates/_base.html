@@ -25,9 +25,15 @@
 
     <link href="{{ SITEURL }}/favicon.png" rel="icon">
    <!-- css -->
-    {% assets filters="cssmin", output="css/style.min.css", "css/all.css", "css/double_collumn.css" if not article else "css/article.css" %}
+    {% if article %}
+    {% assets filters="cssmin", output="css/article.min.css", "css/all.css", "css/article.css" %}
         <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
     {% endassets %}
+    {% else %}
+    {% assets filters="cssmin", output="css/double.min.css", "css/all.css", "css/double_collumn.css" %}
+        <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
+    {% endassets %}
+    {% endif %}
 
     {% if article and article.latex %}
         {{ article.latex }}
