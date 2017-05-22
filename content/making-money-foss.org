@@ -1,0 +1,92 @@
+#+TITLE: Making money with foss
+#+OPTIONS: toc:nil
+#+DATE: 2017-05-22
+#+CATEGORY: technique
+#+Tags: free, money, software, programming
+
+In this blog post I will discuss how to make money with open source software.
+Why do you care?
+Especially the free software variant is [[https://www.gnu.org/philosophy/free-sw.en.html][consumer friendly]].
+(note that these consumers maybe businesses too),
+however as a developer trying to make a living of writing this kind of software
+maybe difficult.
+Which is a big problem, we often end up having developers doing the work in
+their free time.
+
+This hits hard home as I myself would like to do this full time.
+But lest I became [[https://www.reddit.com/r/financialindependence/][financially independent]], I couldn't.
+So in here I will list the options I found trough researching the subject.
+As both an overview to myself and to the interested reader.
+
+* Google results
+So I already had some ideas about how to do this,
+but its interesting what Google says about the subject.
+
+** First attempt
+I searched for [[https://www.google.nl/search?q=making+money+with+foss&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=50YjWYn_CdHU8geKob64BQ]["Making money with foss"]].
+
+The first site that came up was [[http://www.infoworld.com/article/2612393/open-source-software/greed-is-good--9-open-source-secrets-to-making-money.html][info world]].
+This site was full of warning flags,
+click bait title,
+advertise other articles mid article (instead of at the end),
+using a pager.
+After skimming the article it wasn't about making money of an open source project,
+but potential reasons for open sourcing (part of) your code.
+So it was aimed at mid to high level management.
+A [[http://www.fosslc.org/drupal/node/131][second article]] linked to [[http://carlodaffara.conecta.it/?p=90&cpage=1#comment-50][another page]] with a better list, but I couldn't
+find it.
+The third [[http://www.cio.com/article/3178621/open-source-tools/how-to-make-money-from-open-source-software.html][article]] was just a summery of a video and wasn't very focused.
+
+Okay so my search terms were bad. Time to be more specific.
+
+** Second attempt
+I searched for [[https://www.google.nl/search?q=making+money+with+foss&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=50YjWYn_CdHU8geKob64BQ#q=foss+business+models]["foss business models"]], you know you did something right when
+scholarly articles start being presented.
+
+So there was an entire [[https://en.wikipedia.org/wiki/Business_models_for_open-source_software][Wikipedia page]] on the subject.
+I guess more people are really interested in this.
+So does this blog post die in the cradle?
+I say no, I can still give my opinions on that page.
+Besides the fact that there is a (quite big) wiki on it only shows how much
+people care about this subject.
+
+* The Business models
+So the core problem open source software faces is not having a monopoly on
+distribution that copyright provides.
+This is the [[https://www.gnu.org/philosophy/free-sw.en.html][second and third freedoms]].
+I'm not going to discuss why these are necessary because that link does it much
+better than I can, but giving up this monopoly *is* necessary.
+
+** Sell stuff besides software
+*** Service contracts
+*** Labour
+*** Merchandise
+** Donations
+*** Crowd funding
+*** Direct
+*** Patron
+** Advertising
+This is a special snow flake,
+because in principal advertisement and open source can go hand in hand.
+However do note that anyone can take your source code, 
+remove the advertisements, and redistribute it.
+Some [[https://en.wikipedia.org/wiki/Homo_economicus][economic models]] would predict that this would be the end of your project,
+because advertisements give negative utility for the consumer,
+although most people would probably just see it as a dick move.
+So I think this would be viable (and have seen some android apps do this).
+
+** Licensing tricks
+*** Dual license
+*** Proprietary extensions
+*** Delayed open sourcing
+
+
+* In conclusion
+Anyway I've wanted to write down my personal ideas of making money
+with free software.
+So particularly GPL style licensed software,
+but these arguments could also hold true for BSD, MIT or Apache, I guess.
+
+
+My blog seems to be really focussed on money,
+but this is a reflection of what I'm worried about these days.
