@@ -64,7 +64,8 @@ better than I can, but giving up this monopoly *is* necessary.
 ** Donations
 *** Crowd funding
 *** Direct
-*** Patron
+**** Patreon
+
 ** Advertising
 This is a special snow flake,
 because in principal advertisement and open source can go hand in hand.
@@ -88,5 +89,5 @@ So particularly GPL style licensed software,
 but these arguments could also hold true for BSD, MIT or Apache, I guess.
 
 
-My blog seems to be really focussed on money,
+My blog seems to be really focused on money,
 but this is a reflection of what I'm worried about these days.
