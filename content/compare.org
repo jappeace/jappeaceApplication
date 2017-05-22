@@ -1,7 +1,7 @@
 #+TITLE: Comparing tax in different countries
 #+DATE: 2017-03-2
 #+CATEGORY: reflection
-#+Tags: politics, countries, tax
+#+Tags: politics, countries, tax, money
 Soon I will be graduating from my masters in AI.
 However since I was planning to go abroad I wanted to see how much worse or
 better taxation laws are compared to my own country (The Netherlands).
