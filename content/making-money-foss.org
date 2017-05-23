@@ -47,6 +47,10 @@ So there was an entire [[https://en.wikipedia.org/wiki/Business_models_for_open-
 I guess more people are really interested in this.
 So does this blog post die in the cradle?
 I say no, I can still give my opinions on that page.
+Another thing is that discussing this page on my blog will force me to closely
+look at the possiblities.
+
+
 Besides the fact that there is a (quite big) wiki on it only shows how much
 people care about this subject.
 
@@ -58,6 +62,10 @@ I'm not going to discuss why these are necessary because that link does it much
 better than I can, but giving up this monopoly *is* necessary.
 
 ** Sell stuff besides software
+One of the primary strategies is selling stuff besides the software.
+Red hat does this trough providing support contracts for example.
+Big organizations hire them 
+
 *** Service contracts
 *** Labour
 *** Merchandise
@@ -65,22 +73,16 @@ better than I can, but giving up this monopoly *is* necessary.
 *** Crowd funding
 *** Direct
 **** Patreon
-
-** Advertising
-This is a special snow flake,
-because in principal advertisement and open source can go hand in hand.
-However do note that anyone can take your source code, 
-remove the advertisements, and redistribute it.
-Some [[https://en.wikipedia.org/wiki/Homo_economicus][economic models]] would predict that this would be the end of your project,
-because advertisements give negative utility for the consumer,
-although most people would probably just see it as a dick move.
-So I think this would be viable (and have seen some android apps do this).
-
-** Licensing tricks
-*** Dual license
+** Advertisierk\tricks
+*** TODO Dual license
 *** Proprietary extensions
 *** Delayed open sourcing
 
+
+* Literature overview
+Because google came up with the scholarly articles suggestion I decided to dig
+into that too.
+These articles are what most people consider to be /science/.
 
 * In conclusion
 Anyway I've wanted to write down my personal ideas of making money
