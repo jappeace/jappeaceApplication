@@ -57,22 +57,70 @@ people care about this subject.
 * The Business models
 So the core problem open source software faces is not having a monopoly on
 distribution that copyright provides.
-This is the [[https://www.gnu.org/philosophy/free-sw.en.html][second and third freedoms]].
-I'm not going to discuss why these are necessary because that link does it much
-better than I can, but giving up this monopoly *is* necessary.
+Therefore we can't sell it directly:
+Anyone can start distrbuting the software without asking anything for it,
+without running a loss becuase distrbution is
+(pratically) free for software.
+Giving up this monopoly is a neccisary requirement for opensource,
+called the [[https://www.gnu.org/philosophy/free-sw.en.html][second and thirth freedoms]].
 
 ** Sell stuff besides software
 One of the primary strategies is selling stuff besides the software.
-Red hat does this trough providing support contracts for example.
-Big organizations hire them 
+Red Hat does this trough [[https://en.wikipedia.org/wiki/Red_Hat#Business_model][providing support contracts]] for example.
+This can be extended by providing certificates of expertise
+(which Red Hat also does).
 
-*** Service contracts
-*** Labour
-*** Merchandise
+Another strategy is selling of merchandise, such as fan [[https://store.wikimedia.org/collections/accessories][T-shirts or coffee cups]].
+Which the wikimedia foundation does.
+Selling merchandise is quite clever because its much more easy for someone to
+buy "something", than just donating.
+Besides its free advertisment for your project,
+/and/ your users now have something to identify themselves with.
+
+Finally a programmer can rent himself out to a project to add features or do
+bug fixes.
+These include [[https://www.bountysource.com/][bountysource]] or [[https://en.wikipedia.org/wiki/Kickstarter][kickstarter]], where bountysource is
+usually fix an issue first and then get payd whereas kickstarter works on
+promises.
+So in esscense you're offering up your own time to work on a project.
+In both cases there is of course the persistent issue that its [[https://softwareengineering.stackexchange.com/questions/648/how-to-respond-when-you-are-asked-for-an-estimate][hard to decide]]
+how much time this will take.
+With kickstarter however you can estimate it better because you're probably
+starting your own bigger project, so the overhead of estimation is smaller.
+But with bounty source each bounty requires its own estimate and if its about $100,
+its hard to decide to even bother with that.
+Another issue with bounty source is that you have to switch from project to
+project often, which requires a lot of getting familiar with the code base
+overhead.
+So the model of bounty source is less then perfect to live off.
+Although for existing developers of a project its a great motivation to work a
+little more.
+But don't expect strangers to 'join in', just because of the bounties
+unless they're highly overvalued.
+In fact you can see that few people 'live' off bounty source just by the
+overview of bounty hunters. Only three people at the time of writing got over
+$2000 in the last 90 days and only 9 over $1000.
+
+In the strategy of renting yourself out is going to interested parties yourself
+and offer to write software.
+I've attempted this at times with for example [[https://github.com/jappeace/offertex][offertex]] and [[https://github.com/jappeace/schijt-je-rijk][schijt je rijk]].
+The issue that always gets me is negotating about price.
+Almost everytime I just spend working for a bad wage for a programmer.
+I think its better to offer support contracts,
+but drafting up contracts is troublesome too.
+First of all its horribly boring, secondly you should probably let a lawyer
+check it.
+Thirdly you need to make sure it can make you money.
+And considering you need about at least 1000 euros per month just to live,
+you have a big gap to fill.
+So say you offer a contract of 50 euros per month,
+then you need about 20 companies to get minimum wage.
+(Which is a lot of initial negotating to setup).
+
 ** Donations
-*** Crowd funding
-*** Direct
-**** Patreon
+
+*** Patreon
+
 ** Advertisierk\tricks
 *** TODO Dual license
 *** Proprietary extensions
