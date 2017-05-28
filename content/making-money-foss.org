@@ -58,10 +58,10 @@ people care about this subject.
 So the core problem open source software faces is not having a monopoly on
 distribution that copyright provides.
 Therefore we can't sell it directly:
-Anyone can start distrbuting the software without asking anything for it,
-without running a loss becuase distrbution is
-(pratically) free for software.
-Giving up this monopoly is a neccisary requirement for opensource,
+Anyone can start distributing the software without asking anything for it,
+without running a loss because distribution is
+(practically) free for software.
+Giving up this monopoly is a necessary requirement for open source,
 called the [[https://www.gnu.org/philosophy/free-sw.en.html][second and thirth freedoms]].
 
 ** Sell stuff besides software
@@ -74,7 +74,7 @@ Another strategy is selling of merchandise, such as fan [[https://store.wikimedi
 Which the wikimedia foundation does.
 Selling merchandise is quite clever because its much more easy for someone to
 buy "something", than just donating.
-Besides its free advertisment for your project,
+Besides its free advertisement for your project,
 /and/ your users now have something to identify themselves with.
 
 Finally a programmer can rent himself out to a project to add features or do
@@ -82,7 +82,7 @@ bug fixes.
 These include [[https://www.bountysource.com/][bountysource]] or [[https://en.wikipedia.org/wiki/Kickstarter][kickstarter]], where bountysource is
 usually fix an issue first and then get payd whereas kickstarter works on
 promises.
-So in esscense you're offering up your own time to work on a project.
+So in essence you're offering up your own time to work on a project.
 In both cases there is of course the persistent issue that its [[https://softwareengineering.stackexchange.com/questions/648/how-to-respond-when-you-are-asked-for-an-estimate][hard to decide]]
 how much time this will take.
 With kickstarter however you can estimate it better because you're probably
@@ -104,27 +104,76 @@ $2000 in the last 90 days and only 9 over $1000.
 In the strategy of renting yourself out is going to interested parties yourself
 and offer to write software.
 I've attempted this at times with for example [[https://github.com/jappeace/offertex][offertex]] and [[https://github.com/jappeace/schijt-je-rijk][schijt je rijk]].
-The issue that always gets me is negotating about price.
-Almost everytime I just spend working for a bad wage for a programmer.
-I think its better to offer support contracts,
-but drafting up contracts is troublesome too.
-First of all its horribly boring, secondly you should probably let a lawyer
-check it.
-Thirdly you need to make sure it can make you money.
-And considering you need about at least 1000 euros per month just to live,
-you have a big gap to fill.
-So say you offer a contract of 50 euros per month,
-then you need about 20 companies to get minimum wage.
-(Which is a lot of initial negotating to setup).
+The issue that always gets me is negotiating about price.
+And of course once the work is finished, you need to find /more/ work.
+Therefore you won't get better overtime.
+Imitating red hat with support contracts could do that,
+but starting with that on your own is hard.
 
 ** Donations
+Another powerful trick of trying to become self sustained on software is using
+donations.
+The big issue with this is of course getting people to donate in the first place.
+A famous example of a donation scheme as that of [[http://www-archive.mozilla.org/press/mozilla-2004-12-15.html][mozzilla firefox 1.0 release]].
+
 
 *** Patreon
+Recently however another model has popped up in the form of [[https://www.patreon.com/][patreon]].
+The idea is pretty simple, subscribe to a creator and every time he puts
+something out (or every month) donate a small by you decided amount.
+[[https://www.patreon.com/landley][Some]] [[https://www.patreon.com/kozec][developers]] have embraced this idea, although I haven't seen anyone that
+earns self sustaining amounts.
+It does provide a reliable income stream and is aimed at /individuals/,
+and since there are [[https://www.patreon.com/cgpgrey][other]] [[https://www.patreon.com/avasdemon][creators]] who have managed to get to a sustainable
+level.
+We can expect this to happen eventually for software developers too.
 
-** Advertisierk\tricks
-*** TODO Dual license
+The big advantage patreon offers over bounty source is that,
+rather than having to think about how much time creating a feature costs as
+with bountysource,
+you can just continue improving the project how you think it should be done.
+Of course some trust in the developer is necessary for that,
+bounty source doesn't have that problem.
+
+** Advertisements
+A trick often overlooked by most developers is advertising.
+In principle free software is not against the idea of advertising.
+However a problem with this is that anyone can take your software,
+remove the advertisements, and redistribute the add free version.
+You can prevent this from happening by offering two versions,
+one with adds and one without and then ask your users to support the project
+by downloading the one with adds.
+
+[[https://en.wikipedia.org/wiki/Adblock_Plus#Controversy_over_ad_filtering_and_ad_whitelisting][Addblock plus]] famously white listed adds as a way of generating revenue.
+It may be considered hypocritical, but remember that as free software anyone can
+fork it and remove this feature.
+Not that you have to since there are [[https://github.com/gorhill/uBlock][alternatives]].
+Note that although adblock plus probably made quite a good load of money
+with their white listing program, it will probably kill the project eventually.
+I imagine the people who go out of their way to install an ad blocker are not
+the kind of people who are satisfied with an ever laxer white list.
+
+** License tricks
+The final category for making money with opensource is license trickery.
+So this comes from the idea that, if you are the sole copyright holder,
+you can put the software under various licenses.
+Note that it is a big if to be the sole copyright holder,
+you need consent that any contributor is handing over their copyright.
+This increases contributing barrier significantly.
+But in return as project owner you get a lot more possibilities.
+
+*** Dual license
+
 *** Proprietary extensions
+
 *** Delayed open sourcing
+
+*** Re-license
+If you are the sole copyright holder, you can stop distributing under the
+open source license and relicense it.
+Originally I didn't want to include this option because you're no longer
+doing foss at this point, however, it opens up the opportunity to hate upon
+Oracle.
 
 
 * Literature overview
@@ -141,3 +190,5 @@ but these arguments could also hold true for BSD, MIT or Apache, I guess.
 
 My blog seems to be really focused on money,
 but this is a reflection of what I'm worried about these days.
+
+#  LocalWords:  bountysource kickstarter
