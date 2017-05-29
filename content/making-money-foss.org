@@ -8,15 +8,21 @@ In this blog post I will discuss how to make money with open source software.
 Why do you care?
 Especially the free software variant is [[https://www.gnu.org/philosophy/free-sw.en.html][consumer friendly]].
 (note that these consumers maybe businesses too),
-however as a developer trying to make a living of writing this kind of software
-maybe difficult.
+however for developers trying to make a living of writing such software is
+difficult.
 Which is a big problem, we often end up having developers doing the work in
-their free time.
+their free time, next to a day job,
+rather than focusing full time on their projects.
 
-This hits hard home as I myself would like to do this full time.
-But lest I became [[https://www.reddit.com/r/financialindependence/][financially independent]], I couldn't.
+I would like to do this myself full time.
+Lest I became [[https://www.reddit.com/r/financialindependence/][financially independent]], I couldn't.
 So in here I will list the options I found trough researching the subject.
 As both an overview to myself and to the interested reader.
+
+We will start by Googling the subject,
+because this is easier than trying to [[https://www.youtube.com/watch?v=9C_HReR_McQ][be creative]] myself.
+Then I will present the my opinions around the results I found.
+I will conclude with a list of options I liked and why.
 
 * Google results
 So I already had some ideas about how to do this,
@@ -249,6 +255,7 @@ about it, *never hand over copyright*.
 I'm happy to say however that a fork of Solaris occurred called [[https://wiki.illumos.org/display/illumos/illumos+Home][Illumos]] that
 seems to still be active.
 
+
 * Literature overview
 Because google came up with the scholarly articles suggestion I decided to dig
 into that too.
@@ -257,6 +264,32 @@ These articles are what most people consider to be /science/.
 ** TODO literature overview lol
 
 * In conclusion
+Because we are interested in making money,
+this post will took us all over the place.
+On the one hand we have the greedy businesses,
+and on the other side the diligent developer.
+While writing this post it made me realize that you as an individual should at
+some point make a choice on which 'side' you are.
+Will you become a business owner to exploit the developer,
+while trying to get rich?
+Or will you help on someone else' fortunes while just enjoying life,
+not being the owner means much less responsibility.
+
+Having said that, we should point out there are alternative paths that not
+really choose a side.
+First of all there exists software foundations.
+I do not like foundations in general.
+They always end up promoting themselves first and foremost,
+but also have other goals.
+Working for them can thus in turn really be satisfying,
+if your goals align with the foundations'.
+
+Secondly there are [[https://en.wikipedia.org/wiki/Worker_cooperative][worker collectives]].
+This is however a bigger topic I may discuss another time.
+It is a very interesting idea,
+I'm thinking of a kind of [[https://en.wikipedia.org/wiki/Law_firm#Partnership][law firm]] model where only the more seasoned
+programmers can have ownership.
+
 Anyway I've wanted to write down my personal ideas of making money
 with free software.
 So particularly GPL style licensed software,
