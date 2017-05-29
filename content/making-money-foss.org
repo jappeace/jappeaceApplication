@@ -80,7 +80,7 @@ Besides its free advertisement for your project,
 Finally a programmer can rent himself out to a project to add features or do
 bug fixes.
 These include [[https://www.bountysource.com/][bountysource]] or [[https://en.wikipedia.org/wiki/Kickstarter][kickstarter]], where bountysource is
-usually fix an issue first and then get payd whereas kickstarter works on
+usually fix an issue first and then get paid whereas kickstarter works on
 promises.
 So in essence you're offering up your own time to work on a project.
 In both cases there is of course the persistent issue that its [[https://softwareengineering.stackexchange.com/questions/648/how-to-respond-when-you-are-asked-for-an-estimate][hard to decide]]
@@ -148,26 +148,26 @@ by downloading the one with adds.
 It may be considered hypocritical, but remember that as free software anyone can
 fork it and remove this feature.
 Not that you have to since there are [[https://github.com/gorhill/uBlock][alternatives]].
-Note that although adblock plus probably made quite a good load of money
+Note that although Adblock Plus probably made quite a good load of money
 with their white listing program, it will probably kill the project eventually.
 I imagine the people who go out of their way to install an ad blocker are not
 the kind of people who are satisfied with an ever laxer white list.
 
 ** License tricks
-The final category for making money with opensource is license trickery.
+The final category for making money with open source is license trickery.
 So this comes from the idea that, if you are the sole copyright holder,
 you can put the software under various licenses.
 Note that it is a big if to be the sole copyright holder,
 you need consent that any contributor is handing over their copyright.
-And as we will see in the relicense case, this can be abused.
+And as we will see in the re-license case, this can be abused.
 Which increases contributing barrier significantly.
 But in return as project owner you get a lot more possibilities for making money.
 
 *** Dual license
 Dual licenses are a practice where you offer one open license,
 and another business aimed license which promises more support than the open
-license or removes restrictions (such as forcing opensource).
-This is [[http://lucumr.pocoo.org/2013/7/23/licensing/#the-stricter-gpl][where AGPLV3 shines]], original authors can offer large orgnizations an
+license or removes restrictions (such as forcing open source).
+This is [[http://lucumr.pocoo.org/2013/7/23/licensing/#the-stricter-gpl][where AGPLV3 shines]], original authors can offer large organizations an
 alternative license, however downstream receivers of the code under AGPL cannot
 do this.
 [[https://en.wikipedia.org/wiki/MongoDB][Mongodb]] is an example that does this and they can only do this by
@@ -175,11 +175,11 @@ asking contributors to [[https://www.mongodb.com/legal/contributor-agreement][ha
 As a contributor you should be wary of doing this,
 why is discussed later in section [[Re-License]].
 
-However, this does allow a company to thrive upon opensource.
+However, this does allow a company to thrive upon open source.
 A company is still required to hoard in the business deals with other companies,
 and to collect the copyright assignments from contributors.
 It may be taken over similarly as Oracle did to Sun.
-But the AGPLV3 based code was already under license,
+But the AGPL based code was already under license,
 so the community can step in and take over development,
 as happened with Illumos (Solaris fork) after Oracle went on its rampage.
 
@@ -195,24 +195,26 @@ license instead, taking foss projects as collateral damage.
 This strategy involves releasing an open source core and add
 (usually business centred) proprietary extensions.
 The Wikipedia page lists several example but the one I'm personally
-familiar with is the Intelij project.
+familiar with is the IntelliJ project.
 Which is [[https://github.com/JetBrains/intellij-community][opensource]], has a [[https://www.jetbrains.com/idea/features/editions_comparison_matrix.html][proprietary paid extension]], and also a [[http://www.jetbrains.org/display/IJOS/Contributor+Agreement][cla]]
 (which doesn't hand over copyright but does a similar thing,
 but licenses a right to copy).
 
-Intelij is kindoff opensource, but many developers want to pay for things
-such as CSS or Javascript support.
+IntelliJ is kind off open source, but many developers want to pay for things
+such as CSS or JavaScript support.
 Although I'd say any text editor can do that, such as [[http://spacemacs.org/][spacemacs]].
-where InteliJ shines is Java and Scala.
+where IntelliJ shines is Java and Scala.
 As far as I can see are the 'supported' features, just bells and whistles.
 I'm not sure what adding 'support' for a framework really does.
 Will it just add a some GUI options for it or something?
 
-Because InteliJ is opensource it allowed Google to create android studio.
-This is great for the InteliJ team because now there is another party
-that is dependend on their core of which they hold all copyright.
-Google may help developing certain Java features for example just to get it
+Because IntelliJ is open source it allowed Google to create android studio.
+This is great for the IntelliJ team because now there is another party
+that is dependent on their core of which they hold all copyright.
+Google may help developing the IntelliJ Java core, just to get it
 to work for android developers.
+This is the thing most companies are after with open source,
+free programming manpower.
 
 *** Delayed open sourcing
 This is the thing [[https://en.wikipedia.org/wiki/John_Carmack][John Carmack]] famously did with ID tech.
@@ -226,31 +228,33 @@ available.
 
 *** Re-license
 If you are the sole copyright holder, you can stop distributing under the
-open source license and relicense it.
+open source license and re-license it.
 Originally I didn't want to include this option because you're no longer
 doing foss at this point, however, it opens up the opportunity to hate upon
 Oracle.
 So lets hate upon Oracle.
 
-So if we Google: [[https://www.google.nl/search?q=why+oracle+is+horrible&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=Hi0sWcTQNOvGXqT5o7gM][Why oracle is horrible]], we can get some [[https://www.quora.com/Whats-so-bad-about-Oracle][dumb]] [[https://www.quora.com/Why-do-some-people-hate-Oracle][quora]] anwsers.
+So if we Google: [[https://www.google.nl/search?q=why+oracle+is+horrible&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=Hi0sWcTQNOvGXqT5o7gM][Why oracle is horrible]], we can get some [[https://www.quora.com/Whats-so-bad-about-Oracle][dumb]] [[https://www.quora.com/Why-do-some-people-hate-Oracle][quora]] answers.
 These are just not the point.
 This [[https://www.reddit.com/r/linux/comments/2e2c1o/what_do_we_hate_oracle_for/][reddit thread]], sums it up nicely.
-What is really dog kicking evil were the solaris issues, which is discussed in
+What is really dog kicking evil were the Solaris issues, which is discussed in
 this [[https://www.youtube.com/watch?v=-zRN7XLCRhc#t=33m0s][this video]].
-A little further in [[https://www.youtube.com/watch?v=-zRN7XLCRhc&feature=youtu.be&t=2482][the video]] its is explained how it happend.
+A little further in [[https://www.youtube.com/watch?v=-zRN7XLCRhc&feature=youtu.be&t=2482][the video]] its is explained how it happened.
 So what happened is that Oracle obtained all copyright from various authors by
 buying SUN which required initially handing over copyright,
-OpenSolaris was closed by Oracle with a relicense.
-This was only possible because Sun asked contributers to fork over copyright.
-What we can learn from this is taht if you contribute to free software and care
+Open Solaris was closed by Oracle with a re-license.
+This was only possible because Sun asked contributors to fork over copyright.
+What we can learn from this is that if you contribute to free software and care
 about it, *never hand over copyright*.
-I'm happy to say however that a fork of Solaris occured called [[https://wiki.illumos.org/display/illumos/illumos+Home][Illumos]] that
+I'm happy to say however that a fork of Solaris occurred called [[https://wiki.illumos.org/display/illumos/illumos+Home][Illumos]] that
 seems to still be active.
 
 * Literature overview
 Because google came up with the scholarly articles suggestion I decided to dig
 into that too.
 These articles are what most people consider to be /science/.
+
+** TODO literature overview lol
 
 * In conclusion
 Anyway I've wanted to write down my personal ideas of making money
