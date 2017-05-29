@@ -48,7 +48,7 @@ I guess more people are really interested in this.
 So does this blog post die in the cradle?
 I say no, I can still give my opinions on that page.
 Another thing is that discussing this page on my blog will force me to closely
-look at the possiblities.
+look at the possibilities.
 
 
 Besides the fact that there is a (quite big) wiki on it only shows how much
@@ -159,14 +159,70 @@ So this comes from the idea that, if you are the sole copyright holder,
 you can put the software under various licenses.
 Note that it is a big if to be the sole copyright holder,
 you need consent that any contributor is handing over their copyright.
-This increases contributing barrier significantly.
-But in return as project owner you get a lot more possibilities.
+And as we will see in the relicense case, this can be abused.
+Which increases contributing barrier significantly.
+But in return as project owner you get a lot more possibilities for making money.
 
 *** Dual license
+Dual licenses are a practice where you offer one open license,
+and another business aimed license which promises more support than the open
+license or removes restrictions (such as forcing opensource).
+This is [[http://lucumr.pocoo.org/2013/7/23/licensing/#the-stricter-gpl][where AGPLV3 shines]], original authors can offer large orgnizations an
+alternative license, however downstream receivers of the code under AGPL cannot
+do this.
+[[https://en.wikipedia.org/wiki/MongoDB][Mongodb]] is an example that does this and they can only do this by
+asking contributors to [[https://www.mongodb.com/legal/contributor-agreement][hand over copyright]].
+As a contributor you should be wary of doing this,
+why is discussed later in section [[Re-License]].
+
+However, this does allow a company to thrive upon opensource.
+A company is still required to hoard in the business deals with other companies,
+and to collect the copyright assignments from contributors.
+It may be taken over similarly as Oracle did to Sun.
+But the AGPLV3 based code was already under license,
+so the community can step in and take over development,
+as happened with Illumos (Solaris fork) after Oracle went on its rampage.
+
+This has however a darker side in potential license trolling.
+Which [[https://lists.debian.org/debian-legal/2013/07/msg00000.html][Oracle (who else) did]] for example with a database.
+Changing from BSD to AGPLv3, which in case of Debian required around 100 other
+dependent packages to change to AGPLv3 too.
+Which of course is not going to happen.
+Oracle probably did this to force users of that database to take a commercial
+license instead, taking foss projects as collateral damage.
 
 *** Proprietary extensions
+This strategy involves releasing an open source core and add
+(usually business centred) proprietary extensions.
+The Wikipedia page lists several example but the one I'm personally
+familiar with is the Intelij project.
+Which is [[https://github.com/JetBrains/intellij-community][opensource]], has a [[https://www.jetbrains.com/idea/features/editions_comparison_matrix.html][proprietary paid extension]], and also a [[http://www.jetbrains.org/display/IJOS/Contributor+Agreement][cla]]
+(which doesn't hand over copyright but does a similar thing,
+but licenses a right to copy).
+
+Intelij is kindoff opensource, but many developers want to pay for things
+such as CSS or Javascript support.
+Although I'd say any text editor can do that, such as [[http://spacemacs.org/][spacemacs]].
+where InteliJ shines is Java and Scala.
+As far as I can see are the 'supported' features, just bells and whistles.
+I'm not sure what adding 'support' for a framework really does.
+Will it just add a some GUI options for it or something?
+
+Because InteliJ is opensource it allowed Google to create android studio.
+This is great for the InteliJ team because now there is another party
+that is dependend on their core of which they hold all copyright.
+Google may help developing certain Java features for example just to get it
+to work for android developers.
 
 *** Delayed open sourcing
+This is the thing [[https://en.wikipedia.org/wiki/John_Carmack][John Carmack]] famously did with ID tech.
+After some time selling the games he would release the source of the games.
+Which he did for [[https://github.com/id-Software/DOOM][Doom]], [[https://github.com/id-Software/Quake][Quacke]] even [[https://github.com/id-Software/DOOM-3][Doom 3]].
+This in turn led the games to be developed upon for a long time after their
+release.
+For example [[https://ioquake3.org/][ioquake3]], still actively develops the quake engine,
+driving sales of the quake game itself because the assets aren't freely
+available.
 
 *** Re-license
 If you are the sole copyright holder, you can stop distributing under the
@@ -174,7 +230,22 @@ open source license and relicense it.
 Originally I didn't want to include this option because you're no longer
 doing foss at this point, however, it opens up the opportunity to hate upon
 Oracle.
+So lets hate upon Oracle.
 
+So if we Google: [[https://www.google.nl/search?q=why+oracle+is+horrible&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=Hi0sWcTQNOvGXqT5o7gM][Why oracle is horrible]], we can get some [[https://www.quora.com/Whats-so-bad-about-Oracle][dumb]] [[https://www.quora.com/Why-do-some-people-hate-Oracle][quora]] anwsers.
+These are just not the point.
+This [[https://www.reddit.com/r/linux/comments/2e2c1o/what_do_we_hate_oracle_for/][reddit thread]], sums it up nicely.
+What is really dog kicking evil were the solaris issues, which is discussed in
+this [[https://www.youtube.com/watch?v=-zRN7XLCRhc#t=33m0s][this video]].
+A little further in [[https://www.youtube.com/watch?v=-zRN7XLCRhc&feature=youtu.be&t=2482][the video]] its is explained how it happend.
+So what happened is that Oracle obtained all copyright from various authors by
+buying SUN which required initially handing over copyright,
+OpenSolaris was closed by Oracle with a relicense.
+This was only possible because Sun asked contributers to fork over copyright.
+What we can learn from this is taht if you contribute to free software and care
+about it, *never hand over copyright*.
+I'm happy to say however that a fork of Solaris occured called [[https://wiki.illumos.org/display/illumos/illumos+Home][Illumos]] that
+seems to still be active.
 
 * Literature overview
 Because google came up with the scholarly articles suggestion I decided to dig
@@ -191,4 +262,4 @@ but these arguments could also hold true for BSD, MIT or Apache, I guess.
 My blog seems to be really focused on money,
 but this is a reflection of what I'm worried about these days.
 
-#  LocalWords:  bountysource kickstarter
+#  LocalWords:  bountysource kickstarter foss AGPLv
