@@ -27,8 +27,12 @@ I will conclude with a list of options I liked and why.
 * Google results
 I already had some ideas about how to do this,
 but its interesting what Google says about the subject.
+I was humbled by the results of putting a little effort into searching.
+This should of course come not as a surprise to me, but every time when
+I always have the urge to 'just start' without doing research, and every time
+I discover this is a mistake.
 
-I searched for [[https://www.google.nl/search?q=making+money+with+foss&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=50YjWYn_CdHU8geKob64BQ]["Making money with foss"]].
+In my naive approach I searched for [[https://www.google.nl/search?q=making+money+with+foss&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=50YjWYn_CdHU8geKob64BQ]["Making money with foss"]].
 The first site that came up was [[http://www.infoworld.com/article/2612393/open-source-software/greed-is-good--9-open-source-secrets-to-making-money.html][info world]].
 This site was full of warning flags,
 click bait title,
@@ -36,12 +40,14 @@ advertise other articles mid article (instead of at the end),
 using a pager.
 After skimming the article it wasn't about making money of an open source project,
 but potential reasons for open sourcing (part of) your code.
-It was aimed at mid to high level management, non technical texts are of no
-interest to me.
+It was aimed at mid to high level management,
+non technical texts are of no interest to me,
+mainly because they usually have an agenda.
 A [[http://www.fosslc.org/drupal/node/131][second article]] linked to [[http://carlodaffara.conecta.it/?p=90&cpage=1#comment-50][another page]] with a better list, but I couldn't
 find it.
 The third [[http://www.cio.com/article/3178621/open-source-tools/how-to-make-money-from-open-source-software.html][article]] was just a summery of a video and wasn't very focused.
-Okay so my search terms were bad. Time to be more specific.
+Okay so my search terms were bad.
+Time to be more specific.
 
 I searched for [[https://www.google.nl/search?q=making+money+with+foss&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=50YjWYn_CdHU8geKob64BQ#q=foss+business+models]["foss business models"]], you know you did something right when
 scholarly articles start being presented.
@@ -93,7 +99,7 @@ how much time this will take.
 With kickstarter however you can estimate it better because you're probably
 starting your own bigger project, so the overhead of estimation is smaller.
 With bounty source each bounty requires its own estimate and these are often
-smaller, think of about $100, its hard to decide to even bother with that.
+smaller, think of about \$100, its hard to decide to even bother with that.
 Another issue with bounty source is that you have to switch from project to
 project often, which requires a lot of getting familiar with the code base
 overhead.
@@ -104,7 +110,7 @@ But don't expect strangers to 'join in', just because of the bounties
 unless they're highly overvalued.
 In fact you can see that few people 'live' off bounty source just by the
 overview of bounty hunters. Only three people at the time of writing got over
-$2000 in the last 90 days and only 9 over $1000.
+\$2000 in the last 90 days and only 9 over \$1000.
 
 In the strategy of renting yourself out is going to interested parties yourself
 and offer to write software.
