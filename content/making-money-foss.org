@@ -25,12 +25,10 @@ Then I will present the my opinions around the results I found.
 I will conclude with a list of options I liked and why.
 
 * Google results
-So I already had some ideas about how to do this,
+I already had some ideas about how to do this,
 but its interesting what Google says about the subject.
 
-** First attempt
 I searched for [[https://www.google.nl/search?q=making+money+with+foss&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=50YjWYn_CdHU8geKob64BQ]["Making money with foss"]].
-
 The first site that came up was [[http://www.infoworld.com/article/2612393/open-source-software/greed-is-good--9-open-source-secrets-to-making-money.html][info world]].
 This site was full of warning flags,
 click bait title,
@@ -38,25 +36,21 @@ advertise other articles mid article (instead of at the end),
 using a pager.
 After skimming the article it wasn't about making money of an open source project,
 but potential reasons for open sourcing (part of) your code.
-So it was aimed at mid to high level management.
+It was aimed at mid to high level management, non technical texts are of no
+interest to me.
 A [[http://www.fosslc.org/drupal/node/131][second article]] linked to [[http://carlodaffara.conecta.it/?p=90&cpage=1#comment-50][another page]] with a better list, but I couldn't
 find it.
 The third [[http://www.cio.com/article/3178621/open-source-tools/how-to-make-money-from-open-source-software.html][article]] was just a summery of a video and wasn't very focused.
-
 Okay so my search terms were bad. Time to be more specific.
 
-** Second attempt
 I searched for [[https://www.google.nl/search?q=making+money+with+foss&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=50YjWYn_CdHU8geKob64BQ#q=foss+business+models]["foss business models"]], you know you did something right when
 scholarly articles start being presented.
-
 So there was an entire [[https://en.wikipedia.org/wiki/Business_models_for_open-source_software][Wikipedia page]] on the subject.
 I guess more people are really interested in this.
 So does this blog post die in the cradle?
 I say no, I can still give my opinions on that page.
 Another thing is that discussing this page on my blog will force me to closely
 look at the possibilities.
-
-
 Besides the fact that there is a (quite big) wiki on it only shows how much
 people care about this subject.
 
@@ -69,6 +63,10 @@ without running a loss because distribution is
 (practically) free for software.
 Giving up this monopoly is a necessary requirement for open source,
 called the [[https://www.gnu.org/philosophy/free-sw.en.html][second and thirth freedoms]].
+This is also done with the BSD like licenses,
+so we can consider it a part of open source.
+Therefore we need to find a way of making money by working around this
+restriction.
 
 ** Sell stuff besides software
 One of the primary strategies is selling stuff besides the software.
@@ -79,26 +77,27 @@ This can be extended by providing certificates of expertise
 Another strategy is selling of merchandise, such as fan [[https://store.wikimedia.org/collections/accessories][T-shirts or coffee cups]].
 Which the wikimedia foundation does.
 Selling merchandise is quite clever because its much more easy for someone to
-buy "something", than just donating.
+buy 'something', rather than just donating.
 Besides its free advertisement for your project,
 /and/ your users now have something to identify themselves with.
+So I think if you have a project you should seriously consider doing this.
 
 Finally a programmer can rent himself out to a project to add features or do
 bug fixes.
 These include [[https://www.bountysource.com/][bountysource]] or [[https://en.wikipedia.org/wiki/Kickstarter][kickstarter]], where bountysource is
 usually fix an issue first and then get paid whereas kickstarter works on
 promises.
-So in essence you're offering up your own time to work on a project.
+In essence you're offering up your own time to work on a project.
 In both cases there is of course the persistent issue that its [[https://softwareengineering.stackexchange.com/questions/648/how-to-respond-when-you-are-asked-for-an-estimate][hard to decide]]
 how much time this will take.
 With kickstarter however you can estimate it better because you're probably
 starting your own bigger project, so the overhead of estimation is smaller.
-But with bounty source each bounty requires its own estimate and if its about $100,
-its hard to decide to even bother with that.
+With bounty source each bounty requires its own estimate and these are often
+smaller, think of about $100, its hard to decide to even bother with that.
 Another issue with bounty source is that you have to switch from project to
 project often, which requires a lot of getting familiar with the code base
 overhead.
-So the model of bounty source is less then perfect to live off.
+The model of bounty source is less then perfect to live off.
 Although for existing developers of a project its a great motivation to work a
 little more.
 But don't expect strangers to 'join in', just because of the bounties
@@ -122,8 +121,6 @@ donations.
 The big issue with this is of course getting people to donate in the first place.
 A famous example of a donation scheme as that of [[http://www-archive.mozilla.org/press/mozilla-2004-12-15.html][mozzilla firefox 1.0 release]].
 
-
-*** Patreon
 Recently however another model has popped up in the form of [[https://www.patreon.com/][patreon]].
 The idea is pretty simple, subscribe to a creator and every time he puts
 something out (or every month) donate a small by you decided amount.
@@ -139,7 +136,8 @@ rather than having to think about how much time creating a feature costs as
 with bountysource,
 you can just continue improving the project how you think it should be done.
 Of course some trust in the developer is necessary for that,
-bounty source doesn't have that problem.
+bounty source doesn't have that problem, since payment is done afterwards and I
+assume regulated by bountysource.
 
 ** Advertisements
 A trick often overlooked by most developers is advertising.
@@ -151,9 +149,9 @@ one with adds and one without and then ask your users to support the project
 by downloading the one with adds.
 
 [[https://en.wikipedia.org/wiki/Adblock_Plus#Controversy_over_ad_filtering_and_ad_whitelisting][Addblock plus]] famously white listed adds as a way of generating revenue.
-It may be considered hypocritical, but remember that as free software anyone can
-fork it and remove this feature.
-Not that you have to since there are [[https://github.com/gorhill/uBlock][alternatives]].
+It may be considered hypocritical,
+but remember that as free software anyone can fork it and remove this feature.
+Not that you have to since there are already [[https://github.com/gorhill/uBlock][alternatives]].
 Note that although Adblock Plus probably made quite a good load of money
 with their white listing program, it will probably kill the project eventually.
 I imagine the people who go out of their way to install an ad blocker are not
@@ -169,7 +167,6 @@ And as we will see in the re-license case, this can be abused.
 Which increases contributing barrier significantly.
 But in return as project owner you get a lot more possibilities for making money.
 
-*** Dual license
 Dual licenses are a practice where you offer one open license,
 and another business aimed license which promises more support than the open
 license or removes restrictions (such as forcing open source).
@@ -179,7 +176,9 @@ do this.
 [[https://en.wikipedia.org/wiki/MongoDB][Mongodb]] is an example that does this and they can only do this by
 asking contributors to [[https://www.mongodb.com/legal/contributor-agreement][hand over copyright]].
 As a contributor you should be wary of doing this,
-why is discussed later in section [[Re-License]].
+copy left doesn't work if you hand over copyright.
+If you work under BSD or MIT kind of licenses it doesn't matter
+(and I assume you already came to terms with this).
 
 However, this does allow a company to thrive upon open source.
 A company is still required to hoard in the business deals with other companies,
@@ -195,24 +194,24 @@ Changing from BSD to AGPLv3, which in case of Debian required around 100 other
 dependent packages to change to AGPLv3 too.
 Which of course is not going to happen.
 Oracle probably did this to force users of that database to take a commercial
-license instead, taking foss projects as collateral damage.
+license instead, taking foss projects (such as Debian) as collateral damage.
 
 *** Proprietary extensions
-This strategy involves releasing an open source core and add
+Proprietary extensions involve releasing an open source core and add
 (usually business centred) proprietary extensions.
 The Wikipedia page lists several example but the one I'm personally
 familiar with is the IntelliJ project.
 Which is [[https://github.com/JetBrains/intellij-community][opensource]], has a [[https://www.jetbrains.com/idea/features/editions_comparison_matrix.html][proprietary paid extension]], and also a [[http://www.jetbrains.org/display/IJOS/Contributor+Agreement][cla]]
 (which doesn't hand over copyright but does a similar thing,
-but licenses a right to copy).
+licenses a right to copy).
 
 IntelliJ is kind off open source, but many developers want to pay for things
 such as CSS or JavaScript support.
 Although I'd say any text editor can do that, such as [[http://spacemacs.org/][spacemacs]].
 where IntelliJ shines is Java and Scala.
 As far as I can see are the 'supported' features, just bells and whistles.
-I'm not sure what adding 'support' for a framework really does.
-Will it just add a some GUI options for it or something?
+However they maybe valuable for a professional developer, or to a software house
+to which the license fees are nothing compared to developer time.
 
 Because IntelliJ is open source it allowed Google to create android studio.
 This is great for the IntelliJ team because now there is another party
@@ -255,48 +254,20 @@ about it, *never hand over copyright*.
 I'm happy to say however that a fork of Solaris occurred called [[https://wiki.illumos.org/display/illumos/illumos+Home][Illumos]] that
 seems to still be active.
 
-
-* Literature overview
-Because google came up with the scholarly articles suggestion I decided to dig
-into that too.
-These articles are what most people consider to be /science/.
-
-** TODO literature overview lol
-
 * In conclusion
 Because we are interested in making money,
 this post will took us all over the place.
 On the one hand we have the greedy businesses,
 and on the other side the diligent developer.
-While writing this post it made me realize that you as an individual should at
-some point make a choice on which 'side' you are.
-Will you become a business owner to exploit the developer,
-while trying to get rich?
-Or will you help on someone else' fortunes while just enjoying life,
-not being the owner means much less responsibility.
-
-Having said that, we should point out there are alternative paths that not
-really choose a side.
-First of all there exists software foundations.
-I do not like foundations in general.
-They always end up promoting themselves first and foremost,
-but also have other goals.
-Working for them can thus in turn really be satisfying,
-if your goals align with the foundations'.
-
-Secondly there are [[https://en.wikipedia.org/wiki/Worker_cooperative][worker collectives]].
-This is however a bigger topic I may discuss another time.
-It is a very interesting idea,
-I'm thinking of a kind of [[https://en.wikipedia.org/wiki/Law_firm#Partnership][law firm]] model where only the more seasoned
-programmers can have ownership.
-
-Anyway I've wanted to write down my personal ideas of making money
-with free software.
-So particularly GPL style licensed software,
-but these arguments could also hold true for BSD, MIT or Apache, I guess.
-
-
+Licenses were never discussed in hbo or university,
+which is interesting because these are the methods corporations use to make
+money.
+I think having discussed the overview and shown some concrete examples was a
+good exercise.
+I was not aware at all for example of the AGPLv3 practices which
+are interesting (without passing moral judgment).
 My blog seems to be really focused on money,
-but this is a reflection of what I'm worried about these days.
+but this is a reflection of what I'm worried about these days,
+having almost graduated.
 
 #  LocalWords:  bountysource kickstarter foss AGPLv
