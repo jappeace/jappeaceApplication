@@ -5,7 +5,7 @@ blue: 1818b2
 light blue: 54ffff
 grey-ish: 474d4d (used in the borders)
  */
-@import url('https://fonts.googleapis.com/css?family=Dancing+Script|Fira+Mono');
+@import url('https://fonts.googleapis.com/css?family=Dancing+Script|Fira+Mono|Roboto');
 *{
 font-family: 'Fira Mono', monospace;
 margin: 1%; /* so responsive */
@@ -58,6 +58,11 @@ p a{
     padding-left:4px;
     padding-right:4px;
 }
+.entry-content a{
+    margin:0;
+    margin-right: -4px;
+    margin-left: -4px;
+}
 a:active {
     text-decoration:underline;
     text-decoration-color: #54ffff;
@@ -102,7 +107,7 @@ footer.window{
 }
 nav{
     text-align:center;
-    border:1px solid #474d4d;
+    /* border:1px solid #474d4d; */
     width:60%; /* makes the menu fit into the center of the aside somehow*/
     display:inline-block;
     position:absolute;
@@ -142,6 +147,10 @@ nav ul li:hover h3{
 }
 p{
     margin-bottom:1em;
+}
+p,
+p *{
+    font-family: 'Roboto', sans-serif;
 }
 footer ul li{
     width:49%;
@@ -205,6 +214,8 @@ footer {
     margin-bottom:1%;
     margin-top: -2px;
 }
+
+p *,
 .entry-content p,
 article header p,
 article header time,
@@ -212,7 +223,6 @@ article header h1,
 article header h1 a,
 article footer,
 article footer a,
-.entry-content a,
 .entry-content {
     margin:0;
 }
