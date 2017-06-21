@@ -4,3 +4,10 @@ Got the insperation for a webise from
 
 So this is powered by [[http://docs.getpelican.com/en/stable/][pelican]].
 (and the org-mode plugin, org mode best mode)
+
+
+* TODO website extensions
+
++ Replace images with svg variants (scales better)
++ Reddit comments into static site
++ Justify paragraphs like latex
