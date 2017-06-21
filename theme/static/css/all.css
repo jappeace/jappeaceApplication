@@ -227,8 +227,33 @@ article footer a,
     margin:0;
 }
 .entry-content p{
-	padding-top:1%;
 	padding-bottom:1%;
+}
+
+.entry-content h1,
+.entry-content h2,
+.entry-content h3,
+.entry-content h4,
+.entry-content h5,
+.entry-content h6{
+    margin-bottom:0;
+}
+
+.outline-text-2,
+.outline-text-3,
+.outline-text-4,
+.outline-text-5,
+.outline-text-6{
+    margin-top:0;
+}
+
+.section-number-2,
+.section-number-3,
+.section-number-4,
+.section-number-5,
+.section-number-6{
+    visibility:hidden;
+    display:none;
 }
 
 article header{
