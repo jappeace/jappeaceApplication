@@ -8,6 +8,12 @@ So this is powered by [[http://docs.getpelican.com/en/stable/][pelican]].
 
 * TODO website extensions
 
+** Minor things
+
++ Li items don't get right font in paragraphs
+  + We could fix this by making monospace unique and serif default?
+
+** Bigger projects
 + Replace images with svg variants (scales better)
 + Reddit comments into static site
 + Justify paragraphs like latex
