@@ -7,7 +7,6 @@ grey-ish: 474d4d (used in the borders)
  */
 @import url('https://fonts.googleapis.com/css?family=Dancing+Script|Fira+Mono|Roboto');
 *{
-font-family: 'Fira Mono', monospace;
 margin: 1%; /* so responsive */
 padding: 0;
 }
@@ -15,6 +14,7 @@ body{
     /* 1818b2 */
     background:#1818b2;
     text-align:center;
+    font-family: 'Roboto', sans-serif;
 }
 .wrapper{
     margin-left: auto;
@@ -148,10 +148,6 @@ nav ul li:hover h3{
 p{
     margin-bottom:1em;
 }
-p,
-p *{
-    font-family: 'Roboto', sans-serif;
-}
 footer ul li{
     width:49%;
 }
@@ -197,6 +193,9 @@ ul.horizontal li{
 }
 #logo span, #logo br, #logo pre{
     margin:0;
+}
+pre{
+    font-family: 'Fira Mono', monospace;
 }
 #title h1, #title h1 a{
     /* allows a little more small screen support (header becomes fucked less quickly)*/
@@ -298,6 +297,7 @@ article.single > footer{
 .link {
     display:inline-block;
     margin:0;
+    font-family: 'Fira Mono', monospace;
 }
 /*
 make tables less cramped
