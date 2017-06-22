@@ -130,7 +130,7 @@ A famous example of a donation scheme as that of [[http://www-archive.mozilla.or
 Recently however another model has popped up in the form of [[https://www.patreon.com/][patreon]].
 The idea is pretty simple, subscribe to a creator and every time he puts
 something out (or every month) donate a small by you decided amount.
-[[https://www.patreon.com/landley][Some]] [[https://www.patreon.com/kozec][developers]] have embraced this idea, although I haven't seen anyone that
+[[https://www.patreon.com/landley][Some]] [[https://www.patreon.com/kozec][developers]] [[https://www.patreon.com/bcachefs][have]] [[https://www.patreon.com/pippin][embraced]] [[https://www.reddit.com/r/linux/comments/5omtvg/patreons_to_support_open_source_projects_please/][this idea]], although I haven't seen anyone that
 earns self sustaining amounts.
 It does provide a reliable income stream and is aimed at /individuals/,
 and since there are [[https://www.patreon.com/cgpgrey][other]] [[https://www.patreon.com/avasdemon][creators]] who have managed to get to a sustainable
@@ -144,6 +144,7 @@ you can just continue improving the project how you think it should be done.
 Of course some trust in the developer is necessary for that,
 bounty source doesn't have that problem, since payment is done afterwards and I
 assume regulated by bountysource.
+However appearantly bounty source offers a similar service [[https://salt.bountysource.com/teams/neovim][for projects]].
 
 ** Advertisements
 A trick often overlooked by most developers is advertising.
