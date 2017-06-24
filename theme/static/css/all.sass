@@ -45,12 +45,16 @@ a:first-letter
     text-shadow: -1px 0 $col-link, 0 1px $col-link, 1px 0 $col-link, 0 -1px $col-link
 
 // to small for textshadow
-a.tag:first-letter, .entry-content a:first-letter
-    color: $col-dark
+a.tag:first-letter
+    color: $col-text
+    text-shadow: none
+
+.entry-content a:first-letter
+    color: $col-border
     text-shadow: none
 
 a:visited
-    color: $col-dark
+    color: $col-border
 
 a:hover:first-letter, a.tag:hover:first-letter, .entry-content a:hover:first-letter
     color: $col-flash
@@ -59,12 +63,8 @@ a:hover
     color: $col-hover
     background: $col-dark
 
-p a
-    padding-left: 4px
-    padding-right: 4px
 
 .entry-content a
-    margin: 0
     margin-right: -4px
     margin-left: -4px
 
@@ -141,12 +141,16 @@ nav
 .bracket
     display: inline-block
     vertical-align: super
-    margin: 0
 
 nav ul li:hover h3
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
 p
-    margin-bottom: 1em
+    margin-bottom: 0.5em
+    a
+        padding-left: 4px
+        padding-right: 4px
+        color: $col-link
+
 footer ul li
     width: 49%
 ul.horizontal
@@ -183,36 +187,17 @@ ul.horizontal li
     display: block
     float: left
 
-#logo span, #logo br, #logo pre
-    margin: 0
 pre
     font-family: 'Fira Mono', monospace
-#title h1, #title h1 a
-    /* allows a little more small screen support (header becomes fucked less quickly)*/
-    margin-left: 0
+
 .category-glyph
     height: 1em
-    margin: 0
     /* this works cause its inline?? */
     vertical-align: middle 
-footer small a
-    margin: 0
+
 footer 
     margin-bottom: 1%
     margin-top: -2px
-
-p *,
-.entry-content p,
-article header p,
-article header time,
-article header h1,
-article header h1 a,
-article footer,
-article footer a,
-.entry-content 
-    margin: 0
-.entry-content p
-    padding-bottom: 1%
 
 @for $i from 1 to 6
     .entry-content h#{$i}
@@ -224,7 +209,6 @@ article footer a,
         display: none
 
 article header
-    margin: 0
     margin-top: 1%
 
 .entry-content img
@@ -254,7 +238,6 @@ article.single > footer
     font-size: 0.5vw
 .link 
     display: inline-block
-    margin: 0
     font-family: 'Fira Mono', monospace
     text-align: center
     text-align-last: center
@@ -320,8 +303,6 @@ td
     #category-title
         margin-top: 0px
 @media (max-width: 750px) 
-    #main, #title, footer
-        margin: 0
     #title
         border-bottom: none
 @media (max-width: 550px) 
