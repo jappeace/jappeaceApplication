@@ -26,11 +26,11 @@
     <link href="{{ SITEURL }}/favicon.png" rel="icon">
    <!-- css -->
     {% if article %}
-    {% assets filters="cssmin", output="css/article.min.css", "css/all.css", "css/article.css" %}
+    {% assets filters="sass,cssmin", output="css/article.min.css", "css/all.sass", "css/article.sass" %}
         <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
     {% endassets %}
     {% else %}
-    {% assets filters="cssmin", output="css/double.min.css", "css/all.css", "css/double_collumn.css" %}
+    {% assets filters="sass,cssmin", output="css/double.min.css", "css/all.sass", "css/double_collumn.sass" %}
         <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
     {% endassets %}
     {% endif %}

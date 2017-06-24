@@ -2,6 +2,7 @@
 #+DATE: 2017-01-14
 #+CATEGORY: technique
 #+Tags: thesis, tips, technique 
+#+Options: toc:nil
 
 So I recently started writing my master thesis and looking at some of my fellow
 master students their work I realized that perhaps many people have trouble with
