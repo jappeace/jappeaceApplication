@@ -3,6 +3,7 @@
 #+DATE: 2017-06-24
 #+CATEGORY: reflection
 #+Tags: thesis, presents, research, jung, chatbot
+#+PROPERTY: status draft
 
 I'm done. The master in AI is complete.
 I finished the thesis about adding `Jungian personality in a chatbot'.
