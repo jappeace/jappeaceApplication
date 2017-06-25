@@ -149,11 +149,13 @@ p
     text-align: justify
     hyphens: auto
     overflow-wrap: break-word
-    text-indent: 1.375em
+    line-height: 1.3
     a
         padding-left: 4px
         padding-right: 4px
         color: $col-link
+    \+p
+        text-indent: 1.375em
 
 footer ul li
     width: 49%
@@ -266,4 +268,23 @@ td
 abbr
     letter-spacing: 0.1em
 
+.src-block
+    margin: 1.5em 0
+    text-align: center
+
+.highlight
+    padding: 1em
+    border: solid gray.5em
+    text-align: left
+    margin-bottom: 0.25em
+
+.figure
+    @extend .src-block
+    p
+        text-align: inherit
+
+.org-ref-bib
+    margin-top: -1em
+
 @import '_resize'
+@import '_syntax'

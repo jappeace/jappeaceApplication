@@ -1,0 +1,261 @@
+#+TITLE: Jungian personality in a chatbot
+#+OPTIONS: toc:nil
+#+DATE: 2017-06-24
+#+CATEGORY: reflection
+#+Tags: thesis, presents, research, jung, chatbot
+
+I'm done. The master in AI is complete.
+I finished the thesis about adding `Jungian personality in a chatbot'.
+The source is available [[https://jappieklooster.nl/chatbot][here]], for anyone interested.
+In this blogpost I will give a summery and some comments from a programmers'
+perspective that just don't fit in a thesis.
+
+* What did I do?
+I build a very fancy chatbot called Gaia, which is *not* based upon ALICE.
+The core is a buisness rule engine called Drools.
+Once the scenario described by YAML files are read, everything chatbot related
+happens in Drools.
+This means you can make it as smart as you want,
+for example you can make a rule that detects when a user is starting to repeat
+himself (and deal with that),
+or use timers that are native to drools to create a bot that acts impetiantly.
+
+Pattern matching also happens inside drools,
+which means your not stuck to the regex system I provided.
+Unlike the ALICE chatbot where you *have* to use the ALICE patterns
+(which are less powerfull than regexes).
+
+That was the stuff I made to just to get started with personality.
+The issue with the ALICE chatbot was that it already predefined a response 
+before any deliberation could happen.
+What I did was simply seperating the `figure out what user said' step from
+the `this needs to happen next' steps.
+
+To make this seperation more clear lets look at the syntax of both systems.
+AIML, which is the core of the ALICE chatbot looks like source block [[code:aiml]].
+#+CAPTION: AIML syntax for a reply
+#+NAME: code:aiml
+#+BEGIN_SRC nxml
+<aiml>
+<category>
+    <pattern>
+        How are you
+    </pattern>
+    <template>
+        Not doing too well today.
+    </template>
+</category>
+</aiml>
+#+END_SRC
+A pattern `how are you', gets replied to with `not doing wel today'.
+The Gaia YAML representation has this spread over several files however,
+as can be seen in source blocks [[code:yaml:how]], [[code:yaml:not]]
+and [[code:yaml:connections]].
+#+CAPTION: Gaia yaml =status_inquery.yml= file
+#+NAME: code:yaml:how
+#+BEGIN_SRC yaml
+literals:
+  - How are you
+patterns:
+  - How * you
+  - How are you *
+#+END_SRC
+#+CAPTION: Gaia yaml =reply_bad.yml= file
+#+NAME: code:yaml:not
+#+BEGIN_SRC yaml
+literals:
+  - Not doing too well today.
+regexes:
+  - doing (*.) badly
+#+END_SRC
+#+CAPTION: Gaia yaml =_connections.yml= file
+#+NAME: code:yaml:connections
+#+BEGIN_SRC yaml
+from:
+ - status_inquery
+to:
+ - symbol: reply_bad
+#+END_SRC
+So at first this representation just looks more verbose,
+however we seperated the concerns of legal connections, from pattern matching.
+Modelling the scenario now almost enterily happens in the _connections file,
+and while doing that you don't have to deal with pattern matching.
+Using the file names as identifies gaurantees uniqueness.
+
+We can model complicated examples such as in source block [[code:yaml:complex]].
+This can be seen as a diagram in figure [[fig:dep:filedconns]].
+Trying to put such an example in AIML is basically impossible.
+First of all the concept of actors doesn't exist, secondly cattegories can't
+model the availability of choice.
+There are [[http://www.alicebot.org/documentation/aiml-reference.html#if][if]] statements, but that's making the decision in place.
+Asside from the fact you shouldn't do [[http://wiki.c2.com/?XmlSucks][conditionals in xml]] structurally.
+
+#+CAPTION: Connections grouped into a file
+#+NAME: code:yaml:complex
+#+BEGIN_SRC yaml
+  from:
+   - greeting
+  to:
+   - symbol: greeting
+   - symbol: ask_reason_here
+     restricted_to: doctor
+  ---
+  from:
+   - ask_reason_here
+  to:
+   - restricted_to: patient
+     symbol: need_medicine
+   - restricted_to: patient
+     symbol: broken_arms
+   - restricted_to: patient
+     symbol: feel_sick
+  ---
+  from:
+   - need_medicine
+   - greeting
+  to:
+   - restricted_to: doctor         
+     symbol: why_need
+   - symbol: status_inquery
+ #+END_SRC
+
+#+NAME: fig:dep:filedconns
+#+BEGIN_SRC plantuml :cache yes :file images/2017/uml/dep:filedconns.svg :exports results
+cloud "symbols"{
+  node ask_reason_here
+  node broken_arms
+  node feel_sick
+
+  node greeting
+  node status_inquery
+  node why_need
+  node need_medicine
+
+  ask_reason_here --> need_medicine : a = patient
+  ask_reason_here --> broken_arms : a = patient
+  ask_reason_here -> feel_sick : a = patient
+
+  need_medicine --> status_inquery
+  need_medicine --> why_need : a = doctor
+  greeting --> status_inquery
+  greeting --> greeting
+  greeting --> why_need : a = doctor
+  greeting --> ask_reason_here : a = doctor
+}
+#+END_SRC
+
+#+CAPTION: Symbol graph of connections grouped in file
+#+LABEL: fig:dep:filedconns
+#+RESULTS[55b601d37982293fae7a441adb67bda322ffccd4]: fig:dep:filedconns
+[[file:images/2017/uml/dep:filedconns.svg]]
+
+** The personality stuff
+With the availablity of choice in place, I could do the personality stuff.
+Jung's theory is used for personality to decide what the algorithm should use,
+this is also the core theory of for example MBTI.
+Jung said that each function has an attitude, either introversion or
+extroversion.
+Introversion deals with the inside world, memories and ideas.
+Extroversion deals with the outside world, which can be seen.
+An overview of the function can be seen here:
+\[\mathcal{J} = \{ T_e, T_i, F_e, F_i, S_e, S_i, N_e, N_i\} \]
+Each of these does something different, for the entire description I refer to
+the thesis or this source cite:hall1973primer.
+
+What we wanted is that these functions would plan ahead in cooperation with
+each other.
+This would be personality as a process rather than value based cite:campos_mabs2009,
+this was a requirement by my teacher.
+To do this we introduced the dialogue tree datastructure:
+ \[ u = (a,s) \]
+ \[ D = (u, [D])\]
+Where $u$ is an utterance, $a$ an actor, $s$ a symbol and $D$ the dialogue tree.
+With this data structure we can plan ahead, passing the dialogue tree
+trough the functions either growing or sorting on preference.
+
+ #+NAME: fig:dialoguetree
+ #+BEGIN_SRC plantuml :cache yes :file images/2017/uml/dialoguetree.svg :exports results
+ object D0{
+ a = "doctor"
+ s = "Greeting"
+ [D] = [D1, D2, D3]
+ }
+ object D1 {
+ a = "patient"
+ s = "Complaint"
+ [D] = [D5, D4]
+ }
+ object D2 {
+ a = "patient"
+ s = "QuestionIdentity"
+ [D] = [D6]
+ }
+ object D3{
+ a = "patient"
+ s = "Greeting"
+ [D] = [D1, D2]
+ }
+ object D5{
+ a = "doctor"
+ s = "StatusInquiry"
+ [D] = []
+ }
+ object D4{
+ a = "doctor"
+ s = "DoDiagnostics"
+ [D] = []
+ }
+ object D6{
+ a = "doctor"
+ s = "ShareIdentity"
+ [D] = []
+ }
+ D0 --* D1
+ D0 --* D2
+ D0 --* D3
+
+ D1 --* D4
+ D1 --* D5
+
+ D2 --* D6
+
+ D3 -* D1
+ D3 --* D2
+ note "This node is currenlty \n implicitly selected \n as response \n(because it came first \n in D0 as child)" as response
+ response .. D1
+ #+END_SRC
+ #+CAPTION: Object diagram of a dialogue tree, at the leaves deliberation stopped.
+ #+LABEL: fig:dialoguetree
+ #+ATTR_LATEX: :width 0.5\textwidth
+ #+RESULTS[cce59e4b2c2747dd0df130cf4a8adc4ab505afa3]: fig:dialoguetree
+ [[file:images/2017/uml/dialoguetree.svg]]
+
+We assumed that Jung meant that action generation was done by irrational
+functions, and selection by rationale.
+What we did was giving all these functions the same /type signature/ and then
+putting them into an order.
+They could modify the dialogue tree one by one.
+
+There are eight distinct functions, four of which do preference selection and
+the other four do action geneartion.
+
+To steer dialogue two major methods are used.
+Feeling functions use perlocutionary values as directions, and thinking
+functions goals.
+Goals are entirely encoded in the believes, however perlocutionary values are 
+described in connections too.
+
+
+* The experience
+I specifically asked my teacher for getting a
+'practical' assignment because I'm good at that.
+
+What is interesting about the chatbot is that it isn't a string to string
+mapping.
+
+* Acknowledgments
+Thanks to [[https://linevi.ch/en/org-pygments.html?utm_source=stackexchange&utm_medium=post&utm_campaign=org_pygments][this blog post]] for figuring out syntax highlighting in org and how to
+load custom lisp so I can play around with export at lisp level.
+
+bibliographystyle:unsrt
+bibliography:./files/2017/refs.bib

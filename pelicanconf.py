@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 import re
+import os
 
 AUTHOR = 'Jappie J. T. Klooster'
 SITENAME = 'Jappie'
@@ -69,7 +70,6 @@ PLUGINS = [
     'org_reader',
     'assets'
 ]
-ORG_READER_EMACS_LOCATION = "/usr/bin/emacs"
 
 def regex_replace(string, find, replace):
     """A non-optimal implementation of a regex filter"""
@@ -82,3 +82,7 @@ JINJA_FILTERS = {'regex_replace':regex_replace, 'add_abbr_tags':add_abbr_tags}
 # the best date format is obviously signifying each number with the right word
 # chinese happens to do that very concisely
 DEFAULT_DATE_FORMAT = '%d日 %m月 %Y年'
+
+ORG_READER_EMACS_LOCATION = "/usr/bin/emacs"
+ORG_READER_EMACS_SETTINGS = os.path.abspath('lisp/config.el')
+ORG_READER_BACKEND = "'pelican-html"
