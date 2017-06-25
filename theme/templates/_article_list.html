@@ -18,7 +18,7 @@
 
         <div class="entry-content">
             {{ lib.article_illustration(article) }}
-            {{ article.summary }}
+            {{ article.summary | add_abbr_tags}}
         </div>
 
         {% if article.content == article.summary %}

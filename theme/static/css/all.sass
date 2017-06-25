@@ -67,6 +67,7 @@ a:hover
 .entry-content a
     margin-right: -4px
     margin-left: -4px
+    display: inline
 
 a:active 
     text-decoration: underline
@@ -145,7 +146,10 @@ nav
 nav ul li:hover h3
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
 p
-    margin-bottom: 0.5em
+    text-align: justify
+    hyphens: auto
+    overflow-wrap: break-word
+    text-indent: 1.375em
     a
         padding-left: 4px
         padding-right: 4px
@@ -202,6 +206,7 @@ footer
 @for $i from 1 to 6
     .entry-content h#{$i}
         margin-bottom: 0
+        margin-top: 0.5em
     .outline-text-#{$i}
         margin-top: 0
     .section-number-#{$i}
@@ -225,6 +230,10 @@ h1
     color: $col-title
 article 
     margin-top: 5%
+    margin-left: auto
+    margin-right: auto
+    max-width: 45em
+
 article h1
     font-size: 1.5em
 article header h1
@@ -236,6 +245,9 @@ article h3
 article.single > footer
     border-top: 1px solid black
     font-size: 0.5vw
+    margin-top: 1em
+    margin-bottom: 3em
+
 .link 
     display: inline-block
     font-family: 'Fira Mono', monospace
@@ -250,77 +262,8 @@ td
     padding-top: 0.2em
     border-right: dotted
     border-bottom: grey solid thin
-@media (max-width: 1880px) 
-    nav ul li .description 
-        display: none
-    .bracket
-        vertical-align: baseline
-    
-@media (max-width: 1625px) 
-    nav ul li h2 
-        font-size: 0.9em
-    .bracket
-        font-size: 0.8em
-    nav
-        width: 50%
-        left: 24%
-@media (max-width: 1380px) 
 
-    nav
-        width: 38%
-        left: 30%
-    .bracket
-        display: none
-        nav ul li h2 
-        font-size: 0.8em
-@media (max-width: 1050px) 
-    #logo
-        display: none
-        /* now the logo is gone, put the title in center */
-    #title h1
-        float: none
-        text-align: center
-    #sitename
-        font-size: 2em
-        /* menu below title */
-    nav
-        position: static
-        width: 90%
-        border: none
-        margin-top: 1%
-        /* may as well make the font bigger if the logo is gone */
-        ul li h2 
-            font-size: 1em
+abbr
+    letter-spacing: 0.1em
 
-@media (max-width: 1650px) 
-    #category-title
-        margin-top: -25px
-        margin-bottom: 0px
-@media (max-width: 1250px) 
-    #category-title
-        margin-left: -18px
-@media (max-width: 850px) 
-    #category-title
-        margin-top: 0px
-@media (max-width: 750px) 
-    #title
-        border-bottom: none
-@media (max-width: 550px) 
-    #category-title
-        margin-left: 0px
-
-@media (max-width: 500px) 
-
-    #sitename
-        font-size: 1.5em
-    nav ul li h2 
-        font-size: 0.8em
-    article h1
-        font-size: 0.8em
-    article header h1
-        font-size: 1em
-@media (max-width: 400px) 
-    #sitename
-        font-size: 1.0em
-    nav ul li h2 
-        font-size: 0.5em
+@import '_resize'
