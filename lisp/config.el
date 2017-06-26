@@ -20,6 +20,7 @@
 (add-to-list 'load-path "lisp/")
 (require 'pelican-html)
 
+;;; Biblography stuff
 (setq org-ref-bibliography-entry-format
       '(("techreport" . "<li class='bib-list-techreport'><a name=\"\%k\"></a>%a, %t, <i>%j</i>, %p (%y). <a href=\"%U\">link</a>. <a href=\"http://dx.doi.org/%D\">doi</a>.</li>")
         ("article" . "<li class='bib-list-article'><a name=\"\%k\"></a>%a, %t, <i>%j</i>, <b>%v(%n)</b>, %p (%y). <a href=\"%U\">link</a>. <a href=\"http://dx.doi.org/%D\">doi</a>.</li>")

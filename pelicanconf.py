@@ -42,7 +42,7 @@ LINKS_EX = [(
 SOCIAL_EX = [(
     'email',
     'mailto:superpwnzormegaman@gmail.com',
-    "I\'M NOT A ROBOT",
+    "A general purpose problem",
     'email'
 ), (
     'github',
@@ -75,6 +75,7 @@ def regex_replace(string, find, replace):
     """A non-optimal implementation of a regex filter"""
     return re.sub(find, replace, string)
 def add_abbr_tags(string):
+    """Used in various places to put in abbr tags when there are more capital letters"""
     return regex_replace(string, "\ ([A-Z][A-Z0-9]{1,})\ ", " <abbr>\\1</abbr> ")
 
 JINJA_FILTERS = {'regex_replace':regex_replace, 'add_abbr_tags':add_abbr_tags}

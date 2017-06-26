@@ -1,4 +1,4 @@
-#+TITLE: Jungian personality in a chatbot
+#+TITLE: My thesis
 #+OPTIONS: toc:nil
 #+DATE: 2017-06-24
 #+CATEGORY: reflection
@@ -7,9 +7,18 @@
 
 I'm done. The master in AI is complete.
 I finished the thesis about adding `Jungian personality in a chatbot'.
-The source is available [[https://jappieklooster.nl/chatbot][here]], for anyone interested.
+The source is available [[https://jappieklooster.nl/chatbot][here]],for anyone interested. The full text is available
+as pdf. (since I wrote it in org I thought why just not export both).
 In this blogpost I will give a summery and some comments from a programmers'
 perspective that just don't fit in a thesis.
+For example, the implementation are not at all important, but I like talking
+about using Java in a functional programming style and the pains this
+caused.
+
+I start by discussing what the thesis was about in a summery
+(for those who don't want to read about 80 pages).
+Then I will give an overview of the experience (for those who didn't do a master, it maybe interesting),
+after that I'll talk about the implementation details (I just want to lay my egg).
 
 * What did I do?
 I build a very fancy chatbot called Gaia, which is *not* based upon ALICE.
@@ -121,7 +130,7 @@ Asside from the fact you shouldn't do [[http://wiki.c2.com/?XmlSucks][conditiona
  #+END_SRC
 
 #+NAME: fig:dep:filedconns
-#+BEGIN_SRC plantuml :cache yes :file images/2017/uml/dep:filedconns.svg :exports results
+#+BEGIN_SRC plantuml :cache yes :file ./images/2017/uml/dep:filedconns.svg :exports results
 cloud "symbols"{
   node ask_reason_here
   node broken_arms
@@ -147,8 +156,8 @@ cloud "symbols"{
 
 #+CAPTION: Symbol graph of connections grouped in file
 #+LABEL: fig:dep:filedconns
-#+RESULTS[55b601d37982293fae7a441adb67bda322ffccd4]: fig:dep:filedconns
-[[file:images/2017/uml/dep:filedconns.svg]]
+#+RESULTS[f53c318ac641d957262272b2ab3c026eb4d2243b]: fig:dep:filedconns
+[[file:./images/2017/uml/dep:filedconns.svg]]
 
 ** The personality stuff
 With the availablity of choice in place, I could do the personality stuff.
@@ -175,7 +184,7 @@ With this data structure we can plan ahead, passing the dialogue tree
 trough the functions either growing or sorting on preference.
 
  #+NAME: fig:dialoguetree
- #+BEGIN_SRC plantuml :cache yes :file images/2017/uml/dialoguetree.svg :exports results
+ #+BEGIN_SRC plantuml :cache yes :file ./images/2017/uml/dialoguetree.svg :exports results
  object D0{
  a = "doctor"
  s = "Greeting"
@@ -228,8 +237,8 @@ trough the functions either growing or sorting on preference.
  #+CAPTION: Object diagram of a dialogue tree, at the leaves deliberation stopped.
  #+LABEL: fig:dialoguetree
  #+ATTR_LATEX: :width 0.5\textwidth
- #+RESULTS[cce59e4b2c2747dd0df130cf4a8adc4ab505afa3]: fig:dialoguetree
- [[file:images/2017/uml/dialoguetree.svg]]
+ #+RESULTS[061af7eb51a8a1fbcfa4d39a7de0de6814832249]: fig:dialoguetree
+ [[file:./images/2017/uml/dialoguetree.svg]]
 
 We assumed that Jung meant that action generation was done by irrational
 functions, and selection by rationale.
@@ -257,6 +266,7 @@ mapping.
 * Acknowledgments
 Thanks to [[https://linevi.ch/en/org-pygments.html?utm_source=stackexchange&utm_medium=post&utm_campaign=org_pygments][this blog post]] for figuring out syntax highlighting in org and how to
 load custom lisp so I can play around with export at lisp level.
+Previously also [[./thesis-writing.tips.org]]
 
 bibliographystyle:unsrt
 bibliography:./files/2017/refs.bib
