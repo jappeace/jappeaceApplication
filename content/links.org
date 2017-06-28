@@ -1,0 +1,30 @@
+#+TITLE: Links
+#+DATE: 2017-07-28
+#+CATEGORY: reminder
+#+Tags: tips, remind, hastag
+
+A post I'll periodicly update of links I've found that are interesting funny
+whatever.
+
+I guess its a +hall+ wall of fame of sorts except it has zero prestige.
+(well maybe some day it will)
+ 
+* Beauty
+
+* Funny
+** Suicide linux
+ I remember a script that would execute =rm -rf /= if you'd type a command incorrectly,
+ just to teach you to be precise. 
+ It was [[https://qntm.org/suicide][sucide linux]].
+
+
+* Interesting
+** CGPGrey
+A youtuber, although I'm linking to his [[http://www.cgpgrey.com/][website]].
+He has some interesting videos (of which I know him),
+but his podcasts are quite good too.
+
+
+** Brady haron
+
+Also a youtber, [[http://www.bradyharan.com/][his website]].
