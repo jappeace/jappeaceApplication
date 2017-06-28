@@ -11,3 +11,12 @@ So this is powered by [[http://docs.getpelican.com/en/stable/][pelican]].
 + Replace images with svg variants (scales better)
 + Reddit comments into static site
 + Justify paragraphs like latex
+
+
+** Layout ideas
+
+*** Body based wrapping
+http://benhoyt.com/writings/pyast64/
+
+Also looks really clean.
+Although the word spacing is a weird choice
