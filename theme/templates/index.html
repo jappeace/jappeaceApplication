@@ -1,4 +1,5 @@
 {% extends '_article_list.html' %}
+{% import '_lib.html' as lib with context %}
 {% block title %}{{ SITENAME }}{% endblock %}
 
 {% block content %}
@@ -7,7 +8,7 @@
         <a href="{{ FEED_DOMAIN }}/{{ FEED_ATOM }}" rel="subscribe-atom" class="category-atom">
             <img src="/theme/images/feed-icon-28x28.png" alt="Atom feed" title="Atom feed"></a>
         {% endif %}
-        <img class="category-glyph" src="{{ SITEURL }}/theme/images/category-everything.png"> everything
+        {{ lib.category_glyph("everything", "Everything") }} Everything
     </h1>
 
     {{ super() }}
