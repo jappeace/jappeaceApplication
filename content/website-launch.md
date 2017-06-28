@@ -1,6 +1,6 @@
 Title: Website Launch
 Date: 2016-12-25 12:04
-Category: Meta
+Category: meta
 Tags: css, opinion, monetise, theme
 
 So this is the post where I'm launching this website.

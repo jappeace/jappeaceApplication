@@ -8,7 +8,6 @@ So this is powered by [[http://docs.getpelican.com/en/stable/][pelican]].
 
 * TODO website extensions
 
-+ Replace images with svg variants (scales better)
 + Reddit comments into static site
 + Justify paragraphs like latex
 

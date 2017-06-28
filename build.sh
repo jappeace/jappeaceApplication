@@ -5,6 +5,7 @@
 rm -R output/*
 
 pelican -D --ignore-cache
+
 ln -s ../images output/drafts/images
 firefox localhost:8000
 

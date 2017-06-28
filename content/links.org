@@ -1,15 +1,19 @@
-#+TITLE: Links
+#+TITLE: Endorsement
 #+DATE: 2017-07-28
-#+CATEGORY: reminder
+#+CATEGORY: meta
 #+Tags: tips, remind, hastag
 
-A post I'll periodicly update of links I've found that are interesting funny
-whatever.
-
+A post I'll periodicly update (no promises)
+of links I've found that are interesting, funny whatever.
 I guess its a +hall+ wall of fame of sorts except it has zero prestige.
-(well maybe some day it will)
+(well maybe some day it will).
+It also serves as a kindoff reminder of stuff I used to like.
  
 * Beauty
+** Wallpapers
+http://www.erikjohanssonphoto.com/
+I used several images as wallpapers from this guy, at the time I couldn't
+pay him so I guess I repay him by giving him some realestate on my website.
 
 * Funny
 ** Suicide linux
@@ -17,6 +21,7 @@ I guess its a +hall+ wall of fame of sorts except it has zero prestige.
  just to teach you to be precise. 
  It was [[https://qntm.org/suicide][sucide linux]].
 
+ I'm not running that.
 
 * Interesting
 ** CGPGrey
@@ -26,5 +31,4 @@ but his podcasts are quite good too.
 
 
 ** Brady haron
-
-Also a youtber, [[http://www.bradyharan.com/][his website]].
+Also a youtber, [[http://www.bradyharan.com/][his website]]. His numberphile channel is fun.

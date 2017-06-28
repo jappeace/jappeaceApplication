@@ -1,6 +1,6 @@
 #+Title: Comment fetcher
 #+Date: 2017-03-06 22:00
-#+Category: Reflection
+#+Category: reflection
 #+Tags: test, first, comments
 #+PROPERTY: subreddit netherlands
 #+PROPERTY: status draft

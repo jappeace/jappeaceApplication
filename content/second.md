@@ -1,6 +1,6 @@
 Title: Second post
 Date: 2016-12-24 19:51
-Category: Reflection
+Category: reflection
 Tags: test
 
 Yeah, I needed two actually to make sure everything looks good.

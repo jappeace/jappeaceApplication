@@ -3,7 +3,6 @@ $col-flash: #ffff54
 $col-flash2: #54ffff
 $col-flash3: #ff54ff
 $col-dark: #1818b2
-$col-light: #54ffff
 $col-contentbg: #d3d7cf
 $col-border: #474d4d 
 $col-text: #2e3436
@@ -224,9 +223,10 @@ article header
 #category-title
     font-size: 4em
     font-size: 4vw
-    margin-left: -37px
     margin-top: -45px
     margin-bottom: 25px
+    \:first-letter
+        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
 h1
     font-size: 2em
     color: $col-title

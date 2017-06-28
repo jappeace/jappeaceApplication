@@ -1,6 +1,6 @@
 Title: Deployment and todo's
 Date: 2016-12-27 12:00
-Category: Meta
+Category: meta
 Tags: css, opinion, todo, administration
 
 
