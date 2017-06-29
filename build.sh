@@ -4,8 +4,7 @@
 # Deleting everything prevents that
 rm -R output/*
 
-pelican -D --ignore-cache
-
-ln -s ../images output/drafts/images
+pelican -D --ignore-cache && \
+ln -s ../images output/drafts/images && \
 firefox localhost:8000
 
