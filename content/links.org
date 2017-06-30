@@ -1,5 +1,5 @@
 #+TITLE: Endorsement
-#+DATE: 2017-07-28
+#+DATE: 2017-06-28
 #+CATEGORY: meta
 #+Tags: tips, remind, hastag
 
