@@ -4,20 +4,20 @@
 #+Tags: thesis, tips, technique 
 #+Options: toc:nil
 
-So I recently made a lot of changes to this website,
+I recently made a lot of changes to this website,
 they aren't big changes but the devil is in the details.
-I made these mostly in support of writing about [[https://jappieklooster.nl/thesis][my thesis]] as a [[./my-thesis.org][blog post]],
-(for example the SVG stuff, code highlighting and citation formatting).
-I also moved to SVG images because I recently fell in love with Inkscape,
+I made these mostly in support of writing about [[https://jappieklooster.nl/thesis][my thesis]] as a [[./my-thesis.org][blog post]].
+I for example moved to SVG images because I recently fell in love with Inkscape,
 however I wanted to ensure that compression was enabled for these because
-XML is so verbose. Which took me on a small NGINX adventure.
+XML is so verbose.
+Which took me on a small NGINX adventure.
+Then I did various styling changes in light of my job hunt.
+I still think this theme is correct but I made it more 'tight'.
+These were just tweaking with CSS, except for the desire to typeset
+like latex, which I'll discuss in the end.
 
 * Org export
-I wanted to have numbers in the org references rather than citations names,
-when writing about my thesis.
-[[http://kitchingroup.cheme.cmu.edu/blog/2015/12/03/Exporting-numbered-citations-in-html-with-unsorted-numbered-bibliography/][This article]] was invaluable to help with that.
-
-I also wanted to have source code highlighting with [[http://pygments.org/][Pygments]].
+I wanted to have source code highlighting with [[http://pygments.org/][Pygments]].
 Org mode export didn't do any coloring for me, however I came upon
 [[https://emacs.stackexchange.com/questions/32700/styling-source-code-blocks-with-pygments-css-in-org-mode-html-export-pelican][this question]]. which sort of answered it for me, except for telling how to
 load the lisp files which I figured out by studying the GitHub.
@@ -25,6 +25,15 @@ Then I modified the answer to include that so others don't have magically know
 that.
 There were standard style sheets for syntax highlighting available for pygments,
 I chose my favorite: [[https://github.com/richleland/pygments-css/blob/master/monokai.css][monokai]].
+
+In the org references I wanted to have numbered citations rather than names.
+[[http://kitchingroup.cheme.cmu.edu/blog/2015/12/03/Exporting-numbered-citations-in-html-with-unsorted-numbered-bibliography/][This article]] was invaluable to help with that.
+The issue I had with that code is that I called it
+=org-ref-unsrt-html-processor=, but I was using a custom variant
+called =org-ref-unsrt-pelican-html-processor=, because of the Pygments extension.
+Renaming that correctly made it work and cost me about 4 hours of my life.
+So you can just dump that code in you =config.el= file, but be aware of giving
+it the right export name.
 
 The final thing I did was making SVG files export to =img= tags rather 
 than =object= tags, because =object= tags just work very poorly.
@@ -112,7 +121,7 @@ I recommend doing the same if you manage your own CSS for your website.
 However there were two important sections, the one that describes [[http://webtypography.net/2.1.3][ragged]],
 and the one about [[http://webtypography.net/2.4.1][hypenation]].
 They basically recommend *against* trying to emulate latex.
-But me, being the arrogant little bastard I am was like "This is my blog, don't 
+But me, being the arrogant little bastard I am, was like "This is my blog, don't 
 tell me what to do" and started experimenting.
 The result of which you can see in source block [[src:sasstypeset]].
 
@@ -122,19 +131,12 @@ The result of which you can see in source block [[src:sasstypeset]].
 p
     text-align: justify
     hyphens: auto
-    overflow-wrap: break-word
     line-height: 1.3
-    a
-        padding-left: 4px
-        padding-right: 4px
-        color: $col-link
     \+p
         text-indent: 1.375em
 
 // display inline otherwise hypenation doesn't work (normaly inline-block)
 .entry-content a
-    margin-right: -4px
-    margin-left: -4px
     display: inline
 #+END_SRC
 
@@ -154,3 +156,4 @@ personal preference.
 There are various other techniques, for which I refer to the [[http://webtypography.net/2.3.2][expert website]].
 
 #  LocalWords:  config PDF's
+
