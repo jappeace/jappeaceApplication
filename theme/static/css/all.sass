@@ -11,9 +11,12 @@ $col-title: #729fcf
 $col-hover: white
 
 @import url('https://fonts.googleapis.com/css?family=Dancing+Script|Fira+Mono|Roboto')
-*
+
+.no-spacing
     margin: 0
     padding: 0
+*
+    @extend .no-spacing
 body
     background: $col-dark
     text-align: center
@@ -63,6 +66,7 @@ a:hover
     background: $col-dark
 
 
+// display inline otherwise hypenation doesn't work
 .entry-content a
     margin-right: -4px
     margin-left: -4px
@@ -110,6 +114,23 @@ footer.window
 
 #recent_posts
     list-style: none
+
+li
+    list-style-position: outside
+    padding-left: 1em
+    margin-left: 1em
+ol
+    margin: 1em
+    ol
+        @extend .no-spacing
+        margin-left: 1em
+
+ul
+    @extend ol
+    ul
+        @extend .no-spacing
+        margin-left: 1em
+
 nav
     /* border: 1px solid $col-border */
     width: 60% /* makes the menu fit into the center of the aside somehow*/
@@ -119,11 +140,13 @@ nav
     left: 19%
     ul
         @extend #recent_posts
+        @extend .no-spacing
         // spread out evenly
         text-align: justify
         text-align-last: justify
         li
             @extend #main
+            @extend .no-spacing
             overflow: hidden
             text-align: center
             display: inline
@@ -194,6 +217,11 @@ ul.horizontal li
 
 pre
     font-family: 'Fira Mono', monospace
+    white-space: pre-wrap       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap  /* Mozilla, since 1999 */
+    white-space: -pre-wrap      /* Opera 4-6 */
+    white-space: -o-pre-wrap    /* Opera 7 */
+    word-wrap: break-word       /* Internet Explorer 5.5+ */
 
 .category-glyph
     height: 1em
@@ -255,6 +283,13 @@ article.single > footer
     font-family: 'Fira Mono', monospace
     text-align: center
     text-align-last: center
+
+table 
+    margin: 0.5em auto
+caption
+    caption-side: bottom
+    // If I ever figure aut how to make it center below a table
+    // white-space: nowrap
 
 /* make tables less cramped */
 th, td
