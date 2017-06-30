@@ -21,9 +21,11 @@
 (require 'org-element)
 (require 'org-ref)
 
+(setq org-html-table-caption-above nil)
+
 (org-export-define-derived-backend 'pelican-html 'html
   :translate-alist '((src-block .  pelican/pygments-org-html-code)
-                     (example-block . pelican/pygments-org-html-code)
+                    (example-block . pelican/pygments-org-html-code)
                      ))
 
 (defvar pygments-path "pygmentize")
@@ -66,6 +68,5 @@ See http://pygments.org/ for details"
 				  (org-trim (org-export-data caption info))))))
       )
 	)
-
 
 (provide 'pelican-html)
