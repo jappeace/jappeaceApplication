@@ -1,0 +1,156 @@
+#+TITLE: Website changes
+#+DATE: 2017-06-30
+#+CATEGORY: meta
+#+Tags: thesis, tips, technique 
+#+Options: toc:nil
+
+So I recently made a lot of changes to this website,
+they aren't big changes but the devil is in the details.
+I made these mostly in support of writing about [[https://jappieklooster.nl/thesis][my thesis]] as a [[./my-thesis.org][blog post]],
+(for example the SVG stuff, code highlighting and citation formatting).
+I also moved to SVG images because I recently fell in love with Inkscape,
+however I wanted to ensure that compression was enabled for these because
+XML is so verbose. Which took me on a small NGINX adventure.
+
+* Org export
+I wanted to have numbers in the org references rather than citations names,
+when writing about my thesis.
+[[http://kitchingroup.cheme.cmu.edu/blog/2015/12/03/Exporting-numbered-citations-in-html-with-unsorted-numbered-bibliography/][This article]] was invaluable to help with that.
+
+I also wanted to have source code highlighting with [[http://pygments.org/][Pygments]].
+Org mode export didn't do any coloring for me, however I came upon
+[[https://emacs.stackexchange.com/questions/32700/styling-source-code-blocks-with-pygments-css-in-org-mode-html-export-pelican][this question]]. which sort of answered it for me, except for telling how to
+load the lisp files which I figured out by studying the GitHub.
+Then I modified the answer to include that so others don't have magically know
+that.
+There were standard style sheets for syntax highlighting available for pygments,
+I chose my favorite: [[https://github.com/richleland/pygments-css/blob/master/monokai.css][monokai]].
+
+The final thing I did was making SVG files export to =img= tags rather 
+than =object= tags, because =object= tags just work very poorly.
+(Once I published it I couldn't get it to work at all).
+What I did was overwriting the image formatting function in elisp
+as can be seen in source block [[elisp:fixsvg]].
+The only thing I did was remove the check upon SVG files, instead
+it'll use the default path which is using an =img= tag.
+I placed this after the =ox-html= require so it got overwritten by all following
+code (including the deriving stuff.. apparently).
+
+#+NAME: elisp:fixsvg
+#+CAPTION: Elisp image override
+#+BEGIN_SRC elisp
+(require 'ox-html)
+(defun org-html--format-image (source attributes info)
+  "Fix org's implementation, no check for svg files (object is deprecated at 
+    this point and not trusted by most browsers)"
+    (org-html-close-tag
+     "img"
+     (org-html--make-attribute-string
+      (org-combine-plists
+       (list :src source
+             :alt (if (string-match-p "^ltxpng/" source)
+                      (org-html-encode-plain-text
+                       (org-find-text-property-in-string 'org-latex-src source))
+                    (file-name-nondirectory source)))
+       attributes))
+     info))
+#+END_SRC
+
+I'm still very happy to work in org mode, in fact the evaluation of source
+blocks makes it a great combination with plant UML, which I then can
+export to SVG images.
+This makes it *much* easier to describe ideas (being a visual thinker),
+and allows version control upon UML.
+
+* NGINX
+I enabled gzip compression for a bunch of different file extensions,
+(note this is handled by your web server, so its a practically free speedup for
+your website).
+but I know for a fact the SVG images profited a lot form that.
+[[https://www.digitalocean.com/community/tutorials/how-to-add-the-gzip-module-to-nginx-on-ubuntu-14-04][This article]] explains how to do it for NGINX.
+
+I also [[https://tools.pingdom.com/][tested]] the speed and it told me to enable caching of the SVG files,
+this had me confused for a little while but it meant you should tell the browser
+clients that the resource will stay the same for a long time (reducing load on
+your server /and/ since networking is slow giving a speedup).
+[[https://serverfault.com/questions/23157/setting-expires-headers-for-static-content-served-from-nginx][This serverfault]] explains it for NGINX,
+I had another post but couldn't find it back,
+that said to put it on a year however (365d).
+Since I'm not planning to change anything except the PDF's my NGINX config
+now looks like source block [[nginx:caching]].
+
+#+NAME: nginx:caching
+#+CAPTION: Cache NGINX rules
+#+BEGIN_SRC nginx
+# browser caching 
+location ~*  \.(jpg|jpeg|png|gif|ico|css|js|svg)$ { 
+        expires 365d; 
+        add_header Pragma public;
+        add_header Cache-Control "public";
+} 
+
+# pdf also cache, shorter because we want to update our resume frequently 
+location ~*  \.(pdf)$ { 
+        expires 30d; 
+        add_header Pragma public;
+        add_header Cache-Control "public";
+}  
+#+END_SRC
+
+* Typeset like latex 
+If you've ever worked with latex files you may have noticed how the text is 
+aligned.
+Normally (MS Word for example) this is in ragged mode,
+where one side is a straight line down and the other side is 'ragged'.
+Latex type-sets with full justification but doesn't varied spacing between the
+words. 
+I wanted that on this website. Btw, I'm fully aware that only a select few
+people will even notice this, the important point is that *I* will notice this.
+
+I basically went trough [[http://webtypography.net/toc/][this entire site]],
+I recommend doing the same if you manage your own CSS for your website.
+However there were two important sections, the one that describes [[http://webtypography.net/2.1.3][ragged]],
+and the one about [[http://webtypography.net/2.4.1][hypenation]].
+They basically recommend *against* trying to emulate latex.
+But me, being the arrogant little bastard I am was like "This is my blog, don't 
+tell me what to do" and started experimenting.
+The result of which you can see in source block [[src:sasstypeset]].
+
+#+NAME: src:sasstypeset
+#+CAPTION: Sass of typeset experimentation
+#+BEGIN_SRC sass
+p
+    text-align: justify
+    hyphens: auto
+    overflow-wrap: break-word
+    line-height: 1.3
+    a
+        padding-left: 4px
+        padding-right: 4px
+        color: $col-link
+    \+p
+        text-indent: 1.375em
+
+// display inline otherwise hypenation doesn't work (normaly inline-block)
+.entry-content a
+    margin-right: -4px
+    margin-left: -4px
+    display: inline
+#+END_SRC
+
+The key to having proper justification is =text-align: justify=
+and =hypens: auto=, do note that for auto hyphens you need to set your website
+language, they actually have made dictionaries per language, of where to place
+hyphens.
+Another issue that I had was that certain lines would have massive spacing in the
+words, after staring at that for several hours I noticed this only happened before
+inline links. I put those on display inline-block, which apparently means:
+no line breaks.
+Once I put that on display inline it looked practically perfect.
+
+There is some other stuff in that sass, such as doing text indent for succeeding
+paragraphs (rather than margins), which I think looks the 'nicest', but that's just
+personal preference.
+There are various other techniques, for which I refer to the [[http://webtypography.net/2.3.2][expert website]].
+
+#  LocalWords:  config PDF's
