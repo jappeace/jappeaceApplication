@@ -66,7 +66,6 @@ THEME = 'theme'
 
 PLUGIN_PATHS = ["./pelican-plugins"]
 PLUGINS = [
-    'render_math',
     'org_reader',
     'assets'
 ]
