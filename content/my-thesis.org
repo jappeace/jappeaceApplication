@@ -7,9 +7,9 @@
 
 I'm done. The master in AI is complete.
 I finished the thesis about adding `Jungian personality in a chatbot'.
-The source is available [[https://jappieklooster.nl/chatbot][here]],for anyone interested. The full text is available
-as pdf. (since I wrote it in org I thought why just not export both).
-In this blogpost I will give a summery and some comments from a programmers'
+The source is available [[https://jappieklooster.nl/chatbot][here]], for anyone interested.
+The full text is available [[https://jappieklooster.nl/thesis][here]].
+In this blog post I will give a summery and some comments from a programmers'
 perspective that just don't fit in a thesis.
 For example, the implementation are not at all important, but I like talking
 about using Java in a functional programming style and the pains this
@@ -22,50 +22,100 @@ after that I'll talk about the implementation details (I just want to lay my egg
 
 * What did I do?
 I build a very fancy chatbot called Gaia, which is *not* based upon ALICE.
-The core is a buisness rule engine called Drools.
+The core is a business rule engine called Drools.
 Once the scenario described by YAML files are read, everything chatbot related
 happens in Drools.
 This means you can make it as smart as you want,
 for example you can make a rule that detects when a user is starting to repeat
 himself (and deal with that),
-or use timers that are native to drools to create a bot that acts impetiantly.
-
+or use timers that are native to drools to create a bot that acts impatiently.
 Pattern matching also happens inside drools,
 which means your not stuck to the regex system I provided.
 Unlike the ALICE chatbot where you *have* to use the ALICE patterns
-(which are less powerfull than regexes).
+(which are less power full than regular expressions).
 
-That was the stuff I made to just to get started with personality.
+That was made to just to get started with personality.
 The issue with the ALICE chatbot was that it already predefined a response 
 before any deliberation could happen.
-What I did was simply seperating the `figure out what user said' step from
+What I did was simply separating the `figure out what user said' step from
 the `this needs to happen next' steps.
-
-To make this seperation more clear lets look at the syntax of both systems.
+To make this separation more clear lets look at the syntax of both systems.
 AIML, which is the core of the ALICE chatbot looks like source block [[code:aiml]].
+A diagram representation of this block can be seen in figure
+[[fig:dep:aimlcats]].
+
 #+CAPTION: AIML syntax for a reply
 #+NAME: code:aiml
-#+BEGIN_SRC nxml
+#+BEGIN_SRC xml
 <aiml>
-<category>
-    <pattern>
-        How are you
-    </pattern>
-    <template>
-        Not doing too well today.
-    </template>
-</category>
+    <categroy>
+        <pattern>
+            Hello
+        </pattern>
+        <template>
+            Hi
+        </template>
+    </categroy>
+    <category>
+        <pattern>
+            How are you
+        </pattern>
+        <template>
+            Not doing too well today.
+        </template>
+    </category>
+    <category>
+        <pattern>
+            How * you
+        </pattern>
+        <template>
+            <srai>How are you</srai>
+        </template>
+    </category>
 </aiml>
 #+END_SRC
-A pattern `how are you', gets replied to with `not doing wel today'.
-The Gaia YAML representation has this spread over several files however,
-as can be seen in source blocks [[code:yaml:how]], [[code:yaml:not]]
-and [[code:yaml:connections]].
+
+#+NAME: fig:dep:aimlcats
+#+BEGIN_SRC plantuml :cache yes :file ./images/2017/uml/dep:aimlcats.svg :exports results
+frame "user says"{
+  usecase "How are you" as how
+  usecase "How * you" as howstar
+  usecase Hello
+}
+
+frame "bot replies"{
+  storage "Not doing well today." as notwell
+  storage Hi
+}
+
+how -->> notwell
+howstar -->> notwell
+Hello -->> Hi
+#+END_SRC
+
+#+CAPTION: Deployment diagram of AIML example
+#+LABEL: fig:dep:aimlcats
+#+RESULTS[24d509ce57bb1a598a84c5ff10e9cfe2847f91e3]: fig:dep:aimlcats
+[[file:./images/2017/uml/dep:aimlcats.svg]]
+
+Now let's look at the new representation I came up with
+in source blocks [[code:yaml:greeting]], [[code:yaml:how]], [[code:yaml:not]] and
+[[code:yaml:connections]].
+Of which I made a diagram in figure [[fig:dep:aimlsyms]].
+
+#+CAPTION: Gaia yaml =greeting.yml= file
+#+NAME: code:yaml:greeting
+#+BEGIN_SRC yaml
+literals:
+  - Hi
+  - Hello
+#+END_SRC
 #+CAPTION: Gaia yaml =status_inquery.yml= file
+
 #+NAME: code:yaml:how
 #+BEGIN_SRC yaml
 literals:
-  - How are you
+  - How are you?
 patterns:
   - How * you
   - How are you *
@@ -82,23 +132,79 @@ regexes:
 #+NAME: code:yaml:connections
 #+BEGIN_SRC yaml
 from:
+ - greeting
+to:
+ - symbol: greeting
+ - symbol: status_inquery
+---
+from:
  - status_inquery
 to:
  - symbol: reply_bad
+ - restricted_to: patient
 #+END_SRC
-So at first this representation just looks more verbose,
-however we seperated the concerns of legal connections, from pattern matching.
-Modelling the scenario now almost enterily happens in the _connections file,
+
+#+NAME: fig:dep:aimlsyms
+#+BEGIN_SRC plantuml :cache yes :file ./images/2017/uml/dep:aimlsyms.svg :exports results
+frame "user sais"{
+  usecase "How are you?" as howq
+  usecase "How are you *" as how
+  usecase "How * you" as howstar
+  usecase Hello
+  usecase "Not doing too well today." as badlit
+  usecase "doing (*.) badly" as badreg
+}
+
+cloud "symbols"{
+  node Greeting [
+    Greeting
+    ----
+    Hello
+  ]
+  node StatusInquiry[
+    StatusInquiry
+    ----
+    How are you?
+  ]
+  node ReplyBad[
+    ReplyBad
+    ----
+    Not doing too well today.
+  ]
+}
+
+how -->> StatusInquiry
+howq -->> StatusInquiry
+howstar -->> StatusInquiry
+Hello -->> Greeting
+badlit -->> ReplyBad
+badreg -->> ReplyBad
+
+Greeting .> Greeting
+Greeting .> StatusInquiry
+StatusInquiry .> ReplyBad : a = patient
+#+END_SRC
+
+#+CAPTION: Patterns to symbols
+#+LABEL: fig:dep:aimlsyms
+#+RESULTS[fd57b0e958cc3972c013193c0d7c044bcd127abd]: fig:dep:aimlsyms
+[[file:./images/2017/uml/dep:aimlsyms.svg]]
+
+The new representation looks quite verbose too,
+but it does much more modelling than the original.
+Additionally, we separated the concerns of legal connections,
+from pattern matching.
+Modelling the scenario now almost entirely happens in the _connections file,
 and while doing that you don't have to deal with pattern matching.
-Using the file names as identifies gaurantees uniqueness.
+Using the file names as identifies guarantees uniqueness.
 
 We can model complicated examples such as in source block [[code:yaml:complex]].
 This can be seen as a diagram in figure [[fig:dep:filedconns]].
 Trying to put such an example in AIML is basically impossible.
-First of all the concept of actors doesn't exist, secondly cattegories can't
+First of all the concept of actors doesn't exist, secondly categories can't
 model the availability of choice.
 There are [[http://www.alicebot.org/documentation/aiml-reference.html#if][if]] statements, but that's making the decision in place.
-Asside from the fact you shouldn't do [[http://wiki.c2.com/?XmlSucks][conditionals in xml]] structurally.
+Aside from the fact you shouldn't do [[http://wiki.c2.com/?XmlSucks][conditionals in xml]] structurally.
 
 #+CAPTION: Connections grouped into a file
 #+NAME: code:yaml:complex
@@ -160,7 +266,7 @@ cloud "symbols"{
 [[file:./images/2017/uml/dep:filedconns.svg]]
 
 ** The personality stuff
-With the availablity of choice in place, I could do the personality stuff.
+With the availability of choice in place, I could do the personality stuff.
 Jung's theory is used for personality to decide what the algorithm should use,
 this is also the core theory of for example MBTI.
 Jung said that each function has an attitude, either introversion or
@@ -176,12 +282,27 @@ What we wanted is that these functions would plan ahead in cooperation with
 each other.
 This would be personality as a process rather than value based cite:campos_mabs2009,
 this was a requirement by my teacher.
-To do this we introduced the dialogue tree datastructure:
+To do this we introduced the dialogue tree data structure:
  \[ u = (a,s) \]
  \[ D = (u, [D])\]
-Where $u$ is an utterance, $a$ an actor, $s$ a symbol and $D$ the dialogue tree.
-With this data structure we can plan ahead, passing the dialogue tree
-trough the functions either growing or sorting on preference.
+
+ #+NAME: tab:dialoguetree
+#+CAPTION: Description of symbols
+| /   | <>            |
+| $u$ | Utterance     |
+| $a$ | Actor         |
+| $s$ | Symbol        |
+| $D$ | Dialogue Tree |
+
+Where $u$ is an utterance, $a$ an actor, $s$ a symbol and $D$ the dialogue tree
+(see table [[tab:dialoguetree]]).
+With this data structure we can plan ahead,
+each node is an utterance made that can have multiple possible responses
+(see figure [[fig:dialoguetree]]).
+What we then pass this dialogue tree trough the functions either growing or
+sorting on preference.
+Each function in the personality can do modification, but the order of execution
+determines their `strength'.
 
  #+NAME: fig:dialoguetree
  #+BEGIN_SRC plantuml :cache yes :file ./images/2017/uml/dialoguetree.svg :exports results
@@ -241,32 +362,394 @@ trough the functions either growing or sorting on preference.
  [[file:./images/2017/uml/dialoguetree.svg]]
 
 We assumed that Jung meant that action generation was done by irrational
-functions, and selection by rationale.
+functions, and preference ordering by rationale.
 What we did was giving all these functions the same /type signature/ and then
 putting them into an order.
-They could modify the dialogue tree one by one.
+This looked with the Haskell notation like the following:
+ \[ \left (\overset{next}{B \to D \to (B, D)}\right ) \to B \to D \overset{f_a}{\to} (B, D) \]
+The /next/ argument allows us to encode a sequence of functions,
+however this was problematic because I was asked to make operation in between
+functions available to the drools rule engine cite:droolsdocs,vcimbora2015usability.
+We ended up with a hybrid approach where the functions were stored 
+in a list and drools parsed them, but they could also be composed.
+Actually if I could change anything of the thesis it would be this part,
+it's kind-off messy right now, but I simply didn't have any more time left to
+figure this out properly.
 
-There are eight distinct functions, four of which do preference selection and
-the other four do action geneartion.
+#+NAME: fig:jungjavaclass
+#+BEGIN_SRC plantuml :cache yes :file ./images/2017/uml/jungjavaclass.svg :exports results
+skinParam backgroundColor transparent
+interface JungFuncAccessor{
+  + getFunction() : Function<JungFuncArgs, JungFuncArgs>
+}
+interface NextFunction{
+  + get():Pair<JungFuncAccessor, NextFunction>
+}
+NextFunction ..> NextFunction
+NextFunction ..> JungFuncAccessor
 
+class UnitNextFunction{
+  - result:Pair<JungFuncAccessor, NextFunction>
+}
+UnitNextFunction --|> NextFunction
+class JungFuncArgs{
+  + believes:Believes
+  + tree:DialogueTree
+  + next:NextFunction
+  {static} + create(one:Believes,two:DialogueTree):JungFuncArgs
+  + applyNext() : JungFuncArgs
+  + insertNextFuncs(funcs:[JungFuncAccessor]):JungFuncArgs
+}
+JungFuncArgs --* NextFunction
+JungFuncArgs ..> UnitNextFunction
+enum JungianFunction{
+  - function : : Function<JungFuncArgs, JungFuncArgs>
+  + isRational : boolean
+}
+JungianFunction ..|> JungFuncAccessor
+JungianFunction ..> JungFuncArgs
+#+END_SRC
+#+CAPTION: Jung in Java
+#+LABEL: fig:jungjavaclass
+#+RESULTS[adb6835abc1c15fac65eed33d2ade0236d52c0e2]: fig:jungjavaclass
+[[file:./images/2017/uml/jungjavaclass.svg]]
+
+How this looked in java can be seen in figure [[fig:jungjavaclass]].
+The core is the enumeration of Jungian Functions, they all have the same 
+type signature with =JungFuncArgs= as argument and result.
+These arguments can be modified by the functions and they can use apply next
+to apply the next function in the sequence to the arguments.
+This is only part of the story, not telling about how drools rules deal with the
+functions in order, but they are simply functions with as input =JungFuncArgs=
+and as output. Which means they are [[https://en.wikipedia.org/wiki/Endomorphism][endomorphisms]].
+I was tempted to put that in the title, because it sounds impressive,
+but then I realized it's just a minor part of my thesis, and I think that part
+is messy.
+
+*** Steering
 To steer dialogue two major methods are used.
-Feeling functions use perlocutionary values as directions, and thinking
-functions goals.
-Goals are entirely encoded in the believes, however perlocutionary values are 
-described in connections too.
+Feeling functions use perlocutionary values as directions,
+which is based upon speech act theory cite:shoham2008multiagent_speechact_p241..245,
+and as an example can be seen in source block [[yaml:values]].
+The numbers used per perlocutionary value can differ per agent,
+their names can be attached to connections, see source block
+[[yaml:values:connections]].
+
+#+NAME: yaml:values
+#+CAPTION: Values in =believes.yml=
+#+BEGIN_SRC yaml
+values:
+  enthusiasm: 8
+  polite: 5
+#+END_SRC
+
+#+CAPTION: Value example connections =_connection.yaml=
+#+NAME: yaml:values:connections
+#+BEGIN_SRC yaml
+from:
+ - greeting
+to:
+ - symbol: greeting 
+   values:
+   - Polite
+ - symbol: status
+   restricted_to: patient
+   values:
+   - Polite
+   - Enthusiasm
+#+END_SRC
+
+Thinking functions go primarily towards goals and can be seen in source
+block [[yaml:goals]].
+What we do is marking that we want certain symbols to be uttered by 
+a particular actor.
+In the example the patient want the doctor to utter "Have some painkillers".
+Goals are entirely encoded in the believes.
+
+#+NAME: yaml:goals
+#+CAPTION: Goals in =believes.yml=
+#+BEGIN_SRC yaml
+goals:
+  - actor: doctor
+    scene: diagnoses
+    symbol: have_painkillers
+  - actor: patient
+    scene: information_gathering
+    symbol: back_pain
+#+END_SRC
+
+To encode the personality we simply specify which Jungian functions
+we want in what order, see source block [[yaml:personality]].
+In the thesis we specifically used MBTI cite:website.mbtitypedynamics
+as a guide line, but the PPSDQ  cite:kier1997new,king1999score
+and SL-TDI cite:arnau2000reliability can also be represented
+like this.
+Although some work needs to be done to add scalar values they require.
+
+#+NAME: yaml:personality
+#+CAPTION: Personality in =believes.yml=
+#+BEGIN_SRC yaml
+# ENFP
+personality: [Ne, Fi, Te, Si]
+#+END_SRC
+
+Finally we need to specify all actors, in case a connection didn't specify
+which actors are available, and we need to specify which actor the agent
+is.
+We need to do this because we model both sides of the conversation,
+so actors need to be specified explicitly,
+an example can be seen in source block [[yaml:actors]].
+
+#+NAME: yaml:actors
+#+CAPTION: Actors in =believes.yml=
+#+BEGIN_SRC yaml
+self: patient
+actors:
+  - patient
+  - doctor
+#+END_SRC
+
+With all of this in place the varied personalities can go over 
+different modeled paths.
+Which is sort of what my thesis was about I guess.
+We did not specified values (unless you count perlocutionary values and 
+goals), and the personality process will figure out what paths to take.
+
+* Crazy programming stuff
+Ok ok, so now we have some context we can go to some of the more interesting
+parts (to me at least).
+I wasn't allowed to go into the details of the programming techniques I
+applied,
+but boy did I do some interesting things.
+
+To bring you in the mood let's sketch the environment,
+I've been doing a lot of Scala, some Haskell and Rust before I started working
+on the thesis.
+The Salve game was written in Java,
+so guess what style I used for this typical Object Oriented programming language?
+Pure Functional!
+By this I mean that aside from local scope mutations,
+the entire structure was immutable.
+Take for example source block [[java:immutable]].
+We need to make the collections private because Java collections are mutable.
+There is no need for the =name= and =scene= attributes to become private 
+because they are already immutable, so they will never change.
+We made =hash_value= private, even though it's immutable, because code shouldn't
+depend on that.
+This is a core principal of the code base, make everything immutable
+even though Java doesn't really cooperate with that.
+
+#+NAME: java:immutable
+#+CAPTION: Immutable example
+#+BEGIN_SRC java
+@Immutable
+public class Symbol {
+	public final String name; // filename
+	public final Scene scene;
+
+	private final List<String> literals;
+	private final Set<TemplateAttribute> requiredTemplateVars;
+
+	private final int hash_value;
+    ...
+}
+#+END_SRC
+
+Ironically enough I undo this with the builder pattern in the unit tests.
+The issue is that immutability in Java is quite verbose to do, and I wanted
+a nice api to setup my the current dialogue on which I wanted to test
+the functions.
+
+I also wanted to have a good api for modeling the scenario from java code
+in the unit tests, and especially for this one I think I've succeeded
+(see figure [[java:testapi]]).
+We either connect up with any actor, or a restricted actor,
+however as you may see the result of these functions both go trough the 
+same method connect.
+We do this by using an =Either= type, which allows us to treat the same
+information kind off similarly for a while, and eventually on the right place
+we treat the cases separately.
+It's kind off a delayed if statement.
+We can see the expansion of the if statement in figure [[java:test:either]],
+this happens with help of the fold method,
+which receives a lambda per either path.
+Of course there are other ways to do this[fn::
+For example: let the any function also return the triplet but setting it to any
+actor],
+but at the time of writing,
+I thought this was a really neat construct, because it's precise and terse.
+I'm not sure if it's a good or bad practice, but I think it /looks/ interesting.
+
+#+NAME: java:testapi
+#+CAPTION: Immutable example
+#+BEGIN_SRC java
+public class MockBelievesFactory {
+    ...
+	public static final String hellos = "hellos";
+	public static final String whyhere = "whyhere";
+	public static final String maybeimsick = "maybeimsick";
+	public static final String ilikevistingyou = "likevisitingyou";
+
+	public static final String needmedicine= "needmedicine";
+	public static final String imthedoctor= "imthedoctor";
+	public final Believes createTestBelieves(){
+		connect(hellos,
+			any(whyhere, "Angry"),
+			any(hellos, "Happy"),
+			any(needmedicine, "Persuading", "Scary")
+		);
+		connect(whyhere,
+			restricted(needmedicine, actor_patient, "Enlightening"),
+			restricted(imthedoctor, actor_doctor, "Angry"),
+			restricted(maybeimsick, actor_patient, "Angry"),
+			restricted(ilikevistingyou, actor_patient, "Happy")
+		);
+        ...
+   }
+   ...
+
+}
+#+END_SRC
+
+
+#+NAME: java:test:either
+#+CAPTION: Immutable example
+#+BEGIN_SRC java
+public class MockBelievesFactory {
+   ...
+	@SafeVarargs
+	public final void connect(
+		String one,
+		Either<Pair<String, PerlocutionaryValueSet>, Triplet<String, Actor, PerlocutionaryValueSet>>...values
+	){
+		Set<Connection> connections = createConnections(values);
+		setconnect(one, connections);
+	}
+	@SafeVarargs
+	public final Set<Connection> createConnections(
+        Either<Pair<String, PerlocutionaryValueSet>, Triplet<String, Actor, PerlocutionaryValueSet>>...values
+    ){
+		return Arrays.asList(values).stream().map(tupple ->
+			tupple.fold(
+                pair ->
+                createConnection(pair.getValue0(), actor_any, pair.getValue1()),
+
+                tripple ->
+                createConnection(tripple.getValue0(), tripple.getValue1(), tripple.getValue2())
+            )
+		).collect(Collectors.toSet());
+	}
+}
+#+END_SRC
+
+** Dialogue tree.. madness
+In many ways this structure was the core of deliberation.
+The Jungian functions needed to make modifcations to this structure,
+but I wanted it to be immutable.
 
 
 * The experience
 I specifically asked my teacher for getting a
 'practical' assignment because I'm good at that.
+When he mentioned personality research I also opted into that, because I already
+knew a fair bit about MBTI.
+Finally, the personality as a process bit was all my teachers' suggestion,
+but I really liked that idea.
 
-What is interesting about the chatbot is that it isn't a string to string
-mapping.
+** Doing research
+When I started doing the thesis I was mostly on my own,
+my guiding teacher had left for Australia for 6 weeks,
+and I just started with what I think had to be done.
+I never had done before any research of this kind of scale so I just used
+common sense to decide what to do.
+However I made sure to keep my teacher up to date with weekly updates trough
+email.
 
-* Acknowledgments
-Thanks to [[https://linevi.ch/en/org-pygments.html?utm_source=stackexchange&utm_medium=post&utm_campaign=org_pygments][this blog post]] for figuring out syntax highlighting in org and how to
-load custom lisp so I can play around with export at lisp level.
-Previously also [[./thesis-writing.tips.org]]
+The researching part consisted of several parts. First of all, the personality
+research with which I started, this was just ploughing trough papers on my own.
+Then came analyzing the chatbot, this was quite fun because it was just reverse
+engineering some poorly written code, which is challenging but also rewarding
+(I always get the idea I learn to know the author better by studying his code).
+Finally I needed to develop a theory of Jung and Dialogue, this was done mostly
+with the Haskell notation and giving my own interpretations of the Jungian
+functions.
+Then I also developed a way of combining them.
+
+When my teacher came back I was mostly done with all of that.
+So he had a lot to catch-up with because I was writing my thesis while doing
+research.
+Even though I was thoroughly working for just six hours per day, he complemented
+me and said I had done a lot of work.
+I continued working just six hours per day.
+
+** Implementation
+Once I was finished writing what I wanted to do in a functional design I started
+with the implementation.
+I quickly decided to *not* use the ALICE bot.
+It was poorly written, with for example many global mutable variables,
+frantic use of public mutable attributes and all the things you shouldn't do.
+
+In the thesis I justify moving to the new system by saying that AIML 
+doesn't offer the capability of providing choice,
+which is a much better reason that what made me look for alternatives in the
+first place.
+The first strike AIML got was by just being based upon XML, most programmers
+will know [[http://wiki.c2.com/?XmlSucks][XML sucks]] (usually, there are good cases for XML).
+The reason I was pushed initially started looking for an alternative was because
+I didn't like the jury rigged combination of drools and AIML.
+
+What I did was a quick implementation of how I envisioned the chatbot that could
+co-exist beside XML.
+I showed this to my programming guiding teacher after about two weeks of hacking,
+and he recommended me to just dump the old implementation and go with whatever
+I was making.
+He also pushed me to use drools much more intensively rather than java,
+which resulted in some good changes such as the pattern matching code becoming a
+drools rule, and some changes I like less such as the personality order being in
+both a list and the next function.
+
+** Presentation
+I had way to much time to prepare for the preparation.
+Partly because one of the faculty members got a disease.
+But also because the primary guiding teacher was a very busy man and I had a
+long thesis.
+
+I think I practiced the entire thing about 10 times in total. 
+In the beginning I would often change the presentation after practicing 
+but the presentation would become more final after each run.
+Each time I would be over time by a margin, however on presentation day 
+itself I somehow managed to get exactly the right time.
+The difference probably is in stress level.
+
+I don't remember giving the presentation, I know I stood there, said words,
+but I have barely any memories from the event.
+This usually happens to me when giving presentations, luckily my father filmed
+the entire thing.
+I was a little disappointed with the grade, but not too much, the criticism
+that I didn't add much theory was fair.
+However I think I couldn't do this much better because I just don't know how to
+develop theoretic foundations.
+This is partly because of my software engineering background,
+whereas the second judge was mostly from a mathematical background.
+
+The questions I got were really quite though,
+firstly I was asked to describe precisely if a thinking function would be first
+in order, how would it still get to influence the result.
+The answer was that it just could inspect the result, because we have a two pass
+architecture, going deeper first.
+However because this is a very detailed question it took me a while to figure
+out what he meant by that.
+They also asked me about if the division between rational and irrational as
+action generation and sorting was a design decision, and yes it was.
+Then another question was about, can we extract the 'communicate!' game
+information from the GUI and encode it into the new game,
+what personality would the actor have in that game?
+I would say yes upon extraction (even automatic) but I didn't know what
+personality because I didn't study those dialogues (in fact I barely studied the
+communicate game).
+Finally a question was asked in which cases this would help doctors,
+I replied with the more emotional situations because it would be important to
+treat someone right under these cases.
 
 bibliographystyle:unsrt
 bibliography:./files/2017/refs.bib
