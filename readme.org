@@ -22,3 +22,6 @@ http://benhoyt.com/writings/pyast64/
 
 Also looks really clean.
 Although the word spacing is a weird choice
+
+** NGINX
+Fix cache controls /with/ presentation posibilities.
