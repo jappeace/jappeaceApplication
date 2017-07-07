@@ -16,8 +16,8 @@
 (setq org-ref-bibliography-entry-format
       '(("techreport" . "<li class='bib-list-techreport'><a name=\"\%k\"></a>%a, %t, <i>%j</i>, %p (%y).</li>")
         ("article" . "<li class='bib-list-article'><a name=\"\%k\"></a>%a, %t, <i>%j</i>, <b>%v(%n)</b>, %p (%y).<a href=\"%U\">link</a>. <a href=\"http://dx.doi.org/%D\">doi</a>.</li>")
-        ("phdthesis" . "<li class='bib-list-article'><a name=\"\%k\"></a>%a, %t, <i>%j</i>, <b>%v(%n)</b>, %p (%y).</li>")
-        ("misc" . "<li class='bib-list-article'><a name=\"\%k\"></a>%a, %t, <i>%j</i>, <b>%v(%n)</b>, %p (%y).</li>")
+        ("phdthesis" . "<li class='bib-list-article'><a name=\"\%k\"></a>%a, %t, %p (%y).</li>")
+        ("misc" . "<li class='bib-list-article'><a name=\"\%k\"></a>%a, %t, %p (%y).</li>")
         ("book" . "<li class='bib-list-book'><a name=\"\%k\"></a>%a, %t, %u (%y).</li>")))
 
 (defun org-ref-unsrt-latex-processor () nil)

@@ -3,7 +3,7 @@
 #+DATE: 2017-07-07
 #+CATEGORY: reflection
 #+Tags: thesis, presents, research, jung, chatbot
-
+cite:vcimbora2015usability
 I'm done. The master in AI is complete.
 I finished the thesis about adding `Jungian personality in a chatbot'.
 In this blog post I will give a summery and some comments from a programmers'
@@ -112,8 +112,8 @@ literals:
   - Hi
   - Hello
 #+END_SRC
-#+CAPTION: Gaia yaml =status_inquery.yml= file
 
+#+CAPTION: Gaia yaml =status_inquery.yml= file
 #+NAME: code:yaml:how
 #+BEGIN_SRC yaml
 literals:
@@ -122,6 +122,7 @@ patterns:
   - How * you
   - How are you *
 #+END_SRC
+
 #+CAPTION: Gaia yaml =reply_bad.yml= file
 #+NAME: code:yaml:not
 #+BEGIN_SRC yaml
@@ -130,6 +131,7 @@ literals:
 regexes:
   - doing (*.) badly
 #+END_SRC
+
 #+CAPTION: Gaia yaml =_connections.yml= file
 #+NAME: code:yaml:connections
 #+BEGIN_SRC yaml
@@ -431,7 +433,7 @@ is messy.
 *** Steering
 To steer dialogue two major methods are used.
 Feeling functions use perlocutionary values as directions,
-which is based upon speech act theory cite:shoham2008multiagent_speechact_p241..245,
+which is based upon speech act theory cite:shoham2008multiagent,
 and as an example can be seen in source block [[yaml:values]].
 The numbers used per perlocutionary value can differ per agent,
 their names can be attached to connections, see source block
@@ -583,7 +585,7 @@ I thought this was a really neat construct, because it's precise and terse.
 I'm not sure if it's a good or bad practice, but I think it /looks/ interesting.
 
 #+NAME: java:testapi
-#+CAPTION: Immutable example
+#+CAPTION: API usage of creating in memory scenario
 #+BEGIN_SRC java
 public class MockBelievesFactory {
 	...
@@ -615,7 +617,7 @@ public class MockBelievesFactory {
 
 
 #+NAME: java:test:either
-#+CAPTION: Immutable example
+#+CAPTION: API implementation with either types
 #+BEGIN_SRC java
 public class MockBelievesFactory {
 	@SafeVarargs
@@ -629,6 +631,7 @@ public class MockBelievesFactory {
 		Set<Connection> connections = createConnections(values);
 		setconnect(one, connections);
 	}
+
 	@SafeVarargs
 	public final Set<Connection> createConnections(
 		Either<
@@ -667,7 +670,7 @@ The =copyWithAboveLeftMostLeaf= and =copyWithStartAtUntilLeaf= are the main
 clients of this function, however they just fill in the continuations.
 
 #+NAME: java:dialoguetree
-#+CAPTION: Part of the =DialogueTree= class
+#+CAPTION: Tree recursion with continuations
 #+BEGIN_SRC java
 @Immutable
 public class DialogueTree {
@@ -718,6 +721,7 @@ public class DialogueTree {
 		// however if there is no prefered we are at leaf level.
 		return mapPreffered(whenNot, whenAt);
 	}
+
 	/** go down until height, then keep applying function until leaf */
 	public DialogueTree copyWithStartAtUntilLeaf(
 		int height, 
@@ -739,6 +743,7 @@ public class DialogueTree {
 			}
 		);
 	}
+
 	/** A more generalized form that can opperate on any height */
 	public DialogueTree copyWithAboveLeftMostLeaf(
 		int height, 
@@ -806,7 +811,7 @@ The final step in both cases is constructing the hash map, this is used in a
 various places, therefore it was moved to the functions class.
 
 #+NAME: java:patternprocessing
-#+CAPTION: Pattern processing
+#+CAPTION: Constructing pattern databases, core functions
 #+BEGIN_SRC java
 public class PatternProcessing {
 	public static PatternDatabase createSceneContained(
@@ -820,6 +825,7 @@ public class PatternProcessing {
 			)
 		);
 	}
+
 	public static PatternDatabase createSceneNextTo(
 		Map<Symbol, Set<Pattern>> from, 
 		ConnectionDatabase db
@@ -844,6 +850,7 @@ public class PatternProcessing {
 			)
 		);
 	}
+
 	public static Stream<PatternSymbol> flatten(Map<Symbol, Set<Pattern>> from){
 		return from.entrySet()
 			.stream()
@@ -855,7 +862,6 @@ public class PatternProcessing {
 	}
 }
 #+END_SRC
-
 
 I really wanted to show the dual idea somewhere because I know this is 
 a hard problem to solve,
@@ -876,7 +882,7 @@ and then replace the supplier hash with a new lambda that just returns the resul
 Note that this will never change because the model object is immutable.
 
 #+NAME: java:lazyhash
-#+CAPTION: Lazy hashing example
+#+CAPTION: The lambda replaces itself with the result
 #+BEGIN_SRC java
 @Immutable
 public class Utterance {
@@ -904,6 +910,7 @@ public class Utterance {
 			return hash_code;
 		};
 	}
+
 	@Override
 	public int hashCode(){
 		return lazyHashValue.get();
@@ -1034,7 +1041,6 @@ I just want to get out what is on my mind, [[https://en.wikipedia.org/wiki/Relea
 than peer reviewed based academic releases.
 I choose the bazaar cite:raymond1999cathedral.
 
-* End :no-export:
 bibliographystyle:unsrt
 bibliography:./files/2017/refs.bib
 
