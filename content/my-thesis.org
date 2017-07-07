@@ -1,24 +1,26 @@
 #+TITLE: My thesis
 #+OPTIONS: toc:nil
-#+DATE: 2017-06-24
+#+DATE: 2017-07-07
 #+CATEGORY: reflection
 #+Tags: thesis, presents, research, jung, chatbot
-#+PROPERTY: status draft
 
 I'm done. The master in AI is complete.
 I finished the thesis about adding `Jungian personality in a chatbot'.
-The source is available [[https://jappieklooster.nl/chatbot][here]], for anyone interested.
-The full text is available [[https://jappieklooster.nl/thesis][here]].
 In this blog post I will give a summery and some comments from a programmers'
 perspective that just don't fit in a thesis.
 For example, the implementation are not at all important, but I like talking
 about using Java in a functional programming style and the pains this
 caused.
 
+The source is available [[https://jappieklooster.nl/chatbot][here]], for anyone interested.
+The full text is available [[https://jappieklooster.nl/thesis][here]] (and [[https://github.com/jappeace/methods-homework/blob/master/thesis/thesis.org][thesis source]]).
+The presentation I did can be found [[https://jappieklooster.nl/presents/thesis][here]] (and it's [[https://github.com/jappeace/methods-homework/blob/master/thesis/presentation.org][source]]).
+
 I start by discussing what the thesis was about in a summery
 (for those who don't want to read about 80 pages).
-Then I will give an overview of the experience (for those who didn't do a master, it maybe interesting),
 after that I'll talk about the implementation details (I just want to lay my egg).
+Finally I will give an overview of the experience, including the defence
+(for those who didn't do a master, it maybe interesting),
 
 * What did I do?
 I build a very fancy chatbot called Gaia, which is *not* based upon ALICE.
@@ -234,7 +236,7 @@ Aside from the fact you shouldn't do [[http://wiki.c2.com/?XmlSucks][conditional
      symbol: why_need
    - symbol: status_inquery
  #+END_SRC
-
+ 
 #+NAME: fig:dep:filedconns
 #+BEGIN_SRC plantuml :cache yes :file ./images/2017/uml/dep:filedconns.svg :exports results
 cloud "symbols"{
@@ -584,7 +586,7 @@ I'm not sure if it's a good or bad practice, but I think it /looks/ interesting.
 #+CAPTION: Immutable example
 #+BEGIN_SRC java
 public class MockBelievesFactory {
-    ...
+	...
 	public static final String hellos = "hellos";
 	public static final String whyhere = "whyhere";
 	public static final String maybeimsick = "maybeimsick";
@@ -592,6 +594,7 @@ public class MockBelievesFactory {
 
 	public static final String needmedicine= "needmedicine";
 	public static final String imthedoctor= "imthedoctor";
+
 	public final Believes createTestBelieves(){
 		connect(hellos,
 			any(whyhere, "Angry"),
@@ -604,10 +607,9 @@ public class MockBelievesFactory {
 			restricted(maybeimsick, actor_patient, "Angry"),
 			restricted(ilikevistingyou, actor_patient, "Happy")
 		);
-        ...
-   }
-   ...
-
+		...
+	}
+	...
 }
 #+END_SRC
 
@@ -616,38 +618,299 @@ public class MockBelievesFactory {
 #+CAPTION: Immutable example
 #+BEGIN_SRC java
 public class MockBelievesFactory {
-   ...
 	@SafeVarargs
 	public final void connect(
 		String one,
-		Either<Pair<String, PerlocutionaryValueSet>, Triplet<String, Actor, PerlocutionaryValueSet>>...values
+		Either<
+			Pair<String, PerlocutionaryValueSet>, 
+			Triplet<String, Actor, PerlocutionaryValueSet>
+		>... values
 	){
 		Set<Connection> connections = createConnections(values);
 		setconnect(one, connections);
 	}
 	@SafeVarargs
 	public final Set<Connection> createConnections(
-        Either<Pair<String, PerlocutionaryValueSet>, Triplet<String, Actor, PerlocutionaryValueSet>>...values
-    ){
+		Either<
+			Pair<String, PerlocutionaryValueSet>, 
+			Triplet<String, Actor, PerlocutionaryValueSet>
+		>... values
+	){
 		return Arrays.asList(values).stream().map(tupple ->
 			tupple.fold(
-                pair ->
-                createConnection(pair.getValue0(), actor_any, pair.getValue1()),
+				pair ->
+				createConnection(pair.getValue0(), actor_any, pair.getValue1()),
 
-                tripple ->
-                createConnection(tripple.getValue0(), tripple.getValue1(), tripple.getValue2())
-            )
+				tripple ->
+				createConnection(tripple.getValue0(), tripple.getValue1(), 
+				  tripple.getValue2())
+			)
 		).collect(Collectors.toSet());
 	}
 }
 #+END_SRC
 
-** Dialogue tree.. madness
+** Fancy tree traversal
 In many ways this structure was the core of deliberation.
-The Jungian functions needed to make modifcations to this structure,
+The Jungian functions needed to make modifications to this structure,
 but I wanted it to be immutable.
 
+To modify an immutable tree we need to pass a function down to the node where
+we want to do the modification and then apply it, once this is done we can
+go back up the tree with the new modified tree as leaf passing as a result
+the new tree.
+The function that does this is =withPrefferdIfAtHeight= in source block
+[[java:dialoguetree]].
+In this example we make heavy use of continuations to make a really terse
+tree traversal (at least for java).
+The =copyWithAboveLeftMostLeaf= and =copyWithStartAtUntilLeaf= are the main
+clients of this function, however they just fill in the continuations.
 
+#+NAME: java:dialoguetree
+#+CAPTION: Part of the =DialogueTree= class
+#+BEGIN_SRC java
+@Immutable
+public class DialogueTree {
+	public final Utterance utterance;
+	public final Connection connectionUsed;
+	private final List<DialogueTree> options;
+	...
+	/**
+	 * If we have a preffered, execute withPrefferd on it, If we don't have,
+	 * execute ifNoPrefferedWithThis on the current object.
+	 */
+	private DialogueTree mapPreffered(
+		Function<DialogueTree, DialogueTree> withPreffered,
+		Function<DialogueTree, DialogueTree> ifNoPreferedWithThis
+	){
+		final Optional<DialogueTree> prefferedOption = getOptions().findFirst();
+		return prefferedOption.map(preffered -> {
+			final List<DialogueTree> options =
+				getOptions().collect(Collectors.toList());
+			options.set(0, withPreffered.apply(preffered)); // 0 being preffered
+			return replaceOptions(options);
+
+		}).orElse(// there is no first option
+			ifNoPreferedWithThis.apply(this)
+		);
+	}
+
+	/**
+	 * Generalization of 'copyWithStartAtUntilLeaf' and
+	 * 'copyWithAboveLeftMostLeaf'
+	 *
+	 * You could very easily traverse the tree with this if you attach whenNot
+	 * into the called function of the argument dialogueTree.
+	 *
+	 * Whenat will always be exeucted on the leaf.
+	 */
+	private DialogueTree withPrefferdIfAtHeight(
+		int height,
+		Function<DialogueTree, DialogueTree> whenNot,
+		Function<DialogueTree, DialogueTree> whenAt
+	){
+		if(thisIsAtHeight(height)){ // in practice equal, but we just don't want stackoverflows
+			// note return
+			return whenAt.apply(this);
+		}
+		// we execute whenNot on preffered, because if we were at height the
+		// previous condition woudl've been true
+		// however if there is no prefered we are at leaf level.
+		return mapPreffered(whenNot, whenAt);
+	}
+	/** go down until height, then keep applying function until leaf */
+	public DialogueTree copyWithStartAtUntilLeaf(
+		int height, 
+		Function<DialogueTree, DialogueTree> function
+	){
+		if(height < leaf_height){
+			return this;
+		}
+		return withPrefferdIfAtHeight(
+			height,
+			tree -> tree.copyWithStartAtUntilLeaf(height,function),
+			tree -> {
+				final DialogueTree result = function.apply(tree);
+				return result.mapPreffered(
+					prefferd -> prefferd.copyWithStartAtUntilLeaf(
+						height, function),
+					Function.identity()
+				);
+			}
+		);
+	}
+	/** A more generalized form that can opperate on any height */
+	public DialogueTree copyWithAboveLeftMostLeaf(
+		int height, 
+		Function<DialogueTree, DialogueTree> function
+	){
+		return withPrefferdIfAtHeight(
+			height,
+			tree -> tree.copyWithAboveLeftMostLeaf(height,function),
+			function
+		);
+	}
+	...
+}
+#+END_SRC
+
+The tree traversal is extensively tested upon correctness by the unit
+tests aimed at the Jungian functions.
+This helped me a lot with coming with this design in the first place,
+because the unit tests would tell me if I did something different.
+I thought this example was interesting because of the use in continuations,
+I've never really done tree traversal like this aside from [[https://github.com/bitemyapp/learnhaskell][studying]] [[https://www.seas.upenn.edu/%7Ecis194/spring13/lectures.html][Haskell]].
+I did find it really difficult to think of appropriate names for the continuation
+functions because they're so abstract.
+At this point I also started to wonder, are these kind off levels of abstractions
+even useful?
+I mean dialogue tree traversal became in my case really easy ,
+I would say yes. This only happened after I implemented all the Jungian
+Functions and did a refactor round with the unit tests in place came I up with
+this design.
+I would imagine most code bases not really wanting to go this far.
+
+** Graph duality
+This piece of code lingers on the point of madness..
+
+Chatbot works modularized pattern matching called scenes.
+When a scene is active we only match upon patterns of symbols in that scene,
+if there are no such patterns we look at the connections going out to neighbouring
+scenes and match upon the patterns of the symbols leading to those.
+
+To do this we have two pattern databases, the first one for within the scene
+and the second going out of the scene.
+The entire code that construct these databases can be seen in source block
+[[java:patternprocessing]].
+We can see the first database be constructed in =createSceneContained=
+function.
+It just groups patterns based up their sybmols' scenes. The patterns then
+point to their respective symbol with help of =PatternSymbol= structure
+that is setup in the =flatten= function.
+
+The second database is much more difficult.
+We need to go trough all the =PatternSymbols= and see if they came from any
+connections that transit scene,
+this is what the =filter= function does in the stream.
+To figure out in what scene to put this pattern symbol we create a different
+kind of connection database.
+This connection database has all the connections point in the opposite direction,
+we call this the /dual/.
+This idea just use a dual came from my geometric algorithm course,
+where they significantly reduced the complexity of an algorithm by converting
+points in lines and vice versa.
+The dual in this case does something similar, because if you call it twice
+you end up with the same structure.
+
+The final step in both cases is constructing the hash map, this is used in a
+various places, therefore it was moved to the functions class.
+
+#+NAME: java:patternprocessing
+#+CAPTION: Pattern processing
+#+BEGIN_SRC java
+public class PatternProcessing {
+	public static PatternDatabase createSceneContained(
+		Map<Symbol, Set<Pattern>> from
+	){
+		return new PatternDatabase(
+			Functions.streamToHashMapSet(
+				flatten(from),
+				key -> key.symbol.scene,
+				Function.identity()
+			)
+		);
+	}
+	public static PatternDatabase createSceneNextTo(
+		Map<Symbol, Set<Pattern>> from, 
+		ConnectionDatabase db
+	){
+		ConnectionDatabase dual = db.createDual();
+		return new PatternDatabase(
+			Functions.streamToHashMapSet(
+				flatten(from)
+				.flatMap(patternSymbol ->
+					dual.getConnections(patternSymbol.symbol)
+						.filter(connection ->
+							!connection.to.scene.equals(
+								patternSymbol.symbol.scene
+							)
+						)
+						.map(connection -> 
+							new Pair<>(connection.to.scene, patternSymbol)
+						)
+				),
+				Pair::getValue0,
+				Pair::getValue1
+			)
+		);
+	}
+	public static Stream<PatternSymbol> flatten(Map<Symbol, Set<Pattern>> from){
+		return from.entrySet()
+			.stream()
+			.flatMap(entry ->
+				entry.getValue().stream().map(
+					pattern -> new PatternSymbol(pattern, entry.getKey())
+				)
+			);
+	}
+}
+#+END_SRC
+
+
+I really wanted to show the dual idea somewhere because I know this is 
+a hard problem to solve,
+but it didn't take a lot of effort because of the dual idea.
+Not sure how readable this is though, this is a problem I have more often
+with functional programming.. How do you know what is a good or bad pattern?
+I guess I just need more experience or talk with other people about this.
+
+** Lazy hashing
+The only reason I'm discussing this is because I worked with Java (Scala does
+the hashing stuff for you in case classes),
+and in some situations you did not want to calculate the hash code eagerly
+because the model object contained a collection (which could be a lot of work).
+I modified this [[https://stackoverflow.com/questions/29132884/lazy-field-initialization-with-lambdas][stack overflow]] to work for hashing resulting in the
+code seen in source block [[java:lazyhash]].
+So what happens is as soon as the =hashCode= function is called we calculate it,
+and then replace the supplier hash with a new lambda that just returns the result.
+Note that this will never change because the model object is immutable.
+
+#+NAME: java:lazyhash
+#+CAPTION: Lazy hashing example
+#+BEGIN_SRC java
+@Immutable
+public class Utterance {
+	public final Informative informative;
+	public final Instant when; // immutable
+	public final CapturedMatchDB capturedDB;
+	public final PerlocutionaryValueSet perlocutionaryValues;
+
+	private Supplier<Integer> lazyHashValue;
+
+	public Utterance(Informative informative, PerlocutionaryValueSet perlocutionaryValues, CapturedMatchDB capturedDB) {
+		this.informative = informative;
+		this.capturedDB = capturedDB;
+		this.perlocutionaryValues = perlocutionaryValues;
+		this.when = Instant.now();
+
+		lazyHashValue = () -> {
+			// since the class is immutable and we don't deal with collections,
+			// we can calulate this now, if it every is required...
+			final int hash_code =
+				311 * informative.hashCode() -
+				193 * this.perlocutionaryValues.hashCode() +
+				701 * capturedDB.hashCode();
+			lazyHashValue = () -> hash_code;
+			return hash_code;
+		};
+	}
+	@Override
+	public int hashCode(){
+		return lazyHashValue.get();
+	}
+	...
+}
+#+END_SRC
 * The experience
 I specifically asked my teacher for getting a
 'practical' assignment because I'm good at that.
@@ -751,5 +1014,28 @@ Finally a question was asked in which cases this would help doctors,
 I replied with the more emotional situations because it would be important to
 treat someone right under these cases.
 
+
+* Conclusion
+I would say that I liked doing my thesis as a whole.
+In fact I would say I enjoyed the entire master, but I do know that I'm not an
+academic,
+my initial hasty assumption of "head in the clouds" was quite correct.
+The very notion of just always trying to do stuff in new approaches bothers me,
+I would rather just solve real world problem, with old approaches if they work,
+and do new approaches only when the use case demands it.
+
+Then there is also the issue of neglecting to publish source code,
+I just think that is terrible for science as it creates a lot of double work
+and since I personally prefer digging around in source code I'm almost certain
+I work badly in academia.
+By which I mean it would just make me unhappy, I don't get excited by writing
+large bodies of text to the point of perfection.
+I just want to get out what is on my mind, [[https://en.wikipedia.org/wiki/Release_early,_release_often][release early release often]] rather
+than peer reviewed based academic releases.
+I choose the bazaar cite:raymond1999cathedral.
+
+* End :no-export:
 bibliographystyle:unsrt
 bibliography:./files/2017/refs.bib
+
+#  LocalWords:  modularized
