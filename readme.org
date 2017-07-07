@@ -23,5 +23,8 @@ http://benhoyt.com/writings/pyast64/
 Also looks really clean.
 Although the word spacing is a weird choice
 
-** NGINX
-Fix cache controls /with/ presentation posibilities.
+
+** Speedup
+Load logo seperatly,
+or do inpage compression,
+It seems to be about 100k now which is a bit much imho.
