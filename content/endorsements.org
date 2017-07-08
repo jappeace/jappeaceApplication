@@ -29,6 +29,14 @@ A youtuber, although I'm linking to his [[http://www.cgpgrey.com/][website]].
 He has some interesting videos (of which I know him),
 but his podcasts are quite good too.
 
-
 ** Brady haron
 Also a youtber, [[http://www.bradyharan.com/][his website]]. His numberphile channel is fun.
+** How computers learn
+A back to basics overview of machine learning:
+https://youtu.be/T1O3ikmTEdA?t=644
+
+Even though I knew most stuff he talked about in the beginning,
+the talk later becomes more interesting since I didn't follow machine learning
+that much.
+
+
