@@ -28,3 +28,11 @@ Although the word spacing is a weird choice
 Load logo seperatly,
 or do inpage compression,
 It seems to be about 100k now which is a bit much imho.
+
+** NGINX
+*** tracking
+1. Should move configuration file into the version controll
+2. Publish script should overwrite the config file from version controlled one
+
+*** redericts
+Make them all temporary, don't want browsers to cache them.
