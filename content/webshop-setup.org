@@ -94,3 +94,44 @@ in the config script of fpm-php: =/etc/php/fpm-php7.0/fpm.d/www.conf=.
 + Main script not found
 + Ownership of socket
 + /tmp filesystem..
++ Script bugged 2.2.0-RC1 worked, latest version didn't install, 2.2.0 crashed
+  upon missaligned interface
+
+Not so much a bug but just a matter of elagance is the cron jobs
+that are explained [[http://devdocs.magento.com/guides/v2.0/config-guide/cli/config-cli-subcommands-cron.html#config-cli-cron-bkg][here]]. This setup will work, however modern systems
+will have systemd available which is capable of running cron jobs trough
+unit files.
+[[https://wiki.archlinux.org/index.php/Systemd/Timers][Arch wiki]] explains them in detail, the code I used for the timers is listed
+in source block [[src:timer]], and its service file in source block [[src:service]].
+Note that they are linked by having the same file name.
+
+The big advantage of using systemd is that you now have everything tracked
+in the same system.
+Systemd, the program that boots the system and glues everything 
+together is now 'aware' of the cron job.
+
+
+#+CAPTION: Systemd timer file: =magento.timer=
+#+NAME: src:timer
+#+BEGIN_SRC systemd
+[Unit]
+Description=Update indexes, send emails, fix sitemap etc
+
+[Timer]
+OnCalendar=minutely
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+#+END_SRC
+
+#+CAPTION: Systemd service file: =magento.service=
+#+NAME: src:service
+#+BEGIN_SRC systemd
+[Unit]
+Description=Update indexes, send emails, fix sitemap etc
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/php /var/www/localhost/magento2/bin/magento cron:run
+#+END_SRC
