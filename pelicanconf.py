@@ -33,7 +33,7 @@ LINKS_EX = [(
 ),
 (
     'resume',
-    '/files/2017/resume-en.pdf',
+    '/files/2017/resume-en-finished-master.pdf',
     "To convince you to hire me!",
     'resume'
 ),
@@ -49,12 +49,14 @@ SOCIAL_EX = [(
     'https://github.com/jappeace/',
     "Me telling computers to do stuff",
     'github'
-),(
-    'patreon',
-    'https://www.patreon.com/user?u=4695714',
-    'Consider supporting my endeavors',
-    'patreon'
-)
+),
+# (
+#     'patreon',
+#     'https://www.patreon.com/user?u=4695714',
+#     'Consider supporting my endeavors',
+#     'patreon'
+# )
+#
 ]
 
 DEFAULT_PAGINATION = False
