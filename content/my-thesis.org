@@ -3,7 +3,6 @@
 #+DATE: 2017-07-07
 #+CATEGORY: reflection
 #+Tags: thesis, presents, research, jung, chatbot
-cite:vcimbora2015usability
 I'm done. The master in AI is complete.
 I finished the thesis about adding `Jungian personality in a chatbot'.
 In this blog post I will give a summery and some comments from a programmers'
@@ -24,7 +23,7 @@ Finally I will give an overview of the experience, including the defence
 
 * What did I do?
 I build a very fancy chatbot called Gaia, which is *not* based upon ALICE.
-The core is a business rule engine called Drools.
+The core is a business rule engine called Drools cite:vcimbora2015usability.
 Once the scenario described by YAML files are read, everything chatbot related
 happens in Drools.
 This means you can make it as smart as you want,
