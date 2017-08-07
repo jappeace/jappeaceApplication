@@ -113,7 +113,6 @@ in the same system.
 Systemd, the program that boots the system and glues everything 
 together is now 'aware' of the cron job.
 
-
 #+CAPTION: Systemd timer file: =magento.timer=
 #+NAME: src:timer
 #+BEGIN_SRC systemd
@@ -145,4 +144,7 @@ So I googled how to show [[ https://magento.stackexchange.com/questions/94530/ho
 (this is normally surpressed because of security reasons).
 Turns out it was some permision error of the filesystem,
 it couldn't create some folder in the generated folder.
+
+This was because of permission errors.
+
 
