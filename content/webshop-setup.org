@@ -52,33 +52,35 @@ to the database to figure out what the user wants to see.
 
 #+NAME: fig:dep:magento
 #+BEGIN_SRC plantuml :cache yes :file ./images/2017/uml/dep:magento.svg :exports results
+!pragma horizontalLineBetweenDifferentPackageAllowed
+
 actor user
 agent nginx
-
 user -> nginx : requests web page
 
 agent "fpm-php" as php
 
 nginx --> php : Trough socket: What should I do?
 
-php --> processcloud : Forks of a php process todo the real work
+php -right-> processcloud : Forks of a php process todo the real work
 
 cloud "php processes" as processcloud{
     agent "php" as reader
 }
 artifact "magento script" as magento
-reader -> magento : Reads
+
+reader --> magento : Reads
 database mysql [
 Orders
 User state
 Other variable data
 ]
-magento -> mysql : What to show the user?
+magento --> mysql : What to show the user?
 #+END_SRC
 
 #+CAPTION: Magento IPC overview
 #+LABEL: fig:dep:magento
-#+RESULTS[b2da147fa7c80ed6b12f0e06bec7fee25d79b363]: fig:dep:magento
+#+RESULTS[94b94774d5e2d6f46b891be9a5d49400cc80a8cf]: fig:dep:magento
 [[file:./images/2017/uml/dep:magento.svg]]
 
 I had various issues,
@@ -97,6 +99,7 @@ in the config script of fpm-php: =/etc/php/fpm-php7.0/fpm.d/www.conf=.
 + Script bugged 2.2.0-RC1 worked, latest version didn't install, 2.2.0 crashed
   upon missaligned interface
 
+* Cron jobs
 Not so much a bug but just a matter of elagance is the cron jobs
 that are explained [[http://devdocs.magento.com/guides/v2.0/config-guide/cli/config-cli-subcommands-cron.html#config-cli-cron-bkg][here]]. This setup will work, however modern systems
 will have systemd available which is capable of running cron jobs trough
@@ -135,3 +138,11 @@ Description=Update indexes, send emails, fix sitemap etc
 Type=oneshot
 ExecStart=/usr/bin/php /var/www/localhost/magento2/bin/magento cron:run
 #+END_SRC
+
+* Couldn't create products
+This was a magento error because it surpressed a warning.
+So I googled how to show [[ https://magento.stackexchange.com/questions/94530/how-to-enable-error-and-exception-logging-in-magento2][exceptions]] in magento
+(this is normally surpressed because of security reasons).
+Turns out it was some permision error of the filesystem,
+it couldn't create some folder in the generated folder.
+
