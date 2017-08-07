@@ -11,6 +11,7 @@
 ;;; Loading custom backend
 (add-to-list 'load-path "lisp/")
 (require 'pelican-html)
+(require 'cl)
 
 ;;; Biblography stuff
 (setq org-ref-bibliography-entry-format
