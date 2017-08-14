@@ -1,15 +1,22 @@
 #+Title: Journey to Oceania
 #+Date: 2017-08-07 22:00
-#+Category: tools
-#+Tags: webshop, money
+#+Category: story
+#+Tags: travel, oceania, indonesia, china, stereotypes, australia, dutch
 
-This is my second major journey I undertake away from my home.
+Wednesday 2017-08-16 I'll leave towards Oceania.
 First I will go for a month to Indonesia, having a little holiday and meeting
 my almost girlfriend.
 Then I will move on to Australia to do a "working holiday",
-where I hope to do my profession, as a software engineer or work in AI.
-In this blog post I'll record my expectations, so that one day I can look back
-and see what a fool I was.
+where I hope to do my profession, as a software engineer or work in AI
+(think either data mining or machine learning).
+
+This is my second major journey I undertake away from my home, which in my case
+means being away for more than three months. This time I'm expecting to stay
+away for at least six months, depending on if I can get good work and a visa.
+Perhaps I'll write in a later blog post about the first journey to China,
+where I had a great time, which was part of my motivation to leave again.
+In this blog post however I'll record my expectations for this journey,
+so that one day I can look back and see what a fool I was.
 
 For Indonesia I'm expecting the population to be better at English then the
 local Chinese where in China.

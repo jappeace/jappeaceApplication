@@ -327,3 +327,22 @@ abbr
 
 @import '_resize'
 @import '_syntax'
+
+blockquote
+    font-family: Georgia, serif
+    font-style: italic
+    margin: 2em 3em
+    border-left: 1em solid $col-border
+    padding: 0.5em
+    quotes: "\201C""\201D""\2018""\2019"
+    padding-left: 1em
+
+    \:before
+        color: $col-border
+        content: open-quote
+        font-size: 4em
+        line-height: 0.1em
+        margin-right: 0.25em
+        vertical-align: -0.4em
+    p
+        display: inline
