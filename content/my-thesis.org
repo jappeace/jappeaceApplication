@@ -1,8 +1,9 @@
 #+TITLE: My thesis
-#+OPTIONS: toc:nil
 #+DATE: 2017-07-07
+#+OPTIONS: toc:nil
 #+CATEGORY: reflection
 #+Tags: thesis, presents, research, jung, chatbot
+
 I'm done. The master in AI is complete.
 I finished the thesis about adding `Jungian personality in a chatbot'.
 In this blog post I will give a summery and some comments from a programmers'

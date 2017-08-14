@@ -2,6 +2,7 @@
 #+Date: 2017-07-08 22:00
 #+Category: tools
 #+Tags: webshop, money
+#+Options: toc:nil
 #+PROPERTY: subreddit entreperneur
 #+PROPERTY: status draft
 
@@ -140,8 +141,8 @@ ExecStart=/usr/bin/php /var/www/localhost/magento2/bin/magento cron:run
 
 * Couldn't create products
 This was a magento error because it surpressed a warning.
-So I googled how to show [[ https://magento.stackexchange.com/questions/94530/how-to-enable-error-and-exception-logging-in-magento2][exceptions]] in magento
-(this is normally surpressed because of security reasons).
+So I googled how to show [[https://magento.stackexchange.com/questions/94530/how-to-enable-error-and-exception-logging-in-magento2][exceptions]] in magento
+(this is normally suppressed because of security reasons).
 Turns out it was some permision error of the filesystem,
 it couldn't create some folder in the generated folder.
 

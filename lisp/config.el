@@ -1,4 +1,3 @@
-
 ;;; Package configuration
 
 (require 'package)
@@ -11,9 +10,11 @@
 ;;; Loading custom backend
 (add-to-list 'load-path "lisp/")
 (require 'pelican-html)
-(require 'cl)
 
-;;; Biblography stuff
+(defun org-ref-nil-pelican-html-processor () nil)
+(defun org-ref-unsrt-latex-processor () nil)
+(defun org-ref-nil-html-processor () nil)
+;;; Bibliography stuff
 (setq org-ref-bibliography-entry-format
       '(("techreport" . "<li class='bib-list-techreport'><a name=\"\%k\"></a>%a, %t, <i>%j</i>, %p (%y).</li>")
         ("article" . "<li class='bib-list-article'><a name=\"\%k\"></a>%a, %t, <i>%j</i>, <b>%v(%n)</b>, %p (%y).<a href=\"%U\">link</a>. <a href=\"http://dx.doi.org/%D\">doi</a>.</li>")
@@ -21,7 +22,6 @@
         ("misc" . "<li class='bib-list-article'><a name=\"\%k\"></a>%a, %t, %p (%y).</li>")
         ("book" . "<li class='bib-list-book'><a name=\"\%k\"></a>%a, %t, %u (%y).</li>")))
 
-(defun org-ref-unsrt-latex-processor () nil)
 (defun org-ref-unsrt-pelican-html-processor ()
   "Citation processor function for the unsrt style with html output."
   (let (links
@@ -136,4 +136,3 @@
     (funcall (intern (format "org-ref-%s-%s-processor" bibliographystyle backend)))))
 
 (add-hook 'org-export-before-parsing-hook 'org-ref-citation-processor)
-(defun org-ref-nil-pelican-html-processor () nil)
