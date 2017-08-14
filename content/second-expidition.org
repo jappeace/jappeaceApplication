@@ -1,53 +1,77 @@
-#+Title: Major journey to Oceania
+#+Title: Journey to Oceania
 #+Date: 2017-08-07 22:00
 #+Category: tools
 #+Tags: webshop, money
-#+PROPERTY: status draft
 
 This is my second major journey I undertake away from my home.
-First I will go for a month to indonesia, having a little holiday and meeting
-my almost girlfriend. Then I will move on to australia to do a
-"working holiday", where I hope to do my proffesion as a software engineer or in
-AI.
-In this blogpost I'll record my expectations. Because they're funny to read after
-the fact.
+First I will go for a month to Indonesia, having a little holiday and meeting
+my almost girlfriend.
+Then I will move on to Australia to do a "working holiday",
+where I hope to do my profession, as a software engineer or work in AI.
+In this blog post I'll record my expectations, so that one day I can look back
+and see what a fool I was.
 
-For indonesia I'm expecting the population to be better at english then the local
-chinese where in China.
-This is because a chinese can say with quite some confidence he's not going to
-encounter many foreigners in their life, however this may not be as true for
-indonesians, especially on bali island.
-My grandfather actually told me many indonesians would be capable of speaking
-dutch, I seriously doubt that, and my girlfriend has confirmed this is only
-true for older indonesians.
-My indonesian girlfriend has also warned me life is slower in indonsia
+For Indonesia I'm expecting the population to be better at English then the
+local Chinese where in China.
+A Chinese man can say with quite some confidence he's not going to encounter
+many foreigners in his life, in fact I had people tell me this when I was there,
+Which is in stark contrast to Dutch mentality where you expect to encounter many
+foreigners and thus you'd have to learn at least English and either German or
+French (all three also is common).
+I also expect Indonesians to be willing to learn more foreign tongues,
+because they don't have a common tongue such as the Chinese have with
+Mandarin (in fact there are thousand of languages in Indonesia),
+which means they're expecting to meet people that don't know their native
+language, and thus English will be used as lingua franca.
+especially on Bali island everyone will know English because of tourism and
+also in Jakarta, but to a lesser extend.
+
+My grandfather actually told me many Indonesians would be capable of speaking
+Dutch. I seriously doubt that, and my (almost) girlfriend has confirmed this is
+only true for older Indonesians.
+My Indonesian girlfriend has also warned me life is slower in Indonesia
 than in China (which was already pretty laid back).
+By this I think she means that people aren't too strict with appointments and
+that we can expect to wait for stuff to happen.
 
-The weather will be hot in indonesia, at least in jakarta and there will be lots
-of rain. I know this because we talk oftenly about the weather and I'm pretty
-sure it rains there more oftenly.
-Also there will be lots of trafic in jakarta, and I especially many scooters
-and motorbikes. Probably similarly to the amount of Guilin.
+The weather will be hot in Indonesia, at least in Jakarta and there will be lots
+of rain. I know this because we talk often about the weather and I'm pretty
+sure it rains there more.
+Another environmental thing is that there will be lots of traffic in Jakarta,
+and especially many scooters and motorbikes. Probably similarly to the amount of
+[[https://en.wikipedia.org/wiki/Guilin][Guilin]], actually the climate maybe also similar to Guilin summer times.
 
-Australia is a whole other beast of course. Everyone will speak there english
-and I'll probably communicate quite easily there.
-I do expect them to be incredibly polite and somewhat more laid back than dutch
-people, however still 'faster life' than in China and indonesia.
-By politeness I mean, trying to keep a kindoff distance from strangers and
-embesolling your words so they sound 'better'.
-This politenss of course breaks down between friends.
+Australia is a whole other beast of course. Everyone will speak English there
+and I'll probably communicate quite easily.
+My grandfather thought I'd have some problems with Australian English, 
+but I doubt that.
+I mean perhaps I have to get used to it for a week, but that pales in comparison
+to the efforts I had to take for learning the heavy accents of mainland Chinese
+people.
+
+I do expect Australians to be incredibly polite and somewhat more laid back than
+Dutch people, however still 'faster life' than in China and Indonesia.
+By politeness I mean, trying to keep a kind off distance from strangers and
+embezzling your words so they sound 'better'.
+This politeness of course breaks down between friends.
 
 I'm expecting Sydney to be dominated by cars. Like cars to the extreme.
-Whereas in the netherlands we use bycicles, you can get anywhere by car in
+Whereas in the Netherlands we use bicycles, you can get anywhere by car in
 Sydney.
-I'm expecting Sydney to be about the size of Xiamen.
+I'm expecting Sydney to be about the size of [[https://en.wikipedia.org/wiki/Xiamen][Xiamen]].
 Although much less dense (because of the cars needing their space).
 Sydney will probably have about the same weather as the Netherlands,
-laying a lot farther south than indonesia, although with the seasons mirod of
+laying a lot farther south than Indonesia, although with the seasons mirrored of
 course.
 
-So these were my expectations for these two country.
-Probably full of sterio types, but this is why I do the journey.
+My friends also told me Australia is a very deadly place, where everything
+tries to kill you.
+I think that's highly exaggerated, mostly because people tend to put as much
+distance between themselves and nature as possible, especially in cities.
+
+It's a little short but there is it, a quick overview of my expectations for
+these two countries.
+Probably full of stereo types, but this is why I do the journey.
 #+BEGIN_QUOTE
 Travel is fatal to prejudice, bigotry, and narrow-mindedness,
 and many of our people need it sorely on these accounts.
