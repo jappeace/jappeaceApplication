@@ -1,0 +1,33 @@
+#+TITLE: Portfolio
+#+Tags: portfolio, work, brag
+#+Category: reflection
+
+This page lists a lot of programming projects I made.
+here my collected works I ever made.
+
+* Hobby
+
+** Dormant
+These projects I want to work on later but I haven't found the time yet.
+
+** Finished
+Yes, sometime software actually gets finished.
+I finished some projects.
+
+* Proffesionally
+These project I made in assignment for other people. 
+Usually this means once the features are implemented and not /too/ buggy I
+abondon them.
+However after considerable time the employer tends to contact me again to
+work on it.
+
+* Abandon ware
+These projects I will never work on again.
+
+** School projects
+By definition school projects tend to become abandoned once completed.
+Usually because although you may have enjoyed making it at the time,
+once the grade is received you quickly abondon it.
+
+** Hobby
+Projects I once enjoyed making but now have abondoned for one or another reason.
