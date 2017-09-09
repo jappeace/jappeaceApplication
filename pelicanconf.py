@@ -36,7 +36,13 @@ LINKS_EX = [(
     '/files/2017/resume-en-finished-master.pdf',
     "To convince you to hire me!",
     'resume'
+
 ),
+            ('portfolio'
+             'pages/portfolio.html',
+             "I made quite some stuff over the years, here I tell about it",
+             'portfolio'
+            )
 ]
 
 SOCIAL_EX = [(
