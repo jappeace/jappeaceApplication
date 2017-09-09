@@ -32,11 +32,12 @@ systems, so I decided to give CakePHP a try (which I liked a lot).
 I used a MYSQL database because I was already intimately familiar with those
 (and at the time it probably didn't even occurred to me to try something else).
 
-I actually wrote that site at a loss, mainly because of my inexperience
-with estimating time and poor negotiation skills.
 
 The reason why the current website is no longer maintained by me is because
 I didn't want to touch PHP anymore.
+I actually wrote the original site at a loss, mainly because of my inexperience
+with estimating time and poor negotiation skills.
+This didn't help my motivation either.
 A lot of my classmates where joking about the language at the time and
 I already wrote it at a loss so I thought it best just to abandon it and focus
 on my studies.
