@@ -5,23 +5,13 @@
 This page lists a lot of programming projects I made.
 here my collected works I ever made.
 
-* Hobby
+* Solexmarkt
 
-** Dormant
-These projects I want to work on later but I haven't found the time yet.
+| Type   | Contract              |
+| Status | Finished successfully |
 
-** Finished
-Yes, sometime software actually gets finished.
-I finished some projects.
 
-* Proffesionally
-These project I made in assignment for other people. 
-Usually this means once the features are implemented and not /too/ buggy I
-abondon them.
-However after considerable time the employer tends to contact me again to
-work on it.
 
-** Solexmarkt
 I upgraded an existing web shop. The HTML part was already finished but it still
 needed to process payments.
 I added the payment system by using two external libraries.
@@ -32,7 +22,6 @@ systems, so I decided to give CakePHP a try (which I liked a lot).
 I used a MYSQL database because I was already intimately familiar with those
 (and at the time it probably didn't even occurred to me to try something else).
 
-
 The reason why the current website is no longer maintained by me is because
 I didn't want to touch PHP anymore.
 I actually wrote the original site at a loss, mainly because of my inexperience
@@ -42,15 +31,8 @@ A lot of my classmates where joking about the language at the time and
 I already wrote it at a loss so I thought it best just to abandon it and focus
 on my studies.
 
-* Abandon ware
-These projects I will never work on again.
+* De Huiskamer
+This is my parents company. Over the years I did various automation chores
+for them. Which was great because I enjoyed the work a lot but also helped out
+my parents business (which usually resulted in them having more time available).
 
-** School projects
-By definition school projects tend to become abandoned once completed.
-Usually because although you may have enjoyed making it at the time,
-once the grade is received you quickly abondon it.
-
-** Hobby
-Projects I once enjoyed making but now have abondoned for one or another reason.
-
-#  LocalWords:  Solexmarkt

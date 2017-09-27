@@ -38,11 +38,11 @@ LINKS_EX = [(
     'resume'
 
 ),
-            ('portfolio'
-             'pages/portfolio.html',
-             "I made quite some stuff over the years, here I tell about it",
-             'portfolio'
-            )
+#  ('portfolio'
+#  'pages/portfolio.html',
+#  "I made quite some stuff over the years, here I tell about it",
+#  'portfolio'
+# )
 ]
 
 SOCIAL_EX = [(
