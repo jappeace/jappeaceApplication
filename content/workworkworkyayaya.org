@@ -1,7 +1,7 @@
 #+TITLE: Work work work, ya ya ya
-#+DATE: 2017-09-28
+#+DATE: 2017-10-02
 #+CATEGORY: reflection
-#+Tags: travel, indonesia, jakarta, australia
+#+Tags: australia, work
 #+OPTIONS: toc:nil
 
 Last Wednesday I started my first job at [[https://www.openlearning.com/][Open Learning]]. 
@@ -12,28 +12,35 @@ This is to be expected according to reddit.
 I did ask a lot of questions since I was able to start programming for real
 yesterday.
 
-My first task was to basically use the platform and give feedback.
-This was in hope that the UX developer could get some 'fresh' eyes on the matter.
-I also was asked to measure performance and give ideas to improve that.
-So I basically made a report over several hours.
-I was expected to just hand that in, turns out they just wanted a meeting and
-discuss my ideas.
-After that little experience I changed my strategy and just made a list of
-things I saw.
-This was much more efficient.
-I don't think they did much with the stuff I wrote down though.
+The first today I just spend on getting familiar with the platform and the last
+day I dabbled around a little in react (hello world!).
+The reason I for saying I did little contributions is because I just took up
+more time of other employees asking questions then producing much.
+Even the UX work hasn't been integrated yet because the designer was busy.
 
-Then the next task was to just follow a course and see how it works.
-Specifically for this I followed the K-pop course.
-Which was pretty nice to do while working I guess. 
-So after finishing that I was asked to make a course and here I had so many
-comments that I spent more time writing those than actually working on the
-course.
-Finally I setup the dev environment and that was the day.
+What I didn't expect however was having a good time over there.
+I enjoy talking with the various people and the tasks aren't that bad.
+There is also a pantry, free fruit and some tea I take advantage of.
+For lunch we usually go out eating but I'm considering taking lunch as I wanna
+safe some money especially this first month.
 
-The last day was weird, I first setup my bank account but because the bank opened
-at 9:30 I came in late at around 11am.
-I mean there is no real concept of 'late' at this company since they just expect
-you do 8 hours per day - whenever, but it felt late.
-Anyway I just spent that entire day dabbling around in react,
-getting a hello world and doing some basic data flow.
+I noticed a lot of discussions where about food, actually the people at the
+office seem genuinely really interested in food.
+Which is good because I like trying new foods.
+Unfortunately Australia doesn't seem to have much of local cuisine, but they'll
+happily import dishes from neighbouring countries (which are delicious).
+
+What's even better is that they allow you to work from home.
+At this point I can't really do that yet because I'm a newby and ask a lot of
+questions, but at some point I also maybe able to do that.
+Once per week having no travel times would be very good!
+
+Aside from asking to many questions (in my experience) the only other big issue
+I have is leaving times.
+I'm not sure how they decide upon that.
+Its always kind off awkward for me to leave the place,
+but on the other hand I also don't want to do (free) overwork.
+I think I'm gonna ask about these things because they maybe an issue later.
+
+The place is nice, the things they're doing could definitely help
+society and I enjoy the work (not so much the UX part, but it was necessary).
