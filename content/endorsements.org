@@ -40,3 +40,22 @@ the talk later becomes more interesting since I didn't follow machine learning
 that much.
 
 
+
+** Techstratery
+This guy is some kindoff analist I encountered on reddit
+(probably the /r/investing sub).
+He has some really interesting takes on tech companies and I learned a lot about
+buisness in general from just reading his blog.
+I especially liked his aggregration theory, makes me wonder if I could make one
+of those.. (probably not).
+https://stratechery.com/
+
+** danluu
+I found one of his articles on reddit, and he has an interesting perspective
+(as moslty a hardware person).
+I was reading the article [[https://danluu.com/wat/][normalization of defiance]] which talks about how
+strange, shady or broken practices are born, and what one could do about them.
+Then I went to the index and it turns out there is a huge treasure trove
+of interesting articles on that blog.
+
+https://danluu.com/
