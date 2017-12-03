@@ -10,8 +10,6 @@ here my collected works I ever made.
 | Type   | Contract              |
 | Status | Finished successfully |
 
-
-
 I upgraded an existing web shop. The HTML part was already finished but it still
 needed to process payments.
 I added the payment system by using two external libraries.
@@ -32,7 +30,10 @@ I already wrote it at a loss so I thought it best just to abandon it and focus
 on my studies.
 
 * De Huiskamer
+
 This is my parents company. Over the years I did various automation chores
 for them. Which was great because I enjoyed the work a lot but also helped out
 my parents business (which usually resulted in them having more time available).
+I did various projects for them.
+
 
