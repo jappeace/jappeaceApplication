@@ -36,3 +36,12 @@ It seems to be about 100k now which is a bit much imho.
 
 *** redericts
 Make them all temporary, don't want browsers to cache them.
+
+
+* Troubleshooting
+
+** Org fails
+   Probably because of that orgmode bug where they say it isn't allowed to do
+   compilation. (the id then doesn't get generated which makes it fail entrily).
+   Test by trying to just =C-c C-c= some random org source block.
+   Try recompiling elpa =m x recompile-elpa= and see if it loads now.
