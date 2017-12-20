@@ -42,10 +42,13 @@ langauge problem as it's just some calculations.
 What I imagine is just adding a predict button to the current inplan screen
 that uses the statistical model to magically create a roster.
 
-Now the method I thought of is so simple it probably isn't even a technique
-listed in my dataming course[fn:: link], but here is the gist of it:
+Now the method I thought of is simple, it's an adaptation of q-learning,
+which uses a lookup table for geting action probablities, if succesfull
+probability is increased, otherwise decreased.
+I'm doing something more simple, here is the gist of it:
 We count per day how many job types are planned in on average over /n/ weeks.
-Then we plan in that amount of job types.
+Then we plan in that amount of job types, for remaining fractions we flip a
+coin.
 If someone has asked free we remove him from the potential pool of workers.
 If there are not enough workers for a job type we just throw a warning for that
 date and let the owner figure it out.
