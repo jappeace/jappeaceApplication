@@ -1,5 +1,5 @@
 #+TITLE: Jakartian Christmas
-#+DATE: 2017-11-06
+#+DATE: 2017-12-19 21:00
 #+CATEGORY: reflection
 #+Tags: work, projects, jakarta, jesiska
 #+OPTIONS: toc:nil
@@ -17,6 +17,9 @@ Then I've also been trying to increase my income with various project I will
 discuss next.
 Although I've been neglecting the most important one which is the financial one.
 It just seems so boring every time I think about it.
+I need to do this soon because my bonus interest of my savings account will stop
+at the new year.
+This holiday conveniently overlaps with that.
 
 The [[http://raster.click][raster]] project core is up and running. Basically anyone can sign up to it
 and take advantage of it for free! Because I haven't setup payment yet!
