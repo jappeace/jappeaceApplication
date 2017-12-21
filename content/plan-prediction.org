@@ -1,8 +1,7 @@
 #+TITLE: Plan prediction
-#+DATE: 2017-12-20
+#+DATE: 2017-12-21 12:00
 #+CATEGORY: tools
 #+Tags: statistics, machine-learning, AI, raster, data
-#+PROPERTY: status draft
 
 For the raster project a main selling point will be the automatic prediction
 of future scheduling.
