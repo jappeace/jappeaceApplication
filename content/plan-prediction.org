@@ -10,12 +10,12 @@ There are two major schools of thoughts to go with that I know of.
 Constraint satisfaction solving and data driven approaches (use statistics).
 
 First of all the most straight forward approach is to use something like
-[[https://www.optaplanner.org/][optaplanner]]. 
+[[https://www.OptaPlanner.org/][OptaPlanner]]. 
 In this approach constraints are laid upon the problem, such as 2 cooks
 need to at least work on Saturday, but preferably 3.
 This single constraint has two different part, the hard minimum, and the 'soft'
 preference.
-With these kind of rules in place, the opta planner can use heuristics to figure
+With these kind of rules in place, the OptaPlanner can use heuristics to figure
 out who to plan when.
 You could add as many constraints as you want, such as have less preference for
 when employees asked free or let students not work during the day.
@@ -28,7 +28,7 @@ owners.
 What I could do is create some kind off helping GUI around it.
 Or simply use generic predefined rules and if owners want something more
 sophisticated they should contact me.
-On top of that the opta planner system I know of is written in Java,
+On top of that the OptaPlanner system I know of is written in Java,
 which is kind off problematic since I now need to develop some
 micro-service architecture around it.
 
@@ -62,9 +62,9 @@ accurate by using it as another influencing factor.
 Whilst the basic interface remains the same, press the 'predict' button and
 magically you get a roster.
 
-In conclusion I will attempt a statistical approach rather than optaplanner,
+In conclusion I will attempt a statistical approach rather than OptaPlanner,
 because it's more simple.
-In the future I can still choose to experiment with opta-planner.
+In the future I can still choose to experiment with OptaPlanner.
 It would be much more interesting to use that, once I know how to register
 demand accurately,
 for example the amount of reservations for an evening would be a good indicator
