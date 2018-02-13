@@ -5,3 +5,4 @@ __pycache__
 *.kra
 *.directory
 *.swp
+*.pyc
