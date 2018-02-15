@@ -33,7 +33,7 @@ LINKS_EX = [(
 ),
 (
     'resume',
-    '/files/2017/resume-en-finished-master.pdf',
+    '/files/2018/resume-openlearning.pdf',
     "To convince you to hire me!",
     'resume'
 
