@@ -59,3 +59,10 @@ Then I went to the index and it turns out there is a huge treasure trove
 of interesting articles on that blog.
 
 https://danluu.com/
+
+* Tools
+** Vps comparison sites
+For if you just need a cheap computing device somewhere on the internet.
+I wanted one that had high CPU but didn't care about the rest, this one found
+it:
+http://vps-list.cryto.net/index.php?action=list
