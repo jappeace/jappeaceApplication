@@ -1,0 +1,14 @@
+#+TITLE: Distro hoppin like a pro
+#+DATE: 2018-01-09 18:00
+#+CATEGORY: tools
+#+Tags: linux, gentoo, escape, distro, qemu
+#+OPTIONS: toc:nil
+#+PROPERTY: status draft
+
+I've been using qemu a lot today to try and install distributions without
+having to 'burn' usb drives.
+Basically what you do is.
+
+#+BEGIN_SRC bash
+qemu-system-x86_64 -drive format=raw,file=/dev/sda -boot d -cdrom ./ubuntu-17.10-desktop-amd64.iso -m 2G -enable-kvm
+#+END_SRC

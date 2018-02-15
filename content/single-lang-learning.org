@@ -1,0 +1,52 @@
+#+TITLE: Using a single langauge to teach program is a stupid idea
+#+DATE: 2017-12-31 21:00
+#+CATEGORY: opinion
+#+Tags: programming, blog
+#+PROPERTY: status draft
+
+I just, came across this [[http://prog21.dadgum.com/203.html?1][blog post]], which talks about replacing python as *the*
+language to learn programming in.
+But I think the premise is wrong, using a single language to teach programming
+is a thought prison.
+
+It proposes to drop the idea that python should be used as a teaching language
+because it sucks at GUI's and game development.
+I agree, python isn't good at those things.
+
+You know what python is good at? Gluing shit together.
+I see it as a direct evolution on shell programming,
+and in fact some people rolled with that idea and made [[http://xon.sh/][xonsh]].
+Think about where python shines, web servers and command line apps.
+Both of which basically glue shit together (databases, files, requests, whatever).
+
+So what would I teach in python? Well the basics. hello world, IO, for loops and
+functions.
+The article proposes to replace python with JavaScript.
+Although you can do a lot in JS, and I've seen games in it,
+do you really want to let someones entire experience of programming be just
+JavaScript?
+That sounds like a curse to me, although you're at least sure you language will
+never fall out of disuse!
+Besides to teach IO you now also have to teach about HTML, CSS, and the DOM.
+
+When your student starts asking how do I make a GUI, you probably want to show
+him Java, or C#.
+Object orientation shines at GUI's.
+Besides having someone not being exposed to the extremely good editors that Java
+and C# provide is just bad.
+Another idea would be to teach about the browser stack, although making your
+'own' GUI for the first time is much more exciting.
+
+When your student asks about games, you either teach him about C++ or C.
+Here you need to start talking about memory, because games need to be able to
+manipulate memory.
+You could also consider teaching Rust, because it won't compile unless you
+handled memory appropriately. Although this is more risky as Rust is used less.
+
+Language hopping is a *great* way of learning about programming in general.
+Because the only knowledge you can use in a wildly (semantically) different
+language is the general knowledge.
+I think you can become a good programmer by doing a single language,
+but the only way to become a master is by trying something new.
+This way your student would be guaranteed for the future, because he knows
+that switching languages is something he *should* do.
