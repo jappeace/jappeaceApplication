@@ -7,33 +7,131 @@
     <meta name="category" content="experimenting" />
     <meta name="authors" content="Jappie Klooster" />
     <meta name="status" content="draft" />
-    <script src="/files/2018/PhiloGL-1.5.2/build/PhiloGL.js" />
+    <script src="files/2018/PhiloGL-1.5.2/build/PhiloGL.js" />
   </head>
   <body>
+     bleh
     <canvas id="glCanvas" width="640" height="480" />
-    <script>
-      main();
+     <script>
+    //Create moon
+    var moon = new PhiloGL.O3D.Sphere({
+        nlat: 30,
+        nlong: 30,
+        radius: 2,
+        textures: 'moon.gif'
+    });
+     console.log("moon", moon);
+    //Create application
+    PhiloGL('glCanvas', {
+        camera: {
+            position: {
+            x: 0, y: 0, z: -7
+            }
+        },
+        textures: {
+            src: ['moon.gif'],
+            parameters: [{
+                name: 'TEXTURE_MAG_FILTER',
+                value: 'LINEAR'
+            }, {
+                name: 'TEXTURE_MIN_FILTER',
+                value: 'LINEAR_MIPMAP_NEAREST',
+                generateMipmap: true
+            }]
+        },
+    events: {
+        onDragStart: function(e) {
+            pos = {
+                x: e.x,
+                y: e.y
+            };
+        },
+        onDragMove: function(e) {
+            var z = this.camera.position.z,
+            sign = Math.abs(z) / z;
 
-      //
-      // start here
-      //
-      function main() {
-        const canvas = document.querySelector("#glCanvas");
-        // Initialize the GL context
-        const gl = canvas.getContext("webgl");
-
-        // Only continue if WebGL is available and working
-        if (!gl) {
-          alert("Unable to initialize WebGL. Your browser or machine may not support it.");
-          return;
+            moon.rotation.y += -(pos.x - e.x) / 100;
+            moon.rotation.x += sign * (pos.y - e.y) / 100;
+            moon.update();
+            pos.x = e.x;
+            pos.y = e.y;
+        },
+        onMouseWheel: function(e) {
+            e.stop();
+            var camera = this.camera;
+            camera.position.z += e.wheel;
+            camera.update();
         }
+    },
+    onError: function() {
+        alert('There was an error creating the app');
+    },
+    onLoad: function(app) {
+        // Unpack app properties
+        var gl = app.gl,
+        program = app.program,
+        scene = app.scene,
+        canvas = app.canvas,
+        camera = app.camera;
+        // Get light config from forms
+        lighting = $('lighting'),
+        ambient = {
+            r: $('ambientR'),
+            g: $('ambientG'),
+            b: $('ambientB')
+        },
+        direction = {
+            x: $('lightDirectionX'),
+            y: $('lightDirectionY'),
+            z: $('lightDirectionZ'),
 
-        // Set clear color to black, fully opaque
-        gl.clearColor(0.0, 0.0, 0.4, 1.0);
-        // Clear the color buffer with specified clear color
-        gl.clear(gl.COLOR_BUFFER_BIT);
-        var triangleVertexPositionBuffer; var squareVertexPositionBuffer;
-      }
+            r: $('directionalR'),
+            g: $('directionalG'),
+            b: $('directionalB')
+        };
+        // Basic gl setup
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clearDepth(1.0);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        // Add object to the scene
+        scene.add(moon);
+
+        // Draw the scene
+        draw();
+
+        function draw() {
+        // Clear the screen
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        // Setup lighting
+        var lights = scene.config.lights;
+        lights.enable = lighting.checked;
+        lights.ambient = {
+            r: +ambient.r.value,
+            g: +ambient.g.value,
+            b: +ambient.b.value
+        };
+        lights.directional = {
+            color: {
+                r: +direction.r.value,
+                g: +direction.g.value,
+                b: +direction.b.value
+            },
+            direction: {
+                x: +direction.x.value,
+                y: +direction.y.value,
+                z: +direction.z.value
+            }
+        };
+
+        // Render moon
+        scene.render();
+        // Animate
+        Fx.requestAnimationFrame(draw);
+    }
+    }
+    });
     </script>
   </body>
 </html>;
