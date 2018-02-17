@@ -47,6 +47,13 @@ Make them all temporary, don't want browsers to cache them.
    Test by trying to just =C-c C-c= some random org source block.
    Try recompiling elpa =m x recompile-elpa= and see if it loads now.
    
+*** wrong type arg (stringp, null)
+If it's only the thesis it's the plant uml blocks. recompile elpa,
+make sure plantuml is enable (should be).
+
+Also I found a binary search was a good way to confirm that it's the plantuml
+blocks.
+
 ** Assets not found in template
    Set the =SASS_PATH= to theme/static/css.
    
