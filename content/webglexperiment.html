@@ -10,7 +10,7 @@
 
   </head>
   <body>
-    <canvas id="glCanvas"></canvas>
+    <canvas width="1200" height="1200" id="glCanvas"></canvas>
     <script src="files/2018/gl-matrix-min.js"></script>
     <script type="application/javascript">
 function createShaderProgram(gl) {
@@ -209,7 +209,7 @@ function main() {
   const shaders = createShaderProgram(gl);
   const shaderInfo = {
        program: shaders,
-       attributeLocations: {
+       attribLocations: {
         vertexPosition: gl.getAttribLocation(shaders, 'aVertexPosition'),
        },
       uniformLocations: {
