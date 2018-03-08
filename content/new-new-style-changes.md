@@ -1,7 +1,7 @@
 TITLE: New new website style changes
 DATE: 2018-03-08
 CATEGORY: meta
-Tags: thesis, tips, technique 
+Tags: overhaul, website, technique 
 
 Due to circumstances in his life, Jappie Klooster decided it's
 time for some more website changes!

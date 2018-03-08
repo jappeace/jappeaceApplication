@@ -1,7 +1,7 @@
 #+TITLE: Website changes
 #+DATE: 2017-06-30
 #+CATEGORY: meta
-#+Tags: thesis, tips, technique 
+#+Tags: overhaul, website, thesis, tips, technique
 #+Options: toc:nil
 
 I recently made a lot of changes to this website,
