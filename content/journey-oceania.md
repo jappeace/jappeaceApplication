@@ -1,7 +1,7 @@
-#+Title: Journey to Oceania
-#+Date: 2017-08-07 22:00
-#+Category: story
-#+Tags: travel, oceania, indonesia, china, stereotypes, australia, dutch
+Title: Journey to Oceania
+Date: 2017-08-07 22:00
+Category: story
+Tags: travel, oceania, indonesia, china, stereotypes, australia, dutch
 
 Wednesday 2017-08-16 I'll leave towards Oceania.
 First I will go for a month to Indonesia, having a little holiday and meeting
@@ -46,7 +46,7 @@ of rain. I know this because we talk often about the weather and I'm pretty
 sure it rains there more.
 Another environmental thing is that there will be lots of traffic in Jakarta,
 and especially many scooters and motorbikes. Probably similarly to the amount of
-[[https://en.wikipedia.org/wiki/Guilin][Guilin]], actually the climate maybe also similar to Guilin summer times.
+[Guilin](https://en.wikipedia.org/wiki/Guilin), actually the climate maybe also similar to Guilin summer times.
 
 Australia is a whole other beast of course. Everyone will speak English there
 and I'll probably communicate quite easily.
@@ -65,7 +65,7 @@ This politeness of course breaks down between friends.
 I'm expecting Sydney to be dominated by cars. Like cars to the extreme.
 Whereas in the Netherlands we use bicycles, you can get anywhere by car in
 Sydney.
-I'm expecting Sydney to be about the size of [[https://en.wikipedia.org/wiki/Xiamen][Xiamen]].
+I'm expecting Sydney to be about the size of [Xiamen](https://en.wikipedia.org/wiki/Xiamen).
 Although much less dense (because of the cars needing their space).
 Sydney will probably have about the same weather as the Netherlands,
 laying a lot farther south than Indonesia, although with the seasons mirrored of
@@ -79,11 +79,9 @@ distance between themselves and nature as possible, especially in cities.
 It's a little short but there is it, a quick overview of my expectations for
 these two countries.
 Probably full of stereo types, but this is why I do the journey.
-#+BEGIN_QUOTE
-Travel is fatal to prejudice, bigotry, and narrow-mindedness,
-and many of our people need it sorely on these accounts.
-Broad, wholesome, charitable views of men and things cannot be acquired by
-vegetating in one little corner of the earth all one's lifetime.
--- Mark Twain 
-#+END_QUOTE
 
+> Travel is fatal to prejudice, bigotry, and narrow-mindedness,
+> and many of our people need it sorely on these accounts.
+> Broad, wholesome, charitable views of men and things cannot be acquired by
+> vegetating in one little corner of the earth all one's lifetime.
+> &#x2013; Mark Twain

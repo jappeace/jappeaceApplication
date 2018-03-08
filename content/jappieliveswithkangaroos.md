@@ -1,8 +1,7 @@
-#+TITLE: Jappie lives with kangaroos
-#+DATE: 2017-11-06
-#+CATEGORY: reflection
-#+Tags: australia, work
-#+OPTIONS: toc:nil
+TITLE: Jappie lives with kangaroos
+DATE: 2017-11-06
+CATEGORY: reflection
+Tags: australia, work
 
 I've been living in Australia for well over a month now and I really enjoy it!
 The first two weeks were quite a wild ride, looking for my first job and finding
@@ -33,7 +32,7 @@ A lot of project management is involved too, and QA is super slow.
 
 Meanwhile I've been working on a little side project to try and increase my
 income.
-It's [[http://raster.click]], a roster system aimed at restaurants.
+It's <http://raster.click>, a roster system aimed at restaurants.
 This is basically re-doing an idea I had when I was younger, 
 but this time I set it up as a service rather than selling the source.
 This allows me to keep working on it if it becomes adopted by a reasonable

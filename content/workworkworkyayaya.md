@@ -1,10 +1,10 @@
-#+TITLE: Work work work, ya ya ya
-#+DATE: 2017-10-02
-#+CATEGORY: reflection
-#+Tags: australia, work
-#+OPTIONS: toc:nil
+TITLE: Work work work, ya ya ya
+DATE: 2017-10-02
+CATEGORY: reflection
+Tags: australia, work
+OPTIONS: toc:nil
 
-Last Wednesday I started my first job at [[https://www.openlearning.com/][Open Learning]]. 
+Last Wednesday I started my first job at [Open Learning](https://www.openlearning.com/). 
 It has been interesting,
 I know for a fact I practically up till this point contributed almost nothing
 to the company.
@@ -45,4 +45,3 @@ I think I'm gonna ask about these things because they maybe an issue later.
 The place is nice, the things they're doing could definitely help
 society and I enjoy the work (not so much the UX testing part,
 but it was necessary).
-

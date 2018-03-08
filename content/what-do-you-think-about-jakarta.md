@@ -1,20 +1,18 @@
-#+TITLE: What do you think about jakarta
-#+DATE: 2017-09-28
-#+CATEGORY: reflection
-#+Tags: travel, indonesia, jakarta, australia
-#+OPTIONS: toc:nil
+TITLE: What do you think about jakarta
+DATE: 2017-09-28
+CATEGORY: reflection
+Tags: travel, indonesia, jakarta, australia
+OPTIONS: toc:nil
 
 Now I've finally arrived in Australia, its time to reflect upon my
 expectations I had for Jakarta.
 Actually.. While being in Jakarta I got asked this question quite frequently:
 "What do you think about jakarta?" and I just stood there with no answer.
 This post is an attempt to answer that question,
-and at the same time I address the [[./journey-oceania][expectations post]] I made before.
+and at the same time I address the [expectations post](./journey-oceania) I made before.
 
-#+BEGIN_QUOTE
-For Indonesia I'm expecting the population to be better at English then the
-local Chinese where in China.
-#+END_QUOTE
+> For Indonesia I'm expecting the population to be better at English then the
+> local Chinese where in China.
 
 People definitely where better at English than in China,
 at least in my experience.
@@ -27,7 +25,7 @@ However for China the great Chinese firewall and systematic cultural isolation
 (that is in part by design) helps to marginalize exposure to English for sure.
 
 In China learning English is something which parents are willing to pay good
-money for, but Indonesians are willing to go /much/ further with international
+money for, but Indonesians are willing to go *much* further with international
 schools. All day to day conversation happens in English in these schools
 and the entire education system of Singapore is blatantly copied.
 This turns out in little children walking around malls speaking in an almost
@@ -40,20 +38,16 @@ systems, Indonesian, Chinese and Singapore(/American).
 However once I thought about this a little I realized we basically have the same
 in the Netherlands, for example the 'free schools' or 'open schools'.
 
-#+BEGIN_QUOTE
-My grandfather actually told me many Indonesians would be capable of speaking
-Dutch. I seriously doubt that
-#+END_QUOTE
+> My grandfather actually told me many Indonesians would be capable of speaking
+> Dutch. I seriously doubt that
 
 I was totally right by the way about nobody being able to speak Dutch,
 I only ever met one person who said something in Dutch to me and it was done 
 in a way where the words didn't make much sense.
 They said 'nice to meet you' in dutch, without introducing themselves first.
 
-#+BEGIN_QUOTE
-The weather will be hot in Indonesia, at least in Jakarta and there will be lots
-of rain.
-#+END_QUOTE
+> The weather will be hot in Indonesia, at least in Jakarta and there will be lots
+> of rain.
 
 The weather wasn't that hot actually. Most of the time I was quite comfortable
 in the Jakarta heat.
@@ -64,7 +58,8 @@ After this I realized that people in the slums sleep trough this every day.
 I suddenly felt very bad for those poor souls living there.
 They probably never get a good night rest.
 
-* Surprises
+# Surprises
+
 What really surprised me though was the food.
 If you're a fan of strong flavoured foods Jakarta is a great place to go!
 Another thing I didn't expect was the insane amount of malls.
@@ -96,7 +91,7 @@ meters,
 but they also help with getting in and out and making sure you park straight.
 As a consequence all cars are parked really nicely.
 
-Finally another peculiar thing is that there are *so* many people self employed,
+Finally another peculiar thing is that there are **so** many people self employed,
 it's ridiculous if you think about it.
 Little shops everywhere, the traffic people, parking people etc. All self employed.
 I think this is a major difference from the developed world,
@@ -104,7 +99,8 @@ where you generally start working for a boss because it just pays that much
 better. But with those low wages, it's just that more attractive to start for
 yourself.
 
-* So what do I think about Jakarta?
+# So what do I think about Jakarta?
+
 I think that Jakarta is like an uncut gem.
 It already has some really attractive attributes,
 but until issues such as the crazy traffic and drinkable tap water are

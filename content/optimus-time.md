@@ -1,7 +1,7 @@
-#+TITLE: Optimus time!
-#+DATE: 2017-01-29
-#+CATEGORY: tools
-#+Tags: gentoo, optimus, time, wasted, frustration
+TITLE: Optimus time!
+DATE: 2017-01-29
+CATEGORY: tools
+Tags: gentoo, optimus, time, wasted, frustration
 
 Using gentoo is a bliss most of the time.
 The package manager portage is one of the most advanced managers that I've ever
@@ -42,7 +42,7 @@ Thanks X for taking con troll over everything (wayland still worked).
 
 If your keyboard fails you're in big trouble,
 X is sort of optional to fix things, but without a keyboard you can't even
-access the backup tty's linux comes with (alt+{f1,f2,...}).
+access the backup tty's linux comes with (alt+{f1,f2,&#x2026;}).
 
 So now I had to make a new live usb, because this new laptop has no cd player,
 and I only had live CD's.
@@ -51,11 +51,11 @@ into a tty.
 So in my situation it just involved disabling the display manager
 (which disables the keyboard).
 In case of systemd you just remove the symlink
-`/etc/systemd/system/display-manager.service`.
+\`/etc/systemd/system/display-manager.service\`.
 So after I did taht I spend over 4 hours figuring out what was wrong with the
 display manager.
 Apparently this new bumbleed clashes with X11, 
-I used the `/var/log/emerge.log` to figure this out
+I used the \`/var/log/emerge.log\` to figure this out
 (I kindoff forgot all the stuff I changed and for some reason journalctl
 recorded nothing of sddm.
 Also deleting the xorg.conf was a bad idea. it'll also produce a black screen.

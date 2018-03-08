@@ -1,7 +1,7 @@
-#+Title: Beginning of eternal summer
-#+Date: 2017-08-16 16:00
-#+Category: story
-#+Tags: travel, flying, indonesia, job
+Title: Beginning of eternal summer
+Date: 2017-08-16 16:00
+Category: story
+Tags: travel, flying, indonesia, job
 
 Right now I'm in the airport waiting to go to Jakarta.
 It's really weird what I'm doing I think, few people actually travel alone by
@@ -40,7 +40,7 @@ Of course just in the evenings, when I'm not doing cool traveling stuff.
 
 I'm also thinking about tracking the stuff I'm doing in Indonesia holiday a
 little on the blog in a journal kind off style,
-I know nobody is reading this but *I* like writing this.
+I know nobody is reading this but **I** like writing this.
 Directly encoding images etc, would also be nice.
 
 Maybe I'll also add my Chinese journeys to the blog. I at least have the journal
@@ -52,5 +52,3 @@ on it.
 Actually that maybe a good idea because then I'll only record interesting stuff.
 And it help with motivation because I'll think "Oh these 20 minutes are over 
 quickly".
-
-#  LocalWords:  freakonomics

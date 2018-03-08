@@ -1,7 +1,7 @@
-#+TITLE: Plan prediction
-#+DATE: 2017-12-21 12:00
-#+CATEGORY: tools
-#+Tags: statistics, machine-learning, AI, raster, data
+TITLE: Plan prediction
+DATE: 2017-12-21 12:00
+CATEGORY: tools
+Tags: statistics, machine-learning, AI, raster, data
 
 For the raster project a main selling point will be the automatic prediction
 of future scheduling.
@@ -9,7 +9,7 @@ There are two major schools of thoughts to go with that I know of.
 Constraint satisfaction solving and data driven approaches (use statistics).
 
 First of all the most straight forward approach is to use something like
-[[https://www.OptaPlanner.org/][OptaPlanner]]. 
+[OptaPlanner](https://www.OptaPlanner.org/). 
 In this approach constraints are laid upon the problem, such as 2 cooks
 need to at least work on Saturday, but preferably 3.
 This single constraint has two different part, the hard minimum, and the 'soft'
@@ -20,7 +20,7 @@ You could add as many constraints as you want, such as have less preference for
 when employees asked free or let students not work during the day.
 
 This is a very precise approach and almost surely will work,
-as other systems have [[https://www.youtube.com/watch?v=sOWC4qrXxFk&index=5&list=PLJY69IMbAdq0uKPnjtWXZ2x7KE1eWg3ns][demostrated]] [[https://github.com/kiegroup/optashift-employee-rostering][already]].
+as other systems have [demostrated](https://www.youtube.com/watch?v=sOWC4qrXxFk&index=5&list=PLJY69IMbAdq0uKPnjtWXZ2x7KE1eWg3ns) [already](https://github.com/kiegroup/optashift-employee-rostering).
 However the issue with this approach is the actual specification of rules.
 This is quite difficult to do, so for a fact I can't push this onto the company
 owners.
@@ -40,11 +40,11 @@ and also doesn't have the language interaction problem as it's just some calcula
 What I imagine is just adding a predict button to the current roster screen
 that uses the statistical model to magically create a roster.
 
-Now the method I thought of is simple, it's an adaptation of [[https://en.wikipedia.org/wiki/Q-learning][q-learning]],
+Now the method I thought of is simple, it's an adaptation of [q-learning](https://en.wikipedia.org/wiki/Q-learning),
 which uses a lookup table for getting action probabilities, if successful
 probability is increased, otherwise decreased.
 I'm doing something more simple, here is the gist of it:
-We count per day how many job types are planned in on average over /n/ weeks.
+We count per day how many job types are planned in on average over *n* weeks.
 Then we plan in that amount of job types, for remaining fractions we flip a
 coin.
 If someone has asked free we remove him from the potential pool of workers.

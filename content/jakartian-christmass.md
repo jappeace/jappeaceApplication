@@ -1,8 +1,7 @@
-#+TITLE: Jakartian Christmas
-#+DATE: 2017-12-19 21:00
-#+CATEGORY: reflection
-#+Tags: work, projects, jakarta, jesiska
-#+OPTIONS: toc:nil
+TITLE: Jakartian Christmas
+DATE: 2017-12-19 21:00
+CATEGORY: reflection
+Tags: work, projects, jakarta, jesiska
 
 Unfortunately Jesiska couldn't make it to Australia in time for Christmas.
 Therefore I decided basically last week to go to Jakarta instead!
@@ -21,7 +20,7 @@ I need to do this soon because my bonus interest of my savings account will stop
 at the new year.
 This holiday conveniently overlaps with that.
 
-The [[http://raster.click][raster]] project core is up and running. Basically anyone can sign up to it
+The [raster](http://raster.click) project core is up and running. Basically anyone can sign up to it
 and take advantage of it for free! Because I haven't setup payment yet!
 Because many payment providers ask tax details! Which is difficult to do in
 Australia!.. 
