@@ -70,7 +70,8 @@ THEME = 'theme'
 PLUGIN_PATHS = ["./pelican-plugins"]
 PLUGINS = [
     'org_reader',
-    'assets'
+    'assets',
+    'minify'
 ]
 
 def regex_replace(string, find, replace):
@@ -90,3 +91,10 @@ ORG_READER_EMACS_LOCATION = "/usr/bin/emacs"
 ORG_READER_EMACS_SETTINGS = os.path.abspath('lisp/config.el')
 ORG_READER_BACKEND = "'pelican-html"
 SASS_PATH = "theme/static/css"
+
+MINIFY = {
+    'remove_comments': True,
+    'remove_empty_space': True,
+    'remove_optional_attribute_quotes': False,
+    'pre_tags': ['ul', 'pre']
+}
