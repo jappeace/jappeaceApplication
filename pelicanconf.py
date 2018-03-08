@@ -25,12 +25,7 @@ AUTHOR_FEED_RSS = None
 # Links and social cruft
 # NOTE: These aren't called just LINKS and SOCIAL because those are assumed by
 # the default theme to be 2-tuples, but I need more info.
-LINKS_EX = [(
-    'blog',
-    '/',
-    "Isn't it this site?",
-    'blog'
-),
+LINKS_EX = [
 (
     'resume',
     '/files/2018/resume-openlearning.pdf',
