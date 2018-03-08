@@ -2,7 +2,7 @@ clean:
 	rm -R "output/*" || true
 run: clean
 	pelican -D --ignore-cache
-	ln -s "../images" "output/drafts/images"
+	ln -s "../images" "output/drafts/images" || true
 	xdg-open "localhost:8000"
 
 deploy: clean
