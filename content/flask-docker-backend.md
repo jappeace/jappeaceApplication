@@ -6,20 +6,28 @@ status: draft
 [//]: # (TODO: Third person)
 [//]: # (TODO: Add link to flask script that works with docker)
 
-I'm working with some friends on a little app project,
-which we tried to do completely app side with Firebase.
+Jappie Klooster is working with friends on a react native app.
+It was attempted to do this completely without server-side with help of Firebase.
+This post describes the thought process behind not using firebase for
+*everything*, and setting up a custom backend instead.
 
-However Firebase has issues, most notably the database provided in Firebase is
-NoSQL.
-Now, you can do a lot of stuff in NoSQL, but putting your entire application
-logic inside that is generally not a good idea, especially if it's relational.
-Ours is relational.
+The first major issue, for this use case specifically, is the type of database
+provided within Firebase.
+It's a NoSQL database that promises to sync between all devices.
+They probably mean syncing lazily, it's implied in the docs,
+but there is no definitive statement around that.
+NoSQL is the idea that [data doesn't need relationships](http://www.monitis.com/blog/cc-in-review-the-key-differences-between-sql-and-nosql-dbs/).
+For the core business logic of our app, we need relationships between data,
+and we need a lot of them.
+Technically one can represent these within NoSQL, but now you need to solve
+problems which most SQL databases have already done for you.
 
-Aside from the fact that I know a start up that committed to NoSQL in early
-stage and five years later is still doing manual joins in python,
-Firebase has another disadvantage in that it's proprietary.
-If this project takes off, and it may, then we don't want to be dancing to
-whatever tune google is telling us to dance to because we can't get out.
+Another *big* disadvantage of Firebase is that it's proprietary.
+Once a large chunk of the business logic, and data resides inside the Firebase
+ecosystem, it's hard to get out.
+This means it's relatively easy for the owner of the proprietary system, Google,
+to crank up the price.
+Neither Jappie nor his collaborators wanted to 
 
 # Language choice
 So we set out to setup a backend, I asked my colleagues a simple question. 
