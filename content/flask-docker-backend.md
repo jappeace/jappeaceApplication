@@ -1,5 +1,5 @@
 TITLE: Flask docker and the backend
-DATE: 2018-03-09
+DATE: 2018-03-10
 CATEGORY: tools
 Tags: docker, backend, flask, python, website, appengine
 status: draft
@@ -44,46 +44,52 @@ Another advantage of choosing either for these languages would be that our
 editors are already setup to handle them.
 
 # Docker
-My friends made it clear that it was of utmost importance we would jam our
-code into docker containers.
-I was pretty okay with that, but the way they spoke about deploying it was
-kind off, peculiar..
-They wanted to run docker container manually on rented VPS'es.
-That's like saying you want to use this awesome technology which makes
-orchestration super easy and not use it for orchestration at all.
-I mean it's hard to argue against such ignorance so I didn't,
-instead I tried remaining in the problem domain (what do you want?
-not what do you envision as an implementation).
+Many members of the team stressed the importance of containerization.
+Jappie, being the only one that had worked intimately with this technology
+was quite happy with this development.
+What was rather surprising was the suggestion that the team ought to run
+these containers by hand on rented VPS'es.
+Is docker not supposed to make orchestration more easy?
+Do there not exist many tools that build on top of docker to provide variances
+in orchestration? Such as docker-compose, docker swarm, appengine and Kubernetes?
+All these questions entered into Jappie's mind,
+but he felt arguing such ignorance would be a waste of his time.
+Once the team would start working with the containers they would see for
+themselves how easy orchestration is.
+The primary building block was in place anyway (docker) moving to another
+orchestration methodology will be easy.
 
-I picked up this task because I already knew how to dockerize things and my
-other major task had just completed.
-I wrote the little docker compose script, made a hello world in python and
-flask, put a unused Postgres container in the compose file for good measure,
-tested it out and it worked nicely.
-All this was in the space of about an hour or two, including stuff such as
-setting up the project writing the `Dockerfile` etc.
+It was here that Jappie decided to pick up this task.
+He knew about docker from previous experience already, and his other major task
+had just finished.
+He started with a little hello world in python served through [flask](http://flask.pocoo.org/).
+The he put this in a docker container by writing a `Dockerfile`, and finally
+he wrote a little docker-compose script to attach an idle Postgres container
+which would be need later.
+All this was done in the space of about an hour or two.
+Setting up docker isn't difficult.
 Then it was time for the next step, connecting flask to Postgres.
 
 # Flask
-Flask is built around the idea of micro-architectures.
-They give you stuff to do Rest with, and that's about it.
+Flask is a micro framework. 
+It gives some Rest support, and that's about it.
 They sometimes provide some glue scripts that connect some projects to other
 projects, but there is no main monolithic architecture behind it.
+In stark contrast to [Django](https://www.djangoproject.com/),
+which has already done most things for you.
 
-This gives the project a big advantage in that they can have
-independent versioning, swap out some projects for other projects etc.
-The big disadvantage, as I found out, is that its fairly challenging to get
+This micro framework setup, gives the project a big advantage in that they can
+have independent versioning, and gives the capability to swap out some projects
+for others quite easily.
+The big disadvantage, as Jappie encountered, is that its fairly challenging to get
 into.
-In fact it's hard.
+One may even say it's hard to get started.
+The reason for this is that gluing the ORM to the framework has to be done by
+hand.
+Jappie wanted to have an ORM to handle migrations and describe the model in.
 
-The thing I wanted was pretty basic, an ORM that can handle migrations for me.
-Those are the things any project basically needs, an ORM to do data
-(unless you're a fan of NoSQL, but if we were we wouldn't have had this issue),
-and a protocol to communicate through.
-Generally http and Rest because [of many good things](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm).
-
-I just went over example, through example, each of which had some other problem.
-Untill I found this large
+The thing that ended up working for Jappie was this
 [bootstrapping script](https://github.com/davidism/basic_flask) which was about
-5 years old.
-I ended patching it up to to modern flask, and put it into a docker container.
+5 years old and of course outdated.
+But Jappie managed to get [it running](https://github.com/jappeace/basic_flask),
+by googling errors, and stripping features.
