@@ -30,31 +30,18 @@ to crank up the price.
 Neither Jappie nor his collaborators wanted to 
 
 # Language choice
-So we set out to setup a backend, I asked my colleagues a simple question. 
-"How fast do you want it?", do you want to experiment a lot or just get it done?
-We all kind off agreed to just get it done asap.
-This eliminates a host of options, first of all, Haskell is not an option,
-even though we all aspire to it, nobody really knows how to do databases or
-Rest in Haskell.
-Secondly Rust is not an option.
-I myself am a big fan of it, but, I mostly play around with it,
-I would not be confident that I have any serious speed in developing in rust.
-In fact if it would go anything like last time I'd just spend several hours
-trying to setup rust language server in Emacs cause you got to have the best
-tools!
-
-What we're left with is boring stuff we all know: Python, C#, Java, Node etc.
-I picked Python.
-I don't know why anyone would choose Node, I mean, I'm trying to do less
-JavaScript not more, why would you write servers in it too?
-C# and Java are both more difficult to dismiss.
-Actually the reason my colleagues dismissed them was that they simply did not
-knew those. So for them it was analogous to starting a project in Rust.
-
-I had a much more petty reason for dismissing either of those,
-the editors in both C# and Java are really good, I had to either go out of my
-way and set it up for Emacs, install and setup one of the good editors,
-or use python which is already fine for Emacs (because python editors suck).
+The primary question imposed for deciding which language to use was
+"How fast do you want it?".
+*Fast*.
+This means the team rejected the idea that they wanted to learn from implementing
+the backend.
+Therefore a host of options was eliminated, such as Haskell and Rust.
+In fact because we wanted a pan-team familiar choice,
+only two real contenders were left. NodeJS and Python.
+The choice of Python was made because it is a much more simple
+language than JavaScript.
+Another advantage of choosing either for these languages would be that our
+editors are already setup to handle them.
 
 # Docker
 My friends made it clear that it was of utmost importance we would jam our
