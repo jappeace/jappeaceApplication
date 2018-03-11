@@ -1,4 +1,4 @@
-TITLE: Flask docker and the backend
+TITLE: Flask, docker and the backend
 DATE: 2018-03-11
 CATEGORY: tools
 Tags: docker, backend, flask, python, website, appengine
@@ -153,7 +153,7 @@ However with that in place one can create a
 [specialized user](https://medium.com/@mohammedhammoud/postgresql-create-user-create-database-grant-privileges-access-aabb2507c0aa)
 for manipulating the database (rather than the root Postgres account).
 
-Going trough those tutorial Jappie collected the useful commands into a
+Going trough those tutorials Jappie collected the useful commands into a
 makefile. With this in place he had no longer need to refer to them
 and could just `cat` the makefile to see how to deploy for example:
 
