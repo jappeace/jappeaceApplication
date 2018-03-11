@@ -3,8 +3,7 @@ DATE: 2018-03-10
 CATEGORY: tools
 Tags: docker, backend, flask, python, website, appengine
 status: draft
-[//]: # (TODO: Third person)
-[//]: # (TODO: Add link to flask script that works with docker)
+[//]: # (TODO: Write about deploying to appengine)
 
 Jappie Klooster is working with friends on a react native app.
 It was attempted to do this completely without server-side with help of Firebase.
