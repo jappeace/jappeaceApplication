@@ -151,11 +151,11 @@ Jappie was uncertain why a cloud proxy was recommended this much,
 in his memory he hadn't set this up last time with a Django project.
 However with that in place one can create a
 [specialized user](https://medium.com/@mohammedhammoud/postgresql-create-user-create-database-grant-privileges-access-aabb2507c0aa)
-for manipulating the database (rather than the root postgres account).
+for manipulating the database (rather than the root Postgres account).
 
 Going trough those tutorial Jappie collected the useful commands into a
 makefile. With this in place he had no longer need to refer to them
-and could just cat the makefile to see how to deploy for example:
+and could just `cat` the makefile to see how to deploy for example:
 
 ```make
 deploy:
