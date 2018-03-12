@@ -30,8 +30,6 @@ Neither Jappie nor his collaborators wanted to
 The primary question imposed for deciding which language to use was
 "How fast do you want it?".
 *Fast*.
-This means the team rejected the idea that they wanted to learn from implementing
-the backend.
 Therefore a host of options was eliminated, such as Haskell and Rust.
 In fact because we wanted a pan-team familiar choice,
 only two real contenders were left. NodeJS and Python.
