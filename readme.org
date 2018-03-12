@@ -59,3 +59,7 @@ blocks.
    
 ** Web assets doesn't render
    Mask jinja 2.9 for webassets 0.12, see https://bugs.gentoo.org/641766
+
+* Links
+[[https://www.google.com/webmasters/tools/site-message-view?hl=en_GB&authuser=0&siteUrl=https://jappieklooster.nl/][Google crawl report]], I stumbled on that when configuring a static site in
+buckets.
