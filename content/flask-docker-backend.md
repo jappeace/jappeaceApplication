@@ -50,10 +50,10 @@ Is docker not supposed to make orchestration more easy?
 Do there not exist many tools that build on top of docker to provide variances
 in orchestration? Such as docker-compose, docker swarm, appengine and Kubernetes?
 All these questions entered into Jappie's mind,
-but he felt arguing such ignorance would be a waste of his time.
+but he felt arguing in this case would be difficult wihtout an example.
 Once the team would start working with the containers they would see for
 themselves how easy orchestration is.
-The primary building block was in place anyway (docker) moving to another
+The primary building block was in place anyway (docker), moving to another
 orchestration methodology will be easy.
 
 It was here that Jappie decided to pick up this task.
@@ -124,24 +124,23 @@ Which the [python wiki](https://wiki.python.org/moin/Python2orPython3) backs up:
 
 After the hello world was successfully put online
 (in python 3 with the flexible environment),
-Jappie decided it was time to try setting up the entire system.
-For this he needed to setup a managed Postgres on Google Cloud and connect to
-that trough AppEngine.
+it was time to try setting up the entire system.
+For this a managed Postgres needed to be setup on Google Cloud and connected to
+AppEngine.
 
 Google however seems to favor more popular technologies,
 and the primary docs assume you want to use [MySQL](https://cloud.google.com/python/getting-started/using-cloud-sql).
-Jappie had used MySQL quite a lot when he was younger.
-But these days he had grown fond of Postgres.
+Postgres was the preferred choice for the team however.
 It is more
 [standard compliant and has better data types](https://www.quora.com/What-are-pros-and-cons-of-PostgreSQL-and-MySQL-With-respect-to-reliability-speed-scalability-and-features).
-An uber post however claims there are some interesting advantages
-to [mysql](https://eng.uber.com/mysql-migration/) if you manage the architecture
+An Uber post however claims there are some interesting advantages
+to [MySQL](https://eng.uber.com/mysql-migration/) if you manage the architecture
 yourself.
 This is done by google however in this use case,
 besides because an ORM is used, switching database technology is relatively easy.
 
 The search engine doesn't show the docs for Postgres with flask in AppEngine.
-Jappie found those in the [example project](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/appengine/flexible).
+These docs were found in the [example project](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/appengine/flexible).
 The source file had a link to
 [using postgres with AppEngine](https://cloud.google.com/appengine/docs/flexible/python/using-cloud-sql-postgres).
 To test if the Postgres instance was running 
@@ -153,7 +152,7 @@ However with that in place one can create a
 [specialized user](https://medium.com/@mohammedhammoud/postgresql-create-user-create-database-grant-privileges-access-aabb2507c0aa)
 for manipulating the database (rather than the root Postgres account).
 
-Going trough those tutorials Jappie collected the useful commands into a
+Going trough those tutorials the useful commands were collected into a
 makefile. With this in place he had no longer need to refer to them
 and could just `cat` the makefile to see how to deploy for example:
 
