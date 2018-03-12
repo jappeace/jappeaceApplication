@@ -9,4 +9,5 @@ deploy: clean
 	git diff-index --quiet HEAD -- || (echo "branch dirty, commit first" && false)
 	pelican content -s publishconf.py
 	git push &
+	echo "google-site-verification: google4043c908cce5ef76.html" > output/google4043c908cce5ef76.html # google verification, required for crawling analytics
 	rsync -avc --delete output/ root@jappieklooster.nl:/var/www/html/
