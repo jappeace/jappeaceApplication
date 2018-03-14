@@ -23,7 +23,6 @@ http://benhoyt.com/writings/pyast64/
 Also looks really clean.
 Although the word spacing is a weird choice
 
-
 ** Speedup
 Load logo seperatly,
 or do inpage compression,
@@ -38,6 +37,9 @@ It seems to be about 100k now which is a bit much imho.
 Make them all temporary, don't want browsers to cache them.
 
 
+** Search performance
+*** TODO Setup amp?
+*** TODO Setup structured
 * Troubleshooting
   To help me trough the dark times when the ductape fails.
   
