@@ -10,30 +10,76 @@ here my collected works I ever made.
 
 | Type   | Contract              |
 | Status | Finished successfully |
+| End    | 2013                  |
 
-I upgraded an existing web shop. The HTML part was already finished but it still
-needed to process payments.
-I added the payment system by using two external libraries.
+
+This was the first contracting job Jappie accepted.
+It started out by some simple requests: ``Please make my website rank higher into 
+Google'' and ``Help me straightening out the design in html''.
+This was done by modifying the meta tags to rather be as general as possible
+for each page to be as specific as https://sensara.heeft-vacatures.nl/java-talent-met-scrum-marathonloop-in-de-benen-rotterdam/183759/0possible.
+The html was also cleaned up.
+
+#+CAPTION: Example of solexmarkt at the time, Jappie helped implementing the design in html but did not make the design. (image from [[http://www.velosolexclubuk.com/parts-suppliers][velosolexclubuk]])
+[[../images/2018/solexmarkt-website.jpg]]
+
+Several months later the request got extended.
+"Could I make the static html into a web shop system".
+This was done by using two external libraries.
 First there was [[http://simplecartjs.org/][simplecartjs]] for offline cart configuration,
-and secondly there was [[https://cakephp.org/][CakePHP]]. At the time I still used PHP a lot
-(being a second year software engineering student) and had heard about [[https://nl.wikipedia.org/wiki/Model-view-controller-model][MCV]]
-systems, so I decided to give CakePHP a try (which I liked a lot).
-I used a MYSQL database because I was already intimately familiar with those
-(and at the time it probably didn't even occurred to me to try something else).
+and secondly there was [[https://cakephp.org/][CakePHP]].
+For handeling payment and storing the items to be displayed.
 
-The reason why the current website is no longer maintained by me is because
-I didn't want to touch PHP anymore.
-I actually wrote the original site at a loss, mainly because of my inexperience
-with estimating time and poor negotiation skills.
-This didn't help my motivation either.
-A lot of my classmates where joking about the language at the time and
-I already wrote it at a loss so I thought it best just to abandon it and focus
-on my studies.
+Being new to programming, Jappie still used PHP a lot.
+because he was a second year software engineering student he had also heard
+about [[https://nl.wikipedia.org/wiki/Model-view-controller-model][MCV]] systems.
+Which was all the motivation he needed to give CakePHP a try.
+At the time he really enjoyed that framework, it felt much more powerful
+than just plain PHP.
+MySQL was used as a database, because Jappie was already familiar with that
+and he was already experimenting[fn::
+There is, or should be an informal rule to programming projects that sais
+the reasonable limit for experimentation is 1.
+That is to say, only experiment with either one framework, one new database,
+or one new langauge. Don't start mixing as it will impact productivity to much.
+] by doing CakePHP.
+Also at the time it probably didn't even occur to Jappie to try something else.
+
+The reason why the current website is no longer maintained by Jappie is because
+of an aversion of using PHP,
+and due to poor estimation and negotiation skills,
+he kept getting rather low pay for doing this kind of work.
+Which was barely above minimum wage at times.
+So he decided to focus upon his studies instead.
 
 * De Huiskamer
 
-This is my parents company. Over the years I did various automation chores
-for them. Which was great because I enjoyed the work a lot but also helped out
+| Type   | Contract              |
+| Status | Finished successfully |
+| Date   | 2008-2015             |
+
+This company is owned by Jappie's parents.
+It's a restaurtant, and as one can imagine, it provides lots of oppuritunity for
+automation.
+
+The first task was more of a boast, back in 2008 Jappie barely new some basic
+PHP and mysql, yet he told his father he could make the scheduling of
+employees much easier by making a webiste for it.
+His father must have thought his son would've been crazy,
+but rather than dismissing this out of the bet, he decided to challange him.
+If you think you can do this, do it, I'll give you money for it he said.
+Fast forward a month or two and indeed a system had been created.
+
+The style was ugly, the UX was unfriendly, but it worked. It worked well.
+And it saved his father loads of time.
+This was actually the pre-pre cursor to the [[http://raster.click/][raster]] project.
+The precursor was made several years later when Jappie had learned about
+Object Orientated programming and decided to implement his own
+MVC framework (don't we all at some point).
+
+This is my parents company.
+Over the years I did various automation chores for them.
+Which was great because I enjoyed the work a lot but also helped out
 my parents business (which usually resulted in them having more time available).
 I did various projects for them.
 
