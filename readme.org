@@ -40,6 +40,13 @@ Make them all temporary, don't want browsers to cache them.
 ** Search performance
 *** TODO Setup amp?
 *** TODO Setup structured
+
+** Replace straight quotes with curly
+Probably can just add a filter in pelican or something.
+Make a plugin that fixes it for everyone?
+
+https://practicaltypography.com/straight-and-curly-quotes.html
+
 * Troubleshooting
   To help me trough the dark times when the ductape fails.
   
