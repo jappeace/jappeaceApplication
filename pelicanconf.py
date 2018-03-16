@@ -26,18 +26,19 @@ AUTHOR_FEED_RSS = None
 # NOTE: These aren't called just LINKS and SOCIAL because those are assumed by
 # the default theme to be 2-tuples, but I need more info.
 LINKS_EX = [
-(
-    'resume',
-    '/files/2018/resume-exol.pdf',
-    "To convince you to hire me!",
-    'resume'
+    (
+        'resume',
+        '/files/2018/resume-exol.pdf',
+        "To convince you to hire me!",
+        'resume'
 
-),
-#  ('portfolio'
-#  'pages/portfolio.html',
-#  "I made quite some stuff over the years, here I tell about it",
-#  'portfolio'
-# )
+    ),
+    (
+        'portfolio',
+        '/pages/portfolio.html',
+        "I made quite some stuff over the years, here I tell about it",
+        'portfolio'
+    )
 ]
 
 SOCIAL_EX = [(

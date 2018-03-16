@@ -3,8 +3,69 @@
 #+Category: reflection
 #+Date: 2017-09-06 22:00
 
-This page lists a lot of programming projects I made.
-here my collected works I ever made.
+This page lists some of the more complete programming projects I made.
+
+* Schijt je rijk
+
+| Type   | Contract              |
+| Status | Finished successfully |
+| End    | 2017                  |
+
+The [[https://www.vvruinen.nl/supportersvereniging/welkom-bij-de-supportersvereniging-vv-ruinen.html][supporters union]] of [[https://www.vvruinen.nl/][soccer club Ruinen]][fn::These are different entities,
+apparently]
+approached Jappie to make a software variant of a gambling system.
+Traditionally what they did was setting up a field where a cow would be
+unleashed.
+This field would have squares marked out by numbers.
+The public could beforehand buy several of these numbers.
+Then in whichever of these marked out squares the cow would shit,
+would have a winning number and got some price.
+There were some additional requirements,
+such as being able to have a pause between a round,
+specify the amount of rounds and squares.
+
+The task at hand was thus to create a field, add squares to it,
+and let a cow wander about.
+It also had shown on a big screen.
+Jappie decided to implement this in a little language called [[http://elm-lang.org/][Elm]].
+The best way to consider elm is as a simplified Haskell, that strongly
+encourages to use a React/Redux like architecture (in fact Redux was inspired
+by the [[https://redux.js.org/introduction/prior-art#elm][elm architecture]]).
+At the time Jappie didn't even know about React and Redux,
+he just wanted to try a new language,
+the fact that elm could be deployed on a browser rather easily was a big plus
+too.
+This meant it could be displayed on the big screen almost surely.
+
+The result can be seen in figure [[fig:schijt]].
+It was consider to deploy the system on the website too, but since some of the
+assets contain copyrighted material not owned by Jappie he decided to just show
+a figure instead.
+In the figure we can see the cow and some of the areas it shat in.
+In this case 297 won, the round blue thing is a button to continue to the
+next round (provided by the supporters union).
+
+#+LABEL: fig:schijt
+#+CAPTION: Example of solexmarkt at the time, Jappie helped implementing the design in html but did not make the design. (image from the [[https://web.archive.org/web/20140707004850/http://www.solexmarkt.nl/][wayback machine]])
+[[../images/2018/schijt-je-rijk.jpg]]
+
+Time pressure was significant whilst implementing this project.
+The price was agreed upon when starting the project,
+and it turned out to be quite a bit on the short side for Jappie.
+Then when the supporters union saw the final result and decided to ask several more
+features, Jappie decided to send them a bill describing the cost of each
+feature.
+Although the union was quite unhappy with this at first, it did halt the
+requirement creep.
+Only one additional feature was asked, which was rather small to implement,
+and additional currency was payed for that.
+
+Jappie learned two things from this,
+first of all people understand requirement sizes much better when there is a
+currency value attached to it.
+Secondly, doing this kind of work full-time is probably not a good option,
+negotiating these kind of deals is very stressful and difficult.
+This is one of the reasons he decided to consider a full time job instead.
 
 * Solexmarkt
 
@@ -14,13 +75,13 @@ here my collected works I ever made.
 
 
 This was the first contracting job Jappie accepted.
-It started out by some simple requests: ``Please make my website rank higher into 
-Google'' and ``Help me straightening out the design in html''.
+It started out by some simple requests: "Please make my website rank higher into 
+Google" and "Help me straightening out the design in html".
 This was done by modifying the meta tags to rather be as general as possible
-for each page to be as specific as https://sensara.heeft-vacatures.nl/java-talent-met-scrum-marathonloop-in-de-benen-rotterdam/183759/0possible.
+for each page to be as specific as possible.
 The html was also cleaned up.
 
-#+CAPTION: Example of solexmarkt at the time, Jappie helped implementing the design in html but did not make the design. (image from [[http://www.velosolexclubuk.com/parts-suppliers][velosolexclubuk]])
+#+CAPTION: Example of solexmarkt at the time, Jappie helped implementing the design in html but did not make the design. (image from the [[https://web.archive.org/web/20140707004850/http://www.solexmarkt.nl/][wayback machine]])
 [[../images/2018/solexmarkt-website.jpg]]
 
 Several months later the request got extended.
@@ -28,7 +89,7 @@ Several months later the request got extended.
 This was done by using two external libraries.
 First there was [[http://simplecartjs.org/][simplecartjs]] for offline cart configuration,
 and secondly there was [[https://cakephp.org/][CakePHP]].
-For handeling payment and storing the items to be displayed.
+For handling payment and storing the items to be displayed.
 
 Being new to programming, Jappie still used PHP a lot.
 because he was a second year software engineering student he had also heard
@@ -37,20 +98,23 @@ Which was all the motivation he needed to give CakePHP a try.
 At the time he really enjoyed that framework, it felt much more powerful
 than just plain PHP.
 MySQL was used as a database, because Jappie was already familiar with that
-and he was already experimenting[fn::
-There is, or should be an informal rule to programming projects that sais
-the reasonable limit for experimentation is 1.
+and he was already experimenting[fn:: There is,
+or should be an informal rule to programming projects that says
+the reasonable limit for experimentation is one.
 That is to say, only experiment with either one framework, one new database,
-or one new langauge. Don't start mixing as it will impact productivity to much.
-] by doing CakePHP.
+or one new language. Don't start mixing as it will impact productivity too much.
+Never mix and you don't learn much.] by doing CakePHP.
 Also at the time it probably didn't even occur to Jappie to try something else.
 
 The reason why the current website is no longer maintained by Jappie is because
 of an aversion of using PHP,
-and due to poor estimation and negotiation skills,
-he kept getting rather low pay for doing this kind of work.
-Which was barely above minimum wage at times.
-So he decided to focus upon his studies instead.
+and due to poor estimation and negotiation skills.
+He kept getting rather low pay for doing this kind of work.
+Which was the result of poor estimation of work, combined with requirement creep
+(and not knowing how to handle this).
+This result into pay which was barely above minimum wage at times.
+So he decided to focus upon his studies instead of trying to setup a
+consultancy.
 
 * De Huiskamer
 
@@ -59,28 +123,58 @@ So he decided to focus upon his studies instead.
 | Date   | 2008-2015             |
 
 This company is owned by Jappie's parents.
-It's a restaurtant, and as one can imagine, it provides lots of oppuritunity for
+It's a restaurant, and as one can imagine, it provides lots of opportunity for
 automation.
 
+** Plan system(s)
 The first task was more of a boast, back in 2008 Jappie barely new some basic
-PHP and mysql, yet he told his father he could make the scheduling of
-employees much easier by making a webiste for it.
+PHP and MySQL, yet he told his father he could make the scheduling of
+employees much easier by making a website for it.
 His father must have thought his son would've been crazy,
-but rather than dismissing this out of the bet, he decided to challange him.
-If you think you can do this, do it, I'll give you money for it he said.
+but rather than dismissing this, he decided to challenge him.
+"If you think you can do this, do it, I'll give you money for it" he said.
 Fast forward a month or two and indeed a system had been created.
 
 The style was ugly, the UX was unfriendly, but it worked. It worked well.
 And it saved his father loads of time.
 This was actually the pre-pre cursor to the [[http://raster.click/][raster]] project.
-The precursor was made several years later when Jappie had learned about
-Object Orientated programming and decided to implement his own
-MVC framework (don't we all at some point).
+Unfortunately it is not trivial to make a screenshot of this project.
+However the succeeding project, was made two years later when
+Jappie had learned about Object Orientated programming and decided to implement
+his own [[https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller][MVC]] framework (don't we all at some point). See figure [[fig:precursor-raster]].
 
-This is my parents company.
-Over the years I did various automation chores for them.
-Which was great because I enjoyed the work a lot but also helped out
-my parents business (which usually resulted in them having more time available).
-I did various projects for them.
+Compare that to the raster project which can bee seen in figure [[fig:raster]].
+In which he used [[https://www.djangoproject.com/][Django]], [[https://getbootstrap.com/][bootstrap]] and [[http://jinja.pocoo.org/docs/2.10/][every]] [[https://pypi.python.org/pypi/django-ical][library]] he could find to make his
+life easier.
+The raster project is still not in it's final form.
+However Jappie is eager to work on that again once he finds the time.
 
+#+CAPTION: The raster project
+#+LABEL: fig:raster
+[[../images/2018/raster.jpg]]
 
+#+CAPTION: The precursor to the raster project. It isn't particularly beautiful either, but used for years and packed with features.
+#+LABEL: fig:precursor-raster
+[[../images/2018/personeels-planning.jpg]]
+
+** Website designs
+He also made the website design of [[http://de2dekamer.nl/nieuw/][de2dekamer.nl]]
+(see figure [[fig:2dekamer]]), and implemented it within the [[https://www.drupal.org/][Drupal]] CMS.
+This was the first time where he started comparing options in choosing a CMS.
+He went with Drupal because at the time he read [[https://www.elegantthemes.com/blog/resources/wordpress-vs-drupal][blog posts]] that said it was the
+better choice for developers (rather than [[https://wordpress.com/][WordPress]]).
+
+#+CAPTION: De 2de kamer, design was made by Jappie.
+#+LABEL: fig:2dekamer
+[[../images/2018/de2dekamer.jpg]]
+
+After that he re-used this design and put it in place for dehuiskamer.com.
+Although this design is currently no longer used it can be still appreciated
+with help of the waybackmachine as shown in figure [[fig:huiskamer]].
+This design is unfortunately no longer used as the owner wanted to have a
+website that worked good on mobile.
+At the time Jappie did not have enough time available to implement this.
+
+#+CAPTION: De huiskamer, design made by Jappie, thanks to the [[https://web.archive.org/web/20140517090950/http://dehuiskamer.com/][waybackmachine]].
+#+LABEL: fig:huiskamer
+[[../images/2018/dehuiskamer.jpg]]
