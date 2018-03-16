@@ -178,3 +178,71 @@ At the time Jappie did not have enough time available to implement this.
 #+CAPTION: De huiskamer, design made by Jappie, thanks to the [[https://web.archive.org/web/20140517090950/http://dehuiskamer.com/][waybackmachine]].
 #+LABEL: fig:huiskamer
 [[../images/2018/dehuiskamer.jpg]]
+
+** Offertex
+In another instance of Jappie seeing his father doing repetitive stuff,
+he boasted he could mostly automate making offers for him.
+Where he only needed to insert certain variable and the program would
+generate the result for him.
+
+This was what the [[https://github.com/jappeace/offertex][offertex]] project was about.
+Because it's a terminal based program, we can appreciate the output in plain
+text shown in source block [[src:offertex]].
+Essentially the program just asks you questions about the possible offer.
+An offer in this case would be about a potential wedding some customers want to
+organize.
+It does various other things such as calculating the price and making the
+time planning for the offer.
+
+#+LABEL: fig:offertex
+#+CAPTION: sample output of offertex.
+#+BEGIN_SRC shell
+Selecteer een template
+0: brief
+1: brief_bedrijf
+2: email
+Uw keuze: 
+0
+specificeer datumfeest 
+10-02-1992
+datumfeest moet in dd-mm-jjjj formaat zijn, waar dd dag nummer is mm maand nummer en jj jaar nummer.
+
+specificeer datumfeest 
+10-02-1992
+datumfeest moet in dd-mm-jjjj formaat zijn, waar dd dag nummer is mm maand nummer en jj jaar nummer.
+
+specificeer datumfeest 
+19-02-2020
+specificeer groepgrote 
+20
+specificeer kinderen 
+10
+selecteer een betreft: 
+0: <? diversen ?>
+1: Bruiloft
+2: Familiedag
+3: Jubileum
+4: Personeelsfeest
+5: Receptie
+6: Vergadering
+7: Verjaardag
+Uw keuze: 
+2
+specificeer begintijd 
+10:00
+
+Start de planning
+
+---
+Geen planning
+
+selecteer een Beginnen Met activiteit
+0:  Terug
+1: 1X Koffie
+2: 1X Koffie Compleet
+3: 2X Koffie Cake
+4: 2X Koffie Gebak
+5: 2X Koffie Petit
+Uw keuze: 
+
+#+END_SRC
