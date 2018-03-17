@@ -2,8 +2,97 @@
 #+Tags: portfolio, work, brag
 #+Category: reflection
 #+Date: 2017-09-06 22:00
+#+OPTIONS: toc:nil
 
-This page lists some of the more complete programming projects I made.
+# Make the example images less dominating
+#+BEGIN_EXPORT html
+<style>
+.entry-content img{
+  width: 50%;
+}
+</style>
+#+END_EXPORT
+
+This page list projects Jappie made.
+If they listed here it means they're worthy of being talked about.
+This mean they either some kind off value, or used to add value.
+
+With this bar in place, a large host of projects Jappie worked on get eliminated.
+Such as that one time he decided to try out [[http://www.purescript.org/][PureScript]] and barely got an
+hello world operational,
+or that other time where he tried out C++ and just got a window open with a
+programmatic drawing.
+Indeed most 'practice' school work gets eliminated,
+although the projects that were made as part of team exercises to practice
+professional work may qualify
+(depending on if Jappie can find it,
+and manage to get it running so he can screenshot it)
+Obviously all work I managed to sell classifies,
+but certain hobby projects also count.
+
+
+#+TOC: headlines 2 
+
+There are three status kinds:
+
+1. Active, Jappie intends to work on this in the future
+2. Abandoned, There is no intention of working on this in the future
+3. Finished, No more work is necessary, the goals were achieved.
+
+
+
+* Raster.click
+| Type   | Hobby |
+| Status | Active |
+
+[[https://raster.click][Raster]] is a roster system. 
+This is made to fit a use case for a restaurant which wants to roster it's
+employees ahead of time.
+
+#+CAPTION: The raster project
+#+LABEL: fig:raster
+[[../images/2018/raster.jpg]]
+
+* distrowatch1graph1svg
+
+| Type       | Hobby   |
+| Status     | Active |
+  
+[[https://github.com/jappeace/distrowatch1graph1svg][This project]] is a data gather tool that scrapes [[https://distrowatch.com/][distrowatch]], 
+puts it into a graph format, and transforms the result so that it's
+parse-able by [[http://futurist.se/gldt/category/gnuclad/][gnuclad]], which turns it into an [[https://developer.mozilla.org/en-US/docs/Web/SVG][SVG]].
+Note that the one's in the tile actually should be a pipe symbol,
+but github didn't allow that.
+
+The inspiration for this project was that the distribution image presented on
+[[https://en.wikipedia.org/wiki/Linux_distribution][Wikipedia]], impressed Jappie so much that he decided to give Linux a try.
+This choice had a profound impact on his life.
+This lead to all kinds skills we can roughly summarize with the word 'dev ops'.
+In fact his website is an almost direct effect of Jappie getting familiar with
+Linux at that time.
+
+Later when he saw it again, and found out how it was made,
+he decided to improve upon it.
+Perhaps someday, someone else may also appreciate the magic that is Linux,
+and the power it provides.
+
+A sample can be seen in figure [[fig:distrowatch]].
+The program finds all distributions that are on distrowatch,
+however it turns out that there are some small mistakes in this data source.
+Fortunately the source CSV for the original was made available on the GNUClad
+website. One of the remaining tasks is to unify these data sources for a more
+complete picture.
+
+Another possible extension is rather than going in a 1 dimensional direction,
+where left is earlier in time and right is later in time,
+the output could be done in a 2 dimensional direction. Where the center point is
+the begin point and time goes outward in circles.
+To do this however the GNUClad program needs to be either modified or a new
+SVG generator has to be made.
+
+#+LABEL: fig:distrowatch
+#+CAPTION: Sample of svg output of this program, left the program, right the original.
+[[../images/2018/distrowatch1graph1svg.jpg]]
 
 * Schijt je rijk
 
@@ -149,9 +238,6 @@ life easier.
 The raster project is still not in it's final form.
 However Jappie is eager to work on that again once he finds the time.
 
-#+CAPTION: The raster project
-#+LABEL: fig:raster
-[[../images/2018/raster.jpg]]
 
 #+CAPTION: The precursor to the raster project. It isn't particularly beautiful either, but used for years and packed with features.
 #+LABEL: fig:precursor-raster
@@ -194,7 +280,7 @@ organize.
 It does various other things such as calculating the price and making the
 time planning for the offer.
 
-#+LABEL: fig:offertex
+#+LABEL: src:offertex
 #+CAPTION: sample output of offertex.
 #+BEGIN_SRC shell
 Selecteer een template
@@ -203,14 +289,6 @@ Selecteer een template
 2: email
 Uw keuze: 
 0
-specificeer datumfeest 
-10-02-1992
-datumfeest moet in dd-mm-jjjj formaat zijn, waar dd dag nummer is mm maand nummer en jj jaar nummer.
-
-specificeer datumfeest 
-10-02-1992
-datumfeest moet in dd-mm-jjjj formaat zijn, waar dd dag nummer is mm maand nummer en jj jaar nummer.
-
 specificeer datumfeest 
 19-02-2020
 specificeer groepgrote 
@@ -227,22 +305,7 @@ selecteer een betreft:
 6: Vergadering
 7: Verjaardag
 Uw keuze: 
-2
-specificeer begintijd 
-10:00
-
-Start de planning
-
----
-Geen planning
-
-selecteer een Beginnen Met activiteit
-0:  Terug
-1: 1X Koffie
-2: 1X Koffie Compleet
-3: 2X Koffie Cake
-4: 2X Koffie Gebak
-5: 2X Koffie Petit
-Uw keuze: 
 
 #+END_SRC
+
+#  LocalWords:  distrowatch1graph1svg
