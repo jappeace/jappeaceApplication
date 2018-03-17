@@ -1,5 +1,5 @@
 #+TITLE: Portfolio
-#+Tags: portfolio, work, brag
+#+Tags: portfolio, brag, projects
 #+Category: reflection
 #+Date: 2017-09-06 22:00
 #+OPTIONS: toc:nil
@@ -55,8 +55,9 @@ planned.
 
 * distrowatch1graph1svg
 
-| Type       | Hobby   |
-| Status     | Active |
+| Type   | Hobby  |
+| Status | Active |
+| Source | [[https://github.com/jappeace/distrowatch1graph1svg][github]] |
   
 [[https://github.com/jappeace/distrowatch1graph1svg][This project]] is a data gather tool that scrapes [[https://distrowatch.com/][distrowatch]], 
 puts it into a graph format, and transforms the result so that it's
@@ -99,6 +100,7 @@ SVG generator has to be made.
 | Type   | Contract              |
 | Status | Finished successfully |
 | End    | 2017                  |
+| Source | [[https://github.com/jappeace/schijt-je-rijk][github]]                |
 
 The [[https://www.vvruinen.nl/supportersvereniging/welkom-bij-de-supportersvereniging-vv-ruinen.html][supporters union]] of [[https://www.vvruinen.nl/][soccer club Ruinen]][fn::These are different entities,
 apparently]
@@ -156,6 +158,70 @@ currency value attached to it.
 Secondly, doing this kind of work full-time is probably not a good option,
 negotiating these kind of deals is very stressful and difficult.
 This is one of the reasons he decided to consider a full time job instead.
+
+* AI gamespace
+
+| Type   | Hobby     |
+| Status | Abandoned |
+| End    | 2016      |
+| Source | [[https://github.com/jappeace/gdx_ai_gamespace][github]]    |
+
+This was an attempt to make an [[https://www.ageofempires.com/][Age of empires]] like game,
+but in which AI could content rather easily with each other.
+One of the top priorities was network transparency,
+and therefore it was build on top of the [[https://doc.akka.io/docs/akka/2.5/actors.html][akka actor]] framework.
+The graphics used was [[https://libgdx.badlogicgames.com/][libgdx]], and the implementing language was Scala.
+
+The way networking was implemented was rather naive, sending the entire world 
+state to each client on each drawn frame.
+Jappie thinks this is actually a rather unfeasible way of doing game
+development.
+One should rather focus on implementing the core mechanics on the game,
+and figure things such as networking out later.
+
+The reason for listing it here is that the architecture is pretty nice.
+It was one of the latest projects I did in Scala, directly preceding 5ol.
+Jappie wouldn't put this on his resume however because the only utility it provides
+is in having nice source code.
+
+The reason for abandoning it was two fold. First of all Jappie didn't want to
+invest more into Scala (or any JVM based language). 
+Secondly he wanted to make another kind of game.
+Rather than direct command and control he wanted to try what became 5ol.
+Currently there are no plans for taking up this project again.
+
+The host is functional and rather easy to install thanks to [[https://gradle.org/][gradle]].
+Yes Scala was combined with gradle, and it worked well.
+
+#+CAPTION: The running gamespace in deployment phase, after pressing start you can also move these guys around but there isn't much else going on.
+#+ATTR_HTML: :class design
+[[../images/2018/gdx-ai-gamespace.jpg]]
+
+* Gravitas
+
+| Type   | School project        |
+| Status | Finished successfully |
+| End    | 2017                  |
+
+For the course games and agent Jappie worked in a team to re-implement a board
+game so we could study various AI methodologies upon it.
+We chose to do a board game as we wanted to focus upon the AI aspect rather
+than having to do much game mechanics.
+This was written in Python.
+Jappie did personally neuro-evolution with help of [[https://www.tensorflow.org/][TensorFlow]].
+
+The resulting network did not perform as expected,
+but Jappie did learn a lot about neural networks.
+Fortunately his team mates did have more successful approaches, 
+Q-learning was highly successful.
+The hand programmed solution performed by far the best.
+The full report is [[../files/2018/gravitas.pdf][available]],
+unfortunately the source can't be made available because it would infringe
+the intellectual property of [[https://boardgamegeek.com/boardgame/142992/gravwell-escape-9th-dimension][gravwel]] (the board game used).
+
+#+CAPTION: The implemented gravitas game. Function was prefered over form.
+#+ATTR_HTML: :class design
+[[../images/2018/gravitas.jpg]]
 
 * Solexmarkt
 
@@ -271,6 +337,9 @@ At the time Jappie did not have enough time available to implement this.
 [[../images/2018/dehuiskamer.jpg]]
 
 ** Offertex
+
+| Source | [[https://github.com/jappeace/offertex][github]] |
+
 In another instance of Jappie seeing his father doing repetitive stuff,
 he boasted he could mostly automate making offers for him.
 Where he only needed to insert certain variable and the program would
@@ -312,5 +381,21 @@ selecteer een betreft:
 Uw keuze: 
 
 #+END_SRC
+
+* Projects still to be added
+  These are some projects I should consider adding to this page,
+  I didn't do them all at once because it is a lot of effort.
+
+1. game programming minor: [[https://github.com/jappeace/hw-isgp-kbs][platform game]]
+2. game programming minor: [[https://github.com/Bakkes/Karo][board game]] (in 3d graphics, XNA, etc)
+3. game programming minor: [[https://github.com/jappeace/hw-isai][3d stuff]]
+4. Android app: city to city carpooling
+5. Android app: pick up taxi
+6. [[https://github.com/jappeace/gaia][GAIA]] chatbot
+7. [[https://github.com/jappeace/5ol][5ol]]
+8. Iceberg (argarius)
+9. Old website?
+10. Kookboek
+11. Pokemon stuff (I remember vaguely doing a lot of refactoring and some scala, who knows)
 
 #  LocalWords:  distrowatch1graph1svg
