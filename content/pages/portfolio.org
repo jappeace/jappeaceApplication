@@ -4,11 +4,10 @@
 #+Date: 2017-09-06 22:00
 #+OPTIONS: toc:nil
 
-# Make the example images less dominating
 #+BEGIN_EXPORT html
 <style>
-.entry-content img{
-  width: 50%;
+img.design{
+  width:50%;
 }
 </style>
 #+END_EXPORT
@@ -30,7 +29,6 @@ and manage to get it running so he can screenshot it)
 Obviously all work I managed to sell classifies,
 but certain hobby projects also count.
 
-
 #+TOC: headlines 2 
 
 There are three status kinds:
@@ -39,8 +37,6 @@ There are three status kinds:
 2. Abandoned, There is no intention of working on this in the future
 3. Finished, No more work is necessary, the goals were achieved.
 
-
-
 * Raster.click
 | Type   | Hobby |
 | Status | Active |
@@ -48,6 +44,10 @@ There are three status kinds:
 [[https://raster.click][Raster]] is a roster system. 
 This is made to fit a use case for a restaurant which wants to roster it's
 employees ahead of time.
+This is currently used at [[http://www.dehuiskamer.com/][Restaurant De Huiskamer]].
+A [[http://localhost:8000/plan-prediction.html][blog post]] was written about a possible extension idea,
+which essentially uses Q-learning to predict where future employees should be
+planned.
 
 #+CAPTION: The raster project
 #+LABEL: fig:raster
@@ -136,6 +136,7 @@ next round (provided by the supporters union).
 
 #+LABEL: fig:schijt
 #+CAPTION: Example of solexmarkt at the time, Jappie helped implementing the design in html but did not make the design. (image from the [[https://web.archive.org/web/20140707004850/http://www.solexmarkt.nl/][wayback machine]])
+#+ATTR_HTML: :class design
 [[../images/2018/schijt-je-rijk.jpg]]
 
 Time pressure was significant whilst implementing this project.
@@ -165,12 +166,13 @@ This is one of the reasons he decided to consider a full time job instead.
 
 This was the first contracting job Jappie accepted.
 It started out by some simple requests: "Please make my website rank higher into 
-Google" and "Help me straightening out the design in html".
+Google" and "Help me straightening out the design in HTML".
 This was done by modifying the meta tags to rather be as general as possible
 for each page to be as specific as possible.
-The html was also cleaned up.
+The HTML was also cleaned up.
 
 #+CAPTION: Example of solexmarkt at the time, Jappie helped implementing the design in html but did not make the design. (image from the [[https://web.archive.org/web/20140707004850/http://www.solexmarkt.nl/][wayback machine]])
+#+ATTR_HTML: :class design
 [[../images/2018/solexmarkt-website.jpg]]
 
 Several months later the request got extended.
@@ -241,6 +243,7 @@ However Jappie is eager to work on that again once he finds the time.
 
 #+CAPTION: The precursor to the raster project. It isn't particularly beautiful either, but used for years and packed with features.
 #+LABEL: fig:precursor-raster
+#+ATTR_HTML: :class design
 [[../images/2018/personeels-planning.jpg]]
 
 ** Website designs
@@ -252,6 +255,7 @@ better choice for developers (rather than [[https://wordpress.com/][WordPress]])
 
 #+CAPTION: De 2de kamer, design was made by Jappie.
 #+LABEL: fig:2dekamer
+#+ATTR_HTML: :class design
 [[../images/2018/de2dekamer.jpg]]
 
 After that he re-used this design and put it in place for dehuiskamer.com.
@@ -263,6 +267,7 @@ At the time Jappie did not have enough time available to implement this.
 
 #+CAPTION: De huiskamer, design made by Jappie, thanks to the [[https://web.archive.org/web/20140517090950/http://dehuiskamer.com/][waybackmachine]].
 #+LABEL: fig:huiskamer
+#+ATTR_HTML: :class design
 [[../images/2018/dehuiskamer.jpg]]
 
 ** Offertex
