@@ -12,12 +12,13 @@ img.design{
 </style>
 #+END_EXPORT
 
-This page list projects Jappie made.
+This page lists projects Jappie made.
 If they listed here it means they're worthy of being talked about.
-This mean they either some kind off value, or used to add value.
+This mean they either some kind off value right now, or they used to do that.
 
-With this bar in place, a large host of projects Jappie worked on get eliminated.
-Such as that one time he decided to try out [[http://www.purescript.org/][PureScript]] and barely got an
+Assuming this as an entry bar,
+a large host of projects Jappie worked on get eliminated.
+For example, that one time he decided to try out [[http://www.purescript.org/][PureScript]] and barely got an
 hello world operational,
 or that other time where he tried out C++ and just got a window open with a
 programmatic drawing.
@@ -158,6 +159,9 @@ currency value attached to it.
 Secondly, doing this kind of work full-time is probably not a good option,
 negotiating these kind of deals is very stressful and difficult.
 This is one of the reasons he decided to consider a full time job instead.
+
+
+
 
 * AI gamespace
 
@@ -383,8 +387,8 @@ Uw keuze:
 #+END_SRC
 
 * Projects still to be added
-  These are some projects I should consider adding to this page,
-  I didn't do them all at once because it is a lot of effort.
+  These are some projects that should be added to this page.
+  They were not done all at once because there is a lot of effort involved.
 
 1. game programming minor: [[https://github.com/jappeace/hw-isgp-kbs][platform game]]
 2. game programming minor: [[https://github.com/Bakkes/Karo][board game]] (in 3d graphics, XNA, etc)
@@ -394,8 +398,17 @@ Uw keuze:
 6. [[https://github.com/jappeace/gaia][GAIA]] chatbot
 7. [[https://github.com/jappeace/5ol][5ol]]
 8. Iceberg (argarius)
-9. Old website?
 10. Kookboek
-11. Pokemon stuff (I remember vaguely doing a lot of refactoring and some scala, who knows)
+11. Pokemon stuff (I remember vaguely doing a lot of re-factoring, and some scala, I think it also included battle mechanics)
 
 #  LocalWords:  distrowatch1graph1svg
+
+# * 5ol
+#  | Type | Hobby |
+#  | Status | Active |
+#  | Source | [[https://github.com/jappeace/5ol][github] |
+# This is Jappies's latest attempt into gamedev.
+# The development methodology is starkly different from the AI gamespace attempt.
+# Rather than trying to create this awesome architecture, he just wanted to get
+# something to work in this case.
+# TODO, before we can do this we need  to be able to build it so we can get a screenshot
