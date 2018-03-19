@@ -19,15 +19,14 @@ This mean they either some kind off value right now, or they used to do that.
 Assuming this as an entry bar,
 a large host of projects Jappie worked on get eliminated.
 For example, that one time he decided to try out [[http://www.purescript.org/][PureScript]] and barely got an
-hello world operational,
-or that other time where he tried out C++ and just got a window open with a
-programmatic drawing.
+hello world operational, although this could be considered a success,
+it does not have value to anyone else.
 Indeed most 'practice' school work gets eliminated,
 although the projects that were made as part of team exercises to practice
 professional work may qualify
 (depending on if Jappie can find it,
 and manage to get it running so he can screenshot it)
-Obviously all work I managed to sell classifies,
+Obviously all work Jappie managed to sell classifies,
 but certain hobby projects also count.
 
 #+TOC: headlines 2 
@@ -54,6 +53,35 @@ planned.
 #+LABEL: fig:raster
 [[../images/2018/raster.jpg]]
 
+
+* Gaia chatbot
+
+| Type     | School               |
+| Status   | Finshed successfully |
+| Links | [[https://github.com/jappeace/gaia][github]], [[https://jappieklooster.nl/my-thesis.html][blogpost]] |
+
+This chat bot is the result of my [[../my-thesis.org][thesis]], in this work he build a rule based
+chat bot.
+Which at the core uses a [[https://www.drools.org/][rule management system]].
+Jappie is of the opinion that this technology is extremely valuable,
+any technique can be used for any inquiry (eg, machine learning, Bayesian etc),
+by usage of simple rules.
+Therefore one can relatively easily combine machine learning with traditional 
+symbolic methods.
+During his work his teacher urged him to do a PhD on this work.
+Jappie for personal reasons at the time chose to decline it.
+
+The personality is implemented by analyzing the structure of this graph,
+and by attaching some extra values to it.
+The inner workings are explained in detail in this [[https://jappieklooster.nl/my-thesis.html][blogpost]].
+This project tries to emulate a doctor patient interaction where the user is the
+doctor. with the idea that doctors in education could practice social
+interaction more efficiently.
+
+#+CAPTION: An instance of the Gaia chat bot running in a reference implementation made for the browser.
+#+LABEL: fig:chatbot
+[[../images/2018/chatbot.jpg]]
+
 * distrowatch1graph1svg
 
 | Type   | Hobby  |
@@ -69,7 +97,7 @@ but github didn't allow that.
 The inspiration for this project was that the distribution image presented on
 [[https://en.wikipedia.org/wiki/Linux_distribution][Wikipedia]], impressed Jappie so much that he decided to give Linux a try.
 This choice had a profound impact on his life.
-This lead to all kinds skills we can roughly summarize with the word 'dev ops'.
+This lead to all kinds skills we can roughly summarize with the word 'devops'.
 In fact his website is an almost direct effect of Jappie getting familiar with
 Linux at that time.
 
@@ -160,9 +188,6 @@ Secondly, doing this kind of work full-time is probably not a good option,
 negotiating these kind of deals is very stressful and difficult.
 This is one of the reasons he decided to consider a full time job instead.
 
-
-
-
 * AI gamespace
 
 | Type   | Hobby     |
@@ -184,7 +209,7 @@ One should rather focus on implementing the core mechanics on the game,
 and figure things such as networking out later.
 
 The reason for listing it here is that the architecture is pretty nice.
-It was one of the latest projects I did in Scala, directly preceding 5ol.
+It was one of the latest projects he did in Scala, directly preceding 5ol.
 Jappie wouldn't put this on his resume however because the only utility it provides
 is in having nice source code.
 
@@ -388,6 +413,7 @@ Uw keuze:
 
 * Projects still to be added
   These are some projects that should be added to this page.
+  However for various reasons they are more hard to do.
   They were not done all at once because there is a lot of effort involved.
 
 1. game programming minor: [[https://github.com/jappeace/hw-isgp-kbs][platform game]]
@@ -395,11 +421,10 @@ Uw keuze:
 3. game programming minor: [[https://github.com/jappeace/hw-isai][3d stuff]]
 4. Android app: city to city carpooling
 5. Android app: pick up taxi
-6. [[https://github.com/jappeace/gaia][GAIA]] chatbot
 7. [[https://github.com/jappeace/5ol][5ol]]
 8. Iceberg (argarius)
 10. Kookboek
-11. Pokemon stuff (I remember vaguely doing a lot of re-factoring, and some scala, I think it also included battle mechanics)
+11. Pokemon implementation with gdx and some scala
 
 #  LocalWords:  distrowatch1graph1svg
 
