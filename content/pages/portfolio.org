@@ -188,7 +188,7 @@ Secondly, doing this kind of work full-time is probably not a good option,
 negotiating these kind of deals is very stressful and difficult.
 This is one of the reasons he decided to consider a full time job instead.
 
-* AI gamespace
+* AI game space
 
 | Type   | Hobby     |
 | Status | Abandoned |
@@ -196,27 +196,31 @@ This is one of the reasons he decided to consider a full time job instead.
 | Source | [[https://github.com/jappeace/gdx_ai_gamespace][github]]    |
 
 This was an attempt to make an [[https://www.ageofempires.com/][Age of empires]] like game,
-but in which AI could content rather easily with each other.
+build to allow AI to compete with each other.
 One of the top priorities was network transparency,
 and therefore it was build on top of the [[https://doc.akka.io/docs/akka/2.5/actors.html][akka actor]] framework.
 The graphics used was [[https://libgdx.badlogicgames.com/][libgdx]], and the implementing language was Scala.
 
 The way networking was implemented was rather naive, sending the entire world 
 state to each client on each drawn frame.
-Jappie thinks this is actually a rather unfeasible way of doing game
-development.
-One should rather focus on implementing the core mechanics on the game,
+The advantage of this is that you don't have de-syncrhonization issues.
+However in practice it turns out that this far to slow.
+
+The reason why networking had such a high priority was for allowing to execute
+multiple AI's from different machines.
+This is of course not a good way of doing game design,
+one should rather focus on implementing the core mechanics on the game,
 and figure things such as networking out later.
 
 The reason for listing it here is that the architecture is pretty nice.
-It was one of the latest projects he did in Scala, directly preceding 5ol.
-Jappie wouldn't put this on his resume however because the only utility it provides
-is in having nice source code.
+It was one of the latest projects he did in Scala, directly preceding 5OL.
+Jappie wouldn't put this on his resume however because the only utility it
+provides is in having nice source code.
 
 The reason for abandoning it was two fold. First of all Jappie didn't want to
 invest more into Scala (or any JVM based language). 
 Secondly he wanted to make another kind of game.
-Rather than direct command and control he wanted to try what became 5ol.
+Rather than direct command and control he wanted to try what became 5OL.
 Currently there are no plans for taking up this project again.
 
 The host is functional and rather easy to install thanks to [[https://gradle.org/][gradle]].
@@ -232,7 +236,7 @@ Yes Scala was combined with gradle, and it worked well.
 | Status | Finished successfully |
 | End    | 2017                  |
 
-For the course games and agent Jappie worked in a team to re-implement a board
+For the course 'games and agents' Jappie worked in a team to re-implement a board
 game so we could study various AI methodologies upon it.
 We chose to do a board game as we wanted to focus upon the AI aspect rather
 than having to do much game mechanics.
@@ -369,7 +373,7 @@ At the time Jappie did not have enough time available to implement this.
 
 | Source | [[https://github.com/jappeace/offertex][github]] |
 
-In another instance of Jappie seeing his father doing repetitive stuff,
+In another instance of Jappie seeing his father doing repetitive tasks,
 he boasted he could mostly automate making offers for him.
 Where he only needed to insert certain variable and the program would
 generate the result for him.
@@ -421,10 +425,12 @@ Uw keuze:
 3. game programming minor: [[https://github.com/jappeace/hw-isai][3d stuff]]
 4. Android app: city to city carpooling
 5. Android app: pick up taxi
-7. [[https://github.com/jappeace/5ol][5ol]]
-8. Iceberg (argarius)
-10. Kookboek
-11. Pokemon implementation with gdx and some scala
+6. [[https://github.com/jappeace/5ol][5ol]]
+7. Iceberg (argarius)
+8. [[https://github.com/jappeace/grails-kookboek][Kookboek]]
+9. [[https://github.com/jappeace/Slick2DRPG][Pokemon implementation]] with GDX and some Scala.
+   (Although I forked this from a friend).
+10. Playing around with 3D for AI [[https://github.com/jappeace/hw-isai][homework]]
 
 #  LocalWords:  distrowatch1graph1svg
 
