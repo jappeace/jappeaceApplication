@@ -25,6 +25,15 @@
 
         <footer>
             {{ lib.article_footer(article) }}
+            <div class="comments">
+              {% for comment in comments %}
+              {# TODO, recurse in sub comments #}
+              <div class="comment">
+                <span class="fn">{{ comment.author }} </span>
+                {{ comment.content }}
+              </div>
+              {% endfor %}
+            </div>
         </footer>
     </article>
 
