@@ -60,6 +60,11 @@ of interesting articles on that blog.
 
 https://danluu.com/
 
+
+** xoreaxeaxeax
+Everything in [[https://github.com/xoreaxeaxeax/][this github]] profile page is +insane+ beautifull.
+[[https://www.youtube.com/watch?v=KrksBdWcZgQ&feature=youtu.be&t=1250][This youtube]] explains the sandsifter thing in quite detail.
+
 * Tools
 ** Vps comparison sites
 For if you just need a cheap computing device somewhere on the internet.
