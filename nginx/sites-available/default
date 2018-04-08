@@ -20,10 +20,10 @@ server {
 
 	# SSL configuration
 	#
-	# listen 443 ssl default_server;
-	# listen [::]:443 ssl default_server;
-	# include snippets/ssl-jappieklooster.nl.conf;
-	# include snippets/ssl-params.conf;
+	listen 443 ssl default_server;
+	listen [::]:443 ssl default_server;
+	include snippets/ssl-jappieklooster.nl.conf;
+	include snippets/ssl-params.conf;
 
 
 	#main website
