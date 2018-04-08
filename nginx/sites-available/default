@@ -14,7 +14,6 @@
 # Default server configuration
 #
 server {
-	server_name jappieklooster.nl www.jappieklooster.nl;
 
 	listen 80 default_server;
 	listen [::]:80 default_server;
@@ -26,6 +25,7 @@ server {
 	# include snippets/ssl-jappieklooster.nl.conf;
 	# include snippets/ssl-params.conf;
 
+
 	#main website
 	root /var/www/html;
 
@@ -34,6 +34,8 @@ server {
 	rewrite ^(/thesis)$ https://dspace.library.uu.nl/handle/1874/351701 redirect;
 
 	index index.html index.htm index.nginx-debian.html;
+
+	server_name jappieklooster.nl www.jappieklooster.nl;
 
 	location /drafts{
 		try_files $uri @up;

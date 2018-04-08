@@ -14,4 +14,5 @@ deploy: clean
 	git push &
 	cp root/* output/
 	rsync -avc --delete nginx/ root@$(REMOTE):/etc/nginx/
+	ssh root@$(REMOTE) "systemctl restart nginx"
 	rsync -avc --delete output/ root@$(REMOTE):/var/www/html/
