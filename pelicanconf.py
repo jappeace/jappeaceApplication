@@ -72,8 +72,9 @@ PLUGIN_PATHS = ["./pelican-plugins"]
 PLUGINS = [
     'org_reader',
     'assets',
-    'minify'
-]
+    'minify',
+    'recofe'
+]b
 
 def regex_replace(string, find, replace):
     """A non-optimal implementation of a regex filter"""
