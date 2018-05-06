@@ -4,7 +4,6 @@ Date: 2017-03-06 22:00
 Category: reflection
 OPTIONS: toc:nil
 Tags: test, reddit, project, comment
-subreddit: netherlands
 status: draft
 
 So I'm trying to tie in reddit into this website as a comment system.
