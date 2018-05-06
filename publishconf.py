@@ -17,6 +17,7 @@ exec(compile(filedata,  filename, 'exec'))
 # extend configuration
 PLUGINS += ['optimize_images']
 
+
 filename = "./redditconf.py"
 filedata = open(filename, "rb").read()
 exec(compile(filedata,  filename, 'exec'))
