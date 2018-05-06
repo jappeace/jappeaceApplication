@@ -2,7 +2,7 @@ Title: Starting at Daisee
 Date: 2018-04-11 20:30
 Category: reflection
 Tags: job, work, website, burn
-subreddit: netherlands
+subreddit: blogs whateversub
 
 Recently quite a few changes have happened within Jappies' life.
 First of all, he is no longer at [OpenLearning](https://www.openlearning.com/).

@@ -73,8 +73,8 @@ PLUGINS = [
     'org_reader',
     'assets',
     'minify',
-    'recofe'
-]b
+    'reddit_poster'
+]
 
 def regex_replace(string, find, replace):
     """A non-optimal implementation of a regex filter"""
@@ -100,3 +100,4 @@ MINIFY = {
     'remove_optional_attribute_quotes': False,
     'pre_tags': ['ul', 'pre']
 }
+
