@@ -13,14 +13,20 @@ the tooling can be a bit challenging.
 One's understanding start with the fact that there is not one unified package
 manager. Well there is, but only experts use
 [cabal](https://www.haskell.org/cabal/) directly.
-The issue is that often dependencies don't quite match from the hackage
-repository, which cabal uses for the source code.
+The issue is that often dependencies don't quite match from the
+[Hackage](https://hackage.haskell.org/) repository,
+which cabal uses for the source code.
 So installing one extra dependency may cause you hours of trying to fit them
 all together.
 
 This is were [stack](https://www.stackage.org/) stepped in.
-Stack gaurentees that at some point in time all the provided packages in their
-repository will build together, by essentially hosting their alternative to hackage,
-called stackage.
+Stack guarantees that at some point in time all the provided packages in their
+repository will build together, by essentially hosting their alternative to
+[Hackage](https://hackage.haskell.org/), called
+[Stackage](https://www.stackage.org/).
 
+Okay so everything is good up till this point. However, 
 
+- ssl
+- nix
+- git

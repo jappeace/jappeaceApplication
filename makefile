@@ -10,7 +10,7 @@ run: clean
 deploy: # clean
 	echo "Deploying to  $(REMOTE)"
 	git diff-index --quiet HEAD -- || (echo "branch dirty, commit first" && false)
-	pelican content -s publishconf.py
+	pelican content -s publishconf.py -D
 	git push &
 	cp root/* output/
 	rsync -avc --delete nginx/ root@$(REMOTE):/etc/nginx/
