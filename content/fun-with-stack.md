@@ -111,15 +111,43 @@ or even host their own source code with [gitlab](https://gitlab.com).
 
 There is no doubt that stack supports such a functionality for any alternative,
 however it is unclear how to replace the github field properly with alternatives.
-It is hard to search for a solution as it's odly specific.
+It is hard to search for a solution as it's odly specific,
+but it [turns out](https://stackoverflow.com/questions/40332040/what-goes-in-a-stack-package-yaml-file?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)
+that [hpack](https://github.com/sol/hpack)
+is used to parse the package.yaml file.
+Perhaps thie `git` key is used to replace `github`?
+It is unclear.
+It's also ironic in that we can immediatly observe the difference strong
+types make in documentation ability, this yaml file is not strongly typed.
 
 ## Commit dependencies
 In certain situations one may need to change a library.
 The typical way of doing this is to make the fork, and then specify in the
 dependency manager, that a specific (git) url needs to be used on a specific
 commit hash.
+For example: If one tries to get the `56e833` commit from the
+[voicebase library](https://bitbucket.org/daisee/voicebase/src/master/),
+you should record the hash and url somewhere.
 
-j
 
-## Notes
-- git
+If we google for the query `stack.yaml git dependency`,
+you just need to know that you configure this in `stack.yaml`, which is completely unrelated to `package.yaml`
+google points you to
+an outdated doc page which fails to work.
+A helping [stackoverflow](https://stackoverflow.com/questions/43789271/stack-yaml-not-pulling-in-dependency-from-github?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)
+gives the reason why it doesn't work, the syntax recently has changed and
+Google hasn't updated yet.
+One can hardly blame stacks maintainers for this of course. 
+But it still impacts a users' experience.
+
+![Outdated docs](/images/2018/stack-old-docs.jpg)
+
+# Conclusion
+Dependency management in Haskell is complicated.
+Even if one is able to become productive in the langauge,
+any of the problems described here could still make it impossible for them to
+make the system they want.
+Learning about functors and applicative is fun,
+learning what specific syntax to use to make stack pull in a git repository is
+not.
+
