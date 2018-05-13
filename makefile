@@ -5,7 +5,7 @@ clean:
 run: clean
 	pelican -D # --ignore-cache # I have no idea what this cache does
 	ln -s "../images" "output/drafts/images" || true
-	xdg-open "localhost:8000"
+	xdg-open "http://localhost:8000"
 
 deploy: # clean
 	echo "Deploying to  $(REMOTE)"
