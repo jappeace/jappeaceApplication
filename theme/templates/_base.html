@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
-    <meta charset="utf-8">
+
     <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
     <meta name="author" content="{{ AUTHOR }}">
 
@@ -59,7 +59,7 @@
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
     {% endif %}
 
-  {% if not page %} <!-- don't show adds on pages, only articles -->
+    {% if not page %} <!-- don't show adds on pages, only articles -->
     <!-- google addsense -->
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <script>
@@ -69,15 +69,27 @@
         });
     </script>
    {% endif %}
+
+    <!-- Global site tag (gtag.js) - Google Analytics
+        Lets just track whoever enters the website, it may be intersesting
+    -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120139048-1"></script>
+   <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-120139048-1');
+   </script>
 </head>
 
 <body>
-    {% block entirebody %}{% endblock %} <!--  -->
+    {% block entirebody %}{% endblock %} <!-- I guess al information -->
     <footer class="window"role="contentinfo">
        <small>
-           Themestructure from <a href="https://github.com/eevee/eev.ee">here</a>,
+           Themestructure from <a href="https://github.com/eevee/eev.ee">here</a>, <!-- how much is even left of this? -->
            therefore all theme stuff is licensed under <a href="http://creativecommons.org/licenses/by/3.0/us/">Creative Commons Attribution 3.0</a>.
-            <!-- So legally I have to say thanks lexy munroe -->
+         <!-- So legally I have to say thanks lexy munroe -->
+         <!-- I think I filter out my thanks -->
            Powered by <a href="http://docs.getpelican.com/en/3.3.0/">Pelican</a>.
             <a href="https://github.com/jappeace/jappeaceApplication">Source code</a>,
             licensed under GPLv3.
