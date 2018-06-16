@@ -100,3 +100,5 @@ MINIFY = {
     'remove_optional_attribute_quotes': False,
     'pre_tags': ['ul', 'pre']
 }
+
+TYPOGRIFY = True
