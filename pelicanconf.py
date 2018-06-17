@@ -9,7 +9,11 @@ SITENAME = 'Jappie'
 SITEURL = ''
 
 PATH = 'content'
-STATIC_PATHS = ['files', 'images']
+STATIC_PATHS = ['files', 'images', 'raw-html']
+# we obviously don't want to put any articles in any of the static paths.
+# pelican needs to be told this explicetly
+# this allows us to put raw html in any of these paths.
+ARTICLE_EXCLUDES = list(STATIC_PATHS) # copy to make sure it's not modified
 
 TIMEZONE = 'Europe/Paris'
 
