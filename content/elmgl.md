@@ -15,9 +15,8 @@ This post comments on the effort of porting a
 [javasript webgl fire](https://github.com/ethanhjennings/webgl-fire-particles)
 to an [elm implemention](https://github.com/jappeace/elmgl-fire).
 Elm was chosen as target language because it is opinionated, easy and type safe.
-We will soon find out that because elm is a pure language,
-garbage collection will grind our program to an halt,
-therefore we must push more logic to the shaders!
+Because elm is a pure language, garbage collection will grind our program to an halt,
+therefore we must push more logic to the Shaders!
 
 # In the beginning there was nothing.
 
@@ -40,7 +39,7 @@ A pattern that may recur during the blog post.
 From here on there are two possible paths to continue,
 first one can try and completely understand what the shaders do and how they
 work,
-or one can just copy over the shader code from the javascript project and see if
+or one can just copy over the shader code from the Javascript project and see if
 we can make that work.
 Although
 [initial work](https://github.com/jappeace/elmgl-fire/commit/96f3dd293ad72f8b199d7958500f0f14ea2ed013)
@@ -61,15 +60,16 @@ The result of this effort is shown below.
 
 ![Something in gl](/images/2018/gl-something.jpg)
 
-Surprisngly this is counted as progress. Not having a blank screen is good in gl.
-Obviousy, the next thing to do was fixing the colors.
+Surprisingly this is counted as progress.
+Not having a blank screen is good.
+Obviously, the next thing to do was fixing the colors.
 This happened by porting the [hue code](https://github.com/jappeace/elmgl-fire/commit/dbe4c308dcc24f0af8ea6b8f85991c1d83354002),
 there was no elm implementation for this particular kind of Hue representation.
 Adding a [black background](https://github.com/jappeace/elmgl-fire/commit/dbe4c308dcc24f0af8ea6b8f85991c1d83354002#diff-3e16369f543b857a1fea048cf77b7315R120)
 (because a white background and the hue produces
 light blue, but a black background and light blue mixes into an orange).
-Finally transparancy needed to be unbroken, transparancy.
-Transparancy was quite interesting because my initial fix involved changing the
+Finally transparency needed to be unbroken, transparency.
+Transparency was quite interesting because my initial fix involved changing the
 shader.
 However the the [right option](https://github.com/jappeace/elmgl-fire/commit/dbe4c308dcc24f0af8ea6b8f85991c1d83354002#diff-3e16369f543b857a1fea048cf77b7315R136)
 was eventually found
@@ -84,95 +84,123 @@ everything.
 A single dot on it's own is just a single dot, but if we randomly place it all
 over the screen we get something nice to look at (live [here](/raw-html/2018/random-spheres.html)):
 
-<video controls loop video controls>
+<video controls loop video controls autoplay>
     <source src="/images/2018/spheres.webm" type="video/webm">
     Your browser does not support the video tag.
 </video>
 
-Asside from random creation this doesn't bring us much closer to the goal of fire.
+Aside from random creation this doesn't bring us much closer to the goal of fire.
 However some more work was done on it because Jappie thought it looked beautiful.
 Performance was increased by after creating a particle storing it in it's
-webgl representative form immediatly.
+webgl representative form immediately.
 Before that there was an update loop that changed the particle types into elmgl
 objects, which is a more traditional way of doing 'games'.
 In this case it meant having a particle model, which in the view gets translated
-into the verticies.
-However it is taxing on garbage collection in a pure langauge because the
-verticies have to be recreated every frame.
-Keeping a list of final verticies is much lighter.
+into the vertices.
+However it is taxing on garbage collection in a pure language because the
+vertices have to be recreated every frame.
+Keeping a list of final vertices is much lighter.
 
 # Movement
 To do movement we dropped some changes from the random sphere case.
 That work was put on a branch because in the future we may want to do more
-experimentation with the random speheres. (For example by introducing varying hues,
+experimentation with the random spheres. (For example by introducing varying hues,
 and or letting the spheres fade based upon time).
-The idea of not doing an update loop at all is temporarly put asside,
-it would be easier to make to just port the javascript first to elm.
+The idea of not doing an update loop at all is temporary put aside,
+it would be easier to make to just port the Javascript first to elm.
 
 It turns out however that the result is somewhat unimpressive.
-Yes it kindoff looks like fire, but after about 20 seconds the garbage collection
+Yes it looks like fire, but after about 20 seconds the garbage collection
 kicks in and the program grinds to an halt, here is an example (
 live [here](/raw-html/2018/slow-fire.html), may grind your computer to a
 halt):
 
-<video controls loop video controls>
+<video controls loop video controls autoplay>
     <source src="/images/2018/slow-fire.webm" type="video/webm">
     Your browser does not support the video tag.
 </video>
 
 ## Speed
-The problem is that aside from creating particles and sending them to a gpu,
+The problem is that aside from creating particles and sending them to a GPU,
 All existing particles must every cycle be updated with the new location.
 This is of course rather dumb, the path of the particles after creation is
-entirly deterministic.
+entirely deterministic.
 Why don't we let the shaders do this?
 The idea being that we create particles with an initial position, timestamp and
 velocity.
-And then let the shaders calculate the positition for whatever the current
+And then let the shaders calculate the position for whatever the current
 timestamp is.
 
-Turns out howver this is easier said than done. Because the elm webgl api
+Turns out however this is easier said than done. Because the elm webgl API
 specifies a uniform for each entity it has to always loop over the in memory
 structure (causing unstable behavior).
-In an unpure langauge this wouldn't have been a problem as we could just 
+In an unpure language this wouldn't have been a problem as we could just 
 replace the reference with a newly updated uniform.
 Elm does not support this.
 
-What potentially could be done is redigning the shader to take into account
+What potentially could be done is redesigning the shader to take into account
 multiple particles per elm entity.
-This is what is done.
-Rather than tracking lists of entities, lists of tuples of vertecies are now being tracked:
+Rather than tracking lists of entities, lists of tuples of vertices are now being tracked:
 `List (Vertex, Vertex, Vertex)`.
-It would've been preferable to use `Mesh Vertex` as type, but it's not monoidal.
+It would've been preferable to use `Mesh Vertex` as type, but it does not
+support appending.
 What is a mesh but a list of triangles? or in other words, what is a mesh but
-a list of 3 verticies. Since lists can be joined together it should be monoidal.
+a list of 3 vertices.
 
 This approach seemed to work much better, in fact this is probably how one
-should use this api. It was possible to render 500 particles now comfortably:
+should use this api.
+It was possible to render 500 particles now and the computer didn't lock up:
 
 live [here](/raw-html/2018/fast-fire.html)
-<video controls loop video controls>
+<video controls loop video controls autoplay>
     <source src="/images/2018/fast-fire.webm" type="video/webm">
     Your browser does not support the video tag.
 </video>
 
 It's still not very good, as the original was able to do up to 3000 particles
-per seconds quite comfortably...
+per seconds quite comfortably (with much better frame rate)...
 Currently it is unclear how to improve the speed.
-There is not a lot of things done on the cpu side, and still the javascript
-implementation, which does almost everything on cpu, is faster.
+There is not a lot of things done on the CPU side, and still the Javascript
+implementation, which does almost everything on CPU, is faster.
 Perhaps this is just a limit of using elm.
 
 Unfortunatily wind hasn't been implemented, neither have the sparks been.
 The port is quite incomplete.
-For the wind we require a gsl implementation of simplex noise (perlin noise).
+For the wind we require a GSL implementation of simplex noise (perlin noise).
 Which should be possible because it's just a big pre-seeded lookup table,
 however this is out of the scope of this project.
-The sparks are just a particle with different texture and behavior charistics.
-It would be quite trivial to add, which is left as an excersize for the reader.
+The sparks are just a particle with different texture and behavior characteristics.
+It would be quite trivial to add, which is left as an exercise for the reader.
+
+## More speed?
+Another idea to increase speed is by reducing the amount of information send 
+to the GL pipeline.
+Every frame we send this Mesh collection to the GPU trough a buffer, if we 
+can decrease the size of this buffer we would increase speed.
+It would also lighten the load on garbage collection, as less objects need to
+be created.
+We can do this rather trivially by representing each particle as a single vertex,
+with a position and size.
+Then we just use a shader to reconstruct the vertices into quads (squares).
+The vertex shader would move the vertex first, then another shader would do
+reconstruction, then the fragment shader would do drawing.
+Easy as pi.
+
+Stackoverflow [suggests](https://stackoverflow.com/questions/5821152/opengl-add-vertices-with-vertex-shader)
+that we need to use a geometry shader for this.
+Unfortunately the elm GL api doesn't support this, 
+it only has a slot for vertex, and fragment shader in the [entity function](http://package.elm-lang.org/packages/elm-community/webgl/2.0.5/WebGL#entity).
+Jappie briefly got excited about adding this shader type to the elm API,
+however he discovered that webgl doesn't support this type of [shader at all]( https://stackoverflow.com/questions/8641119/webgl-geometry-shader-equivalent).
 
 # In conclusion
-Upon discovery of the webgl api for elm Jappie was quite excited about using that.
+Upon discovery of the webgl API for elm Jappie was quite excited about using that.
 However after using it, and finding the rather large performance difference
 the excitement has been tempered.
-Perhaps elm is not yet ready for any serious game development.
+It's still a good entry point for graphics development,
+a lot was learned from doing this project.
+In fact the idea for using geometry shaders would not had been realized at all
+in a faster language.
+In future endeavors with graphics Rust will be used,
+as it doesn't have these performance problems which are just frustrating.
+It will also allow usage of more shader types.
