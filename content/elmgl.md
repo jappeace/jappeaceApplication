@@ -4,6 +4,7 @@ Category: technique
 OPTIONS: toc:nil
 Tags: elm, shaders, programming
 subreddit: elm programming shaders
+status: draft
 
 ![Elm on fire](/images/2018/elm-fire.svg)
 
