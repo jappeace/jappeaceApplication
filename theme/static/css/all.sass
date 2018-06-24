@@ -169,6 +169,7 @@ nav
 
 nav ul li:hover h3
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
+
 p
     // IDK the hyphens appear to often, I don't really like it
     // text-align: justify
@@ -180,7 +181,12 @@ p
         padding-right: 4px
         color: $col-link
     \+p
-        text-indent: 1.375em
+        $indent: 1.375em
+        text-indent: $indent
+        \> img
+            margin-left: -$indent
+
+       
 
 footer ul li
     width: 49%
