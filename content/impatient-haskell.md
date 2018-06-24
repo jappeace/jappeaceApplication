@@ -1,5 +1,5 @@
 Title: Pragmatic Haskell: Simple servant webserver
-Date: 2018-06-23 12:00
+Date: 2018-06-25 12:00
 Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools
@@ -165,11 +165,11 @@ module Lib
     ( webAppEntry
     ) where
 
-import Servant
-import Data.Aeson
-import Data.Aeson.Types
-import GHC.Generics
-import Network.Wai.Handler.Warp
+import Servant(serve, Proxy(..), Server, JSON, Get, (:>))
+import Data.Aeson(ToJSON)
+import GHC.Generics(Generic)
+import Network.Wai(Application)
+import Network.Wai.Handler.Warp(run)
 
 type UserAPI = "users" :> Get '[JSON] [User]
 
@@ -231,11 +231,11 @@ module Lib
     ( webAppEntry
     ) where
 
-import Servant
-import Data.Aeson
-import Data.Aeson.Types
-import GHC.Generics
-import Network.Wai.Handler.Warp
+import Servant(serve, Proxy(..), Server, JSON, Get, (:>))
+import Data.Aeson(ToJSON)
+import GHC.Generics(Generic)
+import Network.Wai(Application)
+import Network.Wai.Handler.Warp(run)
 ```
 Moving onward, there is the module definition that stack generated for us,
 modules are just namespaces, or similar to python modules.
@@ -372,8 +372,3 @@ curl localhost:6868/users
 
 > [{"email":"isaac@newton.co.uk","name":"Isaac Newton"},{"email":"ae@mc2.org","name":"Albert Einstein"}]
 ```
-
-Hurray success.
-Now lets add a database.
-
-# Database
