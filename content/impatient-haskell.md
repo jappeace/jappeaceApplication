@@ -1,4 +1,4 @@
-Title: Hey you! Go build a Haskell webserver with servant!
+Title: Pragmatic Haskell: Simple servant webserver
 Date: 2018-06-23 12:00
 Category: tools
 OPTIONS: toc:nil
@@ -110,8 +110,6 @@ It builds!
 Functions can be renamed, simple compile errors can be solved, and strings
 can be changed. Progress!
 
-![Progress!](/images/2018/good-job.svg) 
-
 # Servant: Your first dependencies
 It will be easy, don't worry!
 For the impatient, there is a minimal example already [available](https://github.com/haskell-servant/example-servant-minimal)
@@ -156,7 +154,7 @@ If it's unknown to the reader what a type is, think of it as a shape we can
 attach to a function.
 What servant allows us to do is define this shape for a rest api.
 Let's look at a concrete example line by line.
-These are the magic spells required to setup servant:
+These are the magic spells required to setup servant (`Lib.hs`):
 
 ```haskell
 {-# LANGUAGE DataKinds #-}
@@ -224,22 +222,53 @@ So we need datakinds to insert data into a type.
 probably also something data).
 If we disable `TypeOperators`, GHC says it doesn't like `:>` in the type lines.
 And if we disable `DeriveGeneric` it just says we need to enable that to derive
-generic in the data definition of User, this is required for serialization
+[generic](https://wiki.haskell.org/GHC.Generics)
+in the data definition of User, this is required for serialization
 (in our case JSON conversion).
 
+```haskell
+module Lib
+    ( webAppEntry
+    ) where
+
+import Servant
+import Data.Aeson
+import Data.Aeson.Types
+import GHC.Generics
+import Network.Wai.Handler.Warp
+```
 Moving onward, there is the module definition that stack generated for us,
-modules are just namespaces, or like python modules.
-Nothing really special about those except syntax.
+modules are just namespaces, or similar to python modules.
+Nothing really special about those.
 Then we have a bunch of Imports which pull functions into the module namespace.
+There is syntax for name clash management, but we won't introduce it here.
 
-Then we have the line which defines the UserAPI type, which will serve as the
-REST endpoint.
-It's a Get request, mounted below user, returning something JSON and of shape User.
+```haskell
+type UserAPI = "users" :> Get '[JSON] [User]
+```
+This line defines the UserAPI type, which will serve as the REST endpoint.
+The image at the beginning of the post was about this line.
+Let's read it as a sentence, without worrying about how it fits together just
+now:
+It's a Get request, mounted below `/user`, returning something JSON and of
+shape/type User.
+Conveniently we will discuss what a user is in the next section.
 
-User is defined below that, which is just a data structure consisting of two
-strings.
+```haskell
+data User = User
+  { name :: String
+  , email :: String
+  } deriving (Eq, Show, Generic)
+
+instance ToJSON User
+```
+User is just a data structure consisting of two strings:
 Email and name.
-This datastrcutre derives Show, Eq and Generic.
+The way we declared data here is called [record syntax](http://learnyouahaskell.com/making-our-own-types-and-typeclasses#record-syntax).
+This data structure derives
+[Show](https://hackage.haskell.org/package/base-4.9.1.0/docs/Text-Show.html),
+[Eq](http://hackage.haskell.org/package/base-4.11.1.0/docs/Data-Eq.html)
+and Generic.
 Deriving means that GHC will generate function implementations for this
 data structure. so if you call `show` on a User, it will know what to do
 (show is toString).
@@ -247,21 +276,94 @@ data structure. so if you call `show` on a User, it will know what to do
 (implementation is provided by generic).
 
 Done with data, let's move on to some code!
-`users :: [User]` specifies a function that will always return a list of Users.
-`user = ` specifies what this list contains.
+```haskell
+users :: [User]
+```
+Specifies a function that will always return a list of Users.
+There are no arguments to this function.
+We can safely assume the list is always the same
+(because it's a pure function, no monads involved).
+This is how we specify constants.
 
+```haskell
+users =
+  [ User "Isaac Newton"    "isaac@newton.co.uk"
+  , User "Albert Einstein" "ae@mc2.org"
+  ]
+```
+This is the implementation of before defined function.
+There are apparently two users in this list, one Isaac, and another Einstein.
+Note that we use the positional arguments to create the Users.
+
+```haskell
+server :: Server UserAPI
+```
 `server :: Server UserAPI` tells us that there is something called a Server which
-has a UserAPI. Okay we can figure out what happened here.
-Server is a type imported from Warp. It expect basically a routes map which is
-defined in the wai interface.
-The servant api provides this one function `:>` which has two arguments,
-the first one being the route, and the second one being the endpoint.
-The result is something which fits in the Warp Server, because Warp is build on
-top of the WAI interface.
-So servant uses WAI, warp uses WAI, WAI expects any kindoff text.
-We can create text with JSON. Everything fits.
+has a UserAPI.
+But we know what a UserAPI is, we defined that above.
+It's the routes map.
+A [`Server`](http://hackage.haskell.org/package/servant-server-0.14/docs/Servant-Server.html#t:Server)
+is defined in servant.
+The type signature is rather complicated:
+`type Server api = ServerT api Handler`, looking at the definition of `ServerT`
+makes my head spin: `type ServerT api (m :: * -> *) :: *`.
 
+There are some clues we can derive (such as that `m`),
+but they take many words, and it's not that important to make something work.
+Therefore this guide ignores it.
+Note that ignoring scary looking things is an important Haskell technique.
+One should never ask for help, that is a sign of weakness,
+help can be found [here](https://groups.google.com/forum/#!forum/haskell-servant),
+just in case ❤.
 
+```haskell
+server = return users
+```
+The implementation is very simple however.
+The reader should be cautious, to think that return is a keyword.
+It's a function, the same function as pure.
+What both return and pure do is wrap a value into a container.
+For example we can wrap an element like this in a list:
+`pure 2 == [2]`.
+That's all we need to know for now (the interested reader may look at
+[monads](https://wiki.haskell.org/Monad#Monad_class)).
+
+```haskell
+userAPI :: Proxy UserAPI
+userAPI = Proxy
+```
+This is just some type [level magick](http://hackage.haskell.org/package/base-4.11.1.0/docs/Data-Proxy.html).
+Library author needed type information for a function, 
+but they didn't need a value.
+Proxy does that.
+It's useful if you store data at type level,
+(for example with the datakinds language extension).
+
+```haskell
+app :: Application
+app = serve userAPI server
+```
+This combines the poxy and server.
+If we look at the type Application we can appreciate what serve does for us
+better:
+```haskell
+type Application = Request -> (Response -> IO ResponseReceived) -> IO ResponseReceived 
+```
+An application receives a request, then we get a callback which expects a response
+to produce an IO action which gives the result responseRecevied.
+However to return this fucntion must also return a type response Received
+wrapped in IO.
+We can conjecture that the only way to obtain this response recevied is to call
+that callback.
+We receive the freedom to do whatever we want meanwhile (as return type is IO,
+which means do whatever you want).
+
+```haskell
+webAppEntry :: IO ()
+webAppEntry = run 6868 app
+```
+Our initial function!
+rather than saying hello world we're running the app on port 6868 (best port).
 
 Now build and run it in one terminal, and in another curl it:
 
