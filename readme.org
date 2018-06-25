@@ -24,7 +24,6 @@ Also looks really clean.
 Although the word spacing is a weird choice
 
 ** Speedup
-Load logo seperatly,
 or do inpage compression,
 It seems to be about 100k now which is a bit much imho.
 
@@ -39,7 +38,14 @@ Make them all temporary, don't want browsers to cache them.
 
 ** Search performance
 *** TODO Setup amp?
+https://www.ampproject.org/docs/fundamentals/spec#html-tags
+
+It seems actually quit doable.
+The only issue is mathjx realy.
+However currently nobody is coming on my website trough search so who cares.
+
 *** TODO Setup structured
+??
 
 ** Replace straight quotes with curly
 Probably can just add a filter in pelican or something.
