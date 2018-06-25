@@ -1,5 +1,5 @@
 Title: Pragmatic Haskell: Simple servant web server
-Date: 2018-06-25 12:00
+Date: 2018-06-25 15:25
 Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, servant, stack, tutorial
