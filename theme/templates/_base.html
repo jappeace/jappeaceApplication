@@ -25,14 +25,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="{{ SITEURL }}/favicon.png" rel="icon">
-   <!-- css -->
+
+    <!-- css -->
+    <!-- we do this in head, we know it's slower to deliver like this,
+         but it's correct and easier to maintain.
+         Perhaps some day we should figure out how to make our site readable
+         without css.
+    -->
     {% if article %}
     {% assets filters="sass,cssmin", output="css/article.min.css", "css/all.sass", "css/article.sass" %}
-        <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
+    <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
     {% endassets %}
     {% else %}
     {% assets filters="sass,cssmin", output="css/double.min.css", "css/all.sass", "css/double_collumn.sass" %}
-        <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
+    <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
     {% endassets %}
     {% endif %}
 
@@ -84,6 +90,8 @@
 </head>
 
 <body>
+
+
     {% block entirebody %}{% endblock %} <!-- I guess al information -->
     <footer class="window"role="contentinfo">
        <small>
