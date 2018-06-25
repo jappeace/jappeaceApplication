@@ -7,7 +7,7 @@ run: clean
 	ln -s "../images" "output/drafts/images" || true
 	xdg-open "http://localhost:8000"
 
-deploy: # clean
+deploy: clean
 	echo "Deploying to  $(REMOTE)"
 	git diff-index --quiet HEAD -- || (echo "branch dirty, commit first" && false)
 	git push &
