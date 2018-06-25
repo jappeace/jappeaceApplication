@@ -78,3 +78,5 @@ blocks.
 * Links
 [[https://www.google.com/webmasters/tools/site-message-view?hl=en_GB&authuser=0&siteUrl=https://jappieklooster.nl/][Google crawl report]], I stumbled on that when configuring a static site in
 buckets.
+
+https://analytics.google.com/analytics/web/
