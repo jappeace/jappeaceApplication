@@ -7,7 +7,7 @@ subreddit: haskell programming
 
 There are many [guides available](https://github.com/bitemyapp/learnhaskell)
 for learning Haskell.
-Setting up a web server however something simple like a web server isn't so
+Setting up a something simple like a web server isn't so
 straight forward.
 Perhaps choosing one of the [14 libraries](https://wiki.haskell.org/Web/Frameworks)
 is a bit much.
@@ -16,11 +16,11 @@ is a bit much.
 
 This guide will give opinionated web server start.
 This guide assumes no experience with Haskell,
-and will get you up to speed with a (rest) web server called [servant](http://haskell-servant.readthedocs.io/en/stable/).
+and will get you up to speed with a (REST) web server called [Servant](http://haskell-servant.readthedocs.io/en/stable/).
 Servant is a good choice as it can describe both a server and client API.
 In the future this guide may be used as a foundation to create something
 more meaningful than just a very basic REST API,
-this will provide a good starting point.
+this will provide a good starting point however.
 Basic UNIX (command line) skills are assumed.
 
 # From nothing, start with build tools
@@ -31,7 +31,6 @@ curl -sSL https://get.haskellstack.org/ | sh
 ```
 
 Only attempt shortly to install it trough a package manager.
-More than 5 minutes is not worth it. (at some point it may become possible).
 There are other Haskell build tools, they will be more difficult in use.
 There is also the possibility for fully reproducible builds at a system level
 (nix).
@@ -63,7 +62,7 @@ someFunc = putStrLn "someFunc"
 ```
 
 This is where the `someFunc` output came from when the program was ran.
-Change it to something a bit more appropriate, and rename the function too.
+Change it to something a bit more appropriate, and rename the function too:
 ```haskell
 module Lib
     ( webAppEntry
@@ -88,9 +87,9 @@ stack build && stack exec awesome-project-name-exe
 It does not compile.
 There is an app folder where by default all the executable reside
 (which is where the error occurs),
-and a `src` folder where your library code lives (the modified file is in there).
-Future proving yourself by putting as much code in the library as is reasonable,
-seems wise.
+and a `src` folder where the library code lives (the modified file is in there).
+One can future proving themselves by putting as much code in the library as is
+reasonable.
 
 Fix the error in `app/Main.hs`:
 
@@ -133,12 +132,12 @@ Code reuse is not [a myth](https://www.youtube.com/watch?v=Jn3kdTaa69U).
 is for JSON parsing and producing.
 [`wai`](http://hackage.haskell.org/package/wai) is a web application interface and
 [`warp`](http://hackage.haskell.org/package/warp) uses `wai`
-to implement a web application (EG it binds to the port).
+to implement a web application (it binds to the port).
 
-Note that one should *not* add this to the dependencies of the executable or
+Ensure that that this is done at the root of the yaml file (no indentation).
+Stack provides a way of specifying dependencies of either the executable or
 library.
-Stack provides a way of specifying dependencies of either of these.
-However if its done on line 22, the root of the yaml file,
+If its done on line 22, the root of the yaml file,
 it will be a dependency for everything in the project.
 
 # A minimal servant
@@ -146,10 +145,6 @@ A good start is going to servants' [Hackage](http://hackage.haskell.org/package/
 page,
 which linked to a [tutorial](http://haskell-servant.readthedocs.io/en/stable/tutorial/index.html).
 Servant does API definition [at type level](http://haskell-servant.readthedocs.io/en/stable/tutorial/ApiType.html).
-What the author of this post did was study the tutorial and then try to get it
-to compile.
-Then he stepped trough the result and gave a line by line explanation of
-everything he deemed worthy of explanation.
 
 If it's unknown to the reader what a type is, think of it as describing the
 shape of a function.
@@ -224,11 +219,12 @@ data kinds Can be temporary deleted to see what happens:
 Data kinds is needed to insert data into a type.
 A string being data in this case, it is unclear what `'[JSON]` is,
 probably also something data.
-Temporary breaking your program to see what GHC will tell you is an
+Temporary breaking a program to see what GHC will say is an
 effective way of learning more about Haskell.
 
 If `TypeOperators` is disabled, GHC says it doesn't like `:>` in the `UserAPI` line.
 Apparently `:>` is a type operator.
+Apparently types can have operators.
 
 If `DeriveGeneric` is disabled, GHC says it needs to derive
 [generic](https://wiki.haskell.org/GHC.Generics)
@@ -259,7 +255,7 @@ type UserAPI = "users" :> Get '[JSON] [User]
 This line defines the UserAPI type, which will serve as the REST endpoint.
 The image at the beginning of the post was about this line.
 Perhaps reading it as a sentence will give us some insight,
-without worrying about how it fits together just now:
+without worrying about how it fits together:
 It's a Get request, mounted below `/user`, returning something JSON and of
 shape/type User.
 Conveniently what a `User` is will be discussed in the next section.
@@ -344,7 +340,7 @@ That's all one needs to know for now
 userAPI :: Proxy UserAPI
 userAPI = Proxy
 ```
-This is just some type [level magick](http://hackage.haskell.org/package/base-4.11.1.0/docs/Data-Proxy.html).
+This is just some type [level magic](http://hackage.haskell.org/package/base-4.11.1.0/docs/Data-Proxy.html).
 Library author needed type information for a function, 
 but they didn't need a value.
 Proxy does that.
@@ -396,7 +392,7 @@ A lot of concepts have been treated within this blog post while also moving
 towards something productive.
 The reader can now start a new project and add arbitrary dependencies.
 He knows what language extensions are and how to see them in use.
-Type level magick has been encountered, and wisely was ignored.
+Type level magic has been encountered, and wisely was ignored.
 In future this post will build on top of this work
 to extend the API and do something with something within the handlers.
 However this post has grown to big already.
