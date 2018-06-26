@@ -1,6 +1,7 @@
 REMOTE=jappieklooster.nl
 clean: 
-	rm -R "output/*" || true
+	rm -R "output" || true
+	mkdir -p "output"
 
 run: clean
 	pelican -D # --ignore-cache # I have no idea what this cache does
