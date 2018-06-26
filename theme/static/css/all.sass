@@ -19,6 +19,13 @@ $col-hover: white
 body
     font-family: 'Roboto', sans-serif
 
+#main
+    clear: both
+    margin-left: auto
+    margin-right: auto
+    margin-bottom: 2em
+    max-width: 45em
+
 .wrapper
     margin-left: auto
     margin-right: auto
@@ -133,6 +140,50 @@ ul
 
 nav ul li:hover h3
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
+
+nav
+    display: block
+    /* border: 1px solid $col-border */
+    width: 100%
+    margin-top: 1em
+    ul
+        list-style: none
+        @extend .no-spacing
+        // spread out evenly
+        text-align: justify
+        text-align-last: justify
+        margin: 0 20em
+        li
+            @extend #main
+            @extend .no-spacing
+            overflow: hidden
+            text-align: center
+            display: inline
+            .description
+                font-size: 0.4em
+            h2
+                font-size: 1.5em
+
+.navigation li
+    margin: 0 auto
+
+.navigation li a, #recent_posts li
+    display: inline-block
+
+.bracket
+    display: inline-block
+    vertical-align: super
+
+.category-glyph
+    height: 1em
+    /* this works cause its inline?? */
+    vertical-align: middle 
+
+.link 
+    display: inline-block
+    font-family: 'Fira Mono', monospace
+    text-align: center
+    text-align-last: center
 
 p
     // IDK the hyphens appear to often, I don't really like it
