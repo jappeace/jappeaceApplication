@@ -92,6 +92,7 @@
   {% endif %}
 
 
+
     {% block entirebody %}{% endblock %} <!-- I guess al information -->
     <footer class="window"role="contentinfo">
        <small>
@@ -105,7 +106,12 @@
 
             Consider sending ether to <pre>0xD44354d00aef5CEaE12f0Ec41E237d0f48e51baC</pre>.
        </small>
-       <iframe src="/theme/images/face.html" width="575" height="600"></iframe>
+       <iframe id="my-face" src="/theme/images/face.html"></iframe>
     </footer>
+
+    <!-- syntax highlighting, load as last -->
+    {% assets filters="cssmin", output="css/syntax.min.css", "css/syntax.css" %}
+    <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
+    {% endassets %}
 </body>
 </html>

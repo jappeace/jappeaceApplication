@@ -11,7 +11,7 @@ $col-link: black
 $col-title: #729fcf
 $col-hover: white
 
-@import url('https://fonts.googleapis.com/css?family=Dancing+Script|Fira+Mono|Roboto')
+@import url('https://fonts.googleapis.com/css?family=Dancing+Script|Roboto|Inconsolata')
 @import no_spacing
 
 *
@@ -228,13 +228,12 @@ ul.horizontal li
     text-shadow: -2px 0 $col-flash, 0 1px $col-flash, 1px 0 $col-flash, 0 -1px $col-flash
 
 pre
-    font-family: 'Fira Mono', monospace
+    font-family: 'Inconsolata', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace
     white-space: pre-wrap       /* Since CSS 2.1 */
     white-space: -moz-pre-wrap  /* Mozilla, since 1999 */
     white-space: -pre-wrap      /* Opera 4-6 */
     white-space: -o-pre-wrap    /* Opera 7 */
     word-wrap: break-word       /* Internet Explorer 5.5+ */
-    font-size: 0.75em
     -moz-tab-size: 4
     tab-size: 4
 
@@ -306,7 +305,6 @@ abbr
 
 .highlight
     padding: 1em
-    border: solid gray.5em
     text-align: left
     margin-bottom: 0.25em
 
@@ -318,7 +316,6 @@ abbr
 .org-ref-bib
     margin-top: -1em
 
-@import syntax
 @import resize
 
 
@@ -345,3 +342,7 @@ blockquote
 .sidebar-tags a
     margin-right: 1em
 
+#my-face
+    width: 575px
+    height: 600px
+    margin: auto
