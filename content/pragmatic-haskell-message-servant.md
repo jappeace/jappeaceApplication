@@ -2,46 +2,42 @@ Title: Pragmatic Haskell II: IO Webservant
 Date: 2018-06-26 12:00
 Category: tools
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, servant
+Tags: haskell, programming, tools, servant, IO
 subreddit: haskell programming
-status: draft
 
-Most Haskell langauge guides will leave IO
+Most Haskell language guides will leave IO
 [until](http://www.seas.upenn.edu/%7Ecis194/spring13/lectures/08-IO.html)
 [later](http://learnyouahaskell.com/input-and-output).
-This is not a language guide however,
-this is a guide to get something working in Haskell,
-without learning the langauge first.
-One may learn something about Haskell along the way,
-but our focus is different: We build.
+This guide is different,
+this guide is about *using* Haskell.
+Our focus is different: We build first, then learn trough delight.
 
 ![Fancy intro image](/images/2018/io-webserver.svg)
 
-In the [previous blog](pragmatic-haskell-simple-servant.md)
-post it was explained how to get going with a simple minimalistic servant
-webserver.
-In this blog post the simple webserver will get an extra endpoint that can
+In the [previous blog]({filename}/pragmatic-haskell-simple-servant.md)
+post it was explained how to get going with a simple minimalist servant
+web server.
+In this blog post the simple web server will get an extra REST endpoint that can
 do IO actions.
-This is an incredibly important part of pragmatic haskell programming.
-Without IO, our program will be confined to literally do nothing.
+This is an important part of pragmatic Haskell programming.
+Without IO our program can do nothing.
 Programmers are not theorists, therefore we need IO.
 
-Originally the intend was to merge these into a single blogpost,
-explaining this is taking up a lot of space.
-Originally Originally the blogpost should've included database access,
-this is unfeasable under the assumption that reader does not know haskell.
-Seperating all of these seems like a more focused approach.
-In the future database access will be treated.
+The structure of this guide is as follows:
+First we prepare our system,
+then we throw lots of code in your face,
+after which we step the newly introduced concepts line by line.
+Finally we execute it and pat ourselves on the back.
 
-# Add another endpoint
-Existence of a file is assumed in the Haskell code introduced shortly.
-create one with an empty JSON array in the project root:
+# Preparation
+The code assumes a file exists.
+Create one with an empty JSON array in the project root:
 ```bash
 echo "[]" > messages.txt
 ```
 
 Bytestrings are a convenient way of opening files and putting the results into
-aeson, the JSON library.
+`aeson`, the JSON library.
 Dealing with bytestrings requires another dependency:
 
 ```yaml
