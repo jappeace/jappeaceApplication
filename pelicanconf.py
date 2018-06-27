@@ -74,8 +74,8 @@ THEME = 'theme'
 
 PLUGIN_PATHS = ["./pelican-plugins"]
 PLUGINS = [
-    'org_reader',
     'assets',
+    'org_reader',
     'minify',
     'reddit_poster'
 ]
