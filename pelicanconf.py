@@ -6,7 +6,7 @@ import os
 
 AUTHOR = 'Jappie J. T. Klooster'
 SITENAME = 'Jappie'
-SITEURL = ''
+SITEURL = 'https://jappieklooster.nl'
 
 PATH = 'content'
 STATIC_PATHS = ['files', 'images', 'raw-html']
@@ -106,3 +106,6 @@ MINIFY = {
 }
 
 TYPOGRIFY = True
+
+FEED_DOMAIN = SITEURL
+FEED_ATOM = "atom"

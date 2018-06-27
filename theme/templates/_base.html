@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
 
-    <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
+  <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
     <meta name="author" content="{{ AUTHOR }}">
     <meta charset="utf-8" /> <!--  mah chinese -->
 
@@ -91,11 +91,12 @@
   {% endassets %}
   {% endif %}
 
-
+ 
 
     {% block entirebody %}{% endblock %} <!-- I guess al information -->
     <footer class="window"role="contentinfo">
        <small>
+         <a href="/atom"><img class="category-glyph" alt="Atom feed" src="/theme/images/atom-icon.svg" /></a>
            Themestructure from <a href="https://github.com/eevee/eev.ee">here</a>, <!-- how much is even left of this? -->
            therefore all theme stuff is licensed under <a href="http://creativecommons.org/licenses/by/3.0/us/">Creative Commons Attribution 3.0</a>.
          <!-- So legally I have to say thanks lexy munroe -->
