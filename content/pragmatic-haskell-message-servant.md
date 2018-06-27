@@ -10,12 +10,12 @@ Most Haskell language guides will leave IO
 [later](http://learnyouahaskell.com/input-and-output).
 This guide is different,
 this guide is about *using* Haskell.
-Our focus is different: We build first, then learn trough delight.
+Our focus is different: We build first, then learn trough [delight](https://medium.com/the-polymath-project/programming-for-personal-growth-64052e407894).
 
 ![Fancy intro image](/images/2018/io-webserver.svg)
 
-In the [previous blog]({filename}/pragmatic-haskell-simple-servant.md)
-post it was explained how to get going with a simple minimalist servant
+The [previous blog]({filename}/pragmatic-haskell-simple-servant.md)
+post explained how to get going with a simple minimalist servant
 web server.
 In this blog post the simple web server will get an extra REST endpoint that can
 do IO actions.
@@ -23,14 +23,8 @@ This is an important part of pragmatic Haskell programming.
 Without IO our program can do nothing.
 Programmers are not theorists, therefore we need IO.
 
-The structure of this guide is as follows:
-First we prepare our system,
-then we throw lots of code in your face,
-after which we step the newly introduced concepts line by line.
-Finally we execute it and pat ourselves on the back.
-
 # Preparation
-The code assumes a file exists.
+To keep things simple, the code assumes a file exists.
 Create one with an empty JSON array in the project root:
 ```bash
 echo "[]" > messages.txt
@@ -142,7 +136,7 @@ The decleration of this operator is surprisingly simple:
 ```haskell
 data a :<|> b = a :<|> b
 ```
-Left sign of equality is used for type, right side for data.
+Left sign of equality is used for type, right side for data construction.
 Skimming over this, like true Haskellers we will ignore the
 [inner workings](http://hackage.haskell.org/package/servant-0.14/docs/src/Servant-API-Alternative.html#%3A%3C%7C%3E)
 .
@@ -184,18 +178,17 @@ This is where we define what file name is used.
 messages :: Message -> Handler [Message]
 ```
 We define a Handler (which is an servant api endpoint).
-To make it work, it requires a message, then it will return a list of messages
-within a handler container.
-We will see shortly that the handler container is special.
+It requires a message, then it will return a list of messages
+within a `Handler`.
 
 ### Do notation
 ```haskell
 messages message = do 
 ```
-The do keyword allows us to code in [do syntax](https://en.wikibooks.org/wiki/Haskell/do_notation).
-This allows us to do assignments with `<-` (not assignment, but might as well be.
+The do keyword allows us to code with [do notation](https://en.wikibooks.org/wiki/Haskell/do_notation).
+This allows us to do assignments with `<-` (not assignment, but close enough).
 This only works when the result container is a [Monad](https://wiki.haskell.org/Monad).
-*How* monads work is a mystery, but usage is simple: Use do syntax.
+*How* monads work is a mystery, but usage is simple: Use do notation.
 
 ### LiftIO
 ```
@@ -206,7 +199,7 @@ One may wonder why we are using liftIO, if it's deleted we get this:
 
 ```bash
 /home/jappie/projects/haskell/awesome-project-name/src/Lib.hs:46:13: error:
-    • Couldn't match type ‘IO’ with ‘Handler’
+    • Couldnt match type ‘IO’ with ‘Handler’
       Expected type: Handler Data.ByteString.Lazy.Internal.ByteString
         Actual type: IO Data.ByteString.Lazy.Internal.ByteString
     • In a stmt of a 'do' block: result <- LBS.readFile messageFile
@@ -226,24 +219,25 @@ One may wonder why we are using liftIO, if it's deleted we get this:
    |             ^^^^^^^^^^^^^^^^^^^^^^^^
 ```
 
-The `LBS.readfile` function requires a return type of `IO`.
+The `LBS.readfile` function has a return type of `IO`.
 However the return type of `messages` is `Handler`.
 Therefore the compiler says that it expects `Handler`, but the actual type is `IO`.
-Handler implements the `MonadIO` typeclass however, which allows us to
-choose to do things within `IO` by calling the `liftIO` function.
+Handler implements the `MonadIO` typeclass however, which allows
+`IO` by calling the `liftIO` function.
 The `liftIO` function simply tells the Handler container to execute some
 function within the `IO` container.
 
 The dollar sign can be replaced with an open parentheses,
-which is closed at the end of the line, for example:
-`liftIO (LBS.readFile messageFile)` is equivalent.
+which is closed at the end of the line. This is equivalent for example:
+```haskell
+liftIO (LBS.readFile messageFile)
+```
 
 As said before `<-` is (basically) used for assignment in do notation,
 using `<-` is a good way to get rid of a monad container.
 `result` now contains the contents of messageFile,
 the IO is being evaluated and removed by the `<-` operator.
-In Haskell we deal a lot with wrapping and unwrapping things into and from
-containers.
+In Haskell a lot of wrapping and unwrapping is done. 
 
 ### Case .. of
 ```haskell
@@ -258,15 +252,14 @@ return a maybe container:
 decode :: FromJSON a => ByteString -> Maybe a 
 ```
 In this signature, `a` can be anything as long as it implements FromJSON.
-We do this with generic and `instance FromJSON Message`.
+We fulfill this condition with generic and `instance FromJSON Message`.
 We give as bytestring the `result` to decode, in return it gives us `Maybe a`.
-The compiler figures out that `a` in this case is `[Message]`.
+The compiler deduces that `a` in this case is `[Message]`.
 
 The return value will have content if decoding succeeded (`Just`),
 or it won't if it fails (`Nothing`).
 To get rid of the container we pattern match it. 
-This can be thought of as a switch case statement in other languages,
-or just an `if elif else` construct.
+This can be thought of as a switch case statement in other languages.
 
 #### Nothing
 ```haskell
@@ -337,8 +330,8 @@ the errors are:
 In the first error the compiler says that a list is not a `Handler` container.
 Which we expect because the return type of this function is `Handler [Message]`.
 
-The second error asumes contents is of the correct type,
-which means we unwrap the list, contents would be of type `Message`.
+The second error assumes `contents` is of the correct type,
+since `<-` unwraps `contents` would be of type `Message`.
 The return type does not fit in this case either,
 we would get `Handler Message` instead  of `Handler [Message]`.
 
