@@ -23,3 +23,4 @@ filedata = open(filename, "rb").read()
 exec(compile(filedata,  filename, 'exec'))
 
 SITEURL = "https://jappieklooster.nl"
+FEED_DOMAIN = SITEURL
