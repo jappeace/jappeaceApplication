@@ -50,7 +50,8 @@ dependencies:
 - bytestring
 ```
 
-These are the <s>magick spells</s> changes which add an enpoint,
+# A lot of code
+These are the <s>magic spells</s> changes which add an endpoint,
 explained in detail below:
 
 ```haskell
@@ -126,31 +127,25 @@ The new endpoint will accept a post request under "/message".
 It will write the message to a file and then it will return the contents of
 that file.
 
-## Module changes
-```haskell
-import Servant
-import Control.Monad.IO.Class(liftIO)
-import Data.ByteString.Lazy as LBS (writeFile, readFile) 
-import Data.Aeson(ToJSON, FromJSON, encode, decode)
-import GHC.Generics(Generic)
-import Network.Wai(Application)
-import Network.Wai.Handler.Warp(run)
-```
-All of Servant is important now, it became hard to do the explicit imports.
-The `liftIO` import will be discussed below.
-`Bytestring` is the format we get from reading and writing to a file,
-it's conveniently also the format aeson accepts for decoding and encoding.
-
-## Api changes
-
+# Line by line inspection
 ```haskell
 type UserAPI = "users" :> Get '[JSON] [User]
       :<|> "message" :> ReqBody '[JSON] Message :> Post '[JSON] [Message]
 ```
 
-The `:<|>` operator is used to add an extra endpoint, it like the `+` operator
-is for integers, it combines the two endpoints into one UserAPI.
-Like true Haskellers we will ignore the [inner workings](operator link) again.
+The
+[`:<|>` operator](http://hackage.haskell.org/package/servant-0.14/docs/Servant-API-Alternative.html#t::-60--124--62-)
+is used to add an extra endpoint.
+It combines the two endpoints into one.
+In these lines, we are constructing something akin to a jump table.
+The decleration of this operator is surprisingly simple:
+```haskell
+data a :<|> b = a :<|> b
+```
+Left sign of equality is used for type, right side for data.
+Skimming over this, like true Haskellers we will ignore the
+[inner workings](http://hackage.haskell.org/package/servant-0.14/docs/src/Servant-API-Alternative.html#%3A%3C%7C%3E)
+.
 
 The extra end point "message" is similar in structure to the existing "user"
 endpoint.
@@ -167,7 +162,6 @@ data Message = Message {
 instance ToJSON Message
 instance FromJSON Message
 ```
-
 This is Message, apparently it's from a `User` and has some content `String`.
 Aside from using another data type inside an existing data type,
 no new concepts are introduced.
@@ -176,9 +170,9 @@ no new concepts are introduced.
 ```haskell
 messageFile :: FilePath
 ```
-The type `FilePath` is just an alias for a string. Eg: `type FilePath = String`,
-in other words we can use them interchangeably.
-Using `FilePath` is just an extra bit of documentation for code readability.
+The type `FilePath` is just an alias for a `String`: `type FilePath = String`.
+In other words we can use them interchangeably.
+`FilePath` acts as documentation.
 
 ```haskell
 messageFile = "messages.txt"
@@ -190,7 +184,7 @@ This is where we define what file name is used.
 messages :: Message -> Handler [Message]
 ```
 We define a Handler (which is an servant api endpoint).
-To make it work it requires a message, then it will return a list of messages
+To make it work, it requires a message, then it will return a list of messages
 within a handler container.
 We will see shortly that the handler container is special.
 
@@ -271,7 +265,7 @@ The compiler figures out that `a` in this case is `[Message]`.
 The return value will have content if decoding succeeded (`Just`),
 or it won't if it fails (`Nothing`).
 To get rid of the container we pattern match it. 
-This can be thought of as a switch case statement in other langauges,
+This can be thought of as a switch case statement in other languages,
 or just an `if elif else` construct.
 
 #### Nothing
@@ -362,18 +356,41 @@ Type safety ensures encoding always succeeds.
 ```
 Finally we wrap the contents in a `Handler` type.
 
-## Adding the handler to the routesmap
+## Adding the handler to the routes map
 
 ```haskell
 server :: Server UserAPI
 server = (pure users) :<|> messages
 ```
-
+This is the implementation of the `UserAPI` type described before.
 We use the same operator to also add the messages handler into the server.
 We don't need to put `messages` in a container with pure because the functions'
 return type is already a `Handler`.
 
-# Test it!
+Something worth pointing out is that this construction is in order,
+if we pull it out of order we would get a type level.
+Changing the line into:
+
+```haskell
+server =  messages :<|> (pure users)
+```
+
+Will cause an error:
+
+```bash
+/home/jappie/projects/haskell/awesome-project-name/src/Lib.hs:55:11: error:
+    • Could not match type ‘[User]’ with ‘Handler [Message]’
+      Expected type: Server UserAPI
+        Actual type: (Message -> Handler [Message])
+                     :<|> (Message -> [User])
+    • In the expression: messages :<|> (pure users)
+      In an equation for ‘server’: server = messages :<|> (pure users)
+   |
+55 | server =  messages :<|> (pure users)
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+# Execute it!
 
 ```shell
 curl --header "Content-Type: application/json" \ 
@@ -389,12 +406,11 @@ Worked on this machine...
 Perhaps that's why the theorists avoid IO 🤔.
 
 # In conclusion
-A lot was encountered in this blogpost without going into much theory.
-We learned that haskell is primarly dealing with containers.
-We saw `liftIO`, to put certain functions in `IO` rather than
-the return type.
-Also use of `do` notation was seen, which is used a lot.
+Without going into much theory, we dealt with `IO`.
+For example we saw that haskell is about dealing with containers,
+to put certain functions in `IO` rather than the return type, one uses `liftIO`.
+`do` notation was also encountered, which makes working with monads easier.
 Now we can affect the world with our programs trough IO!
 
 The complete code can be found [here](https://github.com/jappeace/awesome-project-name/tree/simple-servent-setup).
-In the future we shall attach this simple webserver to a database.
+In the future we shall attach this simple web server to a database.
