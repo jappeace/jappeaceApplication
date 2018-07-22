@@ -1,7 +1,10 @@
 REMOTE=jappieklooster.nl
-clean: 
-	rm -R "output" || true
+clean:
+	# clean output dir
+	rm -R "output/" || true
 	mkdir -p "output"
+	# kill pelican server if it's running (cause it needs to reload output)
+	./kilserver.sh
 
 run: clean
 	pelican -D # --ignore-cache # I have no idea what this cache does

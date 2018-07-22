@@ -1,4 +1,4 @@
 #! /bin/bash
-cd output
-
-python -m pelican.server
+while true; do
+(cd output; python -m pelican.server)
+done
