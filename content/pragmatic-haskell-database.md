@@ -9,6 +9,7 @@ status: draft
 No need to read a book to learn Haskell!
 This guide will get you going with a serious web application while
 sticking to only the concepts that are encountered.
+This is a Haskell safari with as end goal a working webapp.
 
 1. [Pragmatic Haskell: Simple servant web server]({filename}/pragmatic-haskell-simple-servant.md)
 1. [Pragmatic Haskell II: IO Webservant]({filename}/pragmatic-haskell-message-servant.md)
@@ -17,12 +18,13 @@ sticking to only the concepts that are encountered.
 ![fancy db image](/images/2018/haskell-beam-postgres.svg)
 
 Web applications need to store data.
-Often relational databases are used for this purpose, so will we.
-They also fit nice together with strong typing.
-In this post we will describe how to attach a database to our existing webserver,
-still assuming the reader has no previous Haskell experience.
+In the previous blog post we did this in a file for simplicity.
+Now we will use something more appropriate: A relational database.
+The beam library is used for this because it is closest to the "ORM" way of
+thinking. Eg: Model a schema, generate sql based upon that schema,
+and have migraions to move between different versions.
 
-[For the inpatient: Resulting source](https://github.com/jappeace/awesome-project-name/tree/beam-postgres-db)
+[For the inpatient: Resulting source](#complete-sources)
 
 # Preperation
 Unfortunately this post requires us to do quite a bit of devops to get started.
@@ -31,100 +33,35 @@ We need to:
 1. Install Postgres
 2. Create a user
 3. Create db
+4. Populate structure
 
 It is up to the reader to install Postgres on his configuration.
-This surely will be painful, we wish them good luck.
 However some <s>spells</s> commands for creating the user and database are given,
-we can create a super user in Postgres for our main account:
+we can create a super user in Postgres for our main account and finally create a
+structure with the `data_model.sql` file [(see sources)](#data_modelsql)
 
 ```bash
 sudo -u postgres createuser -s $USER
 dropdb awesome_db
 createdb awesome_db
+psql -f ./data_model.sql -d awesome_db
 ```
 
 Congratulations, devops was survived.
+Note that using this sql file is not idiomatic to beam.
+It should be fully done by beam,
+but getting migrations to function is currently hard (it's a work in progress).
 
 # Creating structure
-In line with our previous guide we will first show all code and then step trough
-it line by line.
-This time we need to handle multiple files however so we split up this task.
-It's best this time to consult the
-[full sources](https://github.com/jappeace/awesome-project-name/tree/beam-postgres-db)
-for a working example.
-To represent our database the beam library is used.
-It defines an organized way of modeling our database fields.
-We do this in a seperate file called `DB.hs`:
-
-```haskell
-{-# LANGUAGE DeriveGeneric         #-}
-{-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedStrings     #-}
-{-# LANGUAGE StandaloneDeriving    #-}
-{-# LANGUAGE TypeFamilies          #-}
-
--- | db structure and source of truth
-module DB where
-import qualified Data.ByteString                as BS
-import qualified Data.Text                      as Text
-import           Database.Beam
-
-
-data UserT f = User
-                { _userId :: C f Int
-                , _name   :: C f Text.Text
-                , _email  :: C f Text.Text
-                }
-                  deriving Generic
-type User = UserT Identity
-deriving instance Show UserId
-deriving instance Show User
-
-instance Table UserT where
-    data PrimaryKey UserT f = UserId (Columnar f Int) deriving Generic
-    primaryKey = UserId . _userId
-type UserId = PrimaryKey UserT Identity -- For convenience
-
-instance Beamable UserT
-instance Beamable (PrimaryKey UserT)
-
-  
-data MessageT f = Message
-                { _messageId :: C f Int
-                , _from      :: PrimaryKey UserT f
-                , _content   :: C f Text.Text
-                }
-                  deriving Generic
-type Message = MessageT Identity
-deriving instance Show (PrimaryKey MessageT Identity)
-deriving instance Show Message
-
-instance Table MessageT where
-    data PrimaryKey MessageT f = MessageId (Columnar f Int) deriving Generic
-    primaryKey = MessageId . _messageId
-type MessageId = PrimaryKey MessageT Identity -- For convenience
-
-instance Beamable MessageT
-instance Beamable (PrimaryKey MessageT)
-
-
-data AwesomeDb f = AwesomeDb
-                      { _users    :: f (TableEntity UserT)
-                      , _messages :: f (TableEntity MessageT) }
-                        deriving Generic
-
-connectionString :: BS.ByteString
-connectionString = "dbname=awesome_db"
-
-instance Database be AwesomeDb
-
-awesomeDB :: DatabaseSettings be AwesomeDb
-awesomeDB = defaultDbSettings
-```
-
-This code will do several things. First it will define how we want our database
-to look. Secondly it provides machinary for beam to inspect these definitions.
+The beam library models our desired structure at type level.
+This is done in a seperate file called `DB.hs`.
+It can be seen in [the sources](#dbhs).
+With help of this code beam can inspect the definitions,
+and it also provides type safety for the beam sql domain specific langauge.
+In other words if the migrations work there would be a path towards bringing
+the database up to date with the code base,
+or a compile error, giving us an idea of what is wrong.
+Now let us carefully expect that file to understand it.
 
 ## Langauge extensions
 ```haskell
@@ -134,9 +71,9 @@ to look. Secondly it provides machinary for beam to inspect these definitions.
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE StandaloneDeriving    #-}
 {-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE DuplicateRecordFields #-}
 ```
-This looks daunting however these are individually all quite simple,
-they all just do one thing.
+This looks daunting however these are individually quite simple.
 Generally they either make nicer API's or an easier language to use.
 We will go over each of them.
 
@@ -148,19 +85,29 @@ declaration, for example:
 deriving instance Show Message
 ```
 
+This mecahnism allows deriving (automatic code generation)
+to be used more flexibly.
+In this case we want to do this because the `MessageT f` type constructor
+eric to derive (as `f` is unkown), but `MessageT Identity` is known 
+so we can derive that.
+The GHC [manual lists](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#stand-alone-deriving-declarations)
+more possible reasons to derive like this instead of the standard method.
+
 ### TypeFamilies
-`TypeFamilies` are required to instantiate the Table class.
-The `Table` type class requires us to define a `data` called
-primary key in it's instance:
+Type famalies allow us to declare `data` inside an instance.
+The `Table` class requires `TypeFamilies` to instantiate,
+it requires us to declare a `data` called primary key in it's instance:
 
 ```haskell
 instance Table UserT where
     data PrimaryKey UserT f = UserId (Columnar f Int) deriving Generic
-    primaryKey = UserId . _userId
+    primaryKey = UserId . _id
 ```
+This example is a prime reason to use type famalies:
+It allows beam to asume the primary key exist.
 
-The primary key is a member of the table "family",
-which is defined concretely by it's instance.
+The Haskell [wiki](https://wiki.haskell.org/GHC/Type_families)
+goes more in depth on type families
 
 ### FlexibleInstances
 If we don't enable `FlexibleInstances` we get the following error:
@@ -176,11 +123,9 @@ If we don't enable `FlexibleInstances` we get the following error:
    |
 36 | instance Beamable (PrimaryKey MessageT)
    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 ```
 
-It's trying to say it doesn't like parenthesis. We must enable Flexible
-instances to allow parenthesis.
+Without Flexible instances parenthesis aren't allowed.
 We know the parenthesis are the problem because the following line
 does not get an error:
 
@@ -189,7 +134,7 @@ instance Beamable MessageT
 ```
 
 ### MultiParamTypeClasses
-If we disable `MultiParamTypeClasses` we get the following error:
+If `MultiParamTypeClasses` is disabled an error appears:
 
 ```
 /home/jappie/projects/haskell/awesome-project-name/src/DB.hs:65:10: error:
@@ -200,16 +145,16 @@ If we disable `MultiParamTypeClasses` we get the following error:
    |
 65 | instance Database be AwesomeDb
    |          ^^^^^^^^^^^^^^^^^^^^^
-
 ```
+
 Because we use two parameters for this instance (`be` and `AwesomeDb`)
 we must lift the default restriction on this with this langauge extension.
 
 ### DeriveGeneric
 `DeriveGeneric` was discussed in a
 [previous blog post]({filename}/pragmatic-haskell-simple-servant.md).
-In short: `Generic` allows for introspection of data structures since they can
-be represented as a recursive structure.
+In short: `Generic` allows for introspection of data structures using the
+fact any data structure can be moddeled in a regular (generic) pattern.
 
 ### OverloadedStrings
 `OverloadedStrings` is probably the most common language extension.
@@ -221,11 +166,22 @@ connectionString :: BS.ByteString
 connectionString = "dbname=awesome_db"
 ```
 
-You can do this without this extension, however finding the right conversion 
-function takes up time and this extension does it for you, why bother?
+In this case it inserts automatically a function `String -> ByteString`.
+Using this extension avoids tedious conversions.
+
+### DuplicateRecordFields
+`DuplicateRecordFields` allows creation of records with the same name.
+For example both user and messages have an `_id` record.
+Type annotations are used to determine which function is called,
+for example in:
+
+```haskell
+instance Table UserT where
+    data PrimaryKey UserT f = UserId (Columnar f Int) deriving Generic
+    primaryKey = UserId . (_id :: UserT f -> C f Int)
+```
 
 ## Imports
-
 ```haskell
 import qualified Data.ByteString                  as BS
 ```
@@ -244,6 +200,7 @@ This entire module is a client of beam, there is no need
 for explicit imports.
 
 ## User table
+We start with defining the structure of our user table.
 ```haskell
 data UserT f = User
                 { _userId :: C f Int
@@ -252,14 +209,16 @@ data UserT f = User
                 }
                   deriving Generic
 ```
-We start with defining the structure of our user table.
-This is somewhat different as how we defined it in the previous post
-as we now have these `C` and `f`'s popping up.
+What are these `C` and `f`'s doing here?
 The `C` is an abbreviation for
 [Columnar](http://hackage.haskell.org/package/beam-core-0.7.2.2/docs/Database-Beam-Schema.html#t:Columnar),
-which is a type that accepts two
-arguments. The first one being this `f`, the second is the actual type of the
-column.
+which is a type that requires two other types to complete.
+This is called a higher kinded type.
+In this case `C` is given an `f`,
+and a second argument with the actual type of the column.
+
+`f` is not defined, instead it's also an argument of `UserT`, therefore `UserT`
+is of kind `* -> *`.
 
 Now this `f` can be thought of as a 'gap' that can be filled up with anything.
 This gap allows the beam library to inspect the structure we have defined,
@@ -353,9 +312,9 @@ Again it provides a 'hole' with the `f`, presumably for schema creation.
 connectionString :: BS.ByteString
 connectionString = "dbname=awesome_db"
 ```
-The `connectionString` is simply required to connect to the database.
-One probably doesn't want to hard code it, but for this guide hard coding is
-good enough.
+The `connectionString` is required to connect to the database.
+One probably doesn't want to hard code it,
+but for this guide hard coding is good enough.
 
 ```haskell
 instance Database be AwesomeDb
@@ -376,97 +335,6 @@ in our already defined servant module `Lib.hs`.
 We have already seen most of this source file in the previous [blog post]({filename}/pragmatic-haskell-message-servant.md),
 the complete new version is listed below:
 
-```haskell
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE DeriveGeneric #-}
-
-module Lib
-    ( webAppEntry
-    ) where
-
-import Servant
-import Control.Monad.IO.Class(liftIO)
-import Data.ByteString.Lazy as LBS (writeFile, readFile) 
-import Data.Aeson(ToJSON, FromJSON, encode, decode)
-import GHC.Generics(Generic)
-import Network.Wai(Application)
-import Network.Wai.Handler.Warp(run)
-import           Database.PostgreSQL.Simple   (Connection)
-import qualified DB as DB
-import           Database.Beam.Backend.SQL.BeamExtensions (runInsertReturningList)
-
-import qualified Database.Beam                            as Beam
-import qualified Database.Beam.Postgres                            as PgBeam
-import Data.Text(pack, unpack)
-
-type UserAPI = "users" :> Get '[JSON] [User]
-      :<|> "message" :> ReqBody '[JSON] Message :> Post '[JSON] [Message]
-
-data Message = Message {
-  from :: User,
-  content :: String
-} deriving (Eq, Show, Generic)
-
-instance ToJSON Message
-instance FromJSON Message
-
-data User = User
-  { name :: String
-  , email :: String
-  } deriving (Eq, Show, Generic)
-
-instance ToJSON User
-instance FromJSON User
-
-users :: [User]
-users =
-  [ User "Isaac Newton"    "isaac@newton.co.uk"
-  , User "Albert Einstein" "ae@mc2.org"
-  ]
-
-messages :: Connection -> Message -> Handler [Message]
-messages conn message = do 
-  messages <- liftIO $ 
-    PgBeam.runBeamPostgres conn $ do
-      let user = from message
-      [user] <- runInsertReturningList (DB._users DB.awesomeDB) $ Beam.insertExpressions [DB.User{
-            DB._userId = Beam.default_,
-            DB._name = Beam.val_ (pack $ name $ user ),
-            DB._email = Beam.val_ (pack $ email $ user )
-        }]
-      _ <- runInsertReturningList (DB._messages DB.awesomeDB) $ Beam.insertExpressions $ [DB.Message{
-            DB._messageId = Beam.default_,
-            DB._from = Beam.val_ (Beam.pk user),
-            DB._content = Beam.val_ (pack $ content message)
-        }]
-      Beam.runSelectReturningList $ Beam.select $ do 
-        usr <- (Beam.all_ (DB._users DB.awesomeDB))
-        msg <- Beam.oneToMany_ (DB._messages DB.awesomeDB) DB._from usr
-        pure (msg, usr)
-  pure $
-    fmap (
-      \(msg, usr) -> Message
-        (User
-          (unpack $ DB._name usr)
-          (unpack $ DB._email usr))
-        (unpack $ DB._content msg)
-    ) messages
-
-
-server :: Connection -> Server UserAPI
-server conn= (pure users) :<|> (messages conn)
-
-userAPI :: Proxy UserAPI
-userAPI = Proxy
-
-app :: Connection -> Application
-app conn = serve userAPI (server conn)
-
-webAppEntry :: Connection -> IO ()
-webAppEntry conn = do
-  run 6868 (app conn)
-```
 
 The functionality is still the same except now we're using a database as
 backend rather than a file.
@@ -541,3 +409,188 @@ we may want to hide from api clients.
 
 # Execute!
 
+# Conclusion
+
+# Complete sources
+The complete sources can be found on [github](https://github.com/jappeace/awesome-project-name/tree/beam-postgre-no-migrate), and below.
+
+## Db.hs
+```haskell
+{-# LANGUAGE DeriveGeneric         #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE StandaloneDeriving    #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+
+-- | db structure and source of truth
+module DB where
+import qualified Data.ByteString                as BS
+import qualified Data.Text                      as Text
+import           Database.Beam
+
+
+data UserT f = User
+                { _id :: C f Int
+                , _name   :: C f Text.Text
+                , _email  :: C f Text.Text
+                }
+                  deriving Generic
+type User = UserT Identity
+deriving instance Show UserId
+deriving instance Show User
+
+instance Table UserT where
+    data PrimaryKey UserT f = UserId (Columnar f Int) deriving Generic
+    primaryKey = UserId . (_id :: UserT f -> C f Int)
+type UserId = PrimaryKey UserT Identity -- For convenience
+
+instance Beamable UserT
+instance Beamable (PrimaryKey UserT)
+
+  
+data MessageT f = Message
+                { _id :: C f Int
+                , _from      :: PrimaryKey UserT f
+                , _content   :: C f Text.Text
+                }
+                  deriving Generic
+type Message = MessageT Identity
+deriving instance Show (PrimaryKey MessageT Identity)
+deriving instance Show Message
+
+instance Table MessageT where
+    data PrimaryKey MessageT f = MessageId (Columnar f Int) deriving Generic
+    primaryKey = MessageId . (_id :: MessageT f -> C f Int)
+type MessageId = PrimaryKey MessageT Identity -- For convenience
+
+instance Beamable MessageT
+instance Beamable (PrimaryKey MessageT)
+
+
+data AwesomeDb f = AwesomeDb
+                      { _ausers    :: f (TableEntity UserT)
+                      , _messages :: f (TableEntity MessageT) }
+                        deriving Generic
+
+connectionString :: BS.ByteString
+connectionString = "dbname=awesome_db"
+
+instance Database be AwesomeDb
+
+awesomeDB :: DatabaseSettings be AwesomeDb
+awesomeDB = defaultDbSettings
+```
+
+## Lib.hs
+```haskell
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DeriveGeneric #-}
+
+module Lib
+    ( webAppEntry
+    ) where
+
+import Servant
+import Control.Monad.IO.Class(liftIO)
+import Data.ByteString.Lazy as LBS (writeFile, readFile) 
+import Data.Aeson(ToJSON, FromJSON, encode, decode)
+import GHC.Generics(Generic)
+import Network.Wai(Application)
+import Network.Wai.Handler.Warp(run)
+import           Database.PostgreSQL.Simple   (Connection)
+import qualified DB as DB
+import           Database.Beam.Backend.SQL.BeamExtensions (runInsertReturningList)
+
+import qualified Database.Beam                            as Beam
+import qualified Database.Beam.Postgres                            as PgBeam
+import Data.Text(pack, unpack)
+
+type UserAPI = "users" :> Get '[JSON] [User]
+      :<|> "message" :> ReqBody '[JSON] Message :> Post '[JSON] [Message]
+
+data Message = Message {
+  from :: User,
+  content :: String
+} deriving (Eq, Show, Generic)
+
+instance ToJSON Message
+instance FromJSON Message
+
+data User = User
+  { name :: String
+  , email :: String
+  } deriving (Eq, Show, Generic)
+
+instance ToJSON User
+instance FromJSON User
+
+users :: [User]
+users =
+  [ User "Isaac Newton"    "isaac@newton.co.uk"
+  , User "Albert Einstein" "ae@mc2.org"
+  ]
+
+messages :: Connection -> Message -> Handler [Message]
+messages conn message = do 
+  messages <- liftIO $ 
+    PgBeam.runBeamPostgres conn $ do
+      let user = from message
+      [user] <- runInsertReturningList (DB._ausers DB.awesomeDB) $ 
+          Beam.insertExpressions [DB.User 
+            Beam.default_
+            (Beam.val_ (pack $ name $ user ))
+            (Beam.val_ (pack $ email $ user ))
+        ]
+      _ <- runInsertReturningList (DB._messages DB.awesomeDB) $ 
+          Beam.insertExpressions 
+            [DB.Message 
+              Beam.default_ 
+              (Beam.val_ (Beam.pk user))
+              (Beam.val_ (pack $ content message))
+            ]
+      Beam.runSelectReturningList $ Beam.select $ do 
+        usr <- (Beam.all_ (DB._ausers DB.awesomeDB))
+        msg <- Beam.oneToMany_ (DB._messages DB.awesomeDB) DB._from usr
+        pure (msg, usr)
+  pure $
+    fmap (
+      \(msg, usr) -> Message
+        (User
+          (unpack $ DB._name usr)
+          (unpack $ DB._email usr))
+        (unpack $ DB._content msg)
+    ) messages
+
+
+server :: Connection -> Server UserAPI
+server conn= (pure users) :<|> (messages conn)
+
+userAPI :: Proxy UserAPI
+userAPI = Proxy
+
+app :: Connection -> Application
+app conn = serve userAPI (server conn)
+
+webAppEntry :: Connection -> IO ()
+webAppEntry conn = do
+  run 6868 (app conn)
+```
+## data_model.sql
+``` SQL
+DROP TABLE ausers cascade;
+DROP TABLE messages cascade;
+CREATE TABLE ausers (
+    id serial NOT NULL PRIMARY KEY,
+    "name" varchar NOT NULL,
+    email varchar NULL
+);
+
+CREATE TABLE messages (
+    id serial NOT NULL PRIMARY KEY,
+    from__id int REFERENCES ausers(id),
+    content varchar NULL
+);
+```
