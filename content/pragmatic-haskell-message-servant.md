@@ -1,9 +1,13 @@
 Title: Pragmatic Haskell II: IO Webservant
-Date: 2018-06-26 12:00
+Date: 2018-06-27 22:00
 Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, servant, IO
 subreddit: haskell programming
+
+1. [Pragmatic Haskell: Simple servant web server]({filename}/pragmatic-haskell-simple-servant.md)
+1. [Pragmatic Haskell II: IO Webservant]({filename}/pragmatic-haskell-message-servant.md)
+1. [Pragmatic Haskell III: Beam Postgres DB]({filename}/pragmatic-haskell-database.md)
 
 Most Haskell language guides will leave IO
 [until](http://www.seas.upenn.edu/%7Ecis194/spring13/lectures/08-IO.html)
