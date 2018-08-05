@@ -6,9 +6,9 @@ Tags: haskell, programming, tools, database
 subreddit: haskell programming
 status: draft
 
-No need to read a book to learn Haskell!
-This guide will get you going with a serious web application while
-sticking to only the concepts that are encountered.
+No need to read a book to use Haskell!
+This post will get you going with a serious web application while
+only sticking to the concepts that are encountered.
 This is a Haskell safari with as end goal a working webapp.
 
 1. [Pragmatic Haskell: Simple servant web server]({filename}/pragmatic-haskell-simple-servant.md)
@@ -21,12 +21,13 @@ Web applications need to store data.
 In the previous blog post we did this in a file for simplicity.
 Now we will use something more appropriate: A relational database.
 The beam library is used for this because it is closest to the "ORM" way of
-thinking. Eg: Model a schema, generate sql based upon that schema,
-and have migraions to move between different versions.
+thinking: Model a schema, generate SQL to query that schema,
+and have migrations to move between different versions of that schema.
+Migrations are left for another post for simplicity.
 
 [For the inpatient: Resulting source](#complete-sources)
 
-# Preperation
+# Preparation
 Unfortunately this post requires us to do quite a bit of devops to get started.
 We need to:
 
@@ -35,10 +36,10 @@ We need to:
 3. Create db
 4. Populate structure
 
-It is up to the reader to install Postgres on his configuration.
-However some <s>spells</s> commands for creating the user and database are given,
-we can create a super user in Postgres for our main account and finally create a
-structure with the `data_model.sql` file [(see sources)](#data_modelsql)
+Installing Postgres is out of the scope of this post.
+We sidestep using migrations for with the `data_model.sql` file
+[(see sources)](#data_modelsql).
+Use the following commands to prepare the database:
 
 ```bash
 sudo -u postgres createuser -s $USER
@@ -49,21 +50,22 @@ psql -f ./data_model.sql -d awesome_db
 
 Congratulations, devops was survived.
 Note that using this sql file is not idiomatic to beam.
-It should be fully done by beam,
+The schema should be managed by beam,
 but getting migrations to function is currently hard (it's a work in progress).
 
 # Creating structure
 The beam library models our desired structure at type level.
-This is done in a seperate file called `DB.hs`.
+This is done in a separate file called `DB.hs`.
 It can be seen in [the sources](#dbhs).
 With help of this code beam can inspect the definitions,
-and it also provides type safety for the beam sql domain specific langauge.
+and it also provides type safety for the beam sql domain specific language.
 In other words if the migrations work there would be a path towards bringing
 the database up to date with the code base,
-or a compile error, giving us an idea of what is wrong.
-Now let us carefully expect that file to understand it.
+or a compile error.
+This is very pleasant because we get a thight feedback loop.
+Now let us carefully inspect that file to understand it.
 
-## Langauge extensions
+## Language extensions
 ```haskell
 {-# LANGUAGE DeriveGeneric         #-}
 {-# LANGUAGE FlexibleInstances     #-}
@@ -73,7 +75,7 @@ Now let us carefully expect that file to understand it.
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 ```
-This looks daunting however these are individually quite simple.
+This looks daunting however these extensions are individually quite simple.
 Generally they either make nicer API's or an easier language to use.
 We will go over each of them.
 
@@ -85,26 +87,26 @@ declaration, for example:
 deriving instance Show Message
 ```
 
-This mecahnism allows deriving (automatic code generation)
+This mechanism allows deriving (automatic code generation)
 to be used more flexibly.
 In this case we want to do this because the `MessageT f` type constructor
-eric to derive (as `f` is unkown), but `MessageT Identity` is known 
+to derive (as `f` is unknown), but `MessageT Identity` is known 
 so we can derive that.
 The GHC [manual lists](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#stand-alone-deriving-declarations)
 more possible reasons to derive like this instead of the standard method.
 
 ### TypeFamilies
-Type famalies allow us to declare `data` inside an instance.
-The `Table` class requires `TypeFamilies` to instantiate,
-it requires us to declare a `data` called primary key in it's instance:
+Type families allow us to declare `data` inside an instance.
+The `Table` class requires `TypeFamilies` to instantiate because
+it needs a `data` called primary key in it's instance:
 
 ```haskell
 instance Table UserT where
     data PrimaryKey UserT f = UserId (Columnar f Int) deriving Generic
     primaryKey = UserId . _id
 ```
-This example is a prime reason to use type famalies:
-It allows beam to asume the primary key exist.
+This example is a prime reason to use type families:
+It allows beam to assume the primary key exist for all tables.
 
 The Haskell [wiki](https://wiki.haskell.org/GHC/Type_families)
 goes more in depth on type families
@@ -147,19 +149,19 @@ If `MultiParamTypeClasses` is disabled an error appears:
    |          ^^^^^^^^^^^^^^^^^^^^^
 ```
 
-Because we use two parameters for this instance (`be` and `AwesomeDb`)
-we must lift the default restriction on this with this langauge extension.
+Because we use two parameters for this instance (`be` and `AwesomeDb`).
+By default Haskell only allows one.
 
 ### DeriveGeneric
 `DeriveGeneric` was discussed in a
 [previous blog post]({filename}/pragmatic-haskell-simple-servant.md).
 In short: `Generic` allows for introspection of data structures using the
-fact any data structure can be moddeled in a regular (generic) pattern.
+fact any data structure can be modeled in a regular (generic) pattern.
 
 ### OverloadedStrings
 `OverloadedStrings` is probably the most common language extension.
 It converts string automatically, for example `String -> ByteString`.
-In our case it's only used for connectionString:
+In our case it's only used for connection string:
 
 ```haskell
 connectionString :: BS.ByteString
@@ -172,7 +174,8 @@ Using this extension avoids tedious conversions.
 ### DuplicateRecordFields
 `DuplicateRecordFields` allows creation of records with the same name.
 For example both user and messages have an `_id` record.
-Type annotations are used to determine which function is called,
+Because they have the same name,
+type annotations are used to determine which function is called,
 for example in:
 
 ```haskell
@@ -203,7 +206,7 @@ for explicit imports.
 We start with defining the structure of our user table.
 ```haskell
 data UserT f = User
-                { _userId :: C f Int
+                { _id     :: C f Int
                 , _name   :: C f Text.Text
                 , _email  :: C f Text.Text
                 }
@@ -213,12 +216,11 @@ What are these `C` and `f`'s doing here?
 The `C` is an abbreviation for
 [Columnar](http://hackage.haskell.org/package/beam-core-0.7.2.2/docs/Database-Beam-Schema.html#t:Columnar),
 which is a type that requires two other types to complete.
-This is called a higher kinded type.
 In this case `C` is given an `f`,
 and a second argument with the actual type of the column.
-
 `f` is not defined, instead it's also an argument of `UserT`, therefore `UserT`
-is of kind `* -> *`.
+is of kind `* -> *`. What we know however is that this `f` is the same for all
+columns in `UserT`.
 
 Now this `f` can be thought of as a 'gap' that can be filled up with anything.
 This gap allows the beam library to inspect the structure we have defined,
@@ -233,7 +235,8 @@ This defines a type alias. A userT with Identity is simply a user.
 In this case we are filling the `f` with Identity, [a container](http://hackage.haskell.org/package/base-4.11.1.0/docs/Data-Functor-Identity.html)
 that exposes on function `runIdentity` which removes the container and
 does nothing with the content.
-In this case we want to use UserT for just holding data and nothing else.
+This is usefull for the case where we want to have the user as a result from
+the database.
 
 ```haskell
 deriving instance Show (PrimaryKey UserT Identity)
@@ -245,28 +248,23 @@ primary key which will be introduced below.
 ```haskell
 instance Table UserT where
     data PrimaryKey UserT f = UserId (Columnar f Int) deriving Generic
-    primaryKey = UserId . _userId
+    primaryKey = UserId . (_id :: UserT f -> C f Int)
 type UserId = PrimaryKey UserT Identity -- For convenience
 ```
 Here we make UserT an instance of a Table.
 To do this we must specify a PrimaryKey, of which we define the type in the data
 line.
 The next line tells which function must be used to access the primary key.
-In other words we implement the primaryKey function here by saying `_userId`
+In other words we implement the primaryKey function here by saying `_id`
 must be used for it.
-
-Note that it is possible to call this primary key `_id`,
-however the `{-# LANGUAGE DuplicateRecordFields #-}` langauge extension
-must be used in this case if multiple models are defined in the same module.
-Then also the type must be defined inline to allow the compiler to figure
-out which `_id` record was used.
-We left it out for simplicity
+We use a type annotation to indicate which `_id` function is used.
+Leaving that out results in an ambigious type error.
 
 ```haskell
 instance Beamable UserT
 instance Beamable (PrimaryKey UserT)
-
 ```
+
 `Beamable` provides several ['introspection routines'](http://hackage.haskell.org/package/beam-core-0.7.2.2/docs/Database-Beam-Schema.html#t:Beamable).
 We require it to create a `Database` out of the table.
 The database will be described below.
@@ -275,7 +273,7 @@ The database will be described below.
 
 ```haskell
 data MessageT f = Message
-                { _messageId :: C f Int
+                { _id        :: C f Int
                 , _from      :: PrimaryKey UserT f
                 , _content   :: C f Text.Text
                 }
@@ -286,17 +284,16 @@ deriving instance Show Message
 
 instance Table MessageT where
     data PrimaryKey MessageT f = MessageId (Columnar f Int) deriving Generic
-    primaryKey = MessageId . _messageId
+    primaryKey = MessageId . (_id :: MessageT f -> C f Int)
 type MessageId = PrimaryKey MessageT Identity -- For convenience
 
 instance Beamable MessageT
 instance Beamable (PrimaryKey MessageT)
 ```
 
-The boiler plate is similar to that of User, the only new introduction is the
-from field, which points at the user table.
-Beam makes this automatically into a foreign key and can do joins on it
-with the DSL, as we will see later.
+The boiler plate is similar to that of User, the only new concept is the
+from field, which points at the user table with the primary key.
+Beam can make joins on this with the DSL.
 
 ## Database
 ```haskell
@@ -306,7 +303,7 @@ data AwesomeDb f = AwesomeDb
                         deriving Generic
 ```
 This type defines the entire database.
-Again it provides a 'hole' with the `f`, presumably for schema creation.
+Again it provides a 'hole' with the `f`.
 
 ```haskell
 connectionString :: BS.ByteString
@@ -333,35 +330,37 @@ All structural information is already provided at type level.
 Now we have a database structure defined we can use it
 in our already defined servant module `Lib.hs`.
 We have already seen most of this source file in the previous [blog post]({filename}/pragmatic-haskell-message-servant.md),
-the complete new version is listed below:
-
+the complete new version is in [the sources](#dbhs).
 
 The functionality is still the same except now we're using a database as
 backend rather than a file.
-What's interesting about the example is that it shows both how to insert, as
-well as retrieve data with help of beam.
-It also does a `JOIN` operation.
-This is enough to build a large backend system from.
+Just like with the previous post, the example shows both how to insert,
+as well as retrieve data.
+Now it also does a `JOIN` operation with the beam dsl.
+Having these tools is in principle enough to build a large backend system from.
+Let's inspect the new changes.
 
-## Messages
 ```haskell
 messages :: Connection -> Message -> Handler [Message]
 messages conn message = do 
   messages <- liftIO $ 
 ```
-
 Messages will hold the messages we're going to query from the database.
+`liftIO` means we're doing a function within the `IO` context (eg, interact with the world).
+
 ```haskell
     PgBeam.runBeamPostgres conn $ do
 ```
+Run the beam Monad with help of a connection.
+In other words, everything within this do block is a query for the database,
+and we're explicitely using postgres.
 
-Run the beam monad with help of a connection.
-In other words, everything within this do block is a query for the database.
 ```haskell
       let user = from message
 ```
-
 Retrieve the user from message for convenience.
+This is just a shorthand.
+
 ```haskell
       [user] <- runInsertReturningList (DB._users DB.awesomeDB) $ Beam.insertExpressions [DB.User{
             DB._userId = Beam.default_,
@@ -369,8 +368,19 @@ Retrieve the user from message for convenience.
             DB._email = Beam.val_ (pack $ email $ user )
         }]
 ```
-This is how we insert an item, beam always inserts lists of items, in our case 
-we only want to insert one user.
+the `runInsertReturningList` function call is quite complex.
+The first argument defines in which table we're using, we want to insert
+something into the users table.
+The second argument is a list of expressions. To get the expressions we use the
+`Beam.insertExpressions` function.
+This is how we insert an item, in this case we only want to insert one user.
+We use the User constructor defined earlier in the `DB.hs` module to obtain a user.
+THe fields are populated with values or a special default value.
+
+Note that although this function is complex, if we do anything wrong we get a
+type error.
+Our code will not compile unless we do it right.
+This is one of the strenghts of beam.
 
 ```haskell
       _ <- runInsertReturningList (DB._messages DB.awesomeDB) $ Beam.insertExpressions $ [DB.Message{
@@ -379,7 +389,8 @@ we only want to insert one user.
             DB._content = Beam.val_ (pack $ content message)
         }]
 ```
-These lines insert the message into the db, linking it up with the newly inserted
+These lines insert the message into the db,
+linking it up with the newly inserted
 user trough the pk.
 
 ```haskell
@@ -388,7 +399,8 @@ user trough the pk.
         msg <- Beam.oneToMany_ (DB._messages DB.awesomeDB) DB._from usr
         pure (msg, usr)
 ```
-This query gets ll resulting messages and their respecive users joined together.
+This query gets the resulting messages and their respective users joined
+together.
 
 ```haskell
   pure $
@@ -400,16 +412,41 @@ This query gets ll resulting messages and their respecive users joined together.
         (unpack $ DB._content msg)
     ) messages
 ```
-here we convertt the database user and database message, to the 'api' user and
+here we convert the database user and database message, to the 'api' user and
 'api' messages.
-The reason we need to do this is because our database data scrturcture does not
+The reason we need to do this is because our database data structure does not
 implement toJSON.
 Also the database structure has extra information such as the primary key which
 we may want to hide from api clients.
 
 # Execute!
+To run the program we use:
+```bash
+   stack build
+   stack exec webservice
+```
+
+To test it a simple curl request was made:
+```bash
+   curl --header "Content-Type: application/json" -v --data '{"from":{"email":"d","name":"xyz"}, "content": "does it word?"}' http://127.0.0.1:6868/message/ 
+```
+
+We can inspect the database with postgress
+
+```bash
+   psql "dbname=awesome_db"
+   \dt
+   select * from messages;
+```
 
 # Conclusion
+We have looked at the beam library in this post and it's interaction with
+postgres.
+There is quite a bit of boilerplate involved,
+but once setup it provides a complete typesafe dsl to the database.
+With the database and webserver in place nothing is stopping the reader from
+making his next major project in Haskell.
+
 
 # Complete sources
 The complete sources can be found on [github](https://github.com/jappeace/awesome-project-name/tree/beam-postgre-no-migrate), and below.
