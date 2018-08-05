@@ -1,15 +1,14 @@
 Title: Pragmatic Haskell III: Beam Postgres DB
-Date: 2018-06-26 12:00
+Date: 2018-08-05 17:30
 Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, database
 subreddit: haskell programming
-status: draft
 
 No need to read a book to use Haskell!
 This post will get you going with a serious web application while
 only sticking to the concepts that are encountered.
-This is a Haskell safari with as end goal a working webapp.
+This is a Haskell safari with as end goal a working webapp with database.
 
 1. [Pragmatic Haskell: Simple servant web server]({filename}/pragmatic-haskell-simple-servant.md)
 1. [Pragmatic Haskell II: IO Webservant]({filename}/pragmatic-haskell-message-servant.md)
@@ -18,7 +17,8 @@ This is a Haskell safari with as end goal a working webapp.
 ![fancy db image](/images/2018/haskell-beam-postgres.svg)
 
 Web applications need to store data.
-In the previous blog post we did this in a file for simplicity.
+In the [previous blog post]({filename}/pragmatic-haskell-message-servant.md)
+we did this in a file for simplicity.
 Now we will use something more appropriate: A relational database.
 The beam library is used for this because it is closest to the "ORM" way of
 thinking: Model a schema, generate SQL to query that schema,
@@ -328,16 +328,14 @@ All structural information is already provided at type level.
 
 # Using structure
 Now we have a database structure defined we can use it
-in our already defined servant module `Lib.hs`.
+in `Lib.hs`.
 We have already seen most of this source file in the previous [blog post]({filename}/pragmatic-haskell-message-servant.md),
-the complete new version is in [the sources](#dbhs).
+the new version can be seen in [the sources](#dbhs).
 
 The functionality is still the same except now we're using a database as
 backend rather than a file.
 Just like with the previous post, the example shows both how to insert,
 as well as retrieve data.
-Now it also does a `JOIN` operation with the beam dsl.
-Having these tools is in principle enough to build a large backend system from.
 Let's inspect the new changes.
 
 ```haskell
@@ -345,21 +343,20 @@ messages :: Connection -> Message -> Handler [Message]
 messages conn message = do 
   messages <- liftIO $ 
 ```
-Messages will hold the messages we're going to query from the database.
-`liftIO` means we're doing a function within the `IO` context (eg, interact with the world).
+Messages will hold the resulting messages we're to querying from the database.
+`liftIO` allows functions within the `IO` context (eg, interact with the world).
 
 ```haskell
     PgBeam.runBeamPostgres conn $ do
 ```
 Run the beam Monad with help of a connection.
 In other words, everything within this do block is a query for the database,
-and we're explicitely using postgres.
+and we're explicitly using postgres to solve ambiguity.
 
 ```haskell
       let user = from message
 ```
 Retrieve the user from message for convenience.
-This is just a shorthand.
 
 ```haskell
       [user] <- runInsertReturningList (DB._users DB.awesomeDB) $ Beam.insertExpressions [DB.User{
@@ -375,12 +372,12 @@ The second argument is a list of expressions. To get the expressions we use the
 `Beam.insertExpressions` function.
 This is how we insert an item, in this case we only want to insert one user.
 We use the User constructor defined earlier in the `DB.hs` module to obtain a user.
-THe fields are populated with values or a special default value.
+The fields are populated with values or a special default value.
 
 Note that although this function is complex, if we do anything wrong we get a
 type error.
 Our code will not compile unless we do it right.
-This is one of the strenghts of beam.
+This is one of the strengths of beam.
 
 ```haskell
       _ <- runInsertReturningList (DB._messages DB.awesomeDB) $ Beam.insertExpressions $ [DB.Message{
@@ -412,12 +409,12 @@ together.
         (unpack $ DB._content msg)
     ) messages
 ```
-here we convert the database user and database message, to the 'api' user and
-'api' messages.
+here we convert the database user and database message, to the 'API' user and
+'API' messages.
 The reason we need to do this is because our database data structure does not
-implement toJSON.
+implement `toJSON`.
 Also the database structure has extra information such as the primary key which
-we may want to hide from api clients.
+we may want to hide from API clients.
 
 # Execute!
 To run the program we use:
@@ -431,7 +428,7 @@ To test it a simple curl request was made:
    curl --header "Content-Type: application/json" -v --data '{"from":{"email":"d","name":"xyz"}, "content": "does it word?"}' http://127.0.0.1:6868/message/ 
 ```
 
-We can inspect the database with postgress
+We can inspect the database with postgres
 
 ```bash
    psql "dbname=awesome_db"
@@ -442,10 +439,11 @@ We can inspect the database with postgress
 # Conclusion
 We have looked at the beam library in this post and it's interaction with
 postgres.
-There is quite a bit of boilerplate involved,
-but once setup it provides a complete typesafe dsl to the database.
-With the database and webserver in place nothing is stopping the reader from
-making his next major project in Haskell.
+Although the example is simple, there is quite a bit of boilerplate involved,
+but once setup it provides a complete type safe DSL to the database.
+With the database and web server in place nothing is stopping the reader from
+making his next major project in Haskell!
+We hereby conclude our Haskell safari successfully. 
 
 
 # Complete sources
