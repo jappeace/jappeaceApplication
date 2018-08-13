@@ -4,6 +4,7 @@ Category: tools
 OPTIONS: toc:nil
 Tags: nix, nixos, btrfs, tools, linux
 subreddit: nixos
+status: draft
 
 I decided to bite the bullet. Figure out how to get btrfs working on a luks
 encrypted disk.
