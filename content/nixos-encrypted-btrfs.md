@@ -26,12 +26,13 @@ The plan can be seen below:
 # Nixos move plan
 
 1. Backup partition
-2. Format in btrfs with luks
-3. Get ssh keys
-4. clone this repo
-5. get main keepass file.
-6. setup syncthing
-7. setup email
+2. Export gpg PRIVATE key (annoying to get back from files)
+3. Format in btrfs with luks
+4. Get ssh keys
+5. clone this repo
+6. get main keepass file.
+7. setup syncthing
+8. setup email
 
 I think it's a bad idea to put everything in nix from the beginning
 (I acrued to much over the years), 
