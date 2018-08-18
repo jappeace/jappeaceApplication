@@ -61,6 +61,17 @@ https://practicaltypography.com/straight-and-curly-quotes.html
    compilation. (the id then doesn't get generated which makes it fail entrily).
    Test by trying to just =C-c C-c= some random org source block.
    Try recompiling elpa =m x recompile-elpa= and see if it loads now.
+
+  https://github.com/syl20bnr/spacemacs/issues/7641
+
+  =rm -rf .emacs.d/elpa/org-plus-contrib-20180806= works.
+**** Test blcok
+#+BEGIN_SRC emacs-lisp
+(+ 4 2)
+#+END_SRC
+
+#+RESULTS:
+: 6
    
 *** wrong type arg (stringp, null)
 If it's only the thesis it's the plant uml blocks. recompile elpa,
@@ -68,6 +79,10 @@ make sure plantuml is enable (should be).
 
 Also I found a binary search was a good way to confirm that it's the plantuml
 blocks.
+
+
+It can also be the case that the org exporter demands an author from the format,
+The fix is to delete it as done in: https://github.com/jappeace/pelican-plugins/commit/ea470ea2f1e333733418ea15f12bdfccdf1526c4
 
 ** Assets not found in template
    Set the =SASS_PATH= to theme/static/css.

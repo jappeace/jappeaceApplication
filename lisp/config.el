@@ -1,5 +1,6 @@
 ;;; Package configuration
 
+(setq debug-on-error t)
 (require 'package)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("marmalade" . "https://marmalade-repo.org/packages/")

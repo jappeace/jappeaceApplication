@@ -97,7 +97,7 @@ Hello -->> Hi
 
 #+CAPTION: Deployment diagram of AIML example
 #+LABEL: fig:dep:aimlcats
-#+RESULTS[24d509ce57bb1a598a84c5ff10e9cfe2847f91e3]: fig:dep:aimlcats
+#+RESULTS[4d509ce57bb1a598a84c5ff10e9cfe2847f91e3]: fig:dep:aimlcats
 [[file:./images/2017/uml/dep:aimlcats.svg]]
 
 Now let's look at the new representation I came up with

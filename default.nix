@@ -44,6 +44,15 @@ let
       sha256 = "0dmz9i6awarq1cnyxnpfr9nr8jn905p65mccmahrj9h268x3a4kq";
     };
   };
+
+  cssmin = pythonPackages.buildPythonPackage {
+    name = "cssmin-0.2.0";
+    doCheck = false;
+    src = pkgs.fetchurl {
+      url = "https://files.pythonhosted.org/packages/8e/d8/dc9da69bb186303f7ab41adef0a5b6d34da2fdba006827620877760241c3/cssmin-0.2.0.tar.gz";
+      sha256 = "1dk723nfm2yf8cp4pj785giqlwv42l0kj8rk40kczvq1hk6g04p0";
+    };
+  };
   typogrify = pythonPackages.buildPythonPackage {
     name = "typogrify-2.0.7";
     doCheck = false;
@@ -67,10 +76,14 @@ stdenv.mkDerivation {
   buildInputs = [
     minify 
     typogrify 
+    pkgs.emacs # for org mode
     pythonPackages.pelican
+    cssmin
     pythonPackages.markdown
     pythonPackages.webassets
     pythonPackages.praw
+    pythonPackages.pygments
+    pkgs.sass
   ];
   shellHook = ''
     export PATH=${pkgs.s3cmd}/bin:$PATH

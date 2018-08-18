@@ -9,16 +9,18 @@ status: draft
 I decided to bite the bullet. Figure out how to get btrfs working on a luks
 encrypted disk.
 Turns out it wasn't as hard as I expected.
-This post documents the journey and commands used.
+This is a after action report of my journey towards btrfs. Commands included.
 
-First thing I did was make a move plan. 
-I had the steps pretty clear in my mind,
-but I didn't want to take risks.
+# Move plan
+First thing I did was make a "move plan". 
+This included all neccisary steps to not lose data and resources for finding the
+commands.
+I didn't want to take risks with losing data.
 Besides I would often need to use the phone to lookup commands so having a
 document with all the neccisary links would come in handy.
-This was recored in my [linux-config](https://github.com/jappeace/linux-config)
+This was recorded in my [linux-config](https://github.com/jappeace/linux-config)
 project around which the installation is centered,
-considering I already had a workign config from a previous install on encrypted
+considering I already had a working config from a previous install on encrypted
 ext4.
 The plan can be seen below:
 
@@ -128,7 +130,7 @@ We setup partitioning but setting up filesystems is a distinct step.
 
 ```bash
 mkfs.vfat -n boot "$dev"1
-mkfs.btfs -l root /dev/mapper/nixos-enc
+mkfs.btrfs -L root /dev/mapper/nixos-enc
 ```
 
 The boot partition will be `vfat` because eufi tells us to.
@@ -147,7 +149,7 @@ partition, which is more space efficient.
 
 ```bash
 mount -t btrfs /dev/mapper/nixos-enc /mnt/
-btfs subvol create /mnt/nixos
+btrfs subvol create /mnt/nixos
 umount /mnt
 mount -t btrfs -o subvol=nixos /dev/mapper/nixos-enc /mnt
 ```
@@ -178,6 +180,24 @@ mount "$dev"1 /mnt/boot
 ```
 
 Here we mount the boot paritition.
+
+## Did I do everything right?
+When running trough this for the second time I was amazed at how fast I went,
+this made me skeptical, 
+so to verify everything was sane I used the following commands.
+
+```bash
+mount | grep /mnt
+ls /mnt
+```
+
+first commadn check if the encrypted volume and boot is mounted at the right
+paths.
+I used it without the grep first but there is a lot mounted on a livedisk
+appearantly and I'm only interested in that path.
+The second one to verify the folders are created, which are subvolumes.
+The subvolume command creates a folder so if it exists we presume it worked.
+But if you're really unsure you can use `btrfs subvol list /mnt/`.
 
 # Configure nix
 We can use hardware detection to figure out how to setup nix on this setup:

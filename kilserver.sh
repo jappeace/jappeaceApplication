@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /run/current-system/sw/bin/bash
 set -xe
 
 ps -aux > /tmp/procs
