@@ -1,68 +1,30 @@
 Title: Nixos on encrypted btrfs
-Date: 2018-08-14 17:30
+Date: 2018-08-18 21:33
 Category: tools
 OPTIONS: toc:nil
 Tags: nix, nixos, btrfs, tools, linux
-subreddit: nixos
-status: draft
+subreddit: nixos linux
 
-I decided to bite the bullet. Figure out how to get btrfs working on a luks
-encrypted disk.
-Turns out it wasn't as hard as I expected.
-This is a after action report of my journey towards btrfs. Commands included.
+Nixos is heroin for tinkerers.
+Paradise can be tinkered together which then can be easily freely shared
+amongst peers because it's fully reproducible!
+Jappie wanted more, he wanted a secure disk *and* a btrfs.
+No guides provide this. So he made one himself.
 
-# Move plan
-First thing I did was make a "move plan". 
-This included all neccisary steps to not lose data and resources for finding the
-commands.
-I didn't want to take risks with losing data.
-Besides I would often need to use the phone to lookup commands so having a
-document with all the neccisary links would come in handy.
-This was recorded in my [linux-config](https://github.com/jappeace/linux-config)
-project around which the installation is centered,
-considering I already had a working config from a previous install on encrypted
-ext4.
-The plan can be seen below:
+![Locked btrfs on nixos](/images/2018/locked_btrfs.svg)
 
-```md
-# Nixos move plan
+The bullet was bitten, btrfs was made to work on a luks encrypted disk.
+This isn't hard, with care and precion.
+To help a reader we document the journey towards btrfs.
+Commands compiled and included.
 
-1. Backup partition
-2. Export gpg PRIVATE key (annoying to get back from files)
-3. Format in btrfs with luks
-4. Get ssh keys
-5. clone this repo
-6. get main keepass file.
-7. setup syncthing
-8. setup email
-
-I think it's a bad idea to put everything in nix from the beginning
-(I acrued to much over the years), 
-but we can keep on adding custimizations over time.
-
-## uniform style
-
-Use lxappearance and qt5ct. Can only work trough magical buttons
-
-## Resources
-
-### btrfs
-
-some thread where it maybe does work: https://github.com/NixOS/nixpkgs/issues/15786
-script: https://gist.github.com/samdroid-apps/3723d30953af5e1d68d4ad5327e624c0
-
-### emacs
-https://github.com/NixOS/nixpkgs/blob/c836833c0125d31f5ec11e5121ba73f89ec4b9fa/pkgs/top-level/emacs-packages.nix
-
-### Full disk encryption blog post
-http://qfpl.io/posts/installing-nixos/
-```
-
-That plan is the content of this entire blog post.
-However it's scattered over the various resources so for cohesion I'll make a
-step by step instruciton here.
-Backups are for losers. Do not backup your data. Losing is part of life.
-I didn't contradict myself there.
+To prevent data loss a
+[move plan](https://github.com/jappeace/linux-config/blob/da00ad06f06b703c88bb9d6a4e7c6335be06299f/NIXOS-MOVE-PLAN.md)
+was made.
+This plan also includes all resources used, 
+which is convenient once in a live environment with no access to the browser.
+This blog post describes that plan in detail and puts the right
+instructions in order.
 
 # Getting started
 Get yourself a nixos [live usb](https://nixos.org/nixos/download.html).
@@ -74,10 +36,17 @@ wpa_passphrase SSID PASS > /etc/wpa_supplicant.conf
 systemctl restart wpa_supplicant
 ```
 
+The first command creates a config for wpa_supplicant.
+The reader must fill in SSID and PASS of his target wifi network.
+The second command tells systemd to go restart wpa_supplicant and use the new config.
+
 # Partitioning
 Now to setup the partitioning on the RIGHT device.
-Use `lsblk` to figure out which.
-The right device will be called `$dev` hence forward.
+Choose carefully.
+Use `lsblk` to figure out which device is RIGHT.
+You'll know it's the WRONG device if you lose data after partitioning.
+The RIGHT device will be called `$dev` hence forward.
+
 There are no other partitioning tools than gdisk.
 Only heritics believe there are.
 Therefore we use gdisk:
@@ -86,13 +55,21 @@ Therefore we use gdisk:
 gdisk $dev
 ```
 
-We use `p` for printing, to see what's going on.
-`d` for deletion, you should start out with deleting everything on `$dev`.
-`n` is used for creating new partitions.
-`w` is used for writing once finished.
-Create the following partition scheme:
+## Gdisk cheatsheet
+
+| Command | Effect                                                                 |
+|---------|------------------------------------------------------------------------|
+| `p`     | For printing, to see what's going on.                                  |
+| `d`     | For deletion, you should start out with deleting everything on `$dev`. |
+| `n`     | Is used for creating new partitions.                                   |
+| `w`     | is used for writing once finished.                                     |
+
+This tabe just describes the commands needed for the intended partitioning.
+
+## Intended partitioning
 
 | Number | type | size           |
+|--------|------|----------------|
 |      1 | ef00 | +500M          |
 |      2 | 8300 | (rest of disk) |
 
@@ -100,15 +77,18 @@ Create the following partition scheme:
 The first paritition will be boot, and the second everything else.
 We will encrypt everything else.
 With type `ef00` we will use eufi for booting.
-Don't worry. nix will handle that. You just need to enable it in bios.
-It's up to the reader to figure that part out.
-(press some f keys on boot, f11 maybe?)
+Don't worry. nix will handle that, mostly. 
+
+You may want to setup a swap partition too.
+Swap files are [bad](https://wiki.archlinux.org/index.php/Btrfs#Swap_file)
+on btrfs.
+Good luck with that.
 Done. Onwards!
 
 # Encryption
 We use `cryptsetup` for encryption.
-Make sure to select the right partition. We do not want to encrypt the boot
-paritition because then we can't boot.
+Make sure to select the right partition.
+We do not want to encrypt the boot paritition because then we can't boot.
 So if you followed above instructions it will be either `2` or `p2`
 (depending on device type).
 We'll call it `2`.
@@ -118,34 +98,29 @@ cryptsetup luksFormat "$dev"2
 cryptsetup open "$dev"2 nixos-enc
 ```
 
-The first command does the actuall formating, the second one opens up the
-formated disk.
+The first command does the actual formating,
+the second one opens up the formated disk.
 You'll need to provide the right password in both cases.
-Choose one you can remember but is strong. A random sentence will do.
+Choose one you can remember but is strong.
 Once decrypted the disk will be mapped to `/dev/mapper/nixos-enc`,
-note that we supplied that final part.
+note that we supplied that final part in the last command.
 
 # Formatting filesystems
-We setup partitioning but setting up filesystems is a distinct step.
+Partitioning is a distinct step from setting up filesystems.
 
 ```bash
 mkfs.vfat -n boot "$dev"1
 mkfs.btrfs -L root /dev/mapper/nixos-enc
 ```
+The boot partition will be `vfat` because [uefi tells us to](https://wiki.archlinux.org/index.php/EFI_system_partition).
+The everything else partition will be `btrfs`,
+because why are you following this guide if not?
+Note that we point it at the mapped file,
+if the `"$dev"2`device were to be used directly we'd remove the encryption.
 
-The boot partition will be `vfat` because eufi tells us to.
-The everything else partition will of course be `btrfs`.
-Note that we point it at the mapped file, if the device were to be used directly
-we'd remove the encryption.
-
-# moutning and subvolumes
-I'm just cargo culting this,
-but wouldn't it be nice to have subvolumes on your btfs?
-You'll get subvolumes like this!
-Note that subvolumes are pretty nice for making backups,
-because we can have a finer grained incremental backup.
-They're also nice because we can put two operating systems on the same
-partition, which is more space efficient.
+# Moutning and subvolumes
+Wouldn't it be nice to have subvolumes on your btfs?
+This is not cargo culted at all.
 
 ```bash
 mount -t btrfs /dev/mapper/nixos-enc /mnt/
@@ -154,12 +129,13 @@ umount /mnt
 mount -t btrfs -o subvol=nixos /dev/mapper/nixos-enc /mnt
 ```
 
-Here we are presumably doing precisely that.
 First we create a nixos subvolume below the root subvolume,
-eg the nixos operating system will not be installed in the root, but one node
-below the root, allowing potentially more being installed.
-I think this is a pretty good idea, even though I'm cargo culting,
-and reverse explaining my cargo culting behavior.
+eg the nixos operating system will not be installed in the root,
+but one node below the root,
+allowing potentially more operating systems to be installed on the same
+partition.
+Reverse explaining cargo culting behavior,
+this maybe a good idea.
 
 ```bash
 btrfs subvol create /mnt/var
@@ -167,12 +143,12 @@ btrfs subvol create /mnt/home
 btrfs subvol create /mnt/tmp
 chmod 777 /mnt/tmp
 ```
+
 Here we create subvolumes below the nixos subvolume.
 This allows the btrfs backup tools to just backup the home directory.
 Or just the root directory ignoring `var`, `tmp` and `home`.
-That final step is an addition by me. 
-Turns out that pulseaudio really doesn't work well if it can't write into /tmp,
-many other programs probably neither.
+That final `chmod` step is to resolve issues with applications.
+Pulseaudio for example doesn't work well if it can't write into `/tmp`.
 
 ```bash
 mkdir /mnt/boot
@@ -180,21 +156,19 @@ mount "$dev"1 /mnt/boot
 ```
 
 Here we mount the boot paritition.
+Just to make it detectable by the nix config generation script.
 
 ## Did I do everything right?
-When running trough this for the second time I was amazed at how fast I went,
-this made me skeptical, 
-so to verify everything was sane I used the following commands.
+Doing this a second time my speed made me skeptical,
+to verify everything was sane I used the following commands.
 
 ```bash
 mount | grep /mnt
 ls /mnt
 ```
 
-first commadn check if the encrypted volume and boot is mounted at the right
-paths.
-I used it without the grep first but there is a lot mounted on a livedisk
-appearantly and I'm only interested in that path.
+The first command is to check if the encrypted volume and boot is mounted at
+the right paths.
 The second one to verify the folders are created, which are subvolumes.
 The subvolume command creates a folder so if it exists we presume it worked.
 But if you're really unsure you can use `btrfs subvol list /mnt/`.
@@ -206,11 +180,10 @@ We can use hardware detection to figure out how to setup nix on this setup:
 nixos-generate-config --root /mnt
 ```
 
-
 Done.
 
-Now the user needs to write his own nix config, or
-[copy mine](https://github.com/jappeace/linux-config/blob/master/configuration.nix)
+Now the user needs to write his own [nix config](https://nixos.org/nixos/manual/index.html#sec-changing-config),
+or [copy mine](https://github.com/jappeace/linux-config/blob/master/configuration.nix)
 or cherry pick whatever they need (recommend).
 
 Once configuration is done we can install nix:
@@ -226,11 +199,17 @@ Hopefully we boot succesfully:
 ```bash
 reboot
 ```
+Booting is hard, don't worry if this goes wrong the first <s>10</s> 30 times.
+
+You may need to enable EFI in your BIOS.
+It's up to the reader to figure that part out.
+(press some f keys on boot, f11 maybe?).
+Alternatively one could setup grub. Good luck with that.
 
 You can't read the rest of this post untill you've booted,
-go back if you haven't, you meshed up.
+go back if you haven't, you messed up.
 
-# final steps
+# Final steps
 Once rebooted you may be stuck at the display manager.
 Use `Alt+f1` to switch to another tty and login as root,
 then use `passwd your-user-name` to set an inital password.
@@ -243,4 +222,7 @@ that symlinks all dotfiles, and hardlinks
 the `configuration.nix` to my linux-config project.
 
 # Conclusion
-btrfs encrypted on nixos.
+The manual step of setting up btrfs on an encrypted volume were described.
+Nix is of course fully self installing so once the partitions were setup 
+and mounted right for hardware detection,
+we were done.
