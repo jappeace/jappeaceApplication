@@ -1,5 +1,5 @@
 Title: Nixos on encrypted btrfs
-Date: 2018-08-18 21:33
+Date: 2018-08-19 13:02
 Category: tools
 OPTIONS: toc:nil
 Tags: nix, nixos, btrfs, tools, linux
