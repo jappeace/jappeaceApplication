@@ -84,6 +84,9 @@ stdenv.mkDerivation {
     pythonPackages.praw
     pythonPackages.pygments
     pkgs.sass
+    pkgs.optipng
+    # TODO svgo
+    # TODO jpegtran
   ];
   shellHook = ''
     export PATH=${pkgs.s3cmd}/bin:$PATH
