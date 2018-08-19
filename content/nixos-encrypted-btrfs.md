@@ -6,28 +6,27 @@ Tags: nix, nixos, btrfs, tools, linux
 subreddit: nixos linux
 
 Nixos is heroin for tinkerers.
-Paradise can be tinkered together which then can be easily freely shared
-amongst peers because it's fully reproducible!
-Jappie wanted more, he wanted a secure disk *and* a btrfs.
-No guides provide this. So he made one himself.
+Paradise can be tinkered together and be freely shared among peers
+because it's fully reproducible!
+Jappie wanted more, he wanted a secure disk *and* a BTRFS.
+There used to be no guides for this, now there is.
 
 ![Locked btrfs on nixos](/images/2018/locked_btrfs.svg)
 
-The bullet was bitten, btrfs was made to work on a luks encrypted disk.
-This isn't hard, with care and precion.
-To help a reader we document the journey towards btrfs.
+The bullet was bitten, BTRFS was made to work on a LUKS encrypted disk.
+This isn't hard, with care and precision.
+To help a reader we document the journey towards BTRFS.
 Commands compiled and included.
 
 To prevent data loss a
 [move plan](https://github.com/jappeace/linux-config/blob/da00ad06f06b703c88bb9d6a4e7c6335be06299f/NIXOS-MOVE-PLAN.md)
 was made.
-This plan also includes all resources used, 
-which is convenient once in a live environment with no access to the browser.
-This blog post describes that plan in detail and puts the right
-instructions in order.
+This plan also includes all resources used.
+Here we describe that plan in detail and compile the commands into an
+understandable whole.
 
 # Getting started
-Get yourself a nixos [live usb](https://nixos.org/nixos/download.html).
+Get yourself a NIXOS [live usb](https://nixos.org/nixos/download.html).
 Boot into it.
 First step is to setup WIFI:
 
@@ -48,14 +47,14 @@ You'll know it's the WRONG device if you lose data after partitioning.
 The RIGHT device will be called `$dev` hence forward.
 
 There are no other partitioning tools than gdisk.
-Only heritics believe there are.
+Only heretics believe there are.
 Therefore we use gdisk:
 
 ```bash
 gdisk $dev
 ```
 
-## Gdisk cheatsheet
+## Gdisk cheat sheet
 
 | Command | Effect                                                                 |
 |---------|------------------------------------------------------------------------|
@@ -64,7 +63,7 @@ gdisk $dev
 | `n`     | Is used for creating new partitions.                                   |
 | `w`     | is used for writing once finished.                                     |
 
-This tabe just describes the commands needed for the intended partitioning.
+This table just describes the commands needed for the intended partitioning.
 
 ## Intended partitioning
 
@@ -74,21 +73,21 @@ This tabe just describes the commands needed for the intended partitioning.
 |      2 | 8300 | (rest of disk) |
 
 
-The first paritition will be boot, and the second everything else.
+The first partition will be boot, and the second everything else.
 We will encrypt everything else.
-With type `ef00` we will use eufi for booting.
+With type `ef00` we will use UEFI for booting.
 Don't worry. nix will handle that, mostly. 
 
 You may want to setup a swap partition too.
 Swap files are [bad](https://wiki.archlinux.org/index.php/Btrfs#Swap_file)
-on btrfs.
+on BTRFS.
 Good luck with that.
 Done. Onwards!
 
 # Encryption
 We use `cryptsetup` for encryption.
 Make sure to select the right partition.
-We do not want to encrypt the boot paritition because then we can't boot.
+We do not want to encrypt the boot partition because then we can't boot.
 So if you followed above instructions it will be either `2` or `p2`
 (depending on device type).
 We'll call it `2`.
@@ -98,8 +97,8 @@ cryptsetup luksFormat "$dev"2
 cryptsetup open "$dev"2 nixos-enc
 ```
 
-The first command does the actual formating,
-the second one opens up the formated disk.
+The first command does the actual formatting,
+the second one opens up the formatted disk.
 You'll need to provide the right password in both cases.
 Choose one you can remember but is strong.
 Once decrypted the disk will be mapped to `/dev/mapper/nixos-enc`,
@@ -112,15 +111,16 @@ Partitioning is a distinct step from setting up filesystems.
 mkfs.vfat -n boot "$dev"1
 mkfs.btrfs -L root /dev/mapper/nixos-enc
 ```
-The boot partition will be `vfat` because [uefi tells us to](https://wiki.archlinux.org/index.php/EFI_system_partition).
+The boot partition will be `vfat` because [UEFI tells us to](https://wiki.archlinux.org/index.php/EFI_system_partition).
 The everything else partition will be `btrfs`,
 because why are you following this guide if not?
 Note that we point it at the mapped file,
 if the `"$dev"2`device were to be used directly we'd remove the encryption.
 
 # Moutning and subvolumes
-Wouldn't it be nice to have subvolumes on your btfs?
-This is not cargo culted at all.
+Wouldn't it be nice to have subvolumes on your BTRFS?
+This is not [cargo culted](https://en.wikipedia.org/wiki/Cargo_cult_programming)
+at all.
 
 ```bash
 mount -t btrfs /dev/mapper/nixos-enc /mnt/
@@ -155,7 +155,7 @@ mkdir /mnt/boot
 mount "$dev"1 /mnt/boot
 ```
 
-Here we mount the boot paritition.
+Here we mount the boot partition.
 Just to make it detectable by the nix config generation script.
 
 ## Did I do everything right?
@@ -194,25 +194,25 @@ nixos-install
 
 Don't worry, we can use `nixos-rebuild switch` to reconfigure nix whenever once
 we're booted into it.
-Hopefully we boot succesfully:
+Hopefully we boot successfully:
 
 ```bash
 reboot
 ```
 Booting is hard, don't worry if this goes wrong the first <s>10</s> 30 times.
 
-You may need to enable EFI in your BIOS.
+You may need to enable UEFI in your BIOS.
 It's up to the reader to figure that part out.
 (press some f keys on boot, f11 maybe?).
 Alternatively one could setup grub. Good luck with that.
 
-You can't read the rest of this post untill you've booted,
+You can't read the rest of this post until you've booted,
 go back if you haven't, you messed up.
 
 # Final steps
 Once rebooted you may be stuck at the display manager.
-Use `Alt+f1` to switch to another tty and login as root,
-then use `passwd your-user-name` to set an inital password.
+Use `Alt+f1` to switch to another TTY and login as root,
+then use `passwd your-user-name` to set an initial password.
 Use `Alt+f7` to go back to the display manager.
 
 I personally haven't moved all my configuration into nix yet
@@ -222,7 +222,7 @@ that symlinks all dotfiles, and hardlinks
 the `configuration.nix` to my linux-config project.
 
 # Conclusion
-The manual step of setting up btrfs on an encrypted volume were described.
+The manual step of setting up BTRFS on an encrypted volume were described.
 Nix is of course fully self installing so once the partitions were setup 
 and mounted right for hardware detection,
 we were done.
