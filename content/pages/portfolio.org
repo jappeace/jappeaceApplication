@@ -45,7 +45,7 @@ There are three status kinds:
 This is made to fit a use case for a restaurant which wants to roster it's
 employees ahead of time.
 This is currently used at [[http://www.dehuiskamer.com/][Restaurant De Huiskamer]].
-A [[http://localhost:8000/plan-prediction.html][blog post]] was written about a possible extension idea,
+A [[https://jappieklooster.nl/plan-prediction.html][blog post]] was written about a possible extension idea,
 which essentially uses Q-learning to predict where future employees should be
 planned.
 
