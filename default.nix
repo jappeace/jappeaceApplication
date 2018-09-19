@@ -85,6 +85,7 @@ stdenv.mkDerivation {
     pythonPackages.pygments
     pkgs.sass
     pkgs.optipng
+    pkgs.nodePackages.svgo
     # TODO svgo
     # TODO jpegtran
   ];
