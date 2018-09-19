@@ -87,6 +87,7 @@ stdenv.mkDerivation {
     pkgs.optipng
     #    nix-env -qaPA 'nixos.nodePackages' | grep -i svgo
     pkgs.nodePackages.svgo
+    pkgs.libjpeg
     # TODO svgo
     # TODO jpegtran
   ];
