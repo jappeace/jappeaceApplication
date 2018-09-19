@@ -12,6 +12,7 @@ So this is powered by [[http://docs.getpelican.com/en/stable/][pelican]].
 + Justify paragraphs like latex
 
 ** Org export
+*** TODO Fix citations
 + Should be faster
   + Maybe going full python? IDK how far that is or how much work
 + TOC shouldn't be generated with ID on overview page.

@@ -136,4 +136,4 @@
                    collect link))))
     (funcall (intern (format "org-ref-%s-%s-processor" bibliographystyle backend)))))
 
-(add-hook 'org-export-before-parsing-hook 'org-ref-citation-processor)
+; (add-hook 'org-export-before-parsing-hook 'org-ref-citation-processor)

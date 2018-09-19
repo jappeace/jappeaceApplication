@@ -76,7 +76,7 @@ stdenv.mkDerivation {
   buildInputs = [
     minify 
     typogrify 
-    pkgs.emacs # for org mode
+    (import ./emacs.nix { inherit pkgs; })
     pythonPackages.pelican
     cssmin
     pythonPackages.markdown
