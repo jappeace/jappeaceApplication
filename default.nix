@@ -85,6 +85,7 @@ stdenv.mkDerivation {
     pythonPackages.pygments
     pkgs.sass
     pkgs.optipng
+    #    nix-env -qaPA 'nixos.nodePackages' | grep -i svgo
     pkgs.nodePackages.svgo
     # TODO svgo
     # TODO jpegtran
