@@ -32,7 +32,7 @@ AUTHOR_FEED_RSS = None
 LINKS_EX = [
     (
         'resume',
-        '/files/2018/resume-daisee.pdf',
+        '/files/2018/resume-new-phone.pdf',
         "To convince you to hire me!",
         'resume'
 
