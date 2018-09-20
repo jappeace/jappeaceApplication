@@ -47,7 +47,7 @@ LINKS_EX = [
 
 SOCIAL_EX = [(
     'email',
-    'mailto:superpwnzormegaman@gmail.com',
+    'mailto:jappieklooster@hotmail.com',
     "A general purpose problem",
     'email'
 ), (
