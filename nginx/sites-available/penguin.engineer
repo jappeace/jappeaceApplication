@@ -19,7 +19,7 @@ server {
 	listen [::]:80;
 
 	#main website
-	root /var/www/penguin.engineer/html;
+	root /var/www/penguin.engineer;
 
 	index index.html index.htm index.nginx-debian.html;
 

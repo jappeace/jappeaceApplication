@@ -27,7 +27,7 @@ server {
 
 
 	#main website
-	root /var/www/jappieklooster.nl/html;
+	root /var/www/jappieklooster.nl;
 
 	# chatbot --> github dir
 	rewrite ^(/chatbot)$ https://github.com/jappeace/gaia redirect;
