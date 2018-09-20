@@ -4,14 +4,6 @@
 #+Date: 2017-09-06 22:00
 #+OPTIONS: toc:nil
 
-#+BEGIN_EXPORT html
-<style>
-img.design{
-  width:50%;
-}
-</style>
-#+END_EXPORT
-
 This page lists projects Jappie made.
 If they listed here it means they're worthy of being talked about.
 This mean they either some kind off value right now, or they used to do that.
@@ -167,7 +159,7 @@ next round (provided by the supporters union).
 
 #+LABEL: fig:schijt
 #+CAPTION: Example of solexmarkt at the time, Jappie helped implementing the design in html but did not make the design. (image from the [[https://web.archive.org/web/20140707004850/http://www.solexmarkt.nl/][wayback machine]])
-#+ATTR_HTML: :class design
+#+ATTR_HTML: :style width:50%;
 [[../images/2018/schijt-je-rijk.jpg]]
 
 Time pressure was significant whilst implementing this project.
@@ -227,7 +219,7 @@ The host is functional and rather easy to install thanks to [[https://gradle.org
 Yes Scala was combined with gradle, and it worked well.
 
 #+CAPTION: The running gamespace in deployment phase, after pressing start you can also move these guys around but there isn't much else going on.
-#+ATTR_HTML: :class design
+#+ATTR_HTML: :style width:50%;
 [[../images/2018/gdx-ai-gamespace.jpg]]
 
 * Gravitas
@@ -253,7 +245,7 @@ unfortunately the source can't be made available because it would infringe
 the intellectual property of [[https://boardgamegeek.com/boardgame/142992/gravwell-escape-9th-dimension][gravwel]] (the board game used).
 
 #+CAPTION: The implemented gravitas game. Function was prefered over form.
-#+ATTR_HTML: :class design
+#+ATTR_HTML: :style width:50%;
 [[../images/2018/gravitas.jpg]]
 
 * Solexmarkt
@@ -271,7 +263,7 @@ for each page to be as specific as possible.
 The HTML was also cleaned up.
 
 #+CAPTION: Example of solexmarkt at the time, Jappie helped implementing the design in html but did not make the design. (image from the [[https://web.archive.org/web/20140707004850/http://www.solexmarkt.nl/][wayback machine]])
-#+ATTR_HTML: :class design
+#+ATTR_HTML: :style width:50%;
 [[../images/2018/solexmarkt-website.jpg]]
 
 Several months later the request got extended.
@@ -342,7 +334,7 @@ However Jappie is eager to work on that again once he finds the time.
 
 #+CAPTION: The precursor to the raster project. It isn't particularly beautiful either, but used for years and packed with features.
 #+LABEL: fig:precursor-raster
-#+ATTR_HTML: :class design
+#+ATTR_HTML: :style width:50%;
 [[../images/2018/personeels-planning.jpg]]
 
 ** Website designs
@@ -354,7 +346,7 @@ better choice for developers (rather than [[https://wordpress.com/][WordPress]])
 
 #+CAPTION: De 2de kamer, design was made by Jappie.
 #+LABEL: fig:2dekamer
-#+ATTR_HTML: :class design
+#+ATTR_HTML: :style width:50%;
 [[../images/2018/de2dekamer.jpg]]
 
 After that he re-used this design and put it in place for dehuiskamer.com.
@@ -366,7 +358,7 @@ At the time Jappie did not have enough time available to implement this.
 
 #+CAPTION: De huiskamer, design made by Jappie, thanks to the [[https://web.archive.org/web/20140517090950/http://dehuiskamer.com/][waybackmachine]].
 #+LABEL: fig:huiskamer
-#+ATTR_HTML: :class design
+#+ATTR_HTML: :style width:50%;
 [[../images/2018/dehuiskamer.jpg]]
 
 ** Offertex
