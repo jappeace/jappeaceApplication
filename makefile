@@ -19,4 +19,5 @@ deploy: clean
 	rsync -avc --delete nginx/ root@$(REMOTE):/etc/nginx/
 	ssh root@$(REMOTE) "systemctl restart nginx"
 	pelican content -s publishconf.py
-	rsync -avc --delete output/ root@$(REMOTE):/var/www/html/
+	rsync -avc --delete output/ root@$(REMOTE):/var/www/jappieklooster.nl/html/
+	rsync -avc --delete penguin/ root@$(REMOTE):/var/www/penguin.engineer/html/
