@@ -1,4 +1,4 @@
-Title: Back to Netherlands!
+Title: Back to the Netherlands!
 Date: 2018-09-23 15:42
 Category: story
 OPTIONS: toc:nil
@@ -6,42 +6,46 @@ Tags: life, visa, netherlands, travel
 subreddit: blog
 
 After a year in foreign countries, I've returned home.
-Last week my working holiday visa expired, and unlike a friend of mine,
-I was not in the mood to find out what would happen if I'd overstay my welcome.
-(You get deported in handcuffs).
+Last week my working holiday visa expired,
+and unlike a friend of mine,
+I did not want to be deported in handcuffs.
+
+![Dutch flag](/images/2018/dutch-flag.svg)
 
 I quite enjoyed my stay in Australia, the people are relax, life is good.
-I've drank lots of coffee and ate many a kangeroo, but it's good to be back
+I've drank lots of coffee and ate many a Kangaroo, but it's good to be back
 and speak my own language.
 The people just "[act normal](https://stuffdutchpeoplelike.com/2010/11/26/no-56-normalcy-doe-normaal/)",
-rather than whatever they do in foreign countries.
 
 First I was a month in Indonesia,
 essentially looking for jobs in Australia (as you do), 
 and hanging out with my then girlfriend.
 Then in Sydney I quickly found a job and place to live.
-Three interviews were pre-arranged, but, they all got converted in offers.
+Three interviews were pre-arranged, they all got converted into offers.
+I took the highest.
 Around new year our relationship was in crisis, and I went back to Indonesia,
 where it failed.
 
 At that point I seriously considered going back,
-around February the company also wanted to initiate sponsorship.
+around February the company wanted to initiate sponsorship.
 However I had become pretty unhappy with the working arrangement.
-It looked more like I was just kept being busy,
+It looked like I was just being kept busy,
 while having no impact on anything.
 That working relationship also ended there.
 
 This was my lowest point in Australia.
 I had nothing there except a little hobby project started with some friends.
-ex-Colleagues at Openlearning, I was crestfallen and they seemed still pretty happy.
-Although being nice about it,
-in Netherlands we would rip on each other so hard at this point,
-You could at least joke about it you know, but then again, I'm facetious.
+ex-Colleagues at Open Learning, I was crestfallen and they seemed still pretty happy.
+Although they were being nice about it,
+in Netherlands we would rip on each other at this point,
+You could at least joke about it you know.
 
 Here I decided that rather than giving up so easily I'd fight for staying in
 Australia as a software engineer.
 I just had arranged better housing, now I bet I could also arrange better work!
-Not at first, I emailed so many companies, I even made a little movie to sell myself.
+Easier said then done, I emailed so many companies,
+I even made a little movie to sell myself.
+Few replies but some did.
 
 First there was Silicon Valley Chicken, they wanted to sell chicken trough an app with a game.
 Completely aimed at Gamers, and only order trough the app.
@@ -56,16 +60,21 @@ But I kind off neglected them in favor of the Haskell opportunity.
 This was role reversal, now the friends had a pretty crappy job compared to doing Haskell.
 Especially considering the company had taken up [Cosmos db](https://azure.microsoft.com/en-us/services/cosmos-db/)
 which required running windows.
-They were both pretty die hard Opensource advocate,
-requiring to run this made them not very happy.
+They were both open source advocates,
+requiring to run this made them unhappy.
 
 I was happy. For a couple of months.
-Daisee kept on hiring people however,
-and the situation became much more political after they
-realized the money making product was doing that months ahead of schedule.
-Our CTO's Haskell gamble had payed off.
-For some reason he decided to change everything however.
-Now we had a traditional hierarchical structure with reporting to mechanisms.
-We used to be anarchists you know? 
-Oh well it has had little impact on me as the colleague who is "above me",
-is not a dick about it (great way of making me leave to would be doing that).
+Daisee kept hiring people and we grew.
+The more time passed the more responsibility I had to give away,
+until I was focused upon the one project.
+Which then got canned.
+Not that it bothered me as I was planning for the next stage in my life.
+
+Going to the Philippines! Except, everyone I spoke to was pretty negative about it,
+and the offer from Daisee wasn't as nice as I expected.
+So here I am, back home.
+Not that it's bad or anything, just, pretty sudden.
+I'll be staying here for some time,
+doing remote work for Daisee as a [company](http://penguin.engineer/)!
+This seems much better than the Philippines, which felt more like a golden prison
+(or brass considering the proposal).
