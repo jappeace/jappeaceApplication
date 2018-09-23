@@ -3,7 +3,6 @@ Date: 2018-09-23 18:21
 Category: story
 OPTIONS: toc:nil
 Tags: life, visa, netherlands, travel
-subreddit: blog
 
 After a year in foreign countries, I've returned home.
 Last week my working holiday visa expired,
