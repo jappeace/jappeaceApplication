@@ -1,5 +1,5 @@
 Title: Back to the Netherlands!
-Date: 2018-09-23 15:42
+Date: 2018-09-23 18:21
 Category: story
 OPTIONS: toc:nil
 Tags: life, visa, netherlands, travel
@@ -22,23 +22,32 @@ essentially looking for jobs in Australia (as you do),
 and hanging out with my then girlfriend.
 Then in Sydney I quickly found a job and place to live.
 Three interviews were pre-arranged, they all got converted into offers.
+The first one was [stackchat](https://stackchat.com/#contact-area),
+they gave me a pretty bad offer, I needed money most yet they came with equity.
+Then there was [ayuda](https://www.ayudasystems.com/),
+I probably could've asked them lots more money as they were hardly strapped for cash.
+[Openlearning](https://www.openlearning.com/) offered most though, more then I asked for,
+which was nice.
 I took the highest.
-Around new year our relationship was in crisis, and I went back to Indonesia,
-where it failed.
 
-At that point I seriously considered going back,
-around February the company wanted to initiate sponsorship.
+Around new year the relationship with Jesiska was in crisis,
+and I went back to Indonesia, where it failed.
+Happy new year.
+
+then, around February the company wanted to initiate sponsorship.
 However I had become pretty unhappy with the working arrangement.
 It looked like I was just being kept busy,
 while having no impact on anything.
 That working relationship also ended there.
 
+At that point I seriously considered going back,
 This was my lowest point in Australia.
 I had nothing there except a little hobby project started with some friends.
-ex-Colleagues at Open Learning, I was crestfallen and they seemed still pretty happy.
-Although they were being nice about it,
+ex-Colleagues at Open Learning, I was crestfallen.
+Although they were being nice about my essentially destroyed life,
 in Netherlands we would rip on each other at this point,
 You could at least joke about it you know.
+I'm too facetious I hear.
 
 Here I decided that rather than giving up so easily I'd fight for staying in
 Australia as a software engineer.
@@ -61,9 +70,9 @@ This was role reversal, now the friends had a pretty crappy job compared to doin
 Especially considering the company had taken up [Cosmos db](https://azure.microsoft.com/en-us/services/cosmos-db/)
 which required running windows.
 They were both open source advocates,
-requiring to run this made them unhappy.
+requiring to run this made them.. Unhappy.
 
-I was happy. For a couple of months.
+But I was happy. For a couple of months.
 Daisee kept hiring people and we grew.
 The more time passed the more responsibility I had to give away,
 until I was focused upon the one project.
@@ -78,3 +87,5 @@ I'll be staying here for some time,
 doing remote work for Daisee as a [company](http://penguin.engineer/)!
 This seems much better than the Philippines, which felt more like a golden prison
 (or brass considering the proposal).
+
+This is all seems pretty random, oh well, such is life.
