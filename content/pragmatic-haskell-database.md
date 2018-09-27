@@ -2,7 +2,7 @@ Title: Pragmatic Haskell III: Beam Postgres DB
 Date: 2018-08-05 17:30
 Category: tools
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, database
+Tags: haskell, programming, tools, database, pragmatic-haskell
 subreddit: haskell programming
 
 No need to read a book to use Haskell!

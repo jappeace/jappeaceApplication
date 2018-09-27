@@ -2,7 +2,7 @@ Title: Pragmatic Haskell II: IO Webservant
 Date: 2018-06-27 22:00
 Category: tools
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, servant, IO
+Tags: haskell, programming, tools, servant, IO, pragmatic-haskell
 subreddit: haskell programming
 
 1. [Pragmatic Haskell: Simple servant web server]({filename}/pragmatic-haskell-simple-servant.md)

@@ -2,7 +2,7 @@ Title: Pragmatic Haskell: Simple servant web server
 Date: 2018-06-25 15:25
 Category: tools
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, servant, stack, tutorial
+Tags: haskell, programming, tools, servant, stack, tutorial, pragmatic-haskell
 subreddit: haskell programming
 
 1. [Pragmatic Haskell: Simple servant web server]({filename}/pragmatic-haskell-simple-servant.md)
