@@ -80,13 +80,13 @@ Not that it bothered me as I was planning for the next stage in my life.
 
 Going to the Philippines! Except, everyone I spoke to was pretty negative about it,
 and the offer from Daisee wasn't as nice as I expected.
-So here I am, back home.
-Not that it's bad or anything, just sudden.
+Back home I am,
+not that it's bad, just sudden.
 I'll be staying here for some time,
 doing remote work for Daisee as a [company](http://penguin.engineer/)!
 Meanwhile Daisee is working on a work visa for Australia.
 This seems much better than the Philippines,
-which felt more like a golden prison (or brass considering the proposal).
+which felt more like a golden prison.
 
 This is all seems pretty random, oh well, such is life.
-I had fun at least, and met many a people.
+I had fun at least.
