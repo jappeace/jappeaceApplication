@@ -1,5 +1,5 @@
 Title: Fullstack Haskell: Reflex and Servant
-Date: 2018-09-24 17:30
+Date: 2018-10-09 12:08
 Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, database
