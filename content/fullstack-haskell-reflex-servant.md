@@ -2,7 +2,7 @@ Title: Fullstack Haskell: Reflex and Servant
 Date: 2018-10-09 12:08
 Category: tools
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, database
+Tags: haskell, programming, tools, reflex, frp, servant
 subreddit: haskell programming reflexfrp
 
 In the [pragmatic haskell](/pragmatic-haskell.html) series, we saw how to setup a simple webserver with database.
