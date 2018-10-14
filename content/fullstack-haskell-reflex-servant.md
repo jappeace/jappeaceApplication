@@ -5,7 +5,7 @@ OPTIONS: toc:nil
 Tags: haskell, programming, tools, reflex, frp, servant
 subreddit: haskell programming reflexfrp
 
-In the [pragmatic haskell](/pragmatic-haskell.html) series, we saw how to setup a simple webserver with database.
+In the [pragmatic haskell](/tag/pragmatic-haskell.html) series, we saw how to setup a simple webserver with database.
 But at some point you still need a frontend.
 If it were 2005 you may have been able to get away with just [blaze](http://hackage.haskell.org/package/blaze-html).
 But we are in 2018+, and [JavaScript is a problem](https://wiki.haskell.org/The_JavaScript_Problem).
