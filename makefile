@@ -20,4 +20,7 @@ deploy: clean
 	ssh root@$(REMOTE) "systemctl restart nginx"
 	pelican content -s publishconf.py
 	rsync -avc --delete output/ root@$(REMOTE):/var/www/jappieklooster.nl/
+	make deploy-penguin
+
+deploy-penguin:
 	rsync -avc --delete penguin/ root@$(REMOTE):/var/www/penguin.engineer/
