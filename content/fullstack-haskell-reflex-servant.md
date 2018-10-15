@@ -151,7 +151,7 @@ The entire file can be seen in the [sources](#frontendsrcservantclienths).
 
 ## Reflex
 After getting the API to function I started working on making an actual UI.
-Which is what this codes does for the `getUsers` function:
+Which is what this code does for the `getUsers` function:
 ```haskell
 reflex :: IO()
 reflex =
@@ -233,6 +233,9 @@ labeledInput label = elClass "div" "field" $ do
     elClass "div" "control" $ textInput (def & textInputConfig_attributes .~ constDyn (Text.pack "class" =: Text.pack "input"))
 ```
 This is done with applicative fmap `<$>` and  spaceship `<*>`.
+That last line sets some extra confiugrations can be set withLenses for textInput,
+which is another [rabithole](http://hackage.haskell.org/package/lens).
+They can simply be thought of as getters and setters for haskell, although more powerfull.
 
 Note that these functions are analogue to a react component, and see the difference!
 They compose perfectly and will function independently.
