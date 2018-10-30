@@ -61,6 +61,13 @@ of interesting articles on that blog.
 https://danluu.com/
 
 
+** Philosophize this
+   I really enjoyed this [[http://philosophizethis.org/][podcast]].
+   He goes trough all great philosphors in chronoloigical
+   order, which as a side effect helps you understand
+   history better.
+   It also made me think about my own life.
+
 ** xoreaxeaxeax
 Everything in [[https://github.com/xoreaxeaxeax/][this github]] profile page is +insane+ beautifull.
 [[https://www.youtube.com/watch?v=KrksBdWcZgQ&feature=youtu.be&t=1250][This youtube]] explains the sandsifter thing in quite detail.
