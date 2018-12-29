@@ -5,7 +5,7 @@ OPTIONS: toc:nil
 Tags: haskell, programming, tools, lens
 status: draft
 
-![Elm on fire](/images/2018/nt-iso.svg)
+![Categorical representation of the NT iso](/images/2018/nt-iso.svg)
 
 > All newtypes are isomorphisms
 > 
