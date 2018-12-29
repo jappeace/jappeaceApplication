@@ -72,7 +72,14 @@ https://danluu.com/
 Everything in [[https://github.com/xoreaxeaxeax/][this github]] profile page is +insane+ beautifull.
 [[https://www.youtube.com/watch?v=KrksBdWcZgQ&feature=youtu.be&t=1250][This youtube]] explains the sandsifter thing in quite detail.
 
-* Blog posts
+* Reading
+** Books in public domain
+   I've been reading the 'classics', of which many are in public domain.
+   No need to spend precious money on something which ought to be free.
+   Project gutenberg offers public domain ebooks for free:
+   - https://www.gutenberg.org/
+     
+   I do recommend donating to them though. [[https://www.gutenberg.org/wiki/Gutenberg:Project_Gutenberg_Literary_Archive_Foundation][They're doing important work]].
 ** Programming for personal growth
 A really well written article about how simple satisfication
 (with programming in this case) may make you more confident and happy in life:
