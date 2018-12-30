@@ -3,7 +3,6 @@ Date: 2018-12-24 12:00
 Category: technique
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, lens
-status: draft
 
 ![Categorical representation of the NT iso](/images/2018/nt-iso.svg)
 
@@ -13,22 +12,18 @@ status: draft
 >
 > -- My mother
 
-Any newtype can change into it's underlying
-representation and back into it's self no problem.
-We just need the constructor.
+[Control.Lens.Wrapped](http://hackage.haskell.org/package/lens-4.17/docs/Control-Lens-Wrapped.html)
+uses this property to introduce a typeclass `Wrapped`.
+Let's explore usecases, because after all, it doesn't appear to do much at first glance.
+What's the point of formalizing wraping and unwrapping of types?
 
-There is a package in the lens library, [Control.Lens.Wrapped](http://hackage.haskell.org/package/lens-4.17/docs/Control-Lens-Wrapped.html)
-which uses this property to introduce a typeclass `Wrapped`.
-If you can provide an [Iso'](http://hackage.haskell.org/package/lens-4.17/docs/Control-Lens-Iso.html#t:Iso-39-),
-then you can give an instance for this class.
-In our case, if a newtype has derived generic we get an instance for free.
-Let's start using it and explore it's usefullness, because after all,
-it doesn't appear to do much at first glance.
+In this blog post we'll explore a method of reducing instance boilerplate for newtypes.
+In my particular use case it'll also eleminate orphan instances.
+I believe that this technique will make using newtypes more attractive.
 
 # Newtype
 Consider the following common code in
 a [fullstack haskell webapp]({filename}/fullstack-haskell-reflex-servant.md):
-
 
 ```haskell
 data Login = Login
@@ -163,6 +158,29 @@ Well we now have a lot of extra boilerplate to content with.
 
 # Wrapped
 Let's kill the boilerplate!
+
+If you can provide an [Iso'](http://hackage.haskell.org/package/lens-4.17/docs/Control-Lens-Iso.html#t:Iso-39-),
+then you can give an instance for Wrapped type class.
+In our case, if a newtype has derived generic we get an instance for free.
+But to refresh our memories let's eximanie how to get an Iso:
+
+```haskell
+iso :: (s -> a) -> (b -> t) -> Iso s t a b 
+```
+That looks complicated, luckeliy the structure we want is `Iso'`,
+so we can ignore that one and use the simpler version
+(which I just invented by doing logical substition):
+```haskell
+Iso' = Iso s s a a
+emailIso :: Iso' Email Text
+```
+Which we can define for Email:
+```haskell
+emailIso = iso unEmail Email 
+```
+So we're creating a function that can do both wrapping and unwrapping.
+Indeed the withIso function provides a mechanism to get access to both functions.
+
 The instances themselve do the same thing over and over,
 they wrap or unwrap types to get the underlying interesting value.
 Just like the pretty picture I put on top of this post.
@@ -353,6 +371,7 @@ What did we lose?
 + Beam schema is yet bit more ugly.
 
 I'm calling this a win.
+The sources can be found on [github](https://github.com/jappeace/dbfield) and [hackage](https://hackage.haskell.org/package/beam-newtype-field).
 
 # Conclusion
 Newtypes seem like a construct with little use.
