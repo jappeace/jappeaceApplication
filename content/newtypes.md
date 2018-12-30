@@ -76,7 +76,7 @@ we need to tell beam how to get the right underlying type
 so it can produce the right queries and schema:
 
 ```haskell
--- orphanage
+-- backend orphanage
 instance HasSqlEqualityCheck PgExpressionSyntax Email
 ```
 This instance allows us to use the [`==.`](http://hackage.haskell.org/package/beam-core-0.7.2.2/docs/Database-Beam-Query.html#v:-61--61-.)
@@ -85,14 +85,14 @@ We can now compare the column email with a client email.
 I don't know why an instance is needed for this, but the
 compiler wanted it whenever I used that operator.
 ```haskell
--- orphanage
+-- backend orphanage
 instance HasSqlValueSyntax PgValueSyntax Email where
   sqlValueSyntax = sqlValueSyntax . unEmail
 ```
 Here we use `unEmail` to the underlying type their sqlValuesyntax.
 
 ```haskell
--- orphanage
+-- backend orphanage
 instance FromBackendRow Postgres Email
 ```
 I believe this tells beam we want to be able to use a postgres database
@@ -101,7 +101,7 @@ We don't have to instantiate sqlite instances
 (beam can do multiple backends).
 
 ```haskell
--- orphanage
+-- backend orphanage
 instance FromField Email where
   fromField a b = Email <$> fromField a b
 ```
@@ -110,14 +110,14 @@ is a type class from [PgSimple](https://hackage.haskell.org/package/postgresql-s
 Here, we're telling the compiler to just use the from field from the underlying type,
 and once it's done we can wrap it back into an email.
 ```haskell
--- orphanage
+-- backend orphanage
 instance HasDefaultSqlDataTypeConstraints PgColumnSchemaSyntax Email
 ```
 This is a constraint coming from beam migrate,
 if you want to have automatic schema generation,
 or be able to step trough various schemas you need this.
 ```haskell
--- orphanage
+-- backend orphanage
 instance HasDefaultSqlDataType PgDataTypeSyntax Email where
   defaultSqlDataType proxy = defaultSqlDataType $ unEmail <$> proxy
 ```
@@ -131,7 +131,7 @@ in case of proxies we're just interested in type.
 All of this is repeated for Password to,
 and any other newtypes you want:
 ```haskell
--- orphanage
+-- backend orphanage
 instance HasSqlEqualityCheck PgExpressionSyntax Password
 instance HasSqlValueSyntax PgValueSyntax Password where
   sqlValueSyntax = sqlValueSyntax . unPassword
@@ -158,27 +158,37 @@ Well we now have a lot of extra boilerplate to content with.
 
 # Wrapped
 Let's kill the boilerplate!
-If you can provide an [Iso'](http://hackage.haskell.org/package/lens-4.17/docs/Control-Lens-Iso.html#t:Iso-39-),
-then you can give an instance for Wrapped type class.
-In our case, if a newtype has derived generic we get an instance for free.
 
-The instances themselves do the same thing over and over,
-they wrap or unwrap types to get the underlying interesting value.
-Here we start using the wrapped module,
-just to share the logic:
 ```haskell
 -- common
-
 newtype Email = Email { unEmail :: Text } deriving Generic
 newtype Password = Password { unPassword :: Text } deriving Generic
 
 instance Wrapped Email
 instance Wrapped Password
 ```
-This implements the Wrapped instance, this is possible because we
-derived generic.
+If you can provide an [Iso'](http://hackage.haskell.org/package/lens-4.17/docs/Control-Lens-Iso.html#t:Iso-39-),
+then you instantiate the Wrapped type class.
+If a newtype has derived generic we get an instance for free by just declaring it, and using the default.
+This is possible because generic knows about constructors.
 
 ```haskell
+-- backend orphanage
+wrappedSqlValueSyntax  :: (Wrapped a, HasSqlValueSyntax b (Unwrapped a)) => a -> b
+wrappedSqlValueSyntax  = sqlValueSyntax . view _Wrapped'
+
+fromWrappedField :: (Wrapped a, FromField (Unwrapped a)) => FieldParser a
+fromWrappedField a b = review _Wrapped' <$> fromField a b
+
+wrappedDefaultSqlDataType :: (Wrapped a, HasDefaultSqlDataType b (Unwrapped a)) => Proxy a -> Bool -> b
+wrappedDefaultSqlDataType proxy = defaultSqlDataType $ view _Wrapped' <$> proxy
+```
+These functions pull out the essence of wrapping.
+If `a` is wrapped, we can speak about it's unwrapped form (which is why we need the type class).
+If `a` his unwrapped form for example implements `FromField`, we can make a `FieldParser` for it.
+
+```haskell
+-- backend orphanage
 instance HasSqlEqualityCheck PgExpressionSyntax Email
 instance HasSqlValueSyntax PgValueSyntax Email where
   sqlValueSyntax = wrappedSqlValueSyntax
@@ -198,21 +208,15 @@ instance FromField Password where
 instance HasDefaultSqlDataTypeConstraints PgColumnSchemaSyntax Password
 instance HasDefaultSqlDataType PgDataTypeSyntax Password where
   defaultSqlDataType = wrappedDefaultSqlDataType
-
--- backend orphanage
-wrappedSqlValueSyntax  :: (Wrapped a, HasSqlValueSyntax b (Unwrapped a)) => a -> b
-wrappedSqlValueSyntax  = sqlValueSyntax . view _Wrapped'
-
-fromWrappedField :: (Wrapped a, FromField (Unwrapped a)) => FieldParser a
-fromWrappedField a b = review _Wrapped' <$> fromField a b
-
-wrappedDefaultSqlDataType :: (Wrapped a, HasDefaultSqlDataType b (Unwrapped a)) => Proxy a -> Bool -> b
-wrappedDefaultSqlDataType proxy = defaultSqlDataType $ view _Wrapped' <$> proxy
 ```
+The instances themselves do the same thing over and over,
+they wrap or unwrap types to get the underlying interesting value.
+Here this is obvious by having the instances of both
+Email and Password point to the same functions.
 
-At first glance, this does not look better.
+At first glance, this implementation does not look better.
 However we now can clearly see that the wrapping is indeed
-the same functionality as the instances all point toward the same
+the same operation because the instances all point toward the same
 functions.
 The FromField instance for Password is implemented with fromWrappedField,
 so does the Email instance.
@@ -221,6 +225,7 @@ Wrapped instance.
 
 This change is a lot better if you consider that there is no more
 logic being repeated here.
+Which means there are no more logic bugs in the repetition.
 The boilerplate is now in it's purest form: Dumb repetition.
 By itself I wouldn't consider the current state to be that bad anymore.
 However, these are still orphans,
