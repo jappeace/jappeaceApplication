@@ -356,12 +356,15 @@ The `Wrapped` instance can be re-used.
 
 # Conclusion
 So what did we gain?
-+ We no longer have orphans!
-+ Boilerplate has been reduced to just the wrapped instance.
+
+- We no longer have orphans!
+- Boilerplate has been reduced to just the wrapped instance.
+
 What did we lose?
-+ Unfortunately we need to unwrap and wrap at the call sites (beam queries).
-* To use this we need to depend on lens.
-+ The beam schema is a little bit more verbose.
+
+- Unfortunately we need to unwrap and wrap at the call sites (beam queries).
+- To use this we need to depend on lens.
+- The beam schema is a little bit more verbose.
 
 Because all those negative points are really small,
 I'm calling this a win.
