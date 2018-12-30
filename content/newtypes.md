@@ -1,5 +1,5 @@
 Title: Lens into wrapped newtypes
-Date: 2018-12-24 12:00
+Date: 2018-12-30 21:34
 Category: technique
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, lens
