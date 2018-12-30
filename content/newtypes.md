@@ -2,6 +2,7 @@ Title: Lens into wrapped newtypes
 Date: 2018-12-30 21:34
 Category: technique
 OPTIONS: toc:nil
+subreddit: haskell programming
 Tags: haskell, programming, tools, lens
 
 ![Categorical representation of the NT iso](/images/2018/nt-iso.svg)
