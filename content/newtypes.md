@@ -238,16 +238,16 @@ for all newtypes?
 My first attempt was rather crazy looking back.
 I wanted to create the ultimate orphan.
 a polymorphic instance that was kept in check by constraints
-such as wrapped and the fact underlying types would have
+such as `Wrapped` and the fact underlying types would have
 these beam instances implemented.
 I attempted this but did got very far, I wasn't very sure what was
 going on anymore with the type errors I got out of that.
 But after a bit of searching I realized that what I attempted
 to do was ridiculous and dangerous.
-Of course that wouldn't work, now all previous and future *Wrapped*
+Of course that wouldn't work, now all previous and future `Wrapped`
 newtypes would have to be able to be fit into postgres or fail.
 This piece of code would break all existing libraries that would've
-had a *Wrapped* newtype.
+had a `Wrapped` newtype.
 No this was an absurd idea.
 
 Rather than solving the problem for all newtypes, 
@@ -259,13 +259,15 @@ newtype DBFieldWrap a = DBFieldWrap
   } deriving (Generic, Show)
 
 instance Wrapped a => Wrapped (DBFieldWrap a)
-
-instance (Wrapped a, FromField (Unwrapped a)) =>
-         FromBackendRow Postgres (DBFieldWrap a)
+instance (Wrapped a, BeamBackend be,
+          BackendFromField be (DBFieldWrap a),
+          FromBackendRow be (Unwrapped a)
+         ) =>
+         FromBackendRow be (DBFieldWrap a)
 ```
-This instance shows the core idea.
+That final instance shows the core idea.
 We add the wrapped restriction on `a`,
-which allows us to speak about the unwrapped form of a.
+which allows us to speak about the unwrapped form of `a`.
 The unwrapped type of `Email` would be Text.
 Beam has already made a FromField instance for Text,
 so we're done.
@@ -284,15 +286,15 @@ The [review function](http://hackage.haskell.org/package/lens-4.17/docs/Control-
 just calls the constructor.
 We have to call two `_Wrapped'`s with it because we need to put 
 it in the `Email` or `Password`, and then we need to put it into
-the `DBField` (in this case I'd rather not but I'm bound to the
-definitions of the type class).
+the `DBField`.
 ```haskell
 instance (Wrapped a, HasSqlValueSyntax be (Unwrapped a)) =>
          HasSqlValueSyntax be (DBFieldWrap a) where
   sqlValueSyntax = sqlValueSyntax . view (_Wrapped' . _Wrapped')
 ```
-The view function is just an alias for `^.`, a getter (as in OOP).
+The view function is just an alias for `^.`, a getter.
 We get the result of wrapping twice.
+
 ```haskell
 instance ( IsSql92ColumnSchemaSyntax be
          , Wrapped a
@@ -317,9 +319,7 @@ did in case of the orphanage,
 the only difference is that they wrap twice.
 We essentially tell the type checker to look for the beam instance
 two levels deeper.
-This can be done because we have a 
-restriction on this newtype is that the underlying type
-has to implement wrapped.
+We tell it by using restrictions on the instances (the stuff before `=>`).
 
 Now we can insert our newtypes directly into database
 without having to implement all those Beam instances:
@@ -348,28 +348,20 @@ data UserT f = User
 	}
 ```
 
-So what did we gain?
-+ We no longer have orphans!
-+ Boilerplate has been reduced to just the wrapped instance,
-What did we lose?
-+ Unfortunately we need to unwrap and wrap at the call sites.
-+ Beam schema is yet bit more ugly.
-
-I'm calling this a win.
-The sources can be found on [github](https://github.com/jappeace/dbfield) and [hackage](https://hackage.haskell.org/package/beam-newtype-field).
+Note that this technique doesn't just work for beam instances,
+one could do the same for Aeson,
+or any other library that requires many instances on newtypes.
+The `Wrapped` instance can be re-used.
 
 # Conclusion
-Newtypes seem like a construct with little use.
-The prime reason for using them is to increase type safety,
-If we have a 'phone number' and an 'email' value that both have 
-type text, we'd better make a newtype for both of them so we don't
-accidentally mix them.
-That is how I was personally introduced to them.
+So what did we gain?
++ We no longer have orphans!
++ Boilerplate has been reduced to just the wrapped instance.
+What did we lose?
++ Unfortunately we need to unwrap and wrap at the call sites (beam queries).
+* To use this we need to depend on lens.
++ The beam schema is a little bit more verbose.
 
-I've never gotten excited about Isomorphisms either, 
-so having these two dubious features interact and such
-a way where they create so much expressive value
-is amazing:
-We killed a bunch of orphans,
-We significantly reduced boilerplate
-and we did so by grasping rather simple tools.
+Because all those negative points are really small,
+I'm calling this a win.
+The sources can be found on [github](https://github.com/jappeace/dbfield) and [hackage](https://hackage.haskell.org/package/beam-newtype-field).
