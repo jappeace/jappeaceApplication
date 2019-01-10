@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Fullstack Haskell with reflex &amp; servant</title>
+<meta name="author" content="(Jappie J. T. Klooster)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/theme/moon.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Fullstack Haskell with reflex &amp; servant</h1><h2 class="author">Jappie J. T. Klooster</h2><p class="date">Created: 2019-01-10 do 18:51</p>
+</section>
+
+
+<section>
+<section id="slide-org3691ccf">
+<h2 id="org3691ccf">Why talk about Reflex &amp; Servant</h2>
+<ul>
+<li>Reflex
+<ul>
+<li>Frontend fun</li>
+<li>Maintainable</li>
+<li>Easier</li>
+
+</ul></li>
+<li>Servant
+<ul>
+<li>Performant</li>
+<li>Simple</li>
+<li>Powerfull</li>
+
+</ul></li>
+
+</ul>
+
+<p>
+Judge for yourself.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgac55106">
+<h2 id="orgac55106">Goal of presentation</h2>
+</section>
+</section>
+<section>
+<section id="slide-orgf198489">
+<h2 id="orgf198489">Reflex &amp; FRP</h2>
+<ul>
+<li>Reflex
+<ul>
+<li>An implementation of FRP</li>
+<li>reflex-dom</li>
+<li>reflex-platform</li>
+
+</ul></li>
+<li>Other options
+<ul>
+<li>frp zoo</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org9ce1600">
+<h2 id="org9ce1600">Reflex building blocks</h2>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #F92672;"># from push &amp; pull paper</span>
+<span style="color: #66D9EF;">Reflex</span> t <span style="color: #FD971F;">=&gt;</span> <span style="color: #66D9EF;">Event</span> t a
+<span style="color: #66D9EF;">Reflex</span> t <span style="color: #FD971F;">=&gt;</span> <span style="color: #66D9EF;">Behavior</span> t a
+
+<span style="color: #F92672;"># (reflex invention)</span>
+<span style="color: #66D9EF;">Reflex</span> t <span style="color: #FD971F;">=&gt;</span> <span style="color: #66D9EF;">Dynamic</span> t a
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge08ae90">
+<h2 id="orge08ae90">Let's make a 'widget'</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd51f19e">
+<h2 id="orgd51f19e">Done!</h2>
+<p>
+with reflex-dom
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #A6E22E;">main</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">IO</span> <span style="color: #66D9EF;">()</span>
+<span style="color: #A6E22E;">main</span> <span style="color: #FD971F;">=</span> mainWidget <span style="color: #FD971F;">$</span> helloWidget
+
+<span style="color: #A6E22E;">helloWidget</span>  <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">Dom.MonadWidget</span> t m <span style="color: #FD971F;">=&gt;</span> m <span style="color: #66D9EF;">()</span>
+<span style="color: #A6E22E;">helloWidget</span>  <span style="color: #FD971F;">=</span> text <span style="color: #E6DB74;">"Hello, world!"</span>
+</pre>
+</div>
+
+<p>
+What does this code do?
+</p>
+<ul>
+<li>A - it launches the missles</li>
+<li>B - doesn't compile</li>
+<li>C - execute the infamous hello world</li>
+
+</ul>
+
+</section>
+<section id="slide-orgc0fb088">
+<h3 id="orgc0fb088">C - execute the infamous hello world</h3>
+
+</section>
+<section id="slide-orgb619850">
+<h3 id="orgb619850">text</h3>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #A6E22E;">text</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">MonadWidget</span> t m <span style="color: #FD971F;">=&gt;</span> <span style="color: #66D9EF;">String</span> <span style="color: #FD971F;">-&gt;</span> m <span style="color: #66D9EF;">()</span> 
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org381fca1">
+<h2 id="org381fca1">Wait where are the behaviors/events?</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-org86593f0">
+<h2 id="org86593f0">Input</h2>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #A6E22E;">body</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">MonadWidget</span> t m <span style="color: #FD971F;">=&gt;</span> m <span style="color: #66D9EF;">()</span>
+<span style="color: #A6E22E;">body</span> <span style="color: #FD971F;">=</span> display <span style="color: #FD971F;">=&lt;&lt;</span> fancyButton
+
+<span style="color: #A6E22E;">fancyButton</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">MonadWidget</span> t m <span style="color: #FD971F;">=&gt;</span> m (<span style="color: #66D9EF;">Dynamic</span> t <span style="color: #66D9EF;">String</span>)
+<span style="color: #A6E22E;">fancyButton</span> <span style="color: #FD971F;">=</span> <span style="color: #F92672;">do</span>
+  intButton <span style="color: #FD971F;">&lt;-</span> button <span style="color: #E6DB74;">"I wonder what will happen?"</span>
+  holdDyn <span style="color: #E6DB74;">"not pressed"</span> <span style="color: #FD971F;">$</span> <span style="color: #E6DB74;">"pressed"</span> <span style="color: #FD971F;">&lt;$</span> intButton
+</pre>
+</div>
+
+<p>
+What does this code do?
+</p>
+<ul>
+<li>A - It shows a text input</li>
+<li>B - doesn't compile</li>
+<li>C - show a button and a text that indicates if pressed</li>
+<li>D - Why are you asking me these questions?</li>
+
+</ul>
+
+</section>
+<section id="slide-org8cd5cc9">
+<h3 id="org8cd5cc9">C - show a button and a text that indicates if pressed</h3>
+</section>
+<section id="slide-org2f5e0d5">
+<h3 id="org2f5e0d5">Demo</h3>
+</section>
+<section id="slide-orgdc0794e">
+<h3 id="orgdc0794e">The button function</h3>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #A6E22E;">button</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">MonadWidget</span> t m <span style="color: #FD971F;">=&gt;</span> <span style="color: #66D9EF;">String</span> <span style="color: #FD971F;">-&gt;</span> m (<span style="color: #66D9EF;">Event</span> t <span style="color: #66D9EF;">()</span>)
+</pre>
+</div>
+</section>
+<section id="slide-org30c4f77">
+<h3 id="org30c4f77">Holddyn</h3>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #A6E22E;">holdDyn</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">MonadHold</span> t m <span style="color: #FD971F;">=&gt;</span> a <span style="color: #FD971F;">-&gt;</span> <span style="color: #66D9EF;">Event</span> t a <span style="color: #FD971F;">-&gt;</span> m (<span style="color: #66D9EF;">Dynamic</span> t a)
+</pre>
+</div>
+</section>
+<section id="slide-org2b38aa0">
+<h3 id="org2b38aa0">Display</h3>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #A6E22E;">display</span> <span style="color: #FD971F;">::</span> (<span style="color: #66D9EF;">MonadWidget</span> t m, <span style="color: #66D9EF;">Show</span> a) <span style="color: #FD971F;">=&gt;</span> <span style="color: #66D9EF;">Dynamic</span> t a <span style="color: #FD971F;">-&gt;</span> m <span style="color: #66D9EF;">()</span>
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org95421d1">
+<h2 id="org95421d1">What if I want to have a widget react on a event value?</h2>
+</section>
+</section>
+<section>
+<section id="slide-orga642fc2">
+<h2 id="orga642fc2">Reflex react on stuff</h2>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #A6E22E;">body</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">MonadWidget</span> t m <span style="color: #FD971F;">=&gt;</span> m <span style="color: #66D9EF;">()</span>
+<span style="color: #A6E22E;">body</span> <span style="color: #FD971F;">=</span> <span style="color: #F92672;">do</span>
+  intButton <span style="color: #FD971F;">&lt;-</span> button <span style="color: #E6DB74;">"Where is the other button?"</span>
+  void <span style="color: #FD971F;">$</span> widgetHold (pure <span style="color: #66D9EF;">()</span>) <span style="color: #FD971F;">$</span>
+    (const <span style="color: #FD971F;">$</span> display <span style="color: #FD971F;">=&lt;&lt;</span> fancyButton) <span style="color: #FD971F;">&lt;$&gt;</span> intButton
+
+<span style="color: #A6E22E;">fancyButton</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">MonadWidget</span> t m <span style="color: #FD971F;">=&gt;</span> m (<span style="color: #66D9EF;">Dynamic</span> t <span style="color: #66D9EF;">String</span>)
+<span style="color: #A6E22E;">fancyButton</span> <span style="color: #FD971F;">=</span> <span style="color: #F92672;">do</span>
+  intButton <span style="color: #FD971F;">&lt;-</span> button <span style="color: #E6DB74;">"I wonder what will happen?"</span>
+  holdDyn <span style="color: #E6DB74;">"not pressed"</span> <span style="color: #FD971F;">$</span> <span style="color: #E6DB74;">"pressed"</span> <span style="color: #FD971F;">&lt;$</span> intButton
+</pre>
+</div>
+
+<p>
+What does this code do?
+</p>
+<ul>
+<li>A - It renders a dom differently based on login information.</li>
+<li>B - It doesn't compile.</li>
+<li>C - show a button that shows a button that indicates if it has been pressed, if pressed.</li>
+<li>D - Seriously aren't you supposed to tell us how this works?</li>
+
+</ul>
+
+</section>
+<section id="slide-orgcc6810b">
+<h3 id="orgcc6810b">C - show a button that shows a button that indicates if it has been pressed, if pressed.</h3>
+</section>
+<section id="slide-orgdb26bac">
+<h3 id="orgdb26bac">Demo</h3>
+</section>
+<section id="slide-orgfa109a7">
+<h3 id="orgfa109a7">Widget hold</h3>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #A6E22E;">widgetHold</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">MonadWidget</span> t m <span style="color: #FD971F;">=&gt;</span> m a <span style="color: #FD971F;">-&gt;</span> <span style="color: #66D9EF;">Event</span> t (m a) <span style="color: #FD971F;">-&gt;</span> m (<span style="color: #66D9EF;">Dynamic</span> t a) 
+</pre>
+</div>
+
+</section>
+<section id="slide-orgb3c8096">
+<h3 id="orgb3c8096">There is also dyn</h3>
+
+</section>
+</section>
+<section>
+<section id="slide-org7d9f614">
+<h2 id="org7d9f614">Time to fullstack</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-orgfda472b">
+<h2 id="orgfda472b">Servant</h2>
+<ul>
+<li>REST API at type level</li>
+<li>Endpoint = function</li>
+<li>Functions from types</li>
+<li>backend
+<ul>
+<li>Implement yourself w/ typesafty</li>
+
+</ul></li>
+<li>Frontend: generated 
+<ul>
+<li>Endpoints become functions</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf46e255">
+<h2 id="orgf46e255">Servant example</h2>
+<p>
+It's reasonably obvious once you see a definition.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #F92672;">type</span> <span style="color: #66D9EF;">ServiceAPI</span> <span style="color: #FD971F;">=</span>
+          <span style="color: #E6DB74;">"api"</span> <span style="color: #66D9EF;">:&gt;</span> <span style="color: #E6DB74;">"1.0"</span> <span style="color: #66D9EF;">:&gt;</span> <span style="color: #E6DB74;">"users"</span> <span style="color: #66D9EF;">:&gt;</span> <span style="color: #66D9EF;">Get</span> '[<span style="color: #66D9EF;">JSON</span>] [<span style="color: #66D9EF;">User</span>]
+      <span style="color: #66D9EF;">:&lt;|&gt;</span> <span style="color: #E6DB74;">"api"</span> <span style="color: #66D9EF;">:&gt;</span> <span style="color: #E6DB74;">"1.0"</span> <span style="color: #66D9EF;">:&gt;</span> <span style="color: #E6DB74;">"message"</span> <span style="color: #66D9EF;">:&gt;</span>
+          <span style="color: #66D9EF;">ReqBody</span> '[<span style="color: #66D9EF;">JSON</span>] <span style="color: #66D9EF;">Message</span> <span style="color: #66D9EF;">:&gt;</span> <span style="color: #66D9EF;">Post</span> '[<span style="color: #66D9EF;">JSON</span>] [<span style="color: #66D9EF;">Message</span>]
+</pre>
+</div>
+
+<p>
+What does this code do?
+</p>
+
+<ul>
+<li>A. It defines a type ServiceAPI</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org2f6b8b9">
+<h2 id="org2f6b8b9">servant example backend</h2>
+<p>
+in memory delivery of users, messages are more complicated
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #A6E22E;">users</span> <span style="color: #FD971F;">::</span> [<span style="color: #66D9EF;">User</span>]
+<span style="color: #A6E22E;">users</span> <span style="color: #FD971F;">=</span>
+  [ <span style="color: #66D9EF;">User</span> <span style="color: #E6DB74;">"Isaac Newton"</span>    <span style="color: #E6DB74;">"isaac@newton.co.uk"</span>
+  , <span style="color: #66D9EF;">User</span> <span style="color: #E6DB74;">"Albert Einstein"</span> <span style="color: #E6DB74;">"ae@mc2.org"</span>
+  ]
+
+<span style="color: #A6E22E;">messages</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">Message</span> <span style="color: #FD971F;">-&gt;</span> <span style="color: #66D9EF;">Handler</span> [<span style="color: #66D9EF;">Message</span>]
+<span style="color: #A6E22E;">messages</span> <span style="color: #FD971F;">=</span> const mempty
+
+<span style="color: #A6E22E;">server</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">Server</span> <span style="color: #66D9EF;">ServiceAPI</span>
+<span style="color: #A6E22E;">server</span> <span style="color: #FD971F;">=</span>
+  (pure users
+    <span style="color: #66D9EF;">:&lt;|&gt;</span> messages )
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org987ab09">
+<h2 id="org987ab09">servant example frontend</h2>
+<div class="org-src-container">
+
+<pre  class="src src-haskell"><span style="color: #A6E22E;">getUsers</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">MonadWidget</span> t m
+          <span style="color: #FD971F;">=&gt;</span> <span style="color: #66D9EF;">Event</span> t <span style="color: #66D9EF;">()</span>  <span style="color: #E6DB74;">-- ^ Trigger the XHR Request</span>
+          <span style="color: #FD971F;">-&gt;</span> m (<span style="color: #66D9EF;">Event</span> t (<span style="color: #66D9EF;">ReqResult</span> <span style="color: #66D9EF;">()</span> [<span style="color: #66D9EF;">User</span>])) <span style="color: #E6DB74;">-- ^ Consume the answer</span>
+<span style="color: #A6E22E;">postMessage</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">MonadWidget</span> t m
+            <span style="color: #FD971F;">=&gt;</span> <span style="color: #66D9EF;">Dynamic</span> t (<span style="color: #66D9EF;">Either</span> <span style="color: #66D9EF;">Text.Text</span> <span style="color: #66D9EF;">Message</span>)
+            <span style="color: #FD971F;">-&gt;</span> <span style="color: #66D9EF;">Event</span> t <span style="color: #66D9EF;">()</span>
+            <span style="color: #FD971F;">-&gt;</span> m (<span style="color: #66D9EF;">Event</span> t (<span style="color: #66D9EF;">ReqResult</span> <span style="color: #66D9EF;">()</span> [<span style="color: #66D9EF;">Message</span>]))
+(getUsers <span style="color: #66D9EF;">:&lt;|&gt;</span> postMessage) <span style="color: #FD971F;">=</span> apiClients
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org46c612a">
+<h2 id="org46c612a">Demo</h2>
+<ul>
+<li>Add an endpoint and use it</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org89b4b55">
+<h2 id="org89b4b55">Servant issues</h2>
+<ul>
+<li>Error messages</li>
+<li>Learning curve</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org7403802">
+<h2 id="org7403802">Reflex issues</h2>
+<ul>
+<li>JS binaries are big
+<ul>
+<li>6mb output</li>
+<li>expect 500kb transfer size</li>
+
+</ul></li>
+<li>Few resources.</li>
+<li>Releases on hackage..</li>
+<li>Infrequent weirdness.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org97ae277">
+<h2 id="org97ae277">Q&amp;A</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/lib/js/head.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>
