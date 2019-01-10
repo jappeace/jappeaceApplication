@@ -1,28 +1,29 @@
-Title: Lens into wrapped newTypes
-Date: 2018-12-24 12:00
-Category: focus
+Title: Lens into wrapped newtypes
+Date: 2018-12-30 21:34
+Category: technique
 OPTIONS: toc:nil
+subreddit: haskell programming
 Tags: haskell, programming, tools, lens
-status: draft
 
 ![Categorical representation of the NT iso](/images/2018/nt-iso.svg)
 
 > All newtypes are isomorphisms
 > 
-> - My mother
+> <br />
+>
+> -- My mother
 
-Any newtype can change into it's underlying
-representation and back into it's self no problem.
-We just need the constructor.
+[Control.Lens.Wrapped](http://hackage.haskell.org/package/lens-4.17/docs/Control-Lens-Wrapped.html)
+uses the isomorphism property to introduce a type class `Wrapped`.
+Let's explore use cases, because after all, it doesn't appear to do much at first glance.
+What's the point of formalizing wrapping and unwrapping of types?
 
-There is a package in the lens library, [Control.Lens.Wrapped](http://hackage.haskell.org/package/lens-4.17/docs/Control-Lens-Wrapped.html)
-which uses this fact to introduce a typeclass wrapped.
-If you're newtype has derived generic we get an instance for free.
-Let's start using it and explore it's usefullness, because after all,
-it doesn't appear to do much at first glance.
+Instance boilerplate will be reduced in this blog post.
+In my use case this will include orphan instances.
+Furthermore, I believe that this technique will make using newtypes more attractive.
 
 # Newtype
-Consider the following code in our common folder of 
+Consider the following common code in
 a [fullstack haskell webapp]({filename}/fullstack-haskell-reflex-servant.md):
 
 ```haskell
@@ -33,11 +34,10 @@ data Login = Login
 ```
 
 Looks good? No of course not.
-This common code is shared 
-between both client and server, therefore we should be pendatic
-about these record field.
-We wrap common occurences such as Text in newtypes
-so we don't accidantly mix up the fields.
+This common code is shared between both client and server,
+therefore we should be pendantic about these record field.
+We wrap common occurrences such as Text in newtypes
+so we don't accidentally mix up the fields.
 This would be a better representation:
 
 ```haskell
@@ -51,12 +51,17 @@ data Login = Login
 ```
 
 Of course this extra safety comes at the cost of more boilerplate,
-but these few lines add a lot of safety.
-So we accept this trade and move on.
+but these few lines add a lot of safety:
+Mixing of email and password becomes less likely,
+from frontend input to the backend.
+This is analogous to having integration tests on user input fields,
+AJAX calls, HTTP endpoints, and database insertion.
+That's a lot of safety for two extra lines,
+therefore we accept this trade and move on.
 
 # Database
-Ok so now we can put the fields of login directly into our
-user table:
+Now we can put the fields of login directly into our
+user table schema for the database:
 
 ```haskell
 -- database
@@ -72,18 +77,62 @@ we need to tell beam how to get the right underlying type
 so it can produce the right queries and schema:
 
 ```haskell
--- orphanage
-
+-- backend orphanage
 instance HasSqlEqualityCheck PgExpressionSyntax Email
+```
+This instance allows us to use the [`==.`](http://hackage.haskell.org/package/beam-core-0.7.2.2/docs/Database-Beam-Query.html#v:-61--61-.)
+operator on beam expressions directly.
+We can now compare the column email with a client email.
+I don't know why an instance is needed for this, but the
+compiler wanted it whenever I used that operator.
+```haskell
+-- backend orphanage
 instance HasSqlValueSyntax PgValueSyntax Email where
   sqlValueSyntax = sqlValueSyntax . unEmail
+```
+Here we use `unEmail` to the underlying type their sqlValuesyntax.
+
+```haskell
+-- backend orphanage
 instance FromBackendRow Postgres Email
+```
+I believe this tells beam we want to be able to use a postgres database
+on email.
+We don't have to instantiate sqlite instances
+(beam can do multiple backends).
+
+```haskell
+-- backend orphanage
 instance FromField Email where
   fromField a b = Email <$> fromField a b
+```
+[FromField](https://hackage.haskell.org/package/postgresql-simple-0.5.4.0/docs/Database-PostgreSQL-Simple-FromField.html#t:FromField)
+is a type class from [PgSimple](https://hackage.haskell.org/package/postgresql-simple-0.5.4.0/docs/Database-PostgreSQL-Simple.html).
+Here, we're telling the compiler to just use the from field from the underlying type,
+and once it's done we can wrap it back into an email.
+```haskell
+-- backend orphanage
 instance HasDefaultSqlDataTypeConstraints PgColumnSchemaSyntax Email
+```
+This is a constraint coming from beam migrate,
+if you want to have automatic schema generation,
+or be able to step trough various schemas you need this.
+```haskell
+-- backend orphanage
 instance HasDefaultSqlDataType PgDataTypeSyntax Email where
   defaultSqlDataType proxy = defaultSqlDataType $ unEmail <$> proxy
+```
+This is also needed for migrations.
+Here we're removing the newtype from the proxy to tell it to use the
+underlying type.
+Note that a proxy isn't holding any data,
+those functions will never be executed,
+in case of proxies we're just interested in type.
 
+All of this is repeated for Password to,
+and any other newtypes you want:
+```haskell
+-- backend orphanage
 instance HasSqlEqualityCheck PgExpressionSyntax Password
 instance HasSqlValueSyntax PgValueSyntax Password where
   sqlValueSyntax = sqlValueSyntax . unPassword
@@ -95,13 +144,13 @@ instance HasDefaultSqlDataType PgDataTypeSyntax Password where
   defaultSqlDataType proxy = defaultSqlDataType $ unPassword <$> proxy
 ```
 
-We put these instances into an orphanage
+I put these instances into an orphanage
 (dedicated file for orphan instances)
-because we want to put the newtypes directly into the datbase.
-However we don't want our common code to be dependend on beam,
-that would mean our frontend javascript suddenly would pull
-in a bunch of database related code for no reason.
-We'll eleminate the need for these orphans later.
+because I want to put the newtypes directly into the database.
+However I don't want our common code to be dependent on beam,
+that would mean the frontend JavaScript suddenly would pull
+in beam as a dependency for no reason.
+We'll eliminate the need for these orphans later.
 
 What did we gain?
 The ability to put these newtypes in the database,
@@ -110,20 +159,21 @@ Well we now have a lot of extra boilerplate to content with.
 
 # Wrapped
 Let's kill the boilerplate!
-The instances themselve do the same thing over and over,
-they wrap or unwrap types to get the underlying interesting value.
-Just like the pretty picture I put on top of this post.
-Here we start using the wrapped module,
-just to share the logic:
+
 ```haskell
 -- common
-
 newtype Email = Email { unEmail :: Text } deriving Generic
 newtype Password = Password { unPassword :: Text } deriving Generic
 
 instance Wrapped Email
 instance Wrapped Password
+```
+If you can provide an [Iso'](http://hackage.haskell.org/package/lens-4.17/docs/Control-Lens-Iso.html#t:Iso-39-),
+then you instantiate the Wrapped type class.
+If a newtype has derived generic we get an instance for free by just declaring it, and using the default.
+This is possible because generic knows about constructors.
 
+```haskell
 -- backend orphanage
 wrappedSqlValueSyntax  :: (Wrapped a, HasSqlValueSyntax b (Unwrapped a)) => a -> b
 wrappedSqlValueSyntax  = sqlValueSyntax . view _Wrapped'
@@ -133,7 +183,13 @@ fromWrappedField a b = review _Wrapped' <$> fromField a b
 
 wrappedDefaultSqlDataType :: (Wrapped a, HasDefaultSqlDataType b (Unwrapped a)) => Proxy a -> Bool -> b
 wrappedDefaultSqlDataType proxy = defaultSqlDataType $ view _Wrapped' <$> proxy
+```
+These functions pull out the essence of wrapping.
+If `a` is wrapped, we can speak about it's unwrapped form (which is why we need the type class).
+If `a` his unwrapped form for example implements `FromField`, we can make a `FieldParser` for it.
 
+```haskell
+-- backend orphanage
 instance HasSqlEqualityCheck PgExpressionSyntax Email
 instance HasSqlValueSyntax PgValueSyntax Email where
   sqlValueSyntax = wrappedSqlValueSyntax
@@ -153,40 +209,46 @@ instance FromField Password where
 instance HasDefaultSqlDataTypeConstraints PgColumnSchemaSyntax Password
 instance HasDefaultSqlDataType PgDataTypeSyntax Password where
   defaultSqlDataType = wrappedDefaultSqlDataType
-
 ```
+The instances themselves do the same thing over and over,
+they wrap or unwrap types to get the underlying interesting value.
+Here this is obvious by having the instances of both
+Email and Password point to the same functions.
 
-At first glance, this does not look better.
+At first glance, this implementation does not look better.
 However we now can clearly see that the wrapping is indeed
-the same functionality as the instances all point toward the same
-function.
+the same operation because the instances all point toward the same
+functions.
+The FromField instance for Password is implemented with fromWrappedField,
+so does the Email instance.
+This is possible because both Email and Password have instantiated the
+Wrapped instance.
 
 This change is a lot better if you consider that there is no more
 logic being repeated here.
-The boilerplate is now in it's purest form.
-By itself I wouldn't consider this to be so bad anymore, 
-but remember, these are still orphans.
-Which can cause [bad problems](https://stackoverflow.com/questions/3079537/orphaned-instances-in-haskell).
-We should strife towards death to orphans!
+Which means there are no more logic bugs in the repetition.
+The boilerplate is now in it's purest form: Dumb repetition.
+By itself I wouldn't consider the current state to be that bad anymore.
+However, these are still orphans,
+which can cause [bad problems](https://stackoverflow.com/questions/3079537/orphaned-instances-in-haskell).
+We should kill all orphans!
 
 # A general instance
-Can't we make a generlized instance that does all of this wrapping
+Can't we make a generalized instance that does all of this wrapping
 for all newtypes?
-
-Yes, we can! Depending on perspective.
 My first attempt was rather crazy looking back.
 I wanted to create the ultimate orphan.
 a polymorphic instance that was kept in check by constraints
-such as wrapped and the fact underlying types would have
+such as `Wrapped` and the fact underlying types would have
 these beam instances implemented.
 I attempted this but did got very far, I wasn't very sure what was
 going on anymore with the type errors I got out of that.
 But after a bit of searching I realized that what I attempted
-to do was ridicioulus and dangerous.
-Of course that wouldn't work, now all previous and future *Wrapped*
+to do was ridiculous and dangerous.
+Of course that wouldn't work, now all previous and future `Wrapped`
 newtypes would have to be able to be fit into postgres or fail.
 This piece of code would break all existing libraries that would've
-had a *Wrapped* newtype.
+had a `Wrapped` newtype.
 No this was an absurd idea.
 
 Rather than solving the problem for all newtypes, 
@@ -198,14 +260,16 @@ newtype DBFieldWrap a = DBFieldWrap
   } deriving (Generic, Show)
 
 instance Wrapped a => Wrapped (DBFieldWrap a)
-
-instance (Wrapped a, FromField (Unwrapped a)) =>
-         FromBackendRow Postgres (DBFieldWrap a)
+instance (Wrapped a, BeamBackend be,
+          BackendFromField be (DBFieldWrap a),
+          FromBackendRow be (Unwrapped a)
+         ) =>
+         FromBackendRow be (DBFieldWrap a)
 ```
-This isntance shows the core idea, we add the wrapped
-restriction on `a`, which allows us to speak about the
-unwrapped form of a, eg, the actuall underlying type 
-of for example `Email`, which is Text.
+That final instance shows the core idea.
+We add the wrapped restriction on `a`,
+which allows us to speak about the unwrapped form of `a`.
+The unwrapped type of `Email` would be Text.
 Beam has already made a FromField instance for Text,
 so we're done.
 
@@ -223,15 +287,15 @@ The [review function](http://hackage.haskell.org/package/lens-4.17/docs/Control-
 just calls the constructor.
 We have to call two `_Wrapped'`s with it because we need to put 
 it in the `Email` or `Password`, and then we need to put it into
-the DBField (in this case I'd rather not but I'm bound to the
-definitions of the typeclass).
+the `DBField`.
 ```haskell
 instance (Wrapped a, HasSqlValueSyntax be (Unwrapped a)) =>
          HasSqlValueSyntax be (DBFieldWrap a) where
   sqlValueSyntax = sqlValueSyntax . view (_Wrapped' . _Wrapped')
 ```
-The view function is just an alias for `^.`, eg a getter.
+The view function is just an alias for `^.`, a getter.
 We get the result of wrapping twice.
+
 ```haskell
 instance ( IsSql92ColumnSchemaSyntax be
          , Wrapped a
@@ -247,18 +311,16 @@ instance ( IsSql92DataTypeSyntax be
   defaultSqlDataType proxy =
     defaultSqlDataType $ view (_Wrapped' . _Wrapped') <$> proxy
 ```
-Right so this final one is interesting, appearantly you can
-fmap into a proxy to get the right type out.
-Even though a proxy is nothing.
+Apparently you can
+`fmap` into a proxy to get the right type out.
+Even though a proxy has no data, it will change type.
 
-This does excatly the same thing as the independent functions
+This does exactly the same thing as the independent functions
 did in case of the orphanage,
 the only difference is that they wrap twice.
 We essentially tell the type checker to look for the beam instance
 two levels deeper.
-This can be done because we have a 
-restriction on this newtype is that the underlying type
-has to implement wrapped.
+We tell it by using restrictions on the instances (the stuff before `=>`).
 
 Now we can insert our newtypes directly into database
 without having to implement all those Beam instances:
@@ -287,27 +349,23 @@ data UserT f = User
 	}
 ```
 
-So what did we gain?
-+ We no longer have orphans!
-+ Boilerplate has been reduced to just the wrapped instance,
-What did we lose?
-+ Unfortunatily we need to unwrap and wrap at the callsites.
-+ Beam schema is yet bit more ugly.
-
-I'm calling this a win.
+Note that this technique doesn't just work for beam instances,
+one could do the same for Aeson,
+or any other library that requires many instances on newtypes.
+The `Wrapped` instance can be re-used.
 
 # Conclusion
-Newtypes seem like a construct with little use.
-The prime reason for using them is to increase typesafety,
-If we have a 'phone number' and an 'email' value that both have 
-type text, we'd better make a newtype for both of them so we don't
-accidently mix them.
-That is how I was personally introduced to them.
+So what did we gain?
 
-I've never gotten excited about Isomorphisms either, 
-so having these two dubious features interect and such
-a way where they create so much expressive value
-is amazing:
-We killed a bunch of orphans,
-We significantly reduced boilerplate
-and we did so by grasping rather simple tools.
+- We no longer have orphans!
+- Boilerplate has been reduced to just the wrapped instance.
+
+What did we lose?
+
+- Unfortunately we need to unwrap and wrap at the call sites (beam queries).
+- To use this we need to depend on lens.
+- The beam schema is a little bit more verbose.
+
+Because all those negative points are really small,
+I'm calling this a win.
+The sources can be found on [github](https://github.com/jappeace/dbfield) and [hackage](https://hackage.haskell.org/package/beam-newtype-field).
