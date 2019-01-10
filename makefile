@@ -11,15 +11,19 @@ run: clean
 	ln -s "../images" "output/drafts/images" || true
 	xdg-open "http://localhost:8000"
 
-deploy: clean
+sync-git: 
 	echo "Deploying to  $(REMOTE)"
 	git diff-index --quiet HEAD -- || (echo "branch dirty, commit first" && false)
 	git push &
+
+deploy-root: sync-git
+	rsync -avc --delete output/ root@$(REMOTE):/var/www/jappieklooster.nl/
+deploy: clean sync-git
 	cp root/* output/
 	rsync -avc --delete nginx/ root@$(REMOTE):/etc/nginx/
 	ssh root@$(REMOTE) "systemctl restart nginx"
 	pelican content -s publishconf.py
-	rsync -avc --delete output/ root@$(REMOTE):/var/www/jappieklooster.nl/
+	make deploy-root
 	make deploy-penguin
 
 deploy-penguin:
