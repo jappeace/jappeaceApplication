@@ -102,6 +102,17 @@ It suggests for example that each sentence should anwser these questions:
 It also explains why we see this horrible accedemic style such as:
 "If a new spirit is to be infused into this old country, there is one thorny and contentious reform which must be tackled, and that is the humanization and galvanization..."
 
+** Paul graham essays
+   [[http://www.paulgraham.com/articles.html][These]] are both inspiring as interesting.
+   I've found myself identifying with much he wrote
+   about.
+   Especially now I've decided to start my own startup,
+   it's really motivating,
+   although I know he writes those mostly to just get
+   more candidates to chose from.
+   I like to believe he also does it to genuinly help people.
+   Getting a job is bad for your brainz.
+
 * Tools
 ** Vps comparison sites
 For if you just need a cheap computing device somewhere on the internet.
