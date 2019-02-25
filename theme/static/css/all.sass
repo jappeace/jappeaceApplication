@@ -25,6 +25,7 @@ body
     margin-right: auto
     margin-bottom: 2em
     max-width: 45em
+    min-height: 800px
 
 .wrapper
     margin-left: auto
@@ -54,6 +55,9 @@ a:first-letter
 a.tag:first-letter
     color: $col-text
     text-shadow: none
+
+.entry-content
+    margin-top: 0.5em
 
 .entry-content a:first-letter
     color: $col-border
@@ -244,13 +248,16 @@ pre
 
 @for $i from 1 to 6
     .entry-content h#{$i}
-        margin-bottom: 0
+        margin-bottom: 0.25em
         margin-top: 0.5em
     .outline-text-#{$i}
         margin-top: 0
     .section-number-#{$i}
         visibility: hidden
         display: none
+
+article
+    margin-top: 2em
 
 article header
     margin-top: 1%
