@@ -15,7 +15,7 @@ So what I want to do is build a simple login system, in which:
 The user first sees a login form,
 and after a successful login the user sees what we build in the previous post.
 
-With this post I hopen to lessen the difficulties I had:
+With this post I hope to lessen the difficulties I had for other people:
 
 1. 'Switching screens' after login, requires [recursive do](https://wiki.haskell.org/MonadFix).
 2. [Dealing with cookies](http://hackage.haskell.org/package/servant-auth-server-0.4.3.0/docs/Servant-Auth-Server.html)
