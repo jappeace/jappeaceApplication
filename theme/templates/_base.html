@@ -75,12 +75,6 @@
     gtag('js', new Date());
     gtag('config', 'UA-120139048-1');
    </script>
-</head>
-
-<body>
-
-  <!-- Head loads base, repaint it with all for beautifull!
-  -->
   {% if article %}
   {% assets filters="sass,cssmin", output="css/article.min.css", "css/all.sass", "css/article.sass" %}
   <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
@@ -90,9 +84,9 @@
   <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
   {% endassets %}
   {% endif %}
+</head>
 
- 
-
+<body>
     {% block entirebody %}{% endblock %} <!-- I guess al information -->
     <footer class="window"role="contentinfo">
        <small>
