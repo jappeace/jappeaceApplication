@@ -84,7 +84,7 @@ server conn=
 The webservice type definition has the aditional `Raw` endpoint,
 which [allows hosting](http://haskell-servant.github.io/servant/Servant-API-Raw.html)
 of custom wai apps.
-The `erveDirectoryFileServer` is that custom wai app and just host the JavaScript
+The `serveDirectoryFileServer` is that custom wai app and just hosts the JavaScript
 output of the client.
 
 
