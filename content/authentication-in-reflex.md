@@ -1,21 +1,43 @@
 Title: Authentication in Reflex & Servant
-Date: 2018-10-09 12:08
+Date: 2019-02-26 12:00
 Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, reflex, frp
 subreddit: haskell programming reflexfrp
-status: draft
 
-In the previous [post]({filename}/fullstack-haskell-reflex-servant.md)
-I discussed how to setup reflex so that it interacts with servant.
-Although that gets the basics,
+In the previous [blog post]({filename}/fullstack-haskell-reflex-servant.md)
+we saw reflex being setup for interaction with servant.
+Although that covers the basics,
 there are several more hurdles to overcome to get comfortable with Reflex.
 I think most of these are encountered by building a simple login system.
-So what I want to do is build a simple login system, in which:
-The user first sees a login form,
-and after a successful login the user sees what we build in the previous post.
+So let's build something like:
 
-With this post I hope to lessen the difficulties I had for other people:
+```
+
+						   See login form
+      -----
+   	 (     )
+      --+--
+	    |				   See previous app after successful login
+	----+-----
+	    |
+	   /-\
+	  /   \				   Seer error message after unsuccessful login
+	 /	   \
+
+
+
+
+
+
+
+```
+
+1. The user first sees a login form,
+2. after a successful login the user sees what we build in the previous blog post.
+2. After an unsuccessful login an error displays an error message
+
+With this blog post I hope make setting up authentication easier:
 
 1. 'Switching screens' after login, requires [recursive do](https://wiki.haskell.org/MonadFix).
 2. [Dealing with cookies](http://hackage.haskell.org/package/servant-auth-server-0.4.3.0/docs/Servant-Auth-Server.html)
@@ -28,14 +50,6 @@ exactly as I do, in prod.
 Trust me, I'm from the internet.
 But seriously If you see something dubious which I'm not pointing out, do contact me, 
 I'll happily rectify mistakes, and put you on the [page of honour](/pages/page-of-honour.html) (if you want).
-
-Now is a perfect time for this post because there is a new reflex release on Hackage.
-For completeness here are the better docs:
-
-+ [Reflex](https://hackage.haskell.org/package/reflex)
-+ [Reflex dom](https://hackage.haskell.org/package/reflex-dom-core-0.4)
-+ [Servant reflex](http://hackage.haskell.org/package/servant-reflex-0.3.3/candidate)
-   (still a candidate, I already [pestered them](https://github.com/imalsogreg/servant-reflex/issues/23#issuecomment-467178912))
 
 The full source for this 'simple login system'
 is available on [github](https://github.com/jappeace/awesome-project-name/tree/auth),
@@ -307,8 +321,16 @@ Although now we use the logged in user to send messages.
 So there you have it. Authentication.
 Not the most exciting thing in the world,
 but usually once this is done you can start making something cool.
-
-I hope I helped you get trough that part faster,
+I hope I helped you get trough the authentication part faster,
 and to see many cool reflex projects popping up.
-
 PM me your cool projects.
+
+# References
++ [Previous blog]({filename}/fullstack-haskell-reflex-servant.md)
++ [Reflex](https://hackage.haskell.org/package/reflex)
++ [Reflex dom](https://hackage.haskell.org/package/reflex-dom-core-0.4)
++ [Servant reflex](http://hackage.haskell.org/package/servant-reflex-0.3.3/candidate)
+   (still a candidate, I already [pestered them](https://github.com/imalsogreg/servant-reflex/issues/23#issuecomment-467178912))
++ [MonadFix](https://wiki.haskell.org/MonadFix)
++ [Control.Monad.Fix](http://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Monad-Fix.html)
++ [Recursive do language extension](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#the-recursive-do-notation)
