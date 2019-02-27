@@ -6,7 +6,7 @@ Tags: haskell, programming, tools, reflex, frp
 subreddit: haskell programming reflexfrp
 
 In the previous [blog post]({filename}/fullstack-haskell-reflex-servant.md)
-we saw reflex being setup for interaction with servant.
+we saw interaction with a servant servant in reflex.
 Although that covers the basics,
 there are several more hurdles to overcome to get comfortable with Reflex.
 I think most of these are encountered by building a simple login system.
@@ -15,7 +15,7 @@ So let's build something like:
 													   |
                    	   +------------------------+	   |         -----
    +-----------+       |  	   .      -         |	   |        ( < < )
-   | +--------+|       |	 .    -  .. .       |	   |         --v-- 
+   | +--------+|       |	 .    -  .. .       |	   |         --v--
    | +--------+|       |    . .-- - + m..-.     |	   |       ----+-----
    | +--------+|    \  |      m# + .-..% -      |	   |           |
    | +--------+|     \ |      + .+ #.+...+      |	   |           /
@@ -30,10 +30,9 @@ So let's build something like:
 
 ```
 
-From my own experience,
-doing this with reflex and to a lesser extend servant-auth
-is hard.
-With this blog post I hope make setting up authentication easier,
+I've experienced that this is hard for the first time in
+reflex and to a lesser extend servant-auth.
+With this blog post I hope that setting up authentication becomes easier,
 considering the following pain points:
 
 1. 'Switching screens' after login, requires [recursive do](https://wiki.haskell.org/MonadFix).
@@ -42,10 +41,10 @@ considering the following pain points:
 3. We need to render widgets based on the login result. This requires [widgetHold](https://hackage.haskell.org/package/reflex-dom-core-0.4/docs/Reflex-Dom-Widget-Basic.html#v:widgetHold)
    or 'dyn'.
 
-I'm of course a world expert on login systems so do everything
-exactly as I do, in production.
+I'm of course a world expert on login systems so in production do everything
+exactly as I do.
 Trust me, I'm from the internet.
-But seriously If you see something dubious which I'm not pointing out,
+But seriously If you see something dubious,
 do contact me.
 I'll happily rectify mistakes,
 and put you on the [page of honour](/pages/page-of-honour.html) (if you want).
@@ -71,8 +70,8 @@ type PublicAPI = "api" :> "1.0" :> "login" :> ReqBody '[JSON] User
 								:> Post '[JSON] (AuthCookies NoContent)
 ```
 This is our entire public api, we only expose the login endpoint.
-The result is no content and cookies.
-Note that we don't model status codes in servant.
+The result contains no content, but cookies.
+Servant assumes all status codes are possible in every request.
 
 ```haskell
 type AuthAPI =
@@ -81,15 +80,15 @@ type AuthAPI =
       :<|> "api" :> "1.0" :> "message" :> ReqBody '[JSON] Message
 						  :> Post '[JSON] [Message]
 ```
-The AuthAPI is similar to the ServiceAPI was the name
+The `AuthAPI` is similar to the `ServiceAPI`
 from the [previous blog post]({filename}/fullstack-haskell-reflex-servant.md).
-It only contained the users and message endpoints.
+That only contained the `users` and `message` endpoints.
 Now we've extended it with a `getme` endpoint.
 The `getme` is a hack to do auto login with cookies.
-It allows us to do a request on initial page load to see if we have cookies or not.
+It allows us to do a request on initial page load to see
+if we have the cookies or not.
 Technically we shouldn't have to do this,
-but I believe reflex is sandboxed from browser cookies.
-In any case it works for version `0.1`.
+but it works for version `0.1`.
 
 Next we'll implement these types into handlers:
 ```haskell
@@ -103,7 +102,8 @@ login settings user = if elem user users then do
   where
     cookies = cookieSettings settings
 ```
-We added a new login handler, which checks if the exists within the users list.
+We added a new login handler, which checks if the user
+exists within the users list.
 If the user is in the list, we use `acceptLogin` to create a JWT from the user.
 The `ApiSettings` is just a data type with various configurations:
 ```haskell
@@ -119,19 +119,21 @@ You'll end up with data races if you use a plain connection.
 
 For the `cookieSettings` I modified the defaults quite a bit:
 ```haskell
-      defaultCookieSettings
-        { cookieIsSecure = NotSecure -- this is good, comments never lie
-        , cookieXsrfSetting = Nothing -- ^ TODO add xsrf protection
-        , cookieMaxAge = Just $ secondsToDiffTime $ 60 * 60 * 24 * 365
-        }
-```
-I haven't got [XSRF](https://github.com/haskell-servant/servant-auth#xsrf-and-the-frontend)
-to work properly yet.
-It only accepts one request once I enable it.
-For the sake of argument I just disabled it.
+cookieConf =
+  defaultCookieSettings
+    { cookieIsSecure = NotSecure
+    , cookieMaxAge = Just $ secondsToDiffTime $ 60 * 60 * 24 * 365
+    , cookieXsrfSetting = Just $
+        def { xsrfCookieName = Text.encodeUtf8 cookieName
+            , xsrfHeaderName = Text.encodeUtf8 headerName
+            }
 
-Cookies are set to NotSecure to allow it to work on HTTP.
-Which is required for local testing.
+    }
+```
+Cookies are set to `NotSecure` to allow it to work on HTTP.
+This is required for local testing,
+and avoids confusion about why your
+cookies don't work locally.
 You should simply disable HTTP in production anyway.
 There is no good reason for using plain HTTP.
 
@@ -140,17 +142,27 @@ in this case a year.
 This is a bit more secure in that we won't trust
 someone's login forever.
 
+XSRF settings are set to use the names from the Common XSRF module.
+This ensures the requests from the frontend use the same names as
+servant-auth expects.
+
 ```haskell
 authenticatedServer :: ApiSettings -> AuthResult User -> Server AuthAPI
 authenticatedServer settings (Authenticated user) =
     (pure user :<|> pure users :<|> messages (connection settings))
 authenticatedServer _ _ = throwAll err401 -- unauthorized
 ```
-The authenticated server handles the endpoints for the authenticated API.
+The `authenticatedServer` handles the endpoints for the authenticated API.
 The only new one is `getMe`, which just returns the authenticated user
 (from the JWT).
-All authetnicated endpoints now have access to the user who was
+All authenticated endpoints now have access to the user who was
 authenticated. This user is just decoded from the JWT.
+
+We get an `AuthResult` from servant-auth-server to work with.
+If the user is authenticated, we give access to the API,
+if not we
+returning a 401 status code is something that we do manually.
+This means the 401 response is not mandatory.
 
 ```haskell
 server :: ApiSettings -> FilePath -> Server Webservice
@@ -168,11 +180,12 @@ app settings staticFolder =
   where
     context = cookieSettings settings :. jwtSettings settings :. EmptyContext
 ```
-This is the final boilerplate.
 We now serve with context,
-which does the decoding of the JWT from the Cookie.
+this is the servant-auth entry point for
+decoding of the JWT from the Cookie.
 
-This is probably not the way you want to do login, for the following reasons:
+This is probably not the way you want to do login on the sever side,
+for the following reasons:
 
 + We don't handle passwords, period. (Authentication by trust is a thing?)
 + One shouldn't use JWT's for [sessions](http://cryto.net/~joepie91/blog/2016/06/13/stop-using-jwt-for-sessions/)
@@ -197,71 +210,60 @@ postMessage :: MonadWidget t m
 ```
 The clients are still generated, the only thing I've done is spell
 out the type signatures.
-You could also leave those out to avoid boilerplate,
-but I like using them
-to increase my trust in this generation magic.
-I still can't really believe the clients just work like this,
-so as a bit of "life line" I add these type signatures.
 
 # Reflex
-Enough dirty hax, time for some reflex.
+Time for some reflex.
 The reflex changes are rather small but dense:
 ```haskell
 loginWidget :: (MonadWidget t m) => m (Event t User)
 loginWidget = do
-  pb <- getPostBuild
-  autoLoginEvt <- getMe pb
-  user <- userInput
-  buttonEvt <- button "login"
-  postResultEvt <- postLogin (Right <$> user) buttonEvt
-  void $ flash postResult $ text . Text.pack . show . reqFailure
-  pure $ leftmost
-	[ withSuccess autoLoginEvt
-	, current user <@ withSuccess postResultEvt
-	]
+  autoLoginEvt <- autoLogin
+  formEvt <- loginForm
+  pure $ leftmost [formEvt, autoLoginEvt]
 ```
-This function perform either an auto login,
+This function performs either an auto login,
 or shows a login form.
-Like I said it's pretty dense so let's go trough
-it in parts.
+leftmost is a function that combines events,
+by using the value of whichever fires.
+If they fire both,
+the element that occurs first in the list is used.
 
+Now let's dive into it's sub components,
+first `autologin`:
 ```haskell
-loginWidget :: (MonadWidget t m) => m (Event t User)
-loginWidget = do
+autoLogin :: (MonadWidget t m) => m (Event t User)
+autoLogin = do
   pb <- getPostBuild
-  autoLoginEvt <- getMe pb
-  ...
-  pure $ leftmost
-	[ withSuccess autoLoginEvt
-	...
+  withSuccess <$> getMe pb
 ```
-First we get the [post build event](https://hackage.haskell.org/package/reflex-0.5/docs/Reflex-PostBuild-Class.html),
+We get the [post build event](https://hackage.haskell.org/package/reflex-0.5/docs/Reflex-PostBuild-Class.html),
 an event that fires after the widget is placed in the DOM.
-We use that to greedily try and get a me.
+We use that to greedily to make the `getMe` request.
 If successful that is used as the resulting event.
-Regardles of success, we also specify the login form with `userInput`:
+However the loginWidget makes a login form regardless of success:
 ```haskell
 userInput :: (MonadWidget t m) => m (Dynamic t User)
 userInput = ...
 
-loginWidget :: (MonadWidget t m) => m (Event t User)
-loginWidget = do
-  ...
+
+loginForm :: (MonadWidget t m) => m (Event t User)
+loginForm = do
   user <- userInput
   buttonEvt <- button "login"
-  postResultEvt <- postLogin (Right <$> user) buttonEvt
-  ...
+  postResult <- postLogin (Right <$> user) buttonEvt
+  void $ flash postResult $ text . Text.pack . show . reqFailure
+  pure $ current user <@ withSuccess postResult
 ```
 The `userInput` has remained the same as in the
 [previous blog post]({filename}/fullstack-haskell-reflex-servant.md).
-After the input we create a button,
+After that form we create a button,
 which gives us a resulting `buttonEvt` event.
 This event only fires if the button is pressed.
 We use the `buttonEvt` to call `postLogin`.
 As input we use the dynamic `user` from the form.
 This gives us a `postResultEvt`,
 an event that only fires on request completion.
-Remember postLogin is a function generated from our api type signature:
+Remember `postLogin` is a function generated from our API type signature:
 ```haskell
 postLogin :: MonadWidget t m
           => Dynamic t (Either Text.Text User)
@@ -271,21 +273,19 @@ postLogin :: MonadWidget t m
 
 The `ReqResult` is a container for dealing with Http status codes,
 connection errors and decoding issues [^clearcache].
+Here we'll just flash a message on any error:
+
 [^clearcache]: What I'm doing in production is a clear cache refres on any
 	4xx status code and decode/encoding errors.
 	This automatically will fix any stale clients without any mental overhead.
 	I just attach a monad to most api calls which does that.
 
-Here we'll just flash a message on any error:
 ```haskell
 loginWidget :: (MonadWidget t m) => m (Event t User)
 loginWidget = do
   ...
   void $ flash postResult $ text . Text.pack . show . reqFailure
-  pure $ leftmost
-	[ ...
-	, current user <@ withSuccess postResultEvt
-	]
+  pure $ current user <@ withSuccess postResult
 ```
 In case of failure the `postResultEvt` is 'flashed',
 or shown briefly for a couple of seconds.
@@ -311,30 +311,34 @@ reflex = do
   rec loginEvt <- elDynAttr "div" loginAttr loginWidget
       loginAttr <- holdDyn (Map.empty) $ hidden <$ loginEvt
   void $ holdEvent () loginEvt authenticatedWidget
-
 ```
-This function will hide the `loginWidget` once the login event happens.
-It will also put the `authenticatedWidget` on the DOM once the
-login event happens.
 
-`loginAttr` is used before it's assigned.
+Once the login event happens
+this function will hide the `loginWidget` 
+and put the `authenticatedWidget` on the DOM.
+`loginAttr` is used before it's assigned however.
 This is impossible in a normal do block,
-however it is possible within a `rec` block.
+but it is possible within a `rec` block.
 The `rec` keyword is from [recursive do](https://wiki.haskell.org/MonadFix).
 It allows referencing of variables 'higher' in a do block.
 In our case we need to have `loginAttr` within the `elDynAttr` function.
 
 I don't want to go into how `rec` works[^howitworks],
 but I do want to make clear why it's needed.
-The `loginAttr` dynamic we made depends on the `loginEvt` which in turn
-is made by the `loginWidget`.
-However to render the `loginWidget` we need to have `loginAttr`.
-Which is a cycle[^breakcycle].
+There is a reference cycle[^breakcycle].
+Look closely at `loginAttr`.
+It depends on `loginEvt`.
+Now look at how the `loginEvt` is made.
+It comes from a div that requires `loginAttr`.
+A cycle.
+I don't know of any other way to solve this than using
+recursive do.
 
 [^breakcycle]: I currently believe that
-	cycle can be broken because we start with the prepostion that a
-	dynamic and behavior always has a value
-	even in this case we can just set it to empty, until the event fires,
+	in reflex the
+	cycle can be broken because we start with the preposition that a
+	dynamic and behavior always have a value.
+	Even in this case we can just set it to empty, until the event fires,
 	which is by definition after rendering.
 	This also explains why you use a sampled value from a behavior in a `rec`
 	block.
@@ -345,8 +349,8 @@ Which is a cycle[^breakcycle].
 So the login widget resides in a `div` with dynamic attributes.
 These attributes are set on the next line,
 which starts out as an empty Map, no attributes.
-Once the login event happens, it becomes the hidden map.
-Setting style to `display:none`.
+Once the login event happens, it becomes the `hidden`,
+which sets the style to `display:none`.
 
 `holdEvent` is used to extract the user as a value from the event
 and render `authenticatedWidget` as a new part of the DOM.
@@ -373,15 +377,13 @@ until the event fires for the first time,
 then it will keep on displaying the fired event.
 
 Note that `widgetHold` is slow [^dynSlow] because it modifies the DOM [^heretics].
-From my own experience, it's much better to use [dynText](https://hackage.haskell.org/package/reflex-dom-core-0.4/docs/Reflex-Dom-Widget-Basic.html#v:dynText)
+It's much better to use [dynText](https://hackage.haskell.org/package/reflex-dom-core-0.4/docs/Reflex-Dom-Widget-Basic.html#v:dynText)
 and [elDynAttr](https://hackage.haskell.org/package/reflex-dom-core-0.4/docs/Reflex-Dom-Widget-Basic.html#v:elDynAttr)
 to modify the dom/layout.
 However, `widgetHold` is really convenient to just get
 values out of the events.
-I also think that
-the
-parts inside a widgetHold function don't get evaluated until the event
-occurs.
+I also think that the parts inside a widgetHold function
+don't get evaluated until the event occurs.
 This is really convenient for login.
 Now you don't have to evaluate the bulk of your app on initial page load.
 `widgetHold` and `dyn` can effectively stop large parts of your
@@ -420,6 +422,28 @@ authenticatedWidget user =
 This is the same as the app discussed in the previous blog post.
 Although now we use the logged in user to send messages.
 
+# XSRF
+To make servant reflex work nicely with servant-auth we need
+to modify the requests a bit, servant reflex supports this with
+`ClientOptions`:
+```haskell
+clientOpts :: ClientOptions
+clientOpts = ClientOptions $ tweakReq
+  where
+    tweakReq r = do
+      mayCookie <- findCookie cookieName
+      return $ r & headerMod headerName .~ mayCookie -- forgive lenses
+    headerMod d = xhrRequest_config . xhrRequestConfig_headers . at d
+
+apiClients :: forall t m. (MonadWidget t m) => _
+apiClients = clientWithOpts
+	serviceAPI (Proxy @m) (Proxy @()) (constDyn url) clientOpts
+```
+The client options lives in the JSM monad and gives us an opportunity
+to modify the XHRRequest how we want.
+We make sure the names are the same by using the ones defined
+in the common module.
+
 # Conclusion
 So there you have it. Authentication.
 Not the most exciting thing in the world,
@@ -430,11 +454,13 @@ Now I hope to see many cool reflex projects popping up.
 PM me your cool projects.
 
 # References
+With the release of reflex 0.5 we now have updated docs!
+
 + [Previous blog]({filename}/fullstack-haskell-reflex-servant.md)
 + [Reflex](https://hackage.haskell.org/package/reflex)
 + [Reflex dom](https://hackage.haskell.org/package/reflex-dom-core-0.4)
-+ [Servant reflex](http://hackage.haskell.org/package/servant-reflex-0.3.3/candidate)
-   (still a candidate, I already [pestered them](https://github.com/imalsogreg/servant-reflex/issues/23#issuecomment-467178912))
++ [Servant reflex](http://hackage.haskell.org/package/servant-reflex-0.3.4)
 + [MonadFix](https://wiki.haskell.org/MonadFix)
 + [Control.Monad.Fix](http://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Monad-Fix.html)
 + [Recursive do language extension](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#the-recursive-do-notation)
++ [Reflex dom XHR](http://hackage.haskell.org/package/reflex-dom-core-0.4/docs/Reflex-Dom-Xhr.html)
