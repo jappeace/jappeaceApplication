@@ -57,6 +57,11 @@ https://practicaltypography.com/straight-and-curly-quotes.html
 * Troubleshooting
   To help me trough the dark times when the ductape fails.
   
+** Nixx build fails
+   Make sure the submodules are cloned properly:
+
+    git@github.com:jappeace/pelican-plugins.git 
+    jappie branch
 ** Org fails
    Probably because of that orgmode bug where they say it isn't allowed to do
    compilation. (the id then doesn't get generated which makes it fail entrily).
