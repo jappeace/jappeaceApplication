@@ -11,20 +11,23 @@ Although that covers the basics,
 there are several more hurdles to overcome to get comfortable with Reflex.
 I think most of these are encountered by building a simple login system.
 So let's build something like:
-
 ```
-	                      ----------------
-			      +----  ( See login form )
-      -----		  |		  ----------------
-   	 (     )	  |
-      --+--		  |       -----------------------------------------
-	    |	      +---   ( See previous app after successful login )
-	----+-----	  |       -----------------------------------------
-	    |		  |
-	   /-\		  |       -------------------------------------------
-	  /   \		  +----  ( See error message after unsuccessful login )
-	 /	   \	          -------------------------------------------
-    (some guy)
+
+                   	   +------------------------+
+   +-----------+       |  	   .      -         |
+   | +--------+|       |	 .    -  .. .       |
+   | +--------+|       |    . .-- - + m..-.     |
+   | +--------+|    \  |      m# + .-..% -      |
+   | +--------+|     \ |      + .+ #.+...+      |
+   | login ----+------X|       .. -.- *         |
+   +-----------+     / |       ..  ..-#+ +      |
+                    /  |         .  - -. .      |
+                   	   |            . .         |
+					   |             -          |
+					   |                        |
+		   -  		   +------------------------+
+					             Awesome app
+
 ```
 
 From my own experience,
@@ -375,8 +378,8 @@ and [elDynAttr](https://hackage.haskell.org/package/reflex-dom-core-0.4/docs/Ref
 to modify the dom/layout.
 However, `widgetHold` is really convenient to just get
 values out of the events.
-I also think that 
-the 
+I also think that
+the
 parts inside a widgetHold function don't get evaluated until the event
 occurs.
 This is really convenient for login.
