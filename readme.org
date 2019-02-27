@@ -11,6 +11,15 @@ So this is powered by [[http://docs.getpelican.com/en/stable/][pelican]].
 + Reddit comments into static site
 + Justify paragraphs like latex
 
+** TODO Use hakyl instead of pelican
+   I'd prefer having everything in haskell because
+   python module system is just too magical.
+
+   I'll postpone this untill I actually need something.
+*** TODO Find reddit auto poster substitue in haskell
+    (should be rather trivial)
+*** TODO Port over layout
+
 ** Org export
 *** TODO Fix citations
 + Should be faster
@@ -23,10 +32,6 @@ http://benhoyt.com/writings/pyast64/
 
 Also looks really clean.
 Although the word spacing is a weird choice
-
-** Speedup
-or do inpage compression,
-It seems to be about 100k now which is a bit much imho.
 
 ** NGINX
 *** tracking
