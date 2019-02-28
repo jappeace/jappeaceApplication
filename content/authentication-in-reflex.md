@@ -1,8 +1,8 @@
 Title: Authentication in Reflex & Servant
-Date: 2019-02-26 12:00
+Date: 2019-02-28 15:00
 Category: tools
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, reflex, frp
+Tags: haskell, programming, tools, reflex, frp, servant-auth, servant
 subreddit: haskell programming reflexfrp
 
 In the previous [blog post]({filename}/fullstack-haskell-reflex-servant.md)
