@@ -6,32 +6,31 @@ Tags: haskell, programming, tools, reflex, frp
 subreddit: haskell programming reflexfrp
 
 In the previous [blog post]({filename}/fullstack-haskell-reflex-servant.md)
-we saw interaction with a servant servant in reflex.
+we saw interaction with servant in reflex.
 Although that covers the basics,
 there are several more hurdles to overcome to get comfortable with Reflex.
 I think most of these are encountered by building a simple login system.
 So let's build something like:
 ```
-													   |
-                   	   +------------------------+	   |         -----
-   +-----------+       |  	   .      -         |	   |        ( < < )
-   | +--------+|       |	 .    -  .. .       |	   |         --v--
-   | +--------+|       |    . .-- - + m..-.     |	   |       ----+-----
-   | +--------+|    \  |      m# + .-..% -      |	   |           |
-   | +--------+|     \ |      + .+ #.+...+      |	   |           /
-   | login ----+------X|       .. -.- *         |	   |          / \
-   +-----------+     / |       ..  ..-#+ +      |	   |         /   \
-                    /  |         .  - -. .      |	   |	      Bill
-                   	   |            . .         |	   |
-					   |             -          |	   |
-					   |                        |	   |
-		     		   +------------------------+	   |
-					             Awesome app		   |
+													
+                   	   +------------------+
+   +-----------+       |    .      -      |
+   | +--------+|       | .    -  .. .     |
+   | +--------+|       | . .-- - + m..-.  |
+   | +--------+|    \  |   m# + .-..% -   |
+   | +--------+|     \ |   + .+ #.+...+   |
+   | login ----+------X|    .. -.- *      |
+   +-----------+     / |    ..  ..-#+ +   |
+                    /  |      .  - -. .   |
+                   	   |         . .      |
+					   |          -       |
+					   |                  |
+		     		   +------------------+
+					        Awesome app	
 
 ```
 
-I've experienced that this is hard for the first time in
-reflex and to a lesser extend servant-auth.
+I've experienced that this is hard to do for the first time.
 With this blog post I hope that setting up authentication becomes easier,
 considering the following pain points:
 
@@ -49,9 +48,9 @@ do contact me.
 I'll happily rectify mistakes,
 and put you on the [page of honour](/pages/page-of-honour.html) (if you want).
 
-The full source for this 'simple login system'
-is available on [github](https://github.com/jappeace/awesome-project-name/tree/auth),
 I left some code out of this blog post for succinctness.
+But the full source
+is available on [github](https://github.com/jappeace/awesome-project-name/tree/auth).
 
 # API Endpoints
 ```haskell
@@ -60,9 +59,10 @@ type ServiceAPI = PublicAPI :<|> Auth '[Cookie, JWT] User :> AuthAPI
 ```
 First we need to split our API into two types.
 The `PublicAPI` and the `AuthAPI`.
-Once the user is logged in he gets access to the `AuthAPI`,
-trough cookies.
-If he does not have a proper cookie, he'll get a [401 unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)
+Once the user is logged in he gets access to the `AuthAPI`.
+We'll secure this with a JWT cookie.
+If the user does not have a proper cookie,
+he'll get a [401 unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)
 status code.
 
 ```haskell
@@ -72,6 +72,7 @@ type PublicAPI = "api" :> "1.0" :> "login" :> ReqBody '[JSON] User
 This is our entire public api, we only expose the login endpoint.
 The result contains no content, but cookies.
 Servant assumes all status codes are possible in every request.
+Therefore we don't have to mention the 401 status code.
 
 ```haskell
 type AuthAPI =
@@ -81,10 +82,10 @@ type AuthAPI =
 						  :> Post '[JSON] [Message]
 ```
 The `AuthAPI` is similar to the `ServiceAPI`
-from the [previous blog post]({filename}/fullstack-haskell-reflex-servant.md).
-That only contained the `users` and `message` endpoints.
+from the [previous blog post]({filename}/fullstack-haskell-reflex-servant.md),
+which only contained `users` and `message` endpoints.
 Now we've extended it with a `getme` endpoint.
-The `getme` is a hack to do auto login with cookies.
+The `getme` endpoint is a hack to do auto login with cookies.
 It allows us to do a request on initial page load to see
 if we have the cookies or not.
 Technically we shouldn't have to do this,
