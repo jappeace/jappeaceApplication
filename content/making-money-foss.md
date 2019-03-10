@@ -152,6 +152,13 @@ bounty source doesn't have that problem, since payment is done afterwards and I
 assume regulated by bountysource.
 However appearantly bounty source offers a similar service [for projects](https://salt.bountysource.com/teams/neovim).
 
+Another approach to this is to start a foundation.
+Blender is developed like [this](https://www.blender.org/foundation/),
+and if your project has any kind of traction,
+do consider this.
+Trusting a foundation is much more easy because
+they're regulated by law.
+
 ## Advertisements
 
 A trick often overlooked by most developers is advertising.
@@ -174,6 +181,22 @@ Because now they're essentially running an extortion racket,
 beocming nothing more than parasites and providing lower quality user experience.
 I imagine the people who go out of their way to install an ad blocker are not
 the kind of people who are satisfied with an ever laxer white list.
+
+## Crypto
+There is an oppertunity in crypto too.
+Although this immediatly sounds fishy.
+I'd say that taking a couple cycles per minute to do some
+mining isn't *that* bad.
+I mean how is it any different from stealing a users
+attention with advertisments?
+It's probably even better because the users' time is more valuabe
+than machine cycles.
+No wonder that google [cracked down](https://www.theregister.co.uk/2018/03/14/google_cracks_down_on_crypto_with_ad_ban_from_june/)
+on this.
+Crypto is a substitute for advertising, 
+Google is essentially a massive ad company.
+But this has the same problem as advertisment in that forks will
+occur which would take it out.
 
 ## License tricks
 
