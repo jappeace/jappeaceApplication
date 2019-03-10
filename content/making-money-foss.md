@@ -88,7 +88,7 @@ So I think if you have an opensource project you should seriously consider doing
 
 Finally a programmer can rent himself out to a project to add features or do
 bug fixes.
-These include [bountysource](https://www.bountysource.com/) or [kickstarter](https://en.wikipedia.org/wiki/Kickstarter), where bountysource is
+These include [Bountysource](https://www.Bountysource.com/) or [kickstarter](https://en.wikipedia.org/wiki/Kickstarter), where Bountysource is
 usually fix an issue first and then get paid whereas kickstarter works on
 promises.
 In essence you're offering up your own time to work on a project.
@@ -96,17 +96,17 @@ In both cases there is of course the persistent issue that its [hard to decide](
 how much time this will take.
 With kickstarter however you can estimate it better because you're probably
 starting your own bigger project, so the overhead of estimation is smaller.
-With bounty source each bounty requires its own estimate and these are often
+With Bountysource each bounty requires its own estimate and these are often
 smaller, think of about \\$100, its hard to decide to even bother with that.
-Another issue with bounty source is that you have to switch from project to
+Another issue with Bountysource is that you have to switch from project to
 project often, which requires a lot of getting familiar with the code base
 overhead.
-The model of bounty source is less then perfect to live off.
+The model of Bountysource is less then perfect to live off.
 Although for existing developers of a project its a great motivation to work a
 little more.
 But don't expect strangers to 'join in', just because of the bounties
 unless they're highly valued.
-In fact you can see that few people 'live' off bounty source just by the
+In fact you can see that few people 'live' off Bountysource just by the
 overview of bounty hunters. Only three people at the time of writing got over
 \\$2000 in the last 90 days and only 9 over \\$1000.
 
@@ -123,7 +123,6 @@ living in a remote village didn't help.
 So you mileage may vary.
 
 ## Donations
-
 Another powerful trick of trying to become self sustained on software is using
 donations.
 The big issue with this is of course getting people to donate in the first place.
@@ -143,14 +142,14 @@ and since there are [other](https://www.patreon.com/cgpgrey) [creators](https://
 who have managed to get to a sustainable level.
 We can expect this to happen eventually for software developers too.
 
-The big advantage patreon offers over bounty source is that,
+The big advantage patreon offers over Bountysource is that,
 rather than having to think about how much time creating a feature costs as
-with bountysource,
+with Bountysource,
 you can just continue improving the project how you think it should be done.
 Of course some trust in the developer is necessary for that,
-bounty source doesn't have that problem, since payment is done afterwards and I
-assume regulated by bountysource.
-However appearantly bounty source offers a similar service [for projects](https://salt.bountysource.com/teams/neovim).
+Bountysource doesn't have that problem, since payment is done afterwards and I
+assume regulated by Bountysource.
+However apparently Bountysource offers a similar service [for projects](https://salt.bountysource.com/teams/neovim).
 
 Another approach to this is to start a foundation.
 Blender is developed like [this](https://www.blender.org/foundation/),
@@ -178,18 +177,18 @@ Note that although Adblock Plus probably made quite a good load of money
 with their white listing program,
 it will probably kill the project eventually.
 Because now they're essentially running an extortion racket,
-beocming nothing more than parasites and providing lower quality user experience.
+becoming nothing more than parasites and providing lower quality user experience.
 I imagine the people who go out of their way to install an ad blocker are not
 the kind of people who are satisfied with an ever laxer white list.
 
-## Crypto
-There is an oppertunity in crypto too.
-Although this immediatly sounds fishy.
+## Crypto Currency
+There is an opportunity in crypto too.
+Although this immediately sounds fishy.
 I'd say that taking a couple cycles per minute to do some
 mining isn't *that* bad.
 I mean how is it any different from stealing a users
-attention with advertisments?
-It's probably even better because the users' time is more valuabe
+attention with advertisements?
+It's probably even better because the users' time is more valuable
 than machine cycles.
 No wonder that google [cracked down](https://www.theregister.co.uk/2018/03/14/google_cracks_down_on_crypto_with_ad_ban_from_june/)
 on this.
@@ -199,7 +198,6 @@ But this has the same problem as advertisment in that forks will
 occur which would take it out.
 
 ## License tricks
-
 The final category for making money with open source is license trickery.
 So this comes from the idea that, if you are the sole copyright holder,
 you can put the software under various licenses.
@@ -230,7 +228,7 @@ But the AGPL based code was already under license,
 so the community can step in and take over development,
 as happened with Illumos (Solaris fork) after Oracle went on its rampage.
 Although a recent [article](https://stratechery.com/2019/aws-mongodb-and-the-economic-realities-of-open-source/)
-by ben thompson cast some doubt on the long term efficacy of this strategy.
+by Ben Thompson cast some doubt on the long term efficacy of this strategy.
 
 This has however a darker side in potential license trolling.
 Which [Oracle (who else) did](https://lists.debian.org/debian-legal/2013/07/msg00000.html) for example with a database.
@@ -277,10 +275,10 @@ For example [ioquake3](https://ioquake3.org/), still actively develops the quake
 driving sales of the quake game itself because the assets aren't freely
 available.
 
-So he opensourced partly dated tech, because he was confident he could do better now.
+So he open sourced partly dated tech, because he was confident he could do better now.
 And he increased sales of already released games,
 because people wanted to hack on it.
-I think this is pretty genious, gaining some extra juice out of old projects.
+I think this is pretty genius, gaining some extra juice out of old projects.
 The really nice thing is that the lifespan of these games has tremendously increased.
 Creating a core of die-hard followers.
 Doom has been ported to essentially [everything](https://en.wikipedia.org/wiki/List_of_Doom_source_ports).
@@ -291,10 +289,10 @@ If you are the sole copyright holder, you can stop distributing under the
 open source license and re-license it.
 Originally I didn't want to include this option because you're no longer
 doing foss at this point.
-But if your project is dying, because you can't give it enoug love.
+But if your project is dying, because you can't give it enough love.
 This maybe totally valid.
 It's your project after all,
-if you can make a valid buisness out of it by stop doing opensource
+if you can make a valid business out of it by stop doing opensource
 I'd give you nothing but praise.
 
 Having said that,
