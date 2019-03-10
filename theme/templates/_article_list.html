@@ -4,17 +4,7 @@
 {% block content %}
     {% for article in articles_page.object_list %}
     <article>
-        <header>
-            <h1>
-                <a href="{{ SITEURL }}/{{ article.url }}">
-                    {{ article.title | striptags }}
-                </a>
-                {{ lib.category_glyph(article.category) }}
-            </h1>
-            <p class="meta">
-                <time datetime="{{ article.date.isoformat() }}" pubdate>{{ article.locale_date }}</time>
-            </p>
-        </header>
+        {{ lib.article_head(article) }}
 
         <div class="entry-content">
             {{ lib.article_illustration(article) }}

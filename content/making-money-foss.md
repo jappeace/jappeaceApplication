@@ -1,6 +1,7 @@
 TITLE: Making money with foss
 OPTIONS: toc:nil
 DATE: 2017-05-22
+Modified: 2019-03-10 14:33
 CATEGORY: technique
 Tags: free, money, software, programming
 
@@ -216,7 +217,7 @@ Which of course is not going to happen.
 Oracle probably did this to force users of that database to take a commercial
 license instead, taking foss projects (such as Debian) as collateral damage.
 
-### Proprietary extensions
+## Proprietary extensions
 
 Proprietary extensions involve releasing an open source core and add
 (usually business centred) proprietary extensions.
@@ -242,7 +243,7 @@ to work for android developers.
 This is the thing most companies are after with open source,
 free programming manpower.
 
-### Delayed open sourcing
+## Delayed open sourcing
 
 This is the thing [John Carmack](https://en.wikipedia.org/wiki/John_Carmack) famously did with ID tech.
 After some time selling the games he would release the source of the games.
@@ -262,7 +263,7 @@ Creating a core of die-hard followers.
 Doom has been ported to essentially [everything](https://en.wikipedia.org/wiki/List_of_Doom_source_ports).
 It's a mystery to me why not more companies are doing this.
 
-### Re-license
+## Re-license
 If you are the sole copyright holder, you can stop distributing under the
 open source license and re-license it.
 Originally I didn't want to include this option because you're no longer
