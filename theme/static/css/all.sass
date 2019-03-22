@@ -202,10 +202,13 @@ p
     \+p
         $indent: 1.375em
         text-indent: $indent
+        margin-top: 0
         \> img
             margin-left: -$indent
 
-       
+.entry-content p, pre, table
+    line-height: 1.5rem
+    margin-top: 1.5rem
 
 footer ul li
     width: 49%
@@ -240,16 +243,26 @@ pre
     word-wrap: break-word       /* Internet Explorer 5.5+ */
     -moz-tab-size: 4
     tab-size: 4
+    border-top: 1px dotted $col-contentbg
+    border-bottom: 1px dotted $col-contentbg
+    padding: 0.25em
 
 
 
 .entry-content h3
     font-weight: lighter
 
+@function repeat($character, $n)
+    $c:""
+    @for $i from 1 through $n
+        $c: $c + $character
+    @return $c
+
 @for $i from 1 to 6
     .entry-content h#{$i}
-        margin-bottom: 0.25em
-        margin-top: 0.5em
+        margin-top: 1.5em
+        /* \:before /* doesn't work, wanted to do something like markdown/org for sublevels but nicer */
+            content: repeat("*", $i) */
     .outline-text-#{$i}
         margin-top: 0
     .section-number-#{$i}
@@ -292,7 +305,8 @@ article.single > footer
     list-style: circle
 
 table 
-    margin: 0.5em auto
+    margin: 0 auto
+    margin-top: 1.5rem
 caption
     caption-side: bottom
     // If I ever figure aut how to make it center below a table
@@ -304,7 +318,7 @@ th, td
 td 
     padding-right: 1em
     padding-top: 0.2em
-    border-right: dotted
+    border-right: 1px dotted $col-contentbg
     border-bottom: grey solid thin
 
 abbr
@@ -315,7 +329,7 @@ abbr
     text-align: center
 
 .highlight
-    padding: 1em
+    padding: 0.75em
     text-align: left
     margin-bottom: 0.25em
 
