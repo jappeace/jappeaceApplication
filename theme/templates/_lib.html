@@ -6,8 +6,29 @@
 />
 {% endmacro %}
 
+{% macro article_head(article) %}
+        <header>
+            <h1>
+                <a href="{{ SITEURL }}/{{ article.url }}">
+                    {{ article.title | striptags }}
+                    {{ category_glyph(article.category) }}
+                </a>
+            </h1>
+            <p class="meta">
+              {{ article_time(article) }}
+            </p>
+        </header>
+{% endmacro %}
+
 {% macro article_time(article) %}
-<time datetime="{{ article.date.isoformat() }}" pubdate>{{ article.locale_date }}</time>
+<time datetime="{{ article.date.isoformat() }}" pubdate>
+  published: 
+  {{ article.locale_date }} </time>
+{% if article.modified %}
+<time datetime="{{ article.modified.isoformat() }}" pubdate>
+  , last modified:
+  {{ article.locale_modified }}</time>
+{% endif %}
 {% endmacro %}
 
 {% macro article_illustration(article) %}

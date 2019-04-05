@@ -31,13 +31,6 @@ AUTHOR_FEED_RSS = None
 # the default theme to be 2-tuples, but I need more info.
 LINKS_EX = [
     (
-        'resume',
-        '/files/2018/resume-new-phone.pdf',
-        "To convince you to hire me!",
-        'resume'
-
-    ),
-    (
         'portfolio',
         '/pages/portfolio.html',
         "I made quite some stuff over the years, here I tell about it",
@@ -53,7 +46,7 @@ SOCIAL_EX = [(
 ), (
     'github',
     'https://github.com/jappeace/',
-    "Me telling computers to do stuff",
+    "The graveyard grows",
     'github'
 ),
 # (

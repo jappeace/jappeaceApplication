@@ -5,15 +5,7 @@
 
 {% block content %}
     <article class="single" role="article">
-        <header>
-            <h1>
-                <a href="{{ SITEURL }}/{{ article.url }}">
-                    {{ article.title | striptags }}
-                    {{ lib.category_glyph(article.category) }}
-                </a>
-            </h1>
-            <p class="meta">{{ lib.article_time(article) }}</p>
-        </header>
+        {{ lib.article_head(article) }}
 
         <div class="entry-content">
             {{ lib.article_illustration(article) }}
@@ -26,7 +18,6 @@
         <footer>
             {{ lib.article_footer(article) }}
             <div class="comments">
-              comments here
               {% for comment in article.comments %}
               {# TODO, recurse in sub comments #}
               <div class="comment">

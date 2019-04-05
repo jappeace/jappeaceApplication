@@ -1,58 +1,49 @@
 TITLE: Making money with foss
 OPTIONS: toc:nil
 DATE: 2017-05-22
+Modified: 2019-03-10 14:33
 CATEGORY: technique
 Tags: free, money, software, programming
 
 In this blog post I will discuss how to make money with open source software.
 Why do you care?
-Especially the free software variant is [consumer friendly](https://www.gnu.org/philosophy/free-sw.en.html).
-(note that these consumers maybe businesses too),
-however for developers trying to make a living of writing such software is
-difficult.
-Which is a big problem, we often end up having developers doing the work in
-their free time, next to a day job,
-rather than focusing full time on their projects.
+Making money of this model is hard,
+yet you got to pay the bills.
+Even though the free software variant is [consumer friendly](https://www.gnu.org/philosophy/free-sw.en.html).
+(note that these consumers maybe businesses too).
+This is a big problem.
+Lot's of projects are maintained in people's unpaid free time,
+next to their day jobs.
+So they don't really get the love they deserve.
+Can we fix this?
 
 I would like to do this myself full time.
 Lest I became [financially independent](https://www.reddit.com/r/financialindependence/), I couldn't.
 So in here I will list the options I found trough researching the subject.
 As both an overview to myself and to the interested reader.
 
-We will start by Googling the subject,
-because this is easier than trying to [be creative](https://www.youtube.com/watch?v=9C_HReR_McQ) myself.
-Then I will present the my opinions around the results I found.
-I will conclude with a list of options I liked and why.
-
 # Google results
-
-I already had some ideas about how to do this,
-but its interesting what Google says about the subject.
-I was humbled by the results of putting a little effort into searching.
-This should of course come not as a surprise to me, but every time when
-I always have the urge to 'just start' without doing research, and every time
-I discover this is a mistake.
 
 In my naive approach I searched for ["Making money with foss"](https://www.google.nl/search?q=making+money+with+foss&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=50YjWYn_CdHU8geKob64BQ).
 The first site that came up was [info world](http://www.infoworld.com/article/2612393/open-source-software/greed-is-good--9-open-source-secrets-to-making-money.html).
 This site was full of warning flags,
-click bait title,
-advertise other articles mid article (instead of at the end),
-using a pager.
+for example having a
+click bait title and using a pagnation.
 After skimming the article it wasn't about making money of an open source project,
 but potential reasons for open sourcing (part of) your code.
 It was aimed at mid to high level management,
 non technical texts are of no interest to me,
 mainly because they usually have an agenda.
-A [second article](http://www.fosslc.org/drupal/node/131) linked to [another page](http://carlodaffara.conecta.it/?p=90&cpage=1#comment-50) with a better list, but I couldn't
-find it.
+
+A [second article](http://www.fosslc.org/drupal/node/131) linked to [another page](http://carlodaffara.conecta.it/?p=90&cpage=1#comment-50)
+with a better list, but I couldn't find it.
 The third [article](http://www.cio.com/article/3178621/open-source-tools/how-to-make-money-from-open-source-software.html) was just a summery of a video and wasn't very focused.
 Okay so my search terms were bad.
 Time to be more specific.
 
 I searched for ["foss business models"](https://www.google.nl/search?q=making+money+with+foss&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=50YjWYn_CdHU8geKob64BQ#q=foss+business+models), you know you did something right when
 scholarly articles start being presented.
-So there was an entire [Wikipedia page](https://en.wikipedia.org/wiki/Business_models_for_open-source_software) on the subject.
+There was an entire [Wikipedia page](https://en.wikipedia.org/wiki/Business_models_for_open-source_software) on the subject.
 I guess more people are really interested in this.
 So does this blog post die in the cradle?
 I say no, I can still give my opinions on that page.
@@ -63,12 +54,12 @@ people care about this subject.
 
 # The Business models
 
-So the core problem open source software faces is not having a monopoly on
+The core problem open source software faces is not having a monopoly on
 distribution that copyright provides.
 Therefore we can't sell it directly:
 Anyone can start distributing the software without asking anything for it,
 without running a loss because distribution is
-(practically) free for software.
+(practically) free for [software on the internet](https://stratechery.com/2015/aggregation-theory/).
 Giving up this monopoly is a necessary requirement for open source,
 called the [second and thirth freedoms](https://www.gnu.org/philosophy/free-sw.en.html).
 This is also done with the BSD like licenses,
@@ -83,17 +74,21 @@ Red Hat does this trough [providing support contracts](https://en.wikipedia.org/
 This can be extended by providing certificates of expertise
 (which Red Hat also does).
 
+I don't like this approach as it gives the incentive to make bad software.
+If your software is hard to use, then only you can sell support.
+You should make your software easy to use.
+
 Another strategy is selling of merchandise, such as fan [T-shirts or coffee cups](https://store.wikimedia.org/collections/accessories).
 Which the wikimedia foundation does.
 Selling merchandise is quite clever because its much more easy for someone to
 buy 'something', rather than just donating.
 Besides its free advertisement for your project,
 *and* your users now have something to identify themselves with.
-So I think if you have a project you should seriously consider doing this.
+So I think if you have an opensource project you should seriously consider doing this.
 
 Finally a programmer can rent himself out to a project to add features or do
 bug fixes.
-These include [bountysource](https://www.bountysource.com/) or [kickstarter](https://en.wikipedia.org/wiki/Kickstarter), where bountysource is
+These include [Bountysource](https://www.Bountysource.com/) or [kickstarter](https://en.wikipedia.org/wiki/Kickstarter), where Bountysource is
 usually fix an issue first and then get paid whereas kickstarter works on
 promises.
 In essence you're offering up your own time to work on a project.
@@ -101,17 +96,17 @@ In both cases there is of course the persistent issue that its [hard to decide](
 how much time this will take.
 With kickstarter however you can estimate it better because you're probably
 starting your own bigger project, so the overhead of estimation is smaller.
-With bounty source each bounty requires its own estimate and these are often
+With Bountysource each bounty requires its own estimate and these are often
 smaller, think of about \\$100, its hard to decide to even bother with that.
-Another issue with bounty source is that you have to switch from project to
+Another issue with Bountysource is that you have to switch from project to
 project often, which requires a lot of getting familiar with the code base
 overhead.
-The model of bounty source is less then perfect to live off.
+The model of Bountysource is less then perfect to live off.
 Although for existing developers of a project its a great motivation to work a
 little more.
 But don't expect strangers to 'join in', just because of the bounties
-unless they're highly overvalued.
-In fact you can see that few people 'live' off bounty source just by the
+unless they're highly valued.
+In fact you can see that few people 'live' off Bountysource just by the
 overview of bounty hunters. Only three people at the time of writing got over
 \\$2000 in the last 90 days and only 9 over \\$1000.
 
@@ -123,32 +118,45 @@ And of course once the work is finished, you need to find *more* work.
 Therefore you won't get better overtime.
 Imitating red hat with support contracts could do that,
 but starting with that on your own is hard.
+Although I had other factors working against me,
+living in a remote village didn't help.
+So you mileage may vary.
 
 ## Donations
-
 Another powerful trick of trying to become self sustained on software is using
 donations.
 The big issue with this is of course getting people to donate in the first place.
 A famous example of a donation scheme as that of [mozzilla firefox 1.0 release](http://www-archive.mozilla.org/press/mozilla-2004-12-15.html).
 
-Recently however another model has popped up in the form of [patreon](https://www.patreon.com/).
+Recently another option has popped up in the form of [patreon](https://www.patreon.com/).
 The idea is pretty simple, subscribe to a creator and every time he puts
-something out (or every month) donate a small by you decided amount.
-[Some](https://www.patreon.com/landley) [developers](https://www.patreon.com/kozec) [have](https://www.patreon.com/bcachefs) [embraced](https://www.patreon.com/pippin) [this idea](https://www.reddit.com/r/linux/comments/5omtvg/patreons_to_support_open_source_projects_please/), although I haven't seen anyone that
-earns self sustaining amounts.
+something out (or every month) donate a small amount decided by you.
+[Some](https://www.patreon.com/landley)
+[developers](https://www.patreon.com/kozec)
+[have](https://www.patreon.com/bcachefs)
+[embraced](https://www.patreon.com/pippin)
+[this idea](https://www.reddit.com/r/linux/comments/5omtvg/patreons_to_support_open_source_projects_please/),
+although I haven't seen anyone that earns self sustaining amounts.
 It does provide a reliable income stream and is aimed at *individuals*,
-and since there are [other](https://www.patreon.com/cgpgrey) [creators](https://www.patreon.com/avasdemon) who have managed to get to a sustainable
-level.
+and since there are [other](https://www.patreon.com/cgpgrey) [creators](https://www.patreon.com/avasdemon)
+who have managed to get to a sustainable level.
 We can expect this to happen eventually for software developers too.
 
-The big advantage patreon offers over bounty source is that,
+The big advantage patreon offers over Bountysource is that,
 rather than having to think about how much time creating a feature costs as
-with bountysource,
+with Bountysource,
 you can just continue improving the project how you think it should be done.
 Of course some trust in the developer is necessary for that,
-bounty source doesn't have that problem, since payment is done afterwards and I
-assume regulated by bountysource.
-However appearantly bounty source offers a similar service [for projects](https://salt.bountysource.com/teams/neovim).
+Bountysource doesn't have that problem, since payment is done afterwards and I
+assume regulated by Bountysource.
+However apparently Bountysource offers a similar service [for projects](https://salt.bountysource.com/teams/neovim).
+
+Another approach to this is to start a foundation.
+Blender is developed like [this](https://www.blender.org/foundation/),
+and if your project has any kind of traction,
+do consider this.
+Trusting a foundation is much more easy because
+they're regulated by law.
 
 ## Advertisements
 
@@ -160,17 +168,36 @@ You can prevent this from happening by offering two versions,
 one with adds and one without and then ask your users to support the project
 by downloading the one with adds.
 
-[Addblock plus](https://en.wikipedia.org/wiki/Adblock_Plus#Controversy_over_ad_filtering_and_ad_whitelisting) famously white listed adds as a way of generating revenue.
+[Addblock plus](https://en.wikipedia.org/wiki/Adblock_Plus#Controversy_over_ad_filtering_and_ad_whitelisting)
+famously white listed adds as a way of generating revenue.
 It may be considered hypocritical,
 but remember that as free software anyone can fork it and remove this feature.
 Not that you have to since there are already [alternatives](https://github.com/gorhill/uBlock).
 Note that although Adblock Plus probably made quite a good load of money
-with their white listing program, it will probably kill the project eventually.
+with their white listing program,
+it will probably kill the project eventually.
+Because now they're essentially running an extortion racket,
+becoming nothing more than parasites and providing lower quality user experience.
 I imagine the people who go out of their way to install an ad blocker are not
 the kind of people who are satisfied with an ever laxer white list.
 
-## License tricks
+## Crypto Currency
+There is an opportunity in crypto too.
+Although this immediately sounds fishy.
+I'd say that taking a couple cycles per minute to do some
+mining isn't *that* bad.
+I mean how is it any different from stealing a users
+attention with advertisements?
+It's probably even better because the users' time is more valuable
+than machine cycles.
+No wonder that google [cracked down](https://www.theregister.co.uk/2018/03/14/google_cracks_down_on_crypto_with_ad_ban_from_june/)
+on this.
+Crypto is a substitute for advertising, 
+Google is essentially a massive ad company.
+But this has the same problem as advertisment in that forks will
+occur which would take it out.
 
+## License tricks
 The final category for making money with open source is license trickery.
 So this comes from the idea that, if you are the sole copyright holder,
 you can put the software under various licenses.
@@ -200,6 +227,8 @@ It may be taken over similarly as Oracle did to Sun.
 But the AGPL based code was already under license,
 so the community can step in and take over development,
 as happened with Illumos (Solaris fork) after Oracle went on its rampage.
+Although a recent [article](https://stratechery.com/2019/aws-mongodb-and-the-economic-realities-of-open-source/)
+by Ben Thompson cast some doubt on the long term efficacy of this strategy.
 
 This has however a darker side in potential license trolling.
 Which [Oracle (who else) did](https://lists.debian.org/debian-legal/2013/07/msg00000.html) for example with a database.
@@ -209,7 +238,7 @@ Which of course is not going to happen.
 Oracle probably did this to force users of that database to take a commercial
 license instead, taking foss projects (such as Debian) as collateral damage.
 
-### Proprietary extensions
+## Proprietary extensions
 
 Proprietary extensions involve releasing an open source core and add
 (usually business centred) proprietary extensions.
@@ -235,7 +264,7 @@ to work for android developers.
 This is the thing most companies are after with open source,
 free programming manpower.
 
-### Delayed open sourcing
+## Delayed open sourcing
 
 This is the thing [John Carmack](https://en.wikipedia.org/wiki/John_Carmack) famously did with ID tech.
 After some time selling the games he would release the source of the games.
@@ -246,14 +275,29 @@ For example [ioquake3](https://ioquake3.org/), still actively develops the quake
 driving sales of the quake game itself because the assets aren't freely
 available.
 
-### Re-license
+So he open sourced partly dated tech, because he was confident he could do better now.
+And he increased sales of already released games,
+because people wanted to hack on it.
+I think this is pretty genius, gaining some extra juice out of old projects.
+The really nice thing is that the lifespan of these games has tremendously increased.
+Creating a core of die-hard followers.
+Doom has been ported to essentially [everything](https://en.wikipedia.org/wiki/List_of_Doom_source_ports).
+It's a mystery to me why not more companies are doing this.
 
+## Re-license
 If you are the sole copyright holder, you can stop distributing under the
 open source license and re-license it.
 Originally I didn't want to include this option because you're no longer
-doing foss at this point, however, it opens up the opportunity to hate upon
-Oracle.
-So lets hate upon Oracle.
+doing foss at this point.
+But if your project is dying, because you can't give it enough love.
+This maybe totally valid.
+It's your project after all,
+if you can make a valid business out of it by stop doing opensource
+I'd give you nothing but praise.
+
+Having said that,
+this also opens up the opportunity to hate upon
+Oracle. So lets hate upon Oracle.
 
 So if we Google: [Why oracle is horrible](https://www.google.nl/search?q=why+oracle+is+horrible&ie=utf-8&oe=utf-8&client=firefox-b&gfe_rd=cr&ei=Hi0sWcTQNOvGXqT5o7gM), we can get some [dumb](https://www.quora.com/Whats-so-bad-about-Oracle) [quora](https://www.quora.com/Why-do-some-people-hate-Oracle) answers.
 These are just not the point.
@@ -271,18 +315,14 @@ I'm happy to say however that a fork of Solaris occurred called [Illumos](https:
 seems to still be active.
 
 # In conclusion
-
 Because we are interested in making money,
 this post will took us all over the place.
 On the one hand we have the greedy businesses,
 and on the other side the diligent developer.
-Licenses were never discussed in hbo or university,
-which is interesting because these are the methods corporations use to make
-money.
+Licenses were never discussed in university,
+which is interesting because this is *the* method for making
+money with software.
 I think having discussed the overview and shown some concrete examples was a
 good exercise.
 I was not aware at all for example of the AGPLv3 practices which
 are interesting (without passing moral judgment).
-My blog seems to be really focused on money,
-but this is a reflection of what I'm worried about these days,
-having almost graduated.
