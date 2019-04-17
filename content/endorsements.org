@@ -1,6 +1,7 @@
 # Use org mode because of the toc
 #+TITLE: Endorsement
 #+DATE: 2017-06-28
+#+Modified: 2019-04-5 11:27
 #+CATEGORY: meta
 #+Tags: tips, remind, hastag
 A post I'll periodicly update (no promises)
@@ -40,6 +41,13 @@ the talk later becomes more interesting since I didn't follow machine learning
 that much.
 
 
+
+** Tech blogs
+   At some point I wanted to read interesting soemthing interesting,
+   I found these who look all very interesting:
+   + https://blog.acolyer.org/
+   + http://highscalability.com/
+   + https://www.oreilly.com/ideas
 
 ** Techstratery
 This guy is some kindoff analist I encountered on reddit

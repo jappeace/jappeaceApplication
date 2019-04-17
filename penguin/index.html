@@ -3,16 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="style.css">
+    <script language="javascript">
+      var dutchTxt =
+      "Met meer dan een decenia programeer ervaring neemt Jappie werk aan!" +
+      "Gespecializeerd in functioneel programmeren en kunstmatige intelligentie:" +
+      "\"U gooit problemen naar mij, ik los ze op\".";
+      var engTxt = "With over a decade of programming experience Jappie is taking jobs!" +
+      "Specialized in functional programming and artificial intelligence:" +
+	  "\"You throw problems at me, I fix them\". ";
+      function setText (txt) {
+	  document.getElementById("blurp").innerHTML = txt;
+      }
+    </script>
     </head>
   <body>
     <header>
-      <h1>Penguin Programmers</h1>
+      <h1>Penguin Programmer</h1>
     <img src="./logo.svg"></img>
     </header>
     <article>
-      With over a decade of programming experience Jappie is for hire!
-      Specialized in functional programming and artificial intelligence:
-      "You throw problems at us, we deliver materialized dreams".
+      <span id="blurp">
+	<script language="javascript"> document.write(dutchTxt); </script>
+	</span>
       <ul>
 	<li><a href="https://jappieklooster.nl/pages/portfolio.html">Portfolio</a></li>
 	<li><a href="mailto:jappieklooster@hotmail.com">Contact</a></li>
@@ -22,7 +34,9 @@
     <footer>
     <small>
       KVK: 72671629
-    </small>
+    </small> <br />
+    <span onClick="setText(dutchTxt)">🇳🇱 Dutch</span> - 
+    <span onClick="setText(engTxt)"> 🇦🇺 English</span>
     </footer>
   </body>
 </html>
