@@ -100,6 +100,7 @@ so no idea why you'd hide that.
 
 The right image format appears to be a vhd.
 You can make it like THIS.
+(How to call that library function here)
 
 # Nixos-rebuild
 
@@ -118,3 +119,9 @@ If you bridged your vm correctly you can find the ip with nmap:
    nmap -sn 192.168.0.0/24 
 ```
 Your subdomain may be different but you can discover that with `ip addr`.
+
+# Fix nix boot issue inplace
+
+You can mount root as /mnt,
+mount boot as /mnt/boot (while either are already mounted).
+and then call nixos-install.
