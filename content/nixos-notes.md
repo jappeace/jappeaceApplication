@@ -9,6 +9,8 @@ but isn't described anywhere.
 I had to read source code to figure these things out.
 By explaining here what is going on I make things easier for other people.
 
+![Nixos notes](/images/2019/nixos_notes.svg)
+
 # Nix custom image
 It's possible to bypass virtual box and make a bunch of different image
 formats directly, I used two files `image.nix`:
