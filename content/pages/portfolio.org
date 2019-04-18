@@ -30,16 +30,24 @@ There are three status kinds:
 3. Finished, No more work is necessary, the goals were achieved.
 
 * Raster.click
-| Type   | Hobby |
-| Status | Active |
+| Type   | Startup |
+| Status | Active  |
 
-[[https://raster.click][Raster]] is a roster system. 
-This is made to fit a use case for a restaurant which wants to roster it's
-employees ahead of time.
+[[https://raster.click][Raster]] is a makes rosters easy!
+This makes rostering easy for restaurants.
+We combine it with reservations to make late adjustments
+to the roster.
+The idea is that we can ensure there is always enough
+but not too many employees.
 This is currently used at [[http://www.dehuiskamer.com/][Restaurant De Huiskamer]].
 A [[https://jappieklooster.nl/plan-prediction.html][blog post]] was written about a possible extension idea,
 which essentially uses Q-learning to predict where future employees should be
 planned.
+
+I'm currently working on this as much as I can.
+At this point the site itself is much more up to date than this page.
+Automated planning is for example possible.
+The picture below is pretty dated at this point.
 
 #+CAPTION: The raster project
 #+LABEL: fig:raster

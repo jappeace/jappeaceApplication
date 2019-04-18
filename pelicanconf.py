@@ -30,26 +30,36 @@ AUTHOR_FEED_RSS = None
 # NOTE: These aren't called just LINKS and SOCIAL because those are assumed by
 # the default theme to be 2-tuples, but I need more info.
 LINKS_EX = [
-    (
-        'portfolio',
-        '/pages/portfolio.html',
-        "I made quite some stuff over the years, here I tell about it",
-        'portfolio'
+    ( 'Portfolio'
+    , '/pages/portfolio.html'
+    , "Random projects I made"
+    , 'portfolio'
+    ),
+    ( 'Penguin 🐧'
+    , 'http://penguin.engineer'
+    , "Jappie for hire"
+    , 'penguin'
+    ),
+    ( 'Raster'
+    , 'https://raster.click/'
+    , 'Scheduling for restaurants startup'
+    , 'Raster'
     )
 ]
 
 SOCIAL_EX = [(
-    'email',
+    'Email',
     'mailto:jappieklooster@hotmail.com',
     "A general purpose problem",
     'email'
-), (
-    'github',
-    'https://github.com/jappeace/',
-    "The graveyard grows",
-    'github'
-),
+)
 # (
+#     'Github',
+#     'https://github.com/jappeace/',
+#     "The graveyard grows",
+#     'github'
+# ),
+# # (
 #     'patreon',
 #     'https://www.patreon.com/user?u=4695714',
 #     'Consider supporting my endeavors',
