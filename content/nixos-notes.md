@@ -4,9 +4,10 @@ CATEGORY: tools
 Tags: pain, devops, virtualization, tools, linux
 subreddit: nixos
 
-This is a post of random things I wanted to do in nixos
-but isn't described anywhere but in the source code.
-So I hope by explaining here what is going on I make things easier.
+This is a post of things I wanted to do in nixos
+but isn't described anywhere.
+I had to read source code to figure these things out.
+By explaining here what is going on I make things easier for other people.
 
 # Nix custom image
 It's possible to bypass virtual box and make a bunch of different image
