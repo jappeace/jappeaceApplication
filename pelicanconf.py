@@ -42,7 +42,7 @@ LINKS_EX = [
     ),
     ( 'Raster 🚀'
     , 'https://raster.click/'
-    , 'Scheduling for restaurants startup'
+    , 'Easy rosters for restaurants startup'
     , 'Raster'
     )
 ]
@@ -50,7 +50,7 @@ LINKS_EX = [
 SOCIAL_EX = [(
     'Email ✉',
     'mailto:jappieklooster@hotmail.com',
-    "A general purpose problem",
+    "Contact me",
     'email'
 )
 # (

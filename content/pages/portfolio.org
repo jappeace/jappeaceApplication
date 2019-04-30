@@ -7,8 +7,7 @@
 This page lists projects Jappie made.
 If they listed here it means they're worthy of being talked about.
 This mean they either some kind off value right now, or they used to do that.
-
-Assuming this as an entry bar,
+With this in a mind,
 a large host of projects Jappie worked on get eliminated.
 For example, that one time he decided to try out [[http://www.purescript.org/][PureScript]] and barely got an
 hello world operational, although this could be considered a success,
@@ -17,9 +16,11 @@ Indeed most 'practice' school work gets eliminated,
 although the projects that were made as part of team exercises to practice
 professional work may qualify
 (depending on if Jappie can find it,
-and manage to get it running so he can screenshot it)
-Obviously all work Jappie managed to sell classifies,
-but certain hobby projects also count.
+and manage to get it running so he can screenshot it).
+Everything is worth what people are willing to pay for it,
+so all work Jappie managed to sell classifies.
+Certain hobby projects also count because they receive star
+on github or Jappie thinks they could be usefull.
 
 #+TOC: headlines 2 
 
@@ -28,6 +29,13 @@ There are three status kinds:
 1. Active, Jappie intends to work on this in the future
 2. Abandoned, There is no intention of working on this in the future
 3. Finished, No more work is necessary, the goals were achieved.
+
+And various types:
+
+1. Startup, attempt to change the world and get rich beyoned ones wildest dreams.
+2. School, project was executed to learn from it.
+3. Hobby, doing something for fun, with no intend of making money.
+4. Contract, realizing other people's wishes in exchange for currency.
 
 * Raster.click
 | Type   | Startup |
