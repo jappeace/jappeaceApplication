@@ -1,0 +1,15 @@
+#+TITLE: Penguin
+
+This is a website for penguin programmers.
+
+Currently I'm simply selling myself.
+Providing enough information for people to make poeple interested in
+contacting me.
+
+
+* TODO 
+  
+** TODO Add resume?
+   I don't think this does harm so I'll do it.
+   
+

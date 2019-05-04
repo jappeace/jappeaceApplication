@@ -15,3 +15,22 @@ text-align:left;
 max-width:50%;
 margin: 0 auto;
 }
+
+blockquote{
+    font-family: Georgia, serif;
+    font-style: italic;
+    margin: 2em 3em;
+    border-left: 1em solid #474d4d;
+    padding: 0.5em;
+    quotes: "\201C""\201D";
+    padding-left: 1em;
+}
+
+blockquote p::before{
+    content: open-quote;
+    color: #474d4d;
+    font-size: 4em;
+    line-height: 0.1em;
+    margin-right: 0.25em;
+    vertical-align: -0.4em;
+}
