@@ -4,16 +4,24 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="style.css">
     <script language="javascript">
-      var dutchTxt =
-      "Met meer dan een decenia programeer ervaring neemt Jappie werk aan!" +
-      "Gespecializeerd in functioneel programmeren en kunstmatige intelligentie:" +
-      "\"U gooit problemen naar mij, ik los ze op\".";
-      var engTxt = "With over a decade of programming experience Jappie is taking jobs!" +
-      "Specialized in functional programming and artificial intelligence:" +
-	  "\"You throw problems at me, I fix them\". ";
-      function setText (txt) {
-	  document.getElementById("blurp").innerHTML = txt;
+      var strings = {
+	  blurp: {
+	      en: "With over a decade of programming experience Jappie is taking jobs!" +
+		  "Specialized in functional programming and artificial intelligence:" +
+		  "\"You throw problems at me, I fix them\". ",
+	      nl: "Met meer dan een decenia programeer ervaring neemt Jappie werk aan!" +
+		  "Gespecializeerd in functioneel programmeren en kunstmatige intelligentie:" +
+		  "\"U gooit problemen naar mij, ik los ze op\"."
+	  }
+      };
+      function setText (lang) {
+	  Object.keys(strings).forEach(function(key){
+	    document.getElementById(key).innerHTML = strings[key][lang];
+	  });
       }
+	document.addEventListener("DOMContentLoaded", function(event) { 
+	    setText('nl');
+	});
     </script>
     </head>
   <body>
@@ -23,8 +31,7 @@
     </header>
     <article>
       <span id="blurp">
-	<script language="javascript"> document.write(dutchTxt); </script>
-	</span>
+      </span>
       <ul>
 	<li><a href="https://jappieklooster.nl/pages/portfolio.html">Portfolio</a></li>
 	<li><a href="mailto:jappieklooster@hotmail.com">Contact</a></li>
@@ -35,8 +42,8 @@
     <small>
       KVK: 72671629
     </small> <br />
-    <span onClick="setText(dutchTxt)">🇳🇱 Dutch</span> - 
-    <span onClick="setText(engTxt)"> 🇦🇺 English</span>
+    <span onClick="setText('nl')">🇳🇱 Dutch</span> - 
+    <span onClick="setText('en')"> 🇦🇺 English</span>
     </footer>
   </body>
 </html>
