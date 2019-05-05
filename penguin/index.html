@@ -9,7 +9,7 @@
 	      en: "With over a decade of programming experience Jappie is taking jobs!" +
 		  "Specialized in functional programming and artificial intelligence:" +
 		  "\"You throw problems at me, I fix them\". ",
-	      nl: "Met meer dan een decenia programeer ervaring neemt Jappie werk aan!" +
+	      nl: "Met meer dan een decennia programmeer ervaring neemt Jappie werk aan!" +
 		  "Gespecializeerd in functioneel programmeren en kunstmatige intelligentie:" +
 		  "\"U gooit problemen naar mij, ik los ze op\"."
 	  },
@@ -22,7 +22,11 @@
 "          I automate office work. If you're doing work on a computer," +
 "        fat chance I can automate it." +
 "        If you're doing lot's of work on a computer," +
-"        automatation becomes attractive.:"
+                  "        automation becomes attractive.:",
+              nl:
+              "Ik automatiseer kantoor werk. Als je werk doet op een computer is er een dikke kans dat ik het kan automatiseren. " +
+              "Als je een hoop werk doet op een computer word automatiseren aantrekkelijk."
+
           },
 	  extend: {
 	      en: "Extend existing software ✍️",
@@ -33,14 +37,14 @@
       "It makes me feel like I'm reading the mind of the author." +
       "Therefore it comes natural to me to try and change or extend it. " +
       " Examples:",
-	      nl: "Ik hou van oude code lezen. " +
-"Het lijkt dan net alsof ik in het brein van de autheur rondspook. " +
+	      nl: "Ik hou vind oude code lezen leuk. " +
+"Het lijkt dan net alsof ik in het brein van de auteur kijk. " +
 "Daardoor is het uitbreiden van bestaande " +
-"systeemen een tweede natuur voor mij. " +
+"systemen een tweede natuur voor mij. " +
 "      Voorbeelden:"
 	  },
           extendActions: {
-              en: "Make the user interface simpeler.",
+              en: "Make the user interface simpler.",
               nl: "Gebruikers interface simpeler maken."
           },
           extendButtonCustomer:  {
@@ -49,7 +53,7 @@
           },
           extendInvoice: {
               en: "Create a pdf for invoices based on database information in the housestyle of your company",
-              nl: "Maken van een pdf factuur gebaseerd op database informatie in de huis-style van uw bedrijf"
+              nl: "Maken van een PDF factuur gebaseerd op database informatie in de huis-style van uw bedrijf"
           },
           build: {
               en: "Build new software 👷",
@@ -62,17 +66,21 @@
 "      and I'll use the latest and greatest inventions in programming," +
 "      and I'll make it last forever." +
                   "      Examples:",
-          nl: "Doorgaans is het beter om bestaande software zoveel mogelijk te gebruiken" +
-" simpelweg omdat het gebprobeerd en getest is." +
+          nl: "Doorgaans is het beter om bestaande software zoveel mogelijk te gebruiken, " +
+" simpelweg omdat het geprobeerd en getest is." +
 "      Als het nodig is, kan ik iets nieuws bouwen," +
-"      hierbij gebruik ik de nieuwste en beste ontwikellingen in software." +
+"      hierbij gebruik ik de nieuwste en beste ontwikkelingen in software." +
 "      Daarnaast zorg ik ervoor dat het eeuwig meegaat." +
                   "      Voorbeelden:"
           },
-	  buildWebsite: { en: "Create a new website that hosts a form and posts it to a database.", nl: "" },
-	  buildLottery: { en: "Create a lottery game with 2d graphics.", nl: "" },
-	  buildApp: { en: "Build a mobile app that allows users to share recipes with each other", nl: "" },
-          sysadmin: { en: "System adminstration ⚙️", nl: "" },
+	  buildWebsite: { en: "Create a new website that hosts a form and posts it to a database.",
+                          nl: "Een nieuwe website maken die een formulier in een database wegschrijft" },
+	  buildLottery: { en: "Create a lottery game with 2d graphics.",
+			nl: "Een lotterij spel met 2d effecten (of 3d)" },
+	  buildApp: { en: "Build a mobile app that allows users to share recipes with each other",
+			nl: "Een app maken die gebruikers in staat stelt recepten te delen." },
+          sysadmin: { en: "System administration ⚙️",
+			nl: "Systeem administratie" },
           sysadminBlurp: { en: 
 "      Usually I put the systems I work on online myself." +
 "      This made me familiar with all kinds of system administration tasks." +
@@ -80,76 +88,134 @@
 "      I have personal stake in being aware, I run several services myself." +
 "      Including this website." +
                            "      Examples:", 
-                           nl: ""
+                           nl: "Normaal gesproken zet ik de systemen die ik maak zelf online." +
+"      Dit heeft me bekend gemaakt met allerlei systeem administratie vaardigheden." +
+"      Daarnaast ben ik bekend met de risico's. " +
+"      Ik heb persoonlijk belang bij hiermee bekend zijn omdat zelf verschillende diensten draai." +
+"      Inclusief deze website. Voorbeelden: "
                          },
-          sysArbitrary: { en: "Host arbitrary code on all kinds of platforms: Cloud, virtual machines, containers, etc.", nl: "" },
-          sysMove: { en: "Move or port databases on systems that are operational.", nl: "" },
-          sysAuto: { en: "Automate deployment of software.", nl: "" },
-          core: { en: "Core tenets", nl: "" },
+          sysArbitrary: { en: "Host arbitrary code on all kinds of platforms: Cloud, virtual machines, containers, etc.",
+			nl: "Neerzetten van arbitraire code op allerlij platformen, zoals cloud, virtuele machines en containers." },
+          sysMove: { en: "Move or port databases on systems that are operational.",
+			nl: "Verplaats of transformeer databases terwijl het achterliggende systeem operationeel is." },
+          sysAuto: { en: "Automate deployment of software.",
+			nl: "Automatiseren van het neerzetten van software." },
+          core: { en: "Core tenets",
+			nl: "Kern principes" },
           coreBlurp: {
               en: 
-"      To achieve buisness goals, " +
+"      To achieve business goals, " +
 "      I abide to several core tenets." +
-"      These tenents drive the decisions I make." +
+"      These tenets drive the decisions I make." +
 "      I believe long term this saves in development costs." +
-"      Once you have a simpel, robust and elegant system doing work" +
-"      meaningfull for you," +
+"      Once you have a simple, robust and elegant system doing work" +
+"      meaningful for you," +
 "      why would you even need a developer?" +
 "      And even if you'd need one," +
 "      he'd pick up extending the system trivially." +
-                  "      I hope to make myself replaceable with these tenets.",
-              nl: ""
+"      I hope to make myself replaceable with these tenets.",
+              nl: 
+"      Voor het bereiken van zakelijke doelen, " +
+"      Volg ik enkele kern principes." +
+"      Deze principes drijven de beslissingen die ik maak." +
+"      Ik geloof dat dit op lange termijn ontwikkel kosten spaart." +
+"      Zodra je een simpel, robuust en elegant systeem je waardevolle" +
+"      werk laat doen," +
+"      heb je in principe geen ontwikkelaar meer nodig." +
+"      En zelfs als je een nodig hebt," +
+"      kan hij het systeem triviaal aanpassen." +
+"      Dus ik hoop mijzelf vervangbaar te maken met deze principes.",
           },
-          impact: { en: "Impact 💣", nl: "" },
-          impactQuote: { en: "Have a strong effect on someone or something.", nl: "" },
+          impact: { en: "Impact 💣",
+			nl: "Impact 💣" },
+          impactQuote: { en: "Have a strong effect on someone or something.",
+			nl: "Een sterk effect op iets of iemand hebben" },
           impactBlurp: { en: 
 "      I wish to help drastically reduce costs," +
-"      or make your buisness drastically more competative." +
+"      or make your business drastically more competitive." +
+"      For example by help choosing better infrastructure, or " +
+"      use data driven models to gain new insights." +
 "      After I'm done your situation should be better," +
 "      to the point where you're bragging about it." +
                          "      If I manage to do that I'm happy.",
-                         nl: ""
+                         nl: "Ik wil graag drastisch kosten helpen reduceren" +
+"      of uw bedrijf strijdbaar helpen maken." +
+"      Door bijvoorbeeld te helpen met het kiezen van infrastructuur, of" +
+"      data gedreven modellen gebruiken voor het verkrijgen van nieuwe inzichten." +
+"      Nadat ik klaar ben is uw situatie beter zoveel beter dat u er gaat over opscheppen." +
+                         "      Als mij dat lukt ben ik erg blij.",
                        },
-          simple: { en: "Simplicity 🔵", nl: "" },
-          simpleQuote: { en: "The quality or condition of being plain or uncomplicated in form or design.", nl: "" },
+          simple: { en: "Simplicity 🔵",
+			nl: "Simpelheid 🔵" },
+          simpleQuote: { en: "The quality or condition of being plain or uncomplicated in form or design.",
+			nl: "De eigenschap of conditie om duidelijk of niet ingewikkeld in vorm of ontwerp te zijn" },
           simpleBlurp: { en: 
 "        Software captures complexity." +
-"        This tenants goes directly against software," +
+"        This tenants goes directly against using software," +
 "        which often leads me to reduce the amount of software used to" +
-"        achieve buisness goals." +
+"        achieve business goals." +
 "        The perfect world would be one where there is no software," +
 "        yet we had all the benefits of automation." +
 "        Of course this is impossible." +
 "        There are tactics however for achieving more of this," +
 "        such as using existing systems," +
-                         "        code re-use, and keeping architectures as simple as possible.",
-                         nl: ""
+"        code re-use, and keeping architectures as simple as possible.",
+                         nl: 
+"        Software vangt complexiteit af." +
+"        Dit principe gaat ook direct tegen het gebruik van software in," +
+"        ik word blij als ik software kan reduceren en alsnog zakelijke doelen" +
+"        kan bereiken." +
+"        De perfecte wereld is waarin er geen software is, maar men alsnog de voordelen uit automatiseren verkrijgt." +
+"        Dit is natuurlijk onmogelijk." +
+"        Er zijn wel tactieken die helpen dit na te streven," +
+"        zoals het gebruik van bestaande systemen," +
+"        hergebruik van code, en architecturen simpel houden.",
                        },
           simpleBlurpLike: {
               en: 
 "        Therefore I like having small focused teams," +
 "        deleting code whenever it's possible," +
-                  "        and leverage opensource projects for dealing with hard problems.",
-              nl: ""
+                  "        and leverage open-source projects for dealing with hard problems.",
+              nl: 
+"        Ik vind het leuk om in kleine gerichte teams te werken," +
+"        waarin ik code verwijder waneer het mogelijk is," +
+"        en bestaande open-source project zoveel mogelijk gebruik.",
           },
-          robust: { en: "Robustness 🏰", nl: "" },
-	  robustQuote: { en: " The ability to withstand or overcome adverse conditions or rigorous testing. ", nl: "" },
+          robust: { en: "Robustness 🏰",
+			nl: "Robustheid  🏰" },
+	  robustQuote: { en: " The ability to withstand or overcome adverse conditions or rigorous testing. ",
+			nl: "Het vermogen om moeilijke omstandigheden of grondige testen te overkomen" },
           robustBlurp: { en:
 "	The reason I want robustness is more a matter of pride." +
 "	I really don't appreciate code I wrote breaking on the job." +
-"	Therefore I will design with robustness in mind." +
+"	Therefore I will develop and design with robustness in mind." +
 "	I wish to build things that can stand the test of time and " +
 "	outlive me many times over." +
-"	This restriction also drives me to search for ever more" +
-                         "	powerfull tools.",
-                         nl: ""
+"	This principle also drives me to search for ever more" +
+                         "	powerful tools.",
+                         nl: 
+"	De reden waarom ik robuustheid nastreef is een zaak van trotsheid." +
+"	Ik vind het echt niet leuk als code die ik geschreven heb faalt op zijn werk." +
+"	Daarom ontwikkel en ontwerp ik met robuustheid in gedachte." +
+"	Ik wil dingen bouwen die de test van tijd aankunnen" +
+"	en meerdere malen ouder worden dan ik." +
+"	Dit principe zorgt er ook voor dat ik altijd opzoek ben naar betere gereedschap",
                        },
-          cant: { en: "What I can't do", nl: "" },
-          cantBlurp: { en: " Even though my prowess is known trough the land, I'm just a mortal, and can't do everything. ", nl: "" },
-          hardware: { en: "Hardware", nl: "" },
-          hardwareFish: { en: " I'm a fish on dryland when it comes to hardware.", nl: "" },
-          printers: { en: "Printers", nl: "" },
-          printersBlrup: { en: " I will not have anything to do with printers.", nl: "" }
+          cant: { en: "What I can't do",
+			nl: "Wat ik niet kan doen" },
+          cantBlurp: { en: " Even though I'm familiar with many technologies and techniques, I'm just a mortal, and can't do everything. ",
+			nl: "Alhoewel ik bekend ben met veel technologieën en technieken, ben ik slechts een sterveling, en kan dus niet alles." },
+          hardware: { en: "Hardware",
+			nl: "Hardware" },
+          hardwareFish: { en: " I'm a fish on dry-land when it comes to hardware.",
+			nl: "Ik ben een vis op het droge als het gaat om hardware." },
+          printers: { en: "Printers",
+			nl: "Printers" },
+          printersBlrup: { en: " I will not have anything to do with printers.",
+			   nl: "Ik wil niks te maken hebben met printers." },
+          embedded: { en: "Embedded", nl: "Embedded" },
+          embeddedBlurp: { en: "Even though I'm familiar with the langauges used, I have no desire to do work without an operating system.",
+                           nl: "Alhoewel ik bekent met de gebruikte talen heb ik geen verlangen om werk te doen zonder besturing systeem." }
       };
       function setText (lang) {
 	  Object.keys(strings).forEach(function(key){
@@ -237,6 +303,8 @@
       </p>
       <h3 id="hardware"></h3>
       <p id="hardwareFish"> </p>
+      <h3 id="embedded"></h3>
+      <p id="embeddedBlurp"></p>
       <h3 id="printers"></h3>
       <p id="printersBlrup"></p>
     </article>
