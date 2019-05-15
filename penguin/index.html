@@ -198,18 +198,12 @@
 "	en meerdere malen ouder worden dan ik." +
 "	Dit principe zorgt er ook voor dat ik altijd opzoek ben naar beter gereedschap",
                        },
-          cant: { en: "What I can't do",
-			nl: "Wat ik niet kan doen" },
-          cantBlurp: { en: " Even though I'm familiar with many technologies and techniques, I'm just a mortal, and can't do everything. ",
-			nl: "Alhoewel ik bekend ben met veel technologieën en technieken, ben ik slechts een sterveling, en kan dus niet alles." },
-          hardware: { en: "Hardware",
-			nl: "Hardware" },
-          hardwareFish: { en: " I'm a fish on dry-land when it comes to hardware.",
-			nl: "Ik ben een vis op het droge als het gaat om hardware." },
-          printers: { en: "Printers",
-			nl: "Printers" },
-          printersBlrup: { en: " I will not have anything to do with printers.",
-			   nl: "Ik wil niks te maken hebben met printers." },
+          happy: {en: "Happy customers 😊",
+                  nl: "Tevreden klanten 😊"
+                 },
+          happyWzonen: {en: "W. van der Meer en Zonen B.V.: VKI form and extend trees",
+                        nl: "W. van der Meer en Zonen B.V.: VKI formulier en uitbreiden trees" 
+                       }
       };
       function setText (lang) {
 	  Object.keys(strings).forEach(function(key){
@@ -224,7 +218,7 @@
   <body>
     <header>
       <h1>Penguin Programmer</h1>
-    <img src="./logo.svg"></img>
+    <img alt="Logo. Thanks to Larry Ewing, Simon Budig and Garrett LeSage for making the penguin. Source: https://commons.wikimedia.org/wiki/File:Tux.svg" src="./logo.svg" />
     <nav class="menu">
       <ul>
 	<li><a href="https://jappieklooster.nl/pages/portfolio.html">Portfolio</a></li>
@@ -233,7 +227,6 @@
 	<li><a href="https://jappieklooster.nl/files/2019/resume-may-en.pdf">CV</a></li>
       </ul>
     </nav>
-
     <span onClick="setText('nl')">🇳🇱 Dutch</span> - 
     <span onClick="setText('en')"> 🇦🇺 English</span>
     </header>
@@ -292,27 +285,35 @@
       </blockquote>
       <p id="robustBlurp">
       </p>
-      <h2>Tevreden klanten 😊</h2>
-      <h3>W. van der Meer en Zonen B.V.: VKI formulier en uitbreiden trees</h3>
-      Dit project is nog in volle gang. Maar de basis staat al.
-      Het VKI formulier is een formulier dat voor elke lading kippen
-      bij de autoriteiten moet worden ingeleverd.
+      <h2 id="happy"></h2>
+      <h3 id="happyWzonen"></h3>
+      <p>
+      Ik ben nog bezig met dit project.
+      Het VKI formulier is een formulier dat bij elke lading kippen
+      ingeleverd moet worden bij de autoriteiten.
 
       Het was altijd veel werk voor de slachterij om dit voor elkaar
       te krijgen.
       De boeren die het horen in te vullen maakten fouten, en
-      iemand op kantoor moest dat dan maar weer oplossen.
+      iemand op kantoor moest dat maar weer oplossen.
       Wat ik heb gedaan is dit formulier veranderen in een
-      website, wat het weg schrijft naar de trees database
-      (trees is het inhuis ERP systeem,
-      wat alle middelen in het bedrijf beheert).
-      Vervolgens word deze informatie omgezet in een pdf
-      en word die opgestuurd naar de autoriteiten.
-      Nu zijn alle formulieren altijd correct, omdat de website
-      geen incorrecte toelaat en worden er uren per
-      week gespaard aan administratie.
+      website, wat het formulier weg schrijft naar de trees database.
+      Trees is het zelf ontwikkelde systeem wat praktisch alles
+      in het bedrijf bijhoud.
+      Nadet het in de database staat
+      kunnen werknemers de informatie omzetten in een pdf,
+      en dit word die opgestuurd naar de autoriteiten.
 
-      <h3>Loterij spel: Schijt je rijk</h3>
+      Nu zijn alle formulieren altijd correct, omdat de website
+      de boeren helpt met het invullen van een juist formulier. 
+      Er word dus significant bespaart op adminsitratie.
+
+      Naast het VKI formulier heb ik ook het Trees systeem verbeterd.
+      Dit kwam vaak neer op het aanpassen van database interactie.
+      Tot slot heb ik gezord voor een extra test database, zodat
+      we op een veilige manier nieuwe code kunnen uittesten.
+      </p>
+      <h3 id="happyShit">Loterij spel: Schijt je rijk</h3>
       <p>
       De supporters Vereniging van
       <a href="https://www.vvruinen.nl/supportersvereniging/welkom-bij-de-supportersvereniging-vv-ruinen.html">
