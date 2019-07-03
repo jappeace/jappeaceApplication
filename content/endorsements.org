@@ -11,6 +11,13 @@ I guess its a +hall+ wall of fame of sorts except it has zero prestige.
 It also serves as a kindoff reminder of stuff I used to like.
  
 * Beauty
+** A work of art
+   https://aphyr.com/posts/342-typing-the-technical-interview
+   I'm envious if the writing style in that blog post.
+   It weaves together some extremely advanced type level programming
+   with a funny narrative.
+   I hope that I could produce this kind of writing in the future too.
+
 ** Wallpapers
 http://www.erikjohanssonphoto.com/
 I used several images as wallpapers from this guy, at the time I couldn't
