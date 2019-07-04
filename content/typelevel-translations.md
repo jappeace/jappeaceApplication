@@ -1,15 +1,18 @@
 Title: Type level translations
 Date: 2019-07-03 20:30
-Category: story
+Category: tools
 OPTIONS: toc:nil
-Tags: test, reddit, project, comment
+Tags: translate, haskell, 
 status: draft
 
-People used to claim langauge was a mere value, nonsense I say!
-Expressed as type a sentence will be inhabited and thus translated.
+People claim langauge is a mere value, nonsense I say!
+Obviously langauge is a type, sentences are types,
+and their translations are mere inhabitations of said types.
 In other words, if you don't translate,
 your program won't compile [^extract].
-This is very usefull for me personally.
+This is very usefull for my startup idea,
+and it also allows me to share components while not having
+to share my entire langauge sumtype.
 Anyway this is the concrete api I want:
 
 [^extract]:
@@ -138,7 +141,12 @@ I just copy whatever spells servant does
 and put it in a different context.
 
 
-## Type level printf
+# Type level printf
+I feel this is the 'killer' idea, combining
+this type level magic with printf capabilites.
+The issue is that the [symbols](http://hackage.haskell.org/package/symbols)
+package only does ascii.
+And if you want 
 
 My little api has problems.
 It's a bit of a pain to add variables with Var.
