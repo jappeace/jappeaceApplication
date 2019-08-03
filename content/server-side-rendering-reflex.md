@@ -4,6 +4,7 @@ Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, servant, tutorial
 subreddit: haskell programming reflexfrp
+status: draft
 Reflex is a single page app framework written in Haskell compiled to Javascript.
 But it’s also capable of doing server side rendering in html.
 This makes load times very fast[^brag] and allows the browser to display the app very quickly. 
