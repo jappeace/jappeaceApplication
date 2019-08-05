@@ -79,8 +79,7 @@ PLUGIN_PATHS = ["./pelican-plugins"]
 PLUGINS = [
     'assets',
     'org_reader',
-    'minify',
-    'reddit_poster'
+    'minify'
 ]
 
 def regex_replace(string, find, replace):
