@@ -6,7 +6,7 @@
   
 + Check title to copy
 + https://reddit.com/r/jappie
-    + Cross post in whatever is relevant
+    + Cross post in whatever is relevant, eg haskell programming reflex nixos
 + https://linkedin.com
 + https://facebook.com
 + https://twitter.com
