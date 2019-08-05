@@ -40,13 +40,13 @@ jump trough some oddly-shaped,
 [MTL](http://hackage.haskell.org/package/mtl) flavoured,
 hoops[^hoops].
 Doing this is not much harder than writing a regular reflex app.
-Jumping trough these also solves handling
+Jumping trough these solves handling
 browser native primitives,
 such as XHR calls.
 This is done
 with help of [prerender](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Prerender.html#v:prerender).
 Which is also the key to displaying authenticated content fast,
-but we have to rewire the the initial app state.
+but we have to rewire the the initial app state to do that.
 Fortunately this rewiring caused the initial state management to become more elegant
 then it was in the
 [authentication](https://jappieklooster.nl/authentication-in-reflex-servant.html)
@@ -63,7 +63,7 @@ We need to get rid of
 [WidgetMonad](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/src/Reflex.Dom.Old.html#MonadWidgetConstraints)
 and replace it with the underlying builders.
 We do this because the WidgetMonad has a nasty equality constraint
-on GhcjsDomSpace that prevents the use of staticRender:
+on GhcjsDomSpace that prevents the use of `renderStatic`:
 
 ```haskell
 type MonadWidgetConstraints t m =
@@ -81,7 +81,7 @@ A good strategy is replacing it with
 and add more constraints based on compiler requests.
 MTL monads push outwards. That is to say,
 the low level widgets determine the
-constraint of the higher level widgets.
+constraints of the higher level widgets.
 
 Unfortunately this is not the only place for that equality constraint.
 The input and textarea widgets indirectly cause this constraint
@@ -174,7 +174,7 @@ To add it to servant we make an authenticated entry point, which returns
 as a `ByteString`.
 Because it's authenticated we can choose what to serve.
 The authenticated app, if the user has the permission, or
-the public site, if the user doesn't have those.
+the public site, if the user doesn't have that.
 It looks like this:
 
 ```haskell
@@ -224,14 +224,14 @@ The result behaves roughly like this:
 ```html
 <!-- Static dom builder environment (server) --> 
 	<script id="Text.Text" type="application/json">
-	encode a
+		<?php encode a ?>
 	</script>
 <!-- GHCJS environment (browser) -->
 	JSON.parse(document.getElementById("Text.Text"));
 ```
 Of course the JavaScript will look completely different
 and the result is put in a dynamic.
-But the end result is the same, the server encodes the JSON
+But the resulting behavior is the same, the server encodes the JSON
 and the client will decodes it giving us the app state from the server
 without additional requests.
 Under the hood `prerender` figures out if we need to read or write.
@@ -258,7 +258,7 @@ We always get an `IniState`,
 but we make sure to first put it in `writeReadDom`.
 This ensures that the `IniState` is the actual `IniState` from
 the server and not the one we hardcoded
-in the executable to make the compiler happy.
+in the executable to make the compiler happy[^nohappy].
 This `iniDyn` then gets used for the `loginWidget` which returns a
 `loginEvt`.
 If the event fires it has a user,
@@ -266,8 +266,16 @@ with which we can display the `authenticatedWidget`.
 This is done with help of `holdEvent`.
 Note that if no event is received, no authentication is done.
 `loginAttr` will however become hidden as soon as there is a `loginEvt`,
-which will hide the login form.
+hiding the login form.
 The login widget itself looks like this now:
+
+[^nohappy]: I don't know of a type safe way around this inital state problem.
+          Note that the JavaScript loading by itself is also not type safe,
+		  a `URI` is used.
+		  With that in mind we can kind off consider this the 'edge'
+		  of the system.
+	
+
 ```haskell
 
 loginWidget :: (AWidget js t m) => Dynamic t IniState -> m (Event t User)
@@ -284,7 +292,7 @@ Compared to the [previous blogpost](https://jappieklooster.nl/authentication-in-
 we got rid of `autoLogin` and use the `IniState` instead.
 The post build event is used to sample the current value of `userDyn`.
 This ensures a user event fires if there is one available.
-This event mechanism also works for static rendering.
+That mechanism also works for static rendering.
 
 # Conclusion
 Loading times was one of reflex major weaknesses and this blog post discussed how to
@@ -302,4 +310,4 @@ seriously consider doing this.
 + [Prerender on hackage](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Prerender.html)
 + [Render static on hackage](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Builder-Static.html#v:renderStatic)
 
-[^prerender]: Special thanks to lumie for pointing this out, saving me a bunch of time.
+[^prerender]: Special thanks to lumie for pointing this out.
