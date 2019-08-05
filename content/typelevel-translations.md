@@ -183,3 +183,60 @@ it seems way faster with a vector, I believe my implementation is just
 linear time.
 )
 
+
+# printf safe
+The printf safe package has a api taht doesn't do the symbol interpertation
+and therefore works with utf8,
+so I attempted to use that.
+
+What I wanted was a type family kindoff like this:
+
+```haskell
+type family Msg lang (a :: [Format]) :: [Format]
+type instance Msg English a = a
+type instance Msg Dutch ("okay" % "") = "ok" % ""
+type instance Msg Dutch ("Give me " % Int $ "pizzas") = "geef me " % Int % "pizzas"
+```
+
+This alows the moving of the types in the strings.
+For example:
+```haskell
+type instance Msg Dutch ("Give me " % Int $ "pizzas") = "geef me zoveel pizzas: " % Int 
+```
+I'd have to put a constraint in place to ensure the resulting function would get the same positional order in the
+arguments,
+otherwise using a different langauge could cause compile errors.
+Or get rid of positional application all together somehow, type level sets? I hear purescript does that sortoff.
+
+
+However I ran into a snag as the compoiler doesn't allow type family applications within
+type [families](https://gitlab.haskell.org/ghc/ghc/issues/3485).
+Giving me this error:
+
+```
+src/Raster/Common/Lang/Tdsl.hs:114:15: error:
+    • Illegal type synonym family application in instance: "okay" % ""
+    • In the type instance declaration for ‘Msg'’
+    |
+114 | type instance Msg' Dutch ("okay" % "") = "ok" % ""
+    |               ^^^^
+```
+
+I'm pretty sure GHC is just being to strict here (or it may not be implmented).
+
+
+# The easy way out
+
+Okay I'll settle for the original idea but I'll 'borrow' the type [safe printf api](http://hackage.haskell.org/package/printf-safe-0.1.0.1/docs/Text-Printf-Safe.html).
+It's pretty much what I want.
+
+So we construct the function first, and then do translation later.
+This means our type class will push a langauge argument down untill it encounters 
+symbols, individual symbols need to be translated
+which is unfurtonate because now you'll get these little
+translation chuncks,
+it's very re-usable but not in the good kind
+because often you need to change these little parts per langauge depending on context.
+However, this api is significantly better than what I'm doing now,
+and I believe better than anything out there.
+Just because there is practically 0 cost to doing inernationalization this way.
