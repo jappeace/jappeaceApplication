@@ -10,10 +10,10 @@ Obviously langauge is a type, sentences are types,
 and their translations are mere inhabitations of said types.
 In other words, if you don't translate,
 your program won't compile [^extract].
-This is very usefull for my startup idea,
+This is very usefull for my [startup idea](https://raster.click),
 and it also allows me to share components while not having
 to share my entire langauge sumtype.
-Anyway this is the concrete api I want:
+This is the concrete API I want:
 
 [^extract]:
 	Program messages as types can be extracted
@@ -25,20 +25,51 @@ Anyway this is the concrete api I want:
 	to the entire program just to collect messages that are known at compile time.
 
 ```haskell
+type instance Msg English a = a
+type instance Msg Dutch "hello world" = "Hallo wereld"
 
-sent :: Text.Text
-sent = _t @"hello world" @English -- hello world
+hello :: Text.Text -- hello world
+hello = translate @"hello world" @English 
 
-sent_nl :: Text.Text
-sent_nl = _t @"hello world" @Dutch -- hallo wereld
+hello_nl :: Text.Text -- hallo wereld
+hello_nl = translate @"hello world" @Dutch 
+```
+In goes a [symbol](ghc sybmol, ponies.io?) and a token for langauge,
+the langauge is inserted after the fact so
+we can use a reader monad.
 
-sent_cn :: Text.Text
-sent_cn = _t @"hello world" @Chinese -- 你好，世界
+Formatting is also handled by [I18N](package).
+It offers a mechanism for placing varaibles within your text,
+allowing translaters to move them around.
+I haven't completely mimiced that behavior, but,
+we can do formating:
 
+```haskell
+watch :: Integer -> Text.Text -- Hi number %d how are you?
+watch = translate @("Hi number" % AsShow Integer % "how are you?") @English 
+
+type instance Msg Dutch "Hi number" = "Hallo nummer"
+type instance Msg Dutch "how are you" = "hoe gaat het met jou?"
+
+watch_nl :: Integer -> Text.Text -- Hallo nummer %d hoe gaat het met jou?
+watch_nl = translate @("Hi number" % AsShow Integer % "how are you?") @Dutch
 ```
 
-I'm using datakinds, neatly explained [here](http://ponies.io/posts/2014-07-30-typelits.html).
+This api works well for most use pure cases.
+However, we needed to make this work with reflex.
+Which means both langauge and symbols need to be modeled in FRP.
+This is the function prototype we ended up with:
 
+```haskell
+txtArgDyn ::
+     forall fun t m env . (LangDom t m env)
+  => Dynamic t (KnownTrans fun)
+  -> Dynamic t (fun -> Text.Text)
+  -> m ()
+```
+
+I'm using datakinds,
+neatly explained [here](http://ponies.io/posts/2014-07-30-typelits.html).
 
 This is faster and more type safe:
 
@@ -183,8 +214,6 @@ it seems way faster with a vector, I believe my implementation is just
 linear time.
 )
 
-
-# printf safe
 The printf safe package has a api taht doesn't do the symbol interpertation
 and therefore works with utf8,
 so I attempted to use that.

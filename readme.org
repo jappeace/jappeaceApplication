@@ -1,10 +1,5 @@
 
-Got the insperation for a webise from 
-[[http://creativecommons.org/licenses/by-sa/4.0/][eevee]]
-
-So this is powered by [[http://docs.getpelican.com/en/stable/][pelican]].
-(and the org-mode plugin, org mode best mode)
-
+#+TITLE: Source of https://jappieklooster.nl
 
 * TODO website extensions
 
@@ -106,3 +101,11 @@ The fix is to delete it as done in: https://github.com/jappeace/pelican-plugins/
 buckets.
 
 https://analytics.google.com/analytics/web/
+
+* Atribution
+Got the insperation for a webise from 
+[[http://creativecommons.org/licenses/by-sa/4.0/][eevee]]
+
+So this is powered by [[http://docs.getpelican.com/en/stable/][pelican]].
+(and the org-mode plugin, org mode best mode)
+
