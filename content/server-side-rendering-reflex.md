@@ -20,7 +20,7 @@ on both the frontend as well as the backend.
 The backend will create a static HTML page,
 whereas the frontend will be a JavaScript client.
 The browser can display this HTML content very fast without having to
-interpret JavaScript client first.
+interpret any JavaScript.
 This is where all the speed gain comes from. [^server]
 JavaScript developers call this technique [‘isomporhic’](https://medium.com/capital-one-tech/why-everyone-is-talking-about-isomorphic-universal-JavaScript-and-why-it-matters-38c07c87905)[^category]
 JavaScript.
@@ -33,8 +33,6 @@ I found it surprisingly easy, and the results very impressive.
 		speed gains by doing page caching.
 [^category]:So it’s not isomorpism categorical terms, but JavaScript terms.
 
-The endpoint already knows trough cookies if someone is logged in,
-we just need to insert that app state into the document.
 The [renderStatic](http://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Builder-Static.html#v:renderStatic)
 function does the HTML rendering.
 However to use it we need to 
@@ -42,20 +40,21 @@ jump trough some oddly-shaped,
 [MTL](http://hackage.haskell.org/package/mtl) flavoured,
 hoops[^hoops].
 Doing this is not much harder than writing a regular reflex app.
-Jumping trough these also solves how how to handle
+Jumping trough these also solves handling
 browser native primitives,
 such as XHR calls.
 This is done
 with help of [prerender](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Prerender.html#v:prerender).
-Which also is the key to displaying authenticated content fast,
+Which is also the key to displaying authenticated content fast,
 but we have to rewire the the initial app state.
-Which was done in 
-the [reference project](https://github.com/jappeace/awesome-project-name/tree/prerender)
-and which will be discussed in this post.
 Fortunately this rewiring caused the initial state management to become more elegant
 then it was in the
 [authentication](https://jappieklooster.nl/authentication-in-reflex-servant.html)
 post.
+
+
+The source code is available in the 
+[reference project](https://github.com/jappeace/awesome-project-name/tree/prerender).
 
 [^hoops]: I figured out all this stuff on [stream](https://www.youtube.com/channel/UCQxmXSQEYyCeBC6urMWRPVw?view_as=subscriber)
 
@@ -79,14 +78,14 @@ instance MonadWidgetConstraints t m => MonadWidget t m
 
 A good strategy is replacing it with 
 [DomBuilder](http://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Builder-Class.html#t:DomBuilder)
-and add more constraint based on compiler requests.
-MTL monads push outwards, that's to say,
-the low level components determine the
-constraint of the higher level components.
+and add more constraints based on compiler requests.
+MTL monads push outwards. That is to say,
+the low level widgets determine the
+constraint of the higher level widgets.
 
 Unfortunately this is not the only place for that equality constraint.
-The input and textarea widgets inderectly cause this constraint
-to because of their return types.
+The input and textarea widgets indirectly cause this constraint
+too because of their return types.
 For example in input:
 
 ```haskell
@@ -98,12 +97,13 @@ data TextInput t
 		}
 ```
 
-There is no direct equality directly constraint,
-but get’s asserted anyway because of
+There is no direct equality constraint,
+but it gets asserted anyway because of
 [functional dependencies](https://wiki.haskell.org/Functional_dependencies).
-However I made an alternative in the bulmex library, in which I just
+However I made an alternative to both these widgets in the Bulmex library.
+In which I just
 copied the [original](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Widget-Input.html)
-and removed the constraining records.
+and removed the constraining records from the result types.
 They can be found
 [here](https://hackage.haskell.org/package/bulmex-2.0.0/docs/Reflex-Bulmex-Input-Polymorphic.html).
 
@@ -115,10 +115,10 @@ In case of the client we use a JavaScript executable entry point
 and get a GHCJS DOM environment.
 In case of the server we use a servant endpoint as entry point and get a static
 DOM builder environment.
-We need to tell reflex what to do when we actually need to access the GHCJS environment.
+When the GHCJS environment is accessed reflex needs to know what to do in the other environment and vice versa.
 In the browser for example we’ll happily do XHR calls,
-but when doing server side rendering we can simply ignore the request.
-This use case between environments is handled by [prerender](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Prerender.html)[^prerender]:
+but when doing server side rendering we can simply ignore the request[^prerender].
+This use case between environments is handled by [prerender](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Prerender.html):
 
 ```haskell
 prerender :: m a
@@ -135,7 +135,7 @@ the second one has access to the GHCJS DOM environment.
 The resulting value will be captured in a dynamic and can be used by the
 shared code.
 
-Now we can replace all servant-reflex calls with prerender calls,
+Now we can enhance all servant-reflex calls with prerender calls,
 to make it do nothing in the static environment and do the XHR calls on the GHCJS dom environment.
 For example the `postLogin` function from the [authentication blogpost](https://jappieklooster.nl/authentication-in-reflex-servant.html)
 now looks like:
@@ -148,8 +148,8 @@ postLogin :: (DomBuilder t m, Prerender js t m)
 postLogin dd yy = fmap switchDyn $ prerender (pure never) $ postLogin' dd yy
 ```
 
-Here `postLogin'` is the generated endpoint from servant.
-In case of server StaticDomBuilder environment we do nothing never
+Here `postLogin'` is the generated endpoint from [servant-reflex](https://hackage.haskell.org/package/servant-reflex).
+In case of a server StaticDomBuilder environment we do nothing never
 `(pure never)`[^side],
 in case of a GHCJS DOM environment we do the `postLogin'` function.
 The fmap switchDyn part is to get rid of the dynamic,
@@ -172,9 +172,9 @@ statically rendered HTML.
 To add it to servant we make an authenticated entry point, which returns
 [HTML](http://hackage.haskell.org/package/servant-fiat-content-1.0.0/docs/Servant-HTML-Fiat.html)
 as a `ByteString`.
-Because it's authenticated we can choose what to serve,
-the authenticated app if the user has the permission or
-the public site if the user doesn't have those.
+Because it's authenticated we can choose what to serve.
+The authenticated app, if the user has the permission, or
+the public site, if the user doesn't have those.
 It looks like this:
 
 ```haskell
@@ -183,7 +183,7 @@ type Webservice = ...
       ...
 ```
 
-In the previous blogpost we'd simply return a status code '401 unauthorized'.
+In the previous blogpost we'd simply return a '401 unauthorized' status code.
 Servant auth allows us to decide how to respond.
 Which we can see in the implementation:
 
@@ -199,11 +199,11 @@ We wrap it around in [`htmlWidget`](https://hackage.haskell.org/package/bulmex-2
 which has [`HeadSettings`](https://hackage.haskell.org/package/bulmex-2.0.0/docs/Reflex-Bulmex-Html.html#t:HeadSettings)
 to load the JavaScript client as a simple [`URI`](https://hackage.haskell.org/package/network-uri-2.6.1.0/docs/Network-URI.html#t:URI).
 The decision of what to show is completely pushed into the reflex code,
-the only thing we do at server side is give it the IniState.
-Next we'll discuss how the reflex app makes decisions in this environment.
+the only thing we do at server side is give it the `IniState`.
+Next we'll discuss how the reflex app decides what to show in this environment.
 
 # Reflex App
-So now we have an `IniAppState` for the app,
+So now we have an `IniState` for the app,
 we can read or write it to the DOM depending on environment.
 I wrote a function for that.
 On the app side this is done by [`writeReadDom`](https://hackage.haskell.org/package/bulmex-2.0.0/docs/Reflex-Bulmex-Html.html#v:writeReadDom):
@@ -219,8 +219,22 @@ writeReadDom ::
 ```
 
 The first value is the HTML id,
-the second one is the appstate as received by it’s respective endpoint.
-Under the hood prerender figures out if we need to read or write.
+the second one is the app state as received by it’s respective endpoint.
+The result behaves roughly like this:
+```html
+<!-- Static dom builder environment (server) --> 
+	<script id="Text.Text" type="application/json">
+	encode a
+	</script>
+<!-- GHCJS environment (browser) -->
+	JSON.parse(document.getElementById("Text.Text"));
+```
+Of course the JavaScript will look completely different
+and the result is put in a dynamic.
+But the end result is the same, the server encodes the JSON
+and the client will decodes it giving us the app state from the server
+without additional requests.
+Under the hood `prerender` figures out if we need to read or write.
 All the client needs to do is provide said value,
 in case of the [example app](https://github.com/jappeace/awesome-project-name/tree/prerender)
 this is just a `Maybe User`.
@@ -240,15 +254,19 @@ authenticatedWidget = ...
 
 ```
 
-Both entry points provide the IniState.
-However we make sure to first put it in writeReadDom,
-so that we can use it in the shared code.
-This iniDyn then gets used for the loginWidget which produces a
-loginEvt.
-If it was successful we'll get a user,
-with which we can display the authenticatedWidget.
-Which is done with help of holdEvent.
-
+We always get an `IniState`,
+but we make sure to first put it in `writeReadDom`.
+This ensures that the `IniState` is the actual `IniState` from
+the server and not the one we hardcoded
+in the executable to make the compiler happy.
+This `iniDyn` then gets used for the `loginWidget` which returns a
+`loginEvt`.
+If the event fires it has a user,
+with which we can display the `authenticatedWidget`.
+This is done with help of `holdEvent`.
+Note that if no event is received, no authentication is done.
+`loginAttr` will however become hidden as soon as there is a `loginEvt`,
+which will hide the login form.
 The login widget itself looks like this now:
 ```haskell
 
@@ -263,11 +281,10 @@ loginWidget iniDyn = do
     userDyn = unpackUser <$> iniDyn
 ```
 Compared to the [previous blogpost](https://jappieklooster.nl/authentication-in-reflex-servant.html)
-we got rid of autoLogin and use the `IniState` instead.
+we got rid of `autoLogin` and use the `IniState` instead.
 The post build event is used to sample the current value of `userDyn`.
-This makes sure we get the event on the static rendering side of things.
-
-For machine level precision I refer to the [source code](https://github.com/jappeace/awesome-project-name/tree/prerender).
+This ensures a user event fires if there is one available.
+This event mechanism also works for static rendering.
 
 # Conclusion
 Loading times was one of reflex major weaknesses and this blog post discussed how to
