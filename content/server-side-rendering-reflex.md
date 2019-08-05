@@ -1,5 +1,5 @@
 Title: Reflex server side html rendering
-Date: 2019-08-04 15:25
+Date: 2019-08-05 19:05
 Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, servant, tutorial

@@ -1,6 +1,17 @@
 
 #+TITLE: Source of https://jappieklooster.nl
 
+
+* Deploy checklist
+  
++ Check title to copy
++ https://reddit.com/r/jappie
+    + Cross post in whatever is relevant
++ https://linkedin.com
++ https://facebook.com
++ https://twitter.com
+
+
 * TODO website extensions
 
 + Reddit comments into static site
