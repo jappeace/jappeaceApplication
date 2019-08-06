@@ -310,6 +310,6 @@ seriously consider doing this.
 + [Official reflex prerender docs](http://docs.reflex-frp.org/en/latest/reflex_dom_docs.html#prerendering-server-side-rendering)
 + [Prerender on hackage](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Prerender.html)
 + [Render static on hackage](https://hackage.haskell.org/package/reflex-dom-core-0.5/docs/Reflex-Dom-Builder-Static.html#v:renderStatic)
-+ [Obelisk does already so SSR](https://github.com/obsidiansystems/obelisk)
++ [Obelisk does already do SSR out of the box](https://github.com/obsidiansystems/obelisk)
 
 [^prerender]: Special thanks to lumie for pointing this out.
