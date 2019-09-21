@@ -24,16 +24,3 @@ and in a fairly elegant manner as well.
 	This will evict the cache on the client side.
 	But also make that result tractable, we know where it came from.
 
-Today we'll discuss a nix based solution,
-which pushes the nix store to the browser.
-We take the hash of the store path
-and put this in the file name of the asset.
-This results in a very reliable and efficient
-cache eviction scheme.
-If any build input changed, source code, compilers etc,
-the name also changes.
-
-Nix is pretty much langauge independent. 
-In fact I'm using a haskell program that gets
-compiled to javascript as an  example.
-So this obviously will also work for javascript.
