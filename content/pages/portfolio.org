@@ -56,6 +56,7 @@ I'm currently working on this as much as I can.
 At this point the site itself is much more up to date than this page.
 Automated planning is for example possible.
 The picture below is pretty dated at this point.
+Progress is occasionally reported on my [[https://www.youtube.com/playlist?list=PLx17y2Rjcl4Fhhbp7DPtPoZ8i4oYdZ_kG][youtube channel]].
 
 #+CAPTION: The raster project
 #+LABEL: fig:raster
@@ -131,6 +132,16 @@ SVG generator has to be made.
 #+LABEL: fig:distrowatch
 #+CAPTION: Sample of svg output of this program, left the program, right the original.
 [[../images/2018/distrowatch1graph1svg.jpg]]
+
+* 5ol
+| Type   | Hobby  |
+| Status | Active |
+| Source | [[https://github.com/jappeace/5ol][github]] |
+
+  A space 4x strategy game in spcae!
+  This project was intended to explore the concurrent properties of rust,
+  as well as to create a fun game.
+  Recently I started streaming making this project work on my [[https://www.youtube.com/playlist?list=PLx17y2Rjcl4EcL2DR-yXV5-DhpIMLj8se][youtube channel]].
 
 * Schijt je rijk
 
@@ -243,6 +254,7 @@ Yes Scala was combined with gradle, and it worked well.
 | Type   | School project        |
 | Status | Finished successfully |
 | End    | 2017                  |
+| Source | [[https://github.com/DrSLDR/mgmag-proj][github]]                |
 
 For the course 'games and agents' Jappie worked in a team to re-implement a board
 game so we could study various AI methodologies upon it.
@@ -423,6 +435,8 @@ Uw keuze:
 
 #+END_SRC
 
+
+
 * Projects still to be added
   These are some projects that should be added to this page.
   However for various reasons they are more hard to do.
@@ -433,12 +447,11 @@ Uw keuze:
 3. game programming minor: [[https://github.com/jappeace/hw-isai][3d stuff]]
 4. Android app: city to city carpooling
 5. Android app: pick up taxi
-6. [[https://github.com/jappeace/5ol][5ol]]
-7. Iceberg (argarius)
-8. [[https://github.com/jappeace/grails-kookboek][Kookboek]]
-9. [[https://github.com/jappeace/Slick2DRPG][Pokemon implementation]] with GDX and some Scala.
+6. Iceberg (argarius)
+7. [[https://github.com/jappeace/grails-kookboek][Kookboek]]
+8. [[https://github.com/jappeace/Slick2DRPG][Pokemon implementation]] with GDX and some Scala.
    (Although I forked this from a friend).
-10. Playing around with 3D for AI [[https://github.com/jappeace/hw-isai][homework]]
+9. Playing around with 3D for AI [[https://github.com/jappeace/hw-isai][homework]]
 
 #  LocalWords:  distrowatch1graph1svg
 
