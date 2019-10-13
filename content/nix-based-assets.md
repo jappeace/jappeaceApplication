@@ -9,6 +9,7 @@ With this technique one can trace back every dependency that
 was used for generating the asset.
 It's also fairly efficient with keeping the browser cache valid,
 and combines well with [server side rendering]({filename}/server-side-rendering-reflex.md).
+This brief blogpost will dive into how to do that.
 
 There are other solutions such as
 [webpack](https://webpack.js.org/guides/asset-management/)
@@ -24,3 +25,6 @@ and in a fairly elegant manner as well.
 	This will evict the cache on the client side.
 	But also make that result tractable, we know where it came from.
 
+
+```shell
+nix show-deriviation STOREPATHSHA
