@@ -2,6 +2,7 @@ TITLE: Nix based asset management
 DATE: 2019-04-18
 CATEGORY: technique
 Tags: devops, tools, linux, nix, nixos, nixops, nginx
+status: draft
 subreddit: nixos
 
 [Nix](https://nixos.org/) can be used for efficient [reproducible](https://en.wikipedia.org/wiki/Reproducible_builds) browser caching.
