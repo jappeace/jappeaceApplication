@@ -32,6 +32,14 @@ pay him so I guess I repay him by giving him some realestate on my website.
  I'm not running that.
 
 * Interesting
+
+** Tsoding
+   A [[https://www.twitch.tv/tsoding][streamer]] who makes a show of programming.
+   With the slogan 'coding for fun' he
+   traverses the programming landscape from
+   [[https://github.com/tsoding/HyperNerd][haskell]] to [[https://github.com/tsoding/wassm][assembly]] and
+   from [[https://github.com/tsoding/HyperNerd/blob/master/src/Markov.hs][markov chains]] to [[https://github.com/tsoding/grub-gamepad][grub drivers]].
+
 ** CGPGrey
 A youtuber, although I'm linking to his [[http://www.cgpgrey.com/][website]].
 He has some interesting videos (of which I know him),
