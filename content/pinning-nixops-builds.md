@@ -18,7 +18,7 @@ To pin a nixops deployment we create a shell[^alternative] from which we run nix
              you can run a different shell by providing the filename to the nix-shell command:
               `nix-shell nixops-shell.nix`
 
-```yaml
+```nix
 let
    pkgs = import ./pin.nix { };
 in
