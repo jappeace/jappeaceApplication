@@ -1,4 +1,4 @@
-TITLE: Ghcid for multi project builds
+TITLE: Ghcid for multi package projects
 DATE: 2019-10-17 21:30
 CATEGORY: tools
 Tags: build-tools, haskell
