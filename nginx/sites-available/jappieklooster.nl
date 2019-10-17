@@ -31,6 +31,7 @@ server {
 
 	# chatbot --> github dir
 	rewrite ^(/chatbot)$ https://github.com/jappeace/gaia redirect;
+	rewrite ^(/ghcid-for-multi-project-builds.html)$ https://jappieklooster.nl/ghcid-for-multi-package-projects.html redirect;
 	rewrite ^(/thesis)$ https://dspace.library.uu.nl/handle/1874/351701 redirect;
 
 	index index.html index.htm index.nginx-debian.html;
