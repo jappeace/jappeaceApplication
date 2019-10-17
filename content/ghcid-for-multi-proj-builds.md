@@ -33,15 +33,17 @@ unit tests.
 If your other project use additional dependencies you may need to add
 them to that test as well.
 
-However because I'm doing reflex I had to compile JavaScript after Ghcid
-typed checked everything. I also had some unit tests to run.
+However because I'm doing reflex,
+I had to compile JavaScript after Ghcid
+typed checked everything.
+I also had some unit tests to run.
 Luckily Ghcid supports both a run and a test flag.
 I simply used the `run` flag to run the tests and the `test`
 flag to start GHCJS compilation.
 Which brings us to this spell:
 
 ```bash
-    Ghcid -s "import Main" \
+    ghcid -s "import Main" \
         -c "make update-cabal && cabal new-repl" \
         -T ":! cd .. && make after-native-build" \
         --run test:unit
