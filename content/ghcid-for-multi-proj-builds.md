@@ -35,10 +35,10 @@ them to that test as well.
 
 However because I'm doing reflex I had to compile JavaScript after Ghcid
 typed checked everything. I also had some unit tests to run.
-Luckily Ghcid supports both a run and test flag.
+Luckily Ghcid supports both a run and a test flag.
 I simply used the `run` flag to run the tests and the `test`
 flag to start GHCJS compilation.
-I ended up with this spell:
+Which brings us to this spell:
 
 ```bash
     Ghcid -s "import Main" \
@@ -47,8 +47,9 @@ I ended up with this spell:
         --run test:unit
 ```
 
-The run flag can also be used to run your code.
-Because it's interpreted you get very fast feedback.
+The run flag can also be used to run your code if you don't have a weird
+GHCJS requirement like me.
+Running like that gives fast feedback because it's interpreted.
 
 # Conclusion
 This setup is an order of magnitude faster for debugging in my case.
