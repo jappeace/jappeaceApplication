@@ -10,7 +10,6 @@ When I tried [Ghcid](https://github.com/ndmitchell/ghcid)for a
 [reflex](http://hackage.haskell.org/package/reflex),
 it wouldn't rebuild on file change.
 This is because reflex has a multi project setup by default.
-
 Recently I found that it is possible to use
 [Ghcid](https://github.com/ndmitchell/Ghcid) for multi project builds.
 The trick is to create an executable that includes all the sources.
