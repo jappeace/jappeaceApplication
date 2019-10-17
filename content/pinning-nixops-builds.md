@@ -4,13 +4,17 @@ CATEGORY: tools
 Tags: build-tools, devops, nix
 OPTIONS: toc:nil
 
+
 ![Pinned nixops](/images/2019/pinned-nixos.png)
 
-[Nixops](https://nixos.org/nixops/) is an excellent tool for managing cloud deployments.
-However by default it will use your system configurations' [channels](https://github.com/NixOS/nixops/issues/736#issuecomment-333399151)
+On one machine my [Nixops](https://nixos.org/nixops/) builds and deploys, but on the other one it fails. Why?
+Isn't nix supposed to deliver [reproducible builds](https://www.software.ac.uk/blog/2017-10-05-reproducible-environments-nix)?
+Turns out nixops in uses by default it will use your system
+configurations' [channels](https://github.com/NixOS/nixops/issues/736#issuecomment-333399151)
 rather then a [pinned nix packages](https://vaibhavsagar.com/blog/2018/05/27/quick-easy-nixpkgs-pinning/).
-This will make your deployment different from whatever machine you're running it from.
 Which is not [why you're using nix](https://medium.com/@ejpcmac/about-using-nix-in-my-development-workflow-12422a1f2f4c).
+You want a reproducible build, in other words, either both machines fail for the same reason or both succeed.
+We will discuss how to do this for nixops in this post trough a pin.
 
 To pin a nixops deployment we create a shell[^alternative] from which we run nixops:
 [^alternative]: For my reflex project I simply made an alternative shell,
@@ -54,6 +58,8 @@ projects where we simply depend on the provided pin:
    pkgs = ((import ./reflex) { }).nixpkgs;
 ```
 
+# Conclusion
+In this post we discussed how to pin nixops builds.
 There are other ways to do pinning, which is
 described [here](https://discourse.nixos.org/t/nixops-pinning-nixpkgs/734).
 I found it hard to get a working solution from that thread, 

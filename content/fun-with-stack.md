@@ -2,7 +2,7 @@ Title: Fun with stack: Haskell dependency management
 Date: 2018-05-13 16:00
 Category: tools
 OPTIONS: toc:nil
-Tags: stack, haskell, programming
+Tags: stack, haskell, programming, build-tools
 subreddit: haskell programming
 
 ![Haskel stack logo](/images/2018/haskell-stack-logo.svg)

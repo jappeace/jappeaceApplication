@@ -1,47 +1,59 @@
-TITLE: GHCID for multi project builds
-DATE: 2019-09-06
+TITLE: Ghcid for multi project builds
+DATE: 2019-10-17 21:30
 CATEGORY: tools
-Tags: haskell build-tools
+Tags: build-tools, haskell
 OPTIONS: toc:nil
-status: draft
 
-It's possible to use ghcid for multiproject builds.
+![GHCID magic](/images/2019/fire.svg)
 
-The trick is to create an executable or test that includes all the sources.
-For example asuming a reflex style project:
+When I tried [Ghcid](https://github.com/ndmitchell/ghcid)for a
+[reflex](http://hackage.haskell.org/package/reflex),
+it wouldn't rebuild on file change.
+This is because reflex has a multi project setup by default.
+
+Recently I found that it is possible to use
+[Ghcid](https://github.com/ndmitchell/Ghcid) for multi project builds.
+The trick is to create an executable that includes all the sources.
+For example in [hpack](https://github.com/sol/hpack) style:
+
 ```yaml
 tests:
   unit:
     main:                Spec.hs
     source-dirs:
     - test
-    # including extra source dirs allows ghcid to watch
+    # including extra source dirs allows Ghcid to watch
     - src 
     - ../common/src
     - ../frontend/src
 ```
-Now this can be used as target for ghcid.
-By using a unit test you can also immediatly use this to run
-your unit tests.
 
-In my case I had to compile javascript after ghcid gave the okay,
-and run the tests.
-Luckily ghcid supports both a run and test command.
-I simply used run to run the tests and test to start javascript.
+Now Ghcid will watch all the sources.
+By targeting the test suite you can also immediately use this to run
+unit tests.
+If your other project use additional dependencies you may need to add
+them to that test as well.
+
+However because I'm doing reflex I had to compile JavaScript after Ghcid
+typed checked everything. I also had some unit tests to run.
+Luckily Ghcid supports both a run and test flag.
+I simply used the `run` flag to run the tests and the `test`
+flag to start GHCJS compilation.
 I ended up with this spell:
 
-```make
-ghcid:
-	nix-shell --run "ghcid -s \"import Main\" -c \"make update-cabal && cabal new-repl\" -T \":! cd .. && make after-native-build\" --run test:unit"
+```bash
+    Ghcid -s "import Main" \
+        -c "make update-cabal && cabal new-repl" \
+        -T ":! cd .. && make after-native-build" \
+        --run test:unit
 ```
 
-It can also run your code after finishing building,
-which is interpreted.
+The run flag can also be used to run your code.
+Because it's interpreted you get very fast feedback.
 
-This is an order of magnitude faster for debugging in my case.
-If I have a compile error it now notifies me instantatiously,
+# Conclusion
+This setup is an order of magnitude faster for debugging in my case.
+If I have a compile error it now notifies me instantaneously,
 whereas before it would take a second or two.
-And if I need to do a full build it takes about
-10 seconds, whereas before it was somewhwere around a minute
-or two.
-
+If I need to do a full build it takes about 10 seconds,
+whereas before it was somewhere around a minute or two.
