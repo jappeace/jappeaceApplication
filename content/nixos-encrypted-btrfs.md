@@ -2,7 +2,7 @@ Title: Nixos on encrypted btrfs
 Date: 2018-08-19 13:02
 Category: tools
 OPTIONS: toc:nil
-Tags: nix, nixos, btrfs, tools, linux
+Tags: nix, nixos, btrfs, tools, linux, devops
 subreddit: nixos linux
 
 Nixos is heroin for tinkerers.
