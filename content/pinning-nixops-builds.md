@@ -9,11 +9,12 @@ OPTIONS: toc:nil
 
 On one machine my [Nixops](https://nixos.org/nixops/) builds and deploys, but on the other one it fails. Why?
 Isn't nix supposed to deliver [reproducible builds](https://www.software.ac.uk/blog/2017-10-05-reproducible-environments-nix)?
-Turns out nixops in uses by default it will use your system
+Turns out nixops uses by default your system
 configurations' [channels](https://github.com/NixOS/nixops/issues/736#issuecomment-333399151)
 rather then a [pinned nix packages](https://vaibhavsagar.com/blog/2018/05/27/quick-easy-nixpkgs-pinning/).
 Which is not [why you're using nix](https://medium.com/@ejpcmac/about-using-nix-in-my-development-workflow-12422a1f2f4c).
-You want a reproducible build, in other words, either both machines fail for the same reason or both succeed.
+You want a reproducible build, in other words,
+either both machines fail for the same reason or both succeed.
 We will discuss how to do this for nixops in this post trough a pin.
 
 To pin a nixops deployment we create a shell[^alternative] from which we run nixops:
