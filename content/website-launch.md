@@ -31,7 +31,6 @@ By which I mean hosting costs (vps in my case) and domain name costs.
 I use pelican to create this site.
 It is a script for parsing text based content formats and generate html from
 them, so that you don't have to redefine the menu every blog post for example.
-I basically stole this idea from [eev.ee](eev.ee).
 So what happens it that you write your content in markdown,
 then you run the script which generates the static html for you.
 I tried setting up org, but had some problems so I'll use markdown first,
