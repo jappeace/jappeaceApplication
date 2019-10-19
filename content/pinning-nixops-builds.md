@@ -49,7 +49,7 @@ pinnedPkgs = hostPkgs.fetchFromGitHub {
 in
 import pinnedPkgs {
     # since I also use this for clients I don't want to have to care
-    config.allowUnfree = true; # took me to long to figure out
+    config.allowUnfree = true; # took me too long to figure out
 }
 ```
 
