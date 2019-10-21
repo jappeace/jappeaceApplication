@@ -71,7 +71,7 @@ This table just describes the commands needed for the intended partitioning.
 | Number | type | size           |
 |--------|------|----------------|
 |      1 | ef00 | +500M          |
-|      2 | 8200 | +$(SIZE_RAM+alittle)G |
+|      2 | 8200 | +$(SIZE_RAM+ a little)G |
 |      3 | 8300 | (rest of disk) |
 
 
@@ -81,15 +81,13 @@ the third will be everything else.
 We will encrypt everything else.
 With type `ef00` we will use UEFI for booting.
 Don't worry. nix will handle that, mostly. 
+Done. Onwards!
 [^optional]: This one is optional but allows hibernation.
            Which is very convenient for laptops.
            It can also make your system [more stable](https://askubuntu.com/questions/291378/do-we-still-need-swap-partitions-on-servers).
-
-You may want to setup a swap partition too.
-Swap files are [bad](https://wiki.archlinux.org/index.php/Btrfs#Swap_file)
-on BTRFS.
-Good luck with that.
-Done. Onwards!
+           Note that 
+           Swap files are [bad](https://wiki.archlinux.org/index.php/Btrfs#Swap_file)
+           on BTRFS.
 
 # Encryption
 We use `cryptsetup` for encryption.
@@ -147,17 +145,17 @@ Reverse explaining cargo culting behavior,
 this maybe a good idea.
 
 ```bash
-btrfs subvol create /mnt/var
 btrfs subvol create /mnt/home
-btrfs subvol create /mnt/tmp
-chmod 777 /mnt/tmp
 ```
 
-Here we create subvolumes below the nixos subvolume.
-This allows the btrfs backup tools to just backup the home directory.
-Or just the root directory ignoring `var`, `tmp` and `home`.
-That final `chmod` step is to resolve issues with applications.
-Pulseaudio for example doesn't work well if it can't write into `/tmp`.
+Setting up a subvolume for `home` allows btrfs based backups.
+I used too also make subvolumes for `tmp`[^cmod] and `var`,
+but I don't see the merit in that.
+
+[^cmod]: If you want a subvolume for /tmp, make sure to chmod it to 777
+        Otherwise various applications get upset.
+        Pulse audio for example doesn't work well if it can't write into `/tmp`.
+
 
 ```bash
 mkdir /mnt/boot
