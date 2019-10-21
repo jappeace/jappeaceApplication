@@ -1,5 +1,6 @@
 Title: Nixos on encrypted btrfs
 Date: 2018-08-19 13:02
+Modified: 2019-10-21 16:00
 Category: tools
 OPTIONS: toc:nil
 Tags: nix, nixos, btrfs, tools, linux, devops
@@ -70,13 +71,19 @@ This table just describes the commands needed for the intended partitioning.
 | Number | type | size           |
 |--------|------|----------------|
 |      1 | ef00 | +500M          |
-|      2 | 8300 | (rest of disk) |
+|      2 | 8200 | +$(SIZE_RAM+alittle)G |
+|      3 | 8300 | (rest of disk) |
 
 
-The first partition will be boot, and the second everything else.
+The first partition will be boot,
+the second swap[^optional],
+the third will be everything else.
 We will encrypt everything else.
 With type `ef00` we will use UEFI for booting.
 Don't worry. nix will handle that, mostly. 
+[^optional]: This one is optional but allows hibernation.
+           Which is very convenient for laptops.
+           It can also make your system [more stable](https://askubuntu.com/questions/291378/do-we-still-need-swap-partitions-on-servers).
 
 You may want to setup a swap partition too.
 Swap files are [bad](https://wiki.archlinux.org/index.php/Btrfs#Swap_file)
@@ -88,20 +95,20 @@ Done. Onwards!
 We use `cryptsetup` for encryption.
 Make sure to select the right partition.
 We do not want to encrypt the boot partition because then we can't boot.
-So if you followed above instructions it will be either `2` or `p2`
+So if you followed above instructions it will be either `3` or `p3`
 (depending on device type).
-We'll call it `2`.
+We'll call it `3`.
 
 ```bash
-cryptsetup luksFormat "$dev"2
-cryptsetup open "$dev"2 nixos-enc
+cryptsetup luksFormat "$dev"3
+cryptsetup open "$dev"3 nixenc
 ```
 
 The first command does the actual formatting,
 the second one opens up the formatted disk.
 You'll need to provide the right password in both cases.
 Choose one you can remember but is strong.
-Once decrypted the disk will be mapped to `/dev/mapper/nixos-enc`,
+Once decrypted the disk will be mapped to `/dev/mapper/nixenc`,
 note that we supplied that final part in the last command.
 
 # Formatting filesystems
@@ -109,13 +116,15 @@ Partitioning is a distinct step from setting up filesystems.
 
 ```bash
 mkfs.vfat -n boot "$dev"1
-mkfs.btrfs -L root /dev/mapper/nixos-enc
+mkswap "$dev"3
+swapon "$dev"3
+mkfs.btrfs -L root /dev/mapper/nixenc
 ```
 The boot partition will be `vfat` because [UEFI tells us to](https://wiki.archlinux.org/index.php/EFI_system_partition).
 The everything else partition will be `btrfs`,
 because why are you following this guide if not?
 Note that we point it at the mapped file,
-if the `"$dev"2`device were to be used directly we'd remove the encryption.
+if the `"$dev"3`device were to be used directly we'd remove the encryption.
 
 # Moutning and subvolumes
 Wouldn't it be nice to have subvolumes on your BTRFS?
@@ -123,10 +132,10 @@ This is not [cargo culted](https://en.wikipedia.org/wiki/Cargo_cult_programming)
 at all.
 
 ```bash
-mount -t btrfs /dev/mapper/nixos-enc /mnt/
+mount -t btrfs /dev/mapper/nixenc /mnt/
 btrfs subvol create /mnt/nixos
 umount /mnt
-mount -t btrfs -o subvol=nixos /dev/mapper/nixos-enc /mnt
+mount -t btrfs -o subvol=nixos /dev/mapper/nixenc /mnt
 ```
 
 First we create a nixos subvolume below the root subvolume,
