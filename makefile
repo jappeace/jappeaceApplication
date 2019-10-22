@@ -28,3 +28,6 @@ deploy: clean sync-git
 
 deploy-penguin:
 	rsync -avc --delete penguin/ root@$(REMOTE):/var/www/penguin.engineer/
+
+submodule:
+	git submodule sync
