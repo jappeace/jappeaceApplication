@@ -1,6 +1,7 @@
 Title: Pragmatic Haskell II: IO Webservant
 Date: 2018-06-27 22:00
 Category: tools
+Modified: 2019-10-24 18:34
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, servant, IO, pragmatic-haskell
 subreddit: haskell programming
@@ -409,5 +410,5 @@ to put certain functions in `IO` rather than the return type, one uses `liftIO`.
 `do` notation was also encountered, which makes working with monads easier.
 Now we can affect the world with our programs trough IO!
 
-The complete code can be found [here](https://github.com/jappeace/awesome-project-name/tree/simple-servent-setup).
+The complete code can be found [here](https://github.com/jappeace/awesome-project-name/tree/message-servant).
 In the future we shall attach this simple web server to a database.
