@@ -1,5 +1,6 @@
-
 #+TITLE: Source of https://jappieklooster.nl
+
+[[https://jappieklooster.nl/my-thesis.html][[[[[https://img.shields.io/badge/blog-jappieklooster.nl-lightgrey?style=for-the-badge]]]]]]
 
 
 * Deploy checklist
