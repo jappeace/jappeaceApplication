@@ -143,6 +143,9 @@ I wanted one that had high CPU but didn't care about the rest, this one found
 it:
 http://vps-list.cryto.net/index.php?action=list
 
+** Haskell blogposts
+   + [[https://kodimensional.dev/posts/2019-03-25-comonadic-builders][Comonads for builders]].
+   
 * Anime
   I watch way to much anime.
   Sometimes I encounter little gems, recorded here.
@@ -151,3 +154,13 @@ http://vps-list.cryto.net/index.php?action=list
    A beautifull juxtposition of childishness and despair.
    I don't want to say anything because I'll spoil it but give it a try,
    it's so worth it.
+   
+** Code geass
+   This was one of my first gateway anime drugs.
+   It's an excellent classic keeping you on the edge of the seat all the way.
+   All characters have good motivations and are believeable.
+
+** Soul eater
+   I especially liked the first season, it drags on for a bit
+   after that. But the theme around crazy-ness being the 
+   enemy is really appealing to me.
