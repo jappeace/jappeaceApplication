@@ -18,7 +18,7 @@ For this new job Jappie was asked to write a short bio,
 which he thought would be a nice addition to this blog post as it explains his
 current situation quite well:
 
-> Jappie joins [Daisee](daisee.com) as Software Engineer,
+> Jappie joins [Daisee](https://daisee.com) as Software Engineer,
 > he is quite excited about working with Haskell and practical AI.
 > 
 > In his previous role Jappie was a Full stack developer at OpenLearning.
