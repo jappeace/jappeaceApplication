@@ -1,3 +1,4 @@
 [submodule "pelican-plugins"]
 	path = pelican-plugins
-	url = git@github.com:getpelican/pelican-plugins.git
+	url = git@github.com:jappeace/pelican-plugins.git
+	branch = jappie
