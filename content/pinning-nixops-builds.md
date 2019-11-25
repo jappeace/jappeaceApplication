@@ -1,5 +1,6 @@
 TITLE: Pinning nixops builds
 DATE: 2019-10-17 17:35
+Modified: 2019-11-25 23:10
 CATEGORY: tools
 Tags: build-tools, devops, nix
 OPTIONS: toc:nil
