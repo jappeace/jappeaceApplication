@@ -1,5 +1,6 @@
 TITLE: Pinning nixops builds
 DATE: 2019-10-17 17:35
+Modified: 2019-11-25 23:10
 CATEGORY: tools
 Tags: build-tools, devops, nix
 OPTIONS: toc:nil
@@ -25,7 +26,7 @@ To pin a nixops deployment we create a shell[^alternative] from which we run nix
 
 ```nix
 let
-   pkgs = import ./pin.nix { };
+   pkgs = import ./pin.nix;
 in
 
   pkgs.stdenv.mkDerivation{
@@ -42,13 +43,11 @@ hostPkgs = import <nixpkgs> {};
 pinnedPkgs = hostPkgs.fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs-channels";
-    # nixos-unstable as of 15.06.2019
     rev = "1601f559e89ba71091faa26888711d4dd24c2d4d";
     sha256 = "0iayyz9617mz6424spwbi9qvmcl8hiql42czxg8mi4ycq4p1k0dx";
 };
 in
 import pinnedPkgs {
-    # since I also use this for clients I don't want to have to care
     config.allowUnfree = true; # took me too long to figure out
 }
 ```

@@ -18,9 +18,9 @@ exec(compile(filedata,  filename, 'exec'))
 PLUGINS += ['optimize_images']
 
 
-filename = "./redditconf.py"
-filedata = open(filename, "rb").read()
-exec(compile(filedata,  filename, 'exec'))
+# filename = "./redditconf.py"
+# filedata = open(filename, "rb").read()
+# exec(compile(filedata,  filename, 'exec'))
 
 SITEURL = "https://jappieklooster.nl"
 FEED_DOMAIN = SITEURL
