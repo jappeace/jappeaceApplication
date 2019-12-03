@@ -1,5 +1,6 @@
 REMOTE=jappieklooster.nl
 clean:
+	chmod -R +rw "output"
 	# clean output dir
 	rm -R "output/" || true
 	mkdir -p "output"
