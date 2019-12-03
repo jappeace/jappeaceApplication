@@ -1,10 +1,11 @@
 REMOTE=jappieklooster.nl
 clean:
+	chmod -R +rw "output"
 	# clean output dir
 	rm -R "output/" || true
 	mkdir -p "output"
 	# kill pelican server if it's running (cause it needs to reload output)
-	./kilserver.sh
+	./kilserver.sh || true
 
 run: clean
 	pelican -D # --ignore-cache # I have no idea what this cache does
@@ -16,9 +17,13 @@ sync-git:
 	git diff-index --quiet HEAD -- || (echo "branch dirty, commit first" && false)
 	git push &
 
+talks: 
+	nix-build ./talks/presentation.nix
+	cp -fLR result output/talks
+
 deploy-root: sync-git
 	rsync -avc --delete output/ root@$(REMOTE):/var/www/jappieklooster.nl/
-deploy: clean sync-git
+deploy: clean sync-git talks
 	cp root/* output/
 	rsync -avc --delete nginx/ root@$(REMOTE):/etc/nginx/
 	ssh root@$(REMOTE) "systemctl restart nginx"
@@ -31,3 +36,5 @@ deploy-penguin:
 
 submodule:
 	git submodule sync
+
+.PHONY: talks

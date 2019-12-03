@@ -1,0 +1,240 @@
+#+TITLE: Algebraic Data Types 
+#+SUBTITLE: Category theory for programmers
+* Tuples
+#+BEGIN_SRC haskell
+epicTuples :: (String, Int)
+
+swap :: (a, b) -> (b, a)
+swap (x, y) = (y, x)
+
+stillEpic :: (Int, String)
+#+END_SRC
+
+* Pair
+#+BEGIN_SRC haskell
+data Pair a b = P a b
+first :: Pair a b -> a
+first (P a _) = a
+setFirst :: Pair a b -> a -> Pair a b
+setFirst (P _ b) a = P a b
+#+END_SRC
+Can you write port this?
+
+* YES
+#+BEGIN_SRC java
+class Pair<A,B>{
+  public final A first;
+  public final B second;
+  public Pair(A d, B c){
+      first = d;
+      second = c;
+  }
+  Pair<A,B> setFst(A d){
+    return new Pair<>(d,second);
+  }
+}
+#+END_SRC
+
+* Records
+#+BEGIN_SRC haskell
+data Person = Person { name :: Text, age :: Int}
+#+END_SRC
+
+#+BEGIN_SRC java
+class Person{
+  public final String name;
+  public final int age;
+}
+#+END_SRC
+
+* Associativity 
+#+BEGIN_SRC haskell
+alpha     :: ((a, b), c) -> (a, (b, c))
+alpha_inv :: (a, (b, c)) -> ((a, b), c)
+
+associativity (a * b) * c = a * (b * c)
+#+END_SRC
+
+Put into groups like an association.
+
+* But is it a monoid?
+
+* Yes: Monoid
+#+BEGIN_SRC haskell
+isIso :: Iso' a (a, ())
+#+END_SRC
+
++ () = neutral element
++ (,) = binary
+
+* Next lvl, coproducts or sums
+
+* Either
+
+#+BEGIN_SRC haskell
+data Either a b = Left a | Right b
+#+END_SRC
+Can you port this?
+
+
+* Yes: Scala
+#+BEGIN_SRC scala
+sealed trait Either[+A,+B]
+final case class Left[+A,+B](ddd:A) extends Either[+A,+B]
+final case class Right[+A,+B](ddd:B) extends Either[+A,+B]
+#+END_SRC
+
+* But is it a monoid?
+
+* Monoid Either
+  + Void = neutral element
+  + Either = binary
+
+#+BEGIN_SRC haskell
+isIso :: Iso' (Either a Void) a
+#+END_SRC 
+
+* Analogy
+  addition and multiplaction
+  + () = 1
+  + Void = 0
+
+* Annihilation
+a*0 = 0
+
+#+BEGIN_SRC haskell
+canMake :: (Int, Void)
+isIso :: Iso' Void (a, Void)
+#+END_SRC
+
+
+* Distributive property
+#+BEGIN_SRC haskell
+a * (b + c) = a * b + a * c
+
+prodToSum :: (a, Either b c) -> Either (a, b) (a, c)
+prodToSum (x, Left e) = Left  (x, e)
+prodToSum (x, Right e) = Right (x, e)
+
+sumToProd :: Either (a, b) (a, c) -> (a, Either b c)
+sumToProd (Left  (x, y)) = (x, Left  y)
+sumToProd (Right (x, z)) = (x, Right z)
+#+END_SRC
+
+
+* Rig
+  semiring = ring without an n
+
+  + (R, +) commutaive monoid w/ identity el 0
+  + (R, *) monoid w/ identity el 1
+  + Multiplication distributes over addition
+  + Multiplication by 0, annihlates R
+
+https://en.wikipedia.org/wiki/Semiring
+
+* Numbers
+
+| Numbers   | Types                            |
+|-----------+----------------------------------|
+| 0         | Void                             |
+| 1         | ()                               |
+| a + b     | Either a b                       |
+| a * b     | (a, b)                           |
+| 2 = 1 + 1 | data Bool = True or False        |
+| 1 + a     | data Maybe a = Nothing or Just a |
+
+* Logic
+
+| Numbers   | Types                            |
+|-----------+----------------------------------|
+| false    | Void                             |
+| true     | ()                               |
+| a or b   | Either a b                       |
+| a && b | (a, b)                           |
+
+* Challenges
+  
+* ISO
+Show the isomorphism between Maybe a and Either () a.
+
+* A
+#+BEGIN_SRC haskell
+from :: Maybe a -> Either () a
+from Just x = Right x
+from Nothing = Left ()
+
+to ::  Either () a -> Maybe a
+to Right x = Just x
+to Left _ = Nothing
+#+END_SRC
+
+* Area 
+  Implement in Java or C++
+
+#+BEGIN_SRC haskell
+data Shape = Circle Float
+           | Rect Float Float
+
+area :: Shape -> Float
+area (Circle r) = pi * r * r
+area (Rect d h) = d * h
+#+END_SRC
+
+* A: Java
+#+BEGIN_SRC java
+interface Aread {
+   float getArea();
+   float circ();
+}
+class Circle implements Aread {
+  public final float radius;
+  @Override
+  public float getArea () {
+    return radius*radius;
+  }
+  @Override
+  public float circ () {
+    return radius*Math.pi*2.0;
+  }
+}
+class Rect implements Aread {
+  public final float d;
+  public final float h;
+  @Override
+  public float getArea () {
+    return d*h;
+  }
+  @Override
+  public float circ () {
+    return 2.0 * (d + h);
+  }
+}
+#+END_SRC 
+
+What did you touch? Everything :)
+
+
+* Add shape
+Add a new shape, Square, to Shape and make all the necessary updates.
+What code did you have to touch in Haskell vs. C++ or Java?
+
+* 5 what is a + a = 2 * a
+
+* A
++ Lookup + which is (Either a a)
++ Lookup 2, which is number 1, which corosponds to true in logic, which is ()
++ Lookup * which is (a,b).
+
+
+#+BEGIN_SRC  haskell
+from :: Either a a -> ((), a)
+from Left x = ((), x)
+from Right x = ((), x)
+
+to ::  ((), a) -> Either a a
+to (_, = ((), x)
+to Right x = ((), x)
+
+#+END_SRC
+   
+
