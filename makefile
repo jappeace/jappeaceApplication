@@ -1,6 +1,5 @@
 REMOTE=jappieklooster.nl
 clean:
-	chmod -R +rw "output"
 	# clean output dir
 	rm -R "output/" || true
 	mkdir -p "output"
@@ -20,6 +19,7 @@ sync-git:
 talks: 
 	nix-build ./talks/presentation.nix
 	cp -fLR result output/talks
+	chmod -R +rw "output"
 
 deploy-root: sync-git
 	rsync -avc --delete output/ root@$(REMOTE):/var/www/jappieklooster.nl/
