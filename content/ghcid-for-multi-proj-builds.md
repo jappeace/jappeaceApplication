@@ -1,5 +1,6 @@
 TITLE: Ghcid for multi package projects
 DATE: 2019-10-17 21:30
+Modified: 2019-12-13 21:58
 CATEGORY: tools
 Tags: build-tools, haskell
 OPTIONS: toc:nil
