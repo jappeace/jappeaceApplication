@@ -7,7 +7,7 @@ OPTIONS: toc:nil
 ![GHCID magic](/images/2019/fire.svg)
 
 When I tried [Ghcid](https://github.com/ndmitchell/ghcid)for a
-[reflex](http://hackage.haskell.org/package/reflex),
+[reflex](http://hackage.haskell.org/package/reflex) project,
 it wouldn't rebuild on file change.
 This is because reflex has a multi package project setup by default.
 Recently I found that it is possible to use
