@@ -3,13 +3,16 @@
 $col-flash: #ffff54
 $col-flash2: #54ffff
 $col-flash3: #ff54ff
-$col-dark: #1818b2
-$col-contentbg: #d3d7cf
-$col-border: #474d4d 
+$col-contentbg: #051005 // $col-codebg
+$col-codebg: #d3d7cf
+$col-border: lightslategrey // #474d4d 
 $col-text: #2e3436
 $col-link: black
 $col-title: #729fcf
 $col-hover: white
+$window-link: #30bb30
+$window-border: #b0ffb0 // lightslategrey // #474d4d 
+$col-dark: $window-link // #1818b2
 
 @import url('https://fonts.googleapis.com/css?family=Dancing+Script|Roboto|Inconsolata')
 @import no_spacing
@@ -35,11 +38,31 @@ body
 .window
     background: $col-contentbg
     color: $col-text
-    border: 2px solid $col-border
     font-size: medium
+
+header.window
+    border-bottom: 4px solid $col-border
+
+.window a, .window a:visited, #sitename
+    background-clip: text
+    -webkit-background-clip: text
+
+.window
+    a 
+        text-shadow: 0 0 0.4em $window-link
+        color: transparent
+        background-color: $window-link
+        background-image: repeating-linear-gradient(0deg, transparent, transparent 3%, black 3%, black 5%, transparent 5%, transparent 10%)
+    a:visited
+        text-shadow: 0 0 0.2em $window-border, 0 0 0.4em $window-border, 0 0 0.8em $window-border, 0 0 1.6em $window-border
+        background-clip: text
+        color: transparent
+        background-color: $window-border
+        background-image: repeating-linear-gradient(0deg, transparent, transparent 3%, black 3%, black 5%, transparent 5%, transparent 10%)
 
 a 
     color: $col-link
+    text-shadow: 0 0 0.05em $window-link
     border-radius: 3px
     display: inline-block
     text-decoration: none
@@ -65,11 +88,12 @@ a.tag:first-letter
 
 a:visited
     color: $col-border
+    text-shadow: 0 0 0.2em $col-border, 0 0 0.4em $col-border, 0 0 0.8em $col-border, 0 0 1.6em $col-border
 
 a:hover:first-letter, a.tag:hover:first-letter, .entry-content a:hover:first-letter
     color: $col-flash
 
-a:hover
+a:hover, #sitename:hover
     color: $col-hover
     background: $col-dark
 
@@ -96,6 +120,8 @@ a:active
 footer.window
     text-align: center
     width: 100%
+    border-top: 4px solid $col-border
+
 footer
     p + p
         text-indent: 0
@@ -237,8 +263,20 @@ ul.horizontal li
     font-size: 3.25em
     font-family: 'Dancing Script', cursive
     /* $col-flash */
-    color: $col-dark
-    text-shadow: -2px 0 $col-flash, 0 1px $col-flash, 1px 0 $col-flash, 0 -1px $col-flash
+    /* color: $window-link */
+    text-shadow: 0 0 0.4em $window-link
+    color: transparent
+    background-color: $window-link
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 3%, black 3%, black 5%, transparent 5%, transparent 10%)
+    padding-left: 1em
+    padding-right: 1em
+
+#sitename:first-letter
+    color: transparent
+    text-shadow: 0 0 0.4em $window-link
+#sitename:hover:first-letter
+    color: $col-flash
+
 
 pre
     font-family: 'Inconsolata', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace
@@ -378,7 +416,7 @@ blockquote
     margin: auto
 
 code
-    background-color: $col-contentbg
+    background-color: $col-codebg
     padding-left: 0.25em
     padding-right: 0.25em
     border-radius: 3px
