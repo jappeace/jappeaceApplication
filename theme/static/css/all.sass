@@ -50,15 +50,20 @@ header.window
 .window
     a 
         text-shadow: 0 0 0.4em $window-link
-        color: transparent
         background-color: $window-link
-        background-image: repeating-linear-gradient(0deg, transparent, transparent 3%, black 3%, black 5%, transparent 5%, transparent 10%)
+
+    a, a:visited, #sitename
+        color: transparent
+        background-clip: text
+        background-image: repeating-linear-gradient(3deg, transparent, transparent 3%, black 3%, black 5%, transparent 5%, transparent 10%)
+        background-position: 0px 0px
+        background-size: 100% 50px
+        animation: animatedBackground 40s linear infinite
+        -webkit-animation: animatedBackground 40s linear infinite
+
     a:visited
         text-shadow: 0 0 0.2em $window-border, 0 0 0.4em $window-border, 0 0 0.8em $window-border, 0 0 1.6em $window-border
-        background-clip: text
-        color: transparent
         background-color: $window-border
-        background-image: repeating-linear-gradient(0deg, transparent, transparent 3%, black 3%, black 5%, transparent 5%, transparent 10%)
 
 a 
     color: $col-link
@@ -264,12 +269,16 @@ ul.horizontal li
     font-family: 'Dancing Script', cursive
     /* $col-flash */
     /* color: $window-link */
-    text-shadow: 0 0 0.4em $window-link
-    color: transparent
-    background-color: $window-link
-    background-image: repeating-linear-gradient(0deg, transparent, transparent 3%, black 3%, black 5%, transparent 5%, transparent 10%)
     padding-left: 1em
     padding-right: 1em
+    text-shadow: 0 0 0.4em $window-link
+    background-color: $window-link
+
+@keyframes animatedBackground 
+    from
+        background-position: 0 0
+    to
+        background-position: 3px 50px
 
 #sitename:first-letter
     color: transparent
