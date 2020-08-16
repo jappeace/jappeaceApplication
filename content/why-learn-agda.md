@@ -7,9 +7,20 @@ subreddit: haskell programming reflexfrp
 Status: draft
 
 Recently I had a discussion on a fellow [streamers channel](https://www.twitch.tv/freeman42x) on why to learn Agda.
-They were helbent on learning agda, but actually couldn't put their figure on why.
+A small group of viewers was very eager to learn agda,
+but I couldn't get them to articulate why.
+Here I could've gone full [socratic method](https://en.wikipedia.org/wiki/Socratic_method)
+on them but this can be quite a nuisance.
+Instead I found the motivation of the agda authors in the 
+[preface](https://plfa.github.io/Preface/)
+of `Programming Langauge Foundations in Agda`.
+
+
+
 Me being the ethernal skeptic started investigating and found a 
-It's in the [preface](https://plfa.github.io/Preface/) of Programming Langauge Foundations in Agda and a lot is in
+motivation of the authors themselves in the 
+of 
+and a lot is in
 that first paragraph.
 Let's parse it line by line:
 
