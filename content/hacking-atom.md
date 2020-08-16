@@ -2,7 +2,7 @@ Title: Hacking atom
 Date: 2020-08-16 21:12
 Category: tools
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, reflex, frp, servant
+Tags: programming, css, atom
 subreddit: haskell programming reflexfrp
 
 On my [twitch stream](https://www.twitch.tv/jappiejappie) I had project where I made
