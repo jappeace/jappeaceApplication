@@ -2,7 +2,7 @@ Title: Hacking atom
 Date: 2020-08-16 21:12
 Category: tools
 OPTIONS: toc:nil
-Tags: programming, css, atom
+Tags: programming, css, atom, video
 Modified: 2020-08-16 23:09
 
 On my [twitch stream](https://www.twitch.tv/jappiejappie) I had project where I made
