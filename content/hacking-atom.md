@@ -6,11 +6,11 @@ Tags: haskell, programming, tools, reflex, frp, servant
 subreddit: haskell programming reflexfrp
 
 On my [twitch stream](https://www.twitch.tv/jappiejappie) I had project where I made
-a CRT scan line monitor in atom:
+a [CRT scan line](https://en.wikipedia.org/wiki/Scan_line) monitor in atom:
 
 <iframe class="video" src="https://www.youtube.com/embed/FdYISkTBVuw" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-The inspiration was the fallout pip-boy.
+The inspiration was the fallout [pip-boy](https://fallout.fandom.com/wiki/Pip-Boy).
 I though it would be cool to have this be in your editor,
 maybe some of the gray beards are nostalgic for this?
 
