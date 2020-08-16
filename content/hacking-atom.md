@@ -3,7 +3,7 @@ Date: 2020-08-16 21:12
 Category: tools
 OPTIONS: toc:nil
 Tags: programming, css, atom
-subreddit: haskell programming reflexfrp
+Modified: 2020-08-16 23:09
 
 On my [twitch stream](https://www.twitch.tv/jappiejappie) I had project where I made
 a [CRT scan line](https://en.wikipedia.org/wiki/Scan_line) monitor in atom:
