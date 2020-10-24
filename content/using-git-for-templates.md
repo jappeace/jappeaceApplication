@@ -11,7 +11,7 @@ edit the names, edit the `readme` end re-setup the remotes:
 
 ```
 git remote add template git@github.com:jappeace/haskell-template-project.git
-git remote set-url origin git@github.com:YOUR-ORG-OR-USER-NAME/new-project.git
+git remote set-url origin git@github.com:jappeace/new-project.git
 ```
 
 This allows me to keep my downstream project up to date with the template.
@@ -74,7 +74,7 @@ While also giving them the choice of VCS[^8]
      25% SVN market share is a lot more then I expected (the absolute SVN repo count is still going up!).
 
 ## A template hierarchy
-Let's go into the deep end and push what it means to be a distributed version control system.
+What I described in the intro can be taken a step further.
 A template of a template can be used to create another new template.
 For example, say you're a fan of [nix](https://nixos.org/) or [make](https://www.gnu.org/software/make/manual/make.html),
 so why not put a makefile and a [nix pin](https://nix.dev/tutorials/towards-reproducibility-pinning-nixpkgs.html#pinning-nixpkgs)
@@ -89,7 +89,6 @@ You simply clone this template of templates and customize it to
 your own [Pythonic](https://stackoverflow.com/questions/25011078/what-does-pythonic-mean#:~:text=Pythonic%20means%20code%20that%20doesn,is%20intended%20to%20be%20used.) needs.
 You can still pull in the upstream changes from your template of templates,
 for example to upgrade the nix pin.
-
 The big advantage of course is that a change in the template of templates
 can easily merged into all downstream projects with git.
 
@@ -99,4 +98,4 @@ It's simpler, and more flexible.
 I also convinced the authors of stack, cabal and summoner to drop their current way of managing 
 templates and use git instead.
 
-Or, more likely no-one read this far.
+Or, more likely, no-one read this far.
