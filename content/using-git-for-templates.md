@@ -6,8 +6,8 @@ OPTIONS: toc:nil
 
 Over the past few years I've started using git as a template
 management tool[^9].
-For example, I clone my [haskell template project](https://github.com/jappeace/haskell-template-project).
-Edit the names, edit the `readme` end re-setup the remotes:
+For example, I clone my [haskell template project](https://github.com/jappeace/haskell-template-project),
+edit the names, edit the `readme` end re-setup the remotes:
 
 ```
 git remote add template git@github.com:jappeace/haskell-template-project.git
@@ -15,7 +15,7 @@ git remote set-url origin git@github.com:YOUR-ORG-OR-USER-NAME/new-project.git
 ```
 
 This allows me to keep my downstream project up to date with the template.
-When I discover another tool this can be merged into the downstream project for example.
+When I discover another tool, this can be merged into the downstream project for example.
 It allows evolving the template over time as I learn more about
 whatever programming language I'm using.
 
@@ -32,8 +32,7 @@ there is a core of truth, because the template
 has gotten a lot of attention.
 If you feel offended by this practice, ask yourself first,
 why are you trusting git histories? These can be [rewritten anyway](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History).
-This authoritativeness gain also gives me personally
-a small moral boost.
+This authoritativeness also gives me a small moral boost.
 It just *feels* better to have a project with well thought
 out tools being started and some history
 rather then the 'normal' stuff everyone starts with.
@@ -65,23 +64,29 @@ I'm speculating,
 but even if you wanted to be that,
 you could still use any version system to track the template
 and recreate the history in the VCS desired by the user.
+This at least gives the user their history of the template back.
+While also giving them the choice of VCS[^8]
 
 [^1]: Version Control System
+[^8]: I wouldn't bother with this choice unless someone is asking for it.
+     I think git has won the VCS battle by a wide [margin](https://softwareengineering.stackexchange.com/questions/136079/are-there-any-statistics-that-show-the-popularity-of-git-versus-svn).
+     Of course that's easy for me the say as neither maintainer nor user.
+     25% SVN market share is a lot more then I expected (the absolute SVN repo count is still going up!).
 
 ## A template hierarchy
 Let's go into the deep end and push what it means to be a distributed version control system.
-A template of a template can be used to create other new template.
+A template of a template can be used to create another new template.
 For example, say you're a fan of [nix](https://nixos.org/) or [make](https://www.gnu.org/software/make/manual/make.html),
 so why not put a makefile and a [nix pin](https://nix.dev/tutorials/towards-reproducibility-pinning-nixpkgs.html#pinning-nixpkgs)
 in some template of templates project.
 These tools don't care about which language you use,
-so their configuration can be shared among python, Java and Haskell projects for example.
+so their configuration can be shared among Python, Java and Haskell projects for example.
 Maybe for github it could even have a partial travis or github actions CI setup.
 
-Now say you're starting a new python project, but have
-no template yet for that programming language,
-you simply clone this template of templates and customize it to
-your own pythonic needs.
+Now, say you're starting a new Python project, but have
+no template yet for that programming language.
+You simply clone this template of templates and customize it to
+your own [Pythonic](https://stackoverflow.com/questions/25011078/what-does-pythonic-mean#:~:text=Pythonic%20means%20code%20that%20doesn,is%20intended%20to%20be%20used.) needs.
 You can still pull in the upstream changes from your template of templates,
 for example to upgrade the nix pin.
 
@@ -89,7 +94,7 @@ The big advantage of course is that a change in the template of templates
 can easily merged into all downstream projects with git.
 
 # Conclusion
-I convinced the reader of the superiority of using git for template management.
+I convinced the reader that using git is the superior way for template management.
 It's simpler, and more flexible.
 I also convinced the authors of stack, cabal and summoner to drop their current way of managing 
 templates and use git instead.
