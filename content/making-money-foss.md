@@ -1,7 +1,7 @@
 TITLE: Making money with foss
 OPTIONS: toc:nil
 DATE: 2017-05-22
-Modified: 2019-03-10 14:33
+Modified: 2020-05-11 10:33
 CATEGORY: technique
 Tags: free, money, software, programming
 
@@ -157,6 +157,11 @@ and if your project has any kind of traction,
 do consider this.
 Trusting a foundation is much more easy because
 they're regulated by law.
+
+A more recent iteration of donations is using twitch.
+Essentially you're just explaining what you're doing on a live
+stream and then people can ask questions while you're programming.
+Twitch handles the payment processing for you.
 
 ## Advertisements
 
