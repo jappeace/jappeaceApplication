@@ -1,0 +1,64 @@
+#+TITLE: MTL
+
+
++ Monad
++ Transfomer
++ Liberary
+  
+
+* Promise 
+You won't need to know what a monad is.
+
+* Please interrupt for questions
+* Goals
+  
++ CONTEXT: Why do we use types?
++ LEvEL 1: When do we use Transformers?
++ LEVEL 2: What is the library aspect of mtl?
+
+Have fun.
+
+BONUS GAME: Spot the monad.
+
+* 
+  
+What can johny do if he is of IO?
+
+#+BEGIN_SRC haskell
+johny :: IO ()
+#+END_SRC 
+
++ A. He can serve a webpage
++ B. He can clean his room.
++ C. He can launch the missles.
++ D. johny is god and can do everything.
++ E. He can asnwer yes or no.
+
+* 
+
+What can betty do if she is of =YesOrNo=?
+
+#+BEGIN_SRC haskell
+data YesOrNo = Yes | No
+betty :: YesOrNo 
+#+END_SRC 
+
++ A. She can serve a webpage
++ B. She can clean his room.
++ C. She can launch the missles.
++ D. betty is god and can do everything.
++ E. She can asnwer yes or no.
+
+
+* 
+Which is bug?
+
+#+BEGIN_SRC haskell
+data YesOrNo = Yes | No
+betty :: YesOrNo 
+
+johny :: IO ()
+#+END_SRC 
+
++ A. johny
++ B. betty

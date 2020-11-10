@@ -10,10 +10,12 @@
     rev = "3.8.0";
     sha256 = "14cva2hxdv4gxpz2a996qs8xhxffw97a90gkz2mmgdczh1kyn1sc";
   }
+ , org-file ? ./category-adts.org
+ , talk-name ? "adt-talk"
 }:
 
-pkgs.runCommand "adt-talk" {} ''
+pkgs.runCommand "${talk-name}" {} ''
   mkdir $out
   ln -s ${revealjs} $out/reveal.js
-  ${pkgs.pandoc}/bin/pandoc -s -V theme=blood -t revealjs -o $out/category-adt.html ${./category-adts.org}
+  ${pkgs.pandoc}/bin/pandoc -s -V theme=blood -t revealjs -o $out/${talk-name}.html ${org-file}
 ''
