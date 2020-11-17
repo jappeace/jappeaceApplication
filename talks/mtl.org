@@ -1,19 +1,23 @@
 #+TITLE: MTL
 
-
 + Monad
 + Transfomer
 + Liberary
   
+(promise) You won't need to know what a monad is.
 
-* Promise 
-You won't need to know what a monad is.
 
-* Please interrupt for questions
+* Ask questions anytime!
+* Motivation
+
++ Satisfy curiosity
++ Explain benefits/costs
++ Challenge
+
 * Goals
   
 + CONTEXT: Why do we use types?
-+ LEvEL 1: When do we use Transformers?
++ LEVEL 1: When do we use Transformers?
 + LEVEL 2: What is the library aspect of mtl?
 
 Have fun.
@@ -29,10 +33,9 @@ johny :: IO ()
 #+END_SRC 
 
 + A. He can serve a webpage
-+ B. He can clean his room.
-+ C. He can launch the missles.
++ B. He can asnwer yes or no.
++ C. He can read a file.
 + D. johny is god and can do everything.
-+ E. He can asnwer yes or no.
 
 * 
 
@@ -44,21 +47,441 @@ betty :: YesOrNo
 #+END_SRC 
 
 + A. She can serve a webpage
-+ B. She can clean his room.
-+ C. She can launch the missles.
++ B. She can asnwer yes or no.
++ C. She can read a file.
 + D. betty is god and can do everything.
-+ E. She can asnwer yes or no.
-
 
 * 
-Which is bug?
+Our web server crashed, where is the bug?
 
 #+BEGIN_SRC haskell
-data YesOrNo = Yes | No
-betty :: YesOrNo 
-
 johny :: IO ()
+
+betty :: YesOrNo 
 #+END_SRC 
 
 + A. johny
 + B. betty
+
+* 
+Why types?
+
++ Thinking aid
++ Spot bugs *early*
++ +Run computations+
+
+* NEXT LEVEL
+
++ +CONTEXT: Why do we use types?+
++ LEVEL 1: When do we use Transformers?
++ LEVEL 2: What is the library aspect of mtl?
+
+* Law of 2 feet
+[[https://fordsfootandanklecare.com/wp-content/uploads/2016/11/8736511_S_Feet_Walking_.jpg]]
+
+# I'll explain the best, but can't promise this is useful to everyone.
+
+* 
+Type variables
+
+#+BEGIN_SRC haskell
+data Maybe a = Just a | Nothing
+data YesOrNo = Yes | No
+betty :: Maybe YesOrNo 
+#+END_SRC 
+
+How many possible answers can betty be?
+
++ A. 1
++ B. 2
++ C. 3
++ D. Infinity
+
+* 
+Why maybe?
+
+#+BEGIN_SRC haskell
+johny :: Maybe YesOrNo
+betty :: Maybe YesOrNo
+
+carl :: Maybe YesOrNo
+carl = do
+    johnyGoes <- johny
+    bettyGoes <- betty
+    Just $ case (johnyGoes, bettyGoes) of
+       (Yes, Yes) -> Yes
+        _ -> No
+#+END_SRC
+
+* 
+Improving errors
+
+#+BEGIN_SRC haskell
+data Result a b = Error a | Ok b
+data YesOrNo = Yes | No
+
+betty :: Result () YesOrNo 
+#+END_SRC
+
+How many possible answers can betty be?
+
++ A. 1
++ B. 2
++ C. 3
++ D. Infinity
+* 
+  Isomorphism
+
+#+BEGIN_SRC haskell
+data Result a b = Error a | Ok b
+data Maybe a = Nothing | Just a
+data YesOrNo = Yes | No
+
+from :: Maybe YesNo -> Result () YesOrNo 
+to :: Result () YesOrNo -> Maybe YesNo
+#+END_SRC
+
+* 
+Improving errors
+
+#+BEGIN_SRC haskell
+data Result a b = Error a | Ok b
+data YesOrNo = Yes | No
+data Errors = JohnyNothing | BettyNothing
+
+betty :: Result Errors YesOrNo 
+#+END_SRC
+
+How many possible answers can betty be?
+
++ A. 2
++ B. 3
++ C. 4
++ D. Infinity
+
+* 
+  Don't squash with tags
+#+BEGIN_SRC haskell
+data Result a b = Error a | Ok b
+data Errors = JohnyNothing | BettyNothing
+
+johny :: Maybe YesOrNo
+betty :: Maybe YesOrNo
+carl :: Result Errors YesOrNo
+carl = do
+    johnyGoes <- maybe (Error JohnyNothing) Ok johny
+    bettyGoes <- maybe (Error BettyNothing) Ok betty
+    Ok $ case (johnyGoes, bettyGoes) of
+         (Yes, Yes) -> Yes
+          _ -> No
+#+END_SRC
+
+* What about logging?
+ # say johnny likes going to parties,
+ # so him saying no could indicate a problem.
+ # While the system still functions,
+ # we want to emit a warning.
+
+
+* 
+  We want to do something like:
+
+#+BEGIN_SRC haskell
+carl :: Result Errors YesOrNo
+carl = do
+    johnyGoes <- maybe (Error JohnyNothing) Ok johny
+    case johnyGoes of
+        No -> $(logWarn) "strange, johny aint goin'"
+        _ -> pure ()
+    ...
+#+END_SRC
+
+* Enter Transformers
+
+[[https://pixy.org/src/121/1215743.jpg]]
+
+* 
+  Attach a logging transformer
+
+#+BEGIN_SRC haskell
+carl :: LoggingT (Result Errors) YesOrNo
+#+END_SRC
+
+* 
+  Tell the code which monad to use
+
+#+BEGIN_SRC haskell
+carl :: LoggingT (Result Errors) YesOrNo
+carl = do
+    johnyGoes <- lift $ maybe (Error JohnyNothing) Ok johny
+    case johnyGoes of
+        No -> $(logWarn) "strange, johny aint goin'"
+        _ -> pure ()
+    ...
+#+END_SRC
+
+notice lift.
+
+* 
+#+BEGIN_SRC haskell
+data Result a b = Error a | Ok b
+data Errors = JohnyNothing | BettyNothing
+
+johny :: Maybe YesOrNo
+betty :: Maybe YesOrNo
+carl :: LoggingT (Result Errors) YesOrNo
+carl = do
+    johnyGoes <- lift $ maybe (Error JohnyNothing) Ok johny
+    case johnyGoes of
+        No -> $(logWarn) "strange, johny aint goin'"
+        _ -> pure ()
+    bettyGoes <- lift $ maybe (Error BettyNothing) Ok betty
+    lift $ Ok $ case (johnyGoes, bettyGoes) of
+         (Yes, Yes) -> Yes
+          _ -> No
+#+END_SRC
+
+* 
+  Unpack at call site
+#+BEGIN_SRC haskell
+main :: IO ()
+main = do
+  res <- runStdoutLoggingT carl -- upack log to terminal
+  case res of -- unpack result
+        Error x -> throwIO x -- crash
+        Ok d -> print d -- happy path
+#+END_SRC
+
+Why do this?
+
+# * 
+# What do transformers do?
+#   + Mixing of monads 
+#   + Unpacking decides what to do with each 'layer'.
+
+* NEXT LEVEL
++ +CONTEXT: Why do we use types?+
++ +LEVEL 1: When do we use Transformers?+
++ LEVEL 2: What is the library aspect of mtl?
+
+* Law of 2 feet
+
+[[https://i.ytimg.com/vi/UNUYS0GRivc/maxresdefault.jpg]]
+# http://www.taigelauren.com/uploads/1/0/1/9/101937976/published/dragons.jpg
+
+# There be dragons here
+* 
+Issues with transformers:
+
++ calling lift is not DRY.
++ I don't care which order the transformer stack is.
++ Any stack above 3 quickly becomes blotted with lifts.
+    + We don't speak about liftwith.
+
+* 
+Why types?
+
++ Thinking aid
++ Spot bugs *early*
+** Run computations
+
+* 
+ Constraints
+
+#+BEGIN_SRC haskell
+data Maybe a = Just a | Nothing
+betty :: Num a => Maybe a
+#+END_SRC 
+  How many possible answers?
+
++ A. 1
++ B. 2
++ C. 3
++ D. Infinity
+
+* 
+What is this num thing?
+
+#+BEGIN_SRC haskell
+class Num a where
+    (+) :: a -> a -> a
+    (-) :: a -> a -> a
+instance Num Float
+instance Num Integer
+...
+#+END_SRC
+
+* 
+Invent our own numbers
+#+BEGIN_SRC haskell
+instance Num YesOrNo where
+    (+) :: YesOrNo -> YesOrNo -> YesOrNo 
+    (+) x y = x
+    (-) :: YesOrNo -> YesOrNo -> YesOrNo
+    (-) x y = y
+...
+#+END_SRC
+What's wrong with this?
+
+* Laws!
+
+#+BEGIN_SRC 
+Associativity of (+)
+(x + y) + z = x + (y + z)
+Commutativity of (+)
+x + y = y + x
+fromInteger 0 is the additive identity
+x + fromInteger 0 = x
+negate gives the additive inverse
+x + negate x = fromInteger 0
+Associativity of (*)
+(x * y) * z = x * (y * z)
+fromInteger 1 is the multiplicative identity
+x * fromInteger 1 = x and fromInteger 1 * x = x
+Distributivity of (*) with respect to (+)
+a * (b + c) = (a * b) + (a * c) and (b + c) * a = (b * a) + (c * a)
+#+END_SRC
+* Anyway
+  
+[[https://railroads.dot.gov/sites/fra.dot.gov/files/inline-images/0845.jpg]]
+
+* How about this
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+#+END_SRC 
+
+How many possible answers?
+
++ A. 1
++ B. 2
++ C. 3
++ D. Infinity
++ E. Unkown
+
+* 
+  call-site determines the =m=.
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+betty = pure Yes
+
+d :: YesOrNo
+d = case betty of
+  Just x -> x
+  Nothing -> No
+#+END_SRC 
+
+What is value of =d= ?
+
++ A. Yes
++ B. No
++ C. Compile error
++ D. Runtime error
+
+* 
+  call-site determines the =m=.
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+betty = pure Yes
+
+y :: YesOrNo
+y = case betty of
+  Right x -> x
+  Left _ -> No
+#+END_SRC 
+
+What is value of =y= ?
+
++ A. Yes
++ B. No
++ C. Compile error
++ D. Runtime error
+
+* 
+  call-site determines the =m=.
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+betty = pure Yes
+
+x :: YesOrNo
+x = betty No
+#+END_SRC 
+
+What is value of =x= ?
+
++ A. Yes
++ B. No
++ C. Compile error
++ D. Runtime error
+
+* All Valid!
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+betty = pure Yes
+d :: YesOrNo
+d = case betty of
+  Just x -> x
+  Nothing -> No
+y :: YesOrNo
+y = case betty of
+  Right x -> x
+  Left _ -> No
+x :: YesOrNo
+x = betty No
+#+END_SRC 
+* 
+Describe the monad we want to use:
+#+BEGIN_SRC haskell
+carl :: MonadError Errors m =>  MonadLogger m => m YesOrNo
+#+END_SRC
+
+* 
+Put them work! No more lift.
+
+#+BEGIN_SRC haskell
+data Result a b = Error a | Ok b
+data Errors = JohnyNothing | BettyNothing
+
+johny :: Maybe YesOrNo
+betty :: Maybe YesOrNo
+carl :: MonadError Errors m =>  MonadLogger m => m YesOrNo
+carl = do
+    johnyGoes <- maybe (throwError JohnyNothing) pure johny
+    case johnyGoes of
+        No -> $(logWarn) "strange, johny aint goin'"
+        _ -> pure ()
+    bettyGoes <- maybe (throwError BettyNothing) pure betty
+    pure $ case (johnyGoes, bettyGoes) of
+         (Yes, Yes) -> Yes
+          _ -> No
+#+END_SRC
+
+* At the call site
+
+#+BEGIN_SRC haskell
+main :: IO ()
+main = do
+  x <- runExceptT (runStdoutLoggingT carl)
+  y <- either throwIO pure x
+  print y
+#+END_SRC
+* Advantages
+  + No need to call lift.
+  + Stack order is determined by callsite
+  + Potentially better testable (shared with transformers)
+    Call site determines what to do with effects.
+
+* Disadvantages
+  + Type errors can get awful.
+  + $N^2$ instances problem...
+
+https://stackoverflow.com/questions/35527483/writing-a-monad-transformer-does-it-really-need-so-many-hardcoded-instances
+
+* Any questions?
+  Or be in peace with confusion.
+* Thanks for watching
+  Leave a like and subscribe.

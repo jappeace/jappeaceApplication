@@ -1,1 +1,1 @@
-import ./presentation.nix {  org-file = ./mtl.org; talk-name = "mtl"; }
+import ./presentation.nix {  org-file = ./mtl.org; talk-name = "mtl"; theme = "simple"; }
