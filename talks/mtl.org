@@ -480,8 +480,75 @@ main = do
   + $N^2$ instances problem...
 
 https://stackoverflow.com/questions/35527483/writing-a-monad-transformer-does-it-really-need-so-many-hardcoded-instances
+* Alternatives
+
+  + Free monads Control.Monad.Free
+  + Freer monads
+  + Polysemi
+  + Fused effects
+  + Eff
+
+I've no idea which one is best.
+# Except at the imperial college in Londen.
+# (In fact I've been avoiding the topic because
+# it's not that interesting for building stuff)
 
 * Any questions?
   Or be in peace with confusion.
 * Thanks for watching
   Leave a like and subscribe.
+
+* BONUS SLIDES
+
+*
+ Apply correctly
+
+#+BEGIN_SRC haskell
+plusOne :: Num a => MonadReader a m => m a
+plusOne = (1 +)
+
+two :: Int
+two = plusOne 2
+
+two' :: Float
+two' = plusOne 2
+#+END_SRC
+
+* 
+ Apply correctly II
+
+#+BEGIN_SRC haskell
+plus :: Num a => MonadReader a n => MonadReader a m => n (m a)
+plus = (+)
+
+two :: Int
+two = 2 `plus` 2
+
+two' :: Float
+two' = 2 `plus` 2
+#+END_SRC
+
+
+* 
+ Row type polymorphism 
+
+#+BEGIN_SRC haskell
+data AppSettings { _johny :: YesOrNo }
+class HasYesOrNo a YesOrNo where twoLens :: Lens' a YesOrNo
+instance HasYesOrNo YesOrNo where twoLens = id
+instance HasYesOrNo AppSettings where
+    twoLens = lens (_johny) $ \x y -> x{_johny=y}
+ 
+someFun :: HasYesOrNo a => a -> IO ()
+inReader :: HasYesOrNo env => MonadReader env m => m ()
+inReader = do
+    x :: YesOrNo <- view twoLens 
+    pure ()
+inState :: HasYesOrNo env => MonadState env m => m ()
+inState = do
+    twoLens %= Yes
+    isYes <- view twoLens 
+    twoLens %= No
+    pure ()
+#+END_SRC
+
