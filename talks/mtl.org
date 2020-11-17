@@ -500,7 +500,7 @@ I've no idea which one is best.
 
 * BONUS SLIDES
 
-*
+* 
  Apply correctly
 
 #+BEGIN_SRC haskell
