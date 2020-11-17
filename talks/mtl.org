@@ -298,6 +298,7 @@ betty :: Num a => Maybe a
 + B. 2
 + C. 3
 + D. Infinity
++ E. Unkown
 
 * 
 What is this num thing?
@@ -399,24 +400,6 @@ What is value of =y= ?
 + C. Compile error
 + D. Runtime error
 
-* 
-  call-site determines the =m=.
-
-#+BEGIN_SRC haskell
-betty :: Monad m => m YesOrNo
-betty = pure Yes
-
-x :: YesOrNo
-x = betty No
-#+END_SRC 
-
-What is value of =x= ?
-
-+ A. Yes
-+ B. No
-+ C. Compile error
-+ D. Runtime error
-
 * All Valid!
 
 #+BEGIN_SRC haskell
@@ -430,8 +413,6 @@ y :: YesOrNo
 y = case betty of
   Right x -> x
   Left _ -> No
-x :: YesOrNo
-x = betty No
 #+END_SRC 
 * 
 Describe the monad we want to use:
@@ -484,7 +465,7 @@ https://stackoverflow.com/questions/35527483/writing-a-monad-transformer-does-it
 
   + Free monads Control.Monad.Free
   + Freer monads
-  + Polysemi
+  + Polysemy
   + Fused effects
   + Eff
 
@@ -528,6 +509,23 @@ two' :: Float
 two' = 2 `plus` 2
 #+END_SRC
 
+* 
+  call-site determines the =m=.
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+betty = pure Yes
+
+x :: YesOrNo
+x = betty No
+#+END_SRC 
+
+What is value of =x= ?
+
++ A. Yes
++ B. No
++ C. Compile error
++ D. Runtime error
 
 * 
  Row type polymorphism 
