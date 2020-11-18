@@ -14,6 +14,7 @@
  , theme ? "blood" # https://github.com/jgm/pandoc/wiki/Using-pandoc-to-produce-reveal.js-slides
 }:
 
+# https://github.com/NixOS/nixpkgs/blob/5d8dd5c2598a74761411bc9bef7c9111d43d2429/pkgs/build-support/trivial-builders.nix#L42
 pkgs.runCommand "${talk-name}" {} ''
   mkdir -p $out
   ln -s ${revealjs} $out/reveal.js
