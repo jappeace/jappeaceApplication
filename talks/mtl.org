@@ -13,6 +13,7 @@
 + Satisfy curiosity
 + Explain benefits/costs
 + Challenge
++ Not an endorsement
 
 * Goals
   
@@ -33,7 +34,7 @@ johny :: IO ()
 #+END_SRC 
 
 + A. He can serve a webpage
-+ B. He can asnwer yes or no.
++ B. He can answer yes or no.
 + C. He can read a file.
 + D. johny is god and can do everything.
 
@@ -47,7 +48,7 @@ betty :: YesOrNo
 #+END_SRC 
 
 + A. She can serve a webpage
-+ B. She can asnwer yes or no.
++ B. She can answer yes or no.
 + C. She can read a file.
 + D. betty is god and can do everything.
 
@@ -120,7 +121,7 @@ Improving errors
 data Result a b = Error a | Ok b
 data YesOrNo = Yes | No
 
-betty :: Result () YesOrNo 
+carl :: Result () YesOrNo
 #+END_SRC
 
 How many possible answers can betty be?
@@ -140,6 +141,15 @@ data YesOrNo = Yes | No
 from :: Maybe YesNo -> Result () YesOrNo 
 to :: Result () YesOrNo -> Maybe YesNo
 #+END_SRC
+where
+
+\[
+    form \; .  \; to \equiv id
+\]
+
+\[
+    to \; . \; from \equiv id
+\]
 
 * 
 Improving errors
@@ -149,7 +159,7 @@ data Result a b = Error a | Ok b
 data YesOrNo = Yes | No
 data Errors = JohnyNothing | BettyNothing
 
-betty :: Result Errors YesOrNo 
+carl :: Result Errors YesOrNo
 #+END_SRC
 
 How many possible answers can betty be?
@@ -252,7 +262,16 @@ main = do
         Ok d -> print d -- happy path
 #+END_SRC
 
-Why do this?
++ Why would we bother with these transformers?
++ Why not run everything in IO?
+
+*
+Issues with transformers:
+
++ calling lift is not DRY.
++ I don't care which order the transformer stack is.
++ Any stack above 3 quickly becomes blotted with lifts.
+    + We don't speak about liftwith.
 
 # * 
 # What do transformers do?
@@ -270,15 +289,7 @@ Why do this?
 # http://www.taigelauren.com/uploads/1/0/1/9/101937976/published/dragons.jpg
 
 # There be dragons here
-* 
-Issues with transformers:
-
-+ calling lift is not DRY.
-+ I don't care which order the transformer stack is.
-+ Any stack above 3 quickly becomes blotted with lifts.
-    + We don't speak about liftwith.
-
-* 
+*
 Why types?
 
 + Thinking aid
