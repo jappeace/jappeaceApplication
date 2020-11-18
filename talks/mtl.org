@@ -265,7 +265,7 @@ main = do
 + Why would we bother with these transformers?
 + Why not run everything in IO?
 
-*
+*   
 Issues with transformers:
 
 + calling lift is not DRY.
