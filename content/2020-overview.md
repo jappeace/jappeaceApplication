@@ -3,6 +3,7 @@ DATE: 2020-12-24
 CATEGORY: reflection
 Tags: australia, work
 OPTIONS: toc:nil
+Status: draft
 
 2020 is the year for corona for most people.
 But for me a bigger event happened personally.
