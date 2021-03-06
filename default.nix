@@ -6,7 +6,7 @@
 let
   stdenv = pkgs.stdenv;
   pythonPackages = pkgs.lib.getAttr "python36Packages" pkgs;
-
+  ignore = import ./nix/gitignoreSource.nix {  inherit (pkgs) lib; };
 
   minify = pythonPackages.buildPythonPackage {
       name = "pelican-minify-0.9";
@@ -53,12 +53,7 @@ let
 in
 stdenv.mkDerivation {
   name = "jappie-blogs";
-  src = builtins.filterSource
-    (path: type:
-      baseNameOf path != ".git" &&
-      baseNameOf path != "output" &&
-      baseNameOf path != "result")
-    ./.;
+  src = ignore.gitignoreSource ./.;
   buildInputs = [
     minify
     typogrify
