@@ -1,15 +1,11 @@
 { pkgs ? (
   import ./nix/pin.nix {}
  )
-, pythonPackages ? "python36Packages"
 }:
 
-with pkgs.lib;
-
-let _pythonPackages = pythonPackages; in
 let
   stdenv = pkgs.stdenv;
-  pythonPackages = getAttr _pythonPackages pkgs;
+  pythonPackages = pkgs.lib.getAttr "python36Packages" pkgs;
 
 
   minify = pythonPackages.buildPythonPackage {
@@ -81,6 +77,9 @@ stdenv.mkDerivation {
     # TODO svgo
     # TODO jpegtran
   ];
+  shellHook = ''
+    export PATH=${pkgs.s3cmd}/bin:$PATH
+  '';
   buildPhase = ''
     make run
   '';
