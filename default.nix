@@ -1,15 +1,11 @@
 { pkgs ? (
   import ./nix/pin.nix {}
  )
-, pythonPackages ? "python36Packages"
 }:
 
-with pkgs.lib;
-
-let _pythonPackages = pythonPackages; in
 let
   stdenv = pkgs.stdenv;
-  pythonPackages = getAttr _pythonPackages pkgs;
+  pythonPackages = pkgs.lib.getAttr "python36Packages" pkgs;
 
 
   minify = pythonPackages.buildPythonPackage {
@@ -56,7 +52,7 @@ let
   };
 in
 stdenv.mkDerivation {
-  name = "blog-johbo";
+  name = "jappie-blogs";
   src = builtins.filterSource
     (path: type:
       baseNameOf path != ".git" &&
@@ -64,8 +60,8 @@ stdenv.mkDerivation {
       baseNameOf path != "result")
     ./.;
   buildInputs = [
-    minify 
-    typogrify 
+    minify
+    typogrify
     (import ./emacs.nix { inherit pkgs; })
     pythonPackages.pelican
     cssmin
@@ -82,11 +78,12 @@ stdenv.mkDerivation {
     # TODO jpegtran
   ];
   buildPhase = ''
-    make run
+    pelican content -D -s publishconf.py
   '';
   installPhase = ''
     # Copy the generated result
-    mkdir -p $out/blog
-    cp -r "output/"* $out/blog
+    mkdir -p $out/jappieklooster.nl $out/penguin
+    cp -r "output/"* $out/jappieklooster.nl/
+    cp -r "penguin"  $out/penguin
   '';
 }
