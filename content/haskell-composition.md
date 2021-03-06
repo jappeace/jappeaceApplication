@@ -52,6 +52,7 @@ Furthermore, I'll explain this right now.
 There is no trick or hidden door.
 It's all common sense.
 
+# How types help
 In haskell we can compose small functions into big ones like this.
 
 ```haskell
@@ -94,6 +95,12 @@ makes it a significantly worse langauge for compesition.
 Something like optics would be obnoxious to use in python, yet it has real utility!
 Java is hopeless.
 
+# Explicit effects
+
+In rust compisition is possible like haskell,
+but again the syntax is much worse, furthermore effects are ignored.
+
+This means we're unsure if a function modifies IO, or is partial.
 
 
 [^vague]: Isn't it vague functional programming? Besides plenty of my haskell code is imperative as fuck, and works great like that.
