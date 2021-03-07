@@ -95,12 +95,51 @@ makes it a significantly worse langauge for compesition.
 Something like optics would be obnoxious to use in python, yet it has real utility!
 Java is hopeless.
 
-# Explicit effects
+#  XXX
 
-In rust compisition is possible like haskell,
-but again the syntax is much worse, furthermore effects are ignored.
+For fun, look at competition in python:
 
-This means we're unsure if a function modifies IO, or is partial.
+Xxx
 
+And Java for example
+
+Xxx
+
+They make quite a big deal out of it. Using big words like "compose", parenthesis flying everywhere. Now let's at the audacity of haskell:
+
+Xxx
+
+If you're unfamiliar you wouldn't even see it, but its that `.` dot.
+And why wouldn't it be so small and ordinary? Composition happens all the time. Even ghe definition itself is so ordinary and small, it must leave most beginners wonder what's the big fuzz is about.
+And they're right. Composition is normal for programs. It's no big deal at all. I wonder why so many programming languages then make this so hard to do.
+
+Lets give some examples of normal things becoming fascinating with relentless composition. The most boring of all, getting and setting of values.
+
+# getting & setting
+The example for Java is so boring it makes me fall asleep when just looking at it:
+
+Xxx
+
+Python tried killing some of the superfluous code that is prevalent in Java code bases by decreeing its fine to make fields public in objects.
+I hate all code equally, so I'm happy they did.
+The example therefore is a bit shorter:
+
+Xxx
+
+In haskell the classical way to define a getter and setter is through a record field. For completeness ill show an equivalence between tuple, and what record generates for you, both these examples are equicelant;
+
+Xxx1
+Xxx2
+
+The semantics for setting are a little different, because haskell is a pure language, rather then changing the record in place (mutating), we return a new tuple with the changed value.
+
+Setting values in deeply nested structure truly becomes problematic in the classical way. However larger comercial code bases tend to have lots of such values.
+The solution to this problem is called optics, and with our eye on composition, it's fascinating! Furthermore, aside from the problem that composition is made needlessly difficult in other languages, these ideas are portable!
+The lens library is used to realize the lenses [X]
+Although it sounds ridiculous, I want to introduce a library called lens to help us with getting and setting. The definition is constructed as follows;
+
+Xxx
+
+Why use this boilerplate? 
 
 [^vague]: Isn't it vague functional programming? Besides plenty of my haskell code is imperative as fuck, and works great like that.
