@@ -33,6 +33,14 @@ pay him so I guess I repay him by giving him some realestate on my website.
 
 * Interesting
 
+** Suckless
+   It's software that sucks slightly less.
+    http://suckless.org/
+
+   Amongst other things they have a irc client
+   that works with fifo queues on the filesystem.
+   It's beautifull.
+
 ** Tsoding
    A [[https://www.twitch.tv/tsoding][streamer]] who makes a show of programming.
    With the slogan 'coding for fun' he
