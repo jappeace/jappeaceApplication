@@ -84,7 +84,7 @@ stdenv.mkDerivation {
     # TODO jpegtran
   ];
   buildPhase = ''
-    rm -R pelican-plugins
+    rm -fR pelican-plugins
     cp -R ${pelican-plugins} pelican-plugins
     pelican content -D -s publishconf.py
   '';
