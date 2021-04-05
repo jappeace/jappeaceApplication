@@ -50,6 +50,17 @@ let
       sha256 = "0f6b2gnnxjbx1fbmkcscc6qjr4hi78kwm1wx4b766ha3va66dr4b";
     };
   };
+  # this makes the fetchign of all submodules cached per revision.
+  # eg, this is (almost) never going to change compared to the rest of the blog.
+  # however it does remove about 10 minutes of fetching from the build.
+  pelican-plugins =
+    (pkgs.fetchgit {
+        name = "pelican-plugins";
+        url = "https://github.com/jappeace/pelican-plugins";
+        rev = "ab7ed8316edcb93dbb1ae08fb997dee032574653";
+        fetchSubmodules = true;
+        sha256 = "1g10wigrpwmzdcs2jxs83fnaq1r2qa3jad4v2cljswil562q1k9w";
+    });
 in
 stdenv.mkDerivation {
   name = "jappie-blogs";
@@ -73,11 +84,13 @@ stdenv.mkDerivation {
     # TODO jpegtran
   ];
   buildPhase = ''
+    rm -R pelican-plugins
+    cp -R ${pelican-plugins} pelican-plugins
     pelican content -D -s publishconf.py
   '';
   installPhase = ''
     # Copy the generated result
-    mkdir -p $out/jappieklooster.nl $out/penguin.engineer
+    mkdir -p $out/jappieklooster.nl $out/penguin.engineer $out/jesiska.jappieklooster.nl/
     cp -r "output/"* $out/jappieklooster.nl/
     cp -r "penguin/"*  $out/penguin.engineer/
     cp -r "jesiska/"*  $out/jesiska.jappieklooster.nl/
