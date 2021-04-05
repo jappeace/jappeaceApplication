@@ -143,3 +143,19 @@ Xxx
 Why use this boilerplate? 
 
 [^vague]: Isn't it vague functional programming? Besides plenty of my haskell code is imperative as fuck, and works great like that.
+
+
+# Y'know
+NAtural langauge also composes.
+
+If you learn a new proffession, you don't throw away all things
+you learned about english you've learned so far.
+That's crazy.
+
+Yet, in python, if you use a new library, you may as well trash most of your python knowledge.
+
+Like in python you have to do to learn a library.
+No you reuse your existing words,
+and add some new ones for efficiency once you get more profficient (jargon).
+In haskell you'll be able to re-use the things you've learned, 
+because a well designed api composes.
