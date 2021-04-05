@@ -1,0 +1,17 @@
+body{
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+article{
+    max-width: 40em;
+}
+td, th{
+    padding:0.5em;
+}
+table.centered{
+    margin: 0 auto;
+}
+.contact th{
+    text-align:left;
+}
