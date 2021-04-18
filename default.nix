@@ -90,9 +90,8 @@ stdenv.mkDerivation {
   '';
   installPhase = ''
     # Copy the generated result
-    mkdir -p $out/jappieklooster.nl $out/penguin.engineer $out/jesiska.jappieklooster.nl/
+    mkdir -p $out/jappieklooster.nl $out/penguin.engineer
     cp -r "output/"* $out/jappieklooster.nl/
     cp -r "penguin/"*  $out/penguin.engineer/
-    cp -r "jesiska/"*  $out/jesiska.jappieklooster.nl/
   '';
 }
