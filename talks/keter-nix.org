@@ -1,0 +1,75 @@
+
+* Keter & Nix
+
+* 
+What motivates me to look into this?
+
++ Avoid stress
++ Downtime.
++ No good reasons 
+
+* Examples
+
+Let's go trough some examples.
+
+0. An exception gets thrown to the main thread.
+   This is pretty benign, but if you don't configure
+   systemd in just the right way, down the service goes.
+1. Updating database structure.
+   Sometimes these take long because lot's of data.
+   Some design decisions can make these awfully slow (json columns).
+   | name | email | -> | name | hobby | email |
+2. Every deploy
+   (we even developed culture around this, remember the question: "is there demo ?"
+   It looks wholeheartely that we lookout for eachother,
+   but another way of looking at this is just having subpar tooling causing our behavior to change.
+
+* previously
+client computer ->  nginx -> haskell code (yesod) -> db
+
+** What does the client computer do?
++ Make requests
++ Interpret responses
++ Deals with encryption
+** What does nginx do?
+** What does nginx do?
+   (deal with very standard things)
++ Decide where requests go
++ Serve static assets, like images and css
++ Handle encryption
+** What does haskell code do?
+   (deal with specialized things)
++ Describe how users are related to brokers
++ make a specific list of underwiters they're allowed to see
++ Make excell files fit into the datbase.
+
+
+* current
+client computer -> nginx -> keter -> haskell code -> db
+
+
+
+
+
+What is a bundle?
+How is a bundle loaded?
+Health check?
+How does it assign ports?
+  Does it recycle ports?
+How does logging work?
+What does keter do?
+
+For hash function, go to fixed output based on content
+for example a css out path has to be unique
+
+
+## JEzen notes
+- Why are we using this?
+- How does it know when a new application bundle is ready
+- What is an application bundle
+- How does it do a health check?
+- How many ports does it use? Does it recycle the ports?
+- How does logging work? Files? Journalctl?
+- Who owns Keter? Can we be maintainers?
+- Which features did we enable or disable? Why?
+- How are static files currently handled? How could it be done better?

@@ -9,15 +9,18 @@
     rev = "4.1.0";
     sha256 = "10xhblbyw8mvak58d294hbxxnf5sq0akj6qldv7brgm6944zppm0";
   }
- , org-file ? ./category-adts.org
- , talk-name ? "adt-talk"
+ , org-files ? ["category-adts" "keter-nix" "mtl"  ]
  , theme ? "blood" # https://github.com/jgm/pandoc/wiki/Using-pandoc-to-produce-reveal.js-slides
 }:
-
+let
+  file-paths = map (x: {path = ./. + "/${x}.org"; name = x;}) org-files;
+in
 # https://github.com/NixOS/nixpkgs/blob/5d8dd5c2598a74761411bc9bef7c9111d43d2429/pkgs/build-support/trivial-builders.nix#L42
-pkgs.runCommand "${talk-name}" {} ''
+pkgs.runCommand "talks" {} (''
   mkdir -p $out
   ln -s ${revealjs} $out/reveal.js
-  ${pkgs.pandoc}/bin/pandoc -s -V theme=${theme} -t revealjs -o $out/${talk-name}.html ${org-file}
-''
+  '' +
+    pkgs.lib.concatStrings(pkgs.lib.forEach file-paths (file: ''
+        ${pkgs.pandoc}/bin/pandoc -s -V theme=${theme} -t revealjs -o $out/${file.name}.html ${file.path}
+    '')))
   # sed -i "s/plugins:\ \[/plugins: [ RevealHighlight, /" $out/${talk-name}.html
