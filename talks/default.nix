@@ -19,6 +19,7 @@ in
 pkgs.runCommand "talks" {} (''
   set -xe
   mkdir -p $out
+  cp -R ${./img} $out/img
   ln -s ${revealjs} $out/reveal.js
   '' +
     pkgs.lib.concatStrings(pkgs.lib.forEach file-paths (file: ''

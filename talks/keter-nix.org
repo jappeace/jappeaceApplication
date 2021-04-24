@@ -17,13 +17,9 @@
 Have fun.
 
 * 
-  + What is a http request?
+  What happens if you click a button in the browser in our app?
 
-*    
-  Hyper Text Transmission Protocol
-
-  But in reality it's this:
-  
+* A request!
 #+BEGIN_SRC text
   ✦ ❯ nc -l localhost 3000
   GET /can/put/anything/here HTTP/1.1
@@ -33,12 +29,6 @@ Have fun.
   ...
 #+END_SRC
 
-* 
-  What makes these?
-
-* 
-  Browser!
-  [[https://upload.wikimedia.org/wikipedia/commons/d/d2/Firefox_Logo%2C_2017.png]]
 * 
   + For our specific setup,
     which software handles a request first?
@@ -50,6 +40,9 @@ Have fun.
 #+BEGIN_SRC text
 nginx -> haskell code (yesod) 
 #+END_SRC
+
+* 
+  What happens if we update the haskell code in this situation?
 
 * 
 ** How this works
@@ -76,8 +69,10 @@ nginx -> haskell code (yesod)
     + If it's ever updated
     + Can run out of memory 
   
-* LEVEL 1:
-**  How does keter work?
+* Goals 
++ +CONTEXT: What is going on in our server?!+
++ LEVEL 1: how does keter work?
++ LEVEL 2: how is integrated into nix/nixos
 
 * 
   Directories
@@ -105,6 +100,10 @@ nginx -> haskell code (yesod)
  2. upload to server.
  3. Put it in =/opt/keter/incoming=.
 
+* Goals 
++ +CONTEXT: What is going on in our server?!+
++ +LEVEL 1: how does keter work?+
++ LEVEL 2: how is integrated into nix/nixos
 
 * 
   What do we specifically put into a bundle?
@@ -114,25 +113,115 @@ nginx -> haskell code (yesod)
     =config/keter.yaml=
 
 * 
+  Does anyone want to explain a hash function?
+  (maybe give a trivial example)
 
-What is a bundle?
-How is a bundle loaded?
-Health check?
-How does it assign ports?
-  Does it recycle ports?
-How does logging work?
-What does keter do?
+* 
+   Examples:
 
-For hash function, go to fixed output based on content
-for example a css out path has to be unique
+sine
+
+#+BEGIN_SRC haskell
+hash  :: Int -> Int
+hash x = remainder (x * 6) 10
+#+END_SRC
+
+Uses:
++ caching
++ cryptography
+
+* 
+A nix out path
+#+BEGIN_SRC
+/nix/store/7ynqpw8sm6s6kflb59m9q7ccpa21rcim-talks
+#+END_SRC
+The out hash is:
+#+BEGIN_SRC
+7ynqpw8sm6s6kflb59m9q7ccpa21rcim
+#+END_SRC
+
+* 
+  The contents of config file
+#+BEGIN_SRC json
+{"stanzas":[{
+    "exec":"/nix/store/fs9y9g1fd0hmyvzsc7x5xxaphm1sp22j-supercede/bin/supercede",
+    "host":"staging.supercede.com",
+    "type":"webapp"
+}]}
+#+END_SRC
+
+* 
+  What is logging?
+
+* 
+#+BEGIN_SRC shell
+[root@riskbook_staging:/opt/keter/log/app-supercede]# head current.log 
+24/Apr/2021:18:26:46 +0000 [Debug#SQL] UPDATE "worker_queue"
+SET "status" = ?, "modified_at" = NOW()
+WHERE ?
+; [PersistText "{\"tag\":\"TaskTaken\"}",PersistBool False]
+24/Apr/2021:18:26:46 +0000 [Debug#SQL] SELECT "worker_queue"."id", "worker_queue"."type", "worker_queue"."data", "worker_queue"."status", "worker_queue"."modified_at"
+FROM "worker_queue"
+WHERE ("worker_queue"."type" = ?) AND ("worker_queue"."status" IN (?, ?))
+ORDER BY "worker_queue"."modified_at" ASC
+ LIMIT 1
+FOR UPDATE SKIP LOCKED; [PersistText "EmailWorker",PersistText "{\"tag\":\"TaskPending\"}",PersistText "{\"tag\":\"TaskFinished\",\"contents\":{\"tag\":\"TaskFailedRetry\"}}"]
+#+END_SRC
+
+* Systemd
+  We need to get this out of the file, into systemd
 
 
-## JEzen notes
-- How does it know when a new application bundle is ready
-- What is an application bundle
-- How does it do a health check?
-- How many ports does it use? Does it recycle the ports?
-- How does logging work? Files? Journalctl?
-- Who owns Keter? Can we be maintainers?
-- Which features did we enable or disable? Why?
-- How are static files currently handled? How could it be done better?
+#+BEGIN_SRC shell
+[root@riskbook_staging:/opt/keter/log/app-supercede]# head current.log 
+    [root@riskbook_staging:/root]# journalctl -f
+  Apr 24 20:14:30 riskbook_staging influxd[18209]: [httpd] ::1 - - [24/Apr/2021:20:14:30 +0000] "POST /write?db=collectd&precision=n HTTP/1.1" 204 0 "-" "-" ad774b90-a539-11eb-8ce9-06168faee19e 39000
+  Apr 24 20:14:30 riskbook_staging postgres[31200]: [31200] LOG:  statement: BEGIN
+  Apr 24 20:14:30 riskbook_staging postgres[31200]: [31200] LOG:  duration: 0.066 ms
+  Apr 24 20:14:30 riskbook_staging postgres[31200]: [31200] LOG:  statement: SELECT "worker_queue"."id", "worker_queue"."type", "worker_queue"."data", "worker_queue"."status", "worker_queue"."modified_at"
+  Apr 24 20:14:30 riskbook_staging postgres[31200]:         FROM "worker_queue"
+  Apr 24 20:14:30 riskbook_staging postgres[31200]:         WHERE ("worker_queue"."type" = 'PackArchiveWorker') AND ("worker_queue"."status" IN ('{"tag":"TaskPending"}', '{"tag":"TaskFinished","contents":{"tag":"TaskFailedRetry"}}'))
+  Apr 24 20:14:30 riskbook_staging postgres[31200]:         ORDER BY "worker_queue"."modified_at" ASC
+#+END_SRC
+
+
+* 
+#+BEGIN_SRC nix
+  keter = {
+    description = "keter app loader";
+    script = ''
+      set -xe
+      mkdir -p ${incoming}
+      { tail -F /opt/keter/log/keter/current.log -n 0 & ${pkgs.haskellPackages.keter}/bin/keter ${globalKeterConfigFile}; }
+    '';
+    ...
+#+END_SRC
+
+* Any questions?
+  Or be in peace with confusion.
+
+* Thanks for watching
+  Leave a like and subscribe.
+
+* BONUS SLIDES
+
+* 
+    How does it assign ports? 
+
+* 
+  There is a portpool file.
+  https://github.com/snoyberg/keter/blob/master/Keter/PortPool.hs#L30
+
+* 
+    Who owns keter?
+
+* 
+
+
+* 
+     + Michael Snoyman has copyright.
+     + There is a MIT license on this.
+     + We can use it as long as:
+        + We don't hold him liable.
+        + We're also not allowed to take credit.
+
