@@ -1,55 +1,119 @@
+#+TITLE: Keter & nix
 
-* Keter & Nix
+* Ask questions anytime!
 
-* 
-What motivates me to look into this?
-
+* Motivation
 + Avoid stress
 + Downtime.
-+ No good reasons 
+    + No good reasons 
+    + Update database structure
+    + Every deploy
 
-* Examples
+* Goals 
++ CONTEXT: What is going on in our server?!
++ LEVEL 1: how does keter work?
++ LEVEL 2: how is integrated into nix/nixos
 
-Let's go trough some examples.
+Have fun.
 
-0. An exception gets thrown to the main thread.
-   This is pretty benign, but if you don't configure
-   systemd in just the right way, down the service goes.
-1. Updating database structure.
-   Sometimes these take long because lot's of data.
-   Some design decisions can make these awfully slow (json columns).
-   | name | email | -> | name | hobby | email |
-2. Every deploy
-   (we even developed culture around this, remember the question: "is there demo ?"
-   It looks wholeheartely that we lookout for eachother,
-   but another way of looking at this is just having subpar tooling causing our behavior to change.
+* 
+  + What is a http request?
 
-* previously
-client computer ->  nginx -> haskell code (yesod) -> db
+*    
+  Hyper Text Transmission Protocol
 
-** What does the client computer do?
-+ Make requests
-+ Interpret responses
-+ Deals with encryption
-** What does nginx do?
-** What does nginx do?
-   (deal with very standard things)
-+ Decide where requests go
-+ Serve static assets, like images and css
-+ Handle encryption
-** What does haskell code do?
-   (deal with specialized things)
-+ Describe how users are related to brokers
-+ make a specific list of underwiters they're allowed to see
-+ Make excell files fit into the datbase.
+  But in reality it's this:
+  
+#+BEGIN_SRC text
+  ✦ ❯ nc -l localhost 3000
+  GET /can/put/anything/here HTTP/1.1
+  Host: localhost:3000
+  Connection: keep-alive
+  Cache-Control: max-age=0
+  ...
+#+END_SRC
+
+* 
+  What makes these?
+
+* 
+  Browser!
+  [[https://upload.wikimedia.org/wikipedia/commons/d/d2/Firefox_Logo%2C_2017.png]]
+* 
+  + For our specific setup,
+    which software handles a request first?
+
+* Nginx
+
+* 
+**    previously
+#+BEGIN_SRC text
+nginx -> haskell code (yesod) 
+#+END_SRC
+
+* 
+** How this works
+    + Kill the old app.
+    + nginx shows down for maintenance (downtime begin)
+    + Boot new app.
+      + App runs migrations
+      + App does checks
+      + App binds to port 
+    + Nginx can route to port again. (downtime over)
+* 
+**    current 
+#+BEGIN_SRC text
+  nginx -> keter |-> new haskell
+                 |-> old haskell
+#+END_SRC
+
+* 
+  Can the down for maintenance screen still occur?
+
+* 
+  Of course!
+  + Keter can get killed as well
+    + If it's ever updated
+    + Can run out of memory 
+  
+* LEVEL 1:
+**  How does keter work?
+
+* 
+  Directories
+
+#+BEGIN_SRC bash
+/opt/keter/
+           incoming/supercede.keter
+           log/keter/current.log
+           log/keter/20210421_160003.log
+           log/app-supercede/current.log
+           log/app-supercede/20210423_002835.log
+           temp/supercede-8/env-vars
+           temp/supercede-8/client_session_key.aes
+           temp/supercede-8/config
+           temp/supercede-8/config/keter.yaml
+#+END_SRC 
+
+* Bundle   
+ 0. has to contain:
+    =config/keter.yaml=
+ 1. Combine everything.
+    #+BEGIN_SRC bash
+    tar -zcvf $out/bundle.tar.gz.keter ./.
+    #+END_SRC
+ 2. upload to server.
+ 3. Put it in =/opt/keter/incoming=.
 
 
-* current
-client computer -> nginx -> keter -> haskell code -> db
+* 
+  What do we specifically put into a bundle?
 
+*  
+  In our case just:
+    =config/keter.yaml=
 
-
-
+* 
 
 What is a bundle?
 How is a bundle loaded?
@@ -64,7 +128,6 @@ for example a css out path has to be unique
 
 
 ## JEzen notes
-- Why are we using this?
 - How does it know when a new application bundle is ready
 - What is an application bundle
 - How does it do a health check?
