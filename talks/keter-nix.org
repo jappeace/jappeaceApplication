@@ -216,6 +216,7 @@ FOR UPDATE SKIP LOCKED; [PersistText "EmailWorker",PersistText "{\"tag\":\"TaskP
     Who owns keter?
 
 * 
+  [[./img/snoyboi.jpg]]
 
 
 * 
