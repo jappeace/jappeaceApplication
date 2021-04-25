@@ -29,6 +29,17 @@ Have fun.
   ...
 #+END_SRC
 
+* What's a port?
+
+* 
+  + A gateway to a computer
+  + One single program will listen
+  + Many can connect
+  + Over ip 
+    + firewalls
+    + dns
+    + etc
+
 * 
   + For our specific setup,
     which software handles a request first?
@@ -74,8 +85,26 @@ nginx -> haskell code (yesod)
 + LEVEL 1: how does keter work?
 + LEVEL 2: how is integrated into nix/nixos
 
-* 
-  Directories
+* Directories
+
+#+BEGIN_SRC bash
+$ ls /opt/keter/
+> /opt/keter/
+              incoming/supercede.keter
+              ...
+#+END_SRC 
+* Log
+
+#+BEGIN_SRC bash
+/opt/keter/
+            incoming/supercede.keter
+            log/keter/current.log
+            log/keter/20210421_160003.log
+            log/app-supercede/current.log
+            log/app-supercede/20210423_002835.log
+            ...
+#+END_SRC 
+* Temp
 
 #+BEGIN_SRC bash
 /opt/keter/
@@ -112,26 +141,27 @@ nginx -> haskell code (yesod)
   In our case just:
     =config/keter.yaml=
 
-* 
-  Does anyone want to explain a hash function?
-  (maybe give a trivial example)
-
-* 
-   Examples:
-
-sine
+* Hash function
+  Let's pretend that
 
 #+BEGIN_SRC haskell
-hash  :: Int -> Int
-hash x = remainder (x * 6) 10
+hash :: ByteString  -> Word32
 #+END_SRC
 
-Uses:
-+ caching
-+ cryptography
++ In: Arbitrary length
++ Out: Fixed length
++ Output dependents on input
++ Any change input see in output
++ There maybe a clash 
 
-* 
-A nix out path
+* Take all inputs
++ Source code
++ Compilers
++ Environment variables
++ Compiler settings
++ Dependencies!
+
+* A nix out path
 #+BEGIN_SRC
 /nix/store/7ynqpw8sm6s6kflb59m9q7ccpa21rcim-talks
 #+END_SRC
