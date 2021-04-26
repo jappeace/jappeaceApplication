@@ -48,9 +48,7 @@ Have fun.
 
 * 
 **    previously
-#+BEGIN_SRC text
-nginx -> haskell code (yesod) 
-#+END_SRC
+  [[./img/nginx-haskell.svg]]
 
 * 
   What happens if we update the haskell code in this situation?
@@ -66,10 +64,11 @@ nginx -> haskell code (yesod)
     + Nginx can route to port again. (downtime over)
 * 
 **    current 
-#+BEGIN_SRC text
-  nginx -> keter |-> new haskell
-                 |-> old haskell
-#+END_SRC
+  [[./img/nginx-keter-haskell-old.svg]]
+  
+* 
+**    current 
+  [[./img/nginx-keter-haskell-new.svg]]
 
 * 
   Can the down for maintenance screen still occur?
@@ -93,6 +92,14 @@ $ ls /opt/keter/
               incoming/supercede.keter
               ...
 #+END_SRC 
+
+* Bundle example
+config/keter.yaml:
+#+BEGIN_SRC yaml
+exec: ../path/to/executable
+host: mydomainname.example.com
+#+END_SRC 
+
 * Log
 
 #+BEGIN_SRC bash
@@ -104,6 +111,29 @@ $ ls /opt/keter/
             log/app-supercede/20210423_002835.log
             ...
 #+END_SRC 
+
+* 
+  Why is logging important?
+
+#+BEGIN_SRC shell
+[root@riskbook_staging:/opt/keter/log/app-supercede]# head current.log 
+24/Apr/2021:18:26:46 +0000 [Debug#SQL] UPDATE "worker_queue"
+SET "status" = ?, "modified_at" = NOW()
+WHERE ?
+; [PersistText "{\"tag\":\"TaskTaken\"}",PersistBool False]
+24/Apr/2021:18:26:46 +0000 [Debug#SQL] SELECT "worker_queue"."id", "worker_queue"."type", "worker_queue"."data", "worker_queue"."status", "worker_queue"."modified_at"
+FROM "worker_queue"
+WHERE ("worker_queue"."type" = ?) AND ("worker_queue"."status" IN (?, ?))
+ORDER BY "worker_queue"."modified_at" ASC
+ LIMIT 1
+FOR UPDATE SKIP LOCKED; [PersistText "EmailWorker",PersistText "{\"tag\":\"TaskPending\"}",PersistText "{\"tag\":\"TaskFinished\",\"contents\":{\"tag\":\"TaskFailedRetry\"}}"]
+#+END_SRC
+
+* Help with debugging
++ Bugs take research.
++ Logs help us find bugs.
++ Without logs, many pains.
+
 * Temp
 
 #+BEGIN_SRC bash
@@ -180,24 +210,6 @@ The out hash is:
 }]}
 #+END_SRC
 
-* 
-  What is logging?
-
-* 
-#+BEGIN_SRC shell
-[root@riskbook_staging:/opt/keter/log/app-supercede]# head current.log 
-24/Apr/2021:18:26:46 +0000 [Debug#SQL] UPDATE "worker_queue"
-SET "status" = ?, "modified_at" = NOW()
-WHERE ?
-; [PersistText "{\"tag\":\"TaskTaken\"}",PersistBool False]
-24/Apr/2021:18:26:46 +0000 [Debug#SQL] SELECT "worker_queue"."id", "worker_queue"."type", "worker_queue"."data", "worker_queue"."status", "worker_queue"."modified_at"
-FROM "worker_queue"
-WHERE ("worker_queue"."type" = ?) AND ("worker_queue"."status" IN (?, ?))
-ORDER BY "worker_queue"."modified_at" ASC
- LIMIT 1
-FOR UPDATE SKIP LOCKED; [PersistText "EmailWorker",PersistText "{\"tag\":\"TaskPending\"}",PersistText "{\"tag\":\"TaskFinished\",\"contents\":{\"tag\":\"TaskFailedRetry\"}}"]
-#+END_SRC
-
 * Systemd
   We need to get this out of the file, into systemd
 
@@ -227,8 +239,11 @@ FOR UPDATE SKIP LOCKED; [PersistText "EmailWorker",PersistText "{\"tag\":\"TaskP
     ...
 #+END_SRC
 
+* Credits
+
 * Any questions?
   Or be in peace with confusion.
+
 
 * Thanks for watching
   Leave a like and subscribe.
