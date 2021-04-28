@@ -61,6 +61,8 @@ let
         fetchSubmodules = true;
         sha256 = "1g10wigrpwmzdcs2jxs83fnaq1r2qa3jad4v2cljswil562q1k9w";
     });
+
+  talks = import ./talks {};
 in
 stdenv.mkDerivation {
   name = "jappie-blogs";
@@ -87,6 +89,8 @@ stdenv.mkDerivation {
     rm -fR pelican-plugins
     cp -R ${pelican-plugins} pelican-plugins
     pelican content -D -s publishconf.py
+    mkdir -p output/talks/
+    cp -R ${talks}/* output/talks/
   '';
   installPhase = ''
     # Copy the generated result
