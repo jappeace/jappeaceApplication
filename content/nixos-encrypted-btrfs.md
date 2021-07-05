@@ -220,9 +220,3 @@ I personally haven't moved all my configuration into nix yet
 but I wrote a [script](https://github.com/jappeace/linux-config/blob/master/scripts/nixos-setup.sh)
 that symlinks all dotfiles, and hardlinks
 the `configuration.nix` to my linux-config project.
-
-# Conclusion
-The manual step of setting up BTRFS on an encrypted volume were described.
-Nix is of course fully self installing so once the partitions were setup 
-and mounted right for hardware detection,
-we were done.
