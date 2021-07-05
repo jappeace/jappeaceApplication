@@ -185,6 +185,12 @@ Done.
 Now the user needs to write his own [nix config](https://nixos.org/nixos/manual/index.html#sec-changing-config),
 or [copy mine](https://github.com/jappeace/linux-config/blob/master/configuration.nix)
 or cherry pick whatever they need (recommend).
+On a wireless laptop,
+it's highly recommended to enable [wpa_supplicant](https://nixos.wiki/wiki/Wpa_supplicant):
+
+```nix
+networking.wireless.enable = true
+```
 
 Once configuration is done we can install nix:
 
