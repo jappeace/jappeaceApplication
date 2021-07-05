@@ -1,6 +1,6 @@
 Title: Nixos on encrypted btrfs
 Date: 2018-08-19 13:02
-Modified: 2019-10-21 16:00
+Modified: 2021-07-05 16:20
 Category: tools
 OPTIONS: toc:nil
 Tags: nix, nixos, btrfs, tools, linux, devops
@@ -18,13 +18,6 @@ The bullet was bitten, BTRFS was made to work on a LUKS encrypted disk.
 This isn't hard, with care and precision.
 To help a reader we document the journey towards BTRFS.
 Commands compiled and included.
-
-To prevent data loss a
-[move plan](https://github.com/jappeace/linux-config/blob/da00ad06f06b703c88bb9d6a4e7c6335be06299f/NIXOS-MOVE-PLAN.md)
-was made.
-This plan also includes all resources used.
-Here we describe that plan in detail and compile the commands into an
-understandable whole.
 
 # Getting started
 Get yourself a NIXOS [live usb](https://nixos.org/nixos/download.html).
@@ -114,8 +107,8 @@ Partitioning is a distinct step from setting up filesystems.
 
 ```bash
 mkfs.vfat -n boot "$dev"1
-mkswap "$dev"3
-swapon "$dev"3
+mkswap "$dev"2
+swapon "$dev"2
 mkfs.btrfs -L root /dev/mapper/nixenc
 ```
 The boot partition will be `vfat` because [UEFI tells us to](https://wiki.archlinux.org/index.php/EFI_system_partition).
