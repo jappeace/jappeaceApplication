@@ -5,11 +5,9 @@ Tags: nix, programming, ops
 OPTIONS: toc:nil
 Status: draft
 
-I've redone how my services are structured.
+I redid how my services are structured.
 Instead of running each project on a separate VM,
 they're now all running on a dedicated hetzner machine.
-In other words, I'm renting an entire machine.
-The services are separated trough multiprocessing.
 The configruation is done with nix.
 That is to say, any change on the machine is reflected
 within nix files, in theory.
@@ -28,7 +26,7 @@ Setting it up like this has a couple of advantages:
 3. No need for nixops.
 4. Spinning out new services is really fast.
 
-### 1
+#### 1
 The price of a [hetzner](https://www.hetzner.com/dedicated-rootserver)
 machine is 45 euro's per month.
 This gives you 1 terrabyte of raid-1 disks,
@@ -39,7 +37,7 @@ That's halve the amount of ram and only 8 vCPU's (not dedicated threads)
 and that doesn't include network cost or storage.
 It's safe to say that hetzner is *cheap*.
 
-### 2
+#### 2
 The setup is simple because you 
 don't have to do networking.
 Everything is on the same machine,
@@ -58,27 +56,23 @@ and if something doesn't work,
 9 out of 10 times systemd will tell me exactly what's broken,
 no need to dive into the AWS CLI.
 
-### 3
-Nixops doesn't have great UX,
-it randomly just doesn't work,
-sometimes because of aws issues,
-or because of bugs in systemd or nix.
-
-Furthermore the nixops developers decided to helpfully
+#### 3
+For me nixops causes a lot of needles friction
+which I like to avoid.
+For example,
+the nixops developers decided to 
 change how the CLI works from the bash based counterparts.
-For example SCP only works with `--from` and `--to` flags,
-which arguably is better, more readable, but,
-frustrating *years* of habits.
+`nixops scp` only works with `--from` and `--to` flags.
+It refuses to accept the ordinary scp syntax, for no reason.
 
-Not to speak of security issues when upgrading to 21.5
-or the version 2 limbo which lasted for years.
-I happily replace it if I can,
-and in this case, I can!
-Furthermore I love to cut out one of the variables.
-I can cut out both nixops and the aws variable,
-after all I don't need to manage aws. 
+There are countless other examples of this kind of friction.
+I just get frustrated by writing about it so I won't,
+however the more important thing this does
+is to cut out one of the variables during deployment.
+I can cut out both nixops and the aws variables,
+after all I don't need to manage aws, so why would I use nixops? 
 
-### 4
+#### 4
 Finally the last advantage 
 is that setting up a new service is *fast*.
 No need to wait ages for an instance to boot,
@@ -319,3 +313,12 @@ be used for secret management.
 Although I'm a bit skeptical over [age](https://github.com/FiloSottile/age),
 it seems to new to trust.
 You should do your diligence before using that in production.
+
+On several occasions I've mentioned that configuration.nix is
+just like on my laptop.
+I'd add to that that originally I copied pasted the postgres
+configuration from my laptop to this machine.
+It just works.
+This is one of the big benefits you get out of nix,
+it's called the [copy-paste monad](https://www.youtube.com/watch?v=OyfBQmvr2Hc&t=2305s).
+
