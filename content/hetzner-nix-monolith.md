@@ -1,86 +1,103 @@
-TITLE: Hetzner nix monolith.
-DATE: 2017-10-02
+TITLE: The Nix mutli-monolith machine.
+DATE: 2021-07-30
 CATEGORY: reflection
 Tags: nix, programming, ops
 OPTIONS: toc:nil
-Status: draft
 
 I redid how my services are structured.
 Instead of running each project on a separate VM,
 they're now all running on a dedicated hetzner machine.
-The configruation is done with nix.
-That is to say, any change on the machine is reflected
-within nix files, in theory.
-The big exceptions being the database and temporary files.
+This is what I call the nix multi monolith machine
+(hence forth called NMMM).
+There are some really big advantages to the NMMM approach.
 
-This post describes why I did this in the first place,
-then we move on to how this was done in nix,
-and finally there is a discussion segment because this
-goes against the convention.
+## Why use a NMMM?
+Setting up NMMM has a couple of advantages:
 
-## Why bother with this?
-Setting it up like this has a couple of advantages:
++ NMMM is cheap [^cheap]
++ NMMM is simple [^simple]
++ NMMM doesn't need nixops [^no-nixops]
++ NMMM spins out new services fast [^fast]
 
-1. It's incredibly cheap
-2. The setup is simple
-3. No need for nixops.
-4. Spinning out new services is really fast.
+Obviously there are also some disadvantages
+to this approach,
+which get answered in the discussion section.
+But for a typical startup situation,
+where money is tight and there is no
+product market fit yet,
+I think NMMM is the best.
 
-#### 1
-The price of a [hetzner](https://www.hetzner.com/dedicated-rootserver)
-machine is 45 euro's per month.
-This gives you 1 terrabyte of raid-1 disks,
-12 threads and 64g of ram.
-You [currently](https://aws.amazon.com/blogs/aws/new-t3-instances-burstable-cost-effective-performance/)
-pay around 240 dollar per month for a t3.2xlarge instance.
-That's halve the amount of ram and only 8 vCPU's (not dedicated threads)
-and that doesn't include network cost or storage.
-It's safe to say that hetzner is *cheap*.
+[^cheap]:   The price of a [hetzner](https://www.hetzner.com/dedicated-rootserver)
+        machine is 45 euro's per month.
+        This gives you 1 terrabyte of raid-1 disks,
+        12 threads and 64g of ram.
+        You [currently](https://aws.amazon.com/blogs/aws/new-t3-instances-burstable-cost-effective-performance/)
+        pay around 240 dollar per month for a t3.2xlarge instance.
+        That's halve the amount of ram and only 8 vCPU's (not dedicated threads)
+        and that doesn't include network cost or storage.
+        It's safe to say that hetzner is *cheap*.
 
-#### 2
-The setup is simple because you 
-don't have to do networking.
-Everything is on the same machine,
-which means you only have to do
-inter process communication.
-Furthermore, all services communicate to the same database
-process,
-which uses the databases' internal tenanting system
-to ensure the data remains isolated.
+[^simple]: The setup is simple because you 
+                don't have to do networking.
+                Everything is on the same machine,
+                which means you only have to do
+                inter process communication.
+                Furthermore, all services communicate to the same database
+                process,
+                which uses the databases' internal tenanting system
+                to ensure the data remains isolated.
+                <p>The same goes for anything else services need,
+                if a service needs the filesystem,
+                just prefix some folder with their domain name, tenanting complete.
+                I don't have to deal with buckets or networking issues.
+                and if something doesn't work,
+                9 out of 10 times systemd will tell me exactly what's broken,
+                no need to dive into the AWS CLI.</p>
 
-The same goes for anything else services need,
-if a service needs the filesystem,
-just prefix some folder with their domain name, tenanting complete.
-I don't have to deal with buckets or networking issues.
-and if something doesn't work,
-9 out of 10 times systemd will tell me exactly what's broken,
-no need to dive into the AWS CLI.
+[^no-nixops]: For me nixops causes a lot of needles friction
+              which I like to avoid.
+              For example,
+              the nixops developers decided to 
+              change how the CLI works from the bash based counterparts.
+              `nixops scp` only works with `--from` and `--to` flags.
+              It refuses to accept the ordinary scp syntax, for no reason.
+              <p>There are countless other examples of this kind of friction.
+              I just get frustrated by writing about it so I won't,
+              however the more important thing this does
+              is to cut out one of the variables during deployment.
+              I can cut out both nixops and the aws variables,
+              after all I don't need to manage aws, so why would I use nixops? </p>
 
-#### 3
-For me nixops causes a lot of needles friction
-which I like to avoid.
-For example,
-the nixops developers decided to 
-change how the CLI works from the bash based counterparts.
-`nixops scp` only works with `--from` and `--to` flags.
-It refuses to accept the ordinary scp syntax, for no reason.
+[^fast]: Finally the last advantage 
+         is that setting up a new service is *fast*.
+         No need to wait ages for an instance to boot,
+         starting a process is instant.
+         This is sort off the same as `3`, but in this case we're saying AWS 
+         is slow, rather then nixops having poor UX.
 
-There are countless other examples of this kind of friction.
-I just get frustrated by writing about it so I won't,
-however the more important thing this does
-is to cut out one of the variables during deployment.
-I can cut out both nixops and the aws variables,
-after all I don't need to manage aws, so why would I use nixops? 
+## What is NMMM
+The Nix mutli-monolith machine (NMMM) has 
+at the core a dedicated machine.
+A dedicated machine means no virtualization.
+The stack runs bear metal.
+As a provider I used hetzner,
+but any vps that provides dedicated machines can be used.
 
-#### 4
-Finally the last advantage 
-is that setting up a new service is *fast*.
-No need to wait ages for an instance to boot,
-starting a process is instant.
-This is sort off the same as `3`, but in this case we're saying AWS 
-is slow, rather then nixops having poor UX.
+The second major part of this configuration is nix.
+Which means we describe our deployment in nix files using nixos.
+This means most changes for configuration go trough editing nix files.
 
-## The configuration 
+The third major part is multi-monoliths.
+Meaning that you can have multiple,
+unrelated services running on this same machine.
+This is something different from micro services.
+Microservice communicate with each other at some point
+to provide a consistent frontend.
+Mutli monoliths on the other hands should *not* communicate
+with each other and are isolated.
+
+## Nix config
+
 I build this by relying on the [module system](https://nixos.wiki/wiki/Module).
 The main entrypoint
 is an ordinary nixos [configuration file](https://nixos.org/manual/nixos/stable/index.html#sec-configuration-file),
@@ -103,7 +120,8 @@ This is how the root configuration file looks
     ];
     ...
 ```
-So that is has the same structure as the `configuration.nix` I use on [my laptop](https://github.com/jappeace/linux-config/blob/lenovo-amd/configuration.nix#L35).
+So that is has the same structure as the `configuration.nix` I use on
+[my laptop](https://github.com/jappeace/linux-config/blob/lenovo-amd/configuration.nix#L35).
 Except I'm pulling in a bunch of modules aside from the hardware config.
 The `imports` tell nixos to also include those other configuration files.
 However before looking into that, I need to explain how to run this entrypoint.
