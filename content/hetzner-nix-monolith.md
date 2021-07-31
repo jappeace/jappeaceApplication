@@ -8,7 +8,7 @@ OPTIONS: toc:nil
 
 I redid how my services are structured.
 Instead of running each project on a separate VM,
-they're now all running on a dedicated hetzner machine.
+they're now all running on a dedicated Hetzner machine.
 This is what I call the nix multi monolith machine
 (hence forth called NMMM,
 pronounced like tasting something delicious prefixed with an N).
@@ -31,16 +31,16 @@ product market fit yet,
 and time to market is important,
 I think the NMMM is the best.
 
-[^cheap]:   The price of a [hetzner](https://www.hetzner.com/dedicated-rootserver)
-        machine is 45 euro's per month.
-        This gives you 1 terrabyte of raid-1 disks,
+[^cheap]:   The price of a [Hetzner](https://www.hetzner.com/dedicated-rootserver)
+        machine is `€ 45` euro's per month.
+        This gives you 1 terabyte of raid-1 disks,
         12 threads and 64g of ram.
         You [currently](https://aws.amazon.com/blogs/aws/new-t3-instances-burstable-cost-effective-performance/)
-        pay around 240 dollar per month for a t3.2xlarge instance.
+        pay around `$ 240` dollar per month for a t3.2xlarge instance.
         That's halve the amount of ram and only 8 vCPU's (not dedicated threads)
         and that doesn't include network cost or storage.
-        It's safe to say that hetzner is *cheap*.
-        <p>Of course on aws you can get a much smaller machine for a cheaper price per month,
+        It's safe to say that Hetzner is *cheap*.
+        <p>Of course on AWS you can get a much smaller machine for a cheaper price per month,
         which may sound good initially,
         but as soon as you need larger or more machines,
         a dedicated machine become much more cost effective.
@@ -62,7 +62,7 @@ I think the NMMM is the best.
                 to ensure the data remains isolated.
                 <p>The same goes for anything else services need,
                 if a service needs the filesystem,
-                just prefix some folder with their domain name, tenanting complete.
+                just prefix some folder with their domain name.
                 I don't have to deal with buckets or networking issues.
                 and if something doesn't work,
                 9 out of 10 times systemd will tell me exactly what's broken,
@@ -76,16 +76,16 @@ I think the NMMM is the best.
               `nixops scp` only works with `--from` and `--to` flags.
               It refuses to accept the ordinary scp syntax, for no reason.
               <p>There are countless other examples of this kind of friction.
-              I just get frustrated by writing about it so I won't,
-              however the more important thing this does
+              I just get frustrated by writing about it, so I won't.
+              However the more important thing this does
               is to cut out one of the variables during deployment.
-              I can cut out both nixops and the aws variables,
-              after all I don't need to manage aws, so why would I use nixops? </p>
+              I can cut out both Nixops and the AWS variables,
+              after all I don't need to manage AWS, so why would I use nixops? </p>
 
 [^fast]: Finally the last advantage 
          is that setting up a new service is *fast*.
          No need to wait ages for an instance to boot,
-         starting a process is instant.
+         starting a process is nearly instant after all.
          This is sort off the same as `3`, but in this case we're saying AWS 
          is slow, rather then nixops having poor UX.
 
@@ -168,8 +168,8 @@ It runs `make deploy_` from a shell that sets the `NIX_PATH`
 to a [pinned nixpkgs](https://jappieklooster.nl/pinning-nixops-builds.html).
 This uses `nixos-rebuild switch`, just like on my laptop.
 However I specify the target host to be one of the
-domains hosted on the hetzner machine.
-All domains domains lead to the hetzner machine.
+domains hosted on the Hetzner machine.
+All domains domains lead to the Hetzner machine.
 
 But how does the machine decide which HTTP request goes to what service?
 After all they all arrive on the same machine now,
@@ -394,7 +394,7 @@ consultancies should also look into this approach.
 
 On several occasions I've mentioned that `configuration.nix` is
 just like on my laptop.
-Originally I even copied pasted the postgres
+Originally I even copied pasted the Postgres
 configuration from my laptop to this machine.
 It just works.
 This is one of the big benefits you get out of nix,
@@ -407,3 +407,17 @@ Fortunately there is an alternative project for secret management called
 Although I'm a bit skeptical over [age](https://github.com/FiloSottile/age),
 it seems to new to trust.
 You should do your diligence before using that in production.
+
+## Conclusion
+
+I described this NMMM setup that's working really well for me.
+Furthermore I think I gave compelling reasons for
+others to try this out.
+Perhaps I liberated some people from their
+[virtual insanity](https://www.youtube.com/watch?v=4JkIs37a2JE).
+Let me know if I've inspired you to change your course of action,
+or you've some compelling reasons not to use this approach.
+Because how to structure services is a large decision,
+I find this all fascinating.
+
+
