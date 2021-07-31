@@ -4,6 +4,8 @@ CATEGORY: reflection
 Tags: nix, programming, ops
 OPTIONS: toc:nil
 
+![a NMMM computer](images/2021/computer-nixos-monolith.png)
+
 I redid how my services are structured.
 Instead of running each project on a separate VM,
 they're now all running on a dedicated hetzner machine.
@@ -396,4 +398,3 @@ configuration from my laptop to this machine.
 It just works.
 This is one of the big benefits you get out of nix,
 it's called the [copy-paste monad](https://www.youtube.com/watch?v=OyfBQmvr2Hc&t=2305s).
-
