@@ -1,99 +1,125 @@
-TITLE: Hetzner nix monolith.
-DATE: 2017-10-02
+TITLE: The Nix mutli-monolith machine.
+DATE: 2021-07-30
 CATEGORY: reflection
 Tags: nix, programming, ops
 OPTIONS: toc:nil
-Status: draft
 
 I redid how my services are structured.
 Instead of running each project on a separate VM,
 they're now all running on a dedicated hetzner machine.
-The configruation is done with nix.
-That is to say, any change on the machine is reflected
-within nix files, in theory.
-The big exceptions being the database and temporary files.
+This is what I call the nix multi monolith machine
+(hence forth called NMMM,
+pronounced like tasting something delicious with an n prefixed).
+There are some really big advantages to the NMMM approach.
 
-This post describes why I did this in the first place,
-then we move on to how this was done in nix,
-and finally there is a discussion segment because this
-goes against the convention.
+## Why use a NMMM?
+Setting up NMMM has a couple of advantages:
 
-## Why bother with this?
-Setting it up like this has a couple of advantages:
++ NMMM is cheap [^cheap]
++ NMMM is simple [^simple]
++ NMMM doesn't need nixops [^no-nixops]
++ NMMM spins out new services fast [^fast]
 
-1. It's incredibly cheap
-2. The setup is simple
-3. No need for nixops.
-4. Spinning out new services is really fast.
+Obviously there are also some disadvantages
+to this approach,
+which get answered in the [discussion section](#discussion).
+But for a typical startup situation,
+where money is tight and there is no
+product market fit yet,
+I think NMMM is the best.
 
-#### 1
-The price of a [hetzner](https://www.hetzner.com/dedicated-rootserver)
-machine is 45 euro's per month.
-This gives you 1 terrabyte of raid-1 disks,
-12 threads and 64g of ram.
-You [currently](https://aws.amazon.com/blogs/aws/new-t3-instances-burstable-cost-effective-performance/)
-pay around 240 dollar per month for a t3.2xlarge instance.
-That's halve the amount of ram and only 8 vCPU's (not dedicated threads)
-and that doesn't include network cost or storage.
-It's safe to say that hetzner is *cheap*.
+[^cheap]:   The price of a [hetzner](https://www.hetzner.com/dedicated-rootserver)
+        machine is 45 euro's per month.
+        This gives you 1 terrabyte of raid-1 disks,
+        12 threads and 64g of ram.
+        You [currently](https://aws.amazon.com/blogs/aws/new-t3-instances-burstable-cost-effective-performance/)
+        pay around 240 dollar per month for a t3.2xlarge instance.
+        That's halve the amount of ram and only 8 vCPU's (not dedicated threads)
+        and that doesn't include network cost or storage.
+        It's safe to say that hetzner is *cheap*.
 
-#### 2
-The setup is simple because you 
-don't have to do networking.
-Everything is on the same machine,
-which means you only have to do
-inter process communication.
-Furthermore, all services communicate to the same database
-process,
-which uses the databases' internal tenanting system
-to ensure the data remains isolated.
+[^simple]: The setup is simple because you 
+                don't have to do networking.
+                Everything is on the same machine,
+                which means you only have to do
+                inter process communication.
+                Furthermore, all services communicate to the same database
+                process,
+                which uses the databases' internal tenanting system
+                to ensure the data remains isolated.
+                <p>The same goes for anything else services need,
+                if a service needs the filesystem,
+                just prefix some folder with their domain name, tenanting complete.
+                I don't have to deal with buckets or networking issues.
+                and if something doesn't work,
+                9 out of 10 times systemd will tell me exactly what's broken,
+                no need to dive into the AWS CLI.</p>
 
-The same goes for anything else services need,
-if a service needs the filesystem,
-just prefix some folder with their domain name, tenanting complete.
-I don't have to deal with buckets or networking issues.
-and if something doesn't work,
-9 out of 10 times systemd will tell me exactly what's broken,
-no need to dive into the AWS CLI.
+[^no-nixops]: For me nixops causes a lot of needles friction
+              which I like to avoid.
+              For example,
+              the nixops developers decided to 
+              change how the CLI works from the bash based counterparts.
+              `nixops scp` only works with `--from` and `--to` flags.
+              It refuses to accept the ordinary scp syntax, for no reason.
+              <p>There are countless other examples of this kind of friction.
+              I just get frustrated by writing about it so I won't,
+              however the more important thing this does
+              is to cut out one of the variables during deployment.
+              I can cut out both nixops and the aws variables,
+              after all I don't need to manage aws, so why would I use nixops? </p>
 
-#### 3
-For me nixops causes a lot of needles friction
-which I like to avoid.
-For example,
-the nixops developers decided to 
-change how the CLI works from the bash based counterparts.
-`nixops scp` only works with `--from` and `--to` flags.
-It refuses to accept the ordinary scp syntax, for no reason.
+[^fast]: Finally the last advantage 
+         is that setting up a new service is *fast*.
+         No need to wait ages for an instance to boot,
+         starting a process is instant.
+         This is sort off the same as `3`, but in this case we're saying AWS 
+         is slow, rather then nixops having poor UX.
 
-There are countless other examples of this kind of friction.
-I just get frustrated by writing about it so I won't,
-however the more important thing this does
-is to cut out one of the variables during deployment.
-I can cut out both nixops and the aws variables,
-after all I don't need to manage aws, so why would I use nixops? 
+## What is NMMM
+The Nix mutli-monolith machine (NMMM) has 
+at the core a dedicated machine.
+A dedicated machine means no virtualization
+in other word it's bear metal.
 
-#### 4
-Finally the last advantage 
-is that setting up a new service is *fast*.
-No need to wait ages for an instance to boot,
-starting a process is instant.
-This is sort off the same as `3`, but in this case we're saying AWS 
-is slow, rather then nixops having poor UX.
+The second major part of this configuration is nix.
+This means that every piece of software and 
+it's configuration is described in nix files.
+More on that in the [nix config](#nix-config) section.
 
-## The configuration 
+The third major part is multi-monoliths.
+Meaning that you can have multiple,
+unrelated services running on the same machine.
+This is something different from micro services.
+[Microservices](https://microservices.io/) communicate with each other at some point
+to provide a consistent frontend.
+The link calls this 'loosly coupled',
+or as I liked to call it: They chat with each other.
+Monoliths on the other hands should *not* communicate
+with each other and are isolated.
+They have independent frontends and backends.
+In other words, no chatting between monoliths.
+They just stand there silent and ominous.
+Like in the movie:
+
+<iframe width="100%" height="400px" src="https://www.youtube.com/embed/cHWs3c3YNs4" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## <a id="nix-config"></a> Nix config
+
 I build this by relying on the [module system](https://nixos.wiki/wiki/Module).
 The main entrypoint
 is an ordinary nixos [configuration file](https://nixos.org/manual/nixos/stable/index.html#sec-configuration-file),
-furthermore, all modules are also just ordinary configuration files.
+furthermore, just like all other modules.
 So we got a very versatile one trick pony!
-This is how the root configuration file looks
+
+Assuming `/` is the root of the project,
+this is how the root configuration file looks
 `/nix/hetzner/configuration.nix`:
 
 ```nix
 { config, pkgs, ... }:
 
 {
-  nixpkgs.config = import ../config.nix; # https://nixos.org/manual/nixpkgs/stable/#chap-packageconfig
   imports =
     [ 
       ./hardware-configuration.nix
@@ -103,14 +129,17 @@ This is how the root configuration file looks
     ];
     ...
 ```
-So that is has the same structure as the `configuration.nix` I use on [my laptop](https://github.com/jappeace/linux-config/blob/lenovo-amd/configuration.nix#L35).
-Except I'm pulling in a bunch of modules aside from the hardware config.
-The `imports` tell nixos to also include those other configuration files.
-However before looking into that, I need to explain how to run this entrypoint.
+
+That is has the same structure as the `configuration.nix` I use on
+[my laptop](https://github.com/jappeace/linux-config/blob/lenovo-amd/configuration.nix#L35).
+Except I'm pulling in a bunch of modules aside from the hardware config
+trough the `imports` mechanism.
+`imports` tells nixos to also include those other configuration files.
+However before looking into those specific files, I need to explain how to run this entrypoint.
 I call this configuration from my `/makefile`:
 ```make
 deploy:
-	nix-shell nix/nixops-shell.nix --run "make deploy_"
+	nix-shell nix/nixpkgs-shell.nix --run "make deploy_"
 
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
@@ -119,12 +148,17 @@ deploy_:
 ```
 
 `make deploy` will deploy if called form the root of the project.
+This will run `make deploy_` from a shell that sets the `NIX_PATH`
+to a pinned nixpkgs like done in [here](https://jappieklooster.nl/pinning-nixops-builds.html).
 This uses `nixos-rebuild switch`, just like on my laptop.
-However I specify the target host to be one of the hosted service domains
-which all point to the same hetzner machine.
+However I specify the target host to be one of the
+domains hosted on the hetzner machine.
+All domains domains lead to the hetzner machine.
 
-So how does the machine know which HTTP request send to what service?
-Nginx can do that! `/nix/hetzner/configuration.nix`:
+But how does the machine know which HTTP request send to what service?
+[Nginx](https://www.nginx.com/) can do that!
+this is a bit later in the same file
+`/nix/hetzner/configuration.nix`:
 
 ```nix
   ...
@@ -140,7 +174,7 @@ Nginx can do that! `/nix/hetzner/configuration.nix`:
 ```
 We let the individual services decide how to configure the virtual
 hosts.
-Virtual hosts allow us to specify configurations per domain.
+Virtual hosts allow us to specify configurations per [domain name](http://nginx.org/en/docs/http/request_processing.html).
 For example the [massapp.org](https://massapp.org/)
 host looks like this `/massapp.org/nix/vhost.nix`:
 
@@ -148,7 +182,7 @@ host looks like this `/massapp.org/nix/vhost.nix`:
   lib = import ./lib.nix;
   sslBools = {
     forceSSL = true;
-    enableACME = true;
+    enableACME = true; # E
   };
   base = locations:
     {
@@ -167,18 +201,30 @@ in {
 The main thing we're saying at `A` is that the [massapp.org](https://massapp.org/)
 domain should point to the port defined at `D`.
 Furthermore in `B` we're redirecting all `www` traffic to `A`.
-which strips off `www` from `www.masssapp.org` into `massapp.org`.
+which strips off `www` from `www.masssapp.org` resulting into `massapp.org`.
 For some reason people still yearn to type `www`.
-Finally in `C` we strip of the https,
-which the proxy will remake into an `http` connection.
-This means our application doesn't have to deal with certificates or SSL.
-Which is safe because this traffic is internal. 
+With this redirect we trash their pointless dreams and desires.
+Finally in `C` we strip of the HTTPS,
+which the proxy will remake into an HTTP connection.
+Traffic at this point is internal, so [SSL](http://www.steves-internet-guide.com/ssl-certificates-explained/)
+has served it's purpose
+and we can safely strip it.
+In practice this means our application doesn't have to deal with certificates or SSL.
+Like this we can also leverage nixos builtin [let's encrypt](https://letsencrypt.org/)
+support without even thinking about it in `E` [^breaks-often].
 
-So every service or application gets a unique port.
-We have to bind a program to that port.
-within the massapp module, another `configuration.nix` file, I register
-the systemd service which runs the main app `/massapp.org/nix/massapp.nix`:
-```
+[^breaks-often]: It's built in but this used to break quite a lot, it has gotten better in recent months.
+
+Every domain gets a unique port.
+We have to bind a program to that port, which is the monolith.
+For example let's look at the massapp module.
+Herein I register
+a systemd service which runs the main massapp executable.
+This is another file like `configuration.nix`
+(just like my laptop! The one trick pony)
+`/massapp.org/nix/massapp.nix`:
+
+```nix
 { config, pkgs, ... }:
 let
     massapp = pkgs.callPackage ../webservice/default.nix { }; # A
@@ -207,9 +253,17 @@ by setting the environment variable `PORT`.
 [Yesod](https://www.yesodweb.com/) has a configuration built in for that by default,
 and massapp is a [Yesod](https://www.yesodweb.com/) application.
 This would work for any other application, you
-can even pass CLI arguments like this just by modifying the ExecStart.
+can even pass CLI arguments like this just by modifying the `ExecStart`.
 
-## Database integration
+Since every domain get's it's own systemd unit,
+logging is automatically collected in journalctl.
+And nixos-rebuild will know if a service failed trough exit codes.
+
+I think that's about it for configuration,
+aside from the [database](#database).
+Which get's it's own section because it's outside of the HTTP request cycle.
+
+## <a id="database"></a> Database integration
 It's not particularly hard setting up the database process
 `/nix/hetzner/configuration.nix`:
 
@@ -264,7 +318,7 @@ This means I can log in from within the machine with a root shell
 with no fuzz.
 Connections from outside the machine are refused.
 
-## Discussion
+## <a id="discussion"></a> Discussion
 This setup goes against [advice](https://www.reddit.com/r/sysadmin/comments/92qhuu/should_i_put_multiple_services_on_a_single_vm_or/)
 from sysadmins, where they recommend
 you split up everything across VM's as much as possible.
