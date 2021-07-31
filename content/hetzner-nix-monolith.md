@@ -1,5 +1,5 @@
 TITLE: The Nix mutli-monolith machine (NMMM).
-DATE: 2021-07-30
+DATE: 2021-07-31 15:05
 CATEGORY: reflection
 Tags: nix, programming, ops
 OPTIONS: toc:nil
