@@ -20,6 +20,7 @@ In Haskell we have:
 + [Data.ByteString](https://hackage.haskell.org/package/bytestring-0.11.1.0/docs/Data-ByteString.html)
 + [Data.ByteString.Lazy](https://hackage.haskell.org/package/bytestring-0.11.1.0/docs/Data-ByteString-Lazy.html#t:ByteString)
 + [Data.Vector.Unboxed Char](https://hackage.haskell.org/package/vector-0.12.3.0/docs/Data-Vector-Unboxed.html)
++ [Symbol](https://hackage.haskell.org/package/base-4.15.0.0/docs/GHC-TypeLits.html#t:Symbol)
 
 what the fuck?
 Seriously what the fuck happened?
@@ -41,10 +42,19 @@ For example J. Abrahamson says:
 
 > You absolutely should use `Text` if you're dealing with a human language string. You should also be really careful to treat it with care since human language strings are not easily amenable to computer processing. If your string is better thought of as a machine string, you probably should use `ByteString`.
 
-There is no real explenation of *why* to use text.
-
+There is no real explanation of *why* to use text.
+It's just an appeal to authority: "you really should use text or bytesting".
+And I'm not saying he's wrong, I just want to know why.
 However in an earlier paragraph he hints to why Text is so much better then string:
 
 > To clarify this distinction take note that there's no guarantee that `unpack . pack` witnesses an isomorphism, that the preferred ways of converting from `Text` to `ByteString` are in `Data.Text.Encoding` and are partial, and that there's a whole sophisticated plug-in module [`text-icu`](https://hackage.haskell.org/package/text-icu) littered with complex ways of handling human language strings.
 
 
+So to pull this apart, the isomorphism comment says that there maybe data loss
+if you convert from a string to a text and back (or a Text and bytestring, it's ambiguous).
+He adds fuel to the fire by saying that even if you'd the 'recommended' functions
+in `Data.Text.Encoding`, they are partial.
+Partiality means that they either crash or return some error on doing this conversion.
+And if you need better support use this other package (which binds to icu, a c library).
+In other words, its complex to convert between all strings,
+and it would've been easy with an isomorphism but there is no such thing.
