@@ -17,10 +17,10 @@ There are some really big advantages to the NMMM approach.
 ## Why use a NMMM?
 Setting up NMMM has a couple of advantages:
 
-+ NMMM is cheap [^cheap]
-+ NMMM is simple [^simple]
-+ NMMM doesn't need nixops while benefiting from nix [^no-nixops]
-+ NMMM spins out new services fast [^fast]
++ the NMMM is cheap [^cheap]
++ the NMMM is simple [^simple]
++ the NMMM doesn't need nixops while benefiting from nix [^no-nixops]
++ the NMMM spins out new services fast [^fast]
 
 Obviously there are also some disadvantages
 to this approach,
@@ -29,7 +29,7 @@ But for a typical startup situation,
 where money is tight and there is no
 product market fit yet,
 and time to market is important,
-I think NMMM is the best.
+I think the NMMM is the best.
 
 [^cheap]:   The price of a [hetzner](https://www.hetzner.com/dedicated-rootserver)
         machine is 45 euro's per month.
@@ -40,6 +40,16 @@ I think NMMM is the best.
         That's halve the amount of ram and only 8 vCPU's (not dedicated threads)
         and that doesn't include network cost or storage.
         It's safe to say that hetzner is *cheap*.
+        <p>Of course on aws you can get a much smaller machine for a cheaper price per month,
+        which may sound good initially,
+        but as soon as you need larger or more machines,
+        a dedicated machine become much more cost effective.
+        And you'll need a larger machine eventually.
+        If your idea fails you probably want to keep it online for your resume,
+        which would make it one of the monoliths,
+        or it succeeds and you need a bigger machine to deal with memory volatility.
+        I happened to need a large machine to do video editing for [videocut.org](https://videocut.org/).
+        </p>
 
 [^simple]: The setup is simple because you 
                 don't have to do networking.
@@ -102,11 +112,7 @@ Monoliths on the other hands should *not* communicate
 with each other and are isolated.
 They have independent frontends and backends.
 In other words, no chatting between monoliths.
-They just stand there silent and ominous.
-Like in the movie:
-
-<iframe width="100%" height="400px" src="https://www.youtube.com/embed/cHWs3c3YNs4" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
+They just stand there [silent and ominous](https://www.youtube.com/watch?v=cHWs3c3YNs4).
 I feel this approach falls inline with the [monlith first](https://martinfowler.com/bliki/MonolithFirst.html)
 approach,
 but rather then a single monolith I can deploy many
@@ -117,7 +123,7 @@ completely unrelated projects.
 I build this by relying on the [module system](https://nixos.wiki/wiki/Module).
 The main entrypoint
 is an ordinary nixos [configuration file](https://nixos.org/manual/nixos/stable/index.html#sec-configuration-file),
-other modules are also shaped like this even
+other modules in general are also shaped like this even
 though the entry point depends on them.
 So we got a very versatile one trick pony!
 
@@ -139,10 +145,8 @@ the root configuration looks like this:
     ...
 ```
 
-That is has the same structure as the `configuration.nix` I use on
+That has the same structure as the `configuration.nix` I use on
 [my laptop](https://github.com/jappeace/linux-config/blob/lenovo-amd/configuration.nix#L35).
-Like I said it's a versatile one trick pony,
-the laptop and server share the same configuration structure.
 The difference this example has with my laptop is that
 I'm pulling in a bunch of additional modules aside from the hardware config
 trough the `imports` mechanism.
@@ -216,7 +220,7 @@ in {
 The main thing we're saying at `A` is that the [massapp.org](https://massapp.org/)
 domain should point to the port defined at `D`.
 Furthermore in `B` we're redirecting all `www` traffic to `A`.
-which strips off `www` from `www.masssapp.org` resulting into `massapp.org`.
+Which strips off `www` from `www.masssapp.org` resulting into `massapp.org`.
 For some reason people still yearn to type `www`.
 With this redirect we trash the peoples' pointless dreams and desires.
 Finally in `C` we strip of the HTTPS,
@@ -225,12 +229,14 @@ Traffic at this point is internal, so [SSL](http://www.steves-internet-guide.com
 has served it's purpose
 and we can safely strip it.
 In practice this means our application doesn't have to deal with certificates or SSL.
-Like this we can also leverage nixos builtin [let's encrypt](https://letsencrypt.org/)
+This leverages nixos [built-in](https://nixos.wiki/wiki/Nginx) [let's encrypt](https://letsencrypt.org/)
 support without even thinking about it in `E` [^breaks-often].
 
-[^breaks-often]: It's built in but this used to break quite a lot, it has gotten better in recent months.
+[^breaks-often]: It's built in but this used to break quite a lot,
+                 this is because it's enterly reliant on the graces of let's encrypt service.
+                 Which may refuse you to give a certificate for all [kinds of reasons](https://letsencrypt.org/docs/rate-limits/).
 
-Since we just bound all incoming domains gets to a unique port,
+Since we just bound all incoming domains to a unique port,
 we have to bind a program to that port as well.
 This program is our main application code, or the monolith.
 For example let's look at the massapp module.
@@ -246,7 +252,7 @@ let
     massapp = pkgs.callPackage ../webservice/default.nix { }; # A
 in {
       ...
-      systemd.services.massapp =
+      systemd.services.massapp = # D
         {
         description = "Massapp webservice";
         serviceConfig = {
@@ -270,13 +276,11 @@ by setting the environment variable `PORT`.
 and massapp is a [Yesod](https://www.yesodweb.com/) application.
 This would work for any other application, you
 can even pass CLI arguments like this just by modifying the `ExecStart`.
-Since every domain get's it's own systemd unit,
-logging is automatically collected in journalctl.
-And nixos-rebuild will know if a service failed trough exit codes.
-
-I think that's about it for configuration,
-aside from the [database](#database).
-Which get's it's own section because it's outside of the HTTP request cycle.
+At `D` we give this systemd unit the name massapp, 
+by doing this std out is logged in journalctl and tagged with the unit name.
+Nixos-rebuild will now also know if a service failed trough exit codes.
+For example if the service can't find the database.
+Which we discuss how to setup in the [database](#database) section.
 
 ## <a id="database"></a> Database integration
 This is the database configuration, again in the entrypoint
@@ -312,11 +316,11 @@ This is the database configuration, again in the entrypoint
 
 The initial script`C` is only run when the database
 is started for the first time,
-after that you need to manage it by hand.
+after that you need to manage users by hand.
 However I still add these users to script to keep track
 of them if I ever need to abandon this system.
 Like this at least the users will exist on the new machine.
-I give every service user superuser access in `C`.
+I give every monoliths' user superuser access in `C`.
 This isn't the best for security, but it's really convenient.
 Besides if a hacker manages to get a shell for the system
 or a shell for the database it's already to late for me anyway.
@@ -330,9 +334,8 @@ logging all statements [slows down](https://dba.stackexchange.com/questions/3014
 However, my services are hardly taxed at the moment,
 they are taxed but no where near justifying not logging.
 
-Authentication is enabled in `A` without password for local host.
-From a root shell within the machine I can login without password
-Connections from outside the machine are refused.
+Localhost connections can authenticate without password in `A`.
+Outside connections are ignored, they're not even asked for a password.
 
 [^it-breaks-always]: When do things break you ask? Well of course all software is broken so we always need to enable this.
 
@@ -342,19 +345,21 @@ from sysadmins, where they recommend
 you split up everything across VM's as much as possible.
 I reject [their hypothesis](https://www.youtube.com/watch?v=nyErR1FS1_0). 
 I mean they argue for splitting services,
-but the tool used for splitting shouldn't be dogmatic always be a VM.
+but the tool used for splitting shouldn't be dogmatic
+and always result in choosing a VM.
 Using multiprocessing,
 and tenanting for specific software packages is good enough.
 [myron semacks](https://www.reddit.com/r/sysadmin/comments/92qhuu/should_i_put_multiple_services_on_a_single_vm_or/e37r7pm/)
-reasons seems to specifically choose VM's 
-because of various windows related oddities
-then anything else.
+at least gives some arguments on why he chooses to use a VM.
+However his reasons for choosing a VM's
+revolve around windows related oddities.
 For example:
 
 > Think about what happens when you need to upgrade the OS, which typically means you make a new VM to replace the old one.
 
 We can seamlessly upgrade nixos pretty much always.
-I've had configuration files change which caused errors, but these need to be solved before deploying.
+I've had configuration files change which caused errors when upgrading nixos stable versions,
+but these errors need to be solved before deploying.
 The systems I use with nixos themselves have always been stable.
 Or: 
 
@@ -364,37 +369,41 @@ How would I even fat finger a network setting?
 I have to modify a file, commit the file and deploy to do this.
 At this point you can't even call it fat fingering.
 And even if you somehow screw up a network setting deliberately,
-you can reboot from an older generation and problem gone.
+you can reboot from an older generation and the problem is gone.
 The difference here is that this deployment is nix based,
 which allows me to manage the complexity of the monolith
 much more efficiently and reliably.
 
-In the past I've used it as well to quickly drag a new website out of
-the ground to impress potential clients.
-Nothing is more impressive then have a functioning website,
-*the next day*.
-What do I have to do?
-I just have to get the domain, for example `newdomain.com`,
-copy over the `massapp.org` folder into `newdomain.com`,
-hook it into the main config`/nix/hetzner/configuration.nix`,
-setup the database, redo branding and deploy.
+NMMM can also be used to impress potential clients
+by quickly creating new websites.
+What are the steps?
+
+1. Get the new domain, for example `newdomain.com`,
+2. copy over the `massapp.org` folder into `newdomain.com`,
+3. hook it into the main config`/nix/hetzner/configuration.nix`,
+4. setup the database,
+5. redo branding 
+6. deploy.
+
 That's it.
 That's two hours of work, maybe three if something goes wrong.
-
-If you're having doubts like me about nixops and want to replace it,
-you may run into secret management issues.
-Fortunately there is an alternative project to do that called
-[agenix](https://github.com/ryantm/agenix).
-Although I'm a bit skeptical over [age](https://github.com/FiloSottile/age),
-it seems to new to trust.
-You should do your diligence before using that in production.
-So I guess aside from startups,
+Nothing is more impressive then have a functioning website,
+*the next day*.
+I guess aside from startups,
 consultancies should also look into this approach.
 
 On several occasions I've mentioned that `configuration.nix` is
 just like on my laptop.
-I'd add to that that originally I copied pasted the postgres
+Originally I even copied pasted the postgres
 configuration from my laptop to this machine.
 It just works.
 This is one of the big benefits you get out of nix,
 it's called the [copy-paste monad](https://www.youtube.com/watch?v=OyfBQmvr2Hc&t=2305s).
+
+If you're having doubts about nixops and want to replace it,
+you may run into secret management issues.
+Fortunately there is an alternative project for secret management called
+[agenix](https://github.com/ryantm/agenix).
+Although I'm a bit skeptical over [age](https://github.com/FiloSottile/age),
+it seems to new to trust.
+You should do your diligence before using that in production.
