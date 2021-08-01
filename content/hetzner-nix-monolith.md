@@ -3,6 +3,7 @@ DATE: 2021-07-31 15:05
 CATEGORY: reflection
 Tags: nix, programming, ops
 OPTIONS: toc:nil
+Modified: 2021-08-01 15:09
 
 ![a NMMM computer](images/2021/computer-nixos-monolith.png)
 
@@ -421,3 +422,11 @@ Because how to structure services is a large decision,
 I find this all fascinating.
 
 
+## Further reading
+
++ [The NixOS configuration file explained](https://nixos.org/manual/nixos/stable/index.html#sec-configuration-file)
++ [NixOS module system](https://nixos.wiki/wiki/Module)
++ [Setting up a Hetzner machine with NixOS script](https://gist.github.com/nh2/ebc27311731f53ee623ae781ca25103f)
++ General nix advice:
+    + [nix.dev](https://nix.dev/)
+    + [nix 'pills'](https://nixos.org/guides/nix-pills/)
