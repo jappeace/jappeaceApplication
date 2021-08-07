@@ -36,7 +36,7 @@ we just want to use it.
 As does the author of the blogpost so he gives an example
 function with the following type signature.
 
-```
+```haskell
 assignIndexToVariables :: AST VariableName -> Variables -> AppM (AST Int)
 ```
 
@@ -45,7 +45,8 @@ You describe what you want instead with the MTL type classes on top of a
 polymorhic variable `m`.
 That is to say, we want to have `MonadError String` as anologue to `ExceptT String`,
 and `MonadState (M.Map VariableName Int)` as analogue to `State (M.Map VariableName Int)`.
-```
+
+```haskell
 assignIndexToVariables ::
     MonadError String m =>
     MonadState (M.Map VariableName Int) m =>
@@ -58,7 +59,7 @@ Both invocations are allowed now:
 
 ```haskell
 main :: IO ()
-main =
+main = do
  ...
  print $ flip evalState mempty $ runExceptT $ assignIndexToVariables ast vars
  print $ runExcept $ flip evalStateT mempty $ assignIndexToVariables ast vars
@@ -101,14 +102,12 @@ The compiler figures out the type of `moreMonad` by looking at how it's used,
 since we pattern matched on an `Either` in `eitherFive` it can only possibly be `Either`,
 *in that situation*.
 But in other situations, like `maybeFive` it can still be something else.
-I once held a [presentation](https://www.youtube.com/watch?v=MPlrAe-XYMU&t=300s) about this as well
-that goes into detail explaining everything.
-
+I once held a [presentation](https://www.youtube.com/watch?v=MPlrAe-XYMU&t=300s) 
+that explains everything about this.
 
 ## On composition and constraints
 
-Let's say for some reason our would need `moreMonad`
-for some reason:
+Let's say `assignIndexToVariables` would need `moreMonad` for some reason:
 
 ```haskell
 assignIndexToVariables ::
@@ -122,9 +121,14 @@ assignIndexToVariables _ _ = do
 
 This would just work, because both [`MonadError`](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Except.html) and
 [`MonadState`](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-State-Class.html#t:MonadState) imply `Monad` in their definitions.
+Now let's add a [MacGyver](https://en.wikipedia.org/wiki/MacGyver) [^macgyver]
+logging function as follows:
 
-
-Now let's add a MacGyver logging function as follows:
+[^macgyver]: MacGyver is a TV character who was known to get out of
+                precarious situations with absurdly little in terms of
+                resources and a lot of improvisation, our logging function feels similar at this point.
+                Another term that could've been used was Not Invented Here,
+                but I liked MacGyver better.
 
 ```haskell
 macGyverLog :: MonadIO m => String -> m ()
@@ -175,8 +179,8 @@ src/Lib.hs:31:5: error:
 
 ```
 The possible fix in this case is correct,
-but sort off have to know what a context is, and a type signature to
-decipher that error message[^why-dont-they].
+but we sort off have to know what a context is,
+and a type signature to decipher that error message[^why-dont-they].
 The compiler is saying in incomprohensible error speak that you need to
 add a constraint `MonadIO m` like so:
 
@@ -343,40 +347,144 @@ No idea why you'd do that, no-one cares about transformer details.
 
 ## Reinterpreting IO or the MTL style
 
-I have to say I don't do this particular part on a regular basis.
-I'm fine with `MonadIO` in general,
+I don't do this particular part on a regular basis.
+In most situations `MonadIO` is fine.
 However it doesn't allow us to reinterpret effects that are
 using `IO`.
-At least not without passing an explicit stub in,
-which would defeat the purpose of using mtl in the first place.
-So if you ever feel the need for reinterpreting these effects,
-such as when writing unit tests, you can fallback to this section.
+As an example of reinterpretation,
+consider a test you where would want to meaure how often your
+`mcGyverLog` function is being called.
+This section will show you how to do that.
 
-Let's begin with the cause of our IO.
-`macGyverLog`.
-How can we rewrite this so that it doesn't use IO?
+First we start by mtl-izing our IO based code.
+How can we rewrite `mcGyverLog` so that it doesn't use `IO` explicetly?
 If we look at the source the function that needs IO is `putStrLn`.
-It's typesignature is `String -> IO ()`,
-so what if we just put it in a typeclass like mtl is doing?
+It's type signature is `String -> IO ()`.
+We want that `IO` to be an `m`, 
+so we introduce a new typeclass for our [not invented here](https://hackage.haskell.org/package/monad-logger-0.3.36/docs/Control-Monad-Logger.html#t:MonadLogger)
+log:
 
 ```haskell
-class (Monad m) => MacGyverLog m where
-    macGyverLog :: String -> m ()
+class (Monad m) => NotInventedHereLog m where
+    nihLog :: String -> m ()
 ```
-And we know how to figure this out for `IO` in specific:
+
+We already what implementation `m` has if it's an
+`IO` instance:
+
 ```haskell
-instance MacGyverLog IO where
-    macGyverLog :: String -> IO ()
-    macGyverLog = putStrLn
+instance NotInventedHereLog IO where
+    nihLog :: String -> IO ()
+    nihLog = putStrLn
 ```
 
+To make our previous example work we need to replace our
+function definition with `MonadIO` to `NotInventedHereLog` and replace the `macGyverLog`
+calls with `nihLog`:
 
+```haskell
+assignIndexToVariables2 ::
+  NotInventedHereLog m =>
+  MonadError String m =>
+  MonadState (M.Map VariableName Int) m =>
+  AST VariableName -> Variables -> m (AST Int)
+assignIndexToVariables2 ast variables = forM ast $ \var -> do
+    nihLog "start more monad"
+    _z <- moreMonad
+    ...
+```
 
-I already hear the readers cringe realizing we secretly infected
-our program with IO.
-Can't we be pure?!
-YES.
-We have to just dive deeper in to the mtl rabbit hole.
+Running this will give us the following type error:
+```
+src/Lib.hs:54:52: error:
+    • No instance for (NotInventedHereLog
+                         (StateT (M.Map VariableName Int) (ExceptT [Char] IO)))
+        arising from a use of ‘assignIndexToVariables2’
+    • In the second argument of ‘($)’, namely
+        ‘assignIndexToVariables2 ast vars’
+      In the first argument of ‘runExceptT’, namely
+        ‘(flip evalStateT mempty $ assignIndexToVariables2 ast vars)’
+      In the second argument of ‘(=<<)’, namely
+        ‘runExceptT
+           (flip evalStateT mempty $ assignIndexToVariables2 ast vars)’
+   |
+54 |     print =<< runExceptT (flip evalStateT mempty $ assignIndexToVariables2 ast vars)
+```
+This looks like scary, maybe this is even the one type error I can't
+solve?
+After all, I've been waiting on that one for over 4 years now, still have managed to solve them all, somehow.
+But no,
+this is known as the [n^2-instances problem](https://lexi-lambda.github.io/blog/2017/04/28/lifts-for-free-making-mtl-typeclasses-derivable/),
+which sounds impressive, but the solution is deceptively simple:
+```haskell
+instance (NotInventedHereLog m) => NotInventedHereLog (StateT s m) where
+  nihLog = lift . nihLog
+```
+This code says:
+If you're a StateT and your base monad is already a `NotInventedHereLog`,
+you are also a `NotInvnetedHereLog` by using lift.
+By providing this instance we're generating lift calls over any StateT
+for all occurences of niLog.
+
+Moving on we get the same error for ExceptT:
+```
+src/Lib.hs:54:52: error:
+    • No instance for (NotInventedHereLog (ExceptT [Char] IO))
+        arising from a use of ‘assignIndexToVariables2’
+    • In the second argument of ‘($)’, namely
+        ‘assignIndexToVariables2 ast vars’
+      In the first argument of ‘runExceptT’, namely
+        ‘(flip evalStateT mempty $ assignIndexToVariables2 ast vars)’
+      In the second argument of ‘(=<<)’, namely
+        ‘runExceptT
+           (flip evalStateT mempty $ assignIndexToVariables2 ast vars)’
+   |
+54 |     print =<< runExceptT (flip evalStateT mempty $ assignIndexToVariables2 ast vars)
+
+```
+The solution is pretty much the same:
+```
+instance (NotInventedHereLog m) => NotInventedHereLog (ExceptT e m) where
+  nihLog = lift . nihLog
+```
+
+With these two additional instances the example code compiles again.
+However we still don't know how to reinterpret this purely,
+and have introduced code duplication.
+This duplication can be removed with the default mechanism described in
+alexis king her [blogpost](https://lexi-lambda.github.io/blog/2017/04/28/lifts-for-free-making-mtl-typeclasses-derivable/).
+
+We need to introduce a newtype to attach an instance for NotInventedHereLog on.
+This type will collect the logged messages,
+turns out that the WriterT monad does exactly what we want.
+So the pure code will look like this:
+
+```
+newtype NihLogT m a = MkNihLogT {
+        runNihLog :: WriterT [String] m a
+    } deriving (Functor, Applicative, Monad, MonadTrans, MonadWriter [String])
+
+instance Monad m => NotInventedHereLog (NihLogT m) where
+  nihLog msg = tell [msg]
+```
+
+The instance simply tells the message, which `mappends` it to the list.
+To run this code we use `runNihLog`:
+```haskell
+    let pureCode :: (Either String (AST Int),  [String])
+        pureCode = runWriter $ runNihLog $ runExceptT (flip evalStateT mempty $ assignIndexToVariables2 ast vars)
+    print pureCode
+```
+With this you can write property tests on `assignIndexToVariables2`.
+For example you could assert that an AST of size 20 should at least emit 40 log messages.
+Obviously this isn't limited to tests,
+you can also add a newtype that has a connection pool to send
+of the messages to some database for example.
+
+I'll tap out here.
+This was supposed to be a short addendum on someone else their blogpost.
+I dumped all my knowledge at this point and extended it a bit on several
+points (like defaults mechanism from alexes king)
 
 ## Links
 
