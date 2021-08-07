@@ -15,13 +15,24 @@ but I strongly feel you'll get more out of them by
 opting into full MTL.
 
 In here I'll give a brief overview of doing this MTL style instead of
-transformer style.
+transformer style[^mtl-vs-transformers].
 I'm not claiming this is a new idea or you should even adopt this style.
 It's just a way I tend to structure my program,
 and I learned it by using reflex instead of reading.
 I feel there is surprising little information on this topic.
 Here I will write down how it works by using words so people can read
 instead of having to struggle with this for days.
+
+[^mtl-vs-transformers]: Aren't transformers the same as mtl? No!
+                        Back in the stoneages, people weren't sure what the right
+                        approach would be to doing this and frankly still aren't.
+                        The base is the [transformers package](https://hackage.haskell.org/package/transformers).
+                        Although the [mtl package](https://hackage.haskell.org/package/mtl)
+                        is most popular, there is also [mtl-tf](https://hackage.haskell.org/package/mtl-tf).
+                        I'd like to point out as well that in technology, popularity means
+                        nothing. Cobol used to be more popular then C up till the 1990's,
+                        and is practically dead now.
+                        JavaScript is also more popular then haskell, is it therefore better?
 
 Let's start from the [blogpost](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/),
 where a newtype is constructed to hold the entire stack like this:
