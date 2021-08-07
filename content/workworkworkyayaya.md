@@ -3,18 +3,19 @@ DATE: 2017-10-02
 CATEGORY: reflection
 Tags: australia, work
 OPTIONS: toc:nil
+Modified: 2021-08-07 18:17
 
 Last Wednesday I started my first job at [Open Learning](https://www.openlearning.com/). 
 It has been interesting,
-I know for a fact I practically up till this point contributed almost nothing
-to the company.
-This is to be expected according to reddit.
+I know for a fact I contributed almost nothing
+to the company up to this point.
+This is to be expected according to reddit since it's the first week.
 I did ask a lot of questions since I was able to start programming for real
 yesterday.
 
 The first today I just spend on getting familiar with the platform and the last
 day I dabbled around a little in react (hello world!).
-The reason I for saying I did little contributions is because I just took up
+The reason I have for saying I did little contributions is because I just took up
 more time of other employees asking questions then producing much.
 Even the UX work hasn't been integrated yet because the designer was busy.
 
