@@ -1,4 +1,4 @@
-Title: Use MTL instead of transformers
+Title: A brief intro to MTL
 Date: 2021-08-07 15:44
 Category: technique
 OPTIONS: toc:nil
@@ -8,20 +8,77 @@ Status: draft
 
 Recently a blog post came out how to use the concrete
 base [transformers](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/).
-This approach is correct, and will result in functioning programs.
+I like the way it's written,
+it's very thorough and brings back the idea of
+transformers to a concrete example which I really like.
 Although to me it looks like quite a low level approach.
-Using transformers directly will work,
-but I strongly feel you'll get more out of them by
+I strongly feel you'll get more out of transformers by
 opting into full MTL.
 
-In here I'll give a brief overview of doing this MTL style instead of
+However I don't think I can find a terse description on how to
+use MTL.
+I learned this by staring at a lot of reflex code for days until it clicked.
+So if `/u/zgkzy` would allow me,
+I'll give a brief overview of doing this MTL style instead of
 transformer style[^mtl-vs-transformers].
 I'm not claiming this is a new idea or you should even adopt this style.
-It's just a way I tend to structure my program,
-and I learned it by using reflex instead of reading.
-I feel there is surprising little information on this topic.
-Here I will write down how it works by using words so people can read
+However I tend to structure my programs this way,
+and I feel there is surprising little prose on this topic.
+I will write down how it works by using words so people can read
 instead of having to struggle with this for days.
+
+Note that I also presented this more detailed in a
+[video](https://www.youtube.com/watch?v=MPlrAe-XYMU&t=300s).
+
+## <a id="intro"></a> The type variable `m`
+
+We start start by introducing `m`,
+`m` could've been named `monad` or `x`, 
+but the community settled on using `m` for type variables
+with the `Monad` constraint, so I will use this too.
+Instead of having our type variable be
+inside a concrete type, such as `Maybe a` or `[a]`,
+we flip it around:
+
+```haskell
+moreMonad :: Monad m => m Int
+moreMonad = return 5
+```
+
+This compiles because the `Monad` constraint on `m`
+gives us the [`return`](https://hackage.haskell.org/package/base-4.15.0.0/docs/Control-Monad.html#v:return)
+function.
+What can we do with this `moreMonad` binding?
+Well, we can pattern match on it:
+```haskell
+fiveTroughMaybe :: Int
+fiveTroughMaybe = case moreMonad of
+  Just x -> x
+  Nothing -> 9
+```
+At this particular call site, GHC will give
+`moreMonad` the type `Maybe`,
+because it's the only possible solution.
+GHC reasons backwards from pattern match up to the `case moreMonad of`
+definition to figure this out.
+It'll result in 5 because `return` is implemented as `Just` on maybe.
+In the same module we can also pattern match on Either:
+
+```haskell
+fiveTroughEither :: Int
+fiveTroughEither = case moreMonad of
+  Right x -> x
+  Left _y -> 9
+```
+
+Both `fiveTroughMaybe` and `fiveTroughEither` will result in `5`.
+This is allowed in the same module because `moreMonad`
+will only get assigned the type at the [call site](https://en.wikipedia.org/wiki/Call_site).
+The compiler figures out the type of `moreMonad` by looking at how it's used per
+call site.
+This backwards 'figuring out', is normal for type variables.
+If it fails you get a message like `Ambiguous type variable ‘m0’`,
+which we'll see happen later on in this [blogpost](#shes-a-beauty).
 
 [^mtl-vs-transformers]: Aren't transformers the same as mtl? No!
                         Back in the stoneages, people weren't sure what the right
@@ -34,34 +91,48 @@ instead of having to struggle with this for days.
                         and is practically dead now.
                         JavaScript is also more popular then haskell, is it therefore better?
 
-Let's start from the [blogpost](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/),
-where a newtype is constructed to hold the entire stack like this:
+### Thought food
+
++ Can we always pattern match on every possible monad type for like we do with `Just` or `Either`? [^no-pattern-match]
++ 
+
+[^no-pattern-match]: No it's not possible if a constructor isn't exposed. Reflex uses this with `dynamic t` to create a smart destructor.
+## Transformers as constraints on `m`
+
+With that brief introduction,
+we can start applying this idea to the [blogpost](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/).
+A newtype is constructed to hold the entire stack like this:
 
 ```haskell
 newtype AppM a = AppM { runAppM :: ExceptT String (State (M.Map VariableName Int)) a }
   deriving newtype (Functor, Applicative, Monad, MonadError String, MonadState (M.Map VariableName Int))
 ```
 
-In truth, we don't care about this definition,
-we just want to use it.
-As does the author of the blogpost so he gives an example
-function with the following type signature.
+I call this `AppM` a concrete type because there is only one way to pattern match on it.
+We're not allowed to pretend it's a `Maybe` for example.
+This definition is used in the `assignIndexToVariables`:
 
 ```haskell
 assignIndexToVariables :: AST VariableName -> Variables -> AppM (AST Int)
 ```
 
-What I'm pitching here, is that instead of using the concrete `AppM`
-You describe what you want instead with the MTL type classes on top of a
-polymorhic variable `m`.
-That is to say, we want to have `MonadError String` as anologue to `ExceptT String`,
-and `MonadState (M.Map VariableName Int)` as analogue to `State (M.Map VariableName Int)`.
+Instead of using the concrete type `AppM`,
+we could use MTL type classes to describe what is needed.
+These type classes will become constraints on `m`,
+similarly to how `Monad` was a constraint on `m` in the [introduction](#intro).
+That is to say, we want to have [`MonadError String`](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Except.html#t:MonadError)
+as replacement for `ExceptT String`,
+and [`MonadState (M.Map VariableName Int)`](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-State-Lazy.html#t:MonadState)
+as replacement for `State (M.Map VariableName Int)`.
+This will change the type signature of `assignIndexToVariables` as follows:
 
 ```haskell
 assignIndexToVariables ::
-    MonadError String m =>
-    MonadState (M.Map VariableName Int) m =>
-    AST VariableName -> Variables -> m (AST Int)
+               MonadError String m
+            => MonadState (M.Map VariableName Int) m
+            => AST VariableName
+            -> Variables
+            -> m (AST Int)
 ```
 
 So what's the difference?
@@ -86,35 +157,6 @@ b :: StateT (M.Map VariableName Int) (Except String) a
 These describe the same capabilities.
 In the transformer style, yes the compiler would say `a` and `b` should *not* compose.
 Whereas an MTL style function definition would compose because no order has been specificied.
-
-## The smallest `m`.
-
-If you're confused about why monad stacks can figure out their
-underlying types by simply running it consider the following example:
-
-```haskell
-moreMonad :: Monad m => m Int
-moreMonad = pure 5
-
-eitherFive :: Int
-eitherFive = case moreMonad of
-  Right x -> x
-  Left _y -> 9
-
-maybeFive :: Int
-maybeFive = case moreMonad of
-  Just x -> x
-  Nothing -> 9
-```
-
-Both `maybeFive` and `eitherFive` will result in `5`.
-Since `pure` for `Maybe` is a `Just`, and for `Either` it's `Right`.
-The compiler figures out the type of `moreMonad` by looking at how it's used,
-since we pattern matched on an `Either` in `eitherFive` it can only possibly be `Either`,
-*in that situation*.
-But in other situations, like `maybeFive` it can still be something else.
-I once held a [presentation](https://www.youtube.com/watch?v=MPlrAe-XYMU&t=300s) 
-that explains everything about this.
 
 ## On composition and constraints
 
@@ -227,7 +269,7 @@ Look at the haddocks for [`evalState`](https://hackage.haskell.org/package/trans
 The base monad is identity.
 How do we fix this?
 First we replace `Identity` with a gap by invoking `evalStateT`.
-This will result in the following beauty:
+This will result in the following beauty <a id="shes-a-beauty"></a>:
 ```
 src/Lib.hs:51:5: error:
     • Ambiguous type variable ‘m0’ arising from a use of ‘print’
@@ -346,7 +388,7 @@ src/Lib.hs:51:14: error:
                         String (StateT (M.Map VariableName Int) IO) (AST Int)’
       To use the inferred type, enable PartialTypeSignatures
 ```
-You can simply copy paste that in your code to get a functioning program
+You can copy paste that type signature in your code to get a functioning program
 back out.
 No idea why you'd do that, no-one cares about transformer details.
 
@@ -436,6 +478,7 @@ If you're a StateT and your base monad is already a `NotInventedHereLog`,
 you are also a `NotInvnetedHereLog` by using lift.
 By providing this instance we're generating lift calls over any StateT
 for all occurences of niLog.
+
 
 Moving on we get the same error for ExceptT:
 ```
