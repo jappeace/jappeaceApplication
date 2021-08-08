@@ -13,7 +13,7 @@ Although it looks like quite low level.
 I strongly feel you'll get more out of transformers by
 opting into full MTL.
 
-Furthermore I don't think I can find a terse description on how to
+Furthermore I can't find a succinct description on how to
 use MTL.
 I feel there is surprising little prose on this topic.
 I learned this myself by staring at [reflex](https://hackage.haskell.org/package/reflex)
@@ -48,11 +48,20 @@ moreMonad = return 5
 
 This compiles because the `Monad` constraint on `m`
 gives us the [`return`](https://hackage.haskell.org/package/base-4.15.0.0/docs/Control-Monad.html#v:return)
-function.
+function [^nonsense].
 After you're convinced this is a valid definition,
 let's use it.
 What can we do with this `moreMonad` binding?
 Well, we can pattern match on it:
+
+[^nonsense]: Note that although this is valid haskell,
+             in practice it's nonsense to write anything
+             with just a `Monad` constraint.
+             I'm saying this because the constraint is [too tight](#lose-tight-constraints)!
+             You can't do anything in just a monad.
+             I'm only showing it here to raise a point.
+             In this situation it would've made more 
+             sense to drop the entire monad sharade and assign 5 directly with type of `Int`.
 
 ```haskell
 fiveTroughMaybe :: Int
@@ -232,7 +241,7 @@ This may all sound like madness if you don't try it out with a compiler.
 And I feel understanding the errors are a large part of understanding MTL.
 The type errors are not easy to decipher.
 
-## On composition and constraints
+## <a id="lose-tight-constraints"></a> Lose and tight constraints
 
 [^value-function]: Aren't values just functions with 0 arguments?
                    Especially in haskell were it may not have been evaluated yet.
@@ -557,8 +566,14 @@ This looks like scary, maybe this is even the one type error I can't
 solve?
 After all, I've been waiting on that one for over 4 years now, still have managed to solve them all, somehow.
 But no,
-this is known as the [n^2-instances problem](https://lexi-lambda.github.io/blog/2017/04/28/lifts-for-free-making-mtl-typeclasses-derivable/),
+this is known as the [n^2-instances problem](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue)[^not-aprove],
 which sounds impressive, but the solution is deceptively simple:
+
+[^not-aprove]: I'm linking to this blog as an explenation of the n^2 instances problem.
+               I definitely don't endorse using Overlappable as a solution for it.
+               I'd prefer using [Alexis](https://lexi-lambda.github.io/blog/2017/04/28/lifts-for-free-making-mtl-typeclasses-derivable/)
+               method which is very copy paste-able.
+
 ```haskell
 instance (NotInventedHereLog m) => NotInventedHereLog (StateT s m) where
   nihLog = lift . nihLog
@@ -628,16 +643,16 @@ you could also add a newtype that has a connection pool to send
 the messages to some database for example.
 
 I'll tap out here.
-This was supposed to be a short addendum on someone else their blogpost.
-I think I dumped all my knowledge at this point on MTL and extended it a bit on
-several points (like defaults mechanism from Alexes King).
+This was supposed to be a short addendum on someone else's blogpost.
+I think at this point I dumped all my knowledge on MTL and extended it a bit as well.
+For example I didn't even know about the defaults mechanism [Alexis talked about](https://lexi-lambda.github.io/blog/2017/04/28/lifts-for-free-making-mtl-typeclasses-derivable/).
 
-Let me know if you have any strong opinions on this style
-(love it or hate it, I'd like to know!)
-or of course if you need any help using it.
+Let me know if you have any strong opinions on this style.
+Love it or hate it, I'd like to know!
+Or of course if you need any help using it.
 I'm interested in effect systems in general.
 Also let me know about your favorite effect system that
-I didn't acknowledge (there were something like 2 or 3 right?).
+I didn't acknowledge.
 
 ## Links
 
