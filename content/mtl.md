@@ -166,6 +166,7 @@ assignIndexToVariables ::
             -> Variables
             -> m (AST Int)
 ```
+
 So what's the difference?
 First of all it's a lot more verbose.
 In trade for this verbosity, 
@@ -325,7 +326,7 @@ and a type signature to decipher that error message[^why-dont-they].
 The compiler is saying in incomprohensible error speak that you need to
 add a constraint `MonadIO m` like so:
 
-```
+```haskell
 assignIndexToVariables ::
     MonadIO m =>
     MonadError String m =>
