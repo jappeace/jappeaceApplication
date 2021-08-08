@@ -9,25 +9,31 @@ it describes how to use the concrete
 base [transformers](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/).
 It's very thorough and brings back the idea of
 transformers to a concrete example.
-Although it looks like quite low level.
+Although it looks like quite low level and
 I strongly feel you'll get more out of transformers by
 opting into full MTL.
 
-Furthermore I can't find a succinct description on how to
+So that blogpost inspired me to write this,
+because I can't find a succinct description on how to
 use MTL.
-I feel there is surprising little prose on this topic.
-I learned this myself by staring at [reflex](https://hackage.haskell.org/package/reflex)
+The best I could find is this [blogpost](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue),
+which is more an experience report rather
+then an explanation of what's going on.
+So how did I learn this stuff again?
+I think I learned MTL myself by staring at [reflex](https://hackage.haskell.org/package/reflex)
 code for days until it clicked.
-Which isn't very ergonomic,
+Which isn't very ergonomic or accessible,
 so I'll give a brief overview of doing this MTL style instead of
 transformer style[^mtl-vs-transformers].
-I will write down how it works with words, so people can read
-rather then struggling with it for days like I had to do.
-Obviously I'm not claiming this is a new idea or you should even adopt
+I will write down how MTL works with words,
+so people can read how to use it rather
+then staring/struggling with it for days like I had to do.
+For the record I'm not claiming this is a new idea or you should even adopt
 this style for your own projects.
-This isn't an endorsement, but a description.
+This isn't an endorsement,
+but a description of something I happen to know.
 
-If you like video presentations, I also presented on MTL in a
+If you like video presentations, I also presented how to use MTL in a
 [video format](https://www.youtube.com/watch?v=MPlrAe-XYMU&t=300s).
 
 ## <a id="intro"></a> The type variable `m`
