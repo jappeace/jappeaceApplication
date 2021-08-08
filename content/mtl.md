@@ -94,15 +94,17 @@ call site.
 This backwards 'figuring out' is normal for type variables.
 
 [^mtl-vs-transformers]: Aren't transformers the same as mtl? No!
-                        Back in the stoneages, people weren't sure what the right
-                        approach would be to doing this and frankly still aren't.
-                        The base is the [transformers package](https://hackage.haskell.org/package/transformers).
+                        Back in the stone ages, people weren't sure what the right
+                        approach would be to doing this, and frankly people still aren't sure.
+                        The base package is the [transformers package](https://hackage.haskell.org/package/transformers).
                         Although the [mtl package](https://hackage.haskell.org/package/mtl)
                         is most popular, there is also [mtl-tf](https://hackage.haskell.org/package/mtl-tf).
+                        [Polysemy](https://hackage.haskell.org/package/polysemy) also builds on top of transformers.
+                        I think the subject of best approach is a subject for debate.
                         I'd like to point out as well that in technology, popularity means
                         nothing. Cobol used to be more popular then C up till the 1990's,
                         and is practically dead now.
-                        JavaScript is also more popular then haskell, is it therefore better?
+                        JavaScript is also more popular then Haskell, is it therefore better?
 
 ### (optional) mastery exercise
 
@@ -623,9 +625,16 @@ This was supposed to be a short addendum on someone else their blogpost.
 I think I dumped all my knowledge at this point on MTL and extended it a bit on
 several points (like defaults mechanism from Alexes King).
 
+Let me know if you have any strong opinions on this style
+(love it or hate it, I'd like to know!)
+or of course if you need any help using it.
+I'm interested in effect systems in general.
+Also let me know about your favorite effect system that
+I didn't acknowledge (there were something like 2 or 3 right?).
+
 ## Links
 
-+ A functional example is available [here](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs)
 + Original [blogpost](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/)
-+ Full test example: https://github.com/lexi-lambda/mtl-style-example
++ A functional example is available [here](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs)
++ Full test [example](https://github.com/lexi-lambda/mtl-style-example)
 + [A video presentation on the exact same topic.](https://www.youtube.com/watch?v=MPlrAe-XYMU&t=300s)
