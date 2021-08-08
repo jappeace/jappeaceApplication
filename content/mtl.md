@@ -9,19 +9,20 @@ it describes how to use the concrete
 base [transformers](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/).
 It's very thorough and brings back the idea of
 transformers to a concrete example.
-Although it looks like quite a low level approach.
+Although it looks like quite low level.
 I strongly feel you'll get more out of transformers by
 opting into full MTL.
 
 Furthermore I don't think I can find a terse description on how to
 use MTL.
 I feel there is surprising little prose on this topic.
-I learned this myself by staring at a lot of reflex code for days until it clicked.
+I learned this myself by staring at [reflex](https://hackage.haskell.org/package/reflex)
+code for days until it clicked.
 Which isn't very ergonomic,
 so I'll give a brief overview of doing this MTL style instead of
 transformer style[^mtl-vs-transformers].
-I will write down how it works with words instead of code so people can read
-instead of having to struggle with it for days like I had to do.
+I will write down how it works with words, so people can read
+rather then struggling with it for days like I had to do.
 Obviously I'm not claiming this is a new idea or you should even adopt
 this style for your own projects.
 This isn't an endorsement, but a description.
@@ -75,7 +76,7 @@ This is valid.
 You should convince yourself it's valid.
 To convince yourself I'm not lying 
 paste this code into GHCI before continuing,
-because it's going to get stranger from here on.
+because it's getting stranger from here on.
 
 Continuing now with the same module we can also pattern match on `Either`:
 
@@ -109,6 +110,10 @@ This backwards 'figuring out' is normal for type variables.
 ### (optional) mastery exercise
 
 + Can we always pattern match on every possible monad type like we just did with `Just` or `Either`? Can we always get the value out without being in the same monad? (answer in footnote [^no-pattern-match])
+<!-- + GHC figures out here the types on callsite, what mechanism can be used 
+to flip the reasoning direction of GHC?
+-- RankNTypes? Existentials?
+-->
 
 [^no-pattern-match]: No it's not possible if a constructor isn't exposed. Reflex uses this with [`Dynamic t`](https://hackage.haskell.org/package/reflex-0.8.1.0/docs/Reflex-Dynamic.html#t:Dynamic)
                      to create a smart destructor.
