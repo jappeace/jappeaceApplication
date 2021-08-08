@@ -587,7 +587,8 @@ src/Lib.hs:54:52: error:
 
 ```
 The solution is pretty much the same:
-```
+
+```haskell
 instance (NotInventedHereLog m) => NotInventedHereLog (ExceptT e m) where
   nihLog = lift . nihLog
 ```
@@ -605,7 +606,7 @@ This type's instance will collect the logged messages,
 turns out that the `WriterT` monad does exactly what we want.
 So the pure code will look like this:
 
-```
+```haskell
 newtype NihLogT m a = MkNihLogT {
         runNihLog :: WriterT [String] m a
     } deriving (Functor, Applicative, Monad, MonadTrans, MonadWriter [String])
