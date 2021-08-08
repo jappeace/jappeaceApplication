@@ -643,9 +643,10 @@ you could also add a newtype that has a connection pool to send
 the messages to some database for example.
 
 I'll tap out here.
-This was supposed to be a short addendum on someone else's blogpost.
-I think at this point I dumped all my knowledge on MTL and extended it a bit as well.
+This was supposed to be a short note on someone else's blogpost,
+which spiraled into dumping all my knowledge on MTL and extending it a bit as well.
 For example I didn't even know about the defaults mechanism [Alexis talked about](https://lexi-lambda.github.io/blog/2017/04/28/lifts-for-free-making-mtl-typeclasses-derivable/).
+I'll tap out here, thanks for reading.
 
 Let me know if you have any strong opinions on this style.
 Love it or hate it, I'd like to know!
@@ -660,3 +661,4 @@ I didn't acknowledge.
 + A functional example is available [here](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs)
 + Full test [example](https://github.com/lexi-lambda/mtl-style-example)
 + [A video presentation on the exact same topic.](https://www.youtube.com/watch?v=MPlrAe-XYMU&t=300s)
++ If I didn't manage to exhaust you, here is way more [background](https://ocharles.org.uk/posts/2016-01-26-transformers-free-monads-mtl-laws.html) 
