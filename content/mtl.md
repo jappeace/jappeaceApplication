@@ -4,7 +4,6 @@ Category: technique
 OPTIONS: toc:nil
 Tags: haskell, programming, mtl
 subreddit: haskell programming reflexfrp
-Status: draft
 
 Recently a blog post came out how to use the concrete
 base [transformers](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/).
@@ -18,7 +17,6 @@ opting into full MTL.
 However I don't think I can find a terse description on how to
 use MTL.
 I learned this by staring at a lot of reflex code for days until it clicked.
-So if `/u/zgkzy` would allow me,
 I'll give a brief overview of doing this MTL style instead of
 transformer style[^mtl-vs-transformers].
 I'm not claiming this is a new idea or you should even adopt this style.
@@ -32,8 +30,8 @@ Note that I also presented this more detailed in a
 
 ## <a id="intro"></a> The type variable `m`
 
-We start start by introducing `m`,
-`m` could've been named `monad` or `x`, 
+We start start by introducing `m`.
+Which could've been named `monad` or `x`,
 but the community settled on using `m` for type variables
 with the `Monad` constraint, so I will use this too.
 Instead of having our type variable be
@@ -48,21 +46,34 @@ moreMonad = return 5
 This compiles because the `Monad` constraint on `m`
 gives us the [`return`](https://hackage.haskell.org/package/base-4.15.0.0/docs/Control-Monad.html#v:return)
 function.
+After you're convinced this is a valid definition,
+let's use it.
 What can we do with this `moreMonad` binding?
 Well, we can pattern match on it:
+
 ```haskell
 fiveTroughMaybe :: Int
 fiveTroughMaybe = case moreMonad of
   Just x -> x
   Nothing -> 9
 ```
+
 At this particular call site, GHC will give
 `moreMonad` the type `Maybe`,
 because it's the only possible solution.
-GHC reasons backwards from pattern match up to the `case moreMonad of`
-definition to figure this out.
-It'll result in 5 because `return` is implemented as `Just` on maybe.
-In the same module we can also pattern match on Either:
+GHC reasons backwards from the pattern match up to the `case moreMonad of`
+definition to figure out the type.
+I usually call this backwards reasoning,
+pretending you have a `Maybe` which makes it becomes true.
+So `fiveTroughMaybe `results in 5 because `return` is implemented as `Just`
+on the `Maybe` type's Monad instance.
+
+This is valid.
+You should convince yourself it's valid,
+maybe even paste this code into GHCI before continuing.
+It's going to get stranger from here on.
+
+Continuing now with the same module we can also pattern match on `Either`:
 
 ```haskell
 fiveTroughEither :: Int
@@ -74,11 +85,9 @@ fiveTroughEither = case moreMonad of
 Both `fiveTroughMaybe` and `fiveTroughEither` will result in `5`.
 This is allowed in the same module because `moreMonad`
 will only get assigned the type at the [call site](https://en.wikipedia.org/wiki/Call_site).
-The compiler figures out the type of `moreMonad` by looking at how it's used per
+The compiler figures out the type of `moreMonad` by looking at usage per
 call site.
-This backwards 'figuring out', is normal for type variables.
-If it fails you get a message like `Ambiguous type variable ‘m0’`,
-which we'll see happen later on in this [blogpost](#shes-a-beauty).
+This backwards 'figuring out' is normal for type variables.
 
 [^mtl-vs-transformers]: Aren't transformers the same as mtl? No!
                         Back in the stoneages, people weren't sure what the right
@@ -91,21 +100,27 @@ which we'll see happen later on in this [blogpost](#shes-a-beauty).
                         and is practically dead now.
                         JavaScript is also more popular then haskell, is it therefore better?
 
-### Thought food
++ Can we always pattern match on every possible monad type like we just did with `Just` or `Either`? Can we always get the value out without being in the same monad? (answer in footnote [^no-pattern-match])
 
-+ Can we always pattern match on every possible monad type for like we do with `Just` or `Either`? [^no-pattern-match]
-+ 
+[^no-pattern-match]: No it's not possible if a constructor isn't exposed. Reflex uses this with [`Dynamic t`](https://hackage.haskell.org/package/reflex-0.8.1.0/docs/Reflex-Dynamic.html#t:Dynamic)
+                     to create a smart destructor.
+                     In reflex you can only use a value in a dynamic by putting an entire monadic action inside the dynamic, and then using [`dyn`](https://hackage.haskell.org/package/reflex-dom-core-0.6.2.0/docs/Reflex-Dom-Widget-Basic.html#v:dyn) to get it out (for reflex-dom at least, sdl uses something different).
+                     I'm highlighting this because I feel this is a powerful idea.
 
-[^no-pattern-match]: No it's not possible if a constructor isn't exposed. Reflex uses this with `dynamic t` to create a smart destructor.
 ## Transformers as constraints on `m`
 
 With that brief introduction,
-we can start applying this idea to the [blogpost](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/).
-A newtype is constructed to hold the entire stack like this:
+we can start applying this idea to the '["A Brief Intro to Monad Transformers" blogpost](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/)'
+that inspired me.
+In that blogpost,
+a newtype is constructed to hold the entire monad transformer stack like this:
 
 ```haskell
-newtype AppM a = AppM { runAppM :: ExceptT String (State (M.Map VariableName Int)) a }
-  deriving newtype (Functor, Applicative, Monad, MonadError String, MonadState (M.Map VariableName Int))
+newtype AppM a = AppM {
+    runAppM :: ExceptT String (State (M.Map VariableName Int)) a
+  }
+  deriving newtype (Functor, Applicative, Monad, MonadError String,
+                    MonadState (M.Map VariableName Int))
 ```
 
 I call this `AppM` a concrete type because there is only one way to pattern match on it.
@@ -121,10 +136,14 @@ we could use MTL type classes to describe what is needed.
 These type classes will become constraints on `m`,
 similarly to how `Monad` was a constraint on `m` in the [introduction](#intro).
 That is to say, we want to have [`MonadError String`](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Except.html#t:MonadError)
-as replacement for `ExceptT String`,
+as replacement for `ExceptT String` [^why-different-name],
 and [`MonadState (M.Map VariableName Int)`](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-State-Lazy.html#t:MonadState)
 as replacement for `State (M.Map VariableName Int)`.
-This will change the type signature of `assignIndexToVariables` as follows:
+Doing 
+this will change the type signature of `assignIndexToVariables` as follows:
+
+[^why-different-name]: Why MonadError and ExceptT don't share their names?
+                       It's explained [here](https://www.reddit.com/r/haskell/comments/3ded39/why_cant_we_have_an_eithert_in_transformers/ct4mnk1/).
 
 ```haskell
 assignIndexToVariables ::
@@ -134,29 +153,54 @@ assignIndexToVariables ::
             -> Variables
             -> m (AST Int)
 ```
-
 So what's the difference?
+First of all it's a lot more verbose.
+However in trade of this verbosity, we gained something back.
 The difference here is in running the code.
-Both invocations are allowed now:
+Both invocations of running this code are allowed now:
 
 ```haskell
 main :: IO ()
 main = do
  ...
- print $ flip evalState mempty $ runExceptT $ assignIndexToVariables ast vars
- print $ runExcept $ flip evalStateT mempty $ assignIndexToVariables ast vars
+ print $ flip evalState mempty $ runExceptT $
+    assignIndexToVariables ast vars
+ print $ runExcept $ flip evalStateT mempty $
+    assignIndexToVariables ast vars
 ```
 
+This wasn't possible in the original code.
 In effect we've told the compiler that at our function definition the order
 of a monad stack doesn't matter.
 Which makes sense because consider two monad stacks:
+
 ```haskell
 a :: ExceptT String (State (M.Map VariableName Int)) a
 b :: StateT (M.Map VariableName Int) (Except String) a
 ```
-These describe the same capabilities.
-In the transformer style, yes the compiler would say `a` and `b` should *not* compose.
-Whereas an MTL style function definition would compose because no order has been specificied.
+
+These describe the same capabilities,
+however the compiler would say `a` and `b` should *not* compose.
+That is to say it's impossible to write `const a >=> const b`.
+
+However if we defined it in MTL style:
+```haskell
+c :: MonadError String m
+     => MonadState (M.Map VariableName Int) m
+     -> m a
+d :: MonadState (M.Map VariableName Int) m
+     => MonadError String m
+     -> m a
+```
+We could write a `const c >=> const d` even though the constraint order is flipped.
+The MTL style function definition would compose because no order has been
+specified.
+
+This section described the core advantage of MTL.
+In the following sections we're going to hash out what this means.
+I've made an [reference project](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs)
+to verify the truth of my claims.
+Because this may all sound like madness if you don't try it out with a compiler.
 
 ## On composition and constraints
 
