@@ -4,27 +4,29 @@ Category: technique
 OPTIONS: toc:nil
 Tags: haskell, programming, mtl
 
+![mtl-header](images/2021/mtl.png)
+
 Recently a blog post came out which I quite like,
 it describes how to use the concrete
 base [transformers](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/).
-It's very thorough and brings back the idea of
-transformers to a concrete example.
-Although it looks like quite low level and
-I strongly feel you'll get more out of transformers by
-opting into full MTL.
+It's very thorough and gives a concrete example for using
+transformers.
+Although it looks quite low level and
+I think you'll get more out of transformers by
+using full MTL.
 
-So that blogpost inspired me to write this,
+That blogpost inspired me to write this,
 because I can't find a succinct description on how to
 use MTL[^best-mtl].
 If I didn't learn by reading blogposts,
 then how did I learn this stuff again?
-I think I learned MTL myself by staring at [reflex](https://hackage.haskell.org/package/reflex)
-code for days until it clicked.
+I think it involved a lot of staring at [reflex](https://hackage.haskell.org/package/reflex).
+This learning process took days if not weeks.
 Which isn't very ergonomic or accessible.
 To make MTL more accessible I'll give a brief overview of doing this style[^mtl-vs-transformers].
-I will write down how MTL works with words,
+I'll write down how MTL works
 so people can read how to use it rather
-then staring and struggling with it for days like I had to do.
+then struggling with it for days like I had to do.
 
 [^best-mtl]: The best I could find is this [blogpost](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue),
             which is more an experience report rather
@@ -81,7 +83,7 @@ GHC will give
 at this call site.
 GHC reasons backwards from the pattern match up to the `case moreMonad of`
 definition to figure out the type.
-The way I describe this backwards reasoning in my head is:
+In my head I describe this backwards reasoning process as:
 "pretending you have a `Maybe` which makes it becomes true".
 So `fiveTroughMaybe `results in 5 because `return` is implemented as `Just`
 on the `Maybe` type's Monad instance.
@@ -214,7 +216,7 @@ bt :: Int -> StateT (M.Map VariableName Int) (Except String) String
 ```
 
 These describe the same capabilities,
-however the compiler would say `a` and `b` should *not* compose.
+however the compiler says `a` and `b` should *not* compose.
 It's impossible to write:
 
 ```haskell
@@ -256,18 +258,21 @@ And I feel understanding errors is a large part of understanding MTL.
 The type errors are difficult to decipher.
 I've made an [reference project](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs)
 so the reader can verify the truth of my claims.
-Even though you doubt me dear reader,
+
+Even though you may doubt me dear reader,
 let's go deeper into the [abyss](images/2021/abyss.png).
 
 ### (optional) mastery exercises
 
 + What does the function [`lift`](https://hackage.haskell.org/package/transformers-0.6.0.2/docs/Control-Monad-Trans-Class.html#v:lift) do?
     The answer is in the footnotes. [^lift-function]
-    + Say `ct` has the type signature:
-    ```haskell
-    ct :: Char -> ExceptT String (State (M.Map VariableName Int)) String
-    ```
-    Call `at` and then `bt` from within `ct` such that it composes like the fish operator `>=>` would
++ Say `ct` has this type signature:
+
+        ct :: Char 
+           -> ExceptT String (State (M.Map VariableName Int)) String
+
+    Call `at` and then `bt` from within `ct` such that it composes like the fish operator [`>=>`](https://hackage.haskell.org/package/base-4.15.0.0/docs/Control-Monad.html#v:-62--61--62-)
+    would
     with help of [`liftWith`](https://hackage.haskell.org/package/monad-control-1.0.3.1/docs/Control-Monad-Trans-Control.html#v:liftWith).
     For additional background see [this blogpost](https://lexi-lambda.github.io/blog/2019/09/07/demystifying-monadbasecontrol/).
     The answer can be found in the [reference project](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs) under the binding `answer`.
@@ -330,7 +335,7 @@ macGyverLog msg = liftIO $ putStrLn msg
 ```
 
 The code is perfect. 
-Y'know it may miss some things you'd expect from your regular
+Y'know, it misses some things you'd expect from your regular
 logging library such as code positions, time stamping, etc.
 But that's why it's called `macGyverLog` and not `kitchenSinkLog`.
 And if we did some introspection we may find our code
@@ -386,8 +391,8 @@ assignIndexToVariables ::
     AST VariableName -> Variables -> m (AST Int)
 ```
 
-Now the reason I'm writing about this isn't that particular error message,
-cryptic as it may be, it's the next one:
+Cryptic as it may be, the reason I'm writing about this isn't that particular error message,
+it's the next one:
 ```
 src/Lib.hs:51:50: error:
     • No instance for (MonadIO Data.Functor.Identity.Identity)
@@ -497,7 +502,7 @@ src/Lib.hs:51:51: error:
 <!-- Oh ghci, I love it when you talk to me this way. -->
 
 All these `m0` occur because we introduced the gap,
-it has no idea what the base monad is at this point.
+GHC has no idea what the base monad is at this point.
 Which is what we want.
 Let's solve it all in one change:
 
@@ -557,9 +562,10 @@ instance NotInventedHereLog IO where
     nihLog = putStrLn
 ```
 
-To make our previous example work we need to replace our
-function definition with `MonadIO` to `NotInventedHereLog` and replace the `macGyverLog`
-calls with `nihLog`:
+To make our previous example work we need to replace `MonadIO` in our
+function definition with  `NotInventedHereLog`.
+Because we renamed the `macGyverLog` function to `nihLog`
+we need to replace those calls with `nihLog` as well:
 
 ```haskell
 assignIndexToVariables2 ::
@@ -589,10 +595,10 @@ src/Lib.hs:54:52: error:
    |
 54 |     print =<< runExceptT (flip evalStateT mempty $ assignIndexToVariables2 ast vars)
 ```
-This looks scary, maybe this the one, the one type error I can't
+This looks scary, maybe this is the one, the one type error I can't
 solve?
-After all, I've been waiting for that one for over four years now,
-I still have managed to solve them all, somehow.
+After all, I've been waiting for that one perfect type error
+for over four years now.
 But no,
 this is known as the [$n^2$-instances problem](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue)[^not-aprove],
 which sounds very impressive.
@@ -652,8 +658,8 @@ Alexis King her [blogpost](https://lexi-lambda.github.io/blog/2017/04/28/lifts-f
 
 For the pure interpretation
 we need to introduce a newtype, which is used to attach an instance for `NotInventedHereLog`.
-This type's instance will collect the logged messages,
-turns out that the `WriterT` monad does exactly what we want.
+This type's instance will collect the logged messages.
+Turns out that the `WriterT` monad transformer does exactly what we want.
 So the pure code will look like this:
 
 ```haskell
@@ -691,7 +697,6 @@ Or if you need any help using it.
 I'm interested in effect systems in general.
 Also let me know about your favorite effect system that
 I didn't acknowledge.
-
 
 ## Links
 
