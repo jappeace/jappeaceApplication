@@ -1,8 +1,8 @@
 Title: A brief intro to MTL
-Date: 2021-08-07 15:44
+Date: 2021-08-10 00:05
 Category: technique
 OPTIONS: toc:nil
-Tags: haskell, programming, mtl
+Tags: haskell, programming, mtl, effects
 
 ![mtl-header](images/2021/mtl.png)
 
