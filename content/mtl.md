@@ -4,6 +4,8 @@ Category: technique
 OPTIONS: toc:nil
 Tags: haskell, programming, mtl, effects
 
+![mtl-header](images/2021/mtl.png)
+
 Recently a blog post came out which I quite like,
 it describes how to use the concrete
 base [transformers](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/).
