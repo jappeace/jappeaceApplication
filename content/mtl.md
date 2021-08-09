@@ -21,15 +21,10 @@ then how did I learn this stuff again?
 I think I learned MTL myself by staring at [reflex](https://hackage.haskell.org/package/reflex)
 code for days until it clicked.
 Which isn't very ergonomic or accessible.
-To make MTL more accessible I'll give a brief overview of doing this
-style instead of the transformer style[^mtl-vs-transformers].
+To make MTL more accessible I'll give a brief overview of doing this style[^mtl-vs-transformers].
 I will write down how MTL works with words,
 so people can read how to use it rather
-then staring/struggling with it for days like I had to do.
-For the record I'm not claiming this is a new idea or you should even adopt
-this style for your own projects.
-This isn't an endorsement,
-but a description of something I happen to know.
+then staring and struggling with it for days like I had to do.
 
 [^best-mtl]: The best I could find is this [blogpost](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue),
             which is more an experience report rather
@@ -83,8 +78,7 @@ fiveTroughMaybe = case moreMonad of
 
 GHC will give
 `moreMonad` the type `Maybe`
-at this particular call site,
-because it's the only possible solution.
+at this call site.
 GHC reasons backwards from the pattern match up to the `case moreMonad of`
 definition to figure out the type.
 The way I describe this backwards reasoning in my head is:
@@ -96,7 +90,8 @@ This is valid.
 You should convince yourself it's valid.
 To convince yourself I'm not lying 
 paste this code into GHCI before continuing,
-because it's getting stranger from here on.
+and gain some confidence,
+because yonder be dragons.
 
 Continuing now with the same module we can also pattern match on `Either`:
 
@@ -129,10 +124,13 @@ This backwards 'figuring out' is normal for type variables.
 
 ### (optional) mastery exercise
 
-+ Can we always pattern match on every possible monad type like we just did with `Just` or `Either`? Can we always get the value out without being in the same monad? (answer in footnote [^no-pattern-match])
++ Can we always pattern match on every possible monad type like we just did with `Just` or `Either`?
+  Can we always get the value out without being in the same monad?
+  The answer is in the footnote. [^no-pattern-match]
+
 <!-- + GHC figures out here the types on callsite, what mechanism can be used 
 to flip the reasoning direction of GHC?
--- RankNTypes? Existentials?
+RankNTypes? Existentials?
 -->
 
 [^no-pattern-match]: No it's not possible if a constructor isn't exposed. Reflex uses this with [`Dynamic t`](https://hackage.haskell.org/package/reflex-0.8.1.0/docs/Reflex-Dynamic.html#t:Dynamic)
@@ -144,7 +142,7 @@ to flip the reasoning direction of GHC?
 
 With that brief introduction,
 we can start applying this idea to the '["A Brief Intro to Monad Transformers" blogpost](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/)'
-that inspired me to write this.
+which inspired me to write this.
 In that blogpost,
 a newtype is constructed to hold the entire monad transformer stack like this:
 
@@ -168,7 +166,7 @@ Instead of using the concrete type `AppM`,
 we could use MTL type classes to describe what is needed.
 These type classes will become constraints on `m`,
 similarly to how `Monad` was a constraint on `m` in the [introduction](#intro).
-That is to say, we want to have [`MonadError String`](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Except.html#t:MonadError)
+Which means we want to have [`MonadError String`](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Except.html#t:MonadError)
 as replacement for `ExceptT String` [^why-different-name],
 and [`MonadState (M.Map VariableName Int)`](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-State-Lazy.html#t:MonadState)
 as replacement for `State (M.Map VariableName Int)`.
@@ -241,27 +239,38 @@ cm :: MonadState (M.Map VariableName Int) m
 cm = am >=> bm
 ```
 
-Because both `bm` and `am` don't specify an order
-the MTL style function definition would compose.
+Because constraints don't specify an order on transformers,
+the MTL style function definition can compose. [^not-solved-anything]
+
+[^not-solved-anything]: We've not solved the [problem](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/#cb5)
+                        here of being able to write a
+                        `Compose` `Monad` instance at all.
+                        We just kind of worked around it by not talking about order.
+                        It's truly an awful hack, which are the best.
 
 This section described the core idea of MTL.
+In the following sections we're going to extend MTL
+using type error driven development.
+This all sound like madness if you don't try it out with a compiler.
+And I feel understanding errors is a large part of understanding MTL.
+The type errors are difficult to decipher.
 I've made an [reference project](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs)
 so the reader can verify the truth of my claims.
-In the following sections we're going to extend MTL
-using some type error driven development.
-This may all sound like madness if you don't try it out with a compiler.
-And I feel understanding the errors are a large part of understanding MTL.
-The type errors are not easy to decipher.
+Even though you doubt me dear reader,
+let's go deeper into the [abyss](images/2021/abyss.png).
 
-## (optional) mastery exercises
+### (optional) mastery exercises
 
 + What does the function [`lift`](https://hackage.haskell.org/package/transformers-0.6.0.2/docs/Control-Monad-Trans-Class.html#v:lift) do?
     The answer is in the footnotes. [^lift-function]
-+ Say `ct` has the type signature `Char -> ExceptT String (State (M.Map VariableName Int)) String`,
-    call `at` and then `bt` from within `ct` such that it composes the fish operator `>=>` would
+    + Say `ct` has the type signature:
+    ```haskell
+    ct :: Char -> ExceptT String (State (M.Map VariableName Int)) String
+    ```
+    Call `at` and then `bt` from within `ct` such that it composes like the fish operator `>=>` would
     with help of [`liftWith`](https://hackage.haskell.org/package/monad-control-1.0.3.1/docs/Control-Monad-Trans-Control.html#v:liftWith).
     For additional background see [this blogpost](https://lexi-lambda.github.io/blog/2019/09/07/demystifying-monadbasecontrol/).
-    The answer can be found in the [reference project](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs).
+    The answer can be found in the [reference project](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs) under the binding `answer`.
   
 [^lift-function]: It allows concrete monad transformer selection,
   For example :
@@ -363,8 +372,8 @@ src/Lib.hs:31:5: error:
                                       AST VariableName -> Variables -> m (AST Int)
 
 ```
-The possible fix in this case is correct,
-but we sort off have to know what a context is,
+The possible fix read in the type error is correct,
+but we have to know what a context is,
 and a type signature to decipher that error message[^why-dont-they].
 The compiler is saying in incomprohensible error speak that you need to
 add a constraint `MonadIO m` like so:
@@ -498,53 +507,37 @@ Let's solve it all in one change:
 ```
 
 Note that we replaced the application of `$` to a bind `=<<`.
-The base monad is now IO instead of identity,
+The base monad is now `IO` instead of `Identity`,
 which solves everything.
-hlint told me to write it like this which makes it a bit more readable
+It's solved because `IO`, surprise, surprise, has an instance of `MonadIO`!
+Who would've thought `liftIO` could be `id`.
+The readers' keen eye spots a pattern:
+We merely select instances with types that have code attached to them.
+It's code generation based on type selection.
 
-```haskell
-    print =<< evalStateT
-        (runExceptT $ assignIndexToVariables ast vars) mempty
-```
-
-If you like you can get the generated transformer stack out with a type hole
-
-```haskell
-    let x :: _
-        x = assignIndexToVariables ast vars
-    print =<< evalStateT (runExceptT x) mempty
-```
-
-which results into an error describing the hole:
-```
-src/Lib.hs:51:14: error:
-    • Found type wildcard ‘_’
-        standing for ‘ExceptT
-                        String (StateT (M.Map VariableName Int) IO) (AST Int)’
-      To use the inferred type, enable PartialTypeSignatures
-```
-Adding that type signature back into the type hole will result in a functioning
-program.
-
-[^why-dont-they]: The thing that baffles me is that they're already managing to print your own
+[^why-dont-they]: The thing that baffles me is that GHC already manages to print your own
             code, they figure out the right constraint,
             why don't they just give the example like I'm doing
             here with the message "try doing this:".
-
+            Instead they talk about constraints and contexts.
+            Do they hate people using their language or something?
+            I feel George Orwell's
+            [guide to writing](https://lhsblogs.typepad.com/files/george-orwell-on-writing.pdf)
+            well also applies to error messages.
 
 ## Reinterpreting IO or the MTL style
 
 In most situations `MonadIO` is fine.
 However it doesn't allow us to reinterpret effects that are
 using `IO`.
-an example of reinterpretation is 
-a test you where would want to measure how often your
+An example of reinterpretation is 
+a test where you would want to measure how often the 
 `mcGyverLog` function is being called.
 This section will show you how to do that.
 
-First we start by MTL-izing our IO based code.
+First we start by MTL-izing our `IO` based code.
 How can we rewrite `mcGyverLog` so that it doesn't use `IO` explicetly?
-The function that needs IO is `putStrLn`.
+The function that needs `IO` is `putStrLn`.
 It's type signature is `String -> IO ()`.
 We want that `IO` to be an `m`, 
 so we introduce a new typeclass for our [not invented here](https://hackage.haskell.org/package/monad-logger-0.3.36/docs/Control-Monad-Logger.html#t:MonadLogger)
@@ -596,12 +589,15 @@ src/Lib.hs:54:52: error:
    |
 54 |     print =<< runExceptT (flip evalStateT mempty $ assignIndexToVariables2 ast vars)
 ```
-This looks like scary, maybe this is even the one type error I can't
+This looks scary, maybe this the one, the one type error I can't
 solve?
-After all, I've been waiting on that one for over 4 years now, still have managed to solve them all, somehow.
+After all, I've been waiting for that one for over four years now,
+I still have managed to solve them all, somehow.
 But no,
-this is known as the [n^2-instances problem](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue)[^not-aprove],
-which sounds impressive, but the solution is deceptively simple:
+this is known as the [$n^2$-instances problem](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue)[^not-aprove],
+which sounds very impressive.
+However for now we completely ignore that problem
+by providing an instance which solves this type error:
 
 [^not-aprove]: I'm linking to this blog as an explenation of the n^2 instances problem.
                I definitely don't endorse using Overlappable as a solution for it.
@@ -613,13 +609,13 @@ instance (NotInventedHereLog m) => NotInventedHereLog (StateT s m) where
   nihLog = lift . nihLog
 ```
 This code says:
-If you're a StateT and your base monad is already a `NotInventedHereLog`,
-you are also a `NotInvnetedHereLog` by using lift.
-By providing this instance we're generating lift calls over any `StateT`
-for all occurences of `niLog`.
+If you're a `StateT` and your base monad already has a `NotInventedHereLog`
+constraint,
+you also have `NotInvnetedHereLog` instance with help of [`lift`](https://hackage.haskell.org/package/transformers-0.6.0.2/docs/Control-Monad-Trans-Class.html#v:lift).
+By providing this instance we're generating lift calls over `StateT`
+for all occurrences of `niLog`.
 
-
-Moving on we get the same error for ExceptT:
+Moving on we get the same error for `ExceptT`:
 ```
 src/Lib.hs:54:52: error:
     • No instance for (NotInventedHereLog (ExceptT [Char] IO))
@@ -635,22 +631,27 @@ src/Lib.hs:54:52: error:
 54 |     print =<< runExceptT (flip evalStateT mempty $ assignIndexToVariables2 ast vars)
 
 ```
-The solution is pretty much the same:
+
+We will keep getting these errors for every unique transformer we use
+because of the
+[$n^2$-instances problem](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue)[^not-aprove].
+This blogpost isn't about solving the $n^2$
+problem so I will ignore it.
+The solution to the type error however is pretty much the same:
 
 ```haskell
 instance (NotInventedHereLog m) => NotInventedHereLog (ExceptT e m) where
   nihLog = lift . nihLog
 ```
 
-With these two additional instances the example code compiles again.
+The example code will compile with these two additional instances.
 However we still don't know how to reinterpret this purely,
 and have introduced code duplication.
 This duplication can be removed with the default mechanism described in
 Alexis King her [blogpost](https://lexi-lambda.github.io/blog/2017/04/28/lifts-for-free-making-mtl-typeclasses-derivable/).
 
-
 For the pure interpretation
-we need to introduce a newtype which is used to attach an instance for `NotInventedHereLog`.
+we need to introduce a newtype, which is used to attach an instance for `NotInventedHereLog`.
 This type's instance will collect the logged messages,
 turns out that the `WriterT` monad does exactly what we want.
 So the pure code will look like this:
@@ -668,32 +669,35 @@ To run this code we use `runNihLog`:
 ```haskell
     let pureCode :: (Either String (AST Int),  [String])
         pureCode = runWriter $ runNihLog $ runExceptT (flip evalStateT mempty $ assignIndexToVariables2 ast vars)
+        (eitherAst, allLoggedMessages) = pureCode 
     print pureCode
 ```
+Now `allLoggedMessages` will contain all messages emitted by `nihLog`.
 With this you can write property tests on `assignIndexToVariables2`.
-For example you could assert that an AST of size 20 should at least emit 40 log messages.
+For example you could assert that an AST of size 20 should emit at least 40 log messages.
 Obviously this isn't limited to tests or purity,
 you could also add a newtype that has a connection pool to send
 the messages to some database for example.
 
 I'll tap out here.
 This was supposed to be a short note on someone else's blogpost,
-which spiraled into dumping all my knowledge on MTL and extending it a bit as well.
-For example I didn't even know about the defaults mechanism [Alexis talked about](https://lexi-lambda.github.io/blog/2017/04/28/lifts-for-free-making-mtl-typeclasses-derivable/).
+which spiraled into dumping all my knowledge here on MTL and extending it a bit as well.
+For example I didn't even know about the defaults mechanism [Alexis wrote about](https://lexi-lambda.github.io/blog/2017/04/28/lifts-for-free-making-mtl-typeclasses-derivable/).
 I'll tap out here, thanks for reading.
 
 Let me know if you have any strong opinions on this style.
 Love it or hate it, I'd like to know!
-Or of course if you need any help using it.
+Or if you need any help using it.
 I'm interested in effect systems in general.
 Also let me know about your favorite effect system that
 I didn't acknowledge.
 
+
 ## Links
 
-+ Original [blogpost](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/)
++ Inspirational [blogpost](https://blog.cofree.coffee/2021-08-05-a-brief-intro-to-monad-transformers/)
 + A functional example is available [here](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs)
-+ Full test [example](https://github.com/lexi-lambda/mtl-style-example)
 + [A video presentation on the exact same topic.](https://www.youtube.com/watch?v=MPlrAe-XYMU&t=300s)
-+ If I didn't manage to exhaust you, here is more [background](https://ocharles.org.uk/posts/2016-01-26-transformers-free-monads-mtl-laws.html) and alternatives.
++ Full mtl style reinterpretation test [example](https://github.com/lexi-lambda/mtl-style-example)
 + And a [library](https://lexi-lambda.github.io/blog/2017/06/29/unit-testing-effectful-haskell-with-monad-mock/) for mocking around mtl style, also gives more background.
++ If I didn't manage to exhaust you, here is more [background](https://ocharles.org.uk/posts/2016-01-26-transformers-free-monads-mtl-laws.html) and alternatives.
