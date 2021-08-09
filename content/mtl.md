@@ -15,16 +15,14 @@ opting into full MTL.
 
 So that blogpost inspired me to write this,
 because I can't find a succinct description on how to
-use MTL.
-The best I could find is this [blogpost](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue),
-which is more an experience report rather
-then an explanation of what's going on.
-So how did I learn this stuff again?
+use MTL[^best-mtl].
+If I didn't learn by reading blogposts,
+then how did I learn this stuff again?
 I think I learned MTL myself by staring at [reflex](https://hackage.haskell.org/package/reflex)
 code for days until it clicked.
-Which isn't very ergonomic or accessible,
-so I'll give a brief overview of doing this MTL style instead of
-transformer style[^mtl-vs-transformers].
+Which isn't very ergonomic or accessible.
+To make MTL more accessible I'll give a brief overview of doing this
+style instead of the transformer style[^mtl-vs-transformers].
 I will write down how MTL works with words,
 so people can read how to use it rather
 then staring/struggling with it for days like I had to do.
@@ -32,6 +30,13 @@ For the record I'm not claiming this is a new idea or you should even adopt
 this style for your own projects.
 This isn't an endorsement,
 but a description of something I happen to know.
+
+[^best-mtl]: The best I could find is this [blogpost](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue),
+            which is more an experience report rather
+            then an explanation of what's going on.
+            [Ocharles](https://ocharles.org.uk/posts/2016-01-26-transformers-free-monads-mtl-laws.html)
+            could also be said to be talking about the subject,
+            but it's not an introduction, it's an expert reference.
 
 If you like video presentations, I also presented how to use MTL in a
 [video format](https://www.youtube.com/watch?v=MPlrAe-XYMU&t=300s).
@@ -183,7 +188,8 @@ assignIndexToVariables ::
 ```
 
 So what's the difference?
-First of all it's a lot more verbose.
+The type signature is more verbose,
+although we no longer need the newtype.
 In trade for this verbosity, 
 we can use the monad stack in any order
 at the call site.
@@ -211,7 +217,7 @@ bt :: Int -> StateT (M.Map VariableName Int) (Except String) String
 
 These describe the same capabilities,
 however the compiler would say `a` and `b` should *not* compose.
-That is to say it's impossible to write:
+It's impossible to write:
 
 ```haskell
 ct :: Char -> _ String
@@ -246,6 +252,28 @@ using some type error driven development.
 This may all sound like madness if you don't try it out with a compiler.
 And I feel understanding the errors are a large part of understanding MTL.
 The type errors are not easy to decipher.
+
+## (optional) mastery exercises
+
++ What does the function [`lift`](https://hackage.haskell.org/package/transformers-0.6.0.2/docs/Control-Monad-Trans-Class.html#v:lift) do?
+    The answer is in the footnotes. [^lift-function]
++ Say `ct` has the type signature `Char -> ExceptT String (State (M.Map VariableName Int)) String`,
+    call `at` and then `bt` from within `ct` such that it composes the fish operator `>=>` would
+    with help of [`liftWith`](https://hackage.haskell.org/package/monad-control-1.0.3.1/docs/Control-Monad-Trans-Control.html#v:liftWith).
+    For additional background see [this blogpost](https://lexi-lambda.github.io/blog/2019/09/07/demystifying-monadbasecontrol/).
+    The answer can be found in the [reference project](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs).
+  
+[^lift-function]: It allows concrete monad transformer selection,
+  For example :
+  ```haskell
+  x :: LogginT (ReaderT AppContext Maybe) String
+  x = do
+    callInLoggingT
+    lift $ callInReaderT
+    lift $ lift $ callInMaybe
+  ```
+  AppM from the original blogpost didn't have to
+  do this because the deriving mechanism generated the instances that in turn generate the lift calls.
 
 ## <a id="lose-tight-constraints"></a> Lose and tight constraints
 
@@ -667,4 +695,5 @@ I didn't acknowledge.
 + A functional example is available [here](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs)
 + Full test [example](https://github.com/lexi-lambda/mtl-style-example)
 + [A video presentation on the exact same topic.](https://www.youtube.com/watch?v=MPlrAe-XYMU&t=300s)
-+ If I didn't manage to exhaust you, here is way more [background](https://ocharles.org.uk/posts/2016-01-26-transformers-free-monads-mtl-laws.html) 
++ If I didn't manage to exhaust you, here is more [background](https://ocharles.org.uk/posts/2016-01-26-transformers-free-monads-mtl-laws.html) and alternatives.
++ And a [library](https://lexi-lambda.github.io/blog/2017/06/29/unit-testing-effectful-haskell-with-monad-mock/) for mocking around mtl style, also gives more background.
