@@ -260,7 +260,7 @@ I've made an [reference project](https://github.com/jappeace/mtl-src/blob/master
 so the reader can verify the truth of my claims.
 
 Even though you may doubt me dear reader,
-let's go deeper into the [abyss](images/2021/abyss.png).
+let's go deeper into the [abyss](images/2021/abyss.jpeg).
 
 ### (optional) mastery exercises
 
