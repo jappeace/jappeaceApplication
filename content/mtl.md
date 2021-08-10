@@ -3,6 +3,7 @@ Date: 2021-08-10 00:05
 Category: technique
 OPTIONS: toc:nil
 Tags: haskell, programming, mtl, effects
+Modified: 2021-08-10 09:50
 
 ![mtl-header](images/2021/mtl.png)
 
