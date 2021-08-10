@@ -18,15 +18,13 @@ using full MTL.
 That blogpost inspired me to write this,
 because I can't find a succinct description on how to
 use MTL[^best-mtl].
-If I didn't learn by reading blogposts,
-then how did I learn this stuff again?
-I think it involved a lot of staring at [reflex](https://hackage.haskell.org/package/reflex).
-This learning process took days if not weeks.
-Which isn't very ergonomic or accessible.
-To make MTL more accessible I'll give a brief overview of doing this style[^mtl-vs-transformers].
-I'll write down how MTL works
-so people can read how to use it rather
-then struggling with it for days like I had to do.
+I learned MTL by staring at [reflex](https://hackage.haskell.org/package/reflex)
+for days, if not weeks.
+Which is an uncomfortable learning process.
+To make MTL more accessible I'll give a brief overview of this style[^mtl-vs-transformers].
+I'll write down how MTL works from the ground up,
+so people can *read* how to use it rather
+then struggling with code for days like I did.
 
 [^best-mtl]: The best I could find is this [blogpost](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue),
             which is more an experience report rather
@@ -47,7 +45,7 @@ with the `Monad` constraint, so I will use this too.
 Normally we use type variable's in concrete types,
 for example `Maybe a` or `[a]`.
 However, Instead of having our type variable 
-inside a concrete type, we can flip it around:
+inside a concrete type, we can also flip it around:
 
 ```haskell
 moreMonad :: Monad m => m Int
@@ -86,7 +84,7 @@ definition to figure out the type.
 In my head I describe this backwards reasoning process as:
 "pretending you have a `Maybe` which makes it becomes true".
 So `fiveTroughMaybe `results in 5 because `return` is implemented as `Just`
-on the `Maybe` type's Monad instance.
+on the `Maybe` type's `Monad` instance.
 
 This is valid.
 You should convince yourself it's valid.
@@ -266,6 +264,7 @@ let's go deeper into the [abyss](images/2021/abyss.jpeg).
 
 + What does the function [`lift`](https://hackage.haskell.org/package/transformers-0.6.0.2/docs/Control-Monad-Trans-Class.html#v:lift) do?
     The answer is in the footnotes. [^lift-function]
++ Is the order of a transformer stack always irrelevant? The answer is in the footnotes. [^irrelevant]
 + Say `ct` has this type signature:
 
         ct :: Char 
@@ -276,7 +275,20 @@ let's go deeper into the [abyss](images/2021/abyss.jpeg).
     with help of [`liftWith`](https://hackage.haskell.org/package/monad-control-1.0.3.1/docs/Control-Monad-Trans-Control.html#v:liftWith).
     For additional background see [this blogpost](https://lexi-lambda.github.io/blog/2019/09/07/demystifying-monadbasecontrol/).
     The answer can be found in the [reference project](https://github.com/jappeace/mtl-src/blob/master/src/Lib.hs) under the binding `answer`.
-  
+
+[^irrelevant]: No! It just happens to be irrelevant for most transformers in the transformers package.
+        For example there exist the transformer [ResourceT](https://hackage.haskell.org/package/resourcet).
+        I encountered a production bug due to wrong order of running the transformer stack.
+        Only large queries crashed with an opaque message `StatementAlreadyFinalized`.
+        The [`selectSource`](https://hackage.haskell.org/package/persistent-2.13.1.1/docs/Database-Persist-Class.html#v:selectSourceRes)
+        exposes the resource constraint.
+        We also had a typeclass to embed that `ReaderT backend` into the constraints,
+        since it's just a regular reader after all (it's not quite).
+        We also had an instance that said order of this `ResourceT` and `ReaderT backend` didn't matter,
+        but it did.
+        This instance caused the running of the query to leak outside of the `runResourceT` block.
+        Removing the instance and being explicit about order solved the bug.
+
 [^lift-function]: It allows concrete monad transformer selection,
   For example :
   ```haskell
@@ -318,7 +330,7 @@ In mtl style, the functions with *tighter* constraints can be used in *more* sit
 Now we're going to do the complete opposite.
 The most lax constraint possible is `MonadIO`,
 which gives access to arbitrary `IO` trough the `liftIO` function.
-I'm not casting judgement on if this is good or bad,
+I'm not casting judgement,
 I just want to show what happens.
 So let's add a [MacGyver](https://en.wikipedia.org/wiki/MacGyver) [^macgyver]
 logging function as follows:
@@ -564,7 +576,7 @@ instance NotInventedHereLog IO where
 
 To make our previous example work we need to replace `MonadIO` in our
 function definition with  `NotInventedHereLog`.
-Because we renamed the `macGyverLog` function to `nihLog`
+Because we renamed the `macGyverLog` function to `nihLog`,
 we need to replace those calls with `nihLog` as well:
 
 ```haskell
@@ -642,7 +654,7 @@ We will keep getting these errors for every unique transformer we use
 because of the
 [$n^2$-instances problem](http://felixmulder.com/writing/2020/08/08/Revisiting-application-structure#the-n2-issue)[^not-aprove].
 This blogpost isn't about solving the $n^2$
-problem so I will ignore it.
+problem, so I will ignore it.
 The solution to the type error however is pretty much the same:
 
 ```haskell
@@ -652,7 +664,7 @@ instance (NotInventedHereLog m) => NotInventedHereLog (ExceptT e m) where
 
 The example code will compile with these two additional instances.
 However we still don't know how to reinterpret this purely,
-and have introduced code duplication.
+and we have introduced code duplication.
 This duplication can be removed with the default mechanism described in
 Alexis King her [blogpost](https://lexi-lambda.github.io/blog/2017/04/28/lifts-for-free-making-mtl-typeclasses-derivable/).
 
