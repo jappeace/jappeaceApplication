@@ -9,7 +9,7 @@
     + Cross post in whatever is relevant, eg haskell programming reflex nixos
 + https://linkedin.com
 + https://twitter.com
-+ 
++ https://news.ycombinator
 
 
 * TODO website extensions
