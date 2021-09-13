@@ -33,12 +33,12 @@ LINKS_EX = [
     ( 'about 📂'
     , '/pages/about.html'
     , "about me"
-    , 'portfolio'
+    , 'about'
     ),
-    ( 'Penguin 🐧'
+    ( 'Hire 🐧'
     , 'http://penguin.engineer'
     , "Jappie for hire"
-    , 'penguin'
+    , 'hire'
     ),
     ( 'Raster 🚀'
     , 'https://raster.click/'

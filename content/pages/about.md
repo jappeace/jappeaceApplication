@@ -2,7 +2,7 @@ Title: About
 Category: reflection
 Date: 2021-09-13
 
-Good day. I'm Jappie Klooster, at your service.
+Hello, I'm Jappie Klooster, at your service.
 I like cooking, black smithing
 and telling computers what to do (also known as programming).
 I'm a freelance software engineer
@@ -13,23 +13,17 @@ perhaps too clever for my own good and a little bored,
 so I decided to torment my classmates by writing a mailbomber
 in PHP.
 Quite a feet for a 15 year old.
-Ever since then I've been writing various programs
+Since then I've been writing programs
 in all kinds of languages.
-These days I've settled on Haskell,
-because it's the best as far as I can tell.
-And why settle for silver if you can have gold?
 I started using Haskell seriously in 2017 when
 I joined Daisee as a software engineer.
-And have I've been using it pretty much constantly since then.
+It's the best as far as I can tell.
+Which is why I still use it and write about it so much.
 
 I like solving problems and produce software that's valuable.
 This means I go to great lengths understanding
-how a business works and then figure out
+how a business works and figure out
 where I can contribute best.
-It may appear things are done so fast it's like magick when I 
-work on a team,
-but that's no magick,
-I merely understood the business and what people want.
 It's surprising how much time can be saved 
-with a couple of questions to the right people,
+with a couple of questions,
 and keeping the implementation as simple as possible.
