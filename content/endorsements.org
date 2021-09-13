@@ -1,7 +1,7 @@
 # Use org mode because of the toc
 #+TITLE: Endorsement
 #+DATE: 2017-06-28
-#+Modified: 2019-04-5 11:27
+#+Modified: 2021-08-29 14:20
 #+CATEGORY: meta
 #+Tags: tips, remind, hastag
 A post I'll periodicly update (no promises)
@@ -63,16 +63,24 @@ Even though I knew most stuff he talked about in the beginning,
 the talk later becomes more interesting since I didn't follow machine learning
 that much.
 
-
-
 ** Tech blogs
    At some point I wanted to read interesting soemthing interesting,
    I found these who look all very interesting:
    + https://blog.acolyer.org/
    + http://highscalability.com/
-   + https://rachelbythebay.com/w/
 
-** Techstratery
+   As I grow older I prune this list more.
+   Technology in isolation is boring.
+** Blogs
+   These people write well.
+   I like reading about the day to day issues in
+   random company or struggles in life.
+
+   + https://rachelbythebay.com/w/
+   + https://sandymaguire.me/
+   + http://www.paulgraham.com/articles.html
+
+** Stratechery
 This guy is some kindoff analist I encountered on reddit
 (probably the /r/investing sub).
 He has some really interesting takes on tech companies and I learned a lot about
