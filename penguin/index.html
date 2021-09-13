@@ -4,356 +4,51 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="style.css">
     <title>J Klooster software</title>
-    <script language="javascript">
-      var strings = {
-	  blurp: {
-	      en: "With over a decade of programming experience Jappie is taking jobs! " +
-		  "Specialized in functional programming and artificial intelligence:" +
-		  "\"You throw problems at me, I fix them\". Call now: <a href='tel:+31644237437'>☎+316 44 237 437</a>!",
-	      nl: "Met meer dan 10 jaar programmeer ervaring ben ik zelfstandig en neem ik werk aan! " +
-		  "Gespecializeerd in functioneel programmeren en kunstmatige intelligentie:" +
-		  "\"U gooit problemen naar mij, ik los ze op\". Bel nu: <a href='tel:+31644237437'>☎+316 44 237 437</a>!"
-	  },
-	  whatdo: {
-	      en: "How can I help?",
-	      nl: "Wat kan ik doen?"
-	  },
-          whatdoBlurp: {
-              en: 
-"          I automate office work. If you're doing work on a computer," +
-"        fat chance I can automate it." +
-"        If you're doing lot's of work on a computer," +
-                  "        automation becomes attractive.:",
-              nl:
-              "Ik automatiseer kantoor werk. Als je werk doet op een computer is er een dikke kans dat ik het kan automatiseren. " +
-              "Als je een hoop werk doet op een computer word automatiseren aantrekkelijk." +
-              " Daarnaast kan ik u helpen met optimalisatie problemen. " +
-              "Denk aan de goedkoopste opslag plaats vinden voor een container, " +
-              " of de kortste route berekenen voor uw chaufeurs." +
-              " Ik zorg er voor dat dit compleet is geintegreerd in uw bestaande systeem."
-
-          },
-	  extend: {
-	      en: "Extend existing software ✍️",
-	      nl: "Bestaande software uitbreiden ✍️"
-	  },
-	  extendBlurp: {
-	      en: "I really enjoy reading old code. " +
-      "It makes me feel like I'm reading the mind of the author." +
-      "Therefore it comes natural to me to try and change or extend it. " +
-      " Examples:",
-	      nl: "Ik vind oude code lezen leuk. " +
-"Het lijkt dan net alsof ik in het brein van de auteur kijk. " +
-"Daardoor is het uitbreiden van bestaande " +
-"systemen een tweede natuur voor mij. " +
-"      Voorbeelden:"
-	  },
-          extendActions: {
-              en: "Make the user interface simpler.",
-              nl: "Gebruikers scherm simpeler maken."
-          },
-          extendButtonCustomer:  {
-              en: "Add a button that sends an email to every customer who's surname starts with the letter A.",
-              nl: "Voeg een knop toe die een email verstuurd naar elke klant waarvan de achternaam begint met de letter A."
-          },
-          extendInvoice: {
-              en: "Create a pdf for invoices based on database information in the housestyle of your company",
-              nl: "Maken van een PDF factuur gebaseerd op database informatie in de huis-style van uw bedrijf"
-          },
-          build: {
-              en: "Build new software 👷",
-              nl: "Nieuwe software bouwen 👷"
-          },
-          buildBlurp: {
-              en: "It's usually better to keep using as much old code as possible," +
-"      simply because it's tried and tested." +
-"      If needs must I can create something new," +
-"      and I'll use the latest and greatest inventions in programming," +
-"      and I'll make it last forever." +
-                  "      Examples:",
-          nl: "Doorgaans is het beter om bestaande software zoveel mogelijk te gebruiken, " +
-" Simpelweg omdat het geprobeerd en getest is." +
-"      Als het nodig is, kan ik iets nieuws bouwen," +
-"      hierbij gebruik ik de nieuwste en beste ontwikkelingen in software." +
-"      Daarnaast zorg ik ervoor dat het eeuwig meegaat." +
-                  "      Voorbeelden:"
-          },
-	  buildWebsite: { en: "Create a new website that hosts a form and posts it to a database.",
-                          nl: "Een nieuwe website maken die een formulier in een database wegschrijft" },
-	  buildLottery: { en: "Create a lottery game with 2d graphics.",
-			nl: "Een lotterij spel met 2d effecten (of 3d)" },
-	  buildApp: { en: "Build a mobile app that allows users to share recipes with each other",
-			nl: "Een app maken die gebruikers recepten laat delen." },
-          sysadmin: { en: "System administration ⚙️",
-			nl: "Systeem administratie ⚙️" },
-          sysadminBlurp: { en: 
-"      Usually I deploy the systems I work myself." +
-"      This made me familiar with all kinds of system administration tasks." +
-"      I'm also well aware of the risks involved." +
-"      I have personal stake in being aware, I run several services myself." +
-"      Including this website." +
-                           "      Examples:", 
-                           nl: "Normaal gesproken zet ik de systemen die ik maak zelf online." +
-"      Dit heeft me bekend gemaakt met allerlei systeem administratie vaardigheden." +
-"      Daarnaast ben ik bekend met de risico's. " +
-"      Omdat ik zelf programma's online draai, heb ik belang bij bekent zijn met de risoco's en de veiligheid." +
-"      Inclusief deze website. Voorbeelden: "
-                         },
-          sysArbitrary: { en: "Host arbitrary code on all kinds of platforms: Cloud, virtual machines, containers, etc.",
-			nl: "Neerzetten van arbitraire code op allerlei platformen, zoals cloud, virtuele machines en containers." },
-          sysMove: { en: "Move or port databases on systems that are operational.",
-			nl: "Verplaats of transformeer databases terwijl het achterliggende systeem operationeel is." },
-          sysAuto: { en: "Automate deployment of software.",
-			nl: "Automatiseren van het neerzetten van software." },
-          core: { en: "Core tenets",
-			nl: "Kern principes" },
-          coreBlurp: {
-              en: 
-"      To achieve business goals, " +
-"      I abide to several core tenets." +
-"      These tenets drive the decisions I make." +
-"      I believe long term this saves in development costs." +
-"      Once you have a simple, robust and elegant system doing work" +
-"      meaningful for you," +
-"      why would you even need a developer?" +
-"      And even if you'd need one," +
-"      he'd pick up extending the system trivially." +
-"      I hope to make myself replaceable with these tenets.",
-              nl: 
-"      Voor het bereiken van zakelijke doelen, " +
-"      Volg ik enkele kern principes." +
-"      Deze principes drijven de beslissingen die ik maak." +
-"      Ik geloof dat dit op lange termijn ontwikkelings kosten bespaard." +
-"      Zodra je een simpel, robuust en elegant systeem je waardevolle" +
-"      werk laat doen," +
-"      heb je in principe geen ontwikkelaar meer nodig." +
-"      En zelfs als je een ontwikelaar nodig hebt," +
-"      kan hij het systeem makkelijk aanpassen." +
-"      Dus ik hoop mijzelf vervangbaar te maken met deze principes.",
-          },
-          impact: { en: "Impact 💣",
-			nl: "Impact 💣" },
-          impactQuote: { en: "Have a strong effect on someone or something.",
-			nl: "Een sterk effect op iets of iemand hebben." },
-          impactBlurp: { en: 
-"      I wish to help drastically reduce costs," +
-"      or make your business drastically more competitive." +
-"      For example by help choosing better infrastructure, or " +
-"      use data driven models to gain new insights." +
-"      After I'm done your situation should be better," +
-"      to the point where you're bragging about it." +
-                         "      If I manage to do that I'm happy.",
-                         nl: "Ik wil graag drastisch kosten helpen reduceren" +
-"      of uw bedrijf competitief helpen maken." +
-"      Door bijvoorbeeld te helpen met het kiezen van infrastructuur, of" +
-"      data gedreven modellen gebruiken voor het verkrijgen van nieuwe inzichten." +
-"      Nadat ik klaar ben is uw situatie beter zoveel beter dat u er over gaat opscheppen." +
-                         "      Als mij dat lukt ben ik erg blij.",
-                       },
-
-          simple: { en: "Simplicity 🔵",
-			nl: "Eenvoudigheid 🔵" },
-          simpleQuote: { en: "The quality or condition of being plain or uncomplicated in form or design.",
-			nl: "De eigenschap of conditie om duidelijk of niet ingewikkeld in vorm of ontwerp te zijn." },
-          simpleBlurp: { en: 
-"        I become happy from reducing the amount of software used to" +
-"        achieve business goals." +
-"        The perfect world would be one where there is no software," +
-"        yet we had all the benefits of automation." +
-"        Of course this is impossible." +
-"        There are tactics however for achieving more of this," +
-"        such as using existing systems," +
-"        code re-use, and keeping architectures as simple as possible.",
-                         nl: 
-"        Ik word blij als ik software kan reduceren en alsnog zakelijke doelen" +
-"        kan bereiken." +
-"        De perfecte wereld heeft geen software, maar men verkijgt alsnog de voordelen uit automatiserening." +
-"        Dit is natuurlijk onmogelijk." +
-"        Er zijn wel tactieken die helpen dit na te streven." +
-"        Zoals het gebruik van bestaande systemen," +
-"        hergebruik van code, en architecturen simpel houden.",
-                       },
-          simpleBlurpLike: {
-              en: 
-"        Therefore I like having small focused teams," +
-"        deleting code whenever it's possible," +
-                  "        and leverage open-source projects for dealing with hard problems.",
-              nl: 
-"        Ik vind het leuk om in kleine gerichte teams te werken," +
-"        waarin ik code verwijder wanneer het mogelijk is," +
-"        en zoveel mogelijk bestaande project gebruik.",
-          },
-          robust: { en: "Robustness 🏰",
-			nl: "Robustheid  🏰" },
-	  robustQuote: { en: " The ability to withstand or overcome adverse conditions or rigorous testing. ",
-			nl: "Het vermogen om moeilijke omstandigheden of grondige testen te overkomen. " },
-          robustBlurp: { en:
-"	The reason I want robustness is more a matter of pride." +
-"	I really don't appreciate code I wrote breaking on the job." +
-"	Therefore I will develop and design with robustness in mind." +
-"	I wish to build things that can stand the test of time and " +
-"	outlive me many times over." +
-"	This principle also drives me to search for ever more" +
-                         "	powerful tools.",
-                         nl: 
-"	De reden waarom ik robuustheid nastreef is een zaak van trotsheid." +
-"	Ik vind het echt niet leuk als code die ik geschreven heb faalt op zijn werk." +
-"	Daarom ontwikkel en ontwerp ik met robuustheid in gedachte." +
-"	Ik wil dingen bouwen die de test van tijd aankunnen" +
-"	en meerdere malen ouder worden dan ik." +
-"	Dit principe zorgt er ook voor dat ik altijd opzoek ben naar beter gereedschap",
-                       },
-          happy: {en: "Happy customers 😊",
-                  nl: "Tevreden klanten 😊"
-                 },
-          happyWzonen: {en: "W. van der Meer en Zonen B.V.: VKI form and extend trees",
-                        nl: "W. van der Meer en Zonen B.V.: VKI formulier en uitbreiden trees" 
-                       }
-      };
-      function setText (lang) {
-	  Object.keys(strings).forEach(function(key){
-	    document.getElementById(key).innerHTML = strings[key][lang];
-	  });
-      }
-	document.addEventListener("DOMContentLoaded", function(event) { 
-	    setText('nl');
-	});
-    </script>
     </head>
   <body>
     <header>
-      <h1>Penguin Programmer</h1>
-    <img alt="Logo. Thanks to Larry Ewing, Simon Budig and Garrett LeSage for making the penguin. Source: https://commons.wikimedia.org/wiki/File:Tux.svg" src="./logo.svg" />
-    <nav class="menu">
-      <ul>
-	<li><a href="https://jappieklooster.nl/pages/portfolio.html">Portfolio</a></li>
+      <h1>Jappie Software</h1>
+  <nav class="menu">
+  <ul>
+	<!-- <li><a href="https://jappieklooster.nl/pages/portfolio.html">Portfolio</a></li> -->
 	<li><a href="mailto:jappieklooster@hotmail.com">Email</a></li>
 	<li><a href="tel:+31644237437">☎</a></li>
 	<li><a href="https://jappieklooster.nl/">Blog</a></li>
-	<li><a href="cv.html">CV</a></li>
-      </ul>
-    </nav>
-    <span onClick="setText('nl')">🇳🇱 Dutch</span> - 
-    <span onClick="setText('en')"> 🇦🇺 English</span>
+  </ul>
+  </nav>
     </header>
     <article>
-      <span id="blurp">
-      </span>
-      <h2 id="whatdo"></h2>
-      <p id="whatdoBlurp"> </p>
-      <h3 id="extend"></h3>
-
-      <p id="extendBlurp"></p>
-      <ul>
-	<li id="extendButtonCustomer"></li>
-	<li id="extendInvoice"></li>
-	<li id="extendActions"></li>
-      </ul>
-
-      <h3 id="build"></h3>
-      <p id="buildBlurp">
-      </p>
-      <ul>
-	<li id="buildWebsite"></li>
-	<li id="buildLottery"></li>
-	<li id="buildApp"></li>
-      </ul>
-
-      <h3 id="sysadmin"></h3>
-      <p id="sysadminBlurp">
-      </p>
-      <ul>
-        <li id="sysMove"></li>
-        <li id="sysAuto"></li>
-        <li id="sysArbitrary"></li>
-      </ul>
-      <h2 id="core"></h2>
-      <p id="coreBlurp">
-      </p>
-      <h3 id="impact"></h3>
-      <blockquote>
-      <p id="impactQuote"></p>
-      </blockquote>
-      <p id="impactBlurp">
-      </p>
-      <h3 id="simple"></h3>
-      <blockquote>
-      <p id="simpleQuote"></p>
-      </blockquote>
-      <p id="simpleBlurp">
-      </p>
-      <p id="simpleBlurpLike">
-      </p>
-      <h3 id="robust"></h3>
-      <blockquote>
-	<p id="robustQuote">
-	</p>
-      </blockquote>
-      <p id="robustBlurp">
-      </p>
-      <h2 id="happy"></h2>
-      <h3 id="happyWzonen"></h3>
       <p>
-      Het VKI formulier is een formulier dat bij elke lading kippen
-      ingeleverd moet worden bij de autoriteiten.
+      Hello, I'm jappie and I want to create things that valuable.
+      I do this trough software. Mostly in Haskell.</p>
 
-      Het was altijd veel werk voor de slachterij om dit voor elkaar
-      te krijgen.
-      De boeren die het horen in te vullen maakten fouten, en
-      iemand op kantoor moest dat maar weer oplossen.
-      Wat ik heb gedaan is dit formulier veranderen in een
-      website, wat het formulier weg schrijft naar de trees database.
-      Trees is het zelf ontwikkelde systeem wat praktisch alles
-      in het bedrijf bijhoud.
-      Nadat het in de database staat
-      kunnen werknemers de informatie omzetten in een pdf,
-      en dit word die opgestuurd naar de autoriteiten.
-
-      Nu zijn alle formulieren altijd correct, omdat de website
-      de boeren helpt met het invullen van een juist formulier. 
-      Er word dus significant bespaart op adminsitratie.
-
-      Naast het VKI formulier heb ik ook het Trees systeem verbeterd.
-      Dit kwam vaak neer op het aanpassen van database interactie.
-      Tot slot heb ik gezord voor een extra test database, zodat
-      we op een veilige manier nieuwe code kunnen uittesten.
-      </p>
-      <h3 id="happyShit">Loterij spel: Schijt je rijk</h3>
       <p>
-      De supporters Vereniging van
-      <a href="https://www.vvruinen.nl/supportersvereniging/welkom-bij-de-supportersvereniging-vv-ruinen.html">
-	VV ruinen </a>.
-      Vroeg om het spel "schijt je rijk" te digitaliseren.
-      Dit is gelukt en is te zien hier:
+      I can:
+      <ul>
+      <li>Produce features for existing systems.</li>
+      <li>Help debug and write automated tests.</li>
+      <li>Design and implement robust systems from scratch.</li>
+      </ul>
       </p>
-      <img src="https://jappieklooster.nl/images/2018/schijt-je-rijk.jpg" />
+
       <p>
-      Er is een uitgebreid verslag beschikbaar in het <a href="https://jappieklooster.nl/pages/portfolio.html#sec-4">portfolio</a>.
+      <a href="mailto:jappieklooster@hotmail.com">Hire me</a>!
+      </p>
+      <p>
+      I've worked with:
+
+      <ul>
+        <li>Websites and web applications</li>
+        <li>Databases</li>
+        <li>Android phones</li>
+        <li>Lots of excel</li>
+      </ul>
       </p>
 
-      <h3>Solex markt</h3>
-      Dit was het eerste commerciële project dat ik heb gedaan.
-      Het was in principe solex markt als webshop helpen van
-      de grond te komen.
-      Uitgebreid beschreven in het <a href="https://jappieklooster.nl/pages/portfolio.html#sec-7">portfolio</a>.
+      <p>
+      See my blog for details.
+      </p>
 
-      <h2>Over Jappie</h2>
-      Op dit moment heeft Jappie twee grote projecten,
-      ten eerste is er <a href="https://raster.click">Raster</a>,
-      een startup die al begint te lopen,
-      en ten tweede is er zijn consulting werk waar deze website
-      over gaat.
-      Jappie heeft een jaar gewerkt in Australië
-      voor de software bedrijven <a href="http://daisee.com/">Daisee</a>,
-      en <a href="https://www.openlearning.com/">OpenLearning</a>.
-      Daar heeft hij ook met vrienden geprobeerd een startup
-      van de grond te krijgen, maar deze poging is gestopt omdat
-      ik terug ging.
-      In 2017 heeft Jappie zijn Master of Science in kunstmatige
-      intelligentie afgerond
-      aan de Universiteit Utrecht,
-      voor dat deed hij een studie informatica aan Windesheim
-      waar het laatste jaar een stage in China was bij Teewoo.
     </article>
     <footer>
     <small>
