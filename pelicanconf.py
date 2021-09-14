@@ -30,9 +30,9 @@ AUTHOR_FEED_RSS = None
 # NOTE: These aren't called just LINKS and SOCIAL because those are assumed by
 # the default theme to be 2-tuples, but I need more info.
 LINKS_EX = [
-    ( 'about 📂'
+    ( 'About 📂'
     , '/pages/about.html'
-    , "about me"
+    , "About me"
     , 'about'
     ),
     ( 'Hire 🐧'

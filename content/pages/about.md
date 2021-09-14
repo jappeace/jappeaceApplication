@@ -21,9 +21,7 @@ It's the best as far as I can tell.
 Which is why I still use it and write about it so much.
 
 I like solving problems and produce software that's valuable.
-This means I go to great lengths understanding
-how a business works and figure out
-where I can contribute best.
-It's surprising how much time can be saved 
-with a couple of questions,
-and keeping the implementation as simple as possible.
+I prefer simplicity, succinctness and wit.
+I get joy out of old things that stood the test of time,
+especially (mechanical) machines, books and furniture.
+Lastly, I hate the number five.
