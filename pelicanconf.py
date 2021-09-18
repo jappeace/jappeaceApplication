@@ -49,7 +49,7 @@ LINKS_EX = [
 
 SOCIAL_EX = [(
     'Email ✉',
-    'mailto:jappieklooster@hotmail.com',
+    'mailto:hi@jappie.me',
     "Contact me",
     'email'
 )
