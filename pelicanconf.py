@@ -31,7 +31,7 @@ AUTHOR_FEED_RSS = None
 # the default theme to be 2-tuples, but I need more info.
 LINKS_EX = [
     ( 'About 📂'
-    , '/pages/about.html'
+    , '/pages/about-me.html'
     , "About me"
     , 'about'
     ),
