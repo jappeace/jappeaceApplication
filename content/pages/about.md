@@ -26,8 +26,22 @@ I get joy out of old things that stood the test of time,
 especially (mechanical) machines, books and furniture.
 Lastly, I hate the number five.
 
+## This blog
+
+This is a personal and technical blog.
+I post about things that interest me,
+and I write here because I enjoy writing.
+I enjoy organizing my thoughts,
+and I enjoy getting better at writing and reasoning.
+My hope is to get better at writing, by doing.
+I also enjoy reading back on previous experience.
+Nostalgia can be a goal on itself.
+I take pride in this work and if you spot grammar issues or
+untruths, please let me know.
+
 ## Timeline
 
+A brief overview of meaningful events and decisions in my life.
 
 <table>
 <tr><th> 2021 </th><td>
@@ -81,4 +95,3 @@ I started running, once or twice per week. A habit I maintain to this day.
 <tr><th> 2000 </th><td> Move to Ansen</td></tr>
 <tr><th> 1992 </th><td> Born. Live in Franeker. </td></tr>
 </table>
-
