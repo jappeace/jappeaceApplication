@@ -19,9 +19,9 @@ in
       '')
       s
       dash
-      org-ref
     # dracula-theme
   ]) ++ (with epkgs.melpaPackages; [
+      org-ref
     # lsp-rust https://github.com/emacs-lsp/lsp-rust
   ]) ++ (with epkgs.elpaPackages; [
     # ehh
