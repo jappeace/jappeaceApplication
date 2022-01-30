@@ -31,7 +31,8 @@ I imagine some people still want to use btrfs,
 so I'll leave the old guide in place.
 However, I'll copy over parts which were good in here for convenience.
 This updated guide still uses encrypted disks,
-I've had no problems at all with this and I recommend disk encryption to all.
+I've had no problems with this at all,
+and I recommend disk encryption to all.
 
 [^hardware]: I had uuid for my disks, but I swapped the disks so the boot bricked.
 
