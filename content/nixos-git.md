@@ -328,8 +328,8 @@ which he calls out directly with the flake.
 I find his setup interesting, and may move over to something like that in the future,
 although since flakes are still experimental, I'll hold off.
 
-Another alternative would be to put multiple configuration.nix files
-into a repository and let the symlink decide which should be used
+Another alternative is multiple configuration.nix files
+in a repository and let the symlink decide which should be used
 for what machine.
 This would avoid any merge conflicts,
 although the versions between machines need to be similar.
