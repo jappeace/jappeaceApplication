@@ -1,25 +1,36 @@
-Title: NixOS managed with git
+Title: NixOS desktop managed with git
 Date: 2022-01-30 16:20
 Category: tools
 OPTIONS: toc:nil
 Tags: nix, nixos, ext4, tools, linux, devops
 
 A few years ago I wrote a post on installing
-NixOS [on encrypted btrfs](./nixos-encrypted-btrfs.md).
+NixOS [on encrypted btrfs]({filename}/nixos-encrypted-btrfs.md).
 I recently went trough that guide to install
 NixOS once more.
-The guide is good, but for me it has some issues:
+It is good, but it has some issues:
 
-1. It uses btrfs which I no longer use, due to performance concerns
-2. No mentioning of git, which composes really well with nix and nixos.
+1. btrfs: Which I no longer use due to performance concerns.
+2. [git](https://git-scm.com/): This requires some special attention,
+   but composes really well with nix and nixos.
 3. It doesn't explain how to deal with secrets.
 
 I'll address these concerns here,
 since I *just* bricked an install due to git usage [^hardware].
+And I also wasted some time re-figuring out secrets.
+
+Why use git if it introduces complexity?
+For one it serves as an excellent backup tool,
+furthermore it allows managing multiple deployments
+side by side trough branches.
+Finally having a log of changes can be useful when things
+break. 
+
 I imagine some people still want to try using btrfs,
 so I'll leave the old guide in place.
-Although updates go here now.
-I'll at verbatim copy old pieces which were good.
+I'll copy parts which were good straight in here for convenience.
+This updated guide still uses encrypted disks,
+I've had no problems at all with this.
 
 [^hardware]: I had uuid for my disks, but I swapped the disks so the boot bricked.
 
