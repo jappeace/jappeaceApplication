@@ -1,6 +1,6 @@
-Title: Nixos on encrypted btrfs
+Title: NixOS on encrypted btrfs
 Date: 2018-08-19 13:02
-Modified: 2021-07-05 16:20
+Modified: 2022-01-30 13:18
 Category: tools
 OPTIONS: toc:nil
 Tags: nix, nixos, btrfs, tools, linux, devops
@@ -20,9 +20,15 @@ To help a reader we document the journey towards BTRFS.
 Commands compiled and included.
 
 # Getting started
-Get yourself a NIXOS [live usb](https://nixos.org/nixos/download.html).
-Boot into it.
-First step is to setup WIFI:
+Get yourself a NixOS [live usb](https://nixos.org/download.html#download-nixos).
+I use the minimal ISO, because the graphical ISO slows booting and gives no advantage
+aside from being pretty.
+You can `cat minimal-nixos.iso > /dev/sdX`, where `X` is the usb drive found by `lsblk`.
+`X` should be a letter, numbers indicate partitions, which we don't want to cat upon.
+Boot into it on the target machine.
+
+# Networking
+Next step is to setup WIFI, you can skip this if you're on Ethernet:
 
 ```bash
 wpa_passphrase SSID PASS > /etc/wpa_supplicant.conf
@@ -32,6 +38,18 @@ systemctl restart wpa_supplicant
 The first command creates a config for wpa_supplicant.
 The reader must fill in SSID and PASS of his target wifi network.
 The second command tells systemd to go restart wpa_supplicant and use the new config.
+
+Ask google if you're online: `curl google.com` should return a 301 redirect:
+```
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>301 Moved</TITLE></HEAD><BODY>
+<H1>301 Moved</H1>
+The document has moved
+<A HREF="http://www.google.com/">here</A>.
+</BODY></HTML>
+```
+
+There is no point proceeding until you have networking.
 
 # Partitioning
 Now to setup the partitioning on the RIGHT device.
