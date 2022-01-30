@@ -1,9 +1,8 @@
-Title: Nixos managed with git
+Title: NixOS managed with git
 Date: 2022-01-30 16:20
 Category: tools
 OPTIONS: toc:nil
 Tags: nix, nixos, ext4, tools, linux, devops
-Status: draft
 
 A few years ago I wrote a post on installing
 NixOS [on encrypted btrfs](./nixos-encrypted-btrfs.md).
@@ -16,10 +15,11 @@ The guide is good, but for me it has some issues:
 3. It doesn't explain how to deal with secrets.
 
 I'll address these concerns here,
-since I *just* fucked up an install due to git usage [^hardware].
-I imagine some people still want to try using btrfs for whatever
-reason, so I'll leave the old guide in place.
-But I'll at verbatim copy old pieces which were good.
+since I *just* bricked an install due to git usage [^hardware].
+I imagine some people still want to try using btrfs,
+so I'll leave the old guide in place.
+Although updates go here now.
+I'll at verbatim copy old pieces which were good.
 
 [^hardware]: I had uuid for my disks, but I swapped the disks so the boot bricked.
 
@@ -28,7 +28,11 @@ But I'll at verbatim copy old pieces which were good.
 Get yourself a NixOS [live usb](https://nixos.org/download.html#download-nixos).
 I use the minimal ISO, because the graphical ISO slows booting and gives no advantage
 aside from being pretty.
-You can `cat minimal-nixos.iso > /dev/sdX`, where `X` is the usb drive found by `lsblk`.
+Use
+```
+cat minimal-nixos.iso > /dev/sdX
+```
+where `X` is the usb drive found by `lsblk`.
 `X` should be a letter, numbers indicate partitions, which we don't want to cat upon.
 
 Boot into it on the target machine.
@@ -191,14 +195,31 @@ Furthermore we're going to need the packages vim and git:
   };
 ```
 
+Make sure to set the channel to the same as in your
+tracked git configuration,
+or alternatively be ready to deal with upgrades.
+For example on a live ISO of 21.11 I did:
+```
+nix-channel --add https://nixos.org/channels/nixos-21.05 nixos
+nix-channel --update
+```
+and then I changed the `configuration.nix` to:
+```
+ system = {
+    stateVersion = "21.05";
+  };
+```
+Dealing with channels is quite fragile, and I have these
+commands copied as comments in my `configuration.nix`.
+
 Once configuration is done we can install nix:
 
 ```bash
 nixos-install
 ```
 
-Don't worry, we can use `nixos-rebuild switch` to reconfigure nix whenever once
-we're booted into it.
+Don't worry, we can use `nixos-rebuild switch` to reconfigure nix whenever,
+once we're booted into it.
 Hopefully we boot successfully:
 
 ```bash
@@ -235,19 +256,12 @@ So login as root and clone your config project:
 ```
 cd /
 git clone https://github.com/jappeace/linux-config
+chown jappie:users -R /linux-config
 ```
-
 This puts the linux-config project on the `/linux-config` path.
 Some old time linux/unix users may puke in their mouths
 upon seeing the "standard" directories being ignored, but fuck them.
 
-Now what I usually do is login as my own user, and run the 
-script [setup-nixos.sh](https://github.com/jappeace/linux-config/blob/work-machine/scripts/nixos-setup.sh).
-which sets up the symlink from the git tracked project to
-the standard location:
-```
-ln -sf /linux-config/configuration.nix /etc/nixos/configuration.nix
-```
 Now we mustn't forget to copy over the hardware generated
 config into our git project:
 ```
@@ -255,43 +269,60 @@ cp /etc/nixos/hardware-configuration.nix /linux-config/hardware/branch-name.nix
 ```
 Where branch name the name is for the git branch you'll use for this deployment.
 More on that in the branches section.
+Also we want to include this as a module in the configuration.nix
+```
+  imports = [ 
+    ./hardware/branch-name.nix
+  ];
+```
 
-The other aspect of this script is that it symlinks all relevant
-dotfiles from the home folder into the linux-config.
-This is pretty much a not invented here home manager.
-I suppose if you've gone to the effort of setting up
-home manager, that solution is more thorough,
-but this was very low effort on my part
-say maybe a couple of hours,
-and has worked for years.
-So I don't see the appeal at all of getting into home manager.
+Now we need to make the tracked configuration
+be used by the system.
+What I usually do is login as my own user, and run the 
+script [setup-nixos.sh](https://github.com/jappeace/linux-config/blob/work-machine/scripts/nixos-setup.sh):
+```
+exit
+cd /linux-config/scripts/
+./setup-nixos.sh
+```
+
+which sets up the symlink from the git tracked project to
+the standard location:
+```
+ln -sf /linux-config/configuration.nix /etc/nixos/configuration.nix
+```
+
+This script also symlinks all relevant
+dotfiles from linux config into the home folder.
+You may want prefer [home manager](https://github.com/nix-community/home-manager)
+to symlinking dotfiles.
+But this works for me.
 
 ## Branches
 Branches are ideal for managing multiple machines,
 because it allows you to diverge oddities such as hardware specific configurations.
 For example I also have this crummy display switch script which is only relevant
 for the PC.
-On the laptop it has to be slightly different.
+On the laptop it has to be slightly different (if used at all).
 
-This setup also allows you to merge back configuration changes from other machines.
-To merge back you'll just have to solve an ordinary git conflict.
+This branch setup also allows merging back configuration changes from other machines.
+Which involves solving an ordinary git conflict.
 I recommend the reader to use merges rather then rebases,
 because that way git remembers how conflicts are resolved.
 
 # Secrets
-
 I have three major secret sources.
 1. ssh keys
 2. gpg keys
 3. The keepassxc database
 
-I put the database in [synchting](https://syncthing.net/),
+The database in [synchting](https://syncthing.net/),
 this gives me access to all services so that I can
 simply generate new gpg and ssh keys per deployment.
 Any other file manage service would do, but I like
 syncthing because it's decentralized.
 
-I go to https://localhost:8384 on some device that has the databse,
+I go to https://localhost:8384 on some device that has the database,
 and the target device on the same address.
 I simply type over the device id.
 

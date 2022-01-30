@@ -23,7 +23,11 @@ Commands compiled and included.
 Get yourself a NixOS [live usb](https://nixos.org/download.html#download-nixos).
 I use the minimal ISO, because the graphical ISO slows booting and gives no advantage
 aside from being pretty.
-You can `cat minimal-nixos.iso > /dev/sdX`, where `X` is the usb drive found by `lsblk`.
+Use
+```
+cat minimal-nixos.iso > /dev/sdX
+```
+where `X` is the usb drive found by `lsblk`.
 `X` should be a letter, numbers indicate partitions, which we don't want to cat upon.
 Boot into it on the target machine.
 
@@ -40,7 +44,8 @@ The reader must fill in SSID and PASS of his target wifi network.
 The second command tells systemd to go restart wpa_supplicant and use the new config.
 
 Ask google if you're online: `curl google.com` should return a 301 redirect:
-```
+
+```html
 <HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
 <TITLE>301 Moved</TITLE></HEAD><BODY>
 <H1>301 Moved</H1>
