@@ -25,15 +25,15 @@ furthermore it allows managing multiple deployments
 side by side trough branches.
 Finally having a log of changes can be useful when things
 break. 
+Things *will* break. Such is the life of a tinkerer. 
 
-I imagine some people still want to try using btrfs,
+I imagine some people still want to use btrfs,
 so I'll leave the old guide in place.
-I'll copy parts which were good straight in here for convenience.
+However, I'll copy over parts which were good in here for convenience.
 This updated guide still uses encrypted disks,
-I've had no problems at all with this.
+I've had no problems at all with this and I recommend disk encryption to all.
 
 [^hardware]: I had uuid for my disks, but I swapped the disks so the boot bricked.
-
 
 # Getting started
 Get yourself a NixOS [live usb](https://nixos.org/download.html#download-nixos).
@@ -44,12 +44,14 @@ Use
 cat minimal-nixos.iso > /dev/sdX
 ```
 where `X` is the usb drive found by `lsblk`.
-`X` should be a letter, numbers indicate partitions, which we don't want to cat upon.
+`X` should be a letter, numbers indicate partitions,
+which we don't want to cat upon because the ISO already
+contains a partitioning scheme.
 
 Boot into it on the target machine.
 Become root with `sudo -i`.
 
-# Networking
+# Internet
 Next step is to setup WIFI, you can skip this if you're on Ethernet:
 
 ```bash
@@ -61,17 +63,13 @@ The first command creates a config for wpa_supplicant.
 The reader must fill in SSID and PASS of his target wifi network.
 The second command tells systemd to go restart wpa_supplicant and use the new config.
 
-Ask google if you're online: `curl google.com` should return a 301 redirect:
+Ask google if you're online:
 ```
-<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
-<TITLE>301 Moved</TITLE></HEAD><BODY>
-<H1>301 Moved</H1>
-The document has moved
-<A HREF="http://www.google.com/">here</A>.
-</BODY></HTML>
+curl google.com
 ```
-
-There is no point proceeding until you have networking.
+Should return a 301 Moved.
+If it hangs or refuses the connection you likely have no internet.
+There is no point proceeding until you have internet access.
 
 # Partitioning
 Now to setup the partitioning on the RIGHT device.
@@ -154,7 +152,7 @@ Note that we point it at the mapped file,
 if the `"$dev"3`device were to be used directly we'd remove the encryption.
 
 # Mounting 
-Wouldn't it be nice to have subvolumes on your BTRFS?
+Here we mount all partitions.
 
 ```bash
 mount /dev/mapper/nixenc /mnt/
@@ -162,12 +160,15 @@ mkdir /mnt/boot
 mount "$dev"1 /mnt/boot
 ```
 
-Here we mount the boot partition.
-Just to make it detectable by the nix config generation script.
+This makes them detectable by the nix config generation script.
+Furthermore it allows the script to write the config on
+the proper disk.
 
 ## Did I do everything right?
-Doing this a second time my speed made me skeptical,
-to verify everything was sane I used the following commands.
+The second time I ran trough this post everything went 
+quite quickly,
+so I became skeptical.
+To verify everything was sane I used the following commands:
 
 ```bash
 mount | grep /mnt
@@ -176,12 +177,11 @@ ls /mnt
 
 The first command is to check if the encrypted volume and boot is mounted at
 the right paths.
-The second one to verify the folders are created, which are subvolumes.
-The subvolume command creates a folder so if it exists we presume it worked.
+The second one to verify the folders are created.
 
-# Configure nix 1
-We can use hardware detection to figure out how to setup nix on this setup:
-
+# Configure nix part 1, in the live environment
+We use a script to generate an intial nix configuration,
+which detects the hardware for us:
 ```bash
 nixos-generate-config --root /mnt
 ```
@@ -196,7 +196,8 @@ it's highly recommended to enable [wpa_supplicant](https://nixos.wiki/wiki/Wpa_s
 networking.wireless.enable = true
 ```
 
-Furthermore we're going to need the packages vim and git:
+Furthermore we're going to need the packages vim and git
+to modify the config after booting into the system:
 ```
   environment = {
     systemPackages = [
@@ -209,7 +210,7 @@ Furthermore we're going to need the packages vim and git:
 Make sure to set the channel to the same as in your
 tracked git configuration,
 or alternatively be ready to deal with upgrades.
-For example on a live ISO of 21.11 I did:
+For example on a live ISO of `21.11` I downgraded to `21.05` with:
 ```
 nix-channel --add https://nixos.org/channels/nixos-21.05 nixos
 nix-channel --update
@@ -220,8 +221,8 @@ and then I changed the `configuration.nix` to:
     stateVersion = "21.05";
   };
 ```
-Dealing with channels is quite fragile, and I have these
-commands copied as comments in my `configuration.nix`.
+Dealing with channels is quite fragile,
+so I have these commands copied as comments in my `configuration.nix`.
 
 Once configuration is done we can install nix:
 
@@ -239,32 +240,30 @@ reboot
 Booting is hard, don't worry if this goes wrong the first <s>10</s> 30 times.
 
 You may need to enable UEFI in your BIOS.
-It's up to the reader to figure that part out.
-(press some f keys on boot, f11 maybe?).
+It's up to the reader to figure that part out [^f-keys][^boot-issue].
 Alternatively one could setup grub. Good luck with that.
+You can't read the rest of this post until you've booted.
+Go back if you haven't booted, you messed up.
 
-You can't read the rest of this post until you've booted,
-go back if you haven't, you messed up.
+[^f-keys]: press some f keys on boot, f11 or f2 maybe?
+[^boot-issue]: An issue I encountered was that rather then selecting EUFI boot,
+              the bios did a traditional boot on the disk.
+              So EUFI was correctly installed,
+              I just had to select the same disk but with the EUFI label from the bios.
+              Yup, all kinds of stuff can go wrong with booting.
 
-# First login
-Once rebooted you may be stuck at the display manager.
-Use `Alt+f1` to switch to another TTY and login as root,
-then use `passwd your-user-name` to set an initial password.
-Use `Alt+f7` to go back to the display manager.
-
-I personally haven't moved all my configuration into nix yet
-(it's a big project),
-but I wrote a [script](https://github.com/jappeace/linux-config/blob/master/scripts/nixos-setup.sh)
-that symlinks all dotfiles, and hardlinks
-the `configuration.nix` to my linux-config project.
-
-# Configure nix II, with git
-Once we're booted into the instalation,
+# Configure nix part 2, with git
+Once we're booted into the installation,
 the absolute paths for the symlinks are different.
 For example root is no longer under `/mnt`, but under, well, root `/`.
+So login as root[^display-manager] and clone your config project:
 
-So login as root and clone your config project:
-```
+[^display-manager]: Once rebooted you may be stuck at the display manager.
+                    Use `Alt+f1` to switch to another TTY and login as root,
+                    then use `passwd your-user-name` to set an initial password for that user.
+                    Use `Alt+f7` to go back to the display manager.
+
+```bash
 cd /
 git clone https://github.com/jappeace/linux-config
 chown jappie:users -R /linux-config
@@ -272,34 +271,32 @@ chown jappie:users -R /linux-config
 This puts the linux-config project on the `/linux-config` path.
 Some old time linux/unix users may puke in their mouths
 upon seeing the "standard" directories being ignored, but fuck them.
-
-Now we mustn't forget to copy over the hardware generated
+We mustn't forget to copy over the hardware generated
 config into our git project:
-```
+```bash
 cp /etc/nixos/hardware-configuration.nix /linux-config/hardware/branch-name.nix
 ```
 Where branch name the name is for the git branch you'll use for this deployment.
 More on that in the branches section.
-Also we want to include this as a module in the configuration.nix
-```
+Also we want to include this as a module in the `configuration.nix`
+```nix
   imports = [ 
     ./hardware/branch-name.nix
   ];
 ```
 
-Now we need to make the tracked configuration
-be used by the system.
-What I usually do is login as my own user, and run the 
-script [setup-nixos.sh](https://github.com/jappeace/linux-config/blob/work-machine/scripts/nixos-setup.sh):
-```
+The tracked configuration should be used by the system.
+What I usually do is login as my own user,
+and run the script [setup-nixos.sh](https://github.com/jappeace/linux-config/blob/work-machine/scripts/nixos-setup.sh):
+```bash
 exit
 cd /linux-config/scripts/
 ./setup-nixos.sh
 ```
 
-which sets up the symlink from the git tracked project to
-the standard location:
-```
+Which sets up the symlink from the git tracked configuration to
+the standard location, in other words it does this:
+```bash
 ln -sf /linux-config/configuration.nix /etc/nixos/configuration.nix
 ```
 
@@ -309,7 +306,7 @@ You may want prefer [home manager](https://github.com/nix-community/home-manager
 to symlinking dotfiles.
 But this works for me.
 
-## Branches
+## Multiple machines desktops
 Branches are ideal for managing multiple machines,
 because it allows you to diverge oddities such as hardware specific configurations.
 For example I also have this crummy display switch script which is only relevant
@@ -320,6 +317,22 @@ This branch setup also allows merging back configuration changes from other mach
 Which involves solving an ordinary git conflict.
 I recommend the reader to use merges rather then rebases,
 because that way git remembers how conflicts are resolved.
+
+However I recently learned that a friend of mine handles this trough
+a [module](https://github.com/erikbackman/nixos-config/blob/master/flake.nix#L54)
+system.
+He then runs that with `nixos-rebuild --flake .#machine-name`.
+So rather then using branches he has an entrypoint per machine
+which he calls out directly with the flake.
+I find his setup interesting, and may move over to something like that in the future,
+although since flakes are still experimental, I'll hold off.
+
+Another alternative would be to put multiple configuration.nix files
+into a repository and let the symlink decide which should be used
+for what machine.
+This would avoid any merge conflicts,
+although the versions between machines need to be similar.
+I think I prefer merge conflicts.
 
 # Secrets
 I have three major secret sources.
@@ -335,11 +348,8 @@ syncthing because it's decentralized.
 
 I go to https://localhost:8384 on some device that has the database,
 and the target device on the same address.
-I simply type over the device id.
-
-After syncing is complete we can generate a new ssh key,
-and put it into github for example.
-Then we can update the remote of linux-config.
-
-Once this is complete I have something which I consider a functioning
-deployment.
+I type over the device id into that screen to start syncing.
+after syncing completes I have access to the keepasscx database.
+Now I can generate new ssh keys and gpg keys,
+and login to services to update those.
+With that finished the installation is complete.

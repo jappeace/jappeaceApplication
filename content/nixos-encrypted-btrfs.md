@@ -182,9 +182,10 @@ Here we mount the boot partition.
 Just to make it detectable by the nix config generation script.
 
 ## Did I do everything right?
-Doing this a second time my speed made me skeptical,
-to verify everything was sane I used the following commands.
-
+The second time I ran trough this post everything went
+quite quickly,
+so I became skeptical.
+To verify everything was sane I used the following commands:
 ```bash
 mount | grep /mnt
 ls /mnt
