@@ -1,4 +1,4 @@
-Title: NixOS desktop managed with git
+Title: Installing a NixOS desktop tracked with git
 Date: 2022-01-30 16:20
 Category: tools
 OPTIONS: toc:nil
