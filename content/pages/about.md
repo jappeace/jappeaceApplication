@@ -31,11 +31,15 @@ Lastly, I hate the number five.
 A brief overview of meaningful events and decisions in my life.
 
 <table>
+<tr><th> 2022 </th><td>
+Deadlift 110kg! clean 60kg.
+Idk, year just started.
+</td></tr>
 <tr><th> 2021 </th><td>
 I started doing crossfit.
 I got vaccinated.
 I started working on <a href="https://massapp.org/" >massapp</a>.
-I came back from Aruba to the Netherlands.
+I became secretary of the haskell foundation compiler tooling taskforce.
 </td></tr>
 <tr><th> 2020 </th><td>
       I bought a house in Kampen.
