@@ -354,3 +354,11 @@ after syncing completes I have access to the keepasscx database.
 Now I can generate new ssh keys and gpg keys,
 and login to services to update those.
 With that finished the installation is complete.
+
+Aside from getting the keypass database up and running,
+it's important to add your newly generated public key to
+the services you manage.
+For example this website is hosted on the [nixos multi monolith]({filename}/hetzner-nix-monolith.md).
+It be prudent to add the ssh key via a machine that already 
+has access to it.
+Syncthing can also be used for this.
