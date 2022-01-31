@@ -1,5 +1,6 @@
 Title: Installing a NixOS desktop tracked with git
 Date: 2022-01-30 16:20
+Modified: 2022-02-01 01:00
 Category: tools
 OPTIONS: toc:nil
 Tags: nix, nixos, ext4, tools, linux, devops
