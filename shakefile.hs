@@ -1,5 +1,7 @@
 import Development.Shake
 import Development.Shake.FilePath
+import System.Exit
+import Control.Monad
 
 main :: IO ()
 main = shakeArgs shakeOptions $ do
@@ -10,5 +12,6 @@ build = do
   assertBranchClean
 
 assertBranchClean :: Action ()
-assertBranchClean =
-  cmd_ "git diff-index --quiet HEAD -- || (echo \"branch dirty, commit first\" && false)"
+assertBranchClean = do
+  exitCode <- cmd "git diff-index --quiet HEAD"
+  unless (exitCode == ExitSuccess) $ error "branch dirty, commit first"
