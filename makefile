@@ -22,19 +22,6 @@ talks:
 	cp -fLR result output/talks
 	chmod -R +rw "output"
 
-deploy-root: sync-git
-	rsync -avc --delete output/ root@$(REMOTE):/var/www/jappieklooster.nl/
-deploy: clean sync-git talks
-	cp root/* output/
-	rsync -avc --delete nginx/ root@$(REMOTE):/etc/nginx/
-	ssh root@$(REMOTE) "systemctl restart nginx"
-	pelican content -s publishconf.py
-	make deploy-root
-	make deploy-penguin
-
-deploy-penguin:
-	rsync -avc --delete penguin/ root@$(REMOTE):/var/www/penguin.engineer/
-
 submodule:
 	git submodule sync
 
