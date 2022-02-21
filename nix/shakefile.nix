@@ -8,6 +8,8 @@ let
     hpkgs.shake hpkgs.directory hpkgs.tagsoup
     hpkgs.text hpkgs.containers hpkgs.uri-encode
     hpkgs.process hpkgs.aeson hpkgs.pandoc hpkgs.SHA
+    hpkgs.pandoc-lens
+    hpkgs.lens
   ]);
 
 in
