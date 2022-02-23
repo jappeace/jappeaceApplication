@@ -5,12 +5,12 @@ Tags: haskell, work
 OPTIONS: toc:nil
 Status: draft
 
-Recently I saw many of my incredibly intelligent
+![mtl-header](images/2022/failure.png)
+
+Recently I saw some of my intelligent
 colleagues fuck up error handling.
 Not only were they failing, they were failing WRONG.
 In here I'll describe the correct way to fail with Haskell examples.
-In my humble opinion of course.
-Just don't do it wrong 😉.
 In essence, this is an answer to Eric Kidd's
 [plea for consistency from 2007](http://www.randomhacks.net/2007/03/10/haskell-8-ways-to-report-errors/)
 [^15-years-ago].
@@ -21,12 +21,13 @@ These are the properties we want from failure:
 1. Preciseness, vague errors are bad.
 2. Locality, we need to know where errors come from.
 3. Recover ability, crashing shouldn't be the only option.
-4. Change ability, introduction of new error cases should not cause unhandled cases at runtime.
+4. Change ability, introduction of new error cases should
+   not cause unhandled cases at runtime.
 
-We want all of these to make debugging easier.
+We want all these properties to make debugging easier.
 This allows you to solve complicated bugs within minutes.
-All we do is structuring the program in a way
-that it tells exactly what goes wrong, where and why.
+Effectively we structure the program in such a way
+that it tells what goes wrong, where and why.
 This isn't magic. It takes effort, but not magic at all.
 
 I'll describe how to achieve above properties with some
