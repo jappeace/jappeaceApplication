@@ -153,7 +153,9 @@ For convenience I'll write out the example in plain `IO` however:
 ```haskell
 data DivideException where
     MkDivideException :: HasCallStack =>
-        DivideFailures -> DivideException 
+        DivideErrors -> DivideException
+
+deriving instance Exception DivideException
 
 instance Show DivideException where
     show (MkDivideException errors) =
@@ -167,15 +169,15 @@ renderExceptionWithCallstack errors valueConstructor = "(" <> valueConstructor <
       <> prettyCallStack callStack
       <> " */)"
 
-throwDivide :: HasCallStack => Either DivideFailures a -> IO a
-throwDivide = either (throwIO . MkDivideException) pure 
+throwDivide :: HasCallStack => Either DivideErrors a -> IO a
+throwDivide = either (throwIO . MkDivideException) pure
 
-myEnv :: Map Text Double 
+myEnv :: Map Text Double
 myEnv = Map.fromList [("zero", 0.0), ("one", -1.0),
                       ("two", 2.0), ("three", 3.0)]
 
 main :: IO ()
-main = do 
+main = do
     result1 <- throwDivide $ divide myEnv "one" "two"
     result2 <- throwDivide $ divide myEnv "one" "three" -- throws
     print (result1 , result2)
@@ -186,8 +188,10 @@ main = do
 All this boilerplate attaches the callstack to our exception.
 Note that all we did to the pure code error handling is put it
 in the exception itself, so this freely composes.
-This idea of attaching callstacks to your exceptions is
-explained further in [this blogpost]
+This is why error handling is more preferable,
+but if you can't figure it out, exceptions like above are good too.
+This idea of attaching call stacks to your exceptions is
+explained further in [this blogpost](https://maksbotan.github.io/posts/2021-01-20-callstacks.html)
 
 ## MTL
 I recently blogged about [mtl]({filename}/mtl.md),
@@ -209,17 +213,23 @@ main = do
 ```
 throwDivide works quite similarly as in the previous example but now
 it works with any transformer stack based on `IO.
-
+This works because we pretend the ExceptT exists at the call site,
+which makes it come true.
+But that idea was explained thoroughly the previous [blog post]({filename}/mtl.md).
 
 # Anti patterns
-Now I'll cover several anti patterns I've seen and discuss what to do differently.
+Now I'll cover several anti patterns
+I've seen.
+I'll discuss what to do differently when
+someone wants to write these.
 Keep in mind some of these are in the wild,
 for example [aeson](https://hackage.haskell.org/package/aeson-2.0.3.0/docs/Data-Aeson.html#v:eitherDecode)
 famously exposes a `String` for errors,
 which is problematic for a library as I'll discuss right now.
 
 ## Text in left branch of Either
-For example both of these would contain text in the left branch:
+
+Both of these would contain text in the left branch:
 ```haskell
 y :: Either Text a
 x :: Either String a
@@ -228,8 +238,7 @@ x :: Either String a
 The problem is that we break the recover ability
 property.
 There is no way to make a closed pattern match
-on every string.
-
+on string.
 What should be done instead is creating a sumtype:
 ```haskell
 data YErrors = YErrorOne
@@ -237,26 +246,23 @@ data YErrors = YErrorOne
 
 y :: Either YErrors a
 ```
-This allows the developer to pattern match on the result
 This way client code can pattern match on all possible
 branches, and if the additional errors get introduced
-the compiler notifies them through the
-incomplete pattern warning.
+the compiler notifies them through
+[`-Wincomplete-patterns` warning](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/using-warnings.html#ghc-flag--Wincomplete-patterns).
 
 ## `throw`
 Never use `throw`. It allows throwing of exceptions in pure code.
 This is very wrong because the code ends up behaving like a null
-pointer in java due to Haskell's non strict evaluation.
+pointer in Java due to Haskell's non strict evaluation.
 In other words, this breaks the locality of errors.
-
 Consider for example:
-
 ```haskell
 myInts :: [Int]
 myInts = []
 
 data EmptyException = MkEmptyException
-    deriving Exception
+    deriving (Exception, Show)
 
 myHead :: [Int] -> Int
 myHead [] = throw $ MkEmptyException
@@ -270,10 +276,9 @@ main = do
 ```
 
 It fails on that last line.
-Even though the error was at
-the x binding.
+Even though the error was at the `x` binding.
 
-Much better is to use throwIO,
+Much better is to use `throwIO`,
 modifying the above example:
 ```haskell
 myInts :: [Int]
@@ -297,7 +302,7 @@ We lost purity,
 in this case `Either` could also have been used as
 described above which is even better.
 Furthermore we can use the `HasCallStack`
-trick as well.
+trick as well if we stick with exceptions.
 
 ## Generic app exceptions
 I'm talking about something like this:
@@ -322,16 +327,10 @@ data AwsResourceNotFound = MkAwsResourceNotFound UUID
 These are precise and type safe, we no longer can be vague because
 you have to provide a UUID and tell what you're talking about to throw.
 
-However, you'll likely already have this generic app
-error being called from 400 places.
+However, you'll likely already have generic app
+exception being called from different 400 places.
 Fortunately we can recover some locality by rewriting
-the exception [in a GADT](https://maksbotan.github.io/posts/2021-01-20-callstacks.html#capturing-stacks):
-
-```haskell
-data AppException where
-    MkAppException :: HasCallStack => Text -> AppException 
-    deriving Exception
-```
+the exception [in a GADT](https://maksbotan.github.io/posts/2021-01-20-callstacks.html#capturing-stacks).
 
 ## Squashing errors
 
@@ -370,18 +369,13 @@ while retaining most of the power of bind.
 # Haskell specific tools
 
 + Make sure to compile your program with `-Wall`,
-  This enable the exhaustiveness checker.
+  This enable the [`-Wincomplete-patterns` warning](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/using-warnings.html#ghc-flag--Wincomplete-patterns).
 + The [stack trace](https://github.com/waddlaw/haskell-stack-trace-plugin) plugin
-  seems like a good idea for applications that can handle the change in perforamnce.
+  seems like a good idea for applications that can handle the change in performance.
   But for development it's good in any case.
 + [Data.Validation](https://hackage.haskell.org/package/validation-1.1.2/docs/Data-Validation.html)
   should be preferred over Either when possible,
   because it allows collecting of multiple errors.
-
-# Conclusion
-
-I'm an expert on failure now.
-
 
 # References
 
