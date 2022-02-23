@@ -237,7 +237,7 @@ famously exposes a `String` for errors,
 which is problematic for a library which I'll discuss right now.
 
 ## Text in left branch of Either
-Both of these would contain text in the left branch:
+These examples contain text in the left branch:
 ```haskell
 y :: Either Text a
 x :: Either String a
@@ -256,13 +256,13 @@ y :: Either YErrors a
 ```
 This way client code can pattern match on all possible
 branches, and if the additional errors get introduced
-the compiler notifies them through
+the compiler notifies the developer through
 [`-Wincomplete-patterns` warning](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/using-warnings.html#ghc-flag--Wincomplete-patterns).
 
 ## `throw`
-Never use `throw`. It allows throwing of exceptions in pure code.
+`throw` allows throwing exceptions in pure code.
 This is very wrong because the code ends up behaving like a null
-pointer in Java due to Haskell's non strict evaluation.
+pointer in Java, due to Haskell's non strict evaluation.
 In other words, this breaks the locality of errors.
 Consider for example:
 ```haskell
@@ -285,7 +285,6 @@ main = do
 
 It fails on that last line.
 Even though the error was at the `x` binding.
-
 Much better is to use `throwIO`,
 modifying the above example:
 ```haskell
@@ -309,8 +308,8 @@ This will indeed fail on the first line.
 We lost purity,
 in this case `Either` could also have been used as
 described above which is even better.
-Furthermore we can use the `HasCallStack`
-trick as well if we stick with exceptions.
+Or we can use the `HasCallStack`
+trick as if we stick with exceptions.
 
 ## Generic app exceptions
 I'm talking about something like this:
@@ -319,9 +318,14 @@ data AppException = MkAppException Text
     deriving Exception
 ```
 This is bad because it ends up being thrown
-at many places with no good way of recovering,
-furthermore the error may be vague,
-depending on what's being put in the Text field.
+at many places with no good way of recovering.
+Exceptions are already difficult to recover from,
+but if they're re-used a lot,
+it becomes a lot more difficult.
+Furthermore the error may be vague,
+depending on what's being put in the `Text` field.
+And because it's a `Text` we can't pattern match
+without wildcards, even if we caught the exception.
 
 It's better to define a custom exception per situation.
 For example:
@@ -341,8 +345,7 @@ Fortunately we can recover some locality by rewriting
 the exception [in a GADT](https://maksbotan.github.io/posts/2021-01-20-callstacks.html#capturing-stacks).
 
 ## Squashing errors
-
-This can occur when using bind on Maybe for example
+This can occur when using bind `>>=` on `Maybe`, for example:
 ```haskell
 x :: Maybe Int
 y :: Maybe Int
@@ -353,7 +356,7 @@ z = do
    y' <- y
    pure $ x' + y'
 ```
-`Nothing` will not tell us why z didn't work out.
+`Nothing` will not tell us why z failed.
 This is wrong because it breaks preciseness.
 instead we should do something like this:
 
@@ -373,6 +376,9 @@ z = do
 
 This will tell you exactly what went wrong,
 while retaining most of the power of bind.
+It's fine to use `Maybe` if there is a single
+error case,
+but often this isn't the case.
 
 # Haskell specific tools
 
