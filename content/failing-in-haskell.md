@@ -6,21 +6,20 @@ OPTIONS: toc:nil
 
 ![mtl-header](images/2022/failure.png)
 
-I saw some of my intelligent
-colleagues muck up error handling.
+Some of my intelligent
+colleagues mucked up error handling.
 Not only were they failing, they were failing WRONG [^anti-patterns].
 This frustrates me because doing failing correctly
 in Haskell is quite easy,
 so why were they doing it wrong?
-I believe no-one has addressed with an opinion.
+I believe no-one has addressed failing with an opinion.
 Plenty people describe the
 [various](http://www.randomhacks.net/2007/03/10/haskell-8-ways-to-report-errors/)
 [ways](https://www.stackbuilders.com/blog/errors-and-exceptions-in-haskell/)
 you can [fail](https://wiki.haskell.org/Handling_errors_in_Haskell).
 But none give opinions on why certain ways are better then others.
-I'll give my opinion,
-maybe someone more clever then me will then correct me.
-In here I'll describe the correct and only way to fail
+I suppose I shall sacrifice myself to become an expert on failing.
+In here I'll describe the correct way to fail
 in Haskell.
 In essence, this is an answer to Eric Kidd's
 [plea for consistency](http://www.randomhacks.net/2007/03/10/haskell-8-ways-to-report-errors/)
@@ -32,7 +31,7 @@ These are the properties we want from failure:
 
 1. Preciseness, vague errors are bad.
 2. Locality, we need to know where errors come from.
-3. Recover ability, crashing shouldn't be the only option.
+3. Recover ability, the program should be able to recover after an error.
 4. Change ability, introduction of new error cases should be easy.
 
 We want all these properties to make debugging easier.
@@ -82,18 +81,18 @@ map, and then performs division after doing some checks.
 This is done in the `Either` monad.
 Errors are emitted by using the `Left` constructor,
 which is the error branch according to `Either`'s
-monad instance.
+`Monad` instance.
 
 This code will tell you exactly what went wrong
 if something goes wrong.
 Locality in this case can be improved a little by adding
 a different constructor for each `bind` call,
 but in this case I'd argue locality is close enough.
-The developer has the complete opportunity to recover from these errors,
+The developer has the opportunity to recover from these errors,
 a simple pattern match would suffice.
 Furthermore if business demands yet another weird constraint,
 such as `NumberFourIsBad`, pattern matches at call sites will emit
-a [`-Wincomplete-patterns` warning](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/using-warnings.html#ghc-flag--Wincomplete-patterns).
+a [`-Wincomplete-patterns`](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/using-warnings.html#ghc-flag--Wincomplete-patterns) warning.
 
 If we need to compose these errors in a larger program we can
 simply wrap previous errors in a bigger sumtype,
@@ -128,8 +127,8 @@ plusDiv env argA argB argC = do
     divide (Map.fromList [("one", res), ("two", cres)]) "one" "two"
 ```
 
-The higher 'level' function `plusDiv` absorbs all errors with extra constructors,
-similarly to a tree.
+The higher 'level' function `plusDiv` absorbs all errors from other functions
+with extra constructors.
 Once more this tells us exactly what part of the computation failed,
 if any.
 In this case, the [first](https://hackage.haskell.org/package/bifunctors-5/docs/Data-Bifunctor.html#v:first)
@@ -142,13 +141,15 @@ instead of `Either`.
 Which can collect more then one error.
 But usage of that is out of the scope of this blogpost.
 
-# IO and exceptions
-I think a good rule of thumb is to use exceptions when
+# `IO` and exceptions
+It's more difficult to recover from an Exception then it is from a pure error value.
+So a good rule of thumb for exceptions is to use them when
 you expect the program to stop.
-This should only be done within a monad stack that has IO as base,
+For example when you can't find a critical resources from the database.
+However, this should only be done within a monad stack that has `IO` as base,
 because exceptions are part of the `IO` 'contract'[^throw].
 This contract extends to any transformer stack that has `IO` as base.
-For convenience I'll write out the example in plain `IO` however:
+For convenience however, I'll write out the example in plain `IO`:
 
 ```haskell
 data DivideException where
@@ -186,12 +187,16 @@ main = do
 [^throw]: See the throw [anti pattern](#throw)
 
 All this boilerplate attaches the callstack to our exception.
-Note that all we did to the pure code error handling is put it
-in the exception itself, so this freely composes.
-This is why error handling is more preferable,
+Note that we put the entire pure code error type
+directly into the exception.
+It freely composes, but `IO` based code couldn't do the same in pure code[^unsafeperformio].
+This is why pure error handling is more preferable,
 but if you can't figure it out, exceptions like above are good too.
 This idea of attaching call stacks to your exceptions is
 explained further in [this blogpost](https://maksbotan.github.io/posts/2021-01-20-callstacks.html)
+
+[^unsafeperformio]: unsafeperformIO 👤🔫
+
 
 ## MTL
 I recently blogged about [mtl]({filename}/mtl.md),
@@ -199,7 +204,11 @@ so I'll briefly cover how to modify this code into mtl style as well:
 
 ```haskell
 throwDivide :: (HasCallStack, MonadIO m)  => ExceptT DivideFailures a -> m a
-throwDivide = either (liftIO . throwIO . MkDivideException) pure . runExceptT
+throwDivide meow = do
+    res <- runExceptT meow
+    case res of 
+      Left err -> liftIO $ throwIO $ MkDivideException err
+      Right res -> pure res
 
 myDBFunc :: (MonadError DivideFailures m, MonadDB m) => m Double
 myDBFunc = do
@@ -211,24 +220,23 @@ main = do
     result1 <- runDB $ throwDivide $ myDBFunc 
     print result1 
 ```
-throwDivide works quite similarly as in the previous example but now
-it works with any transformer stack based on `IO.
-This works because we pretend the ExceptT exists at the call site,
+`throwDivide` works quite similarly as in the previous example but now
+it works with any transformer stack based on `IO`.
+This works because we pretend the `ExceptT` exists at the call site,
 which makes it come true.
-But that idea was explained thoroughly the previous [blog post]({filename}/mtl.md).
+Which is explained thoroughly in the previous [blog post]({filename}/mtl.md).
 
 # Anti patterns
 Now I'll cover several anti patterns
 I've seen.
 I'll discuss what to do differently when
 someone wants to write these.
-Keep in mind some of these are in the wild,
+Keep in mind some of these patterns are in the wild,
 for example [aeson](https://hackage.haskell.org/package/aeson-2.0.3.0/docs/Data-Aeson.html#v:eitherDecode)
 famously exposes a `String` for errors,
-which is problematic for a library as I'll discuss right now.
+which is problematic for a library which I'll discuss right now.
 
 ## Text in left branch of Either
-
 Both of these would contain text in the left branch:
 ```haskell
 y :: Either Text a
