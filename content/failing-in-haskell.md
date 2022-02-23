@@ -10,18 +10,17 @@ colleagues fuck up error handling.
 Not only were they failing, they were failing WRONG.
 In here I'll describe the correct way to fail with Haskell examples.
 In my humble opinion of course.
-Just don't do it wrong `😉`.
+Just don't do it wrong 😉.
 In essence, this is an answer to Eric Kidd's
 [plea for consistency from 2007](http://www.randomhacks.net/2007/03/10/haskell-8-ways-to-report-errors/)
 [^15-years-ago].
+These are the properties we want from failure:
 
 [^15-years-ago]: This is 15 years ago, ah well, better late then never I suppose.
 
-These are the properties we want from failure:
-
-1. Preciseness, vague errors are bad, we need to be precise.
+1. Preciseness, vague errors are bad.
 2. Locality, we need to know where errors come from.
-3. Recover ability, low level errors need to be handled at higher level layers.
+3. Recover ability, crashing shouldn't be the only option.
 4. Change ability, introduction of new error cases should not cause unhandled cases at runtime.
 
 We want all of these to make debugging easier.
@@ -33,7 +32,7 @@ This isn't magic. It takes effort, but not magic at all.
 I'll describe how to achieve above properties with some
 example code for both (Haskell) pure and side effect (Haskell IO) code.
 However these principles apply to other languages as well [^other-langs].
-Then we'll go over some anti patterns and discuss their mediation.
+We'll also go over some anti patterns and discuss their mediation.
 
 [^other-langs]: Haskell is really good at doing failure, ironically.
                 Originally I called this post failing in haskell
@@ -41,7 +40,7 @@ Then we'll go over some anti patterns and discuss their mediation.
                 It just takes more work in Java or PHP to get it to tell you what's going on.
 
 # Pure
-As haskell programmers we prefer so called 'pure' code.
+Haskell programmers prefer so called 'pure' code.
 Therefore we start with the pure case.
 Ideally pure code errors look like this:
 ```haskell
@@ -87,16 +86,20 @@ plus :: Map Text Double -> Text -> Text -> Either PlusErrors Double
 plus env argA argB = do
     valA <- first PlusBinding $ bind env argA
     valB <- first PlusBinding $ bind env argB
-    when (valA == 3.0 || valB == 3.0) $ Left $ PlusNumberThreeIsBad valA valB
+    when (valA == 3.0 || valB == 3.0) $
+      Left $ PlusNumberThreeIsBad valA valB
     let res = valA + valB
     when (res == 0) $ Left PlusNoZeroResults
     pure $ valA / valB
+
 
 data PlusDivErrors = PDPlusError PlusErrors
                    | PDDivErrors DivideErrors
                    | PDBind BindingError
 -- | (a + b) / c
-plusDiv :: Map Text Double -> Text -> Text -> Text -> Either PlusDivErrors Double
+plusDiv :: Map Text Double
+        -> Text -> Text -> Text
+        -> Either PlusDivErrors Double
 plusDiv env argA argB argC = do
   res <- first PDPlusError $ plus env argA argB
   cres <- first PDBind $ bind env argC
@@ -106,9 +109,13 @@ plusDiv env argA argB argC = do
 
 The sum type of errors ends up becoming a tree,
 and cases are easily added.
-first is kindoff being used like lift in this situation.
+the [first](https://hackage.haskell.org/package/bifunctors-5/docs/Data-Bifunctor.html#v:first)
+function is kindoff being used like
+[lift](https://hackage.haskell.org/package/transformers-0.6.0.2/docs/Control-Monad-Trans-Class.html#v:lift)
+in this situation.
 
-In certain cases you can use data.validation instead of Either.
+In certain cases you can use [Data.Validation](https://hackage.haskell.org/package/validation-1.1.2/docs/Data-Validation.html)
+instead of `Either`.
 Which can collect more then one error.
 But usage of that is out of the scope of this blogpost
 
