@@ -16,11 +16,12 @@ I believe no-one has addressed failing with an opinion.
 Plenty people describe the
 [various](http://www.randomhacks.net/2007/03/10/haskell-8-ways-to-report-errors/)
 [ways](https://www.stackbuilders.com/blog/errors-and-exceptions-in-haskell/)
-you can [fail](https://wiki.haskell.org/Handling_errors_in_Haskell).
+[you](https://www.fpcomplete.com/haskell/tutorial/exceptions/)
+[can](https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/10_Error_Handling)
+[fail](https://wiki.haskell.org/Handling_errors_in_Haskell).
 But none give opinions on why certain ways are better then others.
-I suppose I shall sacrifice myself to become an expert on failing.
-In here I'll describe the correct way to fail
-in Haskell.
+Therefore I shall share my failing expertise,
+and describe the correct way to fail in Haskell.
 In essence, this is an answer to Eric Kidd's
 [plea for consistency](http://www.randomhacks.net/2007/03/10/haskell-8-ways-to-report-errors/)
 [^15-years-ago].
@@ -36,7 +37,7 @@ These are the properties we want from failure:
 
 We want all these properties to make debugging easier.
 This allows you to solve complicated bugs within minutes.
-Effectively we structure the program in such a way
+We structure the program in such a way
 that it tells what goes wrong, where and why.
 This isn't magic. It takes effort, but not magic at all.
 
@@ -45,13 +46,13 @@ example code for both pure and side effectful code.
 However these principles apply to other languages as well [^other-langs].
 We'll also go over some anti patterns and discuss their mediation.
 
-[^other-langs]: Haskell is really good at doing failure, ironically.
-                Originally I called this post failing in haskell
-                but when I was writing this I realied I do the exact same thing in Java or PHP.
-                It just takes more work in Java or PHP to get it to tell you what's going on.
+[^other-langs]: When I was writing this I realized I do the exact same program structuring
+                in Java or PHP.
+                It is more work in Java or PHP, but possible and safes so much debugging time.
 
 # Pure
 Haskell programmers prefer so called 'pure' code.
+By which we mean in memory computations[^memory].
 Therefore we start with the pure case.
 Ideally pure code fail management looks like this:
 ```haskell
@@ -75,9 +76,14 @@ divide env argA argB = do
     pure $ valA / valB
 ```
 
+[^memory]: Accessing memory is for no particular reason consdired pure,
+           although one wonders if this could changed
+           to make managing memory bounds easier.
+
 Here we introduce the divide function.
-Which takes an environment map, looks up the values of said
-map, and then performs division after doing some checks.
+Which takes an environment map,
+looks up the values of said map,
+and then performs division after doing some checks.
 This is done in the `Either` monad.
 Errors are emitted by using the `Left` constructor,
 which is the error branch according to `Either`'s
@@ -146,6 +152,9 @@ It's more difficult to recover from an Exception then it is from a pure error va
 So a good rule of thumb for exceptions is to use them when
 you expect the program to stop.
 For example when you can't find a critical resources from the database.
+Another consideration is the value of the error.
+If it's important an error is handled correctly,
+then exceptions should be avoided.
 However, this should only be done within a monad stack that has `IO` as base,
 because exceptions are part of the `IO` 'contract'[^throw].
 This contract extends to any transformer stack that has `IO` as base.
@@ -187,16 +196,19 @@ main = do
 [^throw]: See the throw [anti pattern](#throw)
 
 All this boilerplate attaches the callstack to our exception.
-Note that we put the entire pure code error type
+We also put the entire pure error type
 directly into the exception.
-It freely composes, but `IO` based code couldn't do the same in pure code[^unsafeperformio].
+It composes.
 This is why pure error handling is more preferable,
-but if you can't figure it out, exceptions like above are good too.
+but if you don't have time to do this, exceptions like above are good too.
 This idea of attaching call stacks to your exceptions is
 explained further in [this blogpost](https://maksbotan.github.io/posts/2021-01-20-callstacks.html)
 
-[^unsafeperformio]: unsafeperformIO 👤🔫
-
+If that's to much work, the [`error`](https://hackage.haskell.org/package/base-4.16.0.0/docs/Prelude.html#v:error)
+call also has a stack trace,
+although it's type allows vagueness unfortunately.
+Also make sure to attach it to IO,
+or the [nullpointer](#throw) anti pattern may occur.
 
 ## MTL
 I recently blogged about [mtl]({filename}/mtl.md),
@@ -220,18 +232,17 @@ main = do
     result1 <- runDB $ throwDivide $ myDBFunc 
     print result1 
 ```
+
 `throwDivide` works quite similarly as in the previous example but now
 it works with any transformer stack based on `IO`.
 This works because we pretend the `ExceptT` exists at the call site,
 which makes it come true.
-Which is explained thoroughly in the previous [blog post]({filename}/mtl.md).
+This is explained thoroughly in the previous [blog post]({filename}/mtl.md).
 
 # Anti patterns
-Now I'll cover several anti patterns
-I've seen.
-I'll discuss what to do differently when
-someone wants to write these.
-Keep in mind some of these patterns are in the wild,
+Now I'll cover several anti patterns I've seen and
+discuss what to do differently.
+Some of these patterns occur in the wild,
 for example [aeson](https://hackage.haskell.org/package/aeson-2.0.3.0/docs/Data-Aeson.html#v:eitherDecode)
 famously exposes a `String` for errors,
 which is problematic for a library which I'll discuss right now.
