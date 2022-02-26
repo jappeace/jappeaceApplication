@@ -6,12 +6,11 @@ OPTIONS: toc:nil
 
 ![mtl-header](images/2022/failure.png)
 
-Some of my intelligent
-colleagues mucked up error handling.
-Not only were they failing, they were failing WRONG [^anti-patterns].
+Recently I encountered some dubious error handling code.
+Not only was it failing, it was failing WRONG [^anti-patterns].
 This frustrates me because doing failing correctly
 in Haskell is quite easy,
-so why were they doing it wrong?
+so why was it implemented wrongly?
 I believe no-one has addressed failing with an opinion.
 Plenty people describe the
 [various](http://www.randomhacks.net/2007/03/10/haskell-8-ways-to-report-errors/)
