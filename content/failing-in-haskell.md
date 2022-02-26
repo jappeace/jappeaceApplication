@@ -37,8 +37,8 @@ These are the properties we want from failure:
 
 We want all these properties to make debugging easier.
 This allows you to solve complicated bugs within minutes.
-We structure the program in such a way
-that it tells what goes wrong, where and why.
+We structure the program so that it tells what goes wrong,
+where and why.
 This isn't magic. It takes effort, but not magic at all.
 
 I'll describe how to achieve above properties with some
@@ -52,24 +52,24 @@ We'll also go over some anti patterns and discuss their mediation.
 
 # Pure
 Haskell programmers prefer so called 'pure' code.
-By which we mean in memory computations[^memory].
+By which we mean in immutable memory computations[^memory].
 Therefore we start with the pure case.
 Ideally pure code fail management looks like this:
 ```haskell
-newtype BindingError = NotFound Text
+newtype LookupError = NotFound Text
 
-bind :: Map Text Double -> Text -> Either BindingError Double
-bind env argA = maybe (Left (NotFound argA)) Right $ Map.lookup argA env
+lookup :: Map Text Double -> Text -> Either LookupError Double
+lookup env argA = maybe (Left (NotFound argA)) Right $ Map.lookup argA env
 
-data DivideErrors = DivideBinding BindingError
+data DivideErrors = DivideLookup LookupError
                   | DivisionByZero Double Double
                   | DivNegativeDivision Double Double
                   | DivNumberThreeIsBad Double Double
 
 divide :: Map Text Double -> Text -> Text -> Either DivideErrors Double
 divide env argA argB = do
-    valA <- first DivideBinding $ bind env argA
-    valB <- first DivideBinding $ bind env argB
+    valA <- first DivideLookup $ lookup env argA
+    valB <- first DivideLookup $ lookup env argB
     when (valB == 0) $ Left $ DivisionByZero valA valB
     when (valB < 0) $ Left $ DivNegativeDivision valA valB
     when (valA == 3.0 || valB == 3.0) $ Left $ DivNumberThreeIsBad valA valB
@@ -84,7 +84,11 @@ Here we introduce the divide function.
 Which takes an environment map,
 looks up the values of said map,
 and then performs division after doing some checks.
-This is done in the `Either` monad.
+We introduce the environment as a convenient common
+"this can fail" lookup.
+But business may give us other in-variants
+such as `DivNumberThreeIsBad`,
+which also neatly fits in this "pattern".
 Errors are emitted by using the `Left` constructor,
 which is the error branch according to `Either`'s
 `Monad` instance.
@@ -92,7 +96,7 @@ which is the error branch according to `Either`'s
 This code will tell you exactly what went wrong
 if something goes wrong.
 Locality in this case can be improved a little by adding
-a different constructor for each `bind` call,
+a different constructor for each `lookup` call,
 but in this case I'd argue locality is close enough.
 The developer has the opportunity to recover from these errors,
 a simple pattern match would suffice.
@@ -104,14 +108,14 @@ If we need to compose these errors in a larger program we can
 simply wrap previous errors in a bigger sumtype,
 consider the following function `plusDiv` which emulates `(a + b) / c`
 ```haskell
-data PlusErrors = PlusBinding BindingError
+data PlusErrors = PlusLookup LookupError
                 | PlusNoZeroResults
                 | PlusNumberThreeIsBad Double Double
 
 plus :: Map Text Double -> Text -> Text -> Either PlusErrors Double
 plus env argA argB = do
-    valA <- first PlusBinding $ bind env argA
-    valB <- first PlusBinding $ bind env argB
+    valA <- first PlusLookup $ lookup env argA
+    valB <- first PlusLookup $ lookup env argB
     when (valA == 3.0 || valB == 3.0) $
       Left $ PlusNumberThreeIsBad valA valB
     let res = valA + valB
@@ -120,7 +124,7 @@ plus env argA argB = do
 
 data PlusDivErrors = PDPlusError PlusErrors
                    | PDDivErrors DivideErrors
-                   | PDBind BindingError
+                   | PDLookup LookupError
 
 -- | (a + b) / c
 plusDiv :: Map Text Double
@@ -128,19 +132,25 @@ plusDiv :: Map Text Double
         -> Either PlusDivErrors Double
 plusDiv env argA argB argC = do
   res <- first PDPlusError $ plus env argA argB
-  cres <- first PDBind $ bind env argC
+  cres <- first PDLookup $ lookup env argC
   first PDDivErrors $
     divide (Map.fromList [("one", res), ("two", cres)]) "one" "two"
 ```
 
 The higher 'level' function `plusDiv` absorbs all errors from other functions
 with extra constructors.
+This isn't the most ergonomic approach because variables
+have to go through the environment map
+and in a real program you could factor this out and more typesafe
+rather then relying on runtime failure.
+However I think for an example or early prototype it's good.
 Once more this tells us exactly what part of the computation failed,
 if any.
 In this case, the [first](https://hackage.haskell.org/package/bifunctors-5/docs/Data-Bifunctor.html#v:first)
 function is being used like
 [lift](https://hackage.haskell.org/package/transformers-0.6.0.2/docs/Control-Monad-Trans-Class.html#v:lift):
-Transforming the function it wraps to run in the top environment.
+Transforming the function it wraps to run in the "higher level" `Either` environment.
+Some may even call this a natural transformation. 
 
 In certain cases you can use [Data.Validation](https://hackage.haskell.org/package/validation-1.1.2/docs/Data-Validation.html)
 instead of `Either`.
@@ -148,12 +158,11 @@ Which can collect more then one error.
 But usage of that is out of the scope of this blogpost.
 
 # `IO` and exceptions
-It's more difficult to recover from an Exception then it is from a pure error value.
-So a good rule of thumb for exceptions is to use them when
-you expect the program to stop.
+It's more difficult to recover from an exception then it is from a pure error value.
+As a rule of thumb you can use exceptions when you expect the program to stop.
 For example when you can't find a critical resources from the database.
 Another consideration is the value of the error.
-If it's important an error is handled correctly,
+If it's important that an error is handled correctly,
 then exceptions should be avoided.
 However, this should only be done within a monad stack that has `IO` as base,
 because exceptions are part of the `IO` 'contract'[^throw].
@@ -204,11 +213,16 @@ but if you don't have time to do this, exceptions like above are good too.
 This idea of attaching call stacks to your exceptions is
 explained further in [this blogpost](https://maksbotan.github.io/posts/2021-01-20-callstacks.html)
 
-If that's to much work, the [`error`](https://hackage.haskell.org/package/base-4.16.0.0/docs/Prelude.html#v:error)
+If that's to much work, the [`error`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:error)
 call also has a stack trace,
 although it's type allows vagueness unfortunately.
 Also make sure to attach it to IO,
 or the [nullpointer](#throw) anti pattern may occur.
+I think the [`errorIO`](https://hackage.haskell.org/package/extra-1.7.10/docs/Control-Exception-Extra.html#v:errorIO)
+function is a good idea instead of `error`
+because it avoids that nullpointer scenario entirely.
+Don't try to catch errors,
+use exceptions if you need to catch.
 
 ## MTL
 I recently blogged about [mtl]({filename}/mtl.md),
@@ -297,7 +311,7 @@ main = do
 
 It fails on that last line.
 Even though the error was at the `x` binding.
-Much better is to use `throwIO`,
+Much better is to use [`throwIO`](https://hackage.haskell.org/package/base/docs/Control-Exception.html#v:throwIO),
 modifying the above example:
 ```haskell
 myInts :: [Int]
@@ -318,10 +332,10 @@ main = do
 ```
 This will indeed fail on the first line.
 We lost purity,
-in this case `Either` could also have been used as
-described above which is even better.
-Or we can use the `HasCallStack`
-trick as if we stick with exceptions.
+in this case `Either` could have been used as
+described above, which is even better.
+Alternatively we can use the `HasCallStack`
+trick, if we stick with exceptions.
 
 ## Generic app exceptions
 I'm talking about something like this:
@@ -333,28 +347,31 @@ This is bad because it ends up being thrown
 at many places with no good way of recovering.
 Exceptions are already difficult to recover from,
 but if they're re-used a lot,
-it becomes a lot more difficult.
+it becomes even more difficult.
+Now you'd have to pattern match on the `Text`
+to handle the correct error and hope no one
+re-uses that particular error text, ever!
 Furthermore the error may be vague,
 depending on what's being put in the `Text` field.
-And because it's a `Text` we can't pattern match
-without wildcards, even if we caught the exception.
 
 It's better to define a custom exception per situation.
 For example:
 ```haskell
-data DatabaseNotFound = MkDatabaseNotFound UUID
+data DBUserNotFound = MkDBUserNotFound { userId :: UUID }
     deriving Exception
 
-data AwsResourceNotFound = MkAwsResourceNotFound UUID
+data AwsImgResourceNotFound = MkImgResourceNotFound {name :: Text, awsId :: UUID }
     deriving Exception
 ```
 These are precise and type safe, we no longer can be vague because
-you have to provide a UUID and tell what you're talking about to throw.
+you have to provide a `UUID`
+and tell what you're talking about to throw.
 
 However, you'll likely already have generic app
 exception being called from different 400 places.
-Fortunately we can recover some locality by rewriting
-the exception [in a GADT](https://maksbotan.github.io/posts/2021-01-20-callstacks.html#capturing-stacks).
+Fortunately we can recover some of the locality property by rewriting
+the exception [in a GADT](https://maksbotan.github.io/posts/2021-01-20-callstacks.html#capturing-stacks)
+and using the `HasCallStack` trick.
 
 ## Squashing errors
 This can occur when using bind `>>=` on `Maybe`, for example:
@@ -368,9 +385,9 @@ z = do
    y' <- y
    pure $ x' + y'
 ```
-`Nothing` will not tell us why z failed.
+`Nothing` won't tell us why `z` failed.
 This is wrong because it breaks preciseness.
-instead we should do something like this:
+instead we should restructure like so:
 
 ```haskell
 x :: Maybe Int
@@ -392,16 +409,20 @@ It's fine to use `Maybe` if there is a single
 error case,
 but often this isn't the case.
 
-# Haskell specific tools
+# Conclusion
 
-+ Make sure to compile your program with `-Wall`,
-  This enable the [`-Wincomplete-patterns` warning](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/using-warnings.html#ghc-flag--Wincomplete-patterns).
-+ The [stack trace](https://github.com/waddlaw/haskell-stack-trace-plugin) plugin
-  seems like a good idea for applications that can handle the change in performance.
-  But for development it's good in any case.
-+ [Data.Validation](https://hackage.haskell.org/package/validation-1.1.2/docs/Data-Validation.html)
-  should be preferred over Either when possible,
-  because it allows collecting of multiple errors.
+The preference relation of failing is like this:
+
+```
+pure error handling > exceptions *with* stack traces > errorIO calls
+```
+
+Anything else is most likely *wrong* and should be avoided.
+Structure your programs so that it tells what goes wrong,
+where and why.
+I think most software would benefit from doing this,
+and these concepts are easy.
+Let me know if you disagree, or need help with this.
 
 # References
 
