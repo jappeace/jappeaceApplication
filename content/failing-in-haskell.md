@@ -18,7 +18,7 @@ Plenty people describe the
 [you](https://www.fpcomplete.com/haskell/tutorial/exceptions/)
 [can](https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/10_Error_Handling)
 [fail](https://wiki.haskell.org/Handling_errors_in_Haskell).
-But none give opinions on why certain ways are better then others.
+But none give opinions on why certain ways are better than others.
 Therefore I shall share my failing expertise,
 and describe the correct way to fail in Haskell.
 In essence, this is an answer to Eric Kidd's
