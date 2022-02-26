@@ -245,7 +245,8 @@ discuss what to do differently.
 Some of these patterns occur in the wild,
 for example [aeson](https://hackage.haskell.org/package/aeson-2.0.3.0/docs/Data-Aeson.html#v:eitherDecode)
 famously exposes a `String` for errors,
-which is problematic for a library which I'll discuss right now.
+which is problematic for a library.
+The next section explains why.
 
 ## Text in left branch of Either
 These examples contain text in the left branch:
@@ -258,7 +259,7 @@ The problem is that we break the recover ability
 property.
 There is no way to make a closed pattern match
 on string.
-What should be done instead is creating a sumtype:
+Instead we should create a sumtype for possible errors:
 ```haskell
 data YErrors = YErrorOne
              | YErrorTwo Double
