@@ -435,4 +435,5 @@ Let [me know](mailto:hi@jappie.me) if you disagree, or need help with this.
 + http://www.randomhacks.net/2007/03/10/haskell-8-ways-to-report-errors/
 + https://maksbotan.github.io/posts/2021-01-20-callstacks.html
 + https://hackage.haskell.org/package/validation-1.1.2/docs/Data-Validation.html
++ https://www.parsonsmatt.org/2018/11/03/trouble_with_typed_errors.html
 
