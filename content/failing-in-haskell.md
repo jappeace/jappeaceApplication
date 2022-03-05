@@ -1,5 +1,6 @@
 TITLE: Failing in Haskell
-DATE: 2022-02-24
+DATE: 2022-02-27
+Modified: 2022-03-05 03:40
 CATEGORY: technique
 Tags: haskell, work
 OPTIONS: toc:nil
