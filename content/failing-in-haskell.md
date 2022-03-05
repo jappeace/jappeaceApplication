@@ -12,7 +12,7 @@ This frustrates me because doing failing correctly
 in Haskell is quite easy,
 so why was it implemented wrongly?
 I believe no-one has addressed failing with an opinion.
-Plenty people describe the
+Plenty of people describe the
 [various](http://www.randomhacks.net/2007/03/10/haskell-8-ways-to-report-errors/)
 [ways](https://www.stackbuilders.com/blog/errors-and-exceptions-in-haskell/)
 [you](https://www.fpcomplete.com/haskell/tutorial/exceptions/)
@@ -31,7 +31,7 @@ These are the properties we want from failure:
 
 1. Preciseness, vague errors are bad.
 2. Locality, we need to know where errors come from.
-3. Recover ability, the program should be able to recover after an error.
+3. Recoverability, the program should be able to recover after an error.
 4. Change ability, introduction of new error cases should be easy.
 
 We want all these properties to make debugging easier.
@@ -40,18 +40,18 @@ We structure the program so that it tells what goes wrong,
 where and why.
 This isn't magic. It takes effort, but not magic at all.
 
-I'll describe how to achieve above properties with some
+I'll describe how to achieve the above properties with some
 example code for both pure and side effectful code.
 However these principles apply to other languages as well [^other-langs].
 We'll also go over some anti patterns and discuss their mediation.
 
 [^other-langs]: When I was writing this I realized I do the exact same program structuring
                 in Java or PHP.
-                It is more work in Java or PHP, but possible and safes so much debugging time.
+                It is more work in Java or PHP, but possible and saves so much debugging time.
 
 # Pure
 Haskell programmers prefer so called 'pure' code.
-By which we mean in immutable memory computations[^memory].
+By which we mean immutable memory computations[^memory].
 Therefore we start with the pure case.
 Ideally pure code fail management looks like this:
 ```haskell
@@ -75,8 +75,8 @@ divide env argA argB = do
     pure $ valA / valB
 ```
 
-[^memory]: Accessing memory is for no particular reason consdired pure,
-           although one wonders if this could changed
+[^memory]: Accessing memory is for no particular reason considered pure,
+           although one wonders if this could be changed
            to make managing memory bounds easier.
 
 Here we introduce the divide function.
@@ -139,9 +139,12 @@ plusDiv env argA argB argC = do
 The higher 'level' function `plusDiv` absorbs all errors from other functions
 with extra constructors.
 This isn't the most ergonomic approach because variables
-have to go through the environment map
-and in a real program you could factor this out and more typesafe
-rather then relying on runtime failure.
+have to go through the environment map.
+In a real program you could factor out this function.
+For example with an `innerPlus :: Double -> Double -> Either PlusErrors Double`.
+This adds additional type safety as well,
+because the `Double` type is "smaller" then a
+`Text` type in both memory and cardinality.
 However I think for an example or early prototype it's good.
 Once more this tells us exactly what part of the computation failed,
 if any.
@@ -157,11 +160,11 @@ Which can collect more then one error.
 But usage of that is out of the scope of this blogpost.
 
 # `IO` and exceptions
-It's more difficult to recover from an exception then it is from a pure error value.
+It's more difficult to recover from an exception than it is from a pure error value.
 As a rule of thumb you can use exceptions when you expect the program to stop.
 For example when you can't find a critical resources from the database.
 Another consideration is the value of the error.
-If it's important that an error is handled correctly,
+If it's important that an error be handled correctly,
 then exceptions should be avoided.
 However, this should only be done within a monad stack that has `IO` as base,
 because exceptions are part of the `IO` 'contract'[^throw].
@@ -207,14 +210,14 @@ All this boilerplate attaches the callstack to our exception.
 We also put the entire pure error type
 directly into the exception.
 It composes.
-This is why pure error handling is more preferable,
-but if you don't have time to do this, exceptions like above are good too.
+This is why pure error handling is preferable,
+but if you don't have time to do this, exceptions like those described above are good too.
 This idea of attaching call stacks to your exceptions is
 explained further in [this blogpost](https://maksbotan.github.io/posts/2021-01-20-callstacks.html)
 
 If that's to much work, the [`error`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:error)
 call also has a stack trace,
-although it's type allows vagueness unfortunately.
+although its type allows vagueness unfortunately.
 Also make sure to attach it to IO,
 or the [nullpointer](#throw) anti pattern may occur.
 I think the [`errorIO`](https://hackage.haskell.org/package/extra-1.7.10/docs/Control-Exception-Extra.html#v:errorIO)
@@ -268,10 +271,9 @@ y :: Either Text a
 x :: Either String a
 ```
 
-The problem is that we break the recover ability
+The problem is that we break the recoverability
 property.
-There is no way to make a closed pattern match
-on string.
+There is no way to make a closed pattern match on a string.
 Instead we should create a sumtype for possible errors:
 ```haskell
 data YErrors = YErrorOne
@@ -363,8 +365,9 @@ data AwsImgResourceNotFound = MkImgResourceNotFound {name :: Text, awsId :: UUID
     deriving Exception
 ```
 These are precise and type safe, we no longer can be vague because
-you have to provide a `UUID`
-and tell what you're talking about to throw.
+you have to provide a `UUID`.
+This forces the throw site to capture this `UUID` from
+the environment, making the error precise trough type safety.
 
 However, you'll likely already have generic app
 exception being called from different 400 places.
@@ -421,7 +424,7 @@ Structure your programs so that it tells what goes wrong,
 where and why.
 I think most software would benefit from doing this,
 and these concepts are easy.
-Let me know if you disagree, or need help with this.
+Let [me know](mailto:hi@jappie.me) if you disagree, or need help with this.
 
 # References
 
