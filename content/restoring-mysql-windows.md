@@ -1,4 +1,16 @@
-Restoring mysql innodb on windows.
+Title: Restoring mysql innodb on windows.
+Date: 2022-06-16 22:30
+Category: tools
+OPTIONS: toc:nil
+Tags: programming, windows, mysql
+
+Over the weekend a company had a power outage,
+causing corruption to the on premise hosted mysql innodb database.
+This means the company can't do any work,
+so I had to fix this fast before they opened again on Monday.
+It's not trivial because the system runs on
+windows, which means the online guides don't quite work.
+Therefore I wrote these notes for future me.
 
 We can boot the database with [force recovery](https://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html)
 In my case I had to set it to 3, try as low as possible.
