@@ -128,17 +128,42 @@ The more common approach is to sample a couple values and call it a day.
 Which lead to an alternative more torough approach, fuzzing.
 Also known as property testing.
 
-Here you would generate a random input on one side
+Here you would generate a two random inputs on one side
+interpret it trough the homomorphism and then see if the addition in natural 
+numbers is the same as the test.
+
+Next proving,
+which looks like this:
 
 ```agda
 
 ```
 
+What we're doing is using syntactic transformations to arrive
+from the initial statement to the final statement.
+For example, `cong`
+ignores a part of a prove so you can apply only on part of the syntax.
 
+## Zurich vibes
 
+But aside from our project, 
+another very part is the chill atmosphere.
+You go from talking to someone who's been using haskell for more
+then 10 years and is upset over having to write unit tests,
+to some PHD students trying to add subtyping (but then goodly, somehow)
+to Haskell like languages,
+to a compiler engineer who casually made a debug tool that
+can inspect the heap.
+That all in the same night.
 
-
-
+It just keeps going like this,
+however the nice aspect is that you learn that all these amazing
+people, are just people.
+They've to eat, drink coffee and get drunk like any other nerd.
+They all have some ambition or another,
+altough I met quite a few who were there to just socialize.
+I guess I'm one of the odd-ones out in that regard,
+I just wanted to do something useless, but socializing was a step to far.
 
 [^commercial]:
 [^name]: As the name implies. This place is 30 minutes or so driving from zurich.
