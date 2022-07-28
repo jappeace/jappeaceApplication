@@ -244,11 +244,19 @@ Since this proof is rather long and ugly I stripped out most of it.
 The full source can be seen
 [here](https://github.com/isovector/denotational-arithmetic-zurihac/blob/master/src/Mul.agda).
 
+This proves our bigger adder complies to the property of our `Adder` record.
+meaning it's correct for any base, (bits, trits pentits etc),
+for any size.
+If it's wrong it won't compile.
+This is a big step in terms off correctness compared to property tests,
+and if you have software that /needs/ to be correct,
+I think this agda approach is a very good option to consider.
+
 ## Zurich vibes
 Aside from our project, 
 I think another important part is the chill atmosphere.
 For example I asked some people as they'd be working on,
-more often then not the answser would be that they're
+more often then not the answer would be that they're
 there mostly to socialize.
 In the opening presentation one question that came up
 is "where are the showers to swim in the lake?".
