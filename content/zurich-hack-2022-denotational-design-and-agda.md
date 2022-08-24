@@ -22,7 +22,9 @@ Naturally I chose to work on researchy [^useless]  project I could find.
 Sandy was happy to oblige with his fun [denotational design](https://zfoh.ch/zurihac2022/projects.html#denotational-design)
 project.
 Here we build an "infinite" baseless chip design,
-with a homomorphism in natural numbers to proof correctness.
+with a [homomorphism](https://en.wikipedia.org/wiki/Homomorphism)
+in natural numbers to proof correctness
+, more on this in the proves and programs section.
 
 Our presentation was surprisingly good considering we slapped
 it together 30 minutes before presentation time.
@@ -55,52 +57,71 @@ I'll explain these more in the following paragraphs.
 
 [^i-am-not-an-expert]: I'm not really an expert on this at all, I just put it in my own mistaken words. Feel free to correct me.
 
-Consider the first point, "we should design based on use, not implementation",
-how often have you extended a piece of fucntionality where you had
+Consider the first point, "We should design based on use, not implementation",
+how often have you extended a piece of functionality where you had
 to work around the existing implementation?
 I've done this a lot.
 And I think it's part of the engineers job to decide how "valuable" this
-chunck of code is, and if it's valuable,
+chunck of code is.
+If it's valuable,
 they should consider redesigning it to be better.
 To iterate on the design ignoring the existing implementation
 and do partial if not complete rewrites if necessary.
+Usually this goes in hand well with writing additional tests or properties.
 
 Abstractions shouldn't leak is quite interesting,
 consider for example IP. how often have you had to know about
 the [datagrams](https://www.techopedia.com/definition/6766/datagram)
 that make up a packet?
-Or had to deal with [MAC](https://en.wikipedia.org/wiki/MAC_address) addresses? I bet never[^if-you-had].
+Or had to deal with [MAC](https://en.wikipedia.org/wiki/MAC_address) addresses? I bet never.
 That's because it's a good abstraction that doesn't leak
 most of the time.
 However, if you had to deal with any off low level IP things,
 I apologize, that's some nasty ops.
 When I talk about goodness and badness of these abstractions,
 I mean the probability of having to deal with the low level machinery.
-Consider for example HTTP,
+I think a case of bad abstraction is HTTP,
 how often did you have to think about the cache behavior of a get request?
 Or you probably also know why the User-Agent header is set
 to Mozilla [for every browser](https://stackoverflow.com/questions/1114254/why-do-all-browsers-user-agents-start-with-mozilla)
 right?
-It's because HTTP is a disaster of an abstraction which leaks.
-HTTP is ill defined and completely implementation based.
-Therefore everyone who uses it,
-is forced to know about it's building blocks
-and setup conventions to deal with it's lack of structure.
+It's because HTTP leaks and doesn't serve well to simplify reality.
 
-I guess implied in all of this is that it may take several
+The final point is "Look for something which is elegant.".
+Which should serve as a compass upon iteration.
+You've completed a design,
+you maybe even proved some properties or wrote some tests already,
+now the final step is to ask yourself, "is this elegant?".
+Keep in mind the dictionary definition of elegance:
+
+1. Graceful and stylish in appearance or manner.
+2. (of a scientific theory or solution to a problem) pleasingly ingenious and simple.
+
+Rarely the anwser would be a truthfull yes,
+but you can get closer to it by deleting,
+factoring out components and simplifying.
+It may take several
 iterations to get to the right design.
 You may end up with a horror of a proof for example.
 Which may indicate you're doing something wrong.
 I think this is something we didn't drive home enough in the 
-zurich hack presentation, yes that proof looked impressive,
-but no this isn't something you want.
+zurich hack presentation,
+yes that proof looked impressive,
+but no, this isn't something you want.
+
+If you're not doing this already,
+please take note of this idea of looking for elegance.
+Just taking an additional 10 minutes to think
+about your design, after implementing it,
+will drastically improve your software.
 
 ## Proves and programs
 
+So on zurich hack I meditated on the role of proves in software
+and how dependent types play into this.
 This is about program correctness:
 Is the design I dreamed up correct?
 How do you know this?
-
 We used a technique called a [homomorphism](https://en.wikipedia.org/wiki/Homomorphism)
 to prove correctness.
 Which is to say,
@@ -126,21 +147,36 @@ _ = refl
 
 so here we're creating a bigger multiplication chip out of an existing one,
 by feeding it an add2 chip, an add2x2 chip and a mul2 chip.
+`interpretBF` in this case interprets our code as a boolean value in natural numbers.
+In other words the homomorphism.
+We use `pairμ` to create this single interpretation into an interpretation that
+works with a tuple of booleans: 
+```agda
+pairμ : (Bool -> Nat) -> ((Bool, Bool) -> Nat)
+```
+Applying this twice allows us to read the result of `(mult mul2x2)`
+which returns a `((Bool, Bool), (Bool, Bool))`.
 the name compose refers to composing a larger chip out of smaller ones.
 Although the naming could use some work.
 
 So we've proven these chips behave like we expect for these values and binary circuits.
 If you're building a company around chips that only need to be able
 to multiply up to 9 and in base 2, this is good enough.
-As far unit tests go this is incredibly torough because we're testing against
+As far unit tests go this is incredibly thorough because we're testing against
 all possible values in the chip design.
 The more common approach is to sample a couple values and call it a day.
-Which lead to an alternative more torough approach, fuzzing.
-Also known as property testing.
 
+Which lead to an alternative more torough approach, property testing.
 Here you would generate a two random inputs on one side
-interpret it trough the homomorphism and then see if the addition in natural 
+interpret it trough the homomorphism
+and then see if the addition in natural 
 numbers is the same as the test.
+We didn't do this because our unit tests were better,
+and it's sort of difficult to do[^agda-noob] in agda
+because now you need to figure out how to get your source
+of entropy (randomness).
+
+[^agda-noob]: For me that is, because rember, I'm quite new to this all.
 
 Next proving,
 which looks like this:
@@ -148,6 +184,7 @@ which looks like this:
 ```agda
 
 ```
+
 
 What we're doing is using syntactic transformations to arrive
 from the initial statement to the final statement.
