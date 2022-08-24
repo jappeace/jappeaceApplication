@@ -6,33 +6,41 @@ Tags: haskell, programming, tools, reflex, frp, servant
 subreddit: haskell programming reflexfrp
 Status: draft
 
+<style>
+img[alt="zurich hack logo, uwu"]{
+  width:40%;
+  margin-left: 30%;
+}
+</style>
+
+![zurich hack logo, uwu](images/2022/zurich-hack.svg)
+
 I participated in [zurich hack 2022](https://zfoh.ch/zurihac2022/).
-Zurich hack is a voluntary hackaton[^commercial] organized in
-[Rapperswil-Jona](https://www.myswitzerland.com/en/destinations/rapperswil-jona/) [^name], 
-with as theme improving the haskell ecosystem and socializing. 
-Naturally I chose to work on agda all weekend on the most
-researchy [^useless] , project I could find.
-Sandy was happy to oblige with his [denotational design](https://zfoh.ch/zurihac2022/projects.html#denotational-design)
+This is a voluntary hackaton[^commercial] organized in
+[Rapperswil-Jona](https://www.myswitzerland.com/en/destinations/rapperswil-jona/) [^name].
+Naturally I chose to work on researchy [^useless]  project I could find.
+Sandy was happy to oblige with his fun [denotational design](https://zfoh.ch/zurihac2022/projects.html#denotational-design)
 project.
-It was a lot of fun.
+Here we build an "infinite" baseless chip design,
+with a homomorphism in natural numbers to proof correctness.
 
 Our presentation was surprisingly good considering we slapped
-it together 30 minutes before presentation time,
-however,
+it together 30 minutes before presentation time.
+However,
 we kind off skimmed over explaining denotational design,
 and we could've elaborated more on why this proving stuff matters.
 I shall use this post to fill in the gaps.
-However for starters it can be seen here:
+For starters the presentation can be seen here:
 
-![ ](https://youtu.be/fCT0uVCe53Q?list=PLOvRW_utVPVnqp24VsF0wiIRa-m9oWrox&t=682)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fCT0uVCe53Q?start=682" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-I helped presenting, however most of the implementation
+I helped presenting[^i'm-on-left], however most of the implementation
 was done by Sandy and Nathan.
 I wish I could've done more but my Agda isn't good enough yet.
-Although it was quite interesting to be in the technically
-challenged seat for once.
 I helped with cheering on their proving efforts and coming up
 with ideas for the design.
+
+[^i'm-on-left]: I'm on the left.
 
 ## Denotational design
 So let's begin on what denotational design is.
@@ -52,8 +60,7 @@ I've done this a lot.
 And I think it's part of the engineers job to decide how "valuable" this
 chunck of code is, and if it's valuable,
 they should consider redesigning it to be better.
-to iterate on the design ignoring the existing implementation
-(which likely means some adaptor logic or a partial rewrite).
+to iterate on the design ignoring the existing implementation.
 
 Abstractions shouldn't leak is quite interesting,
 consider for example IP. how often have you had to know about

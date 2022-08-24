@@ -5,7 +5,7 @@ CATEGORY: technique
 Tags: haskell, work
 OPTIONS: toc:nil
 
-![mtl-header](images/2022/failure.png)
+![I'm a Haskell failure, don't tell anyone!](images/2022/failure.png)
 
 Recently I encountered some dubious error handling code.
 Not only was it failing, it was failing WRONG [^anti-patterns].
