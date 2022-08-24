@@ -51,6 +51,8 @@ but in summary[^i-am-not-an-expert]:
 + Abstractions shouldn't leak.
 + Look for something which is elegant.
 
+I'll explain these more in the following paragraphs.
+
 [^i-am-not-an-expert]: I'm not really an expert on this at all, I just put it in my own mistaken words. Feel free to correct me.
 
 Consider the first point, "we should design based on use, not implementation",
@@ -60,7 +62,8 @@ I've done this a lot.
 And I think it's part of the engineers job to decide how "valuable" this
 chunck of code is, and if it's valuable,
 they should consider redesigning it to be better.
-to iterate on the design ignoring the existing implementation.
+To iterate on the design ignoring the existing implementation
+and do partial if not complete rewrites if necessary.
 
 Abstractions shouldn't leak is quite interesting,
 consider for example IP. how often have you had to know about
