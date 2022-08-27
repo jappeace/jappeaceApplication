@@ -1,10 +1,9 @@
-Title: Zurich hack 2022
+Title: Zurich hack 2022 Denotational Design
 Date: 2022-07-13 15:00 
-Category: tools
+Category: technique
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, reflex, frp, servant
-subreddit: haskell programming reflexfrp
 Status: draft
+Tags: programming, agda, denotational design, zurich hack
 
 <style>
 img[alt="zurich hack logo, uwu"]{
@@ -16,9 +15,9 @@ img[alt="zurich hack logo, uwu"]{
 ![zurich hack logo, uwu](images/2022/zurich-hack.svg)
 
 I participated in [zurich hack 2022](https://zfoh.ch/zurihac2022/).
-This is a voluntary hackaton[^commercial] organized in
+This is a voluntary hackaton organized in
 [Rapperswil-Jona](https://www.myswitzerland.com/en/destinations/rapperswil-jona/) [^name].
-Naturally I chose to work on researchy [^useless]  project I could find.
+Naturally I chose to work on the most researchy [^useless]  project I could find.
 Sandy was happy to oblige with his fun [denotational design](https://zfoh.ch/zurihac2022/projects.html#denotational-design)
 project.
 Here we build an "infinite" baseless chip design,
@@ -27,9 +26,9 @@ in natural numbers to proof correctness
 , more on this in the proves and programs section.
 
 Our presentation was surprisingly good considering we slapped
-it together 30 minutes before presentation time.
+it together in 30 minutes.
 However,
-we kind off skimmed over explaining denotational design,
+we skimmed over the denotational design part,
 and we could've elaborated more on why this proving stuff matters.
 I shall use this post to fill in the gaps.
 For starters the presentation can be seen here:
@@ -38,7 +37,7 @@ For starters the presentation can be seen here:
 
 I helped presenting[^i'm-on-left], however most of the implementation
 was done by Sandy and Nathan.
-I wish I could've done more but my Agda isn't good enough yet.
+I wish I could've done more, but my Agda isn't good enough yet.
 I helped with cheering on their proving efforts and coming up
 with ideas for the design.
 
@@ -47,56 +46,83 @@ with ideas for the design.
 ## Denotational design
 So let's begin on what denotational design is.
 You could watch a [video on this](https://youtu.be/bmKYiUOEo2A?t=871),
-but in summary[^i-am-not-an-expert]: 
+but in summary[^i-am-not-an-expert].
+I'll try to re-explain this in my own words,
+so in summary: 
 
-+ We should design based on use, not implementation.
++ We should decompose parts when possible.
 + Abstractions shouldn't leak.
-+ Look for something which is elegant.
++ We should look for something which is elegant.
 
 I'll explain these more in the following paragraphs.
 
 [^i-am-not-an-expert]: I'm not really an expert on this at all, I just put it in my own mistaken words. Feel free to correct me.
 
-Consider the first point, "We should design based on use, not implementation",
-how often have you extended a piece of functionality where you had
-to work around the existing implementation?
-I've done this a lot.
-And I think it's part of the engineers job to decide how "valuable" this
-chunck of code is.
-If it's valuable,
-they should consider redesigning it to be better.
-To iterate on the design ignoring the existing implementation
-and do partial if not complete rewrites if necessary.
-Usually this goes in hand well with writing additional tests or properties.
+The first point
+is "We should decompose parts when possible".
+We can see this from our chip design in zurich hack,
+one of the first designs was just a large record for multiplication
+that had eveyrthing slapped into it.
+Then someone had the idea to split multiplication record into
+addition and multiplication and re-express multiplication into addition.
+This is what we eventually settled upon as well.
+I don't think this has been stated as an explicit goal of denotational
+design before, but it feels implied.
+Perhaps in Conals talk "principled construction of correct implementation"
+can be interpreted as such.
+And the first design we came up with wasn't composable at all,
+I remember seeing a large mult record,
+so my suggestion was to split it up,
+which we eventually did.
 
-Abstractions shouldn't leak is quite interesting,
-consider for example IP. how often have you had to know about
+Abstractions shouldn't leak is quite interesting.
+We wish to provided a simplified view of the world to the user
+through abstraction.
+In practice this means we should hide the implementation from the user.
+In zurich hack I for example suggested to add a xor
+operation to our record to get rid of the carry bit in certain cases.
+After some discussion we settled on not doing this because
+xor isn't really a thing you care about when thinking
+in terms of semirings[^name].
+Another example is the IP[^algebra-driven-design] abstractions.
+How often have you had to know about
 the [datagrams](https://www.techopedia.com/definition/6766/datagram)
 that make up a packet?
-Or had to deal with [MAC](https://en.wikipedia.org/wiki/MAC_address) addresses? I bet never.
+Or had to deal with [MAC](https://en.wikipedia.org/wiki/MAC_address) addresses?
+Rare to never I suppose?
 That's because it's a good abstraction that doesn't leak
 most of the time.
-However, if you had to deal with any off low level IP things,
-I apologize, that's some nasty ops.
-When I talk about goodness and badness of these abstractions,
-I mean the probability of having to deal with the low level machinery.
-I think a case of bad abstraction is HTTP,
+An example of leaky abstraction is HTTP,
 how often did you have to think about the cache behavior of a get request?
 Or you probably also know why the User-Agent header is set
 to Mozilla [for every browser](https://stackoverflow.com/questions/1114254/why-do-all-browsers-user-agents-start-with-mozilla)
 right?
 It's because HTTP leaks and doesn't serve well to simplify reality.
 
+[^name]: The mathmatical name for addition and multiplication
+[^algebra-driven-design]: I've ripped these examples straight out of Sandy Maguire [alrgebra driven design](https://algebradriven.design/)
+
 The final point is "Look for something which is elegant.".
 Which should serve as a compass upon iteration.
-You've completed a design,
-you maybe even proved some properties or wrote some tests already,
-now the final step is to ask yourself, "is this elegant?".
+Here again I've an example of zurich hack,
+where we did our presentations,
+everything was done.
+However that overflow bit bugged me.
+It kind off exposes the internals of addition.
+So I decided to delete it in favor of doing a full co-product instead.
+This breaks both multiplication and addition recrods,
+the proofs have to be redone,
+I'm not even sure if it's possible,
+but that doesn't matter.
+I like that design, it's more elegant.
 Keep in mind the dictionary definition of elegance:
 
 1. Graceful and stylish in appearance or manner.
 2. (of a scientific theory or solution to a problem) pleasingly ingenious and simple.
 
+Once you've completed a design,
+you maybe even proved some properties or wrote some tests already,
+now the final step is to ask yourself, "is this elegant?".
 Rarely the anwser would be a truthfull yes,
 but you can get closer to it by deleting,
 factoring out components and simplifying.
@@ -108,16 +134,11 @@ I think this is something we didn't drive home enough in the
 zurich hack presentation,
 yes that proof looked impressive,
 but no, this isn't something you want.
-
-If you're not doing this already,
-please take note of this idea of looking for elegance.
-Just taking an additional 10 minutes to think
-about your design, after implementing it,
-will drastically improve your software.
+A simple proof is more powerful
 
 ## Proves and programs
 
-So on zurich hack I meditated on the role of proves in software
+So on zurich hack I pondered on the role of proves in software
 and how dependent types play into this.
 This is about program correctness:
 Is the design I dreamed up correct?
@@ -179,43 +200,64 @@ of entropy (randomness).
 [^agda-noob]: For me that is, because rember, I'm quite new to this all.
 
 Next proving,
-which looks like this:
+What we proved is that the homorphism is the same under composition for the addition.
+So this will work for any size chip.
+it looks like this:
 
 ```agda
-
+  begin
+    toℕ (cast _ (combine cout (combine (μ hi) (μ lo))))
+  ≡⟨ toℕ-cast _ (combine cout (combine (μ hi) (μ lo))) ⟩
+    toℕ (combine cout (combine (μ hi) (μ lo)))
+  ≡⟨ toℕ-combine cout _ ⟩
+    size * size * toℕ cout + toℕ (combine (μ hi) (μ lo))
+  ≡⟨ cong (\ φ → size * size * toℕ cout + φ) (toℕ-combine (μ hi) (μ lo)) ⟩
+    size * size * toℕ cout + (size * toℕ (μ hi) + toℕ (μ lo))
+  ≡⟨ {! taneb !} ⟩
+    toℕ (addF' cin (combine (μ mhi) (μ mlo))) + toℕ (combine (μ nhi) (μ nlo))
+  ≡⟨ sym $ toℕ-addF' (addF' cin (combine (μ mhi) (μ mlo))) (combine (μ nhi) (μ nlo)) ⟩
+    toℕ (addF' (addF' cin (combine (μ mhi) (μ mlo))) (combine (μ nhi) (μ nlo)))
+  ∎
 ```
+Note I drastically shortened this proof to make it fit [^full-proof].
+What we do is make the first line: `toℕ (cast _ (combine cout (combine (μ hi) (μ lo))))`
+be the same as the last line `toℕ (addF' (addF' cin (combine (μ mhi) (μ mlo))) (combine (μ nhi) (μ nlo)))`.
+trough steps with equational reasoning.
+So a step is anything within `≡⟨ ⟩`,
+which does some small syntax transformation.
+The `≡⟨ {! taneb !} ⟩` is a missing step, called a hole.
+In this case we request taneb (Natan), to figure out what goes here.
 
+If this proof is incorrect, you'll get a compile error.
+Note that this is similar to property tests,
+although it doesn't use randomness and shrinking,
+but rather the structure of the implementation
+trough dependent types.
+So if you've ever had issues with the arbitrary instances
+of quick check,
+you maybe interested in this whole proving stuff as well,
+and by extension dependent types.
 
-What we're doing is using syntactic transformations to arrive
-from the initial statement to the final statement.
-For example, `cong`
-ignores a part of a prove so you can apply only on part of the syntax.
+[^full-proof]: The full proof can be seen in the [github repository](https://github.com/isovector/denotational-arithmetic-zurihac),
+               although we made some additional changes to the project after the presentation as well.
 
-## Zurich vibes
-
-But aside from our project, 
-another very part is the chill atmosphere.
-You go from talking to someone who's been using haskell for more
-then 10 years and is upset over having to write unit tests,
-to some PHD students trying to add subtyping (but then goodly, somehow)
-to Haskell like languages,
-to a compiler engineer who casually made a debug tool that
-can inspect the heap.
-That all in the same night.
-
-It just keeps going like this,
-however the nice aspect is that you learn that all these amazing
-people, are just people.
-They've to eat, drink coffee and get drunk like any other nerd.
-They all have some ambition or another,
-altough I met quite a few who were there to just socialize.
-I guess I'm one of the odd-ones out in that regard,
-I just wanted to do something useless, but socializing was a step to far.
-
-[^commercial]:
 [^name]: As the name implies. This place is 30 minutes or so driving from zurich.
 [^useless]: I guess we had no hope of succeeding,
             which made it all the more worth while trying in my mind.
             After all I spend all year being productive,
             now was a time to do something cool.
+
+
+## Parting words
+
+Denotational design is an excellent topic of study if you're struggling with questions like
+"how do I make my code be more pretty?",
+or "how do I design nice and easy to understand libraries?".
+Furthermore, I really want to promote the idea out there that even
+for commercial code bases we can have proves.
+We don't need to rely on hand wavy laws asserted merely by
+stochastic approximations of proves (property tests),
+we can do the real deal!
+It's not that hard.
+
 
