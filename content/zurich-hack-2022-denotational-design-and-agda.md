@@ -357,10 +357,6 @@ I think this agda approach is a very good option to consider.
 [^full-proof]: The full proof can be seen in the [github repository](https://github.com/isovector/denotational-arithmetic-zurihac),
                although we made some additional changes to the project after the presentation as well.
 
-<<<<<<< variant A
->>>>>>> variant B
-[^commercial]:
-======= end
 [^name]: As the name implies. This place is 30 minutes or so driving from zurich.
 [^useless]: I guess we had no hope of succeeding,
             which made it all the more worth while trying in my mind.
