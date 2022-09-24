@@ -1,10 +1,18 @@
-Title: Zurich hack 2022
+Title: Zurich hack 2022 Denotational Design
 Date: 2022-07-13 15:00 
-Category: tools
+Category: technique
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, reflex, frp, servant
-subreddit: haskell programming reflexfrp
 Status: draft
+Tags: programming, agda, denotational design, zurich hack
+
+<style>
+img[alt="zurich hack logo, uwu"]{
+  width:40%;
+  margin-left: 30%;
+}
+</style>
+
+![zurich hack logo, uwu](images/2022/zurich-hack.svg)
 
 I participated in [zurich hack 2022](https://zfoh.ch/zurihac2022/).
 Zurich hack is a voluntary hackaton[^commercial] organized in
@@ -14,75 +22,113 @@ Naturally I chose to work on Agda all weekend on the most
 research-y project I could find.
 Sandy was happy to oblige with his [denotational design](https://zfoh.ch/zurihac2022/projects.html#denotational-design)
 project.
-It was a lot of fun.
-Our project presentation can be seen here[^credits]:
+Here we build an "infinite" baseless chip design,
+with a [homomorphism](https://en.wikipedia.org/wiki/Homomorphism)
+in natural numbers to proof correctness
+, more on this in the proves and programs section.
 
-![ ](https://youtu.be/fCT0uVCe53Q?list=PLOvRW_utVPVnqp24VsF0wiIRa-m9oWrox&t=682)
-
-It went surprisingly good considering we slapped
-the presentation together 30 minutes before time.
-I think we didn't explain denotational design well enough however,
+Our presentation was surprisingly good considering we slapped
+it together in 30 minutes.
+However,
+we didn't explain denotational design well enough,
 and we could've elaborated more on why proving matters.
 I shall use this post to fill in these gaps.
+For starters the presentation can be seen here:
 
-[^credits]:
-    I helped presenting, but most of the implementation
-    was done by Sandy and Nathan.
-    I wish I could've done more but my Agda isn't good enough yet.
-    My main contribution was cheering on their proving efforts
-    and coming up with ideas for the design.
-    Now to fill up the gaps in our presentation.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fCT0uVCe53Q?start=682" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+I helped presenting[^i'm-on-left], however most of the implementation
+was done by Sandy and Nathan.
+I wish I could've done more, but my Agda isn't good enough yet.
+I helped with cheering on their proving efforts and coming up
+with ideas for the design.
+
+[^i'm-on-left]: I'm on the left.
 
 ## Denotational design
 Let's begin on what denotational design is.
 You could watch a [video on this](https://youtu.be/bmKYiUOEo2A?t=871),
-but in summary[^i-am-not-an-expert]: 
+but in summary[^i-am-not-an-expert].
+I'll try to re-explain this in my own words,
+so in summary: 
 
-+ We should design based on use, not implementation.
++ We should decompose parts when possible.
 + Abstractions shouldn't leak.
-+ Look for something which is elegant.
++ We should look for something which is elegant.
+
+I'll explain these more in the following paragraphs.
 
 [^i-am-not-an-expert]: I'm not really an expert on this at all, I just put it in my own mistaken words. Feel free to correct me.
 
-Consider the first point, 
-how often have you extended functionality working
-around the existing implementation?
-I've surely done this a lot.
-I think it's part of the engineers job to decide how "valuable" this
-chunck of code is, and if it's valuable,
-they should consider redesigning it to be better.
-to iterate on the design ignoring the existing implementation
-(which likely means some adaptor logic or a partial rewrite).
-Zurich hack was special in this regard,
-a hackaton with no pressure to come up with result,
-of course we can go for the best possible approach!
+The first point
+is "We should decompose parts when possible".
+We can see this from our chip design in zurich hack,
+one of the first designs was just a large record for multiplication
+that had eveyrthing slapped into it.
+Then someone had the idea to split multiplication record into
+addition and multiplication and re-express multiplication into addition.
+This is what we eventually settled upon as well.
+I don't think this has been stated as an explicit goal of denotational
+design before, but it feels implied.
+Perhaps in Conals talk "principled construction of correct implementation"
+can be interpreted as such.
+And the first design we came up with wasn't composable at all,
+I remember seeing a large mult record,
+so my suggestion was to split it up,
+which we eventually did.
 
-Abstractions shouldn't leak is quite interesting,
-consider for example IP.
-how often have you had to know about
+Abstractions shouldn't leak is quite interesting.
+We wish to provided a simplified view of the world to the user
+through abstraction.
+In practice this means we should hide the implementation from the user.
+In zurich hack I for example suggested to add a xor
+operation to our record to get rid of the carry bit in certain cases.
+After some discussion we settled on not doing this because
+xor isn't really a thing you care about when thinking
+in terms of semirings[^name].
+Another example is the IP[^algebra-driven-design] abstractions.
+How often have you had to know about
 the [datagrams](https://www.techopedia.com/definition/6766/datagram)
 that make up a packet?
 Or had to deal with [MAC](https://en.wikipedia.org/wiki/MAC_address) addresses?
-Likely never[^if-you-had].
-That's because IP is a good abstraction that doesn't leak
+Rare to never I suppose?
+That's because it's a good abstraction that doesn't leak
 most of the time.
-However, if you had to deal with any off low level IP things,
-then I apologize, that's some nasty ops.
-When I talk about goodness and badness of these abstractions,
-I mean the probability of having to deal with the low level machinery.
-Consider for example HTTP,
+An example of leaky abstraction is HTTP,
 how often did you have to think about the cache behavior of a get request?
 Or you probably also know why the User-Agent header is set
 to Mozilla [for every browser](https://stackoverflow.com/questions/1114254/why-do-all-browsers-user-agents-start-with-mozilla)
 right?
-It's because HTTP leaks.
-The abstractions don't cover the low level machinery,
-furthermore some aspects have become implementation based.
-Therefore everyone who uses it,
-is forced to know about it's building blocks
-and setup conventions to deal with HTTP's lack of structure.
+It's because HTTP leaks and doesn't serve well to simplify reality.
 
-Implied in all of this is that it may take several
+[^name]: The mathmatical name for addition and multiplication
+[^algebra-driven-design]: I've ripped these examples straight out of Sandy Maguire [alrgebra driven design](https://algebradriven.design/)
+
+The final point is "Look for something which is elegant.".
+Which should serve as a compass upon iteration.
+Here again I've an example of zurich hack,
+where we did our presentations,
+everything was done.
+However that overflow bit bugged me.
+It kind off exposes the internals of addition.
+So I decided to delete it in favor of doing a full co-product instead.
+This breaks both multiplication and addition recrods,
+the proofs have to be redone,
+I'm not even sure if it's possible,
+but that doesn't matter.
+I like that design, it's more elegant.
+Keep in mind the dictionary definition of elegance:
+
+1. Graceful and stylish in appearance or manner.
+2. (of a scientific theory or solution to a problem) pleasingly ingenious and simple.
+
+Once you've completed a design,
+you maybe even proved some properties or wrote some tests already,
+now the final step is to ask yourself, "is this elegant?".
+Rarely the anwser would be a truthfull yes,
+but you can get closer to it by deleting,
+factoring out components and simplifying.
+It may take several
 iterations to get to the right design.
 You may end up with a horror of a proof for example.
 Which may indicate you're doing something wrong.
@@ -92,9 +138,12 @@ The proof in our presentation looked impressive,
 but this isn't something you necessarily want.
 
 ## Proves and programs
+
+So on zurich hack I pondered on the role of proves in software
+and how dependent types play into this.
+This is about program correctness:
 Is the design I dreamed up correct?
 How do you know this?
-
 We used a technique called a [homomorphism](https://en.wikipedia.org/wiki/Homomorphism)
 to prove correctness.
 Which is to say,
@@ -124,6 +173,15 @@ _ = refl
 
 Here we're creating a bigger multiplication chip out of an existing one,
 by feeding it an add2 chip, an add2x2 chip and a mul2 chip.
+`interpretBF` in this case interprets our code as a boolean value in natural numbers.
+In other words the homomorphism.
+We use `pairμ` to create this single interpretation into an interpretation that
+works with a tuple of booleans: 
+```agda
+pairμ : (Bool -> Nat) -> ((Bool, Bool) -> Nat)
+```
+Applying this twice allows us to read the result of `(mult mul2x2)`
+which returns a `((Bool, Bool), (Bool, Bool))`.
 the name compose refers to composing a larger chip out of smaller ones.
 Although the naming could use some work.
 
@@ -135,17 +193,42 @@ Furthermore this only covers a certain possible size of the chip.
 So we've proven these chips behave like we expect for these values and binary circuits.
 If you're building a company around chips that only need to be able
 to multiply up to 9 and in base 2, this is good enough.
-As far unit tests go this is incredibly torough because we're testing against
+As far unit tests go this is incredibly thorough because we're testing against
 all possible values in the chip design.
+The more common approach is to sample a couple values and call it a day.
 
-This setup where we test all possible values doesn't happen in practice,
-instead the programmer would chose one or two "interesting" values,
-and test those,
-So a more thorough approach is to sample lots of values and test against these.
-This is known as fuzzing or property testing.
+Which lead to an alternative more torough approach, property testing.
 Here you would generate a two random inputs on one side
-interpret it trough the homomorphism and then see if the addition in natural 
+interpret it trough the homomorphism
+and then see if the addition in natural 
 numbers is the same as the test.
+We didn't do this because our unit tests were better,
+and it's sort of difficult to do[^agda-noob] in agda
+because now you need to figure out how to get your source
+of entropy (randomness).
+
+[^agda-noob]: For me that is, because rember, I'm quite new to this all.
+
+Next proving,
+What we proved is that the homorphism is the same under composition for the addition.
+So this will work for any size chip.
+it looks like this:
+
+```agda
+  begin
+    toℕ (cast _ (combine cout (combine (μ hi) (μ lo))))
+  ≡⟨ toℕ-cast _ (combine cout (combine (μ hi) (μ lo))) ⟩
+    toℕ (combine cout (combine (μ hi) (μ lo)))
+  ≡⟨ toℕ-combine cout _ ⟩
+    size * size * toℕ cout + toℕ (combine (μ hi) (μ lo))
+  ≡⟨ cong (\ φ → size * size * toℕ cout + φ) (toℕ-combine (μ hi) (μ lo)) ⟩
+    size * size * toℕ cout + (size * toℕ (μ hi) + toℕ (μ lo))
+  ≡⟨ {! taneb !} ⟩
+    toℕ (addF' cin (combine (μ mhi) (μ mlo))) + toℕ (combine (μ nhi) (μ nlo))
+  ≡⟨ sym $ toℕ-addF' (addF' cin (combine (μ mhi) (μ mlo))) (combine (μ nhi) (μ nlo)) ⟩
+    toℕ (addF' (addF' cin (combine (μ mhi) (μ mlo))) (combine (μ nhi) (μ nlo)))
+  ∎
+```
 
 There are some issues with property testing however.
 For one you're dependent on the quality of the random value
@@ -179,6 +262,25 @@ record Adder {τ : Set} {size : ℕ} (μ : τ → Fin size) : Set where
       → toℕ (digitize (P.map μ id (add mnp))) ≡ toℕ (addF'3 (P.map id (P.map μ μ) mnp))
 open Adder
 ```
+
+Note I drastically shortened this proof to make it fit [^full-proof].
+What we do is make the first line: `toℕ (cast _ (combine cout (combine (μ hi) (μ lo))))`
+be the same as the last line `toℕ (addF' (addF' cin (combine (μ mhi) (μ mlo))) (combine (μ nhi) (μ nlo)))`.
+trough steps with equational reasoning.
+So a step is anything within `≡⟨ ⟩`,
+which does some small syntax transformation.
+The `≡⟨ {! taneb !} ⟩` is a missing step, called a hole.
+In this case we request taneb (Natan), to figure out what goes here.
+
+If this proof is incorrect, you'll get a compile error.
+Note that this is similar to property tests,
+although it doesn't use randomness and shrinking,
+but rather the structure of the implementation
+trough dependent types.
+So if you've ever had issues with the arbitrary instances
+of quick check,
+you maybe interested in this whole proving stuff as well,
+and by extension dependent types.
 
 With that we can make an interpertation for bits:
 
@@ -253,6 +355,17 @@ This is a big step in terms off correctness compared to property tests,
 and if you have software that /needs/ to be correct,
 I think this agda approach is a very good option to consider.
 
+
+[^full-proof]: The full proof can be seen in the [github repository](https://github.com/isovector/denotational-arithmetic-zurihac),
+               although we made some additional changes to the project after the presentation as well.
+
+[^name]: As the name implies. This place is 30 minutes or so driving from zurich.
+[^useless]: I guess we had no hope of succeeding,
+            which made it all the more worth while trying in my mind.
+            After all I spend all year being productive,
+            now was a time to do something cool.
+
+
 ## Zurich vibes
 Aside from our project, 
 I think another important part is the chill atmosphere.
@@ -277,8 +390,16 @@ Although I'm not going to stay lnoger that time because switzerland
 is expensive as fuck.
 Even though zurich hack attandence s free, it's still very
 expensive to just be there.
+## Parting words
 
+Denotational design is an excellent topic of study if you're struggling with questions like
+"how do I make my code be more pretty?",
+or "how do I design nice and easy to understand libraries?".
+Furthermore, I really want to promote the idea out there that even
+for commercial code bases we can have proves.
+We don't need to rely on hand wavy laws asserted merely by
+stochastic approximations of proves (property tests),
+we can do the real deal!
+It's not that hard.
 
-[^commercial]:
-[^name]: As the name implies. This place is 30 minutes or so driving from zurich.
-
+[^name]: As the name implies. This place is 30 minutes or so driving from Zurich.
