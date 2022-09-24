@@ -10,27 +10,28 @@ I participated in [zurich hack 2022](https://zfoh.ch/zurihac2022/).
 Zurich hack is a voluntary hackaton[^commercial] organized in
 [Rapperswil-Jona](https://www.myswitzerland.com/en/destinations/rapperswil-jona/) [^name], 
 with as theme improving the haskell ecosystem and socializing. 
-Naturally I chose to work on agda all weekend on the most
-researchy [^useless] , project I could find.
+Naturally I chose to work on Agda all weekend on the most
+research-y project I could find.
 Sandy was happy to oblige with his [denotational design](https://zfoh.ch/zurihac2022/projects.html#denotational-design)
 project.
 It was a lot of fun.
-
-Our presentation was surprisingly good considering we slapped
-it together 30 minutes before presentation time,
-however,
-we didn't explain denotational design well enough,
-and we could've elaborated more on why proving matters.
-I shall use this post to fill in these gaps.
-However for starters it can be seen here:
+Our project presentation can be seen here[^credits]:
 
 ![ ](https://youtu.be/fCT0uVCe53Q?list=PLOvRW_utVPVnqp24VsF0wiIRa-m9oWrox&t=682)
 
-I helped presenting, however most of the implementation
-was done by Sandy and Nathan.
-I wish I could've done more but my Agda isn't good enough yet.
-My main contribution was cheering on their proving efforts
-and coming up with ideas for the design.
+It went surprisingly good considering we slapped
+the presentation together 30 minutes before time.
+I think we didn't explain denotational design well enough however,
+and we could've elaborated more on why proving matters.
+I shall use this post to fill in these gaps.
+
+[^credits]:
+    I helped presenting, but most of the implementation
+    was done by Sandy and Nathan.
+    I wish I could've done more but my Agda isn't good enough yet.
+    My main contribution was cheering on their proving efforts
+    and coming up with ideas for the design.
+    Now to fill up the gaps in our presentation.
 
 ## Denotational design
 Let's begin on what denotational design is.
@@ -280,8 +281,4 @@ expensive to just be there.
 
 [^commercial]:
 [^name]: As the name implies. This place is 30 minutes or so driving from zurich.
-[^useless]: I guess we had no hope of succeeding,
-            which made it all the more worth while trying in my mind.
-            After all I spend all year being productive,
-            now was a time to do something cool.
 
