@@ -1,5 +1,5 @@
 Title: Zurich hack 2022 Denotational Design
-Date: 2022-07-13 15:00 
+Date: 2022-10-25 15:00 
 Category: technique
 OPTIONS: toc:nil
 Tags: programming, agda, denotational design, zurich hack
@@ -13,18 +13,18 @@ img[alt="zurich hack logo, uwu"]{
 
 ![zurich hack logo, uwu](images/2022/zurich-hack.svg)
 
+This blog post is three months overdue, but
 I participated in [zurich hack 2022](https://zfoh.ch/zurihac2022/).
 Zurich hack is a voluntary hackaton organized in
 [Rapperswil-Jona](https://www.myswitzerland.com/en/destinations/rapperswil-jona/) [^name], 
 with as theme improving the haskell ecosystem and socializing. 
-Naturally I chose to work on Agda all weekend on the most
-research-y project I could find.
+Naturally I chose to work on the most research-y project I could find.
 Sandy was happy to oblige with his [denotational design](https://zfoh.ch/zurihac2022/projects.html#denotational-design)
 project.
 Here we build an "infinite" baseless chip design,
 with a [homomorphism](https://en.wikipedia.org/wiki/Homomorphism)
-in natural numbers to proof correctness
-, more on this in the proves and programs section.
+in natural numbers to proof correctness,
+more on this in the proves and programs section.
 
 Our presentation was surprisingly good considering we slapped
 it together in 30 minutes.
@@ -48,28 +48,29 @@ with ideas for the design.
 ## Denotational design
 Let's begin on what denotational design is.
 You could watch a [video on this](https://youtu.be/bmKYiUOEo2A?t=871),
-but I like to put things in my own words,
-so in summary: 
+but summarized in my own words:
 
 + We should decompose parts when possible.
 + Abstractions shouldn't leak.
 + We should look for something which is elegant.
 
-I'll explain these points more in the following paragraphs.
-
 [^i-am-not-an-expert]: I'm not really an expert on this at all, I just put it in my own mistaken words. Feel free to correct me.
 
 The first point
 is "We should decompose parts when possible".
-We can see this from our chip design in zurich hack,
-one of the first designs was just a large record for multiplication
-that had eveyrthing slapped into it.
-Then someone had the idea to split multiplication record into
-addition and multiplication and re-express multiplication into addition.
+This means to break up our design in such a way
+we can re-use parts into a larger whole.
+For example in zurich hack,
+our first designs was a large record for multiplication
+that had baked into it.
+Then someone had the idea to split that record into
+a separate addition and multiplication record
+and re-express multiplication into addition.
 This is what we eventually settled upon as well.
-I don't think this has been stated as an explicit goal of denotational
-design before, but it feels implied.
-Perhaps in Conals talk linked before,
+I don't think this has been stated as an explicit
+goal of denotational design before,
+but it feels implied.
+Perhaps in [Conals talk](https://youtu.be/bmKYiUOEo2A?t=871),
 "principled construction of correct implementation"
 can be interpreted as such.
 
@@ -82,7 +83,8 @@ operation to our record to get rid of the carry bit in certain cases.
 After some discussion we settled on not doing this because
 xor isn't really a thing you care about when thinking
 in terms of semirings[^name].
-I think this idea is much more thoroughly explained in the book
+For more examples of abstractions shouldn't leak
+I recommend the book 
 [algebra driven design](https://algebradriven.design/).
 
 [^name]: The mathmatical name for addition and multiplication
@@ -90,111 +92,113 @@ I think this idea is much more thoroughly explained in the book
 The final point is "Look for something which is elegant.".
 Which should serve as a compass upon iteration.
 Here again I've an example from just after zurich hack:
-The overflow bit bugged me in our final design.
+The overflow bit in our addition record bugged me.
 It kind off exposes the internals of addition.
 So I decided to delete it in favor of doing a full co-product instead.
 This breaks both multiplication and addition records,
 the proofs have to be redone,
 I'm not even sure if it's possible.
 However I like that design, it's more elegant.
-Keep in mind the dictionary definition of elegance:
-
-1. Graceful and stylish in appearance or manner.
-2. (of a scientific theory or solution to a problem) pleasingly ingenious and simple.
-
 I feel coming to a design which is truly elegant
 is difficult, but possible.
 This is something we didn't drive home enough in the 
-zurich hack presentation,
+Zurich hack presentation,
 The proof in our presentation looked impressive,
 but this isn't something you necessarily want.
-An elegant proof is what you want.
+An elegant proof and design is what you want.
 
 ## Proves and programs
-I pondered on the role of proves in software
-and how dependent types play into this.
+I pondered on proves in software
+and how dependent types interplay.
 Is the design I dreamed up correct?
 How do you know this?
 We used a property called a [homomorphism](https://en.wikipedia.org/wiki/Homomorphism)
 to prove correctness.
-Which is to say,
-we brought our chip design back to an interpretation in
-natural numbers.
-addition or multiplication should be the same for our chip,
+In mortal words,
+our chip design was interpreted into [natural numbers](https://en.wikipedia.org/wiki/Natural_number).
+Addition or multiplication should be the same for our chip,
 as it is in natural numbers.
-This also assumes our chip is [bijective](https://en.wikipedia.org/wiki/Bijection)
-into the natural numbers.
 
-So let's start at the beginning with our implementation.
-This is something we settled on after several iterations
+Let's start at the with our implementation.
+This Adder is something we settled on after several iterations
 of design, but I'm cutting that part out for brevity:
 
 ```agda
 record Adder {τ : Set} {size : ℕ} (μ : τ → Fin size) : Set where
   constructor adds
   field
-    add : Fin 2 × τ × τ → τ × Fin 2
-    zeroA : τ
-    proof-add
+    add : Fin 2 × τ × τ → τ × Fin 2 -- 1
+    zeroA : τ -- 2
+    proof-add -- 3
       : (mnp : Fin 2 × τ × τ)
-      → toℕ (digitize (P.map μ id (add mnp))) -- 1 
-      ≡ toℕ (addF'3 (P.map id (P.map μ μ) mnp)) -- 2
+      → toℕ (digitize (P.map μ id (add mnp))) 
+      ≡ toℕ (addF'3 (P.map id (P.map μ μ) mnp)) 
 open Adder
 ```
 Here we're saying, to define an adder you need 3 things.
-You need an add operation,
-you need a zero,
-and you need a proof of addition into the homomorphism of natural numbers.
-Furthermore we don't care how you look or what you are `τ`,
-as long you can b interpreted `μ`.
-From this we can define some interpertation of `τ`,
-say we want to do binary values:
+You need an add operation `1`,
+you need a zero `2`,
+and you need a proof of addition `3` which is a homomorphism from our chip
+to the natural numbers.
+Furthermore we don't specify the input type, which is represented by `τ`.
+We're fine with arbitrary inputs, (eg baseless addition),
+As long as we can interpreted this, represented by `μ`.
+A concrete example of `μ` would be an interpertation 
+into binary values:
 
 ```agda
 interpretBF : Bool → Fin 2
 interpretBF false = zero
 interpretBF true  = suc zero
 ```
+
 If we put this into Adder, `τ = Bool`.
-`interpretBF` in this case interprets our code as a boolean value in natural numbers.
+`interpretBF` in this case interprets our code as
+a boolean value in natural numbers.
 In other words the homomorphism.
-This says what size a true and a false are in natural numbers.
+This says what value a true and a false are in natural numbers.
 Now can define how to add bits:
 ```agda
 
-add2 : Adder interpretBF
-add add2 (zero , false , false)     = false , zero
+add2 : Adder interpretBF -- 1
+add add2 (zero , false , false)     = false , zero -- 2
 ...
 add add2 (suc zero , true , true)   = true  , suc zero
-zeroA add2 = false
+zeroA add2 = false -- 3
 ```
 
-Excersize: Define a proof for add2 [^proof-add-2]
+Here we first define the type of add2 at `1`,
+then we start giving an implementation for add at `2`
+by pattern matching,
+and an implementation of zeroA at `3`.
 
-
-First of all the most obvious approach is to simply use a
-[unit test](https://github.com/isovector/denotational-arithmetic-zurihac/commit/4eb494ad84a1ede2202b036379d8525a391eecbb#diff-201315dac0498e664f0dccffd803e509020bf7d50ce3509d27566a3c26e5cb38R273):
+For correctness we didn't do the full on homorphism prove at first.
+It looked daunting,
+so we settled on making a [unit test](https://github.com/isovector/denotational-arithmetic-zurihac/commit/4eb494ad84a1ede2202b036379d8525a391eecbb#diff-201315dac0498e664f0dccffd803e509020bf7d50ce3509d27566a3c26e5cb38R273)
+instead.
 If we map out all possible inputs to all possible outputs we
 got a crummy proof:
 
 ```agda
+mul2x2 : _ 
+mul2x2 = compose add2 add2x2 mul2 -- 1
 
-mul2x2 : _
-mul2x2 = compose add2 add2x2 mul2
 
-_ : (V.map (toℕ ∘ pairμ (pairμ interpretBF) ∘ uncurry (mult mul2x2)) $
-        composeTheValues allBools2x2 allBools2x2)
-        ≡ (0 ∷ 0 ∷ 0 ∷ 0 ∷
+_ : (V.map -- 2
+        (toℕ ∘ pairμ (pairμ interpretBF) ∘ uncurry (mult mul2x2)) $ 
+        composeTheValues allBools2x2 allBools2x2
+    )
+        ≡ (0 ∷ 0 ∷ 0 ∷ 0 ∷  -- 3
            0 ∷ 1 ∷ 2 ∷ 3 ∷
            0 ∷ 2 ∷ 4 ∷ 6 ∷
            0 ∷ 3 ∷ 6 ∷ 9 ∷ [])
 _ = refl
 ```
 
-Here we're creating a bigger multiplication chip out of an existing one.
+Here we're creating a bigger multiplication chip out of an existing one at `1`.
 We do this by feeding it an add2 chip,
 an add2x2 chip and a mul2 chip.
-`Fin 2` indicates the natural numbers go up to 2.
+Moving on to `2`.
 We use `pairμ` to create this single interpretation into an interpretation that
 works with a tuple of booleans: 
 ```agda
@@ -204,13 +208,13 @@ Applying this function gives us a "bigger" interpertation.
 Applying this twice allows us to read the result of `(mult mul2x2)`
 which returns a `((Bool, Bool), (Bool, Bool))`.
 the name compose refers to composing a larger chip out of smaller ones.
+Finally at `3` we put in a multiplication table as expected result
 
-What does this test not cover?
-For one this only works for the inputs we put in,
-in this case those are bits, we've not tested for trits or pentits.
-Furthermore this only covers a certain possible size of the chip.
-
-We've proven these chips behave like we expect for these values.
+Is this test complete?
+No this only works for binary values up to 9,
+we've not tested for trits or pentits or higher values.
+However we've proven these chips behave like we expect
+for these values.
 If you're building a chip company where you only need
 multiplication up to 9 in base 2, this is good enough.
 As far unit tests go this is incredibly thorough because we're testing against
@@ -218,16 +222,17 @@ all possible values in the chip design.
 The more common approach is to sample a couple values and call it a day.
 
 Which lead to an alternative approach, property testing.
-Here you would generate a two random inputs on one side
+Here you would generate two random inputs on one side
 interpret it trough the homomorphism
 and then see if the multiplication in natural 
 numbers is the same as the test.
 We didn't do this because
-it's sort of difficult to do[^agda-noob] in agda
+it's sort of difficult to do in agda.[^agda-noob]
 Now you need to figure out how to get your source
-of entropy (randomness).
+of randomness.
 Also time was a serious constraint,
-and we had a more powerful and interesting technique, proving!
+and we had a more powerful and interesting technique,
+proving!
 
 A proof doesn't have to be hard, for example consider the correctness
 prove of our add2 chip:
@@ -235,25 +240,21 @@ prove of our add2 chip:
   proof-add add2 (zero , false , false) = refl
   ...
   proof-add add2 (suc zero , true  , true)  = refl
-  ```
-refl means, reflexivity.
-In other words, the statement is simple enough that Agda can
-just look at the definition to figure out what it means.
+```
 
 [^agda-noob]: For me that is, because rember, I'm quite new to this all.
 
-This is only possible because agda is a dependently typed language.
+refl means, reflexivity.
+In other words, the statement is simple enough that Agda can
+just look at the definition to figure out what it means.
+In this case all we do is list out all possible input values,
+and tell agda to look at the definition.
+This is only possible because Agda is a dependently typed language.
 What we proved is that the homorphism is the same under composition for the addition.
-So this will work for any size chip.
-Mind you we only proven this for addtion on zurich hack, 
-so let's first look at the definition of our Adder recrod:
-
-Here we introduce the property we want, where `μ` is our interpretation
-in natural numbers, and `τ` is the type we put in.
-size is used to indicate how big the size in natural numbers this chip is.
-Mind proof add, which puts 
-
-The proof itself then looks like this:
+So this will work for the add2 size chip.
+This works for the small add2,
+but if we want to do this for a general composition
+adder we have to do a bit more work:
 ```agda
 bigger-adder : {σ τ : Set} {σ-size τ-size : ℕ} {μ : σ → Fin σ-size} {ν : τ → Fin τ-size}
                → Adder μ → Adder ν → Adder (uncurry combine ∘ P.map μ ν)
@@ -281,10 +282,12 @@ proof-add (bigger-adder {σ-size = σ-size} {τ-size = τ-size} {μ = μ} {ν = 
   ∎
 ```
 Note I drastically shortened this proof to make it fit [^full-proof].
-What we do is make the first line (indicated by `-- 1`)
-be the same as the last line (indicated by `-- 2`).
+What we do is make the first line (indicated by `1`)
+be the same as the last line (indicated by `2`).
 trough steps with equational reasoning.
-So a step is anything within `≡⟨ ⟩`,
+Every step is small,
+and the process is in a way fully mechanical pattern matching.
+A step is anything within `≡⟨ ⟩`,
 which does some small syntax transformation.
 The `≡⟨ {! taneb !} ⟩` is a missing step, called a hole.
 In this case we request taneb[^ring-solver], to figure out what goes here.
@@ -296,56 +299,13 @@ Note that this is similar to property tests,
 although it doesn't use randomness and shrinking,
 but rather the structure of the implementation
 trough dependent types.
-So if you've ever had issues with the arbitrary instances
-of quick check,
-you maybe interested in this whole proving stuff as well,
-and by extension dependent types.
 
-
-From here the bigger adder can be defined,
-which composes one of these adders into a bigger one.
-This is the core idea of our DSL, once we got 
-a single adder we can grow it trough composition:
-
-```agda
-bigger-adder : {σ τ : Set} {σ-size τ-size : ℕ} {μ : σ → Fin σ-size} {ν : τ → Fin τ-size}
-               → Adder μ → Adder ν → Adder (uncurry combine ∘ P.map μ ν)
-proof-add (bigger-adder {σ-size = σ-size} {τ-size = τ-size} {μ = μ} {ν = ν} x y)
-          (cin , (mhi , mlo) , (nhi , nlo))
-  with y .add (cin , mlo , nlo) in y-eq
-... | (lo , cmid) with x .add (cmid , mhi , nhi) in x-eq
-... | (hi , cout) =
-  let x-proof = proof-add x (cmid , mhi , nhi)
-      y-proof = proof-add y (cin  , mlo , nlo)
-      size = σ-size
-  in begin
-    toℕ (cast _ (combine cout (combine (μ hi) (ν lo))))
-    ≡⟨ toℕ-cast _ (combine cout (combine (μ hi) (ν lo))) ⟩
-    ...
-    toℕ (addF' cin (combine (μ mhi) (ν mlo))) + toℕ (combine (μ nhi) (ν nlo))
-    ≡˘⟨ toℕ-addF' (addF' cin (combine (μ mhi) (ν mlo))) (combine (μ nhi) (ν nlo)) ⟩
-    toℕ (addF' (addF' cin (combine (μ mhi) (ν mlo))) (combine (μ nhi) (ν nlo)))                             ∎
-```
-
-Here `toℕ (cast _ (combine cout (combine (μ hi) (ν lo))))`
-is the first step of our prove, or the left hand side of the `≡`,
-and `toℕ (addF' (addF' cin (combine (μ mhi) (ν mlo))) (combine (μ nhi) (ν nlo)))`
-the right hand side.
-What we're doing is using syntactic transformations to arrive
-from the initial statement to the final statement.
-The statements in `≡⟨ ... ⟩` do these syntactic transformations
-Since this proof is rather long and ugly I stripped out most of it.
-The full source can be seen
-[here](https://github.com/isovector/denotational-arithmetic-zurihac/blob/master/src/Mul.agda).
-
-This proves our bigger adder complies to the property of our `Adder` record.
-meaning it's correct for any base, (bits, trits pentits etc),
-for any size.
-If it's wrong it won't compile.
+This proves a composition of two adders is correct according to our proof-add record.
+In other words the homomorphism.
+If were wrong it wouldn't compile.
 This is a big step in terms off correctness compared to property tests,
 and if you have software that /needs/ to be correct,
 I think this agda approach is a very good option to consider.
-
 
 [^full-proof]: The full proof can be seen in the [github repository](https://github.com/isovector/denotational-arithmetic-zurihac),
                although we made some additional changes to the project after the presentation as well.
@@ -357,42 +317,20 @@ I think this agda approach is a very good option to consider.
             now was a time to do something cool.
 
 
-## Zurich vibes
-Aside from our project, 
-I think another important part is the chill atmosphere.
-For example I asked some people as they'd be working on,
-more often then not the answer would be that they're
-there mostly to socialize.
-In the opening presentation one question that came up
-is "where are the showers to swim in the lake?".
-I think such a chill vibe sets zurich hack apart from other meetups.
-
-You go from talking to someone who's been using haskell for more
-then 10 years and is upset over having to write unit tests,
-to some PHD students trying to add subtyping 
-to Haskell like languages (but then goodly, somehow),
-to a compiler engineer who casually made a debug tool that
-can inspect the heap.
-That all in the same night.
-
-So naturally, I was quite excited to hear this would be organized
-again next year.
-Although I'm not going to stay lnoger that time because switzerland
-is expensive as fuck.
-Even though zurich hack attandence s free, it's still very
-expensive to just be there.
 ## Parting words
 
 Denotational design is an excellent topic of study if you're struggling with questions like
 "how do I make my code be more pretty?",
 or "how do I design nice and easy to understand libraries?".
 Furthermore, I really want to promote the idea out there that even
-for commercial code bases we can have proves.
+for commercial code bases we can have correctness proves.
+This is a much more powerful technique than mere property tests,
+and puts all that hype around dependent types to work.
 We don't need to rely on hand wavy laws asserted merely by
-stochastic approximations of proves (property tests),
+stochastic approximations of proves,
 we can do the real deal!
-It's not that hard.
+Please reach out if you're in a domain where correctness
+like this is important.
+I'd love to chat :).
 
 [^name]: As the name implies. This place is 30 minutes or so driving from Zurich.
-
-[^proof-add-2]:
