@@ -68,7 +68,7 @@ a separate addition and multiplication records
 and re-express multiplication into addition.
 This allows us to work with the simpler problem
 of addition, before tackling multiplication.
-This is what we eventually settled upon as well.
+Which is what we eventually settled upon as well.
 I don't think decomposition has been stated as an explicit
 goal of denotational design before,
 but it feels implied.
@@ -107,6 +107,7 @@ So there is definitely a cost.  [^real-engineering]
 However I like that design, it's more elegant because
 this would make multiplication have a product type as input,
 and addition a sum type.
+Which would have some nice symmetry.
 This is something we didn't drive home enough in the 
 Zurich hack presentation.
 The proof we presented looked impressive,
@@ -132,10 +133,10 @@ our chip design was interpreted into [natural numbers](https://en.wikipedia.org/
 Addition or multiplication should be the same for our chip,
 as it is in natural numbers.
 
-To start with talking about proves,
-we've to have a design and implementation to proof correctness for.
+To start talking about proves,
+we need a design and implementation to proof correctness for.
 In our case this was a chip design in Agda.
-This Adder[^addition-chip] is something we settled on after several iterations
+This Adder[^addition-chip] is something we settled upon after several iterations
 of design, but I'm cutting that part out for brevity:[^in-zurich-hack]
 
 [^in-zurich-hack]: In zurich hack we sortoff started out in a classroom with just random ideas.
@@ -233,7 +234,7 @@ As far unit tests go this is incredibly thorough because we're testing against
 all possible values in the chip design.
 The more common approach is to sample a couple values and call it a day.
 
-Which lead to an alternative approach, property testing.
+Which lead to an alternative approach called property testing.
 Here you would generate two random inputs on one side,
 interpret it trough the homomorphism
 and then see if the multiplication in natural 
