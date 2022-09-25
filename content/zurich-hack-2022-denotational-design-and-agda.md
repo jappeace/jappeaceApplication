@@ -52,7 +52,7 @@ but summarized in my own words:
 
 + We should decompose parts when possible.
 + Abstractions shouldn't leak.
-+ We should look for something which is elegant.
++ We should look for elegance.
 
 [^i-am-not-an-expert]: I'm not really an expert on this at all, I just put it in my own mistaken words. Feel free to correct me.
 
@@ -64,7 +64,7 @@ For example in zurich hack,
 our first designs was a large record for multiplication
 that had everything baked into it.
 Then someone had the idea to split that record into
-a separate addition and multiplication record
+a separate addition and multiplication records
 and re-express multiplication into addition.
 This allows us to work with the simpler problem
 of addition, before tackling multiplication.
@@ -88,29 +88,37 @@ in terms of semirings[^name].
 In other words, when thinking in terms of multiplication
 and addition,
 you don't want to care about the bit representation.
-For more examples of abstractions shouldn't leak
+For more examples of "abstractions shouldn't leak"
 I recommend the book 
 [algebra driven design](https://algebradriven.design/).
 
 [^name]: The mathmatical name for addition and multiplication
 
-The final point is "Look for something which is elegant.".
+The final point is "We should look for elegance".
 Which should serve as a compass upon iteration.
 Here again I've an example from just after zurich hack:
 The overflow bit in our addition record bugged me.
 It kind off exposes the internals of addition.
 So I decided to delete it in favor of doing a full co-product instead.
-This breaks both multiplication and addition records,
+Doing this would break both multiplication and addition records,
 the proofs have to be redone,
 I'm not even sure if it's possible.
-However I like that design, it's more elegant.
-I feel coming to a design which is truly elegant
-is difficult, but possible.
+So there is definitely a cost.  [^real-engineering]
+However I like that design, it's more elegant because
+this would make multiplication have a product type as input,
+and addition a sum type.
 This is something we didn't drive home enough in the 
 Zurich hack presentation.
-The proof in our presentation looked impressive,
+The proof we presented looked impressive,
 but this isn't something you necessarily want.
 An elegant proof and design is what you want.
+
+[^real-engineering]: In a commercial setting we'd decide if it's worth investing additional
+                     in this design.
+                     The one presented at zurich hack works.
+                     But if this is intended to be used in a larger system,
+                     iterating upon the design may help, if the business can afford it.
+
 
 ## Proves and programs
 I pondered on proves in software
@@ -124,9 +132,19 @@ our chip design was interpreted into [natural numbers](https://en.wikipedia.org/
 Addition or multiplication should be the same for our chip,
 as it is in natural numbers.
 
-Let's start at the with our implementation.
-This Adder is something we settled on after several iterations
-of design, but I'm cutting that part out for brevity:
+To start with talking about proves,
+we've to have a design and implementation to proof correctness for.
+In our case this was a chip design in Agda.
+This Adder[^addition-chip] is something we settled on after several iterations
+of design, but I'm cutting that part out for brevity:[^in-zurich-hack]
+
+[^in-zurich-hack]: In zurich hack we sortoff started out in a classroom with just random ideas.
+                   One was quite funny where we somehow ended up with a design that was equivalent
+                   to tallying the ones and zeros.
+                   But we went in all kinds of directions before settling on using a record.
+                   I guess that's the point you've to just try a bunch of stuff
+                   and not put to much ego into it.
+[^addition-chip]: Addition chip
 
 ```agda
 record Adder {τ : Set} {size : ℕ} (μ : τ → Fin size) : Set where
@@ -159,7 +177,7 @@ interpretBF false = zero
 interpretBF true  = suc zero
 ```
 
-If we put this into Adder, `τ = Bool`.
+If we put this into the Adder then `τ = Bool`.
 `interpretBF` in this case interprets our code as
 a boolean value in natural numbers.
 In other words the homomorphism.
@@ -180,7 +198,10 @@ Then we start giving an implementation for `add` at `2`,
 which is a simple pattern match into values.
 finally we give an implementation of `zeroA` at `3`.
 
-For correctness we didn't do the full on homorphism prove at first.
+You can do a quick correctness
+check before doing a full prove.
+For example, in multiplication
+we didn't do the full on homorphism prove at first.
 It looked daunting,
 so we settled on making a [unit test](https://github.com/isovector/denotational-arithmetic-zurihac/commit/4eb494ad84a1ede2202b036379d8525a391eecbb#diff-201315dac0498e664f0dccffd803e509020bf7d50ce3509d27566a3c26e5cb38R273)
 instead.
@@ -200,14 +221,14 @@ _ = refl
 ```
 
 At `1` we run our chip design into the interpretation,
-and at `2` we put in a multiplication table as expected result.
+and at `2` we expect a multiplication table as result.
 Is this test complete?
 No, this only works for binary values up to 9,
 we've not tested for trits or pentits or higher values.
-However we've proven these chips behave like we expect
+We did prove however the chip behaves like we expect
 for these values.
 If you're building a chip company where you only need
-multiplication up to 9 in base 2, this is good enough.
+multiplication up to 9 in base 2 this is good enough.
 As far unit tests go this is incredibly thorough because we're testing against
 all possible values in the chip design.
 The more common approach is to sample a couple values and call it a day.
@@ -278,7 +299,7 @@ What we do is make the first line (indicated by `1`)
 be the same as the last line (indicated by `2`).
 through steps with equational reasoning.
 Every step is small,
-and the process is in a way fully mechanical pattern matching.
+and the process is almost fully mechanical pattern matching.
 A step is anything within `≡⟨ ⟩`,
 which does some small syntax transformation.
 The `≡⟨ {! taneb !} ⟩` is a missing step, called a hole.
@@ -298,7 +319,9 @@ Furthermore smaller proves compose into larger ones (with the right design).
 We can see that for example with `x-proof` in the above block.
 but in fact every step between `≡⟨ ⟩` is a prove being re-used.
 which comes straight from the implementation.
-Property tests aren't composable.
+Property tests however aren't as composable as proves.
+A value generator may be re-used, however care must 
+be taken the sampling and bias doesn't become unacceptable.
 Finally we're able to prove on polymorphic type variables,
 which property tests can't do.
 If you have software that /needs/ to be correct,
@@ -320,7 +343,7 @@ I also think agda is an good choice for a language that supports that.
 Denotational design is an excellent topic of study if you're struggling with questions like
 "how do I make my code be more pretty?",
 or "how do I design nice and easy to understand libraries?".
-Furthermore, I really want to promote the idea out there that even
+Furthermore, even
 for commercial code bases we can have correctness proves.
 This is a much more powerful technique than mere property tests,
 and puts all that hype around dependent types to work.
