@@ -240,7 +240,7 @@ In other words, the statement is simple enough that Agda can
 just look at the definition to figure out what it means.
 In this case all we do is list out all possible input values,
 and tell agda to look at the definition.
-proof-add's type signature ensures the implementation is correct.
+`proof-add`'s type signature ensures the implementation is correct.
 This is only possible because Agda is dependently typed.
 What we proved is that the homorphism is the same under composition for the addition.
 This will work for the add2 chip,
