@@ -3,6 +3,7 @@ Date: 2022-10-25 15:00
 Category: technique
 OPTIONS: toc:nil
 Tags: programming, agda, denotational design, zurich hack
+Status: draft
 
 <style>
 img[alt="zurich hack logo, uwu"]{
