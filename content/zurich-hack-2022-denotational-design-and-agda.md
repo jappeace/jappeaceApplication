@@ -14,10 +14,10 @@ img[alt="zurich hack logo, uwu"]{
 ![zurich hack logo, uwu](images/2022/zurich-hack.svg)
 
 This blog post is three months overdue, but
-I participated in [zurich hack 2022](https://zfoh.ch/zurihac2022/).
+I participated in [Zurich hack 2022](https://zfoh.ch/zurihac2022/).
 Zurich hack is a voluntary hackaton organized in
 [Rapperswil-Jona](https://www.myswitzerland.com/en/destinations/rapperswil-jona/) [^name], 
-with as theme improving the haskell ecosystem and socializing. 
+with as theme improving the Haskell ecosystem and socializing. 
 Naturally I chose to work on the most research-y project I could find.
 Sandy was happy to oblige with his [denotational design](https://zfoh.ch/zurihac2022/projects.html#denotational-design)
 project.
@@ -60,7 +60,7 @@ The first point
 is "We should decompose parts when possible".
 This means breaking up our design in such a way
 we can re-use parts into a larger whole.
-For example in zurich hack,
+For example in Zurich hack,
 our first designs was a large record for multiplication
 that had everything baked into it.
 Then someone had the idea to split that record into
@@ -96,7 +96,7 @@ I recommend the book
 
 The final point is "We should look for elegance".
 Which should serve as a compass upon iteration.
-Here again I've an example from just after zurich hack:
+Here again I've an example from just after Zurich hack:
 The overflow bit in our addition record bugged me.
 It kind off exposes the internals of addition.
 So I decided to delete it in favor of doing a full co-product instead.
@@ -116,7 +116,7 @@ An elegant proof and design is what you want.
 
 [^real-engineering]: In a commercial setting we'd decide if it's worth investing additional
                      in this design.
-                     The one presented at zurich hack works.
+                     The one presented at Zurich hack works.
                      But if this is intended to be used in a larger system,
                      iterating upon the design may help, if the business can afford it.
 
@@ -169,7 +169,7 @@ Furthermore we don't specify the input type, which is represented by `τ`.
 This is done because we want a baseless chip design.
 We're fine with arbitrary inputs,
 As long as we can interpreted this, represented by `μ`.
-A concrete example of `μ` would be an interpertation 
+A concrete example of `μ` would be an interpertation
 into binary values:
 
 ```agda
@@ -240,7 +240,7 @@ interpret it trough the homomorphism
 and then see if the multiplication in natural 
 numbers is the same as the test.
 We didn't do this because
-it's sort of difficult to do in agda.[^agda-noob]
+it's sort of difficult to do in Agda.[^agda-noob]
 Now you need to figure out how to get your source
 of randomness.
 Also time was a serious constraint,
@@ -314,7 +314,7 @@ although it doesn't use randomness and shrinking,
 but rather the structure of the implementation
 through dependent types.
 This is a big step in terms off correctness compared to property tests.
-No longer can you have stocastic issues like insufficient sampling,
+No longer can you have stochastic issues like insufficient sampling,
 or biased distributions.
 Furthermore smaller proves compose into larger ones (with the right design).
 We can see that for example with `x-proof` in the above block.
@@ -327,7 +327,7 @@ Finally we're able to prove on polymorphic type variables,
 which property tests can't do.
 If you have software that /needs/ to be correct,
 I think this dependently typed prove approach is a very good option to consider.
-I also think agda is an good choice for a language that supports that.
+I also think Agda is an good choice for a language that supports that.
 
 [^full-proof]: The full proof can be seen in the [github repository](https://github.com/isovector/denotational-arithmetic-zurihac),
                although we made some additional changes to the project after the presentation as well.
