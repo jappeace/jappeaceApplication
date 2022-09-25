@@ -58,16 +58,18 @@ but summarized in my own words:
 
 The first point
 is "We should decompose parts when possible".
-This means to break up our design in such a way
+This means breaking up our design in such a way
 we can re-use parts into a larger whole.
 For example in zurich hack,
 our first designs was a large record for multiplication
-that had baked into it.
+that had everything baked into it.
 Then someone had the idea to split that record into
 a separate addition and multiplication record
 and re-express multiplication into addition.
+This allows us to work with the simpler problem
+of addition, before tackling multiplication.
 This is what we eventually settled upon as well.
-I don't think this has been stated as an explicit
+I don't think decomposition has been stated as an explicit
 goal of denotational design before,
 but it feels implied.
 Perhaps in [Conals talk](https://youtu.be/bmKYiUOEo2A?t=871),
@@ -83,6 +85,9 @@ operation to our record to get rid of the carry bit in certain cases.
 After some discussion we settled on not doing this because
 xor isn't really a thing you care about when thinking
 in terms of semirings[^name].
+In other words, when thinking in terms of multiplication
+and addition,
+you don't want to care about the bit representation.
 For more examples of abstractions shouldn't leak
 I recommend the book 
 [algebra driven design](https://algebradriven.design/).
@@ -102,7 +107,7 @@ However I like that design, it's more elegant.
 I feel coming to a design which is truly elegant
 is difficult, but possible.
 This is something we didn't drive home enough in the 
-Zurich hack presentation,
+Zurich hack presentation.
 The proof in our presentation looked impressive,
 but this isn't something you necessarily want.
 An elegant proof and design is what you want.
@@ -138,10 +143,12 @@ open Adder
 Here we're saying, to define an adder you need 3 things.
 You need an add operation `1`,
 you need a zero `2`,
-and you need a proof of addition `3` which is a homomorphism from our chip
-to the natural numbers.
+and you need a proof of addition `3`.
+The proof of addition is the
+homomorphism from our chip to the natural numbers.
 Furthermore we don't specify the input type, which is represented by `τ`.
-We're fine with arbitrary inputs, (eg baseless addition),
+This is done because we want a baseless chip design.
+We're fine with arbitrary inputs,
 As long as we can interpreted this, represented by `μ`.
 A concrete example of `μ` would be an interpertation 
 into binary values:
@@ -167,10 +174,11 @@ add add2 (suc zero , true , true)   = true  , suc zero
 zeroA add2 = false -- 3
 ```
 
-Here we first define the type of add2 at `1`,
-then we start giving an implementation for add at `2`
-by pattern matching,
-and an implementation of zeroA at `3`.
+Here we first define the type of `add2` at `1`.
+This uses the previously defined `interpretBF` to set `τ = Bool`.
+Then we start giving an implementation for `add` at `2`,
+which is a simple pattern match into values.
+finally we give an implementation of `zeroA` at `3`.
 
 For correctness we didn't do the full on homorphism prove at first.
 It looked daunting,
@@ -180,38 +188,21 @@ If we map out all possible inputs to all possible outputs we
 got a crummy proof:
 
 ```agda
-mul2x2 : _ 
-mul2x2 = compose add2 add2x2 mul2 -- 1
-
-
-_ : (V.map -- 2
+_ : (V.map -- 1
         (toℕ ∘ pairμ (pairμ interpretBF) ∘ uncurry (mult mul2x2)) $ 
         composeTheValues allBools2x2 allBools2x2
     )
-        ≡ (0 ∷ 0 ∷ 0 ∷ 0 ∷  -- 3
+        ≡ (0 ∷ 0 ∷ 0 ∷ 0 ∷  -- 2
            0 ∷ 1 ∷ 2 ∷ 3 ∷
            0 ∷ 2 ∷ 4 ∷ 6 ∷
            0 ∷ 3 ∷ 6 ∷ 9 ∷ [])
 _ = refl
 ```
 
-Here we're creating a bigger multiplication chip out of an existing one at `1`.
-We do this by feeding it an add2 chip,
-an add2x2 chip and a mul2 chip.
-Moving on to `2`.
-We use `pairμ` to create this single interpretation into an interpretation that
-works with a tuple of booleans: 
-```agda
-pairμ : (Bool -> Nat) -> ((Bool, Bool) -> Nat)
-```
-Applying this function gives us a "bigger" interpertation.
-Applying this twice allows us to read the result of `(mult mul2x2)`
-which returns a `((Bool, Bool), (Bool, Bool))`.
-the name compose refers to composing a larger chip out of smaller ones.
-Finally at `3` we put in a multiplication table as expected result
-
+At `1` we run our chip design into the interpretation,
+and at `2` we put in a multiplication table as expected result.
 Is this test complete?
-No this only works for binary values up to 9,
+No, this only works for binary values up to 9,
 we've not tested for trits or pentits or higher values.
 However we've proven these chips behave like we expect
 for these values.
@@ -222,7 +213,7 @@ all possible values in the chip design.
 The more common approach is to sample a couple values and call it a day.
 
 Which lead to an alternative approach, property testing.
-Here you would generate two random inputs on one side
+Here you would generate two random inputs on one side,
 interpret it trough the homomorphism
 and then see if the multiplication in natural 
 numbers is the same as the test.
@@ -233,9 +224,9 @@ of randomness.
 Also time was a serious constraint,
 and we had a more powerful and interesting technique,
 proving!
-
 A proof doesn't have to be hard, for example consider the correctness
-prove of our add2 chip:
+prove for our add2 chip:
+
 ```agda
   proof-add add2 (zero , false , false) = refl
   ...
@@ -244,16 +235,16 @@ prove of our add2 chip:
 
 [^agda-noob]: For me that is, because rember, I'm quite new to this all.
 
-refl means, reflexivity.
+`refl` means, [reflexivity](https://en.wikipedia.org/wiki/Reflexive_relation).
 In other words, the statement is simple enough that Agda can
 just look at the definition to figure out what it means.
 In this case all we do is list out all possible input values,
 and tell agda to look at the definition.
-This is only possible because Agda is a dependently typed language.
+proof-add's type signature ensures the implementation is correct.
+This is only possible because Agda is dependently typed.
 What we proved is that the homorphism is the same under composition for the addition.
-So this will work for the add2 size chip.
-This works for the small add2,
-but if we want to do this for a general composition
+This will work for the add2 chip,
+but if we want to prove this for a general composition
 adder we have to do a bit more work:
 ```agda
 bigger-adder : {σ τ : Set} {σ-size τ-size : ℕ} {μ : σ → Fin σ-size} {ν : τ → Fin τ-size}
@@ -281,10 +272,11 @@ proof-add (bigger-adder {σ-size = σ-size} {τ-size = τ-size} {μ = μ} {ν = 
     toℕ (addF' (addF' cin (combine (μ mhi) (μ mlo))) (combine (μ nhi) (μ nlo))) -- 2
   ∎
 ```
+
 Note I drastically shortened this proof to make it fit [^full-proof].
 What we do is make the first line (indicated by `1`)
 be the same as the last line (indicated by `2`).
-trough steps with equational reasoning.
+through steps with equational reasoning.
 Every step is small,
 and the process is in a way fully mechanical pattern matching.
 A step is anything within `≡⟨ ⟩`,
@@ -298,14 +290,20 @@ If this proof is incorrect, you'll get a compile error.
 Note that this is similar to property tests,
 although it doesn't use randomness and shrinking,
 but rather the structure of the implementation
-trough dependent types.
-
-This proves a composition of two adders is correct according to our proof-add record.
-In other words the homomorphism.
-If were wrong it wouldn't compile.
-This is a big step in terms off correctness compared to property tests,
-and if you have software that /needs/ to be correct,
-I think this agda approach is a very good option to consider.
+through dependent types.
+This is a big step in terms off correctness compared to property tests.
+No longer can you have stocastic issues like insufficient sampling,
+or biased distributions.
+Furthermore smaller proves compose into larger ones (with the right design).
+We can see that for example with `x-proof` in the above block.
+but in fact every step between `≡⟨ ⟩` is a prove being re-used.
+which comes straight from the implementation.
+Property tests aren't composable.
+Finally we're able to prove on polymorphic type variables,
+which property tests can't do.
+If you have software that /needs/ to be correct,
+I think this dependently typed prove approach is a very good option to consider.
+I also think agda is an good choice for a language that supports that.
 
 [^full-proof]: The full proof can be seen in the [github repository](https://github.com/isovector/denotational-arithmetic-zurihac),
                although we made some additional changes to the project after the presentation as well.
