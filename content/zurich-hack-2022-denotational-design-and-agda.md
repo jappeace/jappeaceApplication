@@ -9,12 +9,17 @@ img[alt="zurich hack logo, uwu"]{
   width:40%;
   margin-left: 30%;
 }
+img[alt="adder"]{
+  float:right;
+  width: 35%;
+  margin: 1em;
+}
 </style>
 
 ![zurich hack logo, uwu](images/2022/zurich-hack.svg)
 
-This blog post is three months overdue, but
-I participated in [Zurich hack 2022](https://zfoh.ch/zurihac2022/).
+This blog post and after action report is three months overdue,
+but I participated in [Zurich hack 2022](https://zfoh.ch/zurihac2022/).
 Zurich hack is a voluntary hackaton organized in
 [Rapperswil-Jona](https://www.myswitzerland.com/en/destinations/rapperswil-jona/) [^name], 
 with as theme improving the Haskell ecosystem and socializing. 
@@ -129,8 +134,9 @@ How do you know this?
 We used a property called a [homomorphism](https://en.wikipedia.org/wiki/Homomorphism)
 to prove correctness.
 In mortal words,
-our chip design was interpreted into [natural numbers](https://en.wikipedia.org/wiki/Natural_number).
-Addition or multiplication should be the same for our chip,
+our chip design was interpreted into [natural numbers](https://en.wikipedia.org/wiki/Natural_number)
+and we showed that 
+addition and multiplication would be the same for our chip,
 as it is in natural numbers.
 
 To start talking about proves,
@@ -169,6 +175,26 @@ Furthermore we don't specify the input type, which is represented by `τ`.
 This is done because we want a baseless chip design.
 We're fine with arbitrary inputs,
 As long as we can interpreted this, represented by `μ`.
+In `μ` the `Fin size` indicates a finite size,
+which we need because we want to map our design to the real world,
+which is finite.
+
+Not shown from the record is that
+we're able to make a bigger adder out of a smaller one
+trough composition of two adders.
+composition chips allows us to "grow" this size
+without needing to re-prove correctness.
+We only need to prove composition is correct.
+All of this also holds for our eventual multiplication
+design. which is build from an adder and composition
+of other multiplication chips.
+We shall see that proving correctness of composition isn't
+easy. Once done, all compositions will provably correct however. [^didn't-finish]
+
+[^didn't-finish]:
+      Unfortunately during the hackaton we didn't finish this for multiplication,
+      but we did for addition.
+
 A concrete example of `μ` would be an interpertation
 into binary values:
 
@@ -224,7 +250,7 @@ _ : (V.map -- 1
 _ = refl
 ```
 
-At `1` we run our chip design into the interpretation,
+At `1` we put our chip design into the interpretation,
 and at `2` we expect a multiplication table as result.
 Is this test complete?
 No, this only works for binary values up to 9,
@@ -274,8 +300,6 @@ However the add2 chip is kindoff useless by itself since it can
 only add 2 bits.
 Our idea was to compose these adders into bigger adders so that
 any size can be represented.
-The adder record will then carry the proof for this composition
-as well to ensure the homomorphism holds.
 To do this we first define the type signature:
 ```agda
 bigger-adder : {σ τ : Set} {σ-size τ-size : ℕ} {μ : σ → Fin σ-size} {ν : τ → Fin τ-size}
@@ -288,18 +312,17 @@ which results into a combined adder `3`.
 `μ` and `ν` are placeholders for different adders.
 This allows us to for example add trits to bits.
 The resulting adder `3` maps over both sides of the resulting
-tuple[^product] with the interpertation,
-and then multiplies them with `combine`
-get once again an interpertation into natural numbers.
+tuple[^product] with the interpertation.
 
-If you squint a little, the implementation looks like a circuit:
+![adder](images/2022/adder-nandgame.png)
+If you squint a little, the implementation looks like a circuit: 
 ```agda
 add (bigger-adder x y) -- 1
-    (cin , (mhi , mlo) , (nhi , nlo)) -- 2
-    =
-      let (lo , cmid) = y .add (cin , mlo ,  nlo) -- 3
-          (hi , cout) = x .add (cmid , mhi , nhi)
-      in ((hi , lo) , cout) -- 4
+  (cin , (mhi , mlo) , (nhi , nlo)) -- 2
+  = let -- 3
+      (lo , cmid) = y .add $ cin , mlo , nlo 
+      (hi , cout) = x .add $ cmid , mhi , nhi
+    in ((hi , lo) , cout) -- 4
 ```
 At `1` we're copattern matching on bigger-adder so we can 
 get the underlying `μ` and `ν` adders as `x` and `y` respectively.
@@ -313,7 +336,7 @@ In `4` we emit the results.
 
 Once we were reasonably confident of our implementation,
 we want to prove this correctness.
-This is a bit more involved than the boolean interpretation:
+This is a bit more involved than proving the boolean interpretation:
 ```agda
 proof-add (bigger-adder {σ-size = σ-size} {τ-size = τ-size} {μ = μ} {ν = ν} x y)
           (cin , (mhi , mlo) , (nhi , nlo))
@@ -340,8 +363,8 @@ proof-add (bigger-adder {σ-size = σ-size} {τ-size = τ-size} {μ = μ} {ν = 
 ```
 
 Note I drastically shortened this proof to make it fit [^full-proof].
-What we do is make the first line (indicated by `1`)
-be the same as the last line (indicated by `2`).
+What do is making the first line (indicated by `1`)
+be the same as the last line (indicated by `2`)
 through steps with equational reasoning.
 Every step is small,
 and the process is almost fully mechanical pattern matching.
@@ -349,24 +372,23 @@ A step is anything within `≡⟨ ⟩`,
 which does some small syntax transformation.
 The `≡⟨ {! taneb !} ⟩` is a missing step, called a hole.
 In this case we request taneb[^ring-solver], to figure out what goes here.
-In `3`, we're summoning the proves from `x` and `y` adders
-to be used in the composition proof later.
+In `3`, we're summoning the proves from the `x` and `y` adders
+to use in the proof later.
 We're making a bigger proof out of smaller ones.
 
 [^ring-solver]: Nathan, a magical ring solver, or flesh and blood person, whichever interpretation suits you better.
 
 If this proof is incorrect, you'll get a compile error.[^incorrectness]
-Note that this is similar to property tests,
+This is similar to property tests,
 although it doesn't use randomness and shrinking,
 but rather the structure of the implementation
 through dependent types.
-This is a big step in terms off correctness compared to property tests.
+This is a big step up in terms off correctness compared to property tests.
 No longer can you have stochastic issues like insufficient sampling,
 or biased distributions.
 Furthermore smaller proves compose into larger ones (with the right design).
 We can see that for example with `x-proof` in the above block.
-but in fact every step between `≡⟨ ⟩` is a prove being re-used.
-which comes straight from the implementation.
+Not just that, but every step between `≡⟨ ⟩` is a prove being re-used.
 Property tests however aren't as composable as proves.
 A value generator may be re-used, however care must 
 be taken the sampling and bias doesn't become unacceptable.
@@ -410,9 +432,9 @@ Please reach out if you're in a domain where correctness
 like this is important.
 I'd love to chat :).
 
-Special thanks to both Nathan and Sandy for giving useful feedback
-on my humble writings.
-And of course thanks to all other volunteers who participated,
+Finally I especially want to thank to both
+Nathan and Sandy for giving useful feedback on my humble writings.
+I also wish thank all other volunteers who participated,
 I had a great time.
 
 [^name]: As the name implies. This place is 30 minutes or so driving from Zurich.
