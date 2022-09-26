@@ -32,8 +32,9 @@ A brief overview of meaningful events and decisions in my life.
 
 <table>
 <tr><th> 2022 </th><td>
-Deadlift 110kg! clean 60kg.
-Idk, year just started.
+I participated in [zurich hack](https://jappie.me/zurich-hack-2022-denotational-design.html).
+I bought another house for rental income in Aruba.
+I read zhuangzi and became useless.
 </td></tr>
 <tr><th> 2021 </th><td>
 I started doing crossfit.
