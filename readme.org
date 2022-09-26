@@ -10,6 +10,7 @@
 + https://linkedin.com
 + https://twitter.com
 + https://news.ycombinator
++ discord
 
 
 * TODO website extensions

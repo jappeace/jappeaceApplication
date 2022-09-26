@@ -36,7 +36,7 @@ LINKS_EX = [
     , 'about'
     ),
     ( 'Hire 🐧'
-    , 'http://penguin.engineer'
+    , 'https://jappiesoftware.com/'
     , "Jappie for hire"
     , 'hire'
     ),
