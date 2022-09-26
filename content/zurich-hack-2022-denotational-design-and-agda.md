@@ -1,5 +1,5 @@
 Title: Zurich hack 2022 Denotational Design
-Date: 2022-10-25 15:00 
+Date: 2022-09-26 19:00 
 Category: technique
 OPTIONS: toc:nil
 Tags: programming, agda, denotational design, zurich hack
