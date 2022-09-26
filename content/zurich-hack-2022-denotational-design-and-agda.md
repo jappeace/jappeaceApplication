@@ -9,11 +9,6 @@ img[alt="zurich hack logo, uwu"]{
   width:40%;
   margin-left: 30%;
 }
-img[alt="adder"]{
-  float:right;
-  width: 35%;
-  margin: 1em;
-}
 </style>
 
 ![zurich hack logo, uwu](images/2022/zurich-hack.svg)
@@ -314,7 +309,6 @@ This allows us to for example add trits to bits.
 The resulting adder `3` maps over both sides of the resulting
 tuple[^product] with the interpertation.
 
-![adder](images/2022/adder-nandgame.png)
 If you squint a little, the implementation looks like a circuit: 
 ```agda
 add (bigger-adder x y) -- 1
