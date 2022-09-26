@@ -24,7 +24,7 @@ project.
 Here we build an "infinite" baseless chip design,
 with a [homomorphism](https://en.wikipedia.org/wiki/Homomorphism)
 in natural numbers to proof correctness,
-more on this in the proofs and programs section.
+more on this in the proves and programs section.
 
 Our presentation was surprisingly good considering we slapped
 it together in 30 minutes.
@@ -101,7 +101,7 @@ The overflow bit in our addition record bugged me.
 It kind off exposes the internals of addition.
 So I decided to delete it in favor of doing a full co-product instead.
 Doing this would break both multiplication and addition records,
-the proofs have to be redone,
+the proves have to be redone,
 I'm not even sure if it's possible.
 So there is definitely a cost.  [^real-engineering]
 However I like that design, it's more elegant because
@@ -121,8 +121,8 @@ An elegant proof and design is what you want.
                      iterating upon the design may help, if the business can afford it.
 
 
-## Proofs and programs
-I pondered on proofs in software
+## Proves and programs
+I pondered on proves in software
 and how dependent types interplay.
 Is the design I dreamed up correct?
 How do you know this?
@@ -133,7 +133,7 @@ our chip design was interpreted into [natural numbers](https://en.wikipedia.org/
 Addition or multiplication should be the same for our chip,
 as it is in natural numbers.
 
-To start talking about proofs,
+To start talking about proves,
 we need a design and implementation to proof correctness for.
 In our case this was a chip design in Agda.
 This Adder[^addition-chip] is something we settled upon after several iterations
@@ -363,11 +363,11 @@ through dependent types.
 This is a big step in terms off correctness compared to property tests.
 No longer can you have stochastic issues like insufficient sampling,
 or biased distributions.
-Furthermore smaller proofs compose into larger ones (with the right design).
+Furthermore smaller proves compose into larger ones (with the right design).
 We can see that for example with `x-proof` in the above block.
 but in fact every step between `≡⟨ ⟩` is a prove being re-used.
 which comes straight from the implementation.
-Property tests however aren't as composable as proofs.
+Property tests however aren't as composable as proves.
 A value generator may be re-used, however care must 
 be taken the sampling and bias doesn't become unacceptable.
 Finally we're able to prove on polymorphic type variables,
@@ -400,11 +400,11 @@ Denotational design is an excellent topic of study if you're struggling with que
 "how do I make my code be more pretty?",
 or "how do I design nice and easy to understand libraries?".
 Furthermore, even
-for commercial code bases we can have correctness proofs.
+for commercial code bases we can have correctness proves.
 This is a much more powerful technique than mere property tests,
 and puts all that hype around dependent types to work.
 We don't need to rely on hand wavy laws asserted merely by
-stochastic approximations of proofs,
+stochastic approximations of proves,
 we can do the real deal!
 Please reach out if you're in a domain where correctness
 like this is important.
