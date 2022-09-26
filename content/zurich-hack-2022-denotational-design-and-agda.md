@@ -3,7 +3,6 @@ Date: 2022-10-25 15:00
 Category: technique
 OPTIONS: toc:nil
 Tags: programming, agda, denotational design, zurich hack
-Status: draft
 
 <style>
 img[alt="zurich hack logo, uwu"]{
@@ -25,7 +24,7 @@ project.
 Here we build an "infinite" baseless chip design,
 with a [homomorphism](https://en.wikipedia.org/wiki/Homomorphism)
 in natural numbers to proof correctness,
-more on this in the proves and programs section.
+more on this in the proofs and programs section.
 
 Our presentation was surprisingly good considering we slapped
 it together in 30 minutes.
@@ -122,8 +121,8 @@ An elegant proof and design is what you want.
                      iterating upon the design may help, if the business can afford it.
 
 
-## Proves and programs
-I pondered on proves in software
+## Proofs and programs
+I pondered on proofs in software
 and how dependent types interplay.
 Is the design I dreamed up correct?
 How do you know this?
@@ -134,7 +133,7 @@ our chip design was interpreted into [natural numbers](https://en.wikipedia.org/
 Addition or multiplication should be the same for our chip,
 as it is in natural numbers.
 
-To start talking about proves,
+To start talking about proofs,
 we need a design and implementation to proof correctness for.
 In our case this was a chip design in Agda.
 This Adder[^addition-chip] is something we settled upon after several iterations
@@ -162,7 +161,7 @@ open Adder
 ```
 Here we're saying, to define an adder you need 3 things.
 You need an add operation `1`,
-you need a zero `2`,
+you need a zero `2` [^nathan-zero],
 and you need a proof of addition `3`.
 The proof of addition is the
 homomorphism from our chip to the natural numbers.
@@ -173,6 +172,9 @@ As long as we can interpreted this, represented by `μ`.
 A concrete example of `μ` would be an interpertation
 into binary values:
 
+[^nathan-zero]: When I asked Nathan to review this post, he mentioned he still hasn't figured out why we needed a zero.
+                I'm not really sure either, so it's quite likely this isn't needed at all!
+                This maybe an artifact of the time crunch at play.
 ```agda
 interpretBF : Bool → Fin 2
 interpretBF false = zero
@@ -266,18 +268,59 @@ and tell agda to look at the definition.
 `proof-add`'s type signature ensures the implementation is correct.
 This is only possible because Agda is dependently typed.
 What we proved is that the homorphism is the same under composition for the addition.
-This will work for the add2 chip,
-but if we want to prove this for a general composition
-adder we have to do a bit more work:
+
+This will work for the add2 chip.
+However the add2 chip is kindoff useless by itself since it can
+only add 2 bits.
+Our idea was to compose these adders into bigger adders so that
+any size can be represented.
+The adder record will then carry the proof for this composition
+as well to ensure the homomorphism holds.
+To do this we first define the type signature:
 ```agda
 bigger-adder : {σ τ : Set} {σ-size τ-size : ℕ} {μ : σ → Fin σ-size} {ν : τ → Fin τ-size}
-               → Adder μ → Adder ν → Adder (uncurry combine ∘ P.map μ ν)
+  → Adder μ -- 1
+  → Adder ν -- 2
+  → Adder (uncurry combine ∘ P.map μ ν) -- 3
+```
+Here we're putting in a low adder `1`, a high adder `2`
+which results into a combined adder `3`.
+`μ` and `ν` are placeholders for different adders.
+This allows us to for example add trits to bits.
+The resulting adder `3` maps over both sides of the resulting
+tuple[^product] with the interpertation,
+and then multiplies them with `combine`
+get once again an interpertation into natural numbers.
+
+If you squint a little, the implementation looks like a circuit:
+```agda
+add (bigger-adder x y) -- 1
+    (cin , (mhi , mlo) , (nhi , nlo)) -- 2
+    =
+      let (lo , cmid) = y .add (cin , mlo ,  nlo) -- 3
+          (hi , cout) = x .add (cmid , mhi , nhi)
+      in ((hi , lo) , cout) -- 4
+```
+At `1` we're copattern matching on bigger-adder so we can 
+get the underlying `μ` and `ν` adders as `x` and `y` respectively.
+At `2` we're getting the actual arguments into the bigger adder.
+The type of this is $ Fin _2 \times (\sigma \times \tau) \times (\sigma \times \tau)$
+this is where the carry comes into play as argument since
+an adder needs to be able to tell when it overflows [^unnesscary].
+The actual addition in `3` we pawn off to the underlying adders `x` and `y`,
+all we do is hook in the carry[^jappie-ventures].
+In `4` we emit the results.
+
+Once we were reasonably confident of our implementation,
+we want to prove this correctness.
+This is a bit more involved than the boolean interpretation:
+```agda
 proof-add (bigger-adder {σ-size = σ-size} {τ-size = τ-size} {μ = μ} {ν = ν} x y)
           (cin , (mhi , mlo) , (nhi , nlo))
   with y .add (cin , mlo , nlo) in y-eq
 ... | (lo , cmid) with x .add (cmid , mhi , nhi) in x-eq
 ... | (hi , cout) =
-  let x-proof = proof-add x (cmid , mhi , nhi)
+  let x-proof = proof-add x (cmid , mhi , nhi) -- 3
       y-proof = proof-add y (cin  , mlo , nlo)
       size = σ-size
   in begin
@@ -306,10 +349,13 @@ A step is anything within `≡⟨ ⟩`,
 which does some small syntax transformation.
 The `≡⟨ {! taneb !} ⟩` is a missing step, called a hole.
 In this case we request taneb[^ring-solver], to figure out what goes here.
+In `3`, we're summoning the proves from `x` and `y` adders
+to be used in the composition proof later.
+We're making a bigger proof out of smaller ones.
 
-[^ring-solver]: Natan, a magical ring solver, or flesh and blood person, whichever interpretation suits you better.
+[^ring-solver]: Nathan, a magical ring solver, or flesh and blood person, whichever interpretation suits you better.
 
-If this proof is incorrect, you'll get a compile error.
+If this proof is incorrect, you'll get a compile error.[^incorrectness]
 Note that this is similar to property tests,
 although it doesn't use randomness and shrinking,
 but rather the structure of the implementation
@@ -317,11 +363,11 @@ through dependent types.
 This is a big step in terms off correctness compared to property tests.
 No longer can you have stochastic issues like insufficient sampling,
 or biased distributions.
-Furthermore smaller proves compose into larger ones (with the right design).
+Furthermore smaller proofs compose into larger ones (with the right design).
 We can see that for example with `x-proof` in the above block.
 but in fact every step between `≡⟨ ⟩` is a prove being re-used.
 which comes straight from the implementation.
-Property tests however aren't as composable as proves.
+Property tests however aren't as composable as proofs.
 A value generator may be re-used, however care must 
 be taken the sampling and bias doesn't become unacceptable.
 Finally we're able to prove on polymorphic type variables,
@@ -330,6 +376,14 @@ If you have software that /needs/ to be correct,
 I think this dependently typed prove approach is a very good option to consider.
 I also think Agda is an good choice for a language that supports that.
 
+[^incorrectness]: So what if you're stuck on a proof?
+                  This either means you can't think of a function,
+                  or it means the thing you're trying to do is impossible.
+                  Here you'd need to think really hard if the thing you're designing
+                  is correct.
+                  You could also try to discuss the issue with a friend or ask
+                  on [the internet](https://wiki.portal.chalmers.se/agda/Main/Community).
+                  Plenty of people eager to help.
 [^full-proof]: The full proof can be seen in the [github repository](https://github.com/isovector/denotational-arithmetic-zurihac),
                although we made some additional changes to the project after the presentation as well.
 
@@ -346,14 +400,30 @@ Denotational design is an excellent topic of study if you're struggling with que
 "how do I make my code be more pretty?",
 or "how do I design nice and easy to understand libraries?".
 Furthermore, even
-for commercial code bases we can have correctness proves.
+for commercial code bases we can have correctness proofs.
 This is a much more powerful technique than mere property tests,
 and puts all that hype around dependent types to work.
 We don't need to rely on hand wavy laws asserted merely by
-stochastic approximations of proves,
+stochastic approximations of proofs,
 we can do the real deal!
 Please reach out if you're in a domain where correctness
 like this is important.
 I'd love to chat :).
 
+Special thanks to both Nathan and Sandy for giving useful feedback
+on my humble writings.
+And of course thanks to all other volunteers who participated,
+I had a great time.
+
 [^name]: As the name implies. This place is 30 minutes or so driving from Zurich.
+[^unnesscary]: As I mentioned in the design section,
+               I don't believe this is necessary,
+               but this is an open research question.
+
+[^product]: P stands for product in this case.
+            So it's a bimap over a tuple (due to uncurry).
+
+
+[^jappie-ventures]: Someone may or may not have opened [nandgame](https://nandgame.com/)
+                    during zurich hack to show a schema off an adder when we were struggling
+                    with correctness.
