@@ -32,8 +32,7 @@ A brief overview of meaningful events and decisions in my life.
 
 <table>
 <tr><th> 2022 </th><td>
-I participated in [zurich hack](https://jappie.me/zurich-hack-2022-denotational-design.html).
-I bought another house for rental income in Aruba.
+I participated in <a href="https://jappie.me/zurich-hack-2022-denotational-design.html">zurich hack</a>.
 I read zhuangzi and became useless.
 </td></tr>
 <tr><th> 2021 </th><td>
