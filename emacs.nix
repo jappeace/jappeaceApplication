@@ -19,7 +19,7 @@ in
       '')
       s
       dash
-      # org-ref # TODO wtf, I need to get rid of emacs
+      org-ref # TODO wtf, I need to get rid of emacs
     # dracula-theme
   ]) ++ (with epkgs.melpaPackages; [
     # lsp-rust https://github.com/emacs-lsp/lsp-rust
