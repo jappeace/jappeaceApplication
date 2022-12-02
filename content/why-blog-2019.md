@@ -5,9 +5,17 @@ Tags: blog
 OPTIONS: toc:nil
 status: draft
 
-My motivation for blogging has changed over time.
-I'd like to revist my initial reason,
-and my found reason while maintaining this blog.
+I've always liked the idea of keeping a journal.
+To rember, and perhaps be remembered.
+Starting to write and fantasicing about it are two
+different things however.
+And now I have a proper blog,
+which I somehow not completly neglect,
+I must be motivated by some good reasons right?
+Well yes, but I think it's interesting to
+revist my initial reason,
+and my reasons for maintaining this blog.
+Because maintaining and keeping the habit is hard work.
 After all I keep posting articles on here,
 something has to keep me going right?
 It seems prudent to me to go back to where I started.
@@ -19,14 +27,17 @@ T-That didn't work out so well.
 I now realize it's quite hard to make money with blogging,
 you've to be really good!
 I'm not, and that's okay.
-Furthermore from ads you need tons of visitors to get even the smallest
+From ads you need tons of visitors to get even the smallest
 amount of money.
 For patreon to work you need to make something for a niche audience,
 and captivate them,
 I think at the time I didn't really know what that would entail.
+For example you've to write things that are interesting to lots of 
+people.
 
-[^forgotten]: I long had forgotten this was a serious goal of mine.
-
+But my initial fantasy about a journal was to write primarily for my self.
+To remember.
+So these desires clash, and it appears writing for myself has won.
 Another romantic desire
 not listed in [that post](https://jappie.me/website-launch.html#why-make-a-site)
 was being remembered after my death.
@@ -35,6 +46,8 @@ For example consider
 People still read that 2000 years after Ceasars' death.
 I was fascinated by this initially.
 Having your words echo trough the ages.
+
+[^forgotten]: I long had forgotten this was a serious goal of mine.
 
 To achieve this I knew my writing skill had to improve.
 I hoped that trough blogging I'd get better. 
