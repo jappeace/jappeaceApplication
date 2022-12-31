@@ -2,7 +2,7 @@
 
 let
   myEmacs = pkgs.emacs.override {} ;
-  emacsWithPackages = (pkgs.emacsPackagesNgGen myEmacs).emacsWithPackages;
+  emacsWithPackages = (pkgs.emacsPackagesFor myEmacs).emacsWithPackages;
 
   # https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/
   myEmacsConfig = pkgs.writeText "default.el" ''

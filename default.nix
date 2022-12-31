@@ -1,11 +1,12 @@
 { pkgs ? (
-  import ./nix/pin.nix {}
+  import ./nix/new-pin.nix {}
  )
 }:
 
 let
   stdenv = pkgs.stdenv;
-  pythonPackages = pkgs.lib.getAttr "python36Packages" pkgs;
+  oldpin = import ./nix/old-pin.nix {};
+  pythonPackages = oldpin.python36Packages;
   ignore = import ./nix/gitignoreSource.nix {  inherit (pkgs) lib; };
 
   minify = pythonPackages.buildPythonPackage {
