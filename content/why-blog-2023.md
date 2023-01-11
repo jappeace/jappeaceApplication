@@ -1,5 +1,5 @@
 TITLE: Why do I still write this blog?
-DATE: 2023-01-11
+DATE: 2023-01-11 17:10
 CATEGORY: reflection
 Tags: blog
 OPTIONS: toc:nil
