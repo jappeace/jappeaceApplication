@@ -5,12 +5,12 @@ OPTIONS: toc:nil
 Status: draft
 Tags: programming, agda, denotational design, zurich hack
 
-4 months ago a colleague of mine got a stern letter
+Four months ago a colleague of mine got a stern letter
 from a hackage maintainer,
 telling her to add upper bounds to her newly uploaded package.
 Since I've been trying to get colleagues to upload 
-our packages to hackage for months, this experience
-was rather unsettling.
+our packages to hackage for months,
+this experience was rather unsettling.
 So I did what any wise person would do,
 and complained about this on internet fora.
 
