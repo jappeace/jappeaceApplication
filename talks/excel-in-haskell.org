@@ -1,0 +1,124 @@
+#+TITLE: Excel in haskell
+#+SUBTITLE: Extend excel, embrace excel, exterminate excel.
+
+* Motivation
+
+I think this is quite cool tech
+
+- Shows power of haskell in a practical manner
+- Excel is ubiquitous, this package and haskell will make your life easier or make you money or both.
+- Programming in haskell is more productive and more fun then other mainstream languages (its not agda or Racket but definitely a step up)
+
+
+* Context
+
+* reinsurance
+- Cedent
+- Broker
+- Underwriter
+
+
+* old IT departments
+- nepotism
+- tradition
+- change averse
+
+* transfer of data 
+- uw needs data for fair quotation
+- cedent provides otherwise no reinsurance
+
+* Everything is excell
+- Most actors are familiar with excell
+  - eg broker, actuaries, underwriters etc.
+- IT departments know how to create excell files
+- No standardization
+
+* Supercede business
+- Provide a common excell file to rule them all
+- Or provide mapping to that excell file
+- Display errors
+- Make graphs
+
+** Initial business
+- Started off as a sort of social network for brokers to find more underwriters and cedents
+- Some actuary had this idea, we implemented for one company
+  - They started dragging it out of us.
+
+* HASKELL
+* Why?
+- TYPES
+- Productivity
+- vibrant community
+- battle hardened
+
+* Uploader
+- Upload excel file
+- Send to s3
+- commit in db
+- start processing
+
+* (Initial) Processing
+- Convert excell file to CSV
+- Python program
+- Put CSV in data types
+
+* (Initial) Cassava
+```haskell
+data BordereauUwu = MkBordereau
+ { name :: Text
+ , address :: Text
+ , since :: UTCTime
+ } deriving FromCSV
+```
+
+* Why does this suck?
+
+* A: Why does this suck
+- Lose type information from excell file
+  - ... half our business
+- Slow
+
+* Excell has types!
+
+let's play is it types or text.
+
+- 5 seconds to answer.
+
+* Number are they types or text?
+according to excell
+
+* Types!
+
+* Are dates types or text?
+according to excell
+
+* Text!
+
+* Formulas are they types or text?
+* Types!
+
+* Richtext are they types or text?
+* Types!
+
+* Text are they types or text?
+according to excell
+
+* Types and text!
+... so there is a seperate type constructor for text.
+but it' the text type.
+so yes it's both.
+
+* Anyway
++ More robust validation
++ Faster validation
+
+* So I set out with xlsx 
+and failed.
+
+* (first attmept) Read in memory
+
+```haskell
+xxx :: IO Xlsx
+xxx = Xlsx.toXlsx <$> BS.readFile "somedownloadedfile.xlsx"
+```
+* In theory
