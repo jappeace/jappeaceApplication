@@ -52,6 +52,8 @@ the event gets recorded like so:
 ```sql
 begin;
 
+/* projection code, insert user into tables here */
+
 insert into event(payload,type,created) values (
   '{"email":"hi@jappie.me"}', /* whatever event source data*/
   'create-user',
@@ -109,7 +111,7 @@ So for example:
 ```sql
 begin;
 
-/* insert user into tables here */
+/* projection code, insert user into tables here */
 
 insert into event(payload,type,created) values (
   '{"email":"hi@jappie.me"}', /* whatever event source data*/
@@ -121,7 +123,7 @@ select 1, max(id) from event
  update set event_id=lastval();
 ;
 
-/* connect user to company */
+/* projection code, connect user to company */
 
 insert into event(payload,type,created) values (
   '{"company-id":2, "user-id": 1}', /* whatever event source data*/
@@ -228,9 +230,87 @@ I decided to modify an even older system.
 But I believed it was much easier to modify,
 and more importantly,
 easier to test for correctness.
+The new schema looks almost identical to the old one:
 
 ```sql
+create table event (
+        id SERIAL primary key NOT NULL,
+        payload jsonb NOT NULL,
+        type character varying NOT NULL,
+        created timestamp with time zone NOT NULL
+);
+
+create table event_applied(
+    id SERIAL primary key NOT NULL,
+    event_id bigint NOT NULL references event(id),
+    created timestamp with time zone NOT NULL
+    );
 
 ```
+The big difference is that we renamed 
+`event_last_applied` to `event_applied`
+and added a created field.
+
+Now inserting events is also quite similar:
+```
+begin;
+
+/* projection code, insert user into tables here */
+
+insert into event(payload,type,created) values (
+  '{"email":"hi@jappie.me"}', /* whatever event source data*/
+  'create-user',
+  now());
+insert into event_applied(event_id, created)
+SELECT last_value, now() FROM event_id_seq;
+
+commit;
+```
+The big difference is that insert of modifying always
+row 1 to be the latest ID, we insert a new row into
+`event_applied` with the latest id.
+This avoids locking of row 1.
+Reprojection we truncate the event_applied
+table, allowing the code to rerun all those events.
+The big difference is in figuring out which events
+haven't been applied yet:
+```sql
+select type,payload from event as e
+where not exists (
+    select 1 from event_applied where event_id=e.id
+  ) order by id asc;
+```
+We compare the event table to the event_applied table,
+and return any events that don't exist in that.
+We're still ordering by id to ensure the correct order.
+
+This works, and allows arbitrary sized transactions to
+project alongside each-other.
+
+You'd say the auto-incrementing rows are also an issue.
+However this is not the case,
+because apparently `nextval`
+of postgres works outside of a transaction.
+There is no need to replace the id with uuid's
+and figure out event order based on dates.
+Although this is also possible.
 
 ## Conclusion
+I think the biggest lesson I've learned from this whole
+sharade is to make sure you reproduce an issue first,
+before diving into solutions.
+Even nasty system level bugs like these can be solved
+with some minor modifications to the system.
+I think the initial solutions we talked about
+were about moving pack ingestation to a sepate machine,
+which would've taken weeks to implement
+and not actually solve anything.
+
+Furthermore, the big boss man isn't always right.
+Yes chucnking transactions would've worked,
+but it would've taken much longer to implement and get correct,
+and that would've only worked for this particular transaction.
+As the system would've grown, more transactions woudl've popped
+up requiring even more engineering effort.
+Solving the problem at the root just saves so much effort.
+
