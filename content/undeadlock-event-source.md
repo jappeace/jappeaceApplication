@@ -125,7 +125,7 @@ select 1, max(id) from event
 
 insert into event(payload,type,created) values (
   '{"company-id":2, "user-id": 1}', /* whatever event source data*/
-  'connect-company,
+  'connect-company',
   now());
 insert into event_last_applied(id, event_id)
 select 1, max(id) from event
@@ -184,13 +184,53 @@ so I asked postgres to list [it's locks](https://wiki.postgresql.org/wiki/Lock_M
 Which clearly showed several locks in progress.
 This lead me to the event source system.
 
+
 ## Now what? 
 
-pt 1 delaying
+At first I started with the most obvious solution.
+I re-grouped how even sourcing took place.
+If I put the even sourcing code to the end of the
+transaction,
+the event source table remained available
+for other transactions up till that point.
 
+This worked!
+It worked for this transaction with pack ingestation,
+I didn't know if there were any other transactions
+like this in our code base.
+Furthermore, I had to bypass parts of the event
+sourcing API to work,
+for example I had to project events by hand,
+and insert events by hand.
+Something which was normally done by the internal library.
+I decided this was a really bad precedence to set.
+So I went looking for other solutions.
 
-pt 2 intercarlation
+The big boss came with another idea.
+Instead of doing the insertion in a large transaction,
+we could split it up into smaller ones.
+Allowing other events to clear while this bigger one
+was in progress.
+I didn't like this either.
+For one this code was old, tried and tested,
+making a rather large modification like splitting
+the transaction could introduce many unintended bugs.
+For example when cleanup doesn't happen correctly on failure.
+I thought this was likely because this transaction was large,
+and covered many tables.
+Also our normal tools such as types and integration tests
+wouldn't help a lot with guaranteeing cleanup.
+Furthermore I had a much more simple but thorough solution in mind.
 
-pt 3 lockless
+I decided to redesign the even source tables.
+Naturally my colleagues exclaimed shouts of joy when
+I decided to modify an even older system.
+But I believed it was much easier to modify,
+and more importantly,
+easier to test for correctness.
+
+```sql
+
+```
 
 ## Conclusion
