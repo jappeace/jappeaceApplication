@@ -411,18 +411,18 @@ ORDER BY
 
 If we run that on an event table like this:
 ```
- id |             payload             |      type       |            created            | transaction_id 
-----+---------------------------------+-----------------+-------------------------------+----------------
-  6 | {"email": "hi@jappie.me"}       | delete-user     | 2023-01-15 14:46:48.199035+00 |          77958
-  7 | {"email": "hi@jappie.me"}       | create-user     | 2023-01-15 14:46:59.032049+00 |          77959
-  8 | {"company-id": 2}               | delete-company  | 2023-01-15 14:46:48.199035+00 |          77958
+id |        payload        |      type       | created    | transaction_id 
+---+-----------------------+-----------------+------------+----------------
+ 6 | {email: hi@jappie.me} | delete-user     | 2023-01-15 | 77958
+ 7 | {email: hi@jappie.me} | create-user     | 2023-01-15 | 77959
+ 8 | {company-id: 2}       | delete-company  | 2023-01-15 | 77958
 ```
 We'd get a result like:
 ```
-             types             |                                payloads                                 
--------------------------------+-------------------------------------------------------------------------
- {create-user}                 | {"{\"email\": \"hi@jappie.me\"}"}
- {delete-user,delete-company}  | {"{\"email\": \"hi@jappie.me\"}","{\"company-id\": 2}"}
+             types             |              payloads
+-------------------------------+-----------------------------------------
+ {create-user}                 | {{email: 'hi@jappie.me'}}
+ {delete-user,delete-company}  | {{email: 'hi@jappie.me'},{company-id: 2}}
 ```
 Which is what we want.
 Even though the create user event happened
@@ -466,7 +466,5 @@ But to my surprise the test passed!
 
 + The code in this [blogpost](https://github.com/jappeace/MAHDB)
 + Postgres [Lock monitoring](https://wiki.postgresql.org/wiki/Lock_Monitoring)
-+ Blogs on event sourcing
-  + https://garba.org/posts/2016/event-sourcing/#materialised-view-pattern
-  + https://www.ahri.net/2019/07/practical-event-driven-and-sourced-programs-in-haskell/
++ [Blogs](https://garba.org/posts/2016/event-sourcing/#materialised-view-pattern) on [event sourcing](https://www.ahri.net/2019/07/practical-event-driven-and-sourced-programs-in-haskell/)
 + Presentation on [event sourcing](https://www.youtube.com/watch?v=8JKjvY4etTY)
