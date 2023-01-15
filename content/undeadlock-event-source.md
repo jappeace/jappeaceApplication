@@ -1,13 +1,18 @@
 TITLE: The peculiar event sourced deadlock
 DATE: 2023-01-14
 CATEGORY: reflection
+Status: draft
 Tags: postgres deadlock programming
 
 ![THE UNDEAD LOCK OF DETH](images/2023/postgresql-deadlock.png)
 
-About a week ago the system became unsuable 
-
-
+About a week ago the supercede system became unusable.
+One thing that always surprises me is how casually 
+serious problems are phrased by business people
+in their blissful ignorance.
+The QA person said to the product manager, "hey why am I seeing the down for maintenance screen"?
+"Oh try it now, the pack uploading has finished".
+Here I grew really suspicious and started asking questions.
 
 This is an after action report of a complicated
 system level bug.
@@ -311,38 +316,92 @@ and `B` get's id 2,
 but `A` finishes after `B`.
 So on reprojection `A` get's applied before `B`,
 but the transaction will check for
-correctnes after the result of `B`.
+correctness after the result of `B`
+on initial projection.
 This *may* cause issues.
-Perhaps to solve this one could order by commit
-timestamp of a transaction.
-Another solution would be to group the events by transaction id.
+This problem was also present in the original implementation,
+since an id is acquired before the lock waiting happens.
+I think a solution would be to group the events by transaction id.
 And then order by last created event.
 In this case all events created before `B` would be pushed
 behind it by the event happening after `B`.
-For now what we'll definitely do is re-projecting all
-all events also in a transaction,
-so we can figure out by hand what happened if a reprojection
-failed.
-And not cause downtime.
+So for example the event table get's an extra field:
+```
+CREATE TABLE event (
+    id serial PRIMARY KEY NOT NULL,
+    payload jsonb NOT NULL,
+    type character varying NOT NULL,
+    created timestamp with time zone NOT NULL,
+    transaction_id bigint NOT NULL
+);
+```
+Our insert function retrieves the transaction id with [`txid_current`](https://www.postgresql.org/docs/9.0/functions-info.html#FUNCTIONS-TXID-SNAPSHOT):
+```
+BEGIN;
+INSERT INTO event (payload, type, created, transaction_id)
+    VALUES ('{"email":"hi@jappie.me"}'
+           , 'create-user'
+           , now()
+           , txid_current());
+INSERT INTO event_applied (event_id, created)
+SELECT
+    last_value,
+    now()
+FROM
+    event_id_seq;
+COMMIT;
+```
+And our unnaplied function now groups:
+```sql
+SELECT
+    array_agg(type) AS types,
+    array_agg(payload) AS payloads
+FROM
+    event AS e
+WHERE
+    NOT EXISTS (
+        SELECT 1 FROM event_applied WHERE event_id = e.id)
+GROUP BY
+    transaction_id
+ORDER BY
+    max(id) ASC;
+```
 
-This works, and allows arbitrary sized transactions to
-project alongside each-other.
+If we run that on an event table like this:
+```
+mah=# select * from event;
+ id |             payload             |      type       |            created            | transaction_id 
+----+---------------------------------+-----------------+-------------------------------+----------------
+  6 | {"email": "hi@jappie.me"}       | delete-user     | 2023-01-15 14:46:48.199035+00 |          77958
+  7 | {"email": "hi@jappie.me"}       | create-user     | 2023-01-15 14:46:59.032049+00 |          77959
+  8 | {"company-id": 2}               | delete-company  | 2023-01-15 14:46:48.199035+00 |          77958
+```
+We'd get a result like:
+```
+             types             |                                payloads                                 
+-------------------------------+-------------------------------------------------------------------------
+ {create-user}                 | {"{\"email\": \"hi@jappie.me\"}"}
+ {delete-user,delete-company}  | {"{\"email\": \"hi@jappie.me\"}","{\"company-id\": 2}"}
+```
+Which is what we want, because even though the create user event happened
+while the delete user event was happening,
+the delete user event was part of a larger transaction,
+so the create user even should come first when re-projecting.
 
-You'd say the auto-incrementing rows are also an issue.
-However this is not the case,
-because apparently `nextval`
-of postgres works outside of a transaction.
-There is no need to replace the id with uuid's
-and figure out event order based on dates.
-Although this is also possible.
-
-
-Eventual consistency issues.
+This allows 
+arbitrary sized transactions to
+project alongside each-other and provides better
+ordering guarantees then the original.
 
 ## Closing thoughts
-I think the biggest lesson I've learned from this
-is to make sure you reproduce an issue first,
-before diving into solutions.
+Phew, that was a lot.
+I didn't think this would become such a large post.
+Designing an event source system
+on postgres transactions is rather hard.
+
+I think the biggest lesson I've (re)learned from 
+the bug itself is to make sure you
+reproduce an issue first before diving into solutions.
 Even nasty business threatening system level bugs like these can
 sometimes be solved with some minor modifications to the system.
 Having an automated test available showing the issue was
