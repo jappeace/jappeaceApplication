@@ -8,7 +8,7 @@ Tags: postgres deadlock programming
 One thing that always surprises me is how casually 
 serious problems are phrased by business people
 in their blissful ignorance.
-"hey why am I seeing the down for maintenance screen"?
+"hey why am I seeing the down for maintenance screen?"
 "Oh try it now, the pack uploading has finished",
 Said the QA engineer to the product manager.
 Once I saw this on slack, I grew really suspicious
@@ -17,9 +17,9 @@ After all, isn't it a bit odd we're seeing a down for maintenance screen
 in one part of the system,
 simply because another part is being used?
 
-At first we thought this was because of high cpu usage.
-The graphs clearly showed high load for CPU while processing packs,
-so maybe the rest of the system was being deprioritized.
+At first we thought this was because of high CPU usage.
+The graphs showed high load for CPU while processing packs,
+so maybe the rest of the system was being deprioritized somehow.
 Before assuming that was the cause however,
 I decided to reproduce the issue first.
 Here I noticed I could for example load the risk index
@@ -28,7 +28,7 @@ but connecting a risk to a pack (a write operation), would hang forever.
 This made me suspect that the issue wasn't
 CPU usage at all,
 so I asked Postgres to list [it's locks](https://wiki.postgresql.org/wiki/Lock_Monitoring).
-Which clearly showed several locks in progress.
+Which showed several locks in progress.
 This lead me to the event source system.
 The event source system is at the core of all our business logic.
 In essence, it provides a ledger of all important business write
@@ -37,12 +37,12 @@ This is useful for auditing purposes for example.
 
 Welcome to an after action report of a complicated
 system level bug.
-It took me a week to come to a satisfying
+It took me a week to find a satisfying
 solution.
 To start I need to sketch context.
-I'll use raw sql because we can in this case.
-It's all related to the database and how we use it for event sourcing.
-So consider an event source system:
+I'll only have to use raw SQL because 
+it's all related to the database and how we use it for event sourcing.
+So consider the tables of an event source system:
 
 ```sql
 CREATE TABLE event (
@@ -58,7 +58,7 @@ CREATE TABLE event_last_applied (
 );
 ```
 
-In here the event `type` and `payload` fields
+In here the `type` and `payload` fields
 contains the information to (re)apply that event.
 The `type` will indicate what business logic or
 queries to execute, and the `payload` holds
@@ -95,11 +95,7 @@ or do other projection stuff, as dictated by the event type*/
 INSERT INTO event (payload, type, created)
     VALUES ('{"email":"hi@jappie.me"}', 'create-user', now());
 INSERT INTO event_last_applied (id, event_id)
-SELECT
-    1,
-    max(id)
-FROM
-    event
+SELECT 1, max(id) FROM event
 ON CONFLICT (id)
     DO UPDATE SET
         event_id = lastval();
@@ -148,20 +144,19 @@ Then the system will notice it needs to replay
 events on boot for example.
 This is a rather dangerous operation,
 because if any event fails, 
-you may have potential data loss.
+you may have potentially lost data.
 A lot of things can go wrong with a large history,
 foreign keys, exceptions, serialization mismatches,
 events out of order etc.
-Transactions can help here as well, and make this completely safe.
+Transactions can help here as well, and make this re-projection safe.
 
 ## Deadlock
 There is one more important piece of context:
 An event maybe composed with other events
-into a larger transactions.
+into larger transactions.
 For example,
 if we create a user,
-we may also assign him to a company,
-or mark them as a test user,
+we may also assign him to a company
 within the same transaction.
 In SQL that looks like this:
 
@@ -175,11 +170,7 @@ INSERT INTO event (payload, type, created)
         /* whatever event source data*/
         '{"email":"hi@jappie.me"}', 'create-user', now());
 INSERT INTO event_last_applied (id, event_id)
-SELECT
-    1,
-    max(id)
-FROM
-    event
+SELECT 1, max(id) FROM event
 ON CONFLICT (id)
     DO UPDATE SET
         event_id = lastval();
@@ -191,11 +182,7 @@ INSERT INTO event (payload, type, created)
         /* whatever event source data*/
         '{"company-id":2, "user-id": 1}', 'connect-company', now());
 INSERT INTO event_last_applied (id, event_id)
-SELECT
-    1,
-    max(id)
-FROM
-    event
+SELECT 1, max(id) FROM event
 ON CONFLICT (id)
     DO UPDATE SET
         event_id = lastval();
@@ -224,7 +211,7 @@ consider connection `A` and `B`:
 3. `A` completes and releases the lock on row `1`.
 4. `B` can now complete as well.
 
-This is not a deadlock as long as A completes.
+This is not a deadlock as long as `A` completes.
 `B` can wait a long time
 because our transactions can grow arbitrarily large.
 For example when we're inserting millions of rows of data,
@@ -238,7 +225,7 @@ and the rest of the system became unusable because of that.
 
 ## Now what? 
 At first I started with the most obvious solution.
-I re-grouped how even sourcing took place.
+I re-grouped how event sourcing took place.
 If I put the even sourcing code at the end of the
 transaction in pack ingestion,
 the event source table remained available
@@ -281,7 +268,7 @@ Naturally my colleagues exclaimed shouts of joy when
 I decided to modify an even older system.
 The event source system described above is almost as old as
 supercede.
-But I believed it was much to modify,
+But I believed it was easier to modify,
 and more importantly,
 easier to test for correctness.
 Furthermore this would also solve the problem for other,
@@ -308,17 +295,14 @@ CREATE TABLE event_applied (
 The big difference is that we renamed 
 `event_last_applied` to `event_applied`
 and added a created field.
-Inserting events is also quite similar:
+With this change,
+inserting events is also quite similar to the initial system:
 ```sql
 BEGIN;
 INSERT INTO event (payload, type, created)
     VALUES ('{"email":"hi@jappie.me"}', 'create-user', now());
 INSERT INTO event_applied (event_id, created)
-SELECT
-    last_value,
-    now()
-FROM
-    event_id_seq;
+SELECT last_value, now() FROM event_id_seq;
 COMMIT;
 ```
 The big difference is that instead of modifying always
@@ -326,7 +310,7 @@ row 1 to be the latest ID, we insert a new row into
 `event_applied` with the latest id.
 This avoids locking of row number 1.
 For 
-reprojection we truncate the event_applied
+reprojection we truncate the `event_applied`
 table, allowing the code to rerun all those events.
 The big difference is in figuring out which events
 haven't been applied yet:
@@ -342,32 +326,32 @@ ORDER BY
 We compare the event table to the `event_applied` table,
 and return any events that don't exist in that.
 We're still ordering by id to ensure the correct order.
-
-Is this correct? Let's consider concurency once more:
-consider connection `A` and `B`:
+Is this correct? Let's consider concurrency once more
+with connection `A` and `B`:
 
 1. `A` opens a transaction and inserts a user, but has to do other event source queries as well.
 2. `B` opens a transaction does it's projection work and wants to insert an event,
    `B` creates a new row in the `even_applied` table and completes.
    There is no need to wait since there is no single row lock.
+   So `B` finishes.
 3. `A` finishes it's other event sourcing completes.
 
 This doesn't deadlock.
-However it's not completely correct in that A get's id 1.
+However it's not completely correct in that `A` get's id 1.
 and `B` get's id 2,
-but `A` finishes after `B`.
-So on reprojection `A` get's applied before `B`,
+but `A` finishes after `B` by inserting another event.
+So on reprojection one of `A`'s events get's applied before `B`,
 but the transaction will check for
 correctness after the result of `B`
 on initial projection.
 This *may* cause issues.
 This problem was also present in the original implementation,
 since an id is acquired before the lock waiting happens.
-I think a solution would be to group the events by transaction id.
-And then order by last created event.
+I think a solution would be to group the events by transaction id,
+and then order by last created event.
 In this case all events created before `B` would be pushed
-behind it by the event happening after `B`.
-So for example the event table get's an extra field:
+behind it by event happening after `B`.
+So for example the event table gets an extra field:
 ```sql
 CREATE TABLE event (
     id serial PRIMARY KEY NOT NULL,
@@ -386,30 +370,23 @@ INSERT INTO event (payload, type, created, transaction_id)
            , now()
            , txid_current());
 INSERT INTO event_applied (event_id, created)
-SELECT
-    last_value,
-    now()
-FROM
-    event_id_seq;
+SELECT last_value, now() FROM event_id_seq;
 COMMIT;
 ```
-And our unnaplied function now groups:
+And our unnaplied events query now groups:
 ```sql
 SELECT
     array_agg(type) AS types,
     array_agg(payload) AS payloads
-FROM
-    event AS e
-WHERE
-    NOT EXISTS (
-        SELECT 1 FROM event_applied WHERE event_id = e.id)
-GROUP BY
-    transaction_id
-ORDER BY
-    max(id) ASC;
+FROM event AS e
+WHERE NOT EXISTS (
+      SELECT 1 FROM event_applied WHERE event_id = e.id
+    )
+GROUP BY transaction_id
+ORDER BY max(id) ASC;
 ```
 
-If we run that on an event table like this:
+If we run that unnaplied events query on an event table like this:
 ```
 id |        payload        |      type       | created    | transaction_id 
 ---+-----------------------+-----------------+------------+----------------
@@ -448,19 +425,16 @@ sometimes be solved with some minor modifications to the system.
 Having an automated test available showing the issue was
 a great help with iterating potential solutions.
 If we has skipped this small step of reproducing the issue,
-we may have feared of to
-moving pack ingestation to a sepate machine,
+we may have focused on the CPU observation and moved 
+pack ingestation to a separate machine,
 which would've taken weeks to implement
 and not actually solve anything.
 
 Furthermore, it's humbling to see that even after having
 used relational databases for more then a decade,
-I still can learn new things.
+I still can learn new things about them.
 For example that the auto increment sidesteps the Postgres
 transaction was quite shocking to me.
-Here once more the automated test helped,
-because adapted initially the implementation to show how it wouldn't work to a colleague.
-But to my surprise the test passed!
 
 ## Resources
 
