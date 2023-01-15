@@ -13,13 +13,31 @@ in their blissful ignorance.
 The QA person said to the product manager, "hey why am I seeing the down for maintenance screen"?
 "Oh try it now, the pack uploading has finished".
 Here I grew really suspicious and started asking questions.
+After all, isn't it a bit odd we're seeing a down for maintenance screen
+in one part of the system,
+simply because another part is being used?
+
+At first we thought this was because of high cpu usage.
+The graphs clearly showed high load for CPU,
+so maybe the rest of the system was deprioritized.
+Before assuming that was the issue however,
+I decided to reproduce the issue first.
+Here I noticed I could for example load the risk index
+easily (a read operation),
+but connecting to a pack (a write operation), would hang forever.
+This made me suspect that the issue wasn't
+CPU usage at all,
+so I asked postgres to list [it's locks](https://wiki.postgresql.org/wiki/Lock_Monitoring).
+Which clearly showed several locks in progress.
+This lead me to the event source system.
 
 This is an after action report of a complicated
 system level bug.
 It took me a week to come to a satisfying
 solution.
 To start I need to sketch context.
-Consider an event source system:
+I'll use raw sql because this is all postgres.
+So consider an event source system:
 
 ```sql
 CREATE TABLE event (
@@ -188,21 +206,6 @@ and the rest of the system became unusable because of that.
 We hadn't notice this before because our system
 only experiences light usage normally,
 and pack ingestation only happens once a year.
-
-Actually at first we thought this was because
-of high cpu usage.
-The graphs clearly showed high load for CPU,
-so maybe the rest of the system just got deprioritized.
-But before assuming that was the issue I decided
-to just reproduce the issue first.
-Here I noticed I could for example load the risk index
-easily, but connecting to a pack (or a write),
-would hang forever.
-This made me suspect that the issue wasn't
-CPU usage at all,
-so I asked postgres to list [it's locks](https://wiki.postgresql.org/wiki/Lock_Monitoring).
-Which clearly showed several locks in progress.
-This lead me to the event source system.
 
 
 ## Now what? 
