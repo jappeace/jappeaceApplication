@@ -1,42 +1,47 @@
 TITLE: The peculiar event sourced deadlock
 DATE: 2023-01-14
 CATEGORY: reflection
-Status: draft
 Tags: postgres deadlock programming
 
 ![THE UNDEAD LOCK OF DETH](images/2023/postgresql-deadlock.png)
 
-About a week ago the supercede system became unusable.
 One thing that always surprises me is how casually 
 serious problems are phrased by business people
 in their blissful ignorance.
-The QA person said to the product manager, "hey why am I seeing the down for maintenance screen"?
-"Oh try it now, the pack uploading has finished".
-Here I grew really suspicious and started asking questions.
+"hey why am I seeing the down for maintenance screen"?
+"Oh try it now, the pack uploading has finished",
+Said the QA engineer to the product manager.
+Once I saw this on slack, I grew really suspicious
+and started asking questions.
 After all, isn't it a bit odd we're seeing a down for maintenance screen
 in one part of the system,
 simply because another part is being used?
 
 At first we thought this was because of high cpu usage.
-The graphs clearly showed high load for CPU,
-so maybe the rest of the system was deprioritized.
-Before assuming that was the issue however,
+The graphs clearly showed high load for CPU while processing packs,
+so maybe the rest of the system was being deprioritized.
+Before assuming that was the cause however,
 I decided to reproduce the issue first.
 Here I noticed I could for example load the risk index
 easily (a read operation),
-but connecting to a pack (a write operation), would hang forever.
+but connecting a risk to a pack (a write operation), would hang forever.
 This made me suspect that the issue wasn't
 CPU usage at all,
-so I asked postgres to list [it's locks](https://wiki.postgresql.org/wiki/Lock_Monitoring).
+so I asked Postgres to list [it's locks](https://wiki.postgresql.org/wiki/Lock_Monitoring).
 Which clearly showed several locks in progress.
 This lead me to the event source system.
+The event source system is at the core of all our business logic.
+In essence, it provides a ledger of all important business write
+activities that can happen.
+This is useful for auditing purposes for example.
 
-This is an after action report of a complicated
+Welcome to an after action report of a complicated
 system level bug.
 It took me a week to come to a satisfying
 solution.
 To start I need to sketch context.
-I'll use raw sql because this is all postgres.
+I'll use raw sql because we can in this case.
+It's all related to the database and how we use it for event sourcing.
 So consider an event source system:
 
 ```sql
@@ -53,31 +58,39 @@ CREATE TABLE event_last_applied (
 );
 ```
 
-In here the event 'type' and `payload` fields
-contains the information to re-apply that event.
-The type will indicate what business code or
-queries to execute, and the payload holds
+In here the event `type` and `payload` fields
+contains the information to (re)apply that event.
+The `type` will indicate what business logic or
+queries to execute, and the `payload` holds
 information for that logic.
-This application or re-application is called projecting.
-The `id` provides a unique global ordering.
-And `created` contains a timestamp of when the event
-was created, mostly for admin purposes.
-The `event_last_applied` table is used to indicate
+As we'll see later,
+these queries will involve modifying other normal
+tables within a transaction.
+This application of events, or re-application
+through business logic or queries is called projecting.
+A `type` can for example be `create-user`
+and the `payload` would contain the data required for creating said user,
+for example `{email:'hi@jappie.me'}`.
+The `id` provides a unique global ordering,
+and the `created` field contains a timestamp of when the event
+was created, which is used for database administration purposes.
+Finally, the `event_last_applied` table is used to indicate
 whichever event was last applied, so the system
 can figure out if additional events need to be 
-reprojected from the `event` table.
+re-projected from the `event` table.
 
 Inserting an event
-works by first applying an event to normal
-postgres tables in a transaction.
-Then,
-once it's not rejected by foreign keys,
+works by projecting an event to normal
+Postgres tables in a transaction.
+Once this operation is not rejected by foreign keys,
 type errors or program exceptions,
-the event gets recorded like so:
+the event gets recorded in the ledger,
+also known as the `event` table. For example:
 ```sql
 begin;
 
-/* projection code, insert user into tables here */
+/* left out projection code, insert user into tables here,
+or do other projection stuff, as dictated by the event type*/
 
 INSERT INTO event (payload, type, created)
     VALUES ('{"email":"hi@jappie.me"}', 'create-user', now());
@@ -96,12 +109,12 @@ commit;
 If the projection fails the entire event
 gets rejected,
 which means all changes within the
-transaction get rolled back by postgres.
-So this applies relational guarantees,
+transaction get rolled back by Postgres.
+This applies relational guarantees,
 to a non-relational system trough a transaction.
 We also weave this transaction trough business logic
 code,
-so in case of an exception in code,
+so that in case of an exception,
 we rollback.
 Quite an elegant solution, which
 [I did](https://garba.org/posts/2016/event-sourcing/#materialised-view-pattern)
@@ -125,22 +138,38 @@ which returns something like this, telling the system what to do:
 -------------+---------------------------
  create-user | {"email": "hi@jappie.me"}
 ```
-With that, we can replay history.
+With that, we can reproject, also known as replaying history.
+Replaying history involves truncating all tables
+that are event sourced.
+And then truncating the `event_last_applied`
+table,
+which in this case just removes the one row.
+Then the system will notice it needs to replay
+events on boot for example.
+This is a rather dangerous operation,
+because if any event fails, 
+you may have potential data loss.
+A lot of things can go wrong with a large history,
+foreign keys, exceptions, serialization mismatches,
+events out of order etc.
+Transactions can help here as well, and make this completely safe.
 
 ## Deadlock
-There is one more important piece of context.
-Namely, an event maybe composed with other events
-into a larger transaction.
-For example, if we create a user, we may
-also assign him to a company,
+There is one more important piece of context:
+An event maybe composed with other events
+into a larger transactions.
+For example,
+if we create a user,
+we may also assign him to a company,
 or mark them as a test user,
 within the same transaction.
-So for example:
+In SQL that looks like this:
 
 ```sql
 BEGIN;
 
-/* projection code, insert user into tables here */
+/* left out projection code, insert user into tables here */
+
 INSERT INTO event (payload, type, created)
     VALUES (
         /* whatever event source data*/
@@ -155,7 +184,8 @@ ON CONFLICT (id)
     DO UPDATE SET
         event_id = lastval();
 
-/* projection code, connect user to company */
+/* left out projection code, connect user to company */
+
 INSERT INTO event (payload, type, created)
     VALUES (
         /* whatever event source data*/
@@ -172,7 +202,7 @@ ON CONFLICT (id)
 COMMIT;
 ```
 
-So yes, transactions form proper monoids,
+Transactions form proper [monoids](https://hackage.haskell.org/package/base-4.17.0.0/docs/Data-Monoid.html),
 and they can grow arbitrarily large.
 This is good because even for large chuncks
 of business logic we always gaurantee our
@@ -184,48 +214,48 @@ Where does this go wrong then?
 The issue is concurrency,
 consider connection `A` and `B`:
 
-1. `A` opens a transaction and inserts a user, but has to do other stuff as well
+1. `A` opens a transaction and inserts a user,
+    but has to do other projections and event insertions as well
 2. `B` opens a transaction and wants to insert an event,
    `B` has to wait until `A` completes.
-   This is because `A` made an update to the `event_last_applied` row `1`,
+   This is because `A` made an update to the `event_last_applied` on row `1`,
+   as part of the insert event logic,
    which is locked until that transaction completes.
 3. `A` completes and releases the lock on row `1`.
 4. `B` can now complete as well.
 
 This is not a deadlock as long as A completes.
 `B` can wait a long time
-because our transactions can grow arbitrarily big.
+because our transactions can grow arbitrarily large.
 For example when we're inserting millions of rows of data,
-this can take up to half an hour.
+taking up half an hour.
 Which is far beyond the HTTP session length of 30 seconds,
-or whatever any user finds acceptable.
+or whatever length a user finds acceptable.
 This was indeed the production bug encountered at [supercede](https://supercede.com/).
 One user was doing pack ingestion,
 which involves reading millions of excell file rows,
 and the rest of the system became unusable because of that.
-We hadn't notice this before because our system
-only experiences light usage normally,
-and pack ingestation only happens once a year.
-
 
 ## Now what? 
 At first I started with the most obvious solution.
 I re-grouped how even sourcing took place.
-If I put the even sourcing code to the end of the
-transaction,
+If I put the even sourcing code at the end of the
+transaction in pack ingestion,
 the event source table remained available
 for other transactions up till that point.
-
 This worked!
-It worked for this transaction with pack ingestation,
+However it only worked for this transaction with
+pack ingestation,
 I didn't know if there were any other transactions
 like this in our code base.
 Furthermore, I had to bypass parts of the event
-sourcing API to work,
-for example I had to project events by hand,
-and insert events by hand.
-Something which was normally done by the internal library.
-I decided this was a really bad precedence to set.
+sourcing interface to make this work.
+For example, I had to project events by hand,
+and insert events by hand,
+rather then using the internal library.
+I decided this was a bad precedence to set.
+I was afraid other engineers would copy this approach,
+when it wasn't necessary.
 So I went looking for other solutions.
 
 Another idea is that instead of doing the large transaction,
@@ -241,14 +271,23 @@ I thought this was likely because this transaction was large,
 and covered many tables.
 Also our normal tools such as types and integration tests
 wouldn't help a lot with guaranteeing cleanup.
+So this would become difficult to maintain fast.
+Which is problematic for a piece of code which is the "money maker",
+and needs to change often.
 Furthermore I had a much more simple but thorough solution in mind.
 
-I decided to redesign the even source tables.
+I decided to redesign the event source tables.
 Naturally my colleagues exclaimed shouts of joy when
 I decided to modify an even older system.
-But I believed it was much easier to modify,
+The event source system described above is almost as old as
+supercede.
+But I believed it was much to modify,
 and more importantly,
 easier to test for correctness.
+Furthermore this would also solve the problem for other,
+possibly unknown, or future, large transactions.
+This change would make keep our code easy to maintain
+and solve a bug.
 The new schema looks almost identical to the old one:
 
 ```sql
@@ -269,9 +308,8 @@ CREATE TABLE event_applied (
 The big difference is that we renamed 
 `event_last_applied` to `event_applied`
 and added a created field.
-
-Now inserting events is also quite similar:
-```
+Inserting events is also quite similar:
+```sql
 BEGIN;
 INSERT INTO event (payload, type, created)
     VALUES ('{"email":"hi@jappie.me"}', 'create-user', now());
@@ -283,11 +321,12 @@ FROM
     event_id_seq;
 COMMIT;
 ```
-The big difference is that insert of modifying always
+The big difference is that instead of modifying always
 row 1 to be the latest ID, we insert a new row into
 `event_applied` with the latest id.
-This avoids locking of row 1.
-Reprojection we truncate the event_applied
+This avoids locking of row number 1.
+For 
+reprojection we truncate the event_applied
 table, allowing the code to rerun all those events.
 The big difference is in figuring out which events
 haven't been applied yet:
@@ -329,7 +368,7 @@ And then order by last created event.
 In this case all events created before `B` would be pushed
 behind it by the event happening after `B`.
 So for example the event table get's an extra field:
-```
+```sql
 CREATE TABLE event (
     id serial PRIMARY KEY NOT NULL,
     payload jsonb NOT NULL,
@@ -339,7 +378,7 @@ CREATE TABLE event (
 );
 ```
 Our insert function retrieves the transaction id with [`txid_current`](https://www.postgresql.org/docs/9.0/functions-info.html#FUNCTIONS-TXID-SNAPSHOT):
-```
+```sql
 BEGIN;
 INSERT INTO event (payload, type, created, transaction_id)
     VALUES ('{"email":"hi@jappie.me"}'
@@ -372,7 +411,6 @@ ORDER BY
 
 If we run that on an event table like this:
 ```
-mah=# select * from event;
  id |             payload             |      type       |            created            | transaction_id 
 ----+---------------------------------+-----------------+-------------------------------+----------------
   6 | {"email": "hi@jappie.me"}       | delete-user     | 2023-01-15 14:46:48.199035+00 |          77958
@@ -386,11 +424,11 @@ We'd get a result like:
  {create-user}                 | {"{\"email\": \"hi@jappie.me\"}"}
  {delete-user,delete-company}  | {"{\"email\": \"hi@jappie.me\"}","{\"company-id\": 2}"}
 ```
-Which is what we want, because even though the create user event happened
+Which is what we want.
+Even though the create user event happened
 while the delete user event was happening,
-the delete user event was part of a larger transaction,
-so the create user even should come first when re-projecting.
-
+the delete user event was part of a larger transaction.
+So the create user even should come first when re-projecting.
 This allows 
 arbitrary sized transactions to
 project alongside each-other and provides better
@@ -400,7 +438,7 @@ ordering guarantees then the original.
 Phew, that was a lot.
 I didn't think this would become such a large post.
 Designing an event source system
-on postgres transactions is rather hard.
+on Postgres transactions is rather hard.
 
 I think the biggest lesson I've (re)learned from 
 the bug itself is to make sure you
@@ -418,9 +456,17 @@ and not actually solve anything.
 Furthermore, it's humbling to see that even after having
 used relational databases for more then a decade,
 I still can learn new things.
-For example that the auto increment sidesteps the postgres
+For example that the auto increment sidesteps the Postgres
 transaction was quite shocking to me.
 Here once more the automated test helped,
 because adapted initially the implementation to show how it wouldn't work to a colleague.
 But to my surprise the test passed!
 
+## Resources
+
++ The code in this [blogpost](https://github.com/jappeace/MAHDB)
++ Postgres [Lock monitoring](https://wiki.postgresql.org/wiki/Lock_Monitoring)
++ Blogs on event sourcing
+  + https://garba.org/posts/2016/event-sourcing/#materialised-view-pattern
+  + https://www.ahri.net/2019/07/practical-event-driven-and-sourced-programs-in-haskell/
++ Presentation on [event sourcing](https://www.youtube.com/watch?v=8JKjvY4etTY)
