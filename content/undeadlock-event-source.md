@@ -8,7 +8,7 @@ Tags: postgres, deadlock, programming, sql, database
 One thing that always surprises me is how casually 
 serious problems are phrased by business people
 in their blissful ignorance.
-"hey why am I seeing the down for maintenance screen?"
+"Hey why am I seeing the down for maintenance screen?"
 "Oh try it now, the pack uploading has finished",
 Said the QA engineer to the product manager.
 Once I saw this on slack, I grew really suspicious
@@ -17,7 +17,7 @@ After all, isn't it a bit odd we're seeing a down for maintenance screen
 in one part of the system,
 simply because another part is being used?
 
-At first we thought this was because of high CPU usage.
+Initially we thought this was caused by high CPU usage.
 The graphs showed high CPU load while processing packs,
 so maybe the rest of the system was being deprioritized somehow.
 Before assuming that was the cause however,
@@ -41,8 +41,8 @@ system level bug.
 It took me a week to find a satisfying
 solution.
 To start I need to sketch context.
-I'll only have to use raw SQL because 
-it's all related to the database and how we use it for event sourcing.
+I'll only use raw SQL because 
+this entire story is related to the database and how we use it for event sourcing.
 So consider the tables of an event source system:
 
 ```sql
@@ -227,11 +227,14 @@ and the rest of the system became unusable because of that.
 ## Now what? 
 At first I started with the most obvious solution.
 I re-grouped how event sourcing took place.
-I Put the even sourcing code at the end of the
+I put the event sourcing code at the end of the
 transaction in pack ingestion,
 so that the event source table remained available
 for other transactions up till that point.
-This worked!
+Because event sourcing is only a small part
+of normal transactions,
+this created a small locking window.
+Thus this worked!
 However it only worked for this transaction with
 pack ingestation,
 I didn't know if there were any other transactions
@@ -242,7 +245,7 @@ For example, I had to project events by hand,
 and insert events by hand,
 rather then using the internal library.
 I decided this was a bad precedence to set.
-I was afraid other engineers would copy this approach,
+I was afraid other engineers would copy this approach
 when it wasn't necessary.
 So I went looking for other solutions.
 
@@ -409,7 +412,7 @@ So the create user even should come first when re-projecting.
 This allows 
 arbitrary sized transactions to
 project alongside each-other and provides better
-ordering guarantees then the original.
+ordering guarantees then the original implementation.
 
 ## Closing thoughts
 Phew, that was a lot.
@@ -434,8 +437,10 @@ and not solve anything.
 Furthermore, it's humbling to see that even after having
 used relational databases for more then a decade,
 I still can learn new things about them.
-For example that the auto increment sidesteps the Postgres
-transaction was quite shocking to me.
+For example Postgres' auto increment sidesteps the 
+transaction, which was quite shocking to me.
+A rather important detail to keep in mind when reasoning
+about these systems.
 
 I made a [github repository](https://github.com/jappeace/MAHDB)
 for playing around with the queries more easily.
