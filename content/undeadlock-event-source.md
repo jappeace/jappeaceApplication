@@ -1,5 +1,5 @@
 TITLE: The peculiar event sourced deadlock
-DATE: 2023-01-14
+DATE: 2023-01-15 22:30
 CATEGORY: reflection
 Tags: postgres, deadlock, programming, sql, database
 
