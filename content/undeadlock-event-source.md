@@ -324,9 +324,6 @@ all events also in a transaction,
 so we can figure out by hand what happened if a reprojection
 failed.
 And not cause downtime.
-It would be rather silly for example to cause downtime
-before christmass just because you'd urgently wanted
-to solve some projection bug.
 
 This works, and allows arbitrary sized transactions to
 project alongside each-other.
