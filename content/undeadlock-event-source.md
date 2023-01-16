@@ -330,7 +330,7 @@ ORDER BY
 We compare the event table to the `event_applied` table,
 and return any events that don't exist in that.
 We're still ordering by id to ensure the correct order.
-Is this correct? Let's consider concurrency once more
+<span id="is-this-correct">Is this correct?</span> Let's consider concurrency once more
 with connection `A` and `B`:
 
 1. `A` opens a transaction and inserts a user, but has to do other event source queries as well.
