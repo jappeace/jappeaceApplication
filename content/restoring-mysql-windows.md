@@ -1,5 +1,6 @@
 Title: Restoring mysql innodb on windows.
 Date: 2022-06-16 22:30
+Modified: 2023-01-17 17:00
 Category: tools
 OPTIONS: toc:nil
 Tags: programming, windows, mysql
@@ -24,11 +25,17 @@ This post is specifically about windows.
 We need to run from cmd not powershell,
 powershell doesn't understand `<`, and I've doubts about it understanding `>`.
 
-To get a working installation I set `innod_force_recovery = 3` in mysql.ini,
+To get a working installation I set `innod_force_recovery = 3` in `mysql\bin\my.ini`,
 which can be found in xampp.
+First we have to restart mysql so we can get the data out.
+Now we can dump the tables:
 
-```bash
+```cmd
 ./mysqldump.exe -u root -pwhatever --skip-lock-tables -A > all.sql
+```
+And shut down the server.
+
+```cmd
 ./mysqladmin -u root -pwhatever shut
 ```
 
