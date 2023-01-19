@@ -1,8 +1,11 @@
-Title: Restoring mysql innodb on windows.
+Title: Restoring msyql backup system on windows.
 Date: 2023-01-17 17:00
 Category: tools
 OPTIONS: toc:nil
 Tags: programming, windows, mysql
+
+This is a quick after action report on restoring backups.
+This is mostly for future me to know what I did.
 
 The backup scripts on the main server stopped working.
 The IT person at that company
@@ -23,7 +26,7 @@ that we need to recover from backup if `innodb_force_recovery`
 doesn't work.
 It doesn't say how.
 Remember, we can't even start the database!
-What I did instead was deleting the innodb0 file, and the innodb.log files.
+What I did instead was deleting the `innodb0` file, and the `innodb.log` files.
 Remember, I actually don't care about the data,
 it's just a backup machine.
 This made the database boot again,
@@ -32,13 +35,15 @@ making it ready to receive backups.
 One more peculiarity occurred (of course).
 The script would timeout saying it's a connection error.
 However this error happened every time I executed the script,
-which made me think it was just mislabeling the error.
+and I'd assume that at an office the connection is pretty
+reliable.
+This made me think it was just mislabeling the error.
 Once again [stack overflow](https://stackoverflow.com/a/24555191) agreed.
 This database has lots of blob data,
 so setting `max_allowed_packet` to `64M` indeed fixed the connection
 error.
 
-I'm really starting to think I should move this entire
+I'm starting to think I should move this entire
 stack over to postgres,
 at least that doesn't randomly start failing,
 or has mislabeled errors.
