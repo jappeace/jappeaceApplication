@@ -14,3 +14,5 @@ and make sure that they appear in the same ordering as the transactions were pla
 
 Message queue: https://www.hillelwayne.com/post/tla-messages/
 Formalizing fairness: https://www.hillelwayne.com/post/fairness/
+
+transactions: http://lamport.azurewebsites.net/video/video5.html
