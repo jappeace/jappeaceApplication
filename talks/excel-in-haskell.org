@@ -7,19 +7,20 @@ I think this is quite cool tech
 
 - Shows power of haskell in a practical manner
 - Excel is ubiquitous, this package and haskell will make your life easier or make you money or both.
-- Programming in haskell is more productive and more fun then other mainstream languages (its not agda or Racket but definitely a step up)
+- Programming in haskell is more productive
+  and more fun then other mainstream languages
+  (its not agda or Racket but definitely a step up)
 
-
+* Haskell why 
+- TYPES
+- Productivity
+- vibrant community
+- battle hardened
+  
 * Context
 
 * reinsurance
-- Cedent
-- Broker
-- Underwriter
-
-
-* old IT departments
-- nepotism
+- Cedent (insurance company)
 - tradition
 - change averse
 
@@ -39,23 +40,11 @@ I think this is quite cool tech
 - Display errors
 - Make graphs
 
-** Initial business
-- Started off as a sort of social network for brokers to find more underwriters and cedents
-- Some actuary had this idea, we implemented for one company
-  - They started dragging it out of us.
-
-* HASKELL
-* Why?
-- TYPES
-- Productivity
-- vibrant community
-- battle hardened
-
 * Uploader
 - Upload excel file
 - Send to s3
-- commit in db
-- start processing
+- process to db
+- show graphs :)
 
 * (Initial) Processing
 - Convert excell file to CSV
@@ -64,7 +53,7 @@ I think this is quite cool tech
 
 * (Initial) Cassava
 ```haskell
-data BordereauUwu = MkBordereau
+data BordereauRow = MkBordereauRow 
  { name :: Text
  , address :: Text
  , since :: UTCTime
@@ -79,7 +68,6 @@ data BordereauUwu = MkBordereau
 - Slow
 
 * Excell has types!
-
 let's play is it types or text.
 
 - 5 seconds to answer.
@@ -118,7 +106,46 @@ and failed.
 * (first attmept) Read in memory
 
 ```haskell
-xxx :: IO Xlsx
-xxx = Xlsx.toXlsx <$> BS.readFile "somedownloadedfile.xlsx"
+readExcellFile :: IO Xlsx
+readExcellFile = Xlsx.toXlsx <$>
+  BS.readFile "somedownloadedfile.xlsx"
 ```
 * In theory
+
+```haskell
+
+selectSheet :: Lens' Xlsx Worksheet
+selectSheet = xlSheets . ix 0 . _2
+
+cellValLens :: ColumnIndex -> Lens' Worksheet
+cellValLens colIx = selectSheet . ix (rowIx,colIx) . cellValue . _Just
+
+data ParseErrors = NameNotFound
+                 | AddressNotFound
+                 | TimeNotFound
+                 | TimeParseError
+
+parseRow :: Xlsx -> RowIndex -> Either ParseErrors BordereauRow 
+parseRow xlsx rowIx = 
+   name <- tagError NameNotFound $ preview (selectSheet . cellValLens 0)
+   address <- tagError AddressNotFound $ preview (selectSheet . cellValLens 1)
+   sinceRead <- tagError TimeNotFound$ preview (selectSheet . cellValLens 2)
+   since <- tagError TimeParseError $ parseTime sinceRead
+   pure $ BordereauRow {..}
+   where
+      tagError err = maybe err pure
+
+main :: IO ()
+main = do
+   xlsx <- readExcellFile 
+   case parseRow xlsx 0 of
+     Left errr -> throwIO err
+     Right res -> runDB $ insert res
+```
+
+* What's wrong with that?
+
+* A
++ Memory usage explodes on large rowsets
++ An error puts in a partial result
++ 
