@@ -46,10 +46,19 @@ I think this is quite cool tech
 - process to db
 - show graphs :)
 
+
 * (Initial) Processing
 - Convert excell file to CSV
 - Python program
 - Put CSV in data types
+
+* Example bordereau
+
+| Name | Address           |      Since |
+|------+-------------------+------------|
+| henk | kieviet straat 8  | 2010-12-08 |
+| bart | thorbecke plein 4 | 2012-12-09 |
+| piet | flevoweg 12       | 2011-10-18 |
 
 * (Initial) Cassava
 ```haskell
@@ -146,6 +155,11 @@ main = do
 * What's wrong with that?
 
 * A
-+ Memory usage explodes on large rowsets
++ Memory usage 
 + An error puts in a partial result
-+ 
+
+* Streaming
+
+```haskell
+
+```
