@@ -1,43 +1,52 @@
 #+TITLE: Excel in haskell
 #+SUBTITLE: Extend excel, embrace excel, exterminate excel.
 
+* FP Kampen
++ Corona is over~
++ 4 fun
++ Support
++ Job
+
 * Motivation
 
 I think this is quite cool tech
 
-- Shows power of haskell in a practical manner
-- Excel is ubiquitous, this package and haskell will make your life easier or make you money or both.
-- Programming in haskell is more productive
-  and more fun then other mainstream languages
-  (its not agda or Racket but definitely a step up)
+- Shows practical haskell power
+- Excel is ubiquitous
+- Bragging.
+
+* Why use excel
+
+- In our case no choice.
+- xlsx package 
 
 * Haskell why 
 - TYPES
 - Productivity
 - vibrant community
 - battle hardened
-  
+
+
 * Context
 
-* reinsurance
+* Reinsurance
 - Cedent (insurance company)
-- tradition
-- change averse
+- Tradition
+- Change averse
 
-* transfer of data 
-- uw needs data for fair quotation
-- cedent provides otherwise no reinsurance
+* Transfer of data 
+- Underwriter
+- fair quotation
 
-* Everything is excell
+* Excel everywhere
 - Most actors are familiar with excell
   - eg broker, actuaries, underwriters etc.
 - IT departments know how to create excell files
 - No standardization
 
-* Supercede business
-- Provide a common excell file to rule them all
-- Or provide mapping to that excell file
-- Display errors
+* Supercede 
+- Standard Excell file
+- Validate
 - Make graphs
 
 * Uploader
@@ -46,13 +55,7 @@ I think this is quite cool tech
 - process to db
 - show graphs :)
 
-
-* (Initial) Processing
-- Convert excell file to CSV
-- Python program
-- Put CSV in data types
-
-* Example bordereau
+* Bordereau
 
 | Name | Address           |      Since |
 |------+-------------------+------------|
@@ -60,21 +63,35 @@ I think this is quite cool tech
 | bart | thorbecke plein 4 | 2012-12-09 |
 | piet | flevoweg 12       | 2011-10-18 |
 
+* (Initial) Processing
+- Convert excell file to CSV
+- Python program
+- Put CSV in data types
+
+
 * (Initial) Cassava
-```haskell
+
+#+BEGIN_SRC haskell
 data BordereauRow = MkBordereauRow 
  { name :: Text
  , address :: Text
  , since :: UTCTime
  } deriving FromCSV
-```
+#+END_SRC
 
-* Why does this suck?
+* Why bad?
+#+BEGIN_SRC haskell
+data BordereauRow = MkBordereauRow 
+ { name :: Text
+ , address :: Text
+ , since :: UTCTime
+ } deriving FromCSV
+#+END_SRC
 
 * A: Why does this suck
-- Lose type information from excell file
-  - ... half our business
 - Slow
+- Lose type information 
+- Type class errors lose locality
 
 * Excell has types!
 let's play is it types or text.
@@ -82,12 +99,12 @@ let's play is it types or text.
 - 5 seconds to answer.
 
 * Number are they types or text?
-according to excell
+according to excel
 
 * Types!
 
 * Are dates types or text?
-according to excell
+according to excel
 
 * Text!
 
@@ -108,27 +125,37 @@ so yes it's both.
 * Anyway
 + More robust validation
 + Faster validation
++ Keep locality info
 
-* So I set out with xlsx 
-and failed.
+* Read in memory
+First attempt
 
-* (first attmept) Read in memory
-
-```haskell
+#+BEGIN_SRC haskell
 readExcellFile :: IO Xlsx
 readExcellFile = Xlsx.toXlsx <$>
   BS.readFile "somedownloadedfile.xlsx"
-```
-* In theory
+#+END_SRC
+* What's an xlsx
 
-```haskell
+[[https://hackage.haskell.org/package/xlsx-1.1.0.1/docs/Codec-Xlsx-Types.html]]
 
+* Lens into cells
+
+#+BEGIN_SRC haskell
 selectSheet :: Lens' Xlsx Worksheet
 selectSheet = xlSheets . ix 0 . _2
+#+END_SRC
 
-cellValLens :: ColumnIndex -> Lens' Worksheet
-cellValLens colIx = selectSheet . ix (rowIx,colIx) . cellValue . _Just
+* value lens
 
+#+BEGIN_SRC haskell
+cellValLens :: RowIndex -> ColumnIndex -> Lens' Xlsx CellValue
+cellValLens rowIx colIx = selectSheet .
+    ix (rowIx,colIx) . cellValue . _Just
+
+#+END_SRC
+* Parsing
+#+BEGIN_SRC haskell
 data ParseErrors = NameNotFound
                  | AddressNotFound
                  | TimeNotFound
@@ -136,21 +163,27 @@ data ParseErrors = NameNotFound
 
 parseRow :: Xlsx -> RowIndex -> Either ParseErrors BordereauRow 
 parseRow xlsx rowIx = 
-   name <- tagError NameNotFound $ preview (selectSheet . cellValLens 0)
-   address <- tagError AddressNotFound $ preview (selectSheet . cellValLens 1)
-   sinceRead <- tagError TimeNotFound$ preview (selectSheet . cellValLens 2)
-   since <- tagError TimeParseError $ parseTime sinceRead
-   pure $ BordereauRow {..}
-   where
-      tagError err = maybe err pure
+     name <- tagError NameNotFound $
+                preview (selectSheet . cellValLens rowIx 1)
+     address <- tagError AddressNotFound $
+                preview (selectSheet . cellValLens rowIx 2)
+     sinceRead <- tagError TimeNotFound$
+                preview (selectSheet . cellValLens rowIx 3)
+     since <- tagError TimeParseError $ parseTime sinceRead
+     pure $ BordereauRow {..}
+     where
+        tagError err = maybe err pure
+#+END_SRC
 
+* Program
+#+BEGIN_SRC haskell
 main :: IO ()
 main = do
-   xlsx <- readExcellFile 
-   case parseRow xlsx 0 of
-     Left errr -> throwIO err
-     Right res -> runDB $ insert res
-```
+     xlsx <- readExcellFile 
+     case parseRow xlsx 1 of
+       Left errr -> throwIO err
+       Right res -> runDB $ insert res
+#+END_SRC
 
 * What's wrong with that?
 
@@ -162,9 +195,9 @@ main = do
 
 TODO example
 
-```haskell
-
-```
+#+BEGIN_SRC haskell
+  example
+#+END_SRC
 
 * Streaming II data.validation o clock
 we can accumalate errors on the rows.
