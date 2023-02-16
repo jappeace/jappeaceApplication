@@ -160,6 +160,47 @@ main = do
 
 * Streaming
 
+TODO example
+
 ```haskell
 
 ```
+
+* Streaming II data.validation o clock
+we can accumalate errors on the rows.
+
+* Writing files
+
++ Once we validated everything
++ Pretty graphs are shown
++ We need to write out our summeries and transformed data
+
+* Streamin writing
+
+* Correctness
++ say we add a column to our template
++ can we enforce correctness?
+
+  YES
+
+eg we use generics to list out our field names 
+then we read the header row 
+then we assert our field names == header rows.
+
+* trippin correctness
+
+Can I for our arbitrary database type `t`
+write an excell file,
+parse it with our parser,
+insert it into database,
+get it out again.
+See if it is the same as what we started with.
+
+We do this for all types.
+Ensures parser, write code, and read code are consistent.
+
+* Summary
+
++ clever use of type allows us to pinpoint errors pricesely
++ We get strong correctness gaurantees
+
