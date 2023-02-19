@@ -3,51 +3,34 @@
 
 * FP Kampen
 + Corona is over~
-+ 4 fun
++ For fun
 + Support
 + Job
 
 * Motivation
-
 I think this is quite cool tech
 
 - Shows practical haskell power
 - Excel is ubiquitous
 - Bragging.
 
-* Why use excel
+* Why use Excel
 
 - In our case no choice.
 - xlsx package 
 
-* Haskell why 
+* Why use Haskell?
+
+* A
 - TYPES
 - Productivity
 - vibrant community
 - battle hardened
 
-
 * Context
-
-* Reinsurance
-- Cedent (insurance company)
-- Tradition
-- Change averse
-
-* Transfer of data 
-- Underwriter
-- fair quotation
-
-* Excel everywhere
-- Most actors are familiar with excell
-  - eg broker, actuaries, underwriters etc.
-- IT departments know how to create excell files
-- No standardization
-
-* Supercede 
-- Standard Excell file
-- Validate
-- Make graphs
+- supercede 
+- reinsurance
+- tradition
 
 * Uploader
 - Upload excel file
@@ -196,6 +179,7 @@ main = do
 TODO example
 
 #+BEGIN_SRC haskell
+
   example
 #+END_SRC
 
