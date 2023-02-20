@@ -369,31 +369,31 @@ submissionSpec = withApp $ do
     -- insert a fake submission
     rows <- genFake $ runConduit $
               (do
-                  fakePremiumEstimates 3 .| CC.map (\x -> x{cedentPremiumEstimateSubmissionId=pesId, cedentPremiumEstimateSubsectionId=subsectId1})
+                  fakePremiumEstimates 3 .| CC.map (\x -> x{policyBordereauSubmissionId=pesId, policyBordereauSubsectionId=subsectId1})
               .| sinkList
 
     runDB $ do
       forM_ rows $ \r -> do
-        uuid <- genKey CedentPremiumEstimateKey
+        uuid <- genKey PolicyBordereauKey
         P.insertKey uuid r
     withSystemTempDirectory "DownloadAllSpec_Result" $ \tmpDir -> do
         let zipFilePath = tmpDir <> "/" <> "to-re-submit.zip"
         combinedSrc <- findDataFiles pretendCacheNeverExists struct tmpDir
         runConduit $ combinedSrc .| void (zipStream $ zipOptions now' pid $ dsSubmissionMap struct) .| sinkFile zipFilePath
-        rs <- runDB $ P.selectList [CedentPremiumEstimateSubmissionId P.==. pesId] sortCols
+        rs <- runDB $ P.selectList [PolicyBordereauSubmissionId P.==. pesId] sortCols
 
         -- running a submission with downloaded zip file
         liftIO $ void $ runServiceT ctx $ withTransaction $
           persistAndValidateAndClear pid (templatedPersited (Entity pesId2 pes2)) SExhibitPremium zipFilePath
-        rs2 <- runDB $ P.selectList [CedentPremiumEstimateSubmissionId P.==. pesId2] sortCols
+        rs2 <- runDB $ P.selectList [PolicyBordereauSubmissionId P.==. pesId2] sortCols
 
-        before <- runDB $ P.selectList [CedentPremiumEstimateSubmissionId P.==. pesId] sortCols
+        before <- runDB $ P.selectList [PolicyBordereauSubmissionId P.==. pesId] sortCols
 
         -- running a submission with downloaded zip file
         liftIO $ void $ runServiceT ctx $ withTransaction $
           persistAndValidateAndClear pid (templatedPersited (Entity pesId2 pes2)) SExhibitPremium zipFilePath
-        after <- runDB $ P.selectList [CedentPremiumEstimateSubmissionId P.==. pesId2] sortCols
-        let asIfSameSubmission r = r {cedentPremiumEstimateSubmissionId = pesId}
+        after <- runDB $ P.selectList [PolicyBordereauSubmissionId P.==. pesId2] sortCols
+        let asIfSameSubmission r = r {policyBordereauSubmissionId = pesId}
         assertEq "rows match"
           (map entityVal before)
           (sortOn sortFn rows)
