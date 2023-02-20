@@ -21,11 +21,11 @@ I think this is quite cool tech
 
 * Why use Haskell?
 
-* A
+* My answer
 - TYPES
 - Productivity
-- vibrant community
-- battle hardened
+- Vibrant community
+- Battle hardened
 
 * Context
 - supercede 
@@ -71,7 +71,7 @@ data BordereauRow = MkBordereauRow
  } deriving FromCSV
 #+END_SRC
 
-* A: Why does this suck
+* A: Why bad?
 - Slow
 - Lose type information 
 - Type class errors lose locality
@@ -97,14 +97,6 @@ according to excel
 * Richtext are they types or text?
 * Types!
 
-* Text are they types or text?
-according to excell
-
-* Types and text!
-... so there is a seperate type constructor for text.
-but it' the text type.
-so yes it's both.
-
 * Anyway
 + More robust validation
 + Faster validation
@@ -125,33 +117,47 @@ readExcellFile = Xlsx.toXlsx <$>
 * Lens into cells
 
 #+BEGIN_SRC haskell
-selectSheet :: Lens' Xlsx Worksheet
+selectSheet :: Traverse' Xlsx Worksheet
 selectSheet = xlSheets . ix 0 . _2
+
+data Xlsx = Xlsx {
+    _xlSheets :: [(Text, Worksheet)]
+    ... }
 #+END_SRC
 
 * value lens
-
 #+BEGIN_SRC haskell
-cellValLens :: RowIndex -> ColumnIndex -> Lens' Xlsx CellValue
-cellValLens rowIx colIx = selectSheet .
-    ix (rowIx,colIx) . cellValue . _Just
+cellValLens :: RowIndex -> ColumnIndex -> Traverse' Xlsx CellValue
+cellValLens rowIx colIx =
+  selectSheet . wsCells  . ix (rowIx,colIx) . cellValue . _Just
 
+  data WorkSheet = WorkSheet {
+    _wsCells :: CellMap
+    ... }
+
+  type CellMap = Map (RowIndex, ColumnIndex) Cell 
 #+END_SRC
 * Parsing
+tag all errors
 #+BEGIN_SRC haskell
 data ParseErrors = NameNotFound
                  | AddressNotFound
                  | TimeNotFound
                  | TimeParseError
+#+END_SRC
 
+
+
+* Parsing
+#+BEGIN_SRC haskell
 parseRow :: Xlsx -> RowIndex -> Either ParseErrors BordereauRow 
 parseRow xlsx rowIx = 
      name <- tagError NameNotFound $
-                preview (selectSheet . cellValLens rowIx 1)
+                preview (selectSheet . cellValLens rowIx 1) xlsx
      address <- tagError AddressNotFound $
-                preview (selectSheet . cellValLens rowIx 2)
+                preview (selectSheet . cellValLens rowIx 2) xlsx
      sinceRead <- tagError TimeNotFound$
-                preview (selectSheet . cellValLens rowIx 3)
+                preview (selectSheet . cellValLens rowIx 3) xlsx
      since <- tagError TimeParseError $ parseTime sinceRead
      pure $ BordereauRow {..}
      where
@@ -176,11 +182,31 @@ main = do
 
 * Streaming
 
-TODO example
+#+BEGIN_SRC haskell
+main :: IO ()
+main = runXlsxM "somedownloadedfile.xlsx" $ do
+  readSheet (makeIndex 0) $ \sheetItem -> 
+    eResult <- parseSheetItem sheetItem
+    case eResult of
+      Left err -> throwIO err
+      Right res -> runDB $ insert res
+#+END_SRC
+
+* Streaming Parser
 
 #+BEGIN_SRC haskell
-
-  example
+parseSheetItem :: SheetItem -> Either ParseErrors BordereauRow 
+parseSheetItem  xlsx rowIx = 
+     name <- tagError NameNotFound $
+                preview (selectSheet . cellValLens rowIx 1) xlsx
+     address <- tagError AddressNotFound $
+                preview (selectSheet . cellValLens rowIx 2) xlsx
+     sinceRead <- tagError TimeNotFound$
+                preview (selectSheet . cellValLens rowIx 3) xlsx
+     since <- tagError TimeParseError $ parseTime sinceRead
+     pure $ BordereauRow {..}
+     where
+        tagError err = maybe err pure
 #+END_SRC
 
 * Streaming II data.validation o clock
