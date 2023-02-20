@@ -365,41 +365,27 @@ Ensures parser, write code, and read code are consistent.
 
 submissionSpec :: Spec
 submissionSpec = withApp $ do
-  describe "roundtrip download all zip -> submission" $ it "should be able to re-submit a pack archive as a Zip-of-Xlsx submission " $ do
+  it "roundtrip download all zip -> submission" $ do
     -- insert a fake submission
-    rows <- genFake $ runConduit $
-              (do
-                  fakePremiumEstimates 3 .| CC.map (\x -> x{policyBordereauSubmissionId=pesId, policyBordereauSubsectionId=subsectId1})
-              .| sinkList
+    rows <- genFake $ fakeBordereau 3
+    runDB $ forM_ rows P.insert
 
-    runDB $ do
-      forM_ rows $ \r -> do
-        uuid <- genKey PolicyBordereauKey
-        P.insertKey uuid r
     withSystemTempDirectory "DownloadAllSpec_Result" $ \tmpDir -> do
-        let zipFilePath = tmpDir <> "/" <> "to-re-submit.zip"
+        let zipFilePath = tmpDir </> "to-re-submit.zip"
         combinedSrc <- findDataFiles pretendCacheNeverExists struct tmpDir
-        runConduit $ combinedSrc .| void (zipStream $ zipOptions now' pid $ dsSubmissionMap struct) .| sinkFile zipFilePath
-        rs <- runDB $ P.selectList [PolicyBordereauSubmissionId P.==. pesId] sortCols
-
-        -- running a submission with downloaded zip file
-        liftIO $ void $ runServiceT ctx $ withTransaction $
-          persistAndValidateAndClear pid (templatedPersited (Entity pesId2 pes2)) SExhibitPremium zipFilePath
-        rs2 <- runDB $ P.selectList [PolicyBordereauSubmissionId P.==. pesId2] sortCols
+        runConduit $ combinedSrc
+                  .| zipStream defZipOptions
+                  .| sinkFile zipFilePath
 
         before <- runDB $ P.selectList [PolicyBordereauSubmissionId P.==. pesId] sortCols
 
         -- running a submission with downloaded zip file
         liftIO $ void $ runServiceT ctx $ withTransaction $
-          persistAndValidateAndClear pid (templatedPersited (Entity pesId2 pes2)) SExhibitPremium zipFilePath
+          persistAndValidateAndClear pid (templatedPersited (Entity pesId2 pes2)) SExhibitBordereau zipFilePath
+
         after <- runDB $ P.selectList [PolicyBordereauSubmissionId P.==. pesId2] sortCols
-        let asIfSameSubmission r = r {policyBordereauSubmissionId = pesId}
-        assertEq "rows match"
-          (map entityVal before)
-          (sortOn sortFn rows)
-        assertEq "rows match"
-          (map entityVal before)
-          (asIfSameSubmission . entityVal <$> after)
+        assertEq "rows match" (map entityVal before) rows
+        assertEq "rows match" (map entityVal before) (entityVal <$> after)
 
 #+END_SRC 
 
