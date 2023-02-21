@@ -1,4 +1,4 @@
-#+TITLE: Excel in haskell
+#+TITLE: Excel in Haskell
 #+SUBTITLE: Extend excel, embrace excel, exterminate excel.
 
 * FP Kampen
@@ -81,20 +81,28 @@ let's play is it types or text.
 
 - 5 seconds to answer.
 
-* Number are they types or text?
+* Numbers
+** types or text?
 according to excel
 
 * Types!
 
-* Are dates types or text?
+* Dates
+** types or text?
 according to excel
 
 * Text!
 
-* Formulas are they types or text?
+* Formulas
+** types or text?
+according to excel
+
 * Types!
 
-* Richtext are they types or text?
+* Richtext
+** types or text?
+according to excel
+
 * Types!
 
 * Anyway
@@ -125,17 +133,17 @@ data Xlsx = Xlsx {
     ... }
 #+END_SRC
 
-* value lens
+* Value lens
 #+BEGIN_SRC haskell
 cellValLens :: RowIndex -> ColumnIndex -> Traverse' Xlsx CellValue
 cellValLens rowIx colIx =
   selectSheet . wsCells  . ix (rowIx,colIx) . cellValue . _Just
 
-  data WorkSheet = WorkSheet {
-    _wsCells :: CellMap
-    ... }
+data WorkSheet = WorkSheet {
+  _wsCells :: CellMap
+  ... }
 
-  type CellMap = Map (RowIndex, ColumnIndex) Cell 
+type CellMap = Map (RowIndex, ColumnIndex) Cell 
 #+END_SRC
 * Parsing
 tag all errors
@@ -192,7 +200,7 @@ main = runXlsxM "somedownloadedfile.xlsx" $ do
       Right res -> runDB $ insert res
 #+END_SRC
 
-* Streaming Parser
+* Parser
 
 #+BEGIN_SRC haskell
 parseSheetItem :: SheetItem -> Either ParseErrors BordereauRow 
@@ -209,10 +217,9 @@ parseSheetItem  sheetitem = do
         tagError err = maybe (Left err) Right
 #+END_SRC
 
-* Streaming II data.validation o clock
-we can accumalate errors on the rows.
-
+* Validation
 #+BEGIN_SRC haskell
+{-# LANGUAGE ApplicativeDo #-} 
 parseSheetItem :: SheetItem -> Validation [ParseErrors] BordereauRow 
 parseSheetItem  sheetitem = do
      name <- tagError NameNotFound $
@@ -240,37 +247,33 @@ cellText txt = Cell
 main :: IO ()
 main = do
    runConduitRes $ 
-    yield (MkRow 0 $ IntMap.fromList [cellText "one",  cellText "two"] )
+    yield (MkRow 0 $ IntMap.fromList
+          [cellText "one",  cellText "two"] )
     .| writeXlsx defaultSettings
     .| C.sinkFile "my-file.xlsx"
 #+END_SRC
 
-* Streamin writing fastly
+* Streamin Fastly
 
-+ alternative
++ Alternative
   https://github.com/SupercedeTech/libxlsxwriter-hs
-+ faster
-+ loses expressiveness
++ Faster
++ Loses expressiveness
 
 * Correctness
-+ say we add a column to our template
-+ can we enforce correctness?
++ Add a column
 
-  YES
+* YES
 
-eg we use generics to list out our field names 
-then we read the header row 
-then we assert our field names == header rows.
+* Example 
 
-* Okay back to the example bordereau
+| Name | Address           |      Since | age |
+|------+-------------------+------------+-----|
+| henk | kieviet straat 8  | 2010-12-08 |  35 |
+| bart | thorbecke plein 4 | 2012-12-09 |  30 |
+| piet | flevoweg 12       | 2011-10-18 |  22 |
 
-| Name | Address           |      Since |
-|------+-------------------+------------|
-| henk | kieviet straat 8  | 2010-12-08 |
-| bart | thorbecke plein 4 | 2012-12-09 |
-| piet | flevoweg 12       | 2011-10-18 |
-
-* we put the header row in a vector at compile time
+* TH Xlsx
 
 
 #+BEGIN_SRC haskell
@@ -284,21 +287,17 @@ policyBordereauTemplate =
   
 headerRowToVector :: Xlsx -> RowIndex -> Vector (ColumnIndex, Text)
 headerRowToVector template rowNum =
-  Vec.fromList $
-    Supercede.Prelude.catMaybes $ takeWhile isJust $
+  Vec.fromList $ catMaybes $ takeWhile isJust $
       [columnOffset ..] <&> \x ->
         template ^? dataTraverse . cellValueAtXY (x, rowNum)
             . _Just . cellTextPrism . to (x,)
-
-columnIndices :: Xlsx -> Vector Text
-columnIndices = Vec.map snd . computerReadableHeaderRow
 
 computerReadableHeaderRow :: Xlsx -> Vector (ColumnIndex, Text)
 computerReadableHeaderRow template = headerRowToVector template
   Template.computerReadableHeaderRowNum
 
 #+END_SRC
-* getting the fieldnames
+* Fieldnames
 
 #+BEGIN_SRC haskell
 module FieldNames
@@ -307,7 +306,6 @@ module FieldNames
 where
 
 import GHC.Generics
-import Supercede.Prelude
 
 class FieldNames rep where
   fieldNames :: [String]
@@ -333,7 +331,7 @@ getNames :: forall a . FieldNames (Rep a) => [String]
 getNames = fieldNames @(Rep a)
 #+END_SRC 
 
-* the test 
+* The test 
 
 #+BEGIN_SRC haskell
 spec :: Spec
@@ -341,28 +339,17 @@ spec = do
   describe "policyBordereauTemplate" $ do
     it "should have the same ordering and names as the Bordereau data type" $
       columnIndices policyBordereauTemplate `shouldBe`
-       Vec.fromList (toExpectation (getNames @BordereauRow))
+       Vec.fromList (getNames @BordereauRow)
 #+END_SRC 
 
-* business updates
-+ anyone can change the template
-+ ci will tell programers what's wrong
-+ asside generics, EZ!
+* Updates
++ Anyone 
++ CI 
++ Easy!
 
-* trippin correctness
-
-Can I for our arbitrary database type `t`
-write an excell file,
-parse it with our parser,
-insert it into database,
-get it out again.
-See if it is the same as what we started with.
-
-We do this for all types.
-Ensures parser, write code, and read code are consistent.
+* Trippin 
 
 #+BEGIN_SRC haskell
-
 submissionSpec :: Spec
 submissionSpec = withApp $ do
   it "roundtrip download all zip -> submission" $ do
