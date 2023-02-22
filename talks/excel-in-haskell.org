@@ -1,11 +1,12 @@
-#+TITLE: Excel in Haskell
-#+SUBTITLE: Extend excel, embrace excel, exterminate excel.
+#+TITLE: FP Kampen
 
 * FP Kampen
 + Corona is over~
 + For fun
 + Support
 + Job
+
+* Excel in Haskell
 
 * Motivation
 I think this is quite cool tech
@@ -184,7 +185,7 @@ main = do
 
 * What's wrong with that?
 
-* A
+* Answer
 + Memory usage 
 + An error puts in a partial result
 
@@ -347,38 +348,9 @@ spec = do
 + CI 
 + Easy!
 
-* Trippin 
-
-#+BEGIN_SRC haskell
-submissionSpec :: Spec
-submissionSpec = withApp $ do
-  it "roundtrip download all zip -> submission" $ do
-    -- insert a fake submission
-    rows <- genFake $ fakeBordereau 3
-    runDB $ forM_ rows P.insert
-
-    withSystemTempDirectory "DownloadAllSpec_Result" $ \tmpDir -> do
-        let zipFilePath = tmpDir </> "to-re-submit.zip"
-        combinedSrc <- findDataFiles pretendCacheNeverExists struct tmpDir
-        runConduit $ combinedSrc
-                  .| zipStream defZipOptions
-                  .| sinkFile zipFilePath
-
-        before <- runDB $ P.selectList [PolicyBordereauSubmissionId P.==. pesId] sortCols
-
-        -- running a submission with downloaded zip file
-        liftIO $ void $ runServiceT ctx $ withTransaction $
-          persistAndValidateAndClear pid (templatedPersited (Entity pesId2 pes2)) SExhibitBordereau zipFilePath
-
-        after <- runDB $ P.selectList [PolicyBordereauSubmissionId P.==. pesId2] sortCols
-        assertEq "rows match" (map entityVal before) rows
-        assertEq "rows match" (map entityVal before) (entityVal <$> after)
-
-#+END_SRC 
-
-
 * Summary
++ precise errors
++ fast writes
++ correctness
 
-+ clever use of type allows us to pinpoint errors pricesely
-+ We get strong correctness gaurantees
-
+* Questions?
