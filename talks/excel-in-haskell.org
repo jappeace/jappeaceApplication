@@ -6,6 +6,8 @@
 + Support
 + Job
 
+* Ask questions!
+
 * Excel in Haskell
 
 * Motivation
@@ -264,7 +266,16 @@ main = do
 * Correctness
 + Add a column
 
-* YES
+* The test 
+
+#+BEGIN_SRC haskell
+spec :: Spec
+spec = do
+  describe "policyBordereauTemplate" $ do
+    it "should have the same ordering and names as the Bordereau data type" $
+      columnIndices policyBordereauTemplate `shouldBe`
+       Vec.fromList (getNames @BordereauRow)
+#+END_SRC 
 
 * Example 
 
@@ -332,16 +343,6 @@ getNames :: forall a . FieldNames (Rep a) => [String]
 getNames = fieldNames @(Rep a)
 #+END_SRC 
 
-* The test 
-
-#+BEGIN_SRC haskell
-spec :: Spec
-spec = do
-  describe "policyBordereauTemplate" $ do
-    it "should have the same ordering and names as the Bordereau data type" $
-      columnIndices policyBordereauTemplate `shouldBe`
-       Vec.fromList (getNames @BordereauRow)
-#+END_SRC 
 
 * Updates
 + Anyone 
@@ -354,3 +355,8 @@ spec = do
 + correctness
 
 * Questions?
+
+* FP Kampen future
+
++ Feedback
++ ... so many cancelations
