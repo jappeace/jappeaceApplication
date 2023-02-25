@@ -39,11 +39,6 @@ LINKS_EX = [
     , 'https://jappiesoftware.com/'
     , "Jappie for hire"
     , 'hire'
-    ),
-    ( 'Raster 🚀'
-    , 'https://raster.click/'
-    , 'Easy rosters for restaurants startup'
-    , 'Raster'
     )
 ]
 
