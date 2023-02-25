@@ -1,8 +1,10 @@
-Title: My startup: raster.click
+Title: RIP 🪦, my startup: raster.click 
 Date: 2023-02-25 20:40
 Category: reflection
 OPTIONS: toc:nil
-Tags: raster.click, project, comment
+Tags: raster.click, project, programming, business
+
+![raster logo](./images/2023/raster-logo.svg)
 
 As a founder of [raster.click](https://raster.click/),
 I was passionate about providing rostering systems for restaurants
@@ -24,6 +26,7 @@ which slowed growth even further.
 Despite the hard work and dedication,
 I eventually made the difficult decision to stop working Raster.click,
 and go back into contract work.
+This was in 2020, but I never wrote about this event.
 It was a heartbreaking decision,
 as I knew I had a great product that was loved by my users.
 They kept on using it up untill corona broke out,
@@ -46,3 +49,13 @@ Such as:
   Without significant funding,
   it can be challenging to scale your startup and compete effectively in the market.
 I will take these lessons with me as I move forward with future endeavors.
+
+Although I stopped working on this project,
+it's still [operational](https://raster.click/).
+It costs very little money for me to keep this operational.
+That's because it runs next to this site, [videocut](https://videocut.org/),
+and [massapp](https://massapp.org/) on the
+[nmm approach](https://jappie.me/the-nix-mutli-monolith-machine-nmmm.html).
+Yes it's sad I stopped working on this project,
+but if anyone is interested in using it,
+[it's right there](https://raster.click/).
