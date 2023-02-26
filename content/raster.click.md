@@ -4,6 +4,13 @@ Category: reflection
 OPTIONS: toc:nil
 Tags: raster.click, project, programming, business
 
+<style>
+img[alt="raster logo"]{
+  width:40%;
+  margin-left: 30%;
+}
+</style>
+
 ![raster logo](./images/2023/raster-logo.svg)
 
 As a founder of [raster.click](https://raster.click/),
