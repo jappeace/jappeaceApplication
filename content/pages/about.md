@@ -31,9 +31,14 @@ Lastly, I hate the number five.
 A brief overview of meaningful events and decisions in my life.
 
 <table>
+<tr><th> 2023 </th><td>
+I had chatgpt pretend Zhuangzi and Nietzsche were arguing :).
+I organized [fp-kampen](https://www.meetup.com/nl-NL/functional-programming-kampen/).
+</td></tr>
 <tr><th> 2022 </th><td>
 I participated in <a href="https://jappie.me/zurich-hack-2022-denotational-design.html">zurich hack</a>.
 I read zhuangzi and became useless.
+I'm trying to get into [real estate](http://localhost:8000/summerhouse-paradis-aruba.html).
 </td></tr>
 <tr><th> 2021 </th><td>
 I started doing crossfit.
