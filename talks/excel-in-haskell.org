@@ -1,14 +1,6 @@
-#+TITLE: FP Kampen
-
-* FP Kampen
-+ Corona is over~
-+ For fun
-+ Support
-+ Job
+#+TITLE: Excel in Haskell
 
 * Ask questions!
-
-* Excel in Haskell
 
 * Motivation
 I think this is quite cool tech
@@ -263,19 +255,9 @@ main = do
 + Faster
 + Loses expressiveness
 
+
 * Correctness
 + Add a column
-
-* The test 
-
-#+BEGIN_SRC haskell
-spec :: Spec
-spec = do
-  describe "policyBordereauTemplate" $ do
-    it "should have the same ordering and names as the Bordereau data type" $
-      columnIndices policyBordereauTemplate `shouldBe`
-       Vec.fromList (getNames @BordereauRow)
-#+END_SRC 
 
 * Example 
 
@@ -286,8 +268,6 @@ spec = do
 | piet | flevoweg 12       | 2011-10-18 |  22 |
 
 * TH Xlsx
-
-
 #+BEGIN_SRC haskell
 policyBordereau :: LBS.ByteString
 policyBordereau = 
@@ -296,7 +276,10 @@ policyBordereau =
 policyBordereauTemplate :: Xlsx
 policyBordereauTemplate = 
   toXlsx $ LBS.fromStrict policyBordereau 
+#+END_SRC
   
+* Reading a row
+#+BEGIN_SRC haskell
 headerRowToVector :: Xlsx -> RowIndex -> Vector (ColumnIndex, Text)
 headerRowToVector template rowNum =
   Vec.fromList $ catMaybes $ takeWhile isJust $
@@ -305,10 +288,51 @@ headerRowToVector template rowNum =
             . _Just . cellTextPrism . to (x,)
 
 computerReadableHeaderRow :: Xlsx -> Vector (ColumnIndex, Text)
-computerReadableHeaderRow template = headerRowToVector template
-  Template.computerReadableHeaderRowNum
+computerReadableHeaderRow template = headerRowToVector template 1
 
+columnIndices :: Xlsx -> Vector Text
+columnIndices = fmap snd . computerReadableHeaderRow 
 #+END_SRC
+
+
+
+* Usage
+
+#+BEGIN_SRC haskell
+spec :: Spec
+spec = do
+  describe "policyBordereauTemplate" $ do
+    it "should have the same ordering and names as the Bordereau data type" $
+       columnIndices policyBordereauTemplate `shouldBe`
+          ["name", "address", "since", "age"]
+#+END_SRC
+
+* Aligning with datatype
+
+* Data type
+
+#+BEGIN_SRC haskell
+data BordereauRow = MkBordereauRow 
+ { name :: Text
+ , address :: Text
+ , since :: UTCTime
+ , age :: Int
+ } 
+#+END_SRC
+
+* Generic
+
+#+BEGIN_SRC haskell
+data BordereauRow = MkBordereauRow 
+ { name :: Text
+ , address :: Text
+ , since :: UTCTime
+ , age :: Int
+ } deriving Generic
+#+END_SRC
+
+* Does anyone happen to know how to use generics?
+
 * Fieldnames
 
 #+BEGIN_SRC haskell
@@ -343,20 +367,20 @@ getNames :: forall a . FieldNames (Rep a) => [String]
 getNames = fieldNames @(Rep a)
 #+END_SRC 
 
+* The test 
+
+#+BEGIN_SRC haskell
+spec :: Spec
+spec = do
+  describe "policyBordereauTemplate" $ do
+    it "should have the same ordering and names as the Bordereau data type" $
+      columnIndices policyBordereauTemplate `shouldBe`
+       Vec.fromList (getNames @BordereauRow)
+#+END_SRC 
 
 * Updates
 + Anyone 
 + CI 
 + Easy!
 
-* Summary
-+ precise errors
-+ fast writes
-+ correctness
-
 * Questions?
-
-* FP Kampen future
-
-+ Feedback
-+ ... so many cancelations
