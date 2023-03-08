@@ -28,10 +28,19 @@ I think this is quite cool tech
 - tradition
 
 * Uploader
-- Upload excel file
-- Send to s3
-- process to db
-- show graphs :)
+[[./img/upload/initial.png]]
+
+* Processing
+[[./img/upload/uploading.png]]
+
+
+* Failure
+[[./img/upload/failure.png]]
+
+
+
+* Success
+[[./img/upload/success.png]]
 
 * Bordereau
 
