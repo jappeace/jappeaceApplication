@@ -165,11 +165,11 @@ data ParseErrors = NameNotFound
 parseRow :: Xlsx -> RowIndex -> Either ParseErrors BordereauRow 
 parseRow xlsx rowIx = do
      name <- tagError NameNotFound $
-                preview (selectSheet . cellValLens rowIx 1) xlsx
+                preview (cellValLens rowIx 1) xlsx
      address <- tagError AddressNotFound $
-                preview (selectSheet . cellValLens rowIx 2) xlsx
+                preview (cellValLens rowIx 2) xlsx
      sinceRead <- tagError TimeNotFound$
-                preview (selectSheet . cellValLens rowIx 3) xlsx
+                preview (cellValLens rowIx 3) xlsx
      since <- tagError TimeParseError $ parseTime sinceRead
      pure $ BordereauRow {..}
      where
