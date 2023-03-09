@@ -155,7 +155,7 @@ tag all errors
 data ParseErrors = NameNotFound
                  | AddressNotFound
                  | TimeNotFound
-                 | TimeParseError
+                 | TimeParseError Text
 #+END_SRC
 
 
@@ -168,9 +168,10 @@ parseRow xlsx rowIx = do
                 preview (cellValLens rowIx 1) xlsx
      address <- tagError AddressNotFound $
                 preview (cellValLens rowIx 2) xlsx
-     sinceRead <- tagError TimeNotFound$
+     sinceRead <- tagError TimeNotFound $
                 preview (cellValLens rowIx 3) xlsx
-     since <- tagError TimeParseError $ parseTime sinceRead
+     since <- tagError (TimeParseError sinceRead) $
+                parseTime sinceRead
      pure $ BordereauRow {..}
      where
         tagError err = maybe err pure
