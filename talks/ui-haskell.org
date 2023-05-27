@@ -1,0 +1,70 @@
+#+TITLE: Haskell UI 
+
+* Motivation
+
++ Strugling 
++ Not that difficult
++ extremely difficult.
+  
+* Generalized
++ Render
++ Routing
++ State
+
+* CLI
+
+* Interact
+
+
+#+BEGIN_SRC haskell
+
+interact :: (String -> String) -> IO () 
+
+#+END_SRC
+
+* Usage
+
++ Only as a toy
+
+* Opt-parse applicative
+
+examples!
+https://github.com/pcapriotti/optparse-applicative#quick-start
+
+* Usage
+
++ Quick n' dirty
++ Can grow easily
++ Bindable on ports
+
+* Yesod
+https://www.yesodweb.com/book
+
+* Usage
+
++ Multiple people
++ Power of browser
++ Can grow easily
+
+* GTK bindings
+
+* Usage
++ Computer access
++ Many forms
+
+* SDL
+
+* Usage
+
++ Games
++ Graphics intense apps
+
+* Reflex FRP
+
+
+* Usage
+
++ Games (more fun)
++ FRRRRRP
+
+* Questions?
