@@ -9,7 +9,7 @@
   repo = "reveal.js";
   rev = "4.1.0";
   sha256 = "10xhblbyw8mvak58d294hbxxnf5sq0akj6qldv7brgm6944zppm0";
-}, org-files ? [ "category-adts" "keter-nix" "mtl" "excel-in-haskell" ], theme ?
+}, org-files ? [ "category-adts" "keter-nix" "mtl" "excel-in-haskell" "ui-haskell"], theme ?
   "simple" # https://github.com/jgm/pandoc/wiki/Using-pandoc-to-produce-reveal.js-slides
 }:
 let
