@@ -116,22 +116,22 @@ they're going to freak out.
 Because they're going to think our platform messed up their data somehow.
 So I reply to his announcement, because I know he's well aware of this.
 
-> Not sure if I'd release the "feature" because "our Elm tables" are kind of incoherent right now. But if you're happy with it 🤷‍♂️
+> I'm not sure if I'd release the "feature" because "our Elm tables" are kind of incoherent right now. But if you're happy with it 🤷‍♂️
 
 Here I named the specific features interacting instead of "feature" and "our Elm tables", which is redacted for the sake of anonymity.
-Now is this blunt? Yes, but there is *a lot of money on the line*.
+Now, is this blunt? Yes, but there is *a lot of money on the line*.
 
-The same manager who blamed the Developers in the missing button incident,
+The same manager who blamed the developers in the missing button incident,
 was also responsible for this release.
-Naturally, he used his amazing managing talents,
+Naturally, he used his amazing management talents,
 and decided to throw a tantrum and get the CTO to scold me.
-Yes, I was scolded, and told I had done a good thing at the same time by the CTO?
+Yes, I was scolded, and told I had done a good thing at the same time by the CTO.
 I got told my communication was too blunt and not precise enough,
 but it once again puts all the blame on developers,
 even though our beloved manager could've asked in #tech before releasing,
 "Are there any serious issues left with feature X or Y or Z?"
 Like you would do in a team.
-Or he could've engaged me in my #general response, figure out what's going on. [^tricks]
+Or he could've engaged me in my #general response, to figure out what's going on. [^tricks]
 
 [^tricks]: Perhaps this is the hidden trick to becoming a manager,
            just constantly blame others for your own mistakes.
@@ -144,22 +144,12 @@ I've always learned to release early and release often.
 But ever since the introduction of feature flags,
 we've just not been releasing, until it became a problem.
 In typical startup style sledgehammer fashion,
-the problem was solved, release a bunch of stuff,
-and for the unfinished parts we peeled them off putting them behind different flags.
+the problem was solved; release a bunch of stuff,
+and for the unfinished parts we peeled them off, putting them behind different flags.
 But does the path towards releasing this software have to be so stressful?
 I feel we're doing it wrong.
-The lack of some kind of formalized strategy causes some issues here I think.
-We're just doing stuff, inconsistently, and coordination revolves around people being shocked and in panic.
+The lack of some kind of formalized strategy causes some issues here, I think.
+We're just doing stuff, inconsistently, and coordination revolves around people being shocked and in a panic.
 This clearly isn't working.
 
-Here I was hoping to arrive at some golden solution,
-perhaps send a particular manager to some course for release engineering.
-However, once I googled them they seemed to be focused on learning about technology,
-but we don't have a tech problem.
-Our problem is entirely focused on the process, how people interact.
-I hope it's clear from the context that I think blaming the devs isn't the right solution.
-Perhaps the lesson here is that releases aren't easy.
-How do other people release software?
-
-[^model]: A model being a piece of abstract representation of the world, which is directly represented into database tables for example. Changing this requires a lot of updating of the code, wherever it used. Pretty much all web application have either expicit or implicit representations of models.
-
+[^model]: A model is an abstract representation of the world, which is directly represented into database tables, for example. Changing this requires a lot of updating of the code, wherever it's used. Pretty much all web applications have either explicit or implicit representations of models.
