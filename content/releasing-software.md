@@ -3,27 +3,39 @@ DATE: 2023-06-09 18:17
 CATEGORY: reflection
 Tags: work, remote
 OPTIONS: toc:nil
-Status: draft
+
+<style>
+img[src="/images/2023/release-rodeo.png"]{
+  height: 20em;
+}
+</style>
 
 ![Release rodeo~](/images/2023/release-rodeo.png)
 
-We started off with feature flags.
-These were initially introduced as a way to pace development.
-No longer did changes need to be done in one go and have to be correct immediately,
-but QA could test a feature behind a feature flag while a part was being developed.
-This also allowed for more smaller PRs [^PR],
-making reviews much easier.
+In the beginning, there was nothing,
+we merged completed features after a month or so of development.
+Leading to large PR's and often unexpected implementations.
+Then, feature flags were introduced.
+This allowed merging of code in chuncks.
+Allowing QA test verily.
+Furthermore it allowed the people in charge to decide *when* to release.
+Because this also allowed for more smaller PRs [^PR],
+it also made the reviewing process much easier.
+Everything was awesome in paradise.
+But not all was as it seemed...
 
-[^PR]: Pull requests
+[^PR]: Pull requests, the primary mechanism in which developers align their changes.
+       It opens up a moment for question or comments.
 
-*However*, the flag count grew,
+The flag count grew,
 and salespeople started to realize they could enable flags for certain customers.
-This is all well and good,
-except for the fact that these features are still in development.
+This went well, in the beginning.
+Except that these features are still in development.
 So, on one occasion a client success person got upset after her feature flag
-(a fancy file uploader) had disappeared because it got merged into another feature
-(a gigantic redesign which was swallowing a bunch of other features[^problem]).
-This effectively meant certain customers no longer had access to the file uploader they had grown accustomed to.
+, a fancy file uploader,
+had disappeared because it got merged into another feature flag. [^problem]
+This effectively meant certain customers no longer had access to the file uploader
+they had grown accustomed to.
 And also that their entire workflow was now broken,
 since this is how they had learned to use the product.
 
@@ -32,24 +44,25 @@ since this is how they had learned to use the product.
             but devs start ask questions how to do these changes,
             and realize it's easier to just merge features.
 
-Note that in this setting, a customer is a large corporation with 1000's of employees.
+Note that in this setting, a customer, is a large corporation with 1000's of employees.
 So if one of them gets unhappy,
-the startup I worked for could lose a lot,
-not just money but also reputation (which translates into future sales),
-and it could potentially kill the startup.
+the startup I worked for could lose a lot.
+Not just money but also reputation, which translates into future sales.
+Which could potentially kill the startup.
 Up until now this hasn't happened,
-all customers who've signed have always been kept happy.
+all customers who've signed up have always been kept happy.
 
 Anyway, long story short, since the feature was being used in production,
 I strongly urged its release.
 This was discussed internally,
 and everyone agreed on releasing this file uploader feature.
 *Everyone*. However, some requests were made, for example, there were some redundant form elements.
-Deleting this had some consequences for the rest of the code, however, due to how the internal application was structured, it required removing this field also from the model[^model].
-Actually deleting this form element was quite a bit of work because of that.
-So it took one of the devs a while to ready the PR to release the feature.
-The manager suggested also deleting the old file uploading button?
-This was a pretty good idea,
+Deleting this had consequences,due to how the internal application was structured,
+it required removing this field also from the model[^model].
+Because of that, deleting this form element was quite a bit of work.
+So it took one of the developers a while to finish the PR for release of the feature.
+The manager suggested also deleting the old file uploading button.
+This was a good idea,
 because with this change the old flow would be quite broken;
 we had already removed error messages.
 The manager in charge got tagged and ignored the PR for several days,
@@ -58,7 +71,7 @@ We had already decided to release this feature,
 so his approval wasn't necessary according to our customs.
 
 Fast forward to the next week,
-and our dear client success person was in panic once more.
+and our dear client success person was once again in panic once more.
 It turns out that one of our older customers was still using that button.
 So we had to put it back.
 I warned them that this old flow was broken, missed a lot of stuff and would cause confusion.
@@ -139,7 +152,9 @@ Here I was hoping to arrive at some golden solution, perhaps send a particular m
 However, once I googled them they seemed to be focused on learning about technology, but we don't have a tech problem.
 Our problem is entirely focused on the process, how people interact.
 I hope it's clear from the context that I think blaming the devs isn't the right solution.
-They'll just leave after a while.
+Perhaps the lesson here is that releases aren't easy.
+Many small releases are better then large bundled ones.
+Developers and sales people need opportunity to comment.
 
 In this article, I was particularly harsh on this one manager, but I've to say he's not all bad.
 He has good ideas.
