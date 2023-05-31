@@ -72,14 +72,14 @@ so his approval wasn't necessary according to our customs.
 
 Fast forward to the next week,
 and our dear client success person was once again in panic once more.
-It turns out that one of our older customers was still using that button.
+It turns out that one of our older customers was still using that confusing button.
 So we had to put it back.
-I warned them that this old flow was broken, missed a lot of stuff and would cause confusion.
+I warned them that this old flow was broken,
+missed a lot of stuff and would cause confusion.
 They just wanted it back however, so I complied.
-I also added back the error messages which were also gone for some reason (based on my own testing).
 This was a rather minor change,
-however our dear manager in charge,
-did what any good leader would do and blamed the devs.
+however the manager in charge of releases,
+did what any good leader would do and blamed the developers.
 *Even though this was his own suggestion*.
 
 I wouldn't be writing this if it was the only incident.
@@ -93,42 +93,43 @@ Moving forward a month, a large client was prepping for a demo.
 I moved onto this detection feature which we needed to impress said client.
 We had a meeting to figure out what we could get done before some demo.
 From this we learned we had to modify the elm apps.
-These Elm apps represent HTML tables that open up a modal with more tables.
-Why this is implemented in Elm is beyond me, there is no interactivity at all.
-Well, I know why this was implemented in Elm.
-The developers who wrote it were more familiar with Elm,
-and they had deadlines, so they chose what they knew.
+These Elm apps represent HTML tables that open up a modal with the specific data comprising those tables.
 It's like eight different tables, all looking slightly different,
 all piped into the same Elm app with flags specifying how it should look.
 We've had production bugs with these apps.
 They just stop functioning and you've no idea why.
 Furthermore, one of the best features of Elm,
-its debugger, is unusable because they overlap, since there are several Elm apps displayed on the page.
+its debugger, is unusable because they overlap,
+since there are several Elm apps displayed on the page.
 As you can tell I'm not to happy having to modify these.
+It's a lot of pointless complexity.
 
-Anyway, the demo went well, as they skirted around those Elm apps and didn't open the modals,
+Anyway, the demo went well,
+as they skirted around those Elm apps and didn't open the modals,
 which show the wrong information our new feature detects.
 Now, 2 weeks later, the manager decides it's a good idea to release this feature.
-But I've not finished yet, since I was away for 1 week on vacation, (also there was an offsite).
-But the way I learn about this intent is through an announcement in #general.
+I learn this trough an announcement in #general.
+But I wasn't finished yet, since I was away for 1 week on vacation.
 I'm kind of shocked.
-If clients see those numbers don't align with that new feature and our Elm apps, they're gonna freak out.
+If clients see those numbers don't align with that new feature and our Elm apps,
+they're gonna freak out.
 Because they're gonna think our platform messed up their data somehow.
 So I reply to his announcement, because I know he's well aware of this.
+
 > Not sure if I'd release the "feature" because "our Elm tables" are kind of incoherent right now. But if you're happy with it 🤷‍♂️
+
 Here I named the specific features interacting instead of "feature" and "our Elm tables", which is redacted for the sake of anonymity.
 Now is this blunt? Yes, but there is *a lot of money on the line*.
 
-The same manager who blamed the dev was responsible for this release,
-used his amazing managing talents,
+The same manager who blamed the dev in the missing button incident,
+was also responsible for this release.
+Naturally, he used his amazing managing talents,
 and decided to throw a tantrum and get the CTO to scold me.
 Yes, I was scolded, and told I had done a good thing at the same time by the CTO?
-And we decided to disable the links in those Elm apps, preventing clients from seeing wrong information.
-You know, I got told my communication was too blunt and not precise enough,
+I got told my communication was too blunt and not precise enough,
 but it once again puts all the blame on developers,
 even though our beloved manager could've asked in #tech before releasing,
 "Are there any serious issues left with feature X or Y or Z?"
-I just assume he didn't have enough time to actually figure out this himself because our dear management talent is actually legitimately quite busy.
 Like you would do in a team.
 Or he could've engaged me in my #general response, figure out what's going on.
 Perhaps this is the hidden trick to becoming a manager,
