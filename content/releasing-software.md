@@ -12,32 +12,34 @@ img[src="/images/2023/release-rodeo.png"]{
 
 ![Release rodeo~](/images/2023/release-rodeo.png)
 
-In the beginning, there was nothing,
-we merged completed features after a month or so of development.
-Leading to large PR's and often unexpected implementations.
+In the beginning, there was nothing.
+We merged completed features after a month or so of development,
+leading to large PRs and often unexpected implementations.
 Then, feature flags were introduced.
-This allowed merging of code in chuncks.
-Allowing QA test verily.
-Furthermore it allowed the people in charge to decide *when* to release.
-Because this also allowed for more smaller PRs [^PR],
+This allowed the merging of code in chunks,
+enabling QA to test thoroughly.
+Furthermore, it allowed the people in charge to decide *when* to release.
+Because this also facilitated more, smaller PRs[^PR],
 it also made the reviewing process much easier.
-Everything was awesome in paradise.
-But not all was as it seemed...
+Everything was awesome in paradise,
+but not all was as it seemed...
 
 [^PR]: Pull requests, the primary mechanism in which developers align their changes.
-       It opens up a moment for question or comments.
+       It opens up a moment for questions or comments.
 
 The flag count grew,
 and salespeople started to realize they could enable flags for certain customers.
 This went well, in the beginning.
-Except that these features are still in development.
-So, on one occasion a client success person got upset after her feature flag
-, a fancy file uploader,
-had disappeared because it got merged into another feature flag. [^problem]
+Except that these features were still in development.
+So, on one occasion, a client success person got upset after her feature flag,
+a fancy file uploader,
+had disappeared because it was merged into another feature flag[^problem].
 This effectively meant certain customers no longer had access to the file uploader
-they had grown accustomed to.
-And also that their entire workflow was now broken,
-since this is how they had learned to use the product.
+to which they had grown accustomed.
+Also, their entire workflow was now broken,
+since this was how they had learned to use the product.
+
+
 
 [^problem]: This by itself was also problematic.
             The issue was is that designers start wanting to do changes (as is their job),
