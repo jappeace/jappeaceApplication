@@ -5,12 +5,16 @@ Tags: work, remote
 OPTIONS: toc:nil
 Status: draft
 
+![Release rodeo~](/images/2023/release-rodeo.png)
+
 We started off with feature flags.
 These were initially introduced as a way to pace development.
 No longer did changes need to be done in one go and have to be correct immediately,
 but QA could test a feature behind a feature flag while a part was being developed.
-This also allowed for more smaller PRs,
+This also allowed for more smaller PRs [^PR],
 making reviews much easier.
+
+[^PR]: Pull requests
 
 *However*, the flag count grew,
 and salespeople started to realize they could enable flags for certain customers.
@@ -18,10 +22,15 @@ This is all well and good,
 except for the fact that these features are still in development.
 So, on one occasion a client success person got upset after her feature flag
 (a fancy file uploader) had disappeared because it got merged into another feature
-(a gigantic redesign which was swallowing a bunch of other features).
+(a gigantic redesign which was swallowing a bunch of other features[^problem]).
 This effectively meant certain customers no longer had access to the file uploader they had grown accustomed to.
 And also that their entire workflow was now broken,
 since this is how they had learned to use the product.
+
+[^problem]: This by itself was also problematic.
+            The issue was is that designers start wanting to do changes (as is their job),
+            but devs start ask questions how to do these changes,
+            and realize it's easier to just merge features.
 
 Note that in this setting, a customer is a large corporation with 1000's of employees.
 So if one of them gets unhappy,
