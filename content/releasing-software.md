@@ -149,20 +149,14 @@ The lack of some kind of formalized strategy causes some issues here I think.
 We're just doing stuff, inconsistently, and coordination revolves around people being shocked and in panic.
 This clearly isn't working.
 
-Here I was hoping to arrive at some golden solution, perhaps send a particular manager to some course for release engineering.
-However, once I googled them they seemed to be focused on learning about technology, but we don't have a tech problem.
+Here I was hoping to arrive at some golden solution,
+perhaps send a particular manager to some course for release engineering.
+However, once I googled them they seemed to be focused on learning about technology,
+but we don't have a tech problem.
 Our problem is entirely focused on the process, how people interact.
 I hope it's clear from the context that I think blaming the devs isn't the right solution.
 Perhaps the lesson here is that releases aren't easy.
-Many small releases are better then large bundled ones.
-Developers and sales people need opportunity to comment.
-
-In this article, I was particularly harsh on this one manager, but I've to say he's not all bad.
-He has good ideas.
-And I'm sure he's got some stuff to say about me.
-But, this is *my* blog, and I'll write what *I* want to write about.
-I've kept this intentionally anonymous because people can grow and organizations can change.
-In fact, I hope people will change after reading my humble perspective.
+How do other people release software?
 
 [^model]: A model being a piece of abstract representation of the world, which is directly represented into database tables for example. Changing this requires a lot of updating of the code, wherever it used. Pretty much all web application have either expicit or implicit representations of models.
 
