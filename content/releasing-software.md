@@ -45,7 +45,7 @@ breaking their entire workflow.
 
 Note that in this setting, a customer is a large corporation with thousands of employees.
 So if one of them becomes unhappy,
-the startup I worked for could lose a lot.
+the startup could lose a lot.
 Not just money but also reputation, which translates into future sales,
 potentially threatening the survival of the startup.
 Up until now, this hasn't happened;
