@@ -1,7 +1,7 @@
 TITLE: The Release Rodeo
-DATE: 2023-06-09 18:17
+DATE: 2023-05-31 20:14
 CATEGORY: reflection
-Tags: work, remote
+Tags: work, remote, programming, release
 OPTIONS: toc:nil
 
 <style>
