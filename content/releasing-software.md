@@ -187,7 +187,7 @@ without naming specific individuals or organizations, [^could-be-anyone]
 has at least alleviated my anger.
 I'm not sure if the procedures I've outlined constitute a good process,
 hence I welcome comments,
-but I believe it's a step forward from the status quo of just doing things haphazardly.
+but I believe it's a step forward from doing things haphazardly.
 Getting a timeline for a release at the very least would be beneficial.
 Therefore, with my anger tempered and a sense of progress, I deem this a successful blog post 💪.
 Please share your thoughts in the comments.
