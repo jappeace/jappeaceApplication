@@ -182,15 +182,16 @@ The lack of some kind of formalized strategy causes some issues here, I think.
 We're just doing stuff, inconsistently, and coordination revolves around people being shocked and in a panic.
 This clearly isn't working.
 
-Writing down what I think should happen,
-without naming individuals or organizations, [^could-be-anyone]
-has alleviated my anger at least.
-I'm not sure if the things I've written down are a good process,
-hence I ask for comments,
-but I feel it's a step forward from the status quo of just doing stuff.
-At least getting a timeline of a release out would be great.
-Therefore, with my anger tempered, and a sense of progress, I consider this a successful blog post 💪.
-Let me know what you think in the comments.
+Documenting what I believe should happen,
+without naming specific individuals or organizations, [^could-be-anyone]
+has at least alleviated my anger.
+I'm not sure if the procedures I've outlined constitute a good process,
+hence I welcome comments,
+but I believe it's a step forward from the status quo of just doing things haphazardly.
+Getting a timeline for a release at the very least would be beneficial.
+Therefore, with my anger tempered and a sense of progress, I deem this a successful blog post 💪.
+Please share your thoughts in the comments.
+
 
 
 [^could-be-anyone]: Could be anyone really, since I do work freelance :)
