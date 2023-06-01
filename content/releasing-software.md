@@ -134,8 +134,6 @@ Or he could've engaged me in my #general response, to figure out what's going on
 [^tricks]: Perhaps this is the hidden trick to becoming a manager,
            just constantly blame others for your own mistakes.
            Never reflect, always project.
-           Not that I'm surprised this manager in particular acts this way.
-           He had an amazing teacher of incompetence.
 
 I was angry when starting to write this.
 And while I wanted to blame a particular individual,
