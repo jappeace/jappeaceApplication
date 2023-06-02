@@ -116,24 +116,21 @@ So I reply to his announcement, because I know he's well aware of this.
 Here I redacted the names of the specific features,
 replacing them by "feature" and "our Elm tables".
 Now, is this blunt? Yes, but there is *a lot of money on the line*.
-
-The same manager who blamed the developers in the missing button incident,
+The same manager who blamed the developers for the missing button incident
 was also responsible for this release.
-Naturally, he used his amazing management talents,
-and decided to throw a tantrum and get the CTO to scold me.
-Yes, I was scolded, and praised at the same time.
-It was good we detected this issue early.
-but I got told my communication was too blunt and not precise enough.
-Once again this puts all the blame on developers,
-even though our beloved manager could've asked in #tech before releasing,
-"Are there any serious issues left with feature X or Y or Z?"
-Like you would do in a team.
-Or he could've engaged me in my #general response, to figure out what's going on. [^tricks]
-
-
-[^tricks]: Perhaps this is the hidden trick to becoming a manager,
-           just constantly blame others for your own mistakes.
-           Never reflect, always project.
+Naturally, he employed his remarkable management skills
+and decided to throw a tantrum, persuading the CTO to scold me.
+Indeed, I was reprimanded and praised simultaneously.
+It was beneficial that we detected this issue early,
+but I was told that my communication was too blunt and insufficiently precise.
+I believe there's truth in this.
+I could've been calmer, but maintaining composure is challenging in a stressful situation.
+Part of this blog post is about circumventing such situations in the future.
+The manager could've performed better too.
+For instance, he could've inquired in #tech before releasing,
+"Are there any serious issues remaining with feature X, Y, or Z?"
+Just like one would do in a team.
+Alternatively, he could've engaged with my response in #general to figure out what was happening. 
 
 I was angry when starting to write this.
 And while I wanted to blame a particular individual,
