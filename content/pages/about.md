@@ -32,8 +32,8 @@ A brief overview of meaningful events and decisions in my life.
 
 <table>
 <tr><th> 2023 </th><td>
-I had chatgpt pretend Zhuangzi and Nietzsche were arguing :).
-I organized [fp-kampen](https://www.meetup.com/nl-NL/functional-programming-kampen/).
+I organized <a href="https://www.meetup.com/nl-NL/functional-programming-kampen/">fp-kampen</a>.
+Aruba is <a href="airbnb.nl/h/jappie-aruba">open for business</a>.
 </td></tr>
 <tr><th> 2022 </th><td>
 I participated in <a href="https://jappie.me/zurich-hack-2022-denotational-design.html">zurich hack</a>.

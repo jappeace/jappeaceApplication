@@ -2,7 +2,7 @@ Title: Summerhouse Paradis Aruba
 Date: 2023-01-12 19:00 
 Category: story
 OPTIONS: toc:nil
-Tags: realestate aruba
+Tags: realestate, aruba
 
 <style>
 .video{
