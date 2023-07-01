@@ -33,27 +33,27 @@ it would be better to abandon your Nix aspirations and follow these steps.
 
 # Install ghcup
 
-Link: [https://www.haskell.org/ghcup/#ghcup-instructions-win](https://www.haskell.org/ghcup/#ghcup-instructions-win)
+[Cabal](https://www.haskell.org/cabal/) is a package manager for Haskell only.
+It assumes that native bindings exist.
+We'll provide these using [msys2](https://www.msys2.org/),
+which offers a shell and system isolation.
+On top of that, we utilize [pacman](https://wiki.archlinux.org/title/pacman).
+With this combination, we can create a Linux-like environment to generate *native* Windows executables! 
+We use ghcup to manage the versions of these programs.
+The name comes from ghc, the main compiler. this is also installed.  [^nix-dfference]
+
+[^nix-dfference]: To be clear, the major difference with nix is that nix in principle leverages cabal and ghc, but nix manages the  versions of these, but also solves the native part in a reproducible manner. This means I can write a script for a build and it mostly will keep on working forever, unless source mirrors disappear for example. 
+
+Follow the instructions in the install link: [https://www.haskell.org/ghcup/#ghcup-instructions-win](https://www.haskell.org/ghcup/#ghcup-instructions-win)
 
 Earlier versions suggested using [Chocolatey](https://chocolatey.org/),
 but don't use Chocolatey.
-It is akin to apt and can cause significant problems with Haskell releases.
-It's similar to why you shouldn't use apt to manage Haskell dependencies.
+It is akin to [apt](https://manpages.ubuntu.com/manpages/xenial/man8/apt.8.html)
+and can cause significant problems with Haskell packages.
 If you need system package management and Haskell package management,
 use [Nix](https://nixos.org/).
-It's the only package manager that seems to work.
-However, it doesn't function on native Windows.
-
-[Cabal](https://www.haskell.org/cabal/)
-is a package manager for *just* haskell. It just assumes native
-bindings exist. We'll provide these with [msys2](https://www.msys2.org/),
-which provides a shell and system isolation.
-On top of that we use [pacman](https://wiki.archlinux.org/title/pacman).
-With this combination we can get a linux like environment to get *native*
-windows executables! [^nix-dfference]
-
-[^nix-dfference]: To be clear, the major difference with nix is that nix in principle leverages cabal, but also solves the native part in a reproducible manner. This means I can write a script for a build and it mostly will keep on working forever. Unless source mirrors disappear. Seeing this mutable state going on in windows causes me frustration as I've to fallback to guides like these rather then just solving the "build problem" and move on with my life.
-
+It's the only package manager that seems to work reliably.
+However nix has no native Windows support.
 
 Answer the other questions:
 
