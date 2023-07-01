@@ -1,46 +1,116 @@
-Title: Mysql support for haskell on windows
-Date: 2023-06-22 15:44
+Title: Mysql persistent support for haskell on windows
+Date: 2023-07-01 15:44
 Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, reflex, frp, servant
 subreddit: haskell programming reflexfrp
 Status: draft
 
-This is one of those blogpost I'm making because it sounds trivial,
-but once you get into this you'll learn the depths of the abys.
+This is a small instruction blogpost, mostly for myself
+on how to get mysql support for oprograms on windows.
 
-Normally I use nix to build haskell.
-Nix is almost a perfect solution for haskell.
-It provides a functioning binary cache and it allows patching
-of libraries where naughty maintainers didn't bother updating
-them for whatever reason.
+Specifically we get mysql-persistent support,
+with the help of the pure mysql bindings written in haskell.
 
-Windows doesn't support nix at all.
-Only on WSL[^wsl] there is nix support, but that isn't windows.
-Furthermroe the target platform i'm deploying for, windows server 2012,
-flatout has no WSL support anyway.
-So we've to use cabal (or stack).
-So I decided to drink the coolaid of mutable world, and go for ghcup.
+There technically is cross compilation support
+for windows, [somewhere](https://github.com/input-output-hk/nix-hs-hello-windows).
+It's not implemented in [mainstream nixpkgs](https://github.com/NixOS/nixpkgs/issues/36200)
+at the time of writing.
+So future jappie, it's better to drop your nix hope and follow these steps.
 
-[^wsl]: Windows subsystem for linux, eg a neatly integrated linux vm.
-
-Without nix, or stackage, the situation becomes different.
-All of hacakge is now available for solving,
-meaning cabal will try to use the highest possible version wherever possible.
-You've to sortoff jerry-rig cabal with upper version bounds to get a working build.
-But it's not just you, it's every library that's transiently dependent as well
-that does this.
-So if tls 
-I didn't know this at the time.
-
-I've to say, the first time I tried doing this,
-it wasn't just frustrating, at points I even felt real despair.
-I had this fear that there simply was no way of building mysql
-support for windows.
+These steps are for *native* windows support. No WSL bullshit.
 
 
+# Install ghcup
 
+Link: https://www.haskell.org/ghcup/#ghcup-instructions-win
 
-So the next best thing is to cross compile.
-And although there are claims you can cross compile.
-I don't have the time to figure out how.
+Previous versions asked about using [chocolaty](https://chocolatey.org/), do NOT use chocolatey.
+It's like apt and causes major issues for haskell releases.
+Similar to how you shouldn't use apt to manage haskell dependencies.
+
+If you want package management for haskell use nix.
+That's the only package manager that seems to work.
+But it doesn't work on native windows.
+
+Anwser the other questions:
+
+```
+   default path "C:\"
+```
+It doesn't matter what path is used for ghcup.
+
+```
+   cabal to C:\cabal
+```
+Agaain doesn't matter, putting everything in top-level C makes it easy to find.
+
+```
+   HLS N
+```
+I don't use windows for editing.
+
+```
+   stack N
+```
+We don't use stack as it's just another layer of complexity on top of cabal
+
+```
+   msys2 Y 
+```
+This is mandatory to build the required system dependencies somewhat easily.
+
+Note that you need to re-open the terminal for the new programs,
+eg `cabal` and `ghcup` to register on the `$PATH`.
+
+# Build by hand on with msys2
+
+next you need to open up a msys2 terminal (which is different from a powershell).
+for git we can intsall with pacman in a msys64 terminal:
+
+```
+pacman -S git
+```
+
+There are two spells, I'm not sure which one made it do the work:
+```
+cabal user-config -a "extra-prog-path: %HOME%\.ghcup\bin, %HOME%\AppData\Roaming\cabal\bin, C:\\ghcup\msys64, C:\\ghcup\msys64\mingw64\bin, C:\\ghcup\msys64\user\bin" -a "extra-include-dirs: C:\\ghcup\msys64\mingw64\include" -a "extra-lib-dirs: C:\\ghcup\msys64\mingw64\lib" -f init
+```
+and then I also did this:
+
+```
+    $Env:Path += ";C:\ghcup\msys64\mingw64\bin"
+    $Env:Path += ";C:\ghcup\msys64\usr\bin"
+```
+
+After these steps it worked.
+
+## cabal.project
+You've to tell cabal to use the right mysql packages:
+```
+packages: .
+
+allow-newer: wire-streams:bytestring, binary-parsers:bytestring
+
+source-repository-package
+    type: git
+    location: https://github.com/chordify/persistent
+    tag: cf735587e590369e62168dacc2c3c2411493ae6d
+    subdir: persistent-mysql-haskell
+
+source-repository-package
+    type:git
+    location: https://github.com/jappeace/mysql-haskell
+    tag: 8f95f0a4749b888eba96173378acbede3955ab60
+
+source-repository-package
+    type:git
+    location: https://github.com/naushadh/word24
+    tag: 1cc234d53923c270e888fdeac868c34306c43c70
+
+source-repository-package
+    type:git
+    location: https://github.com/naushadh/word24
+    tag: 1cc234d53923c270e888fdeac868c34306c43c70
+
+```
