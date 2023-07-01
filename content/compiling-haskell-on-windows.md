@@ -2,91 +2,102 @@ Title: Mysql persistent support for haskell on windows
 Date: 2023-07-01 15:44
 Category: tools
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, reflex, frp, servant
-subreddit: haskell programming reflexfrp
-Status: draft
+Tags: programming, windows, mysql, haskell
 
-This is a small instruction blogpost, mostly for myself
-on how to get mysql support for oprograms on windows.
+This is a small instructional blog post,
+primarily for my own reference,
+on how to acquire MySQL support for programs on Windows.
+These steps are for *native* Windows support. There's no WSL involvement.
 
-Specifically we get mysql-persistent support,
-with the help of the pure mysql bindings written in haskell.
+Using Haskell on windows can be very useful in a [wamp](https://www.wampserver.com/en/) like situation.
+Where the main legacy code base is stuck at PHP 5.6 (forever because upgrading is to painful).
+However any new pages can be written with Haskell, 
+which is much more easy to upgrade since the compiler will tell you about most changes.
+New pages can for example be written in [yesod](https://www.yesodweb.com/), 
+and then simply linked to, or posted to with normal HTML/HTTP.
+Although I've not setup a full yesod webserver on windows (yet),
+these step include the hardest part (the database).
+feel free to [contact me](mailto:hi@jappie.me) for help if you want that. 
 
-There technically is cross compilation support
-for windows, [somewhere](https://github.com/input-output-hk/nix-hs-hello-windows).
-It's not implemented in [mainstream nixpkgs](https://github.com/NixOS/nixpkgs/issues/36200)
-at the time of writing.
-So future jappie, it's better to drop your nix hope and follow these steps.
+Specifically,
+we are obtaining MySQL-persistent support with the assistance
+of the pure MySQL bindings written in Haskell.
+Because the bindings are in pure Haskell, they're easily portable.
+Haskell abstracts most operating system oddities away.
 
-These steps are for *native* windows support. No WSL bullshit.
-
+There is technical support for cross-compilation on Windows in nixpkgs,
+available [here](https://github.com/input-output-hk/nix-hs-hello-windows).
+However, at the time of writing,
+it has not been implemented in [mainstream nixpkgs](https://github.com/NixOS/nixpkgs/issues/36200).
+Therefore, future Jappie,
+it would be better to abandon your Nix aspirations and follow these steps.
 
 # Install ghcup
 
 Link: https://www.haskell.org/ghcup/#ghcup-instructions-win
 
-Previous versions asked about using [chocolaty](https://chocolatey.org/), do NOT use chocolatey.
-It's like apt and causes major issues for haskell releases.
-Similar to how you shouldn't use apt to manage haskell dependencies.
+Earlier versions suggested using [chocolaty](https://chocolatey.org/),
+but don't use Chocolatey.
+It is akin to apt and can cause significant problems with Haskell releases.
+It's similar to why you shouldn't use apt to manage Haskell dependencies.
 
-If you want package management for haskell use nix.
-That's the only package manager that seems to work.
-But it doesn't work on native windows.
+If you need package management for Haskell
+, use [Nix](https://nixos.org/). It's the only package manager that seems to work.
+However, it doesn't function on native Windows.
 
-Anwser the other questions:
-
-```
-   default path "C:\"
-```
-It doesn't matter what path is used for ghcup.
+Answer the other questions:
 
 ```
-   cabal to C:\cabal
+   default path "C:\" -- 1
+   cabal to C:\cabal -- 2
+   HLS N -- 3
+   stack N -- 4
+   msys2 Y -- 5
 ```
-Agaain doesn't matter, putting everything in top-level C makes it easy to find.
+1. The path used for ghcup isn't important.
+2. Again, it doesn't matter.
+   Placing everything at the top-level C makes it easy to find.
+3. I don't use Windows for editing.
+   I mounted the project folder as a virtual box folder.
+   On linux I use emacs to maintain chagnes and I run the windows
+   cabal in this mounted folder
+4. We don't use stack as it adds another layer of complexity on top of Cabal.
+5. This is necessary to build the required system dependencies with relative ease. 
 
-```
-   HLS N
-```
-I don't use windows for editing.
+Keep in mind that you need to reopen the terminal for the new programs,
+such as `cabal` and `ghcup`, to register on the `$PATH`.
 
-```
-   stack N
-```
-We don't use stack as it's just another layer of complexity on top of cabal
+# Build manually with msys2
 
-```
-   msys2 Y 
-```
-This is mandatory to build the required system dependencies somewhat easily.
-
-Note that you need to re-open the terminal for the new programs,
-eg `cabal` and `ghcup` to register on the `$PATH`.
-
-# Build by hand on with msys2
-
-next you need to open up a msys2 terminal (which is different from a powershell).
-for git we can intsall with pacman in a msys64 terminal:
+Next, you need to open a msys2 terminal (which is different from a PowerShell).
+To install git, use pacman in a msys64 terminal:
 
 ```
 pacman -S git
 ```
 
-There are two spells, I'm not sure which one made it do the work:
+There are two spells, and I'm not sure which one made it work:
 ```
 cabal user-config -a "extra-prog-path: %HOME%\.ghcup\bin, %HOME%\AppData\Roaming\cabal\bin, C:\\ghcup\msys64, C:\\ghcup\msys64\mingw64\bin, C:\\ghcup\msys64\user\bin" -a "extra-include-dirs: C:\\ghcup\msys64\mingw64\include" -a "extra-lib-dirs: C:\\ghcup\msys64\mingw64\lib" -f init
 ```
-and then I also did this:
+I also did this:
 
 ```
     $Env:Path += ";C:\ghcup\msys64\mingw64\bin"
     $Env:Path += ";C:\ghcup\msys64\usr\bin"
 ```
 
-After these steps it worked.
+After these steps, it worked.
+Now cabal can find git, and therefore download our patched versions.
+Fret not, I'm working on getting these changes into hackage directly.
+It just takes time to do all the politics involved and
+give people opportunity to reply to my requests.
+However even if I'd manage to get the changes upstream, 
+there is a big chance you'd need one native dependency or another anyway,
+which this setup will give you.
 
-## cabal.project
-You've to tell cabal to use the right mysql packages:
+## cabal
+You need to instruct cabal to use the correct MySQL packages:
 ```
 packages: .
 
@@ -112,5 +123,23 @@ source-repository-package
     type:git
     location: https://github.com/naushadh/word24
     tag: 1cc234d53923c270e888fdeac868c34306c43c70
+```
+
+
+Now, cabal can figure out what to use in you 
+`packagename.cabal` file:
 
 ```
+  build-depends:
+    , base                      >=4.9.1.0 && <5
+    , persistent-mysql-haskell
+```
+
+## conclusion
+
+This should set you up with windows development for Haskell
+in more complicated setups then some puzzles.
+You're probably better of getting an ubuntu vm if you just
+want to build something *new* in Haskell.
+However for legacy integrations, this will work,
+and if not, please leave a comment below, or [contact me](mailto:hi@jappie.me).
