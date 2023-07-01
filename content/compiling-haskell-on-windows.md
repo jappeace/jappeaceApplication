@@ -4,11 +4,6 @@ Category: tools
 OPTIONS: toc:nil
 Tags: programming, windows, mysql, haskell
 
-This is a small instructional blog post,
-primarily for my own reference,
-on how to get MySQL support for programs on Windows.
-These steps are for *native* Windows support. There's no WSL involvement.
-
 Using Haskell on Windows can be very useful in a [WAMP](https://www.wampserver.com/en/) like situation,
 where the main legacy codebase is stuck at PHP 5.6 (forever, because upgrading is too painful).
 However, any new pages can be written with Haskell, 
@@ -19,13 +14,17 @@ Although I've not set up a full Yesod web server on Windows (yet),
 these steps include the hardest part (the database).
 Feel free to [contact me](mailto:hi@jappie.me) for help if you want that. 
 
+This is a small instructional blog post,
+primarily for my own reference,
+on how to get MySQL support for programs on Windows.
+These steps are for *native* Windows support. There's no WSL involvement.
 Specifically,
 we are obtaining MySQL-persistent support with the help
-of the pure MySQL bindings written in Haskell.
+of the pure Haskell [MySQL bindings](https://hackage.haskell.org/package/persistent-mysql-haskell).
 Because the bindings are in pure Haskell, they're easily portable.
 Haskell abstracts most operating system oddities away.
 
-There is technical support for cross-compilation on Windows in nixpkgs,
+There is support for cross-compilation on Windows somewhere
 available [here](https://github.com/input-output-hk/nix-hs-hello-windows).
 However, at the time of writing,
 it has not been implemented in [mainstream nixpkgs](https://github.com/NixOS/nixpkgs/issues/36200).
@@ -34,15 +33,27 @@ it would be better to abandon your Nix aspirations and follow these steps.
 
 # Install ghcup
 
-Link: https://www.haskell.org/ghcup/#ghcup-instructions-win
+Link: [https://www.haskell.org/ghcup/#ghcup-instructions-win](https://www.haskell.org/ghcup/#ghcup-instructions-win)
 
 Earlier versions suggested using [Chocolatey](https://chocolatey.org/),
 but don't use Chocolatey.
 It is akin to apt and can cause significant problems with Haskell releases.
 It's similar to why you shouldn't use apt to manage Haskell dependencies.
-
-If you need package management for Haskell, use [Nix](https://nixos.org/). It's the only package manager that seems to work.
+If you need system package management and Haskell package management,
+use [Nix](https://nixos.org/).
+It's the only package manager that seems to work.
 However, it doesn't function on native Windows.
+
+[Cabal](https://www.haskell.org/cabal/)
+is a package manager for *just* haskell. It just assumes native
+bindings exist. We'll provide these with [msys2](https://www.msys2.org/),
+which provides a shell and system isolation.
+On top of that we use [pacman](https://wiki.archlinux.org/title/pacman).
+With this combination we can get a linux like environment to get *native*
+windows executables! [^nix-dfference]
+
+[^nix-dfference]: To be clear, the major difference with nix is that nix in principle leverages cabal, but also solves the native part in a reproducible manner. This means I can write a script for a build and it mostly will keep on working forever. Unless source mirrors disappear. Seeing this mutable state going on in windows causes me frustration as I've to fallback to guides like these rather then just solving the "build problem" and move on with my life.
+
 
 Answer the other questions:
 
