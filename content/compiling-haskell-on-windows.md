@@ -5,14 +5,17 @@ OPTIONS: toc:nil
 Tags: programming, windows, mysql, haskell
 
 Using Haskell on Windows can be very useful in a [WAMP](https://www.wampserver.com/en/) like situation,
-where the main legacy codebase is stuck at PHP 5.6 (forever, because upgrading is too painful).
+where the main legacy codebase is stuck at PHP 5.6[^forever] .
 However, any new pages can be written with Haskell, 
 which is much easier to upgrade since the compiler will inform you about most changes.
 New pages can, for example, be written in [Yesod](https://www.yesodweb.com/), 
 and then simply linked to, or posted to with normal HTML/HTTP.
+The database can be used as an API to interact with PHP state.
 Although I've not set up a full Yesod web server on Windows (yet),
-these steps include the hardest part (the database).
-Feel free to [contact me](mailto:hi@jappie.me) for help if you want that. 
+these steps include the hardest part, the database connection.
+Feel free to [contact me](mailto:hi@jappie.me) if you want help with that. 
+
+[^forever]: Forever, because upgrading is too painful and introduces to many runtime bugs.
 
 This is a small instructional blog post,
 primarily for my own reference,
@@ -107,8 +110,8 @@ there is a big chance you'd need one native dependency or another anyway,
 which this setup will give you.
 
 # Cabal
-You need to instruct Cabal to use the correct MySQL packages:
-```
+You need to instruct Cabal to use the correct MySQL packages `project.cabal`:
+```cabal
 packages: .
 
 allow-newer: wire-streams:bytestring, binary-parsers:bytestring
@@ -136,7 +139,8 @@ source-repository-package
 ```
 
 
-Now, Cabal can figure out what to use in your 
+You can generate an intial configuration with `cabal init`,
+then add `persistent-mysql-haskell` dependency to your build-depends:
 `packagename.cabal` file:
 
 ```
@@ -144,6 +148,10 @@ Now, Cabal can figure out what to use in your
     , base                      >=4.9.1.0 && <5
     , persistent-mysql-haskell
 ```
+
+In combination with the `cabal.project` file, cabal should be using
+git instead of hackage to find that package.
+Test it out with with `cabal build`.
 
 # Conclusion
 
