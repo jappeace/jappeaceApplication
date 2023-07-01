@@ -1,4 +1,4 @@
-Title: Mysql persistent support for haskell on windows
+Title: MySQL Persistent Support for Haskell on Windows
 Date: 2023-07-01 15:44
 Category: tools
 OPTIONS: toc:nil
@@ -6,21 +6,21 @@ Tags: programming, windows, mysql, haskell
 
 This is a small instructional blog post,
 primarily for my own reference,
-on how to acquire MySQL support for programs on Windows.
+on how to get MySQL support for programs on Windows.
 These steps are for *native* Windows support. There's no WSL involvement.
 
-Using Haskell on windows can be very useful in a [wamp](https://www.wampserver.com/en/) like situation.
-Where the main legacy code base is stuck at PHP 5.6 (forever because upgrading is to painful).
-However any new pages can be written with Haskell, 
-which is much more easy to upgrade since the compiler will tell you about most changes.
-New pages can for example be written in [yesod](https://www.yesodweb.com/), 
+Using Haskell on Windows can be very useful in a [WAMP](https://www.wampserver.com/en/) like situation,
+where the main legacy codebase is stuck at PHP 5.6 (forever, because upgrading is too painful).
+However, any new pages can be written with Haskell, 
+which is much easier to upgrade since the compiler will inform you about most changes.
+New pages can, for example, be written in [Yesod](https://www.yesodweb.com/), 
 and then simply linked to, or posted to with normal HTML/HTTP.
-Although I've not setup a full yesod webserver on windows (yet),
-these step include the hardest part (the database).
-feel free to [contact me](mailto:hi@jappie.me) for help if you want that. 
+Although I've not set up a full Yesod web server on Windows (yet),
+these steps include the hardest part (the database).
+Feel free to [contact me](mailto:hi@jappie.me) for help if you want that. 
 
 Specifically,
-we are obtaining MySQL-persistent support with the assistance
+we are obtaining MySQL-persistent support with the help
 of the pure MySQL bindings written in Haskell.
 Because the bindings are in pure Haskell, they're easily portable.
 Haskell abstracts most operating system oddities away.
@@ -36,13 +36,12 @@ it would be better to abandon your Nix aspirations and follow these steps.
 
 Link: https://www.haskell.org/ghcup/#ghcup-instructions-win
 
-Earlier versions suggested using [chocolaty](https://chocolatey.org/),
+Earlier versions suggested using [Chocolatey](https://chocolatey.org/),
 but don't use Chocolatey.
 It is akin to apt and can cause significant problems with Haskell releases.
 It's similar to why you shouldn't use apt to manage Haskell dependencies.
 
-If you need package management for Haskell
-, use [Nix](https://nixos.org/). It's the only package manager that seems to work.
+If you need package management for Haskell, use [Nix](https://nixos.org/). It's the only package manager that seems to work.
 However, it doesn't function on native Windows.
 
 Answer the other questions:
@@ -55,12 +54,10 @@ Answer the other questions:
    msys2 Y -- 5
 ```
 1. The path used for ghcup isn't important.
-2. Again, it doesn't matter.
-   Placing everything at the top-level C makes it easy to find.
-3. I don't use Windows for editing.
-   I mounted the project folder as a virtual box folder.
-   On linux I use emacs to maintain chagnes and I run the windows
-   cabal in this mounted folder
+2. Again, it doesn't matter. Placing everything at the top-level C makes it easy to find.
+3. I don't use Windows for editing. I mounted the project folder as a virtual box folder.
+   On Linux, I use Emacs to maintain changes,
+   and I run the Windows based cabal command in this mounted folder.
 4. We don't use stack as it adds another layer of complexity on top of Cabal.
 5. This is necessary to build the required system dependencies with relative ease. 
 
@@ -69,14 +66,16 @@ such as `cabal` and `ghcup`, to register on the `$PATH`.
 
 # Build manually with msys2
 
-Next, you need to open a msys2 terminal (which is different from a PowerShell).
+Next, you need to open an msys2 terminal (which is different from a PowerShell).
 To install git, use pacman in a msys64 terminal:
 
 ```
 pacman -S git
 ```
 
-There are two spells, and I'm not sure which one made it work:
+There
+
+ are two spells, and I'm not sure which one made it work:
 ```
 cabal user-config -a "extra-prog-path: %HOME%\.ghcup\bin, %HOME%\AppData\Roaming\cabal\bin, C:\\ghcup\msys64, C:\\ghcup\msys64\mingw64\bin, C:\\ghcup\msys64\user\bin" -a "extra-include-dirs: C:\\ghcup\msys64\mingw64\include" -a "extra-lib-dirs: C:\\ghcup\msys64\mingw64\lib" -f init
 ```
@@ -89,15 +88,15 @@ I also did this:
 
 After these steps, it worked.
 Now cabal can find git, and therefore download our patched versions.
-Fret not, I'm working on getting these changes into hackage directly.
+Fret not, I'm working on getting these changes into Hackage directly.
 It just takes time to do all the politics involved and
-give people opportunity to reply to my requests.
-However even if I'd manage to get the changes upstream, 
+give people the opportunity to reply to my requests.
+However, even if I manage to get the changes upstream, 
 there is a big chance you'd need one native dependency or another anyway,
 which this setup will give you.
 
-## cabal
-You need to instruct cabal to use the correct MySQL packages:
+# Cabal
+You need to instruct Cabal to use the correct MySQL packages:
 ```
 packages: .
 
@@ -126,7 +125,7 @@ source-repository-package
 ```
 
 
-Now, cabal can figure out what to use in you 
+Now, Cabal can figure out what to use in your 
 `packagename.cabal` file:
 
 ```
@@ -135,11 +134,11 @@ Now, cabal can figure out what to use in you
     , persistent-mysql-haskell
 ```
 
-## conclusion
+# Conclusion
 
-This should set you up with windows development for Haskell
-in more complicated setups then some puzzles.
-You're probably better of getting an ubuntu vm if you just
+This should set you up with Windows development for Haskell
+in more complicated setups than just some puzzles.
+You're probably better off getting an Ubuntu VM if you just
 want to build something *new* in Haskell.
-However for legacy integrations, this will work,
-and if not, please leave a comment below, or [contact me](mailto:hi@jappie.me).
+However, for legacy integrations, this will work.
+If not, please leave a comment below, or [contact me](mailto:hi@jappie.me).
