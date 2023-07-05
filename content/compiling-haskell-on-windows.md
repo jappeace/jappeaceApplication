@@ -81,7 +81,7 @@ such as `cabal` and `ghcup`, to register on the `$PATH`.
 # Build manually with msys2
 
 Next, you need to open an msys2 terminal (which is different from a PowerShell).
-To install git, use pacman in a msys64 terminal:
+To install git, use pacman in a mingw64 terminal, which can be found in `C:\ghcup\msys64`:
 
 ```
 pacman -S git
