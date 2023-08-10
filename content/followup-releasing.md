@@ -1,4 +1,4 @@
-TITLE: A lesson from Anger
+TITLE: Follow up release rodeo
 DATE: 2023-07-17
 CATEGORY: reflection
 Tags: work, release, anger
@@ -10,10 +10,13 @@ After I wrote that blog post, the CTO found it quickly by coincidence.
 He was quite okay with everything I had written.
 However, he took issue with that I called his critique "scolding".
 I suppose he didn't exactly scold me.
-I described it that way because it aligns with my personality: I'm a harsh person,
+I described it that way because it aligns with my personality:
+I'm an honest person,
 I have high standards, and I take criticism extremely seriously.
 Even when someone says, "You're kind of doing this badly sometimes,"
 I interpret it as "You suck, Jappie, you need to do better".[^psyche]
+This doesn't mean I'm unkind to others,
+however I put myself to high standards.
 He also warned me that if the PM were ever to stumble upon this post, they might get quite upset.
 I am aware of this possibility, which is why I didn't advertise this article at all.
 It seems rather unlikely to me he'd go read a tech blog anyway.
