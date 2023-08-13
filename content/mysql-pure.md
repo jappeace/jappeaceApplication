@@ -1,5 +1,5 @@
-Title: Announcing mysql pure
-Date: 2023-07-01 15:44
+Title: Announcing mysql pure fork
+Date: 2023-08-13 13:37
 Category: tools
 OPTIONS: toc:nil
 Tags: programming, mysql, haskell
