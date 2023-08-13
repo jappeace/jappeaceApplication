@@ -7,28 +7,30 @@ Tags: programming, mysql, haskell
 I've forked [mysql-haskell](https://hackage.haskell.org/package/mysql-haskell) and [persistent-mysql-haskell](https://hackage.haskell.org/package/persistent-mysql-haskell)
 into [mysql-pure](https://hackage.haskell.org/package/mysql-pure)
 and [persistent-mysql-pure](https://hackage.haskell.org/package/persistent-mysql-pure).
-Neither of those packages seem maintained.
-I've done this because they cause me constant issues
-for one of my clients on GHC upgrades.
-Bounds are out of date and or I need minor patches.
-I'm saving myself time by just taking over maintainership,
-and setting up various form of CI automation.
-For example I've added the automated version
-bumping of [nomeata](https://github.com/nomeata/haskell-bounds-bump-action),
-and [haskell nightly](https://github.com/jappeace/haskell-nightly) builds[^issue].
-I forked because I don't want to go trough the [process](https://wiki.haskell.org/Taking_over_a_package) of 
-getting the hackage name space,
-that demotivates me.
-Furthermore mysql-pure merges several dependencies
-of mysql-haskell into one package,
+The original packages were no longer maintained and frequently caused me issues 
+during GHC upgrades,
+so I decided to take over maintainership. 
+For example, bounds were outdated, or I needed minor patches found on
+[obscure branches](https://github.com/chordify/persistent/tree/persistent-mysql-haskell-9.2)
+in [unrelated repositories](https://github.com/naushadh/word24/tree/ci).
+I've set up various CI automations.
+Specifically, I've integrated automated version 
+bumping from [nomeata](https://github.com/nomeata/haskell-bounds-bump-action) and 
+incorporated [haskell nightly](https://github.com/jappeace/haskell-nightly) builds[^issue].
+
+I forked because I didn't want to go through the [process](https://wiki.haskell.org/Taking_over_a_package) of 
+obtaining the Hackage namespace,
+which I found discouraging.
+Furthermore, mysql-pure merges several dependencies
+of mysql-haskell into one package.
 [word24](https://hackage.haskell.org/package/word24),
 [binary-parsers](https://hackage.haskell.org/package/binary-parsers),
-and [wirestreams](https://hackage.haskell.org/package/wire-streams) are all
-now part of this one package.
-This is a somewhat different view of package organization,
-which may warrant a new package *anyway*.
-However, practically no third party packages dependent on the packages
-I merged anyway.
-Having them split incurred more work.
+and [wirestreams](https://hackage.haskell.org/package/wire-streams)
+are all now part of this one package.
+This presents a somewhat different perspective on package organization,
+which might warrant a new package *anyway*.
+However, practically no third-party packages depend on the packages
+I merged,
+So having them separated results in more work nobody appears to benefit from.
 
-[^issue]: Which instantly found an issue in ghc on windows for the linker https://gitlab.haskell.org/ghc/ghc/-/issues/23835
+[^issue]: This instantly found an issue in GHC on Windows for the linker: https://gitlab.haskell.org/ghc/ghc/-/issues/23835.
