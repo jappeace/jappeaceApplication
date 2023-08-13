@@ -2,6 +2,7 @@ Title: MySQL Persistent Support for Haskell on Windows
 Date: 2023-07-01 15:44
 Category: tools
 OPTIONS: toc:nil
+Modified: 2023-08-13 14:09
 Tags: programming, windows, mysql, haskell
 
 Using Haskell on Windows can be very useful in a [WAMP](https://www.wampserver.com/en/) like situation,
@@ -110,6 +111,34 @@ there is a big chance you'd need one native dependency or another anyway,
 which this setup will give you.
 
 # Cabal
+You can generate an intial configuration with `cabal init`,
+then add `persistent-mysql-haskell` dependency to your build-depends:
+`packagename.cabal` file:
+
+```
+  build-depends:
+    , base                      >=4.9.1.0 && <5
+    , persistent-mysql-pure
+```
+
+In combination with the `cabal.project` file, cabal should be using
+git instead of hackage to find that package.
+Test it out with with `cabal build`.
+
+# Conclusion
+
+This should set you up with Windows development for Haskell
+in more complicated setups than just some puzzles.
+You're probably better off getting an Ubuntu VM if you just
+want to build something *new* in Haskell.
+However, for legacy integrations, this will work.
+If not, please leave a comment below, or [contact me](mailto:hi@jappie.me).
+
+
+# Update: Cabal edit
+The cabal section used to contain below text, however since I've
+forked [mysql-pure]({filename}/mysql-pure.md). this is no longer necessary.
+
 You need to instruct Cabal to use the correct MySQL packages `project.cabal`:
 ```cabal
 packages: .
@@ -138,7 +167,6 @@ source-repository-package
     tag: 1cc234d53923c270e888fdeac868c34306c43c70
 ```
 
-
 You can generate an intial configuration with `cabal init`,
 then add `persistent-mysql-haskell` dependency to your build-depends:
 `packagename.cabal` file:
@@ -152,12 +180,3 @@ then add `persistent-mysql-haskell` dependency to your build-depends:
 In combination with the `cabal.project` file, cabal should be using
 git instead of hackage to find that package.
 Test it out with with `cabal build`.
-
-# Conclusion
-
-This should set you up with Windows development for Haskell
-in more complicated setups than just some puzzles.
-You're probably better off getting an Ubuntu VM if you just
-want to build something *new* in Haskell.
-However, for legacy integrations, this will work.
-If not, please leave a comment below, or [contact me](mailto:hi@jappie.me).
