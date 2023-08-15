@@ -8,7 +8,7 @@ Good news! I've come to an agreement with the maintainer of
 [mysql-haskell](https://hackage.haskell.org/package/mysql-haskell), [winterland](https://github.com/winterland1989).
 I'll become a co-maintainer.
 
-What this means in practice is that I'll deprecate [mysql-pure](https://hackage.haskell.org/package/mysql-haskell)
+What this means in practice is that I'll deprecate [mysql-pure](https://hackage.haskell.org/package/mysql-pure)
 and merge the changes back into [mysql-haskell](https://hackage.haskell.org/package/mysql-haskell).
 This will make upgrades far more convenient for users.
 That's you!
