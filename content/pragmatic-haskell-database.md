@@ -4,6 +4,13 @@ Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, database, pragmatic-haskell
 subreddit: haskell programming
+Modified: 2023-08-19 12:32
+
+> Note, I no longer recommend using beam for business as ORM.
+> Please use [persistent](https://www.yesodweb.com/book/persistent) instead.
+> Beam is far to complicated for it's use case.
+> Migrations can be run with [postgresql-migration](https://hackage.haskell.org/package/postgresql-migration) for example, using the suggested migrations from persistent.
+> I'd only recommend using beam for hobby projects or as a case study for [finally tagless](https://okmij.org/ftp/tagless-final/JFP.pdf).
 
 No need to read a book to use Haskell!
 This post will get you going with a serious web application while

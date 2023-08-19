@@ -3,6 +3,7 @@ DATE: 2023-05-31 20:14
 CATEGORY: reflection
 Tags: work, remote, programming, release
 OPTIONS: toc:nil
+Modified: 2023-08-19 12:38
 
 <style>
 img[src="/images/2023/release-rodeo.png"]{
@@ -187,6 +188,7 @@ Getting a timeline for a release at the very least would be beneficial.
 Therefore, with my anger tempered and a sense of progress, I deem this a successful blog post 💪.
 Please share your thoughts in the comments.
 
+Note that this post has a [follow up]({filename}/followup-releasing.md).
 
 
 [^could-be-anyone]: Could be anyone really, since I do work freelance :)
