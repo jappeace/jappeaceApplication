@@ -27,16 +27,16 @@ thought it interesting, looked around more, and found the [release rodeo]({filen
 He got rather upset.
 His issue was that I didn't approach him directly.
 I think that's fair, 
-I feel I would under normal circumstances do this,
+I feel I would do this under normal circumstances,
 however due to history,[^ayden] 
 it was difficult for me to take that step.
-We did solve the underlying problem however. [^perhaps-antisocial]
+I did solve the underlying process problem to him. [^perhaps-antisocial]
 There may not even have been a need
 to single out specific roles in the original blog post,
 I could've chatted in more general
 terms and get the story across.
 I think in the future I won't do that anymore.
-It's just distracting.
+It's just distracting to single out people (even anonymously).
 Because it wasn't a post about venting,
 although I admit, there was a fair bit of venting.
 It was about identifying and solving the underlying issue,
