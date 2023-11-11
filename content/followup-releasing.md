@@ -44,5 +44,7 @@ it's productive to think about why you're angry and devise a plan of action.
 In this case, I indeed solved a rather annoying but important issue by taking a relatively simple action.
 Anyone could've done this.
 
+Note that this post has a [follow up]({filename}/followup-followup-releasing-software.md).
+
 [^psyche]: From this, we can also derive the reason for my bluntness when angry. For a mind that is harsh on itself by default, being nice requires extra effort.
 [^rfc]: Request for change, eg an invitation to discuss a change in process or system.
