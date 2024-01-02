@@ -108,7 +108,18 @@ is many small things, which you probably can't think off ahead of time.
 And recommendations from family and friends during renovation needs to be 
 carefully considered, because they're not all good!
 
-One wild guess I made is that knowing skilled people 
+I learned that people who are good at one job,
+may suck if you let them do a slightly different job.
+For example the guy who build the
+wall (Cesar) and the tiling around the pool
+did some great jobs, but then I let him install a shower,
+and he sort of flipped around the faucet upside down.
+It's still in this awkward position.
+It's rather annoying because they'll say they can do it,
+even though it maybe their first time doing said job.
+
+
+Knowing skilled people 
 is something which is difficult for most who start on aruba.
 I got incredibly lucky with that considering my
 parents had already sifted trough so many contractors with their [casa aruba](https://www.casaaruba.info/) 
@@ -120,15 +131,6 @@ The kitchen looks better as well!
 The entire house is now in this scaffolding wood
 stile, giving a robust and cozy style.
 
-I also learned that people who are good at one job,
-may suck if you let them do a slightly different job.
-For example the guy who put in the tiles and build the
-wall (Cesar) and the tiling around the pool.
-Both great jobs, but then I let him install a shower,
-and he sort of flipped around the faucet upside down.
-It's still in this awkward position.
-It's rather annoying because they'll say they can do it,
-even though it maybe their first time.
 
 I'm not sure if it was financially worth it.
 My intuition says yes, I ran trough the numbers I need
