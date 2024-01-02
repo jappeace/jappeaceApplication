@@ -61,6 +61,25 @@ However I think this is somewhat overvalued,
 because unless if you're straight at the beach,
 tourists are going to have to rent a car anyway.
 
+One wild guess I made is that knowing skilled people 
+is something which is difficult for most who start on aruba.
+I got incredibly lucky with that considering my
+parents had already sifted to so many contractors.
+I was for example able to hire a [local carpenter](https://www.facebook.com/steigerhoutaruba/)
+to clear up the entire kitchen for a third of the
+price I would've had to pay if I let euro-kitchen
+ship it in from europe.
+And it looks better as well!
+The entire house is now in this scaffolding wood
+stile, giving a robust and cozy style.
+
+I also learned that people who are good at one job,
+my suck if you let them do a slightly different job.
+For example the guy who put in the tiles and build the
+wall (cesar) and the tiling around the pool.
+Both great jobs, but then I let him install a shower,
+and he sort of flipped around the faucet upside down.
+
 
 
 However i already had arranged financing trough a private loan.
