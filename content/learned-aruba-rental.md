@@ -20,10 +20,13 @@ I may wish to do this again; it was a fun ride.
 If you're interested in doing something similar, I think this blog post
 is useful.
 
+
+
 The prices for real estate 
-were really good in aruba compared to the Netherlands,
+were really good in aruba compared to the Netherlands at the time of buying,
 I got about double what I could expect in the Netherlands.
-Since my parents already have a [investment property](https://www.casaaruba.info/)  in Aruba it seemed 
+Since my parents already have an
+[investment property](https://www.casaaruba.info/) in Aruba it seemed,
 relatively easy to setup, not to say it's easy.
 Another reason for doing this was the low interest rates, 
 it looked like attractive leverage.
