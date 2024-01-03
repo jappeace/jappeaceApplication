@@ -44,6 +44,7 @@ This is so hard.[^ego] 😬
         One could even say this post is a giant brag, but hey, I'm not forcing you to read this,
         my dear reader.
 
+
 I considered many other properties before settling on this one;
 at first, I wanted to build a new place.
 This made sense to me since labor costs are low in Aruba.
@@ -56,6 +57,8 @@ the plastic door was jammed too close to the switches, giving no space to move.
 If you're considering building on Aruba, 
 keep in mind you have to be there, or have someone trustworthy there, 
 and watch the contractors.
+
+![jappie digs the pool](/images/2024/jappie-dig.jpg)
 
 The amount of corruption or incompetence[^incompetence] on Aruba is rather staggering.
 For example, 
@@ -131,105 +134,106 @@ In this regard, my more budget-friendly stay offers a lot of value to tourists.
 ![pool](/images/2024/skilled.jpeg)
 
 After handover, when doing some renovations,
-many people will recommend you extending the scope of a project a lot.
+many people will recommend extending the scope of a project significantly.
 This can come from friends and family.
-I had discussions about placing more walls for more bedrooms, or placing doors,
-or this and that, and most of these changes won't make you a lot of money.
-However they will extend the timeline, so I refused most of these requests.
-However the first guest [recommended](https://www.airbnb.nl/progress/reviews/details/921014041531665037) 
+I had discussions about adding more walls for additional bedrooms, or installing doors,
+or various other changes, but most of these wouldn't be very profitable.
+However, they would extend the timeline, so I refused most of these requests.
+However, the first guest [recommended](https://www.airbnb.nl/progress/reviews/details/921014041531665037) 
 me to put a fence between the pool 
-and the patio, so that the kids go safely outside.
-A minor change in the grand scheme of things, 
-which solved a real problem this guest was miffed by.
-None of my family or friends had recommended such a change, 
-because nobody had stayed at the place with kids.
-I just kept solving all these problems guests highlighted in reviews,
-if they were reasonable, such as
-"we miss wine glasses", "we miss trashcans in the toilets", 
-"we don't have oven ready pots and pans but there is an oven".
-Some requests were rather infeasible, such as "move the pool behind the house", and I ignored those.
-Solving these issues usually cost below 100 euro, and even the fence was done for less then 1000 euro.
-Compared to the amount of money I spend for the pool and the house itself this was small change.
-But they were fixed costs.
-However, after having done that after the first couple visits the complaints
-stopped and people started giving me consistent 5 star reviews.
-Even though the price had gone way up in December.
+and the patio, to ensure the kids could play safely outside.
+This was a minor change overall, 
+but it solved a real issue that this guest was concerned about.
+None of my family or friends had suggested such a change, 
+as nobody had stayed at the place with kids.
+I focused on solving all these problems guests highlighted in reviews,
+when they were reasonable, such as
+"we miss wine glasses", "we need trash cans in the bathrooms", 
+"we don’t have oven-ready pots and pans, but there is an oven".
+Some requests were impractical, like "move the pool behind the house", and I ignored those.
+Addressing these issues usually cost less than 100 euros, and even the fence was done for less than 1000 euros.
+Compared to the amount I spent on the pool and the house itself, this was minor.
+But these were fixed costs.
+However, after addressing these issues after the first few visits, the complaints
+stopped and people began giving me consistent 5-star reviews,
+even though the price had increased significantly in December.
 I learned that the difference between a good stay and a great stay
-is many small things, which you probably can't think off ahead of time.
-Guests will tell their problems however if you ask.
-And recommendations from family and friends during renovation needs to be 
-carefully considered, because they're not all good!
+lies in many small details, which are hard to anticipate.
+Guests will share their problems if you ask.
+Recommendations from family and friends during renovations need to be 
+carefully evaluated, as they're not always beneficial.
+
 
 ![the fence is shown behind the pool](/images/2024/fence.jpeg)
 
-I learned that people who are good at one job,
-may suck if you let them do a slightly different job.
-For example the guy who build the
+I learned that people who are good at one job
+may underperform if you let them do a slightly different job.
+For example, the guy who built the
 wall (Cesar) and the tiling around the pool
 did some great jobs, but then I let him install a shower,
-and he sort of flipped around the faucet upside down.
+and he inadvertently installed the faucet upside down.
 It's still in this awkward position.
-Aruban contracters often will say they can do something,
-even though it maybe their first time doing said job.
-One has to be carefull about this.
-I like this particular contractor however because he can't speak English
-and I find the broken hands/feet communitcation rather funny.
-So I'd hire him again, but not for showers!
+Aruban contractors often will say they can do something,
+even though it may be their first time doing such a job.
+One has to be careful about this.
+I like this particular contractor, however, because he can't speak English
+and I find the non-verbal communication rather amusing.
+So, I'd hire him again, but not for showers!
 
 ![shower flipped](/images/2024/douche.jpeg)
 
 Knowing skilled people 
-is something which is difficult for most who start on Aruba.
-I got incredibly lucky with that considering my
-parents had already sifted trough so many contractors with their [casa aruba](https://www.casaaruba.info/) 
-project.
-I was for example able to hire a [local carpenter](https://www.facebook.com/steigerhoutaruba/)
-to clear up the entire kitchen for a third of the price I would've had 
-to pay if I let euro-kitchen ship it in from europe.
-The kitchen looks better as well!
-The entire house is now in this scaffolding wood
-stile, giving a robust and cozy style.
+is something that is difficult for newcomers in Aruba.
+I got incredibly lucky in that regard, considering my
+parents had already sifted through so many contractors for their [Casa Aruba](https://www.casaaruba.info/) 
+rental property.
+For example, I was able to hire a [local carpenter](https://www.facebook.com/steigerhoutaruba/)
+to redo the entire kitchen for a third of the price I would have 
+had to pay if I had used a European kitchen supplier.
+The kitchen looks better, too!
+The entire house now has this scaffolding wood
+style, giving it a robust and cozy ambiance.
 
-![shower flipped](/images/2024/kitchen-2.jpeg)
+![second kitchen pick](/images/2024/kitchen-2.jpeg)
 
 I was also blessed with the support of my parents.
-Aside the financing, they supported me with the paint work,
-and there was a lot of paintwork.
-Without their help I probably would've spend another 30k on that
-and end up with a worse result.
+Besides financing, they supported me with the paintwork,
+and there was a lot of it.
+Without their help, I probably would have spent another 30k on that
+and ended up with a worse result.
 
 I'm not sure if it was financially worth it.
-Intuitively I think it was, but I still need to run the numbers more torughly once the first year is finished. 
-My pelimary observation say I need
-to make more then 1500 euro a month to turn a profit,
-and more then 3000 a month to cover mortgage payments as well.
-I've some brutal payback schedule, 
+Intuitively, I think it was, but I still need to run the numbers more thoroughly once the first year is finished. 
+My preliminary observations suggest I need
+to make more than 1500 euros a month to turn a profit,
+and more than 3000 euros a month to cover mortgage payments as well.
+I have a strict payback schedule, 
 because I didn't like the high interest rate from the private market,
-but this will finish in 6 years.
-It's difficult to measure if it's "worth it",
-because the first couple months of this project were naturally the worst 
-ones I could've had, there were no reviews, 
+but this will be completed in 6 years.
+It's difficult to measure if it's "worth it,"
+because the first few months of this project were naturally the worst 
+I could have had, with no reviews, 
 so I had to compensate by lowering the price.
-Furthermore things like solar panels and my custom 
+Furthermore, things like solar panels and my custom 
 [rental booking](https://github.com/jappeace/rentals/)
 site are still not operational[^link].
-the solar panels should bring the electric bill down from roughly
-250 to close to 0, and the rental booking website cuts out
-airbnb for bookings which take about 15%.
+The solar panels should reduce the electric bill from roughly
+250 euros to close to 0, and the rental booking website eliminates
+the need for Airbnb, which takes 15% cut of bookings.
 
 [^link]: If it is operational this [link](https://rental.jappie.me) should work.
 
 ![bed](/images/2024/bed.jpeg)
 
-Ironically, despite all the setbacks I may do this again.
-Seeing the house come to live, all the reviews from people,
-and the appreciation is fantastic.
-However I'd like to confirm first if it's financially worth it.
+Ironically, despite all the setbacks, I may do this again.
+Seeing the house come to life, reading all the reviews from people,
+and experiencing their appreciation is fantastic.
+However, I'd like to confirm first if it's financially worth it.
 After it has been open for a year, 
-I think what I'll do is just make a year overview for this project.
-How much it brought in and how much I spend on it.
-Furthermore I currently simply do not have the cash to setup another
+I plan to create a yearly overview of this project,
+detailing how much it brought in and how much I spent on it.
+Furthermore, I currently simply do not have the cash to set up another
 one.
-I feel I'm kinda good at this.
-However, If you happen to run a rental and have ideas for improvement? 
-Please let me know in the comments!
+I feel I'm quite good at this.
+However, if you happen to run a rental and have ideas for improvement, 
+please let me know in the comments!
