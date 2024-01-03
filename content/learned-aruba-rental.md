@@ -4,7 +4,7 @@ Category: reflection
 OPTIONS: toc:nil
 Tags: realestate, aruba, finance, rental
 
-[Villa Katalina in aruba~ is online](https://www.airbnb.nl/jappie-aruba).
+[Villa Katalina in aruba~ is online](https://www.airbnb.nl/h/jappie-aruba).
 
 ![pic of the house](/images/2024/katalina.jpeg)
 
