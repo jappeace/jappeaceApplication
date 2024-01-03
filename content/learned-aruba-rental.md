@@ -31,8 +31,8 @@ which looked like attractive leverage.
 Furthermore, I already had experience with running an Airbnb in my own home, 
 so I felt somewhat confident I could make this work.
 Because my own house is not in a touristic area at all, but Aruba is.
-I'd be lying if I said this was done just for financial reasons.
-Ego played a huge part in deciding to do this as well.
+I'd be lying if I said this only done for financial reasons.
+Ego played a large part in deciding to do this as well.
 For one, not being completely dependent on a single source of income
 allows me to take more professional risks and become more productive as a result.
 The other reason is bragging rights, not that I wish to brag, 
@@ -50,7 +50,7 @@ at first, I wanted to build a new place.
 This made sense to me since labor costs are low in Aruba.
 However, my father strongly urged against that, citing many experiences
 of even the smallest jobs going wrong.
-You have to be there and watch contractors like a hawk if you want to do this.
+You have to watch contractors like a hawk if you want to do this.
 I experienced such issues as well with some contractors while doing the pool house.
 For example, the fuse switch in the pool house couldn't switch off because
 the plastic door was jammed too close to the switches, giving no space to move.
@@ -139,21 +139,23 @@ This can come from friends and family.
 I had discussions about adding more walls for additional bedrooms, or installing doors,
 or various other changes, but most of these wouldn't be very profitable.
 However, they would extend the timeline, so I refused most of these requests.
-However, the first guest [recommended](https://www.airbnb.nl/progress/reviews/details/921014041531665037) 
+The first guest [recommended](https://www.airbnb.nl/progress/reviews/details/921014041531665037) 
 me to put a fence between the pool 
 and the patio, to ensure the kids could play safely outside.
 This was a minor change overall, 
-but it solved a real issue that this guest was concerned about.
+and could happen with other guests staying there.
+This change solved a real issue that this guest, and by extension other guests, 
+were concerned about.
 None of my family or friends had suggested such a change, 
 as nobody had stayed at the place with kids.
-I focused on solving all these problems guests highlighted in reviews,
+I kept focus on solving all these problems guests highlighted in reviews,
 when they were reasonable, such as
 "we miss wine glasses", "we need trash cans in the bathrooms", 
 "we don’t have oven-ready pots and pans, but there is an oven".
 Some requests were impractical, like "move the pool behind the house", and I ignored those.
 Addressing these issues usually cost less than 100 euros, and even the fence was done for less than 1000 euros.
-Compared to the amount I spent on the pool and the house itself, this was minor.
-But these were fixed costs.
+Compared to the amount I spent on the pool and the house itself, 
+this was minor and a fixed costs.
 However, after addressing these issues after the first few visits, the complaints
 stopped and people began giving me consistent 5-star reviews,
 even though the price had increased significantly in December.
@@ -199,7 +201,7 @@ style, giving it a robust and cozy ambiance.
 I was also blessed with the support of my parents.
 Besides financing, they supported me with the paintwork,
 and there was a lot of it.
-Without their help, I probably would have spent another 30k on that
+Without their help, I probably would have spent another 8k on that
 and ended up with a worse result.
 
 I'm not sure if it was financially worth it.
@@ -212,14 +214,14 @@ because I didn't like the high interest rate from the private market,
 but this will be completed in 6 years.
 It's difficult to measure if it's "worth it,"
 because the first few months of this project were naturally the worst 
-I could have had, with no reviews, 
-so I had to compensate by lowering the price.
+I could have had. 
+I had no reviews so I had to compensate by lowering the price.
 Furthermore, things like solar panels and my custom 
 [rental booking](https://github.com/jappeace/rentals/)
 site are still not operational[^link].
 The solar panels should reduce the electric bill from roughly
 250 euros to close to 0, and the rental booking website eliminates
-the need for Airbnb, which takes 15% cut of bookings.
+the need for Airbnb, which takes 17% cut of bookings.
 
 [^link]: If it is operational this [link](https://rental.jappie.me) should work.
 
@@ -230,7 +232,7 @@ Seeing the house come to life, reading all the reviews from people,
 and experiencing their appreciation is fantastic.
 However, I'd like to confirm first if it's financially worth it.
 After it has been open for a year, 
-I plan to create a yearly overview of this project,
+I plan to create an private overview of this investment,
 detailing how much it brought in and how much I spent on it.
 Furthermore, I currently simply do not have the cash to set up another
 one.
