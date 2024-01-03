@@ -20,110 +20,109 @@ I may wish to do this again; it was a fun ride.
 If you're interested in doing something similar, I think this blog post
 is useful.
 
-
-
 The prices for real estate 
-were really good in aruba compared to the Netherlands at the time of buying,
-I got about double what I could expect in the Netherlands.
+were really good in Aruba compared to the Netherlands at the time of buying;
+I got about double of what I could expect in the Netherlands.
 Since my parents already have an
-[investment property](https://www.casaaruba.info/) in Aruba it seemed,
-relatively easy to setup, not to say it's easy.
+[investment property](https://www.casaaruba.info/) in Aruba, it seemed
+relatively easy to set up, not to say it was easy.
 Another reason for doing this was the low interest rates, 
-it looked like attractive leverage.
-Furthermore I already had experience with running an airbnb in my own home, 
+which looked like attractive leverage.
+Furthermore, I already had experience with running an Airbnb in my own home, 
 so I felt somewhat confident I could make this work.
-Because my own house is not in a touristic area at all, Aruba is however.
-I'd be lying if this was done just for financial reasons.
-Ego had a huge part in deciding to do this as well.
+Because my own house is not in a touristic area at all, but Aruba is.
+I'd be lying if I said this was done just for financial reasons.
+Ego played a huge part in deciding to do this as well.
 For one, not being completely dependent on a single source of income
 allows me to take more professional risks and become more productive as a result.
 The other reason is bragging rights, not that I wish to brag, 
 but the only way to be humble is to have something to brag about [and not do that](https://www.youtube.com/watch?v=S-huj6EL3A4).
 This is so hard.[^ego] 😬
 
-[^ego]: Of course I did tell people about the bnb I bought, of 
+
+[^ego]: Of course, I did tell people about the BnB I bought. 
         One could even say this post is a giant brag, but hey, I'm not forcing you to read this,
         my dear reader.
 
-I considered many other properties before setting onto this one,
-at first I wanted to build a new place.
+I considered many other properties before settling on this one;
+at first, I wanted to build a new place.
 This made sense to me since labor costs are low in Aruba.
-However my father strongly urged against that, citing many experiences
+However, my father strongly urged against that, citing many experiences
 of even the smallest jobs going wrong.
 You have to be there and watch contractors like a hawk if you want to do this.
-I experienced such issues as well with some contractors while doing the pool house,
-for example the fuse switch in the pool house couldn't switch off because
-the plastic door was jammed to close to the switches, giving no space to move. 
+I experienced such issues as well with some contractors while doing the pool house.
+For example, the fuse switch in the pool house couldn't switch off because
+the plastic door was jammed too close to the switches, giving no space to move.
 If you're considering building on Aruba, 
 keep in mind you have to be there, or have someone trustworthy there, 
 and watch the contractors.
 
 The amount of corruption or incompetence[^incompetence] on Aruba is rather staggering.
 For example, 
-the notary [johnson and johnson](https://www.johnsonnotary.com/),
+the notary [Johnson and Johnson](https://www.johnsonnotary.com/),
 took ages to close when I was buying the place.
-The closing date was at the end of july,
-I assumed it'd be done before that time,
+The closing date was at the end of July;
+I assumed it would be done before that time,
 but we closed in October.
-I was familiar with Aruba culture of taking things slowly,
+I was familiar with Aruba's culture of taking things slowly,
 but I didn't expect things to take this long!
-What I've could've done different in this case is contact the notary
-more often on progress.
+What I could have done differently in this case is contact the notary
+more often for progress updates.
 I think they just forgot about this deal or something.
 I was even told this was exceptionally slow.
-Because closing took so long I essentially mist out of opportunity costs,
-I could've opened the airbnb 2 months earlier, in March instead of May.
-Which means I missed all that income.
+Because the closing took so long, I essentially missed out on opportunity costs.
+I could have opened the Airbnb two months earlier, in March instead of May,
+which means I missed all that income.
 
-[^incompetence]: I say incompetence, because by [Hanlon's razor](https://en.wikipedia.org/wiki/Hanlon%27s_razor), it's usually just that.
+[^incompetence]: I say incompetence because, according to [Hanlon's razor](https://en.wikipedia.org/wiki/Hanlon%27s_razor), it's usually just that.
 
-Another example incompetence I'm currently facing is with the power company [Elmar](https://www.elmar.aw/),
-and [Mr Green](https://mistergreenaruba.com/) solar services.
-The solar panels were installed 15 august, I was promised they
+Another example of incompetence I'm currently facing is with the power company [Elmar](https://www.elmar.aw/),
+and [Mr. Green](https://mistergreenaruba.com/) solar services.
+The solar panels were installed on 15 August, and I was promised they
 could at least be turned on from that point, 
 subtracting power generation from my usage.
-It's now January and this still hasn't happened.
-And even after that happens the excess is still given away
+It's now January, and this still hasn't happened.
+Even after that, the excess is still given away
 to Elmar for free, after some "mythical" inspection which
 has to take at least 6 months.
-This little joke is costing me the full power bill which is 250 euro a month.
-I've no idea why it takes this long, it's not a big island!
-I've learned from my johnson experience so I'm contacting Mr green
+This delay is costing me the full power bill, which is 250 euros a month.
+I have no idea why it takes this long; it's not a big island!
+Having learned from my Johnson experience, I'm contacting Mr. Green
 weekly.
 
-I also got screwed me over was the amount at 
-which exchange rates can fluctuate,
-this caused a lot off stress.
-The euro fell rather sharply against the dollar while I was waiting
+What also caught me off guard was the fluctuation in exchange rates,
+which caused a lot of stress.
+The euro fell sharply against the dollar while I was waiting
 for the deal to close,
-however the listing price was denominated in dollars,
-and I had euro currency saved up!
+but the listing price was denominated in dollars,
+and I had euros saved up!
 This made the property effectively 10% more expensive.
-Considering the price was 180'000 dollar, this cost me 18'000.
-I've to admit, I dropped a little tear there.
-In the future I should put the closing money 
-in a same currency account as soon as I sign.
+Considering the price was 180,000 dollars, this cost me 18,000.
+I must admit, I shed a tear over this.
+In the future, I should put the closing money 
+in an account of the same currency as soon as I sign.
 
 ![course of euro/dollar](/images/2023/course.png)
 
 However, what I'm really happy with is not going into hyper debt.
-My father who financed half this investment property[^interest] with a mortage like loan, 
-recommended me to look at more expensive properties.
-so I was looking at (400k) properties at first, 
-However I decided to go with a cheaper option instead (180k),
-even though the lender would've agreed to the more expensive option.
-I'm really happy I did this because during the renovation
+My father, who financed half of this investment property[^interest] with a mortgage-like loan, 
+recommended I look at more expensive properties.
+So, I was looking at properties around 400k at first, 
+however, I decided to go with a cheaper option instead, at 180k,
+even though the lender would have agreed to the more expensive option.
+I'm really happy I did this because during the renovation,
 I decided that a pool would drastically increase the
 appeal, allowing me to charge much more rent [^more],
 but this would require another 30k investment.
 This was still possible because the monthly payments weren't as high yet.
-The biggest improvement from these more expensive properties 
-were proximity to the beach.
-However I think this is somewhat overvalued,
+The biggest advantage of these more expensive properties 
+was their proximity to the beach.
+However, I think this is somewhat overvalued,
 because public transit is poor in Aruba, 
-so unless if you're straight at the beach,
+so unless you're right on the beach,
 tourists are going to have to rent a car anyway.
-In this regard my more budget stay gives a lot of value to tourists.
+In this regard, my more budget-friendly stay offers a lot of value to tourists.
+
 
 [^interest]: He got a 5% interest rate while other mortages were going around for 1.5%. 
              So it's not like I got a handout.
