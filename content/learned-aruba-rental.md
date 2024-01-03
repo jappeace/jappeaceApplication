@@ -8,7 +8,7 @@ Tags: realestate, aruba, finance, rental
 
 ![pic of the house](/images/2024/katalina.jpeg)
 
-You can book [this wonderful rental now!](https://www.airbnb.nl/jappie-aruba)
+You can book [this wonderful rental now!](https://www.airbnb.nl/h/jappie-aruba)
 This is the rebranded [summerhouse Paradis]({filename}/summerhouse-paradis.md).
 It's a villa that can host up to 8 guests, located in Aruba.
 I think this rental project is slowly turning out to be successful,
