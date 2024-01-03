@@ -21,8 +21,10 @@ If you're interested in doing something similar, I think this blogpost
 is useful.
 
 The prices for real estate 
-were really good in aruba compared to the netherlands,
-I got about double what I could expect in the netherlands.
+were really good in aruba compared to the Netherlands,
+I got about double what I could expect in the Netherlands.
+Since my parents already have a [investment property](https://www.casaaruba.info/)  in Aruba it seemed 
+relatively easy to setup, not to say it's easy.
 Another reason for doing this was the low interest rates, 
 it looked like attractive leverage.
 Furthermore I already had experience with running an airbnb in my own home, 
@@ -102,8 +104,8 @@ in a same currency account as soon as I sign.
 ![course of euro/dollar](/images/2023/course.png)
 
 However, what I'm really happy with is not going into hyper debt.
-My father who financed half this project with a loan, recommended me to
-look at more expensive properties.
+My father who financed half this investment property[^interest] with a mortage like loan, 
+recommended me to look at more expensive properties.
 so I was looking at (400k) properties at first, 
 However I decided to go with a cheaper option instead (180k),
 even though the lender would've agreed to the more expensive option.
@@ -120,6 +122,8 @@ so unless if you're straight at the beach,
 tourists are going to have to rent a car anyway.
 In this regard my more budget stay gives a lot of value to tourists.
 
+[^interest]: He got a 5% interest rate while other mortages were going around for 1.5%. 
+             So it's not like I got a handout.
 [^more]: Say 50% more.
 
 ![pool](/images/2024/skilled.jpeg)
