@@ -10,14 +10,14 @@ Tags: realestate, aruba, finance
 
 You can book [this wonderful rental now!](https://www.airbnb.nl/jappie-aruba)
 This is the rebranded [summerhouse Paradis]({filename}/summerhouse-paradis.md).
-It's a villa that can host up to 8 guests located in Aruba.
-I think the project is slowly turning out to be successful,
-but this wasn't easy.
-I went into this project knowing full well there'd be trouble,
-and boy there was trouble.
+It's a villa that can host up to 8 guests, located in Aruba.
+I think this rental project is slowly turning out to be successful,
+but it wasn't easy.
+I went into this project knowing full well there would be trouble,
+and boy, there was trouble.
 I'll list the issues and lessons learned from doing this for future me.
-I may wish to do this again, it was a fun ride.
-If you're interested in doing something similar, I think this blogpost
+I may wish to do this again; it was a fun ride.
+If you're interested in doing something similar, I think this blog post
 is useful.
 
 The prices for real estate 
