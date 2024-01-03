@@ -2,7 +2,7 @@ Title: Lessons from creating a vacation rental.
 Date: 2024-01-02 19:00 
 Category: reflection
 OPTIONS: toc:nil
-Tags: realestate, aruba, finance
+Tags: realestate, aruba, finance, rental
 
 [Villa Katalina in aruba~ is online](https://www.airbnb.nl/jappie-aruba).
 
