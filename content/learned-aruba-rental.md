@@ -28,6 +28,17 @@ it looked like attractive leverage.
 Furthermore I already had experience with running an airbnb in my own home, 
 so I felt somewhat confident I could make this work.
 Because my own house is not in a touristic area at all, Aruba is however.
+I'd be lying if this was done just for financial reasons.
+Ego had a huge part in deciding to do this as well.
+For one, not being completely dependent on a single source of income
+allows me to take more professional risks and become more productive as a result.
+The other reason is bragging rights, not that I wish to brag, 
+but the only way to be humble is to have something to brag about [and not do that](https://www.youtube.com/watch?v=S-huj6EL3A4).
+This is so hard.[^ego] 😬
+
+[^ego]: Of course I did tell people about the bnb I bought, of 
+        One could even say this post is a giant brag, but hey, I'm not forcing you to read this,
+        my dear reader.
 
 I considered many other properties before setting onto this one,
 at first I wanted to build a new place.
@@ -35,7 +46,7 @@ This made sense to me since labor costs are low in Aruba.
 However my father strongly urged against that, citing many experiences
 of even the smallest jobs going wrong.
 You have to be there and watch contractors like a hawk if you want to do this.
-I experienced such issues as well with some contractors while doing the pool,
+I experienced such issues as well with some contractors while doing the pool house,
 for example the fuse switch in the pool house couldn't switch off because
 the plastic door was jammed to close to the switches, giving no space to move. 
 If you're considering building on Aruba, 
