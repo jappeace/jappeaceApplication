@@ -1,0 +1,730 @@
+#+TITLE: Type classes
+
+
+* Motivation
+
++ Heavily used by converge
++ Explain benefits/costs
++ Difficulty
+
+* Ask questions anytime!
+
+
+* Goals
+  
++ Layer 0: Why do we use types?
++ Layer 1: typeclasses and instances
++ Layer 2: Polymophic effects
++ Layer 3: Instance recursion
+
+* 
+  
+What can tommy do if he is of IO?
+
+#+BEGIN_SRC haskell
+tommy :: IO ()
+#+END_SRC 
+
++ A. He can serve a webpage
++ B. He can answer yes or no.
++ C. He can read a file.
++ D. tommy is god and can do everything.
+
+* 
+
+What can betty do if she is of =YesOrNo=?
+
+#+BEGIN_SRC haskell
+data YesOrNo = Yes | No
+betty :: YesOrNo 
+#+END_SRC 
+
++ A. She can serve a webpage
++ B. She can answer yes or no.
++ C. She can read a file.
++ D. betty is god and can do everything.
+
+* 
+Our web server crashed, where is the bug?
+
+#+BEGIN_SRC haskell
+tommy :: IO ()
+
+betty :: YesOrNo 
+#+END_SRC 
+
++ A. tommy
++ B. betty
+
+* 
+Why types?
+
++ Thinking aid
++ Spot bugs *early*
++ Run computations
+
+* NEXT LEVEL
+
+
++ +Layer 0: Why do we use types?+
++ Layer 1: typeclasses and instances
++ Layer 2: Polymophic effects
++ Layer 3: Instance recursion
+
+
+* 
+Consider numbers
+#+BEGIN_SRC haskell
+
+one :: Int
+one = 1
+
+two :: Double
+two = 2
+
+three :: _ -- ???
+three = one + two
+
+#+END_SRC 
+
+* 
+Compile error
+
+#+BEGIN_SRC haskell
+Main.hs:9:15: error:
+    • Couldn't match expected type ‘Int’ with actual type ‘Double’
+    • In the second argument of ‘(+)’, namely ‘two’
+      In the expression: one + two
+      In an equation for ‘three’: three = one + two
+  |
+9 | three = one + two
+#+END_SRC
+* 
+
+#+BEGIN_SRC haskell
+one :: Int
+one = 1
+
+two :: Double
+two = 2
+
+three = one + two
+
+(+) :: a -> a -> a
+-- a is substituded by Int
+(+) :: Int -> Int -> Int
+#+END_SRC
+
+* 
++ valid program
++ *too* strict
+
+* 
+What is the type of a number?
+#+BEGIN_SRC haskell
+
+one :: _ -- ??
+one = 1
+
+#+END_SRC 
+
+
+* 
+It's not sure
+#+BEGIN_SRC haskell
+
+one :: Num a => a -- ??
+one = 1
+
+#+END_SRC 
+
+* 
+A class
+#+BEGIN_SRC haskell
+
+class Num a where
+  (+) :: a -> a -> a
+
+#+END_SRC 
+
+* 
+#+BEGIN_SRC haskell
+instance Num Double where
+  (+) = plusDouble
+
+instance Num Int where
+  I# x + I# y = I# (x +# y)
+#+END_SRC 
+
+
+* 
+How does it select the right instance?
+
+#+BEGIN_SRC haskell
+
+one :: Num a => a
+one = 1
+
+two :: Num a => a
+two = 2
+
+threeInt :: Int
+threeInt = two + one
+
+#+END_SRC 
+
+* 
+#+BEGIN_SRC haskell
+
+threeInt :: Int
+threeInt = two + one
+            -- ^ (+) :: Num a => a -> a -> a
+            -- result is Int.
+            -- (+) :: Int -> Int -> Int
+            -- do I have an instance for this?
+#+END_SRC 
+
+* 
+All types from main:
+ - Monomorphzed
+ - concrete
+
+* 
+Will this compile?
+
+#+BEGIN_SRC haskell
+main :: IO ()
+main = do
+  print myMonad
+
+myMonad :: (Show (m Char), Monad m) => m Char
+myMonad = pure 'x'
+#+END_SRC
+* 
+No, ambiguity
+#+BEGIN_SRC haskell
+   • Ambiguous type variable ‘m0’ arising from a use of ‘print’
+      prevents the constraint ‘(Show (m0 Char))’ from being solved.
+      Probable fix: use a type annotation to specify what ‘m0’ should be.
+      Potentially matching instances:
+        instance Show g => Show (Rand.AtomicGen g)
+          -- Defined in ‘System.Random.Stateful’
+        instance Show g => Show (Rand.IOGen g)
+          -- Defined in ‘System.Random.Stateful’
+        ...plus 19 others
+        ...plus three instances involving out-of-scope types
+        (use -fprint-potential-instances to see them all)
+    • In a stmt of a 'do' block: print myMonad
+      In the expression:
+        do print one
+           print myMonad
+      In an equation for ‘main’:
+          main
+            = do print one
+                 print myMonad
+  |
+9 |   print myMonad
+#+END_SRC
+
+
+
+* NEXT LEVEL
++ +Layer 0: Why do we use types?+
++ +Layer 1: typeclasses and instances+
++ Layer 2: Polymophic effects
++ Layer 3: Instance recursion
+
+* 
+ Constraints
+
+#+BEGIN_SRC haskell
+data Maybe a = Just a | Nothing
+betty :: Num a => Maybe a
+#+END_SRC 
+  How many possible answers?
+
++ A. 1
++ B. 2
++ C. 3
++ D. Infinity
++ E. Unkown
+
+* 
+Invent our own numbers
+#+BEGIN_SRC haskell
+instance Num YesOrNo where
+    (+) :: YesOrNo -> YesOrNo -> YesOrNo 
+    (+) x y = x
+    (-) :: YesOrNo -> YesOrNo -> YesOrNo
+    (-) x y = y
+...
+#+END_SRC
+What's wrong with this?
+
+* Laws!
+
+#+BEGIN_SRC 
+Associativity of (+)
+(x + y) + z = x + (y + z)
+Commutativity of (+)
+x + y = y + x
+fromInteger 0 is the additive identity
+x + fromInteger 0 = x
+negate gives the additive inverse
+x + negate x = fromInteger 0
+Associativity of (*)
+(x * y) * z = x * (y * z)
+fromInteger 1 is the multiplicative identity
+x * fromInteger 1 = x and fromInteger 1 * x = x
+Distributivity of (*) with respect to (+)
+a * (b + c) = (a * b) + (a * c) and (b + c) * a = (b * a) + (c * a)
+#+END_SRC
+
+* Laws!
+  + Why shouldn't we break these laws?
+  + Why don't we have laws in the typesystem?
+  + Easy to quickcheck
+
+* How about this
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+#+END_SRC 
+
+How many possible answers?
+
++ A. 1
++ B. 2
++ C. 3
++ D. Infinity
++ E. Unkown
+
+* 
+  call-site determines the =m=.
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+betty = pure Yes
+
+callSiteMaybe :: YesOrNo
+callSiteMaybe = case betty of
+  Just x -> x
+  Nothing -> No
+#+END_SRC 
+
+What is value of =callSiteMaybe= ?
+
++ A. Yes
++ B. No
++ C. Compile error
++ D. Runtime error
+
+* 
+  call-site determines the =m=.
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+betty = pure Yes
+
+callSiteEither :: YesOrNo
+callSiteEither = case betty of
+  Right x -> x
+  Left _ -> No
+#+END_SRC 
+
+What is value of =callSiteEither= ?
+
++ A. Yes
++ B. No
++ C. Compile error
++ D. Runtime error
+
+* All Valid!
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+betty = pure Yes
+callSiteMaybe :: YesOrNo
+callSiteMaybe = case betty of
+  Just x -> x
+  Nothing -> No
+callSiteEither :: YesOrNo
+callSiteEither = case betty of
+  Right x -> x
+  Left _ -> No
+#+END_SRC 
+* 
+Describe the effects we want to use:
+#+BEGIN_SRC haskell
+carl :: MonadError Errors m =>  MonadLogger m => m YesOrNo
+#+END_SRC
+
+* 
+Put them work! No more lift.
+
+#+BEGIN_SRC haskell
+data Result a b = Error a | Ok b
+data Errors = TommyNothing | BettyNothing
+
+tommy :: Maybe YesOrNo
+betty :: Maybe YesOrNo
+carl :: MonadError Errors m =>  MonadLogger m => m YesOrNo
+carl = do
+    tommyGoes <- maybe (throwError TommyNothing) pure tommy
+    case tommyGoes of
+        No -> $logWarn "strange, tommy aint goin'"
+        _ -> pure ()
+    bettyGoes <- maybe (throwError BettyNothing) pure betty
+    pure $ case (tommyGoes, bettyGoes) of
+         (Yes, Yes) -> Yes
+          _ -> No
+#+END_SRC
+
+* At the call site
+
+#+BEGIN_SRC haskell
+main :: IO ()
+main = do
+  x <- runExceptT (runStdoutLoggingT carl)
+  y <- either throwIO pure x
+  print y
+#+END_SRC
+
+
+* In converge specifically
+In domain:
+
+
+#+BEGIN_SRC haskell
+class Monad m => UnitRepository m where
+  getAll :: UnitLocationArgs -> [SiteId] -> Maybe Int -> m [UnitEntity]
+  findByUnitId :: UnitLocationArgs -> UnitId -> [SiteId] -> m (Maybe UnitEntity)
+#+END_SRC
+
++ Repository = DB
++ some instance (authM)
+
+
+#+BEGIN_SRC haskell
+instance UnitRepository AuthenticatedAppM where
+  getAll = UnitRepository.getAll
+  findByUnitId = UnitRepository.findByUnitId
+#+END_SRC
+
+* NEXT LEVEL
++ +Layer 0: Why do we use types?+
++ +Layer 1: typeclasses and instances+
++ +Layer 2: Polymophic effects+
++ Layer 3: Instance recursion
+
+* 
+Servant
++ webservice as a type
++ signatures handlers
++ client derivation
++ automated docs
++ automated property tests
++ content type requests 
+
+probably the most advanced webserver in the world right now.
+
+* 
+will this compile?
+
+#+BEGIN_SRC haskell
+callUnitLifts :: SiteId -> [UnitId] -> UTCTime -> UTCTime -> PageNumber -> ClientM (Paged.PagedResponse Lift)
+callUnitLifts = client (Proxy @(TokenAuth :> (UnitLocation.Routes :> "lifts" :> Get '[JSON] (Paged.PagedResponse Lift)))) validTokenRequest
+#+END_SRC
+
++ yes 
++ no
++ you've not shown all information, therefore it's not a puzzle.
+
+* 
+No.
+
+#+BEGIN_SRC haskell
+    • There is no instance for HasClient ClientM ("units"
+                                                  :> (("unregistered"
+                                                       :> (("upload"
+                                                            :> (QueryParam'
+                                                                  '[Required, Strict]
+                                                                  "siteId"
+                                                                  SiteId
+                                                                :> (Servant.Multipart.API.MultipartForm
+                                                                      Servant.Multipart.API.Mem
+                                                                      Converge.Features.UnitLocation.Logic.Unregistered.UploadForm
+                                                                    :> Post
+                                                                         '[JSON]
+                                                                         Converge.Domain.UnitEntity.UnregisteredUnit.RecordingResult)))
+                                                           :<|> ("list"
+                                                                 :> (QueryParam'
+                                                                       '[Required, Strict]
+                                                                       "siteId"
+                                                                       SiteId
+                                                                     :> (QueryParam'
+                                                                           '[Required, Strict]
+                                                                           "offset"
+                                                                           PageNumber
+                                                                         :> Get
+                                                                              '[JSON]
+                                                                              (Paged.PagedResponse
+                                                                                 UnitEntity))))))
+                                                      :<|> ((QueryParam'
+                                                               '[Required, Strict] "siteId" SiteId
+                                                             :> (QueryParam "limit" Int
+                                                                 :> Get
+                                                                      '[JSON]
+                                                                      (Paged.PagedResponse
+                                                                         UnitEntity)))
+                                                            :<|> ((Capture "unitId" UnitId
+                                                                   :> (ReqBody
+                                                                         '[JSON]
+                                                                         UnitLocation.CreateUnitPayload
+                                                                       :> Put '[JSON] NoContent))
+                                                                  :<|> (("single"
+                                                                         :> (QueryParam'
+                                                                               '[Required, Strict]
+                                                                               "unitId"
+                                                                               UnitId
+                                                                             :> (QueryParam'
+                                                                                   '[Required,
+                                                                                     Strict]
+                                                                                   "siteId"
+                                                                                   SiteId
+                                                                                 :> Get
+                                                                                      '[JSON]
+                                                                                      UnitEntity)))
+                                                                        :<|> ((Capture
+                                                                                 "unitId" UnitId
+                                                                               :> ("beacon"
+                                                                                   :> (ReqBody
+                                                                                         '[JSON]
+                                                                                         UnitLocation.BeaconAssignmentPayload
+                                                                                       :> Put
+                                                                                            '[JSON]
+                                                                                            NoContent)))
+                                                                              :<|> (("history"
+                                                                                     :> (QueryParam'
+                                                                                           '[Required,
+                                                                                             Strict]
+                                                                                           "siteId"
+                                                                                           SiteId
+                                                                                         :> (QueryParam'
+                                                                                               '[Required,
+                                                                                                 Strict]
+                                                                                               "unitIds"
+                                                                                               [UnitId]
+                                                                                             :> (QueryParam'
+                                                                                                   '[Required,
+                                                                                                     Strict]
+                                                                                                   "from"
+                                                                                                   UTCTime
+                                                                                                 :> (QueryParam'
+                                                                                                       '[Required,
+                                                                                                         Strict]
+                                                                                                       "to"
+                                                                                                       UTCTime
+                                                                                                     :> Get
+                                                                                                          '[JSON]
+                                                                                                          [Converge.Domain.UnitEntity.UnitMovement])))))
+                                                                                    :<|> ("lifts"
+                                                                                          :> (QueryParam'
+                                                                                                '[Required,
+                                                                                                  Strict]
+                                                                                                "siteId"
+                                                                                                SiteId
+                                                                                              :> (QueryParam'
+                                                                                                    '[Required,
+                                                                                                      Strict]
+                                                                                                    "unitIds"
+                                                                                                    [UnitId]
+                                                                                                  :> (QueryParam'
+                                                                                                        '[Required,
+                                                                                                          Strict]
+                                                                                                        "from"
+                                                                                                        UTCTime
+                                                                                                      :> (QueryParam'
+                                                                                                            '[Required,
+                                                                                                              Strict]
+                                                                                                            "to"
+                                                                                                            UTCTime
+                                                                                                          :> (QueryParam'
+                                                                                                                '[Required,
+                                                                                                                  Strict]
+                                                                                                                "pageNumber"
+                                                                                                                PageNumber
+                                                                                                              :> Get
+                                                                                                                   '[JSON]
+                                                                                                                   [(UnitId,
+                                                                                                                     Int)])))))))))))) :> ...)
+    • In the expression:
+        client
+          (Proxy
+             @(TokenAuth
+               :>
+               (UnitLocation.Routes
+                :> "lifts" :> Get '[JSON] (Paged.PagedResponse Lift))))
+          validTokenRequest
+      In an equation for ‘callUnitLifts’:
+          callUnitLifts
+            = client
+                (Proxy
+                   @(TokenAuth
+                     :>
+                     (UnitLocation.Routes
+                      :> "lifts" :> Get '[JSON] (Paged.PagedResponse Lift))))
+                validTokenRequest
+
+#+END_SRC
+
+Note the `:<|>` which split the handlers as type operators
+
+* 
+What happens is:
+
+#+BEGIN_SRC haskell
+
+callUnitLifts :: SiteId -> [UnitId] -> UTCTime -> UTCTime -> PageNumber -> ClientM (Paged.PagedResponse Lift)
+                 -- ^ single handle type signature
+callUnitLifts = client (Proxy @(TokenAuth :> (UnitLocation.Routes :> "lifts" :> Get '[JSON] (Paged.PagedResponse Lift)))) validTokenRequest
+                                              -- ^ multiple api endpoints, expect multiple handler types
+#+END_SRC
+* 
+How does it convert?
+
+#+BEGIN_SRC haskell
+type Routes = "units" :> (
+  "unregistered" :> ( "upload" :> QueryParam' '[Required, Strict] "siteId" SiteId :> MultipartForm Mem Unregistered.UploadForm :> Post '[JSON] RecordingResult
+                    :<|>
+                      "list" :> QueryParam' '[Required, Strict] "siteId" SiteId :> QueryParam' '[Required, Strict] "offset" PageNumber :> Get '[JSON] (PagedResponse UnitEntity)
+                    )
+  :<|>
+  -- units/ -- list units
+  QueryParam' '[Required, Strict] "siteId" SiteId :> QueryParam "limit" Int :> Get '[JSON] (PagedResponse UnitEntity)
+  -- units/#unit-id -- create unit
+  :<|> Capture "unitId" UnitId :> ReqBody '[JSON] CreateUnitPayload :> Put '[JSON] NoContent
+
+#+END_SRC 
+
+* 
+
+#+BEGIN_SRC haskell
+class RunClient m => HasClient m api where
+  type Client (m :: * -> *) (api :: *) :: *
+        -- ^ every instance can define soem type
+  clientWithRoute :: Proxy m -> Proxy api -> Request -> Client m api
+                                                        -- ^ the return type is dependent on the instance
+#+END_SRC
+
+* 
+
+#+BEGIN_SRC haskell
+instance (HasClient m a, HasClient m b) => HasClient m (a :<|> b) where
+                                                          -- ^ if encounter a :<|> where both sides also HasClient
+  type Client m (a :<|> b) = Client m a :<|> Client m b
+                                         -- ^ my return type will be 2 client functions :)
+  clientWithRoute pm Proxy req =
+    clientWithRoute pm (Proxy :: Proxy a) req :<|>
+    clientWithRoute pm (Proxy :: Proxy b) req
+    -- ^ consisting of just calling myself with the appropriate type
+    --   so it recurses into deeper instances here
+#+END_SRC
+
+
+* 
+same trick function args :)
+
+#+BEGIN_SRC haskell
+instance (KnownSymbol capture, ToHttpApiData a, HasClient m api)
+      => HasClient m (Capture' mods capture a :> api) where
+                       -- ^ if my verb is cature
+                                           -- ^ and there is more of the api which also has client
+ type Client m (Capture' mods capture a :> api) =
+    a -> Client m api
+   -- ^ add an argument to the result function of the type defined by capture
+
+  clientWithRoute pm Proxy req val =
+                                -- ^ which we now receive as val!!
+    clientWithRoute pm (Proxy :: Proxy api)
+                    (appendToPath p req)
+    where p = toEncodedUrlPiece val
+
+#+END_SRC
+
+* Any questions?
+  
+
+* Thanks for watching
+  Leave a like and subscribe.
+
+* BONUS SLIDES
+
+* 
+ Apply correctly
+
+#+BEGIN_SRC haskell
+plusOne :: Num a => MonadReader a m => m a
+plusOne = (1 +)
+
+two :: Int
+two = plusOne 2
+
+two' :: Float
+two' = plusOne 2
+#+END_SRC
+
+* 
+ Apply correctly II
+
+#+BEGIN_SRC haskell
+plus :: Num a => MonadReader a n => MonadReader a m => n (m a)
+plus = (+)
+
+two :: Int
+two = 2 `plus` 2
+
+two' :: Float
+two' = 2 `plus` 2
+#+END_SRC
+
+* 
+  call-site determines the =m=.
+
+#+BEGIN_SRC haskell
+betty :: Monad m => m YesOrNo
+betty = pure Yes
+
+x :: YesOrNo
+x = betty No
+#+END_SRC 
+
+What is value of =x= ?
+
++ A. Yes
++ B. No
++ C. Compile error
++ D. Runtime error
+
+* 
+ Row type polymorphism 
+
+#+BEGIN_SRC haskell
+data AppSettings { _johny :: YesOrNo }
+class HasYesOrNo a YesOrNo where twoLens :: Lens' a YesOrNo
+instance HasYesOrNo YesOrNo where twoLens = id
+instance HasYesOrNo AppSettings where
+    twoLens = lens (_johny) $ \x y -> x{_johny=y}
+ 
+someFun :: HasYesOrNo a => a -> IO ()
+inReader :: HasYesOrNo env => MonadReader env m => m ()
+inReader = do
+    x :: YesOrNo <- view twoLens 
+    pure ()
+inState :: HasYesOrNo env => MonadState env m => m ()
+inState = do
+    twoLens %= Yes
+    isYes <- view twoLens 
+    twoLens %= No
+    pure ()
+#+END_SRC
