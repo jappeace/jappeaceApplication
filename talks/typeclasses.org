@@ -15,7 +15,7 @@
 + Layer 0: Why do we use types?
 + Layer 1: typeclasses and instances
 + Layer 2: Polymophic effects
-+ Layer 3: Instance recursion
++ Layer 3: Instance induction (servant)
 
 * 
   
@@ -130,20 +130,20 @@ one = 1
 
 
 * 
-It's not sure
+polymorphic number
 #+BEGIN_SRC haskell
 
-one :: Num a => a -- ??
+one :: Num a => a
 one = 1
 
 #+END_SRC 
 
 * 
-A class
 #+BEGIN_SRC haskell
 
 class Num a where
   (+) :: a -> a -> a
+
 
 #+END_SRC 
 
@@ -185,14 +185,11 @@ threeInt = two + one
 #+END_SRC 
 
 * 
-All types from main:
- - Monomorphzed
- - concrete
-
-* 
 Will this compile?
 
 #+BEGIN_SRC haskell
+print :: Show a => a -> IO ()
+
 main :: IO ()
 main = do
   print myMonad
@@ -226,7 +223,10 @@ No, ambiguity
 9 |   print myMonad
 #+END_SRC
 
-
+* 
+All types from main:
+ - Monomorphized
+ - Concrete
 
 * NEXT LEVEL
 + +Layer 0: Why do we use types?+
@@ -391,8 +391,8 @@ main = do
 #+END_SRC
 
 
-* In converge specifically
-In domain:
+* 
+@converge
 
 
 #+BEGIN_SRC haskell
@@ -425,8 +425,6 @@ Servant
 + automated docs
 + automated property tests
 + content type requests 
-
-probably the most advanced webserver in the world right now.
 
 * 
 will this compile?
