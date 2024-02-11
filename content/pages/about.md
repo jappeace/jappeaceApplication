@@ -17,7 +17,7 @@ Since then I've been writing programs
 in all kinds of languages.
 I started using Haskell seriously in 2017 when
 I joined Daisee as a software engineer.
-It's the best as far as I can tell.
+Haskell is the best as far as I can tell.
 Which is why I still use it and write about it so much.
 
 I like solving problems and produce software that's valuable.
@@ -32,8 +32,9 @@ A brief overview of meaningful events and decisions in my life.
 
 <table>
 <tr><th> 2023 </th><td>
-I organized <a href="https://www.meetup.com/nl-NL/functional-programming-kampen/">fp-kampen</a>.
-Aruba is <a href="airbnb.nl/h/jappie-aruba">open for business</a>.
+Aruba is <a href="https://jappie.me/lessons-from-creating-a-vacation-rental.html">open for business</a>.
+I quit [supercede](https://supercede.com/) and became a construction worker at [converge](https://www.converge.io/).
+[Crossfit Nationals](https://www.youtube.com/playlist?list=PL6FatF00QFsNbjZVpn9Djqwk4ah0esmGX).
 </td></tr>
 <tr><th> 2022 </th><td>
 I participated in <a href="https://jappie.me/zurich-hack-2022-denotational-design.html">zurich hack</a>.
