@@ -584,7 +584,7 @@ What happens is:
 #+BEGIN_SRC haskell
 
 callUnitLifts :: SiteId -> [UnitId] -> UTCTime -> UTCTime -> PageNumber -> ClientM (Paged.PagedResponse Lift)
-                 -- ^ single handle type signature
+              -- ^ single client type signature
 callUnitLifts = client (Proxy @(TokenAuth :> (UnitLocation.Routes :> "lifts" :> Get '[JSON] (Paged.PagedResponse Lift)))) validTokenRequest
                                               -- ^ multiple api endpoints, expect multiple handler types
 #+END_SRC
@@ -619,7 +619,7 @@ class RunClient m => HasClient m api where
 
 #+BEGIN_SRC haskell
 instance (HasClient m a, HasClient m b) => HasClient m (a :<|> b) where
-                                                          -- ^ if encounter a :<|> where both sides also HasClient
+                                                      -- ^ if encounter a :<|> where both sides also HasClient
   type Client m (a :<|> b) = Client m a :<|> Client m b
                                          -- ^ my return type will be 2 client functions :)
   clientWithRoute pm Proxy req =
@@ -637,7 +637,7 @@ same trick function args :)
 instance (KnownSymbol capture, ToHttpApiData a, HasClient m api)
       => HasClient m (Capture' mods capture a :> api) where
                        -- ^ if my verb is cature
-                                           -- ^ and there is more of the api which also has client
+                       --   and there is more of the api which also has client
  type Client m (Capture' mods capture a :> api) =
     a -> Client m api
    -- ^ add an argument to the result function of the type defined by capture
