@@ -1,4 +1,4 @@
-Title: Announcement: Updated Esqueleto textsearch & Postgis bindings
+Title: Announcement: Updated Esqueleto text-search & PostGIS bindings
 Date: 2024-02-25 15:01
 Category: tools
 OPTIONS: toc:nil
