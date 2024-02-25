@@ -1,4 +1,4 @@
-Title: Announcement: Esqueleto textsearch & postgiss
+Title: Announcement: Updated Esqueleto textsearch & Postgis bindings
 Date: 2024-02-25 15:01
 Category: tools
 OPTIONS: toc:nil
@@ -10,10 +10,15 @@ I've updated the esqueleto bindings for
 guesswork.
 Furthermore I've also created new [esqueleto bindings for PostGIS](https://hackage.haskell.org/package/esqueleto-postgis).
 
+![esqueleto](/images/2024/esqueleto.webp)
+
 [Esqueleto](https://hackage.haskell.org/package/esqueleto) 
 is a more advanced query library that builds on top of the [persistent](https://hackage.haskell.org/package/persistent) ORM[^object-relational].
-[Postgres text search](https://rachbelaid.com/postgres-full-text-search-is-good-enough/) brings Elasticsearch like functionality to postgres.
-[PostGIS](https://postgis.net/) is a spatial database extension for postgres.
+[Postgres text search](https://rachbelaid.com/postgres-full-text-search-is-good-enough/) brings [Elasticsearch](https://en.wikipedia.org/wiki/Elasticsearch) like functionality to Postgres.
+[PostGIS](https://postgis.net/) is a spatial database extension for Postgres.
+This allows querying on longitude and latitude for example, or any geometry.
+As part of postgres it allows mixing normal relational data with space and geometry, 
+which makes space itself relational!
 
 Roughly four years ago I had drafted out an implementation for the admin pages for some company.
 This was part of my "trial" 2 days, where you just work as a "technical interview". [^great-for-me]
@@ -34,16 +39,18 @@ I initially handcrafted some haphazard persistent instances to see if a full sol
 It worked and one interesting outcome is that I could combine this PostGIS implementation with text-search!
 For example, we've named locations on a map, 
 and objects within the database have some point on the map,
-we can now search for some location on the map and find the objects trough normal full-text search.
+we can now search for some location on the map and find the objects through normal full-text search.
 The database does all the thinking.
 Because this worked so well, I got motivated to do the full bindings, 
 and prevent the issue I just had with textsearch.
 
 I'm slowly transforming into a database engineer 😅.
-Please let me know if you've any comments or suggestions.
-Furthermore, if you need help with database woes, please let me know :).
+Anyway, everyone should try these libraries out! 
+You're in space after all, and you lose stuff all the time, go get searching in space!
+Let me know if you've any comments or suggestions.
+Furthermore, let me know if you need help with database woes, I'm becoming quite good at this.
 
-[^great-for-me]: I perform way better in such a situation then a take-home test, because it's incredibly hard for me to get motivated to do throw away work, but here I did something useful.
+[^great-for-me]: I perform way better in such a situation than a take-home test, because it's incredibly hard for me to get motivated to do throw away work, but here I did something useful.
 [^hackage-upload]: Note that the hackage upload was also done by me, because my dear colleague had ported it to a library which wasn't even published! It was just some github repository. After a couple years I decided to just upload it, right before I jumped ship to another company.
 
 [^object-relational]: Object relational mapping
