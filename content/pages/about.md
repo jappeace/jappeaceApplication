@@ -31,6 +31,9 @@ Lastly, I hate the number five.
 A brief overview of meaningful events and decisions in my life.
 
 <table>
+<tr><th> 2024 </th><td>
+Applying abstract maths to concrete factories.
+</td></tr>
 <tr><th> 2023 </th><td>
 Aruba is <a href="https://jappie.me/lessons-from-creating-a-vacation-rental.html">open for business</a>.
 I quit [supercede](https://supercede.com/) and became a construction worker at [converge](https://www.converge.io/).
