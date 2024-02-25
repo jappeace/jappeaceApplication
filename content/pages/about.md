@@ -36,8 +36,8 @@ Applying abstract maths to concrete factories.
 </td></tr>
 <tr><th> 2023 </th><td>
 Aruba is <a href="https://jappie.me/lessons-from-creating-a-vacation-rental.html">open for business</a>.
-I quit [supercede](https://supercede.com/) and became a construction worker at [converge](https://www.converge.io/).
-[Crossfit Nationals](https://www.youtube.com/playlist?list=PL6FatF00QFsNbjZVpn9Djqwk4ah0esmGX).
+I quit <a href="https://supercede.com/">supercede</a> and became a construction worker at <a href="https://www.converge.io/">converge</a>.
+<a href="https://www.youtube.com/playlist?list=PL6FatF00QFsNbjZVpn9Djqwk4ah0esmGX">Crossfit Nationals</a>.
 </td></tr>
 <tr><th> 2022 </th><td>
 I participated in <a href="https://jappie.me/zurich-hack-2022-denotational-design.html">zurich hack</a>.
