@@ -23,7 +23,7 @@ which makes space itself relational!
 Roughly four years ago I had drafted out an implementation for the admin pages for some company.
 This was part of my "trial" 2 days, where you just work as a "technical interview". [^great-for-me]
 Ironically the admin pages ended up having far better search than the main app,
-unfortunately, implementing proper text search to the main app was never prioritized.
+unfortunately, implementing proper text-search to the main app was never prioritized.
 A colleague of mine had ported that to the [current library](https://hackage.haskell.org/package/esqueleto-textsearch).
 However, I completely had forgotten how it worked and there was essentially [no documentation](https://hackage.haskell.org/package/esqueleto-textsearch-1.0.0.3/docs/Database-Esqueleto-TextSearch-Language.html). [^hackage-upload]
 Since I was somehow the maintainer of this package I decided to just fix this for all Haskellers.
@@ -42,7 +42,7 @@ and objects within the database have some point on the map,
 we can now search for some location on the map and find the objects through normal full-text search.
 The database does all the thinking.
 Because this worked so well, I got motivated to do the full bindings, 
-and prevent the issue I just had with textsearch.
+and prevent the issue I just had with text-search.
 
 I'm slowly transforming into a database engineer 😅.
 Anyway, everyone should try these libraries out! 
