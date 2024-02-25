@@ -5,34 +5,35 @@ OPTIONS: toc:nil
 Tags: programming, haskell, database
 
 I've updated the esqueleto bindings for
-esqueleto-textsearch to include [tutorials](https://hackage.haskell.org/package/esqueleto-textsearch#tutorial) and
-[documentation](https://hackage.haskell.org/package/esqueleto-textsearch-1.1.4/docs/Database-Esqueleto-TextSearch.html) so it no longer requires a 
-guesswork on how to use this.
+[esqueleto-textsearch](https://hackage.haskell.org/package/esqueleto-textsearch) to include a [tutorial](https://hackage.haskell.org/package/esqueleto-textsearch#tutorial) and
+[documentation](https://hackage.haskell.org/package/esqueleto-textsearch-1.1.4/docs/Database-Esqueleto-TextSearch.html) so it no longer requires
+guesswork.
 Furthermore I've also created new [esqueleto bindings for PostGIS](https://hackage.haskell.org/package/esqueleto-postgis).
 
 [Esqueleto](https://hackage.haskell.org/package/esqueleto) 
 is a more advanced query library that builds on top of the [persistent](https://hackage.haskell.org/package/persistent) ORM[^object-relational].
 [Postgres text search](https://rachbelaid.com/postgres-full-text-search-is-good-enough/) brings Elasticsearch like functionality to postgres.
+[PostGIS](https://postgis.net/) is a spatial database extension for postgres.
 
 Roughly four years ago I had drafted out an implementation for the admin pages for some company.
 This was part of my "trial" 2 days, where you just work as a "technical interview". [^great-for-me]
 Ironically the admin pages ended up having far better search than the main app,
-and implementing proper text search to the main app was never prioritized.
+unfortunately, implementing proper text search to the main app was never prioritized.
 A colleague of mine had ported that to the [current library](https://hackage.haskell.org/package/esqueleto-textsearch).
 However, I completely had forgotten how it worked and there was essentially [no documentation](https://hackage.haskell.org/package/esqueleto-textsearch-1.0.0.3/docs/Database-Esqueleto-TextSearch-Language.html). [^hackage-upload]
 Since I was somehow the maintainer of this package I decided to just fix this for all Haskellers.
 
 PostGIS has a different motivation.
 My current contract is about finding stuff.
-Now I could do this with some geometry library, 
-but considering most logic is already in the database, 
-I decided it was worth a try to see if postgis would be a good fit.
+Now I could do this with some geometry library in pure haskell. 
+However, considering most logic is already in the database, 
+I decided it was worth a try to see if PostGIS would be a good fit.
 There was already some existing art done, such as [reading](https://hackage.haskell.org/package/wkt-geom-0.0.12/docs/Data-Ewkb.html#v:parseHexByteString) from the database,
 but there was no off-the-shelf, functional writing.
 I initially handcrafted some haphazard persistent instances to see if a full solution was feasible.
-It worked and
-one interesting outcome is that I could combine this postgis implementation with the text-search!
-So we've named locations on a map, and objects within the database have some point on the map,
+It worked and one interesting outcome is that I could combine this PostGIS implementation with text-search!
+For example, we've named locations on a map, 
+and objects within the database have some point on the map,
 we can now search for some location on the map and find the objects trough normal full-text search.
 The database does all the thinking.
 Because this worked so well, I got motivated to do the full bindings, 
