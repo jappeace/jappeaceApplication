@@ -3,7 +3,7 @@ Date: 2022-06-16 22:30
 Modified: 2023-01-17 17:00
 Category: tools
 OPTIONS: toc:nil
-Tags: programming, windows, mysql
+Tags: programming, windows, mysql, database
 
 Over the weekend a company had a power outage,
 causing corruption to the on premise hosted mysql innodb database.

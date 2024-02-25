@@ -2,7 +2,7 @@ Title: BONUS Announcement mysql pure unfork
 Date: 2023-08-14 17:37
 Category: tools
 OPTIONS: toc:nil
-Tags: programming, mysql, haskell
+Tags: programming, mysql, haskell, database
 
 Good news! I've come to an agreement with the maintainer of
 [mysql-haskell](https://hackage.haskell.org/package/mysql-haskell), [winterland](https://github.com/winterland1989).

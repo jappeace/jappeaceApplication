@@ -2,7 +2,7 @@ Title: Announcing mysql pure fork
 Date: 2023-08-13 13:37
 Category: tools
 OPTIONS: toc:nil
-Tags: programming, mysql, haskell
+Tags: programming, mysql, haskell, database
 
 I've forked [mysql-haskell](https://hackage.haskell.org/package/mysql-haskell) and [persistent-mysql-haskell](https://hackage.haskell.org/package/persistent-mysql-haskell)
 into [mysql-pure](https://hackage.haskell.org/package/mysql-pure)
