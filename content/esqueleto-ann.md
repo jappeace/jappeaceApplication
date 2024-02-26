@@ -25,6 +25,7 @@ This was part of my "trial" 2 days, where you just work as a "technical intervie
 Ironically the admin pages ended up having far better search than the main app,
 unfortunately, implementing proper text-search to the main app was never prioritized.
 A colleague of mine had ported that to the [current library](https://hackage.haskell.org/package/esqueleto-textsearch).
+Recently I needed this again.
 However, I completely had forgotten how it worked and there was essentially [no documentation](https://hackage.haskell.org/package/esqueleto-textsearch-1.0.0.3/docs/Database-Esqueleto-TextSearch-Language.html). [^hackage-upload]
 Since I was somehow the maintainer of this package I decided to just fix this for all Haskellers.
 
@@ -36,12 +37,12 @@ I decided it was worth a try to see if PostGIS would be a good fit.
 There was already some existing art done, such as [reading](https://hackage.haskell.org/package/wkt-geom-0.0.12/docs/Data-Ewkb.html#v:parseHexByteString) from the database,
 but there was no off-the-shelf, functional writing.
 I initially handcrafted some haphazard persistent instances to see if a full solution was feasible.
-It worked and one interesting outcome is that I could combine this PostGIS implementation with text-search!
+It worked, and one interesting outcome is that I could combine this PostGIS implementation with text-search!
 For example, we've named locations on a map, 
 and objects within the database have some point on the map,
 we can now search for some location on the map and find the objects through normal full-text search.
 The database does all the thinking.
-Because this worked so well, I got motivated to do the full bindings, 
+Because this worked so well, I got motivated to do the full bindings for PostGIS, 
 and prevent the issue I just had with text-search.
 
 I'm slowly transforming into a database engineer 😅.
