@@ -1,0 +1,91 @@
+#+TITLE: Why Haskell?
+
+* About me
++ haskell consultant
++ 6 years of haskell
++ 16 years of programming
+
+*  Ask questions!
+
+
+* Motivation
+
++ Precast reflection
++ Good question!
+
+
+* Type system
++ what is?
++ feedback loop
++ code re-use
++ hoogle
++ other langauges
+
+* Expressivness
+0,1,1,2,3,5,8,13...
+
+#+BEGIN_SRC haskell
+fibonacci :: [Integer]
+fibonacci = fix $ \xs -> 0:1:zipWith (+) xs (tail xs)
+#+END_SRC
+
+* Petri dish
++ dependent types
++ effect systems
++ property tests
+
+* Maintainability
+
+
+* Disadvantages
++ Learning curve
+
+~2 weeks of trouble
+
+
+* 
+Disadvantages
+
++ Learning curve
+  + one time investment
+  + we focus on what matters
+    + no typefamalies,
+    + no TH etc.
+
+* 
+
++ Fewer comercial adoptation
+  + unmaintained libs
++  
+
+* 
+If haskell is so great?
+What happened at precast before I joined?
+Why the frustration?
+
+* 
+Engineers like finding the best.
+So they did.
+
+* 
+Issues
+
++ Use of advanced dev tools
++ We used advanced haskell featuers
++ Advanced libraries
+
+* 
+Beginners had to use these.
+
+* 
+
++ HLS (advanced, unreliable)
+  + -> we use compiler directly
++ Advanced haskell features
+  + all new code is simple haskell,
+    few language extensions.
++ Libraries
+  + lens      <- comppletly replaced
+  + servant   <- minimize and educate (we can't switch now)
+  + mtl (somewhat) <- educate, only typeclasses, no transformers
+
