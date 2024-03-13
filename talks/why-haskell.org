@@ -42,7 +42,7 @@ Which is correct?
 
 * Type error
 
-#+BEGIN_SRC
+#+BEGIN_SRC haskell
 
 Main.hs:10:29: error:
     • Couldn't match expected type ‘Text’
@@ -77,16 +77,14 @@ what happens if we add a nationality?
 
 * Pattern match
 #+BEGIN_SRC haskell
-data Nationality = Dutch | English | Other | German
-
 Main.hs:21:36: warning: [-Wincomplete-patterns]
     Pattern match(es) are non-exhaustive
     In a case alternative:
         Patterns of type ‘Nationality’ not matched: German
    |
 21 | isDutch (Person _ _ nationality) = case nationality of
-
 #+END_SRC
+
 * Type error driven development
 
 * 
@@ -219,18 +217,20 @@ Especially HLS is unreliable
 + Supercede
 + CF Haskell foundation sponsors
 
+* 
+People are 
+
 * Compare other languages
 
-* Vs kotlin
+* VS kotlin
 + Mutable state -> no logical subtitution
-+ type system not so good
-  + subtyping causing havoc
++ type system
+  + subtyping 
 
 * VS Go
 + Mutable state -> no logical subtitution
-+ Error handeling more ergnomic
-  + I've a blog post on this!
-  + https://jappie.me/failing-in-haskell.html
-+ Type system is far better
++ Error handling
++ Type system
++ Ergonomics
 
-* Questions
+* Questions?
