@@ -1,9 +1,10 @@
 #+TITLE: Why Haskell?
 
 * About me
-+ haskell consultant
-+ 6 years of haskell
-+ 16 years of programming
++ Haskell consultant
++ Six years of Haskell
++ Sixteen years of programming
++ https://jappie.me
 
 *  Ask questions!
 
@@ -14,58 +15,180 @@
 
 * Type system
 + what is?
++ restrictions give meaning
 
-* Type system
-+ what is?
-+ feedback loop
-
-* Type system
-+ what is?
-+ feedback loop
-+ code re-use
-
-* Type system
-+ what is?
-+ feedback loop
-+ code re-use
-+ hoogle
-
-* Type system
-+ what is?
-+ feedback loop
-+ code re-use
-+ hoogle
-+ other langauges
-
-* Expressivness
-0,1,1,2,3,5,8,13...
-
+* Example
+introduce types
 #+BEGIN_SRC haskell
-fibonacci :: [Integer]
-fibonacci = fix recurse 
+data Nationality = Dutch | English | Other
+data Person = Person Int Text Nationality 
+#+END_SRC 
 
-recurse :: [Integer] -> [Integer]
-recurse xs = 0:1:zipWith (+) xs (tail xs)
+* Example
+#+BEGIN_SRC haskell
+data Nationality = Dutch | English | Other
+data Person = Person Int Text Nationality 
+
+getName :: Person -> Text  -- type signature
+getName (Person _ _ field) = field -- implementation
+
+getName2 :: Person -> Text
+getName2 (Person _ field _) = field
+
+getName3 :: Person -> Text
+getName3 (Person field _ _ ) = field
+#+END_SRC 
+Which is correct?
+
+* Type error
+
+#+BEGIN_SRC
+
+Main.hs:10:29: error:
+    • Couldn't match expected type ‘Text’
+                  with actual type ‘Nationality’
+    • In the expression: field
+      In an equation for ‘getName’: getName (Person _ _ field) = field
+   |
+10 | getName (Person _ _ field) = field
+   |                              ^^^^
+
+Main.hs:16:31: error:
+    • Couldn't match expected type ‘Text’ with actual type ‘Int’
+    • In the expression: field
+      In an equation for ‘getName3’: getName3 (Person field _ _) = field
+   |
+16 | getName3 (Person field _ _ ) = field
+   |                                ^^^^
 #+END_SRC
 
+* Pattern match
+#+BEGIN_SRC haskell
+data Nationality = Dutch | English | Other
+isDutch :: Person -> Bool
+isDutch (Person _ _ nationality) = case nationality of
+  Dutch -> True
+  English -> False
+  Other -> False
+
+#+END_SRC 
+
+what happens if we add a nationality?
+
+* Pattern match
+#+BEGIN_SRC haskell
+data Nationality = Dutch | English | Other | German
+
+Main.hs:21:36: warning: [-Wincomplete-patterns]
+    Pattern match(es) are non-exhaustive
+    In a case alternative:
+        Patterns of type ‘Nationality’ not matched: German
+   |
+21 | isDutch (Person _ _ nationality) = case nationality of
+
+#+END_SRC
+* Type error driven development
+
+* 
+#+BEGIN_QUOTE
+Can be difficult and challenging at times,
+but much easier when you've got someone experienced in haskell who really knows their stuff to help you
+and I like being able to just try run it and see what the compiler says.
+So you can incrementally get closer and closer to getting it right.
+-- Beibhinn
+#+END_QUOTE
+
 * Expressivness
 #+BEGIN_SRC haskell
-zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+determineLoadState :: LocationStatus -> LoadStatus -> LoadStatus
+determineLoadState unitStatus currentState = case unitStatus of
+  -- we should ignore unregisterd units for load status
+  StatusNotRegistered -> currentState
+  StatusUnknown UnitNotAvailable -> currentState -- also unregistered
+  -- if the state is unkown make sure to track it
+  StatusUnknown reason -> setUnknown reason currentState
+  -- if a state is located here, we mostly want to map it to located here,
+  -- except if a state was unkown
+  StatusLocatedHere _ -> locateHere currentState
+  StatusLoaded _ -> locateHere currentState
+  -- dispatched and delivered are current state because we start
+  -- of with the assumption it was dispatched
+  StatusDispatched _ -> currentState
+  StatusDeliveredToSite _ -> currentState
+  StatusInstalled _ -> currentState
 #+END_SRC
+
+* Type system
++ what is?
++ feedback loop
++ code re-use
+
+* Logical substitution
+
+#+BEGIN_SRC haskell
+determineLoadState :: LocationStatus -> LoadStatus -> LoadStatus
+determineLoadState unitStatus currentState = case unitStatus of
+  StatusLocatedHere _ -> case currentState of
+    LoadUnknown x -> LoadUnknown x
+    LoadDispatched _ -> LoadLocatedHere
+    LoadLocatedHere -> LoadLocatedHere
+    LoadNoTimeDetermined -> LoadLocatedHer
+  ...
+#+END_SRC
+
+* Logical substitution
+known types
+
+#+BEGIN_SRC haskell
+determineLoadState :: LocationStatus -> LoadStatus -> LoadStatus
+                                                   -- ^^^^
+#+END_SRC
+* Logical substitution
+Factor out
+#+BEGIN_SRC haskell
+locateHere :: LoadStatus -> LoadStatus
+locateHere currentState = case currentState of
+  LoadUnknown x -> LoadUnknown x
+  LoadDispatched _ -> LoadLocatedHere
+  LoadLocatedHere -> LoadLocatedHere
+  LoadNoTimeDetermined -> LoadLocatedHere
+#+END_SRC
+
+* Logical substitution
+
+#+BEGIN_SRC haskell
+determineLoadState :: LocationStatus -> LoadStatus -> LoadStatus
+determineLoadState unitStatus currentState = case unitStatus of
+  StatusLocatedHere _ -> locateHere currentState 
+  ...
+#+END_SRC
+* Logical substitution
++ Not possible in other languages
+  + Purity
+  + Lack of types
+
+* Type system
++ what is?
++ feedback loop
++ code re-use
++ https://hoogle.haskell.org/
+
+* Type search
+[[./img/hoogle.jpg]]
+
+* Type search
+[[./img/hoogle-read-file.jpg]]
+
 
 * Petri dish
 + dependent types
 + effect systems
 + property tests
 
-* Maintainability
-
-
 * Disadvantages
 + Learning curve
 
 ~2 weeks of trouble
-
 
 * Disadvantages
 + Learning curve
@@ -73,7 +196,8 @@ zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
   + we focus on what matters
     + no type families,
     + no TH etc.
-
+  + productivity first,
+    advanced features later
 * Tooling 
 Especially HLS is unreliable
 (frustrating)
@@ -81,33 +205,32 @@ Especially HLS is unreliable
 * Tooling 
 Especially HLS is unreliable
 + -> use ghc directly
+
 * Commercial adoptation 
 + unmaintained libraries
 + not existing libraries
 
-* Commercial adoptation 
-+ github
+* Users
++ Github
++ Meta
 + Scrive
 + Mercury
 + Groq
 + Supercede
++ CF Haskell foundation sponsors
 
-* 
-If haskell is so great?
-What happened at precast before I joined?
-Why the frustration?
+* Compare other languages
 
-* 
-Engineers like finding the best.
-So they did.
+* Vs kotlin
++ Mutable state -> no logical subtitution
++ type system not so good
+  + subtyping causing havoc
 
-* 
-Issues
+* VS Go
++ Mutable state -> no logical subtitution
++ Error handeling more ergnomic
+  + I've a blog post on this!
+  + https://jappie.me/failing-in-haskell.html
++ Type system is far better
 
-+ Use of advanced dev tools
-+ We used advanced haskell featuers
-+ Advanced libraries
-
-* 
-Beginners had to use these.
-
+* Questions
