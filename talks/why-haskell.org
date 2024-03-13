@@ -172,7 +172,10 @@ determineLoadState unitStatus currentState = case unitStatus of
 + https://hoogle.haskell.org/
 
 * Type search
-[[./img/hoogle.jpg]]
++ Read file
+#+BEGIN_SRC haskell
+lookingFor :: FilePath -> IO Text
+#+END_SRC
 
 * Type search
 [[./img/hoogle-read-file.jpg]]
@@ -182,6 +185,14 @@ determineLoadState unitStatus currentState = case unitStatus of
 + dependent types
 + effect systems
 + property tests
+
+* Advantages
++ Typesystem
+    + feedback loop
+    + code re-use
+    + hoogle
++ Expressiveness
++ Petri dish
 
 * Disadvantages
 + Learning curve
@@ -216,9 +227,6 @@ Especially HLS is unreliable
 + Groq
 + Supercede
 + CF Haskell foundation sponsors
-
-* 
-People are 
 
 * Compare other languages
 
