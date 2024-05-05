@@ -28,7 +28,7 @@ GHC emits a warning:
 You'd say, why doesn't cabal just add this module to the cabal file?
 Well, it can't.
 Cabal is currently only able to parse Cabal files,
-and print them back out in a mangled[^mangled] form via the pretty printer.
+and print them back out in a mangled[^mangled] form.
 There are other programs providing this functionality[^other-programs], but nothing integrated.
 Anyway one day I was lamenting this problem
 on the internet and I was told a forum user[^self-identified] that
@@ -39,19 +39,21 @@ an [approach I made](https://github.com/haskell/cabal/pull/9436#issue-1989616367
 
 [^mangled]: you can see this mangling by running `cabal format` on a cabal file,
             the issues I saw were:
-            &nbsp;
-              1. Delete all comments
-              2. merge any `common` stanza into wherever it was imported.
-              3. change line ordering
-              4. change spacing (although perhaps to be expected from a formatter)
+            <ol>
+            <li> Delete all comments</li>
+            <li> Merges any `common` stanza into wherever it was imported.</li>
+            <li> Change line ordering </li>
+            <li> Change spacing (although perhaps to be expected from a formatter)</li>
+            </ol>
 
 [^other-programs]: We have a whole host of projects that re-implement this specific functionality.
                    for example have: 
-                    + [hpack](https://github.com/sol/hpack), 
-                    + [autopack](https://github.com/kowainik/autopack)
-                    + [cabal-fmt](https://github.com/phadej/cabal-fmt)
-                    + [gild](https://taylor.fausak.me/2024/02/17/gild/)
-                    &nbsp;
+                   <ul>
+                    <li> [hpack](https://github.com/sol/hpack),              </li>
+                    <li> [autopack](https://github.com/kowainik/autopack)    </li>
+                    <li> [cabal-fmt](https://github.com/phadej/cabal-fmt)    </li>
+                    <li> [gild](https://taylor.fausak.me/2024/02/17/gild/)   </li>
+                   </ul>
                     Of course many of these projects do more then just module expension.
                     hpack provides a completly different cabal file layout for exampe,
                     cabal-fmt and gild are formatters for cabal file.
@@ -65,7 +67,7 @@ or revolved around creating a seperate AST, which was against maintainer recomme
 and then [abandoned](https://github.com/haskell/cabal/pull/9385).
 
 In essence I'm doing a fully integrated design around `parseGenericPackageDescription`.
-To make sure the changes I make are helping I setup several round trip test concerning
+To make sure the changes I make are helping, I setup several round trip test concerning
 the various properties we want see exact printed.
 For example, I'll add a cabal [file](https://github.com/haskell/cabal/blob/a75d51b8921f30ec24414f7a3413afc0e0fac111/Cabal-tests/tests/ParserTests/exactPrint/comments.cabal) with comments:
 ```cabal
@@ -91,7 +93,7 @@ and it should be the [*exact* same](https://github.com/haskell/cabal/pull/9436/f
 By doing this we should theoretically be allowed to modify
 `GenericPackageDescription` however we please,
 and get the result printed.
-Solving our initial module not listed problem (and several others).
+Solving our initial module not listed problem (and [several others](https://github.com/haskell/cabal/labels/exact-print)).
 
 The implementation itself is simple.
 We add a [field](https://github.com/haskell/cabal/pull/9436/files#diff-73c00fc0bacfac2e46beb6b5fafba1886f0e32e8678b5173347acfd7ec8aef05R127) to `GenericPackageDescription` with all the exact
@@ -123,7 +125,7 @@ you'll see you can put commas in many different places and still have a valid
 cabal file.
 These locations need to be parsed and tracked somehow.
 I've not even spoken about conditional branches yet,
-which I've no ideas for,
+which I've not thought about yet,
 however the point is that there is a lot to support!
 
 In general the issue why this exact printing is so hard is because
@@ -133,14 +135,13 @@ support until *some* solution gets merged.
 So overtime we can expect exact printing to become even harder to implement.
 
 Why I'm writing this instead of just implementing exact print?
-After my brief fit of anger, back in November, 
-and the draft PR created, my anger had all dissipated. 
+Back in November, I implemented some initial solution in anger,
+and the draft PR created, my anger had all but dissipated. 
 With clarity of mind, 
 I realized spending
 all my freetime implementing this feature isn't sustainable.
 I'd burn out at that rate.
 Essentially I'm looking for a way to make this more sustainable.
-
 
 A possibility is to create a haskell [tech proposal](https://github.com/haskellfoundation/tech-proposals/blob/main/proposals/templates/CommunityProject.md).
 This is a funding mechanism for long standing issues in the haskell community.
@@ -158,8 +159,10 @@ and work on the exact printer as a group.
 The tests can be solved in parrelel, a single person could work on
 comments, and another on common stanzas for example.
 Which I still may do. 
-I need to discuss that with the powers that be.
-Is subcontracting allowed?
+
+If I managed to unlock funds trough a tech proposal,
+I need to discuss that with the powers that be to make sure
+subcontracting is allowed.
 After all If I'm payed for the work, 
 I would also want to reward successful contributions.
 
