@@ -30,7 +30,12 @@ There are other programs providing module detection [^other-programs], but nothi
 Anyway one day I was lamenting this problem
 on the internet and I was told a forum user[^self-identified] that
 this is in fact the [cabal exact print](https://github.com/haskell/cabal/issues/7544) issue.
-In any case, after some exploritary discussion in that thread,
+GHC is [already able](https://github.com/alanz/ghc-exactprint) to do this for Haskell code, and [defines](https://gitlab.haskell.org/ghc/ghc/-/wikis/api-annotations#in-tree-exact-printing-annotations) it as follows:
+
+> Taking an abstract syntax tree (AST) and converting it into a string that looks like what the user originally wrote 
+> is called exact-printing. An exact-printed program includes the original spacing and all comments.
+
+In any case, after some exploratory discussion in that thread,
 I got a maintainer to [endorse](https://github.com/haskell/cabal/pull/9436#issuecomment-1809209581) 
 an [approach I made](https://github.com/haskell/cabal/pull/9436#issue-1989616367).
 
@@ -60,10 +65,18 @@ an [approach I made](https://github.com/haskell/cabal/pull/9436#issue-1989616367
                     no-one has attempted to centralize it yet however.
 
 Previous attempts were [abandoned](https://github.com/haskell/cabal/pull/7626),
-or revolved around creating a seperate AST, which was against maintainer recommendation, 
+or revolved around creating a seperate AST[^ast], which was against maintainer recommendation, 
 and then [abandoned](https://github.com/haskell/cabal/pull/9385).
+I'm doing a fully integrated design around the `parseGenericPackageDescription` function.
 
-In essence I'm doing a fully integrated design around the `parseGenericPackageDescription` function.
+[^ast]: AST: Abstract Syntax Tree, a tree representation of the structure of code, which helps the system understand and manipulate code.
+
+```haskell
+parseGenericPackageDescription :: ByteString 
+                               -> ParseResult GenericPackageDescription 
+```
+This function takes a `ByteString` (cabal file), and returns a `GenericPackageDescription`. 
+Which is the data type the rest of cabal works with. Also known as the AST, even though it's not really a tree.
 To make sure the changes I make are helping, I setup several round trip test concerning
 the various properties we want see exact printed.
 For example, I'll add a cabal [file](https://github.com/haskell/cabal/blob/a75d51b8921f30ec24414f7a3413afc0e0fac111/Cabal-tests/tests/ParserTests/exactPrint/comments.cabal) with comments:
