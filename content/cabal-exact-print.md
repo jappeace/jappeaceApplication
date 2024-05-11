@@ -1,9 +1,9 @@
 Title: Cabal exact print
-Date: 2024-05-05 16:00 
+Date: 2024-05-11 16:00 
 Category: tools
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, reflex, frp, servant
-subreddit: haskell programming reflexfrp
+Tags: haskell, programming, tools, tech-proposal
+subreddit: haskell programming 
 
 For a long time I've been annoyed with [cabal](https://www.haskell.org/cabal/) telling you
 to add modules to your cabal file.
