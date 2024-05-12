@@ -1,5 +1,5 @@
-Title: Cabal Exact Print
-Date: 2024-05-11 16:00 
+Title: Cabal exact printing
+Date: 2024-05-12 18:00
 Category: tools
 OPTIONS: toc:nil
 Tags: haskell, programming, tools, tech-proposal
