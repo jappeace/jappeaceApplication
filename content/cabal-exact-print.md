@@ -5,7 +5,7 @@ OPTIONS: toc:nil
 Tags: haskell, programming, tools, tech-proposal
 subreddit: haskell programming 
 
-For a long time I've been annoyed with [cabal](https://www.haskell.org/cabal/) telling you
+For a long time I've been annoyed that [cabal](https://www.haskell.org/cabal/) tells you
 to add modules to your cabal file.
 It's capable of detecting they're missing, 
 but won't go the extra mile and just add them.
@@ -14,6 +14,11 @@ but if you like splitting code into many small modules,
 for example because you like [fast compile times](https://www.parsonsmatt.org/2019/11/27/keeping_compilation_fast.html#the-projecttypes-megamodule),
 then any refactor may cause many of these messages to appear.
 Which becomes tedious to manage.
+
+<div style="width:100%; text-align:center;">
+<img style="width:50%;" alt="exact print image" src="/images/2024/exact-print.webp" />
+</div>
+
 Currently if you build a project with an extra module not listed in your cabal file,
 GHC emits a warning:
 ```
@@ -28,7 +33,7 @@ Cabal is currently only able to parse Cabal files,
 and print them back out in a mangled[^mangled] form.
 There are other programs providing module detection [^other-programs], but nothing integrated.
 Anyway one day I was lamenting this problem
-on the internet and I was told a forum user[^self-identified] that
+on the internet and I was told by a forum user[^self-identified] that
 this is in fact the [cabal exact print](https://github.com/haskell/cabal/issues/7544) issue.
 GHC is [already able](https://github.com/alanz/ghc-exactprint) to do this for Haskell code, and [defines](https://gitlab.haskell.org/ghc/ghc/-/wikis/api-annotations#in-tree-exact-printing-annotations) it as follows:
 
@@ -64,8 +69,8 @@ an [approach I made](https://github.com/haskell/cabal/pull/9436#issue-1989616367
                     there is clearly demand for it.
                     no-one has attempted to centralize it yet however.
 
-Previous attempts were [abandoned](https://github.com/haskell/cabal/pull/7626),
-or revolved around creating a seperate AST[^ast], which was against maintainer recommendation, 
+Previous attempts were [abandoned](https://github.com/haskell/cabal/pull/7626).
+Or they revolved around creating a seperate AST[^ast], which was against maintainer recommendation, 
 and then [abandoned](https://github.com/haskell/cabal/pull/9385).
 I'm doing a fully integrated design around the `parseGenericPackageDescription` function.
 
@@ -76,7 +81,7 @@ parseGenericPackageDescription :: ByteString
                                -> ParseResult GenericPackageDescription 
 ```
 This function takes a `ByteString` (cabal file), and returns a `GenericPackageDescription`. 
-Which is the data type the rest of cabal works with. Also known as the AST, even though it's not really a tree.
+Which is the data type the rest of cabal works with. This is the cabal equivalent of an AST.
 To make sure the changes I make are helping, I setup several round trip test concerning
 the various properties we want see exact printed.
 For example, I'll add a cabal [file](https://github.com/haskell/cabal/blob/a75d51b8921f30ec24414f7a3413afc0e0fac111/Cabal-tests/tests/ParserTests/exactPrint/comments.cabal) with comments:
@@ -103,11 +108,11 @@ and it should be the [*exact* same](https://github.com/haskell/cabal/pull/9436/f
 By doing this we should theoretically be allowed to modify
 `GenericPackageDescription` however we please,
 and get the result printed.
-Solving our initial module not listed problem (and [several others](https://github.com/haskell/cabal/labels/exact-print)).
+Which is a step towards solving our initial module not listed problem (and [several others](https://github.com/haskell/cabal/labels/exact-print)).
 
 The implementation itself is simple.
-We add a [field](https://github.com/haskell/cabal/pull/9436/files#diff-73c00fc0bacfac2e46beb6b5fafba1886f0e32e8678b5173347acfd7ec8aef05R127) to `GenericPackageDescription` with all the exact
-print data.
+We add a [field](https://github.com/haskell/cabal/pull/9436/files#diff-73c00fc0bacfac2e46beb6b5fafba1886f0e32e8678b5173347acfd7ec8aef05R127) 
+to `GenericPackageDescription` with all the exact print data.
 Which we access trough `Map`'s. 
 The key is a new concept called a `NameSpace`.
 Values are `ExactPostions` for example.
@@ -116,10 +121,10 @@ an exact position, before falling back to pretty printing.
 This instantly solved the tests for sections.
 Which was a good result!
 
-Then there is a long list of features we need to support,
+However, there is still a long list of features we need to support,
 such as comments, common stanzas, 
 better comma support, and conditional branches.
-Exact printing comments are hard, because cabal just filters them now instead of parsing them. 
+Exact printing comments are hard, because currently cabal filters them instead of parsing them. 
 so the parser needs to be modified as well.
 Fortunately someone has already done some [preliminary work](https://github.com/haskell/cabal/pull/9436/commits/d752e49e526a377f1ec96a37660e0fd9b88cb5e0)
  on that,
@@ -135,7 +140,7 @@ but you can put commas in many different places and still have a valid
 cabal file.
 These locations need to be parsed and tracked somehow.
 I've not even spoken about conditional branches yet,
-which I've not thought about yet,
+which I've not thought about much,
 however the point is that there is a lot to support!
 
 In general the issue why this exact printing is so hard is because
@@ -162,11 +167,11 @@ And I'm not sure how much budget is even available for a project like this.
 So this in essence this blogpost is a preproposal,
 to see what people think of it without going all the way.
 
-Another thing that came to mind is that I wanted to do is recruit volunteers.
+Another possibility is recruiting volunteers.
 In general, however they'd run into the same issue I had!
 However I do think if I'd trade some money for some helping hands
 then this could work.
-The tests can be solved in parrelel, a single person could work on
+The tests can be solved in parallel, a single person could work on
 comments, and another on common stanzas for example.
 But would this be allowed by the tech proposal system?
 
