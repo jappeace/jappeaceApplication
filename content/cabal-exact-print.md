@@ -162,7 +162,7 @@ Essentially I'm looking for a way to make this more sustainable.
 A possibility is to create a Haskell [tech proposal](https://github.com/haskellfoundation/tech-proposals/blob/main/proposals/templates/CommunityProject.md).
 This is a funding mechanism for long-standing issues in the Haskell community.
 With funding I could trade hours in my day job for hours working on this particular issue,
-without losing anything on lifestyle.
+without losing anything on mental health.
 Currently the issue is that these proposals look like [a lot of work](https://github.com/haskellfoundation/tech-proposals/blob/main/proposals/052-cryptography-leg-1.md).
 And I'm not sure how much budget is even available for a project like this.
 So in essence this blog-post is a preproposal,
