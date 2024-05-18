@@ -7,8 +7,8 @@ subreddit: haskell programming
 
 For a long time, I've been annoyed that [cabal](https://www.haskell.org/cabal/) tells you
 to add modules to your cabal file.
-It's can of detect missing modules, 
-but won't automatically add them.
+It can detect missing modules,
+but won’t automatically add them.
 This is not a big deal for a single module, 
 but if you like splitting code into many small modules,
 for example because you like [fast compile times](https://www.parsonsmatt.org/2019/11/27/keeping_compilation_fast.html#the-projecttypes-megamodule),
