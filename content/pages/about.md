@@ -6,7 +6,7 @@ Hello, I'm Jappie Klooster, at your service.
 I like cooking, black smithing
 and telling computers what to do (also known as programming).
 I'm a freelance software engineer
-working for [Supercede](https://supercede.com/) at the moment.
+working for [Converge](https://www.converge.io/) at the moment.
 
 Around 2004 I was high schooler,
 perhaps too clever for my own good and a little bored,
@@ -33,6 +33,7 @@ A brief overview of meaningful events and decisions in my life.
 <table>
 <tr><th> 2024 </th><td>
 Applying abstract maths to concrete factories.
+Dealing with my [debt](https://www.youtube.com/watch?v=qI_IIKW2YRY&list=PL6FatF00QFsM4TQwsr1bRt61AR9dBHDRh&index=2) arc.
 </td></tr>
 <tr><th> 2023 </th><td>
 Aruba is <a href="https://jappie.me/lessons-from-creating-a-vacation-rental.html">open for business</a>.
