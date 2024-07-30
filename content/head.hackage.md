@@ -5,6 +5,8 @@ OPTIONS: toc:nil
 Tags: Haskell, programming, tools, tech-proposal
 subreddit: Haskell programming 
 
+![Stability - according to gpt4o](/images/2024/stability.webp)
+
 I joined the [Haskell Stability Working Group](https://github.com/haskellfoundation/stability) 
 about a year ago.
 I was freshly scarred from a GHC upgrade, 
@@ -13,6 +15,7 @@ I think my first contribution was making an example for
 [GHC nightly builds](https://github.com/jappeace/haskell-nightly) on GitHub Actions.
 This allows downstream[^downstream] maintainers to build
 GHC nightly to spot issues early.[^github-actions] 
+
 
 [^downstream]: Downstream in this case means people who use GHC and are dependent on it.
 
