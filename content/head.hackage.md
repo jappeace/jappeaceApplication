@@ -1,5 +1,5 @@
 Title: Analyzing Haskell stability
-Date: 2024-07-30 21:00
+Date: 2024-07-30 15:00
 Category: tools
 OPTIONS: toc:nil
 Tags: Haskell, programming, tools, tech-proposal
