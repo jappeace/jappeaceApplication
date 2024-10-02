@@ -43,7 +43,7 @@ I quit <a href="https://supercede.com/">supercede</a> and became a construction 
 <tr><th> 2022 </th><td>
 I participated in <a href="https://jappie.me/zurich-hack-2022-denotational-design.html">zurich hack</a>.
 I read zhuangzi and became useless.
-I'm trying to get into [real estate](http://localhost:8000/summerhouse-paradis-aruba.html).
+I'm trying to get into [real estate](https://jappie.me/lessons-from-creating-a-vacation-rental.html).
 </td></tr>
 <tr><th> 2021 </th><td>
 I started doing crossfit.
