@@ -33,7 +33,9 @@ A brief overview of meaningful events and decisions in my life.
 <table>
 <tr><th> 2024 </th><td>
 Applying abstract maths to concrete factories.
-Dealing with my [debt](https://www.youtube.com/watch?v=qI_IIKW2YRY&list=PL6FatF00QFsM4TQwsr1bRt61AR9dBHDRh&index=2) arc.
+Dealing with my <a href="https://www.youtube.com/watch?v=qI_IIKW2YRY&list=PL6FatF00QFsM4TQwsr1bRt61AR9dBHDRh&index=2">debt arc</a>.
+I met weronika,
+I broke up with weronika.
 </td></tr>
 <tr><th> 2023 </th><td>
 Aruba is <a href="https://jappie.me/lessons-from-creating-a-vacation-rental.html">open for business</a>.
@@ -43,7 +45,7 @@ I quit <a href="https://supercede.com/">supercede</a> and became a construction 
 <tr><th> 2022 </th><td>
 I participated in <a href="https://jappie.me/zurich-hack-2022-denotational-design.html">zurich hack</a>.
 I read zhuangzi and became useless.
-I'm trying to get into [real estate](https://jappie.me/lessons-from-creating-a-vacation-rental.html).
+I'm trying to get into <a href="https://jappie.me/lessons-from-creating-a-vacation-rental.html">real estate</a>.
 </td></tr>
 <tr><th> 2021 </th><td>
 I started doing crossfit.
