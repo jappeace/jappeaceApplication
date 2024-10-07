@@ -37,34 +37,19 @@
 + Updating.
 + Informing.
 
-* What to do (when maintaining)
+* How to maintain
 + Adding things.
 + Changing *maybe* fine.
 + Hide details
-
-* Adding things
-+ Extra field in json response
-+ New endpoint
-+ new function
-
-* Changing things
-+ More leniency
-+ redirects
-
-* Hiding details
-
-+ public/private
-+ exports
 
 * Use golden tests
 
 https://github.com/converge-io/precast-dna/tree/main/server/test/golden
 
-* What to (when using)
+* When using
 
 + Prefer stable (as blessed by the author)
-+ Choose things with more users
-  + gives natural 
++ Choose options with more users
 
 * Conclusion
 
