@@ -1,0 +1,73 @@
+#+TITLE: Stability & Innovation
+
+* Motivation
++ Upgrade Churn
++ Haskell community
++ Enterprise & Java 6
++ Precast mobile
+
+* upgrading causes pain
++ takes a long time
++ difficult to justify
+
+* Upgrade pain
++ github  actions: slightly alter a command
+  https://github.com/converge-io/precast-dna/commit/6d2a439db75f0b19e1c9185918244002588ee609
+  https://github.com/actions/runner-images/issues/9557
++ python 2 to python 3
+    #+BEGIN_LANGUAGE python
+      print "xx" -> print("xx")
+    #+END _LANGUAGE
++ Xorg -> wayland
++ Simplified subsumption
+  https://www.reddit.com/r/haskell/comments/ujpzx3/was_simplified_subsumption_worth_it_for_industry/
+
+* Never upgrading is a bad stability strat
++ you're on your own
++ or just get used to the bugs
++ end up paying heavy fees for security
+
+* can we have nice upgrades?
+
+* Yes!
+
+* When is stability an issue?
+
++ Many (unknown) clients.
++ Updating.
++ Informing.
+
+* What to do (when maintaining)
++ Adding things.
++ Changing *maybe* fine.
++ Hide details
+
+* Adding things
++ Extra field in json response
++ New endpoint
++ new function
+
+* Changing things
++ More leniency
++ redirects
+
+* Hiding details
+
++ public/private
++ exports
+
+* Use golden tests
+
+https://github.com/converge-io/precast-dna/tree/main/server/test/golden
+
+* What to (when using)
+
++ Prefer stable (as blessed by the author)
++ Choose things with more users
+  + gives natural 
+
+* Conclusion
+
+Nice upgrades starts with you!
+
+* Call for Volunteers
