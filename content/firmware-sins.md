@@ -16,8 +16,11 @@ img[src="images/2024/calc-gamble.png"]{
 
 ![Life and lemons](images/2024/calc-gamble.png)
 
-I wasn't hired to modify firmware.
-But we needed better scanners, better hardware even,
+Ever found yourself fixing a problem you weren't hired to solve? 
+To the point where you're under qualified?
+That's what happened when I dove into firmware.
+It was my suggestion, nobody *asked* me to do this,
+but we needed better scanners, better hardware even,
 and we couldn't get it due to politics.
 They asked us to get more customers, 
 before we could get better hardware.
@@ -39,7 +42,7 @@ We tried doing fancy startup things, and underachieved.
 For example we wanted to detect if a "lift" was happening,
 but only got a single observation from the scanner for a two minute
 period.[^area-note]
-About two months ago I brought up the issue of scanner firmware.
+About two months ago I brought that the scanner firmware maybe bad.
 We thought the scanners worked at peak performance before that.
 Kind of silly looking back.
 We naively assumed we were set up for success,
@@ -54,6 +57,7 @@ but we were given lemons.
               pick up the wrong signals, of stuff just laying around, and
               send those over!
 
+## Experiment
 My colleague tracked down the packet size configuration and increased it as an experiment. 
 This doubled the performance of the device.
 I was relieved by this; I sensed the deadlock breaking and could smell lemonade.
@@ -81,7 +85,7 @@ My colleague recommended that I make a small, baby-step changes.
 Test each small change out out on the device making sure it doesn't crash. [^1] 
 
 
-[^particle-one]: For particle tracker one, you have to screw it open, and there is a mode and reset button, hold the mode button, then tap the reset button, once it starts flashing green release mode, this will allow you to put new firmeware on it again via usb.
+[^particle-one]: For particle tracker one, you have to screw it open, and there is a mode and reset button, hold the mode button, then tap the reset button, once it starts flashing green release mode, this will allow you to put new firmware on it again via usb.
 
 [^1]: Which is starkly different from my haskell workflow
     of just writing everything you want in one go,
@@ -89,6 +93,7 @@ Test each small change out out on the device making sure it doesn't crash. [^1]
     a functioning program.
     This Made me realize how spoiled I am.
 
+## Sorting
 Anyway, I got better.
 In the second week I got a build that sorted on signal strength values. [^struggles]
 We believed the machine was sending random updates, 
@@ -103,6 +108,7 @@ but a good step forward.
 
 [^requested]: My colleague menioned they asked to sort the signals from the original contractors, but they never did this.
 
+## Mutex nonsense
 The following week I tackled the concurrency issue.
 I knew this was an issue because there was a [mutex](https://stackoverflow.com/questions/34524/what-is-a-mutex)
 that excluded the Bluetooth scanner from
@@ -174,6 +180,7 @@ because I knew the code was nonsense and had addressed it.[^turnover]
 
 [^turnover]: This explains the fast turnover time, I just fixed obvious glaring problems, which you can see by reading code and trying to figure out what it does.
 
+## Fixing concurrency
 The fix involved deleting it all.
 Both the locks and the mutex. 
 Instead I used a queue for inter thread communication.
@@ -186,12 +193,12 @@ The queue I ended up using looked like [this](https://docs.particle.io/firmware/
 ```C
 int os_queue_create(os_queue_t* queue, size_t item_size, size_t item_count, void* reserved);
 ```
-It's a bit wack;; you reserve some memory
+It's a bit wack; you reserve some memory
 for the queue, giving you a `os_queue_t*`.
 Then you've to initialize that memory with `os_queue_create`.
 This fills in some fields of the structure.
-The thing I got stuck on for a while, which caused me 
-red blinking light grief[^rs-segfault] was `os_queue_put` and `os_queue_take`
+I got stuck on using `os_queue_put` and `os_queue_take` for a while, 
+which caused me red blinking light grief[^rs-segfault] (segfaults):
 ```C
 int os_queue_put(os_queue_t queue, const void* item, system_tick_t delay, void* reserved);
 int os_queue_take(os_queue_t queue, void* item, system_tick_t delay, void* reserved);
@@ -204,7 +211,7 @@ and the `os_queue_create` function already told how large it should be.
 So instead of putting everything on the queue, I just made a struct with
 all relevant information:
 
-[^rs-segfault]: Because the code segfauts and red blinking light is all you get.
+[^rs-segfault]: Because the code segfaults and red blinking light is all you get.
 
 [^haskell-void]: Not to be confused with `void`, which is just an empty return type, or `Void` in haskell, which means no value will ever be that.
 ```C
@@ -223,6 +230,7 @@ but once this was done it worked.
 [^class]: with class we mean a c++ class, which is kindoff a module with implied mutable state. Or a struct, with member functions, it forces a construction function as well. 
 [^know-why]: I think I only know this because I played around before with haskell to c FFI.
 
+## Results: From lemons to lemonade
 The results of these improvements are impressive:
 
 | firmware          | p/s  |
