@@ -2,8 +2,7 @@ Title: Firmware lemons 🍋
 Date: 2024.11.02
 Category: reflection
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, reflex, frp, servant
-subreddit: haskell programming reflexfrp
+Tags: C, C++, programming, firmware
 
 <style>
 img[src="images/2024/calc-gamble.png"]{
