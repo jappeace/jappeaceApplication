@@ -12,8 +12,10 @@ width:15em;
 }
 article{
 text-align:left;
-max-width:50%;
+max-width:60%;
+padding:5%;
 margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
 }
 
 blockquote{
@@ -46,6 +48,7 @@ blockquote p::before{
 
 header{
     margin-bottom: 2em;
+    background: rgba(255, 255, 255, 0.85);
 }
 .xcd-when-to{
     width:100%;
@@ -55,3 +58,12 @@ header{
 small{
     font-size:x-small;
 }
+
+        .voronoi{
+            z-index: -1;
+width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+        }
