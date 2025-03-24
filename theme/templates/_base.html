@@ -25,7 +25,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="{{ SITEURL }}/favicon.png" rel="icon">
-    {% assets filters="sass,cssmin", output="css/base.min.css", "css/base.sass" %}
+    {% assets filters="cssmin", output="css/base.min.css", "css/base.css" %}
     <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
     {% endassets %}
 
@@ -66,11 +66,11 @@
     gtag('config', 'G-SJ36NEDJPD');
    </script>
   {% if article %}
-  {% assets filters="sass,cssmin", output="css/article.min.css", "css/all.sass", "css/article.sass" %}
+  {% assets filters="cssmin", output="css/article.min.css", "css/all.css", "css/article.css" %}
   <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
   {% endassets %}
   {% else %}
-  {% assets filters="sass,cssmin", output="css/double.min.css", "css/all.sass", "css/double_collumn.sass" %}
+  {% assets filters="cssmin", output="css/double.min.css", "css/all.css", "css/double_collumn.css" %}
   <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
   {% endassets %}
   {% endif %}
