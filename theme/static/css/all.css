@@ -546,7 +546,31 @@ ul.footlinks {
 .footnote {
   margin: 5em 0; }
 
+
+#main::after{
+  content: "";
+  display: block;
+  position:fixed;
+  width:100vw;
+  height:100vh;
+  /* background-image:linear-gradient(transparent,rgba(0,30,0,0.5)); */
+
+  background-image:
+    linear-gradient(to bottom, rgba(0,30,0,0.5) 0%, transparent 20%),
+    linear-gradient(to top, rgba(0,30,0,0.5) 0%, transparent 20%);
+  z-index:1;
+  left: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
 @media (prefers-color-scheme: dark) {
+
+#main::after{
+  background-image:
+    linear-gradient(to bottom, rgba(0,30,0,0.5) 0%, transparent 30%),
+    linear-gradient(to top, rgba(0,30,0,0.5) 0%, transparent 30%);
+}
   body {
     color: #eee;
     background: #121212; }
@@ -581,22 +605,10 @@ ul.footlinks {
     color: #9b5afb; }
 
   code {
-    background: radial-gradient(#134013, #121212); } }
+      background: radial-gradient(#134013, #121212); }
 
-/* cool but need to think about how it not disturb text
-#main::after{
-  content: "";
-  display: block;
-  position:fixed;
-  width:100vw;
-  height:100vh;
-  background-image:linear-gradient(transparent,rgba(0,30,0,0.5));
-  z-index:1;
-  left: 0;
-  bottom: 0;
-  pointer-events: none;
 }
-*/
+
 
 /* try make some walls out of css ...
 /* #main::before::before{ */
