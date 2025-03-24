@@ -582,3 +582,32 @@ ul.footlinks {
 
   code {
     background: radial-gradient(#134013, #121212); } }
+
+/* cool but need to think about how it not disturb text
+#main::after{
+  content: "";
+  display: block;
+  position:fixed;
+  width:100vw;
+  height:100vh;
+  background-image:linear-gradient(transparent,rgba(0,30,0,0.5));
+  z-index:1;
+  left: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+*/
+
+/* try make some walls out of css ...
+/* #main::before::before{ */
+/*   content: ""; */
+/*   display: block; */
+/*   border-bottom: 1em solid #FF0; */
+/*   margin-top: 10px; */
+/*   position: relative; */
+/*   left: 100px; */
+/*   top: 300px; */
+/*   width: 100px; */
+/*   height: 1em; */
+/*   border-top: 1em solid gold; */
+/* } */
