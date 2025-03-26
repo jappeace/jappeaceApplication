@@ -13,7 +13,7 @@ img[src="images/2025/stacked.png"]{
 }
 </style>
 
-![Life and lemons](images/2025/stacked.png)
+![Stacked against us](images/2025/stacked.png)
 
 September 2023, I knew I was in for a wild ride when I won this contract.
 I already coached other developers in a commercial setting,
@@ -73,6 +73,9 @@ using the most advanced features available, rather than just focusing on the bas
 For example they would teach how to use lens, instead of simple record updates.
 This made it feel as if there was an endless mountain to climb of stuff to learn.
 I quickly proposed focusing on [simple Haskell](https://www.simplehaskell.org/).
+This would cut down on the size of the learning curve and allow people to focus
+on building features, 
+so they'd feel productive and could explore the remainder of the language at their own pace.
 Furthermore, the relational aspects of Postgres were in large parts of the system
 ignored. For example a load of units, 
 which in reality is a wagon of precast walls, 
@@ -86,9 +89,9 @@ Trying to achieve perfect code essentially.
 What was special is that they were still obsessed
 over this, despite how buggy and slow development was.
 
-[^mtl-issues]: There still to this day is an entire MTL based framework to stub out 
+[^mtl-issues]: There still to this day is an entire [MTL]({filename}/mtl.md) based framework to stub out 
                logic and run tests in memory.
-               One of my first suggestions was to delete that and instead just use higher order functions to stub things out, 
+               ONE of my first suggestions was to delete that and instead just use higher order functions to stub things out, 
                but some high up chiefs decided against that because they liked seeing the possible effects in the type signature.
                Because most logic resided in the database I think at this point I've deleted most
                tests that use this. 
@@ -117,12 +120,14 @@ He was one of two people I was supposed to teach Haskell.
 I never got the opportunity to do this.
 He'd be gone in a month.
 He was seething against Haskell.
-He had been only using HLS for compiler feedback and it's unreliable, [^infuriating]
+He had been only using [HLS](https://github.com/haskell/haskell-language-server)[^hls] for compiler feedback and it's unreliable, [^infuriating]
 Furthermore, he claimed Haskell had caused a huge amount of "mental overhead".[^architecutre-ii]
 But after talking to him I learned his underlying frustration was with
 upper management ignoring his recommendations.
 Ironically enough, despite our differences in "ideology"[^ideology], I liked this guy.
 He wasn't bad at his job[^tech-choises], but dear lord, he was pissed!
+
+[^hls]: Haskell language server. an LSP implementation for haskell. this provides IDE like experience for editors. It'll make your text editor give hints.
 
 [^tech-choises]: Later I found out that he made a bunch of suspicious technical choices, 
                  but I think most of these decisions came from being angry instead of lack of skill
@@ -403,8 +408,10 @@ tactic to "crack" this yard.
 He went again around May, and failed.
 But as we know now there were serious [fundamental issues]({filename}/firmware-sins.md)
 with the firmware.
-So I don't think trilateration could've worked in any case 
+So I don't think [trilateration](https://en.wikipedia.org/wiki/Trilateration)[^trilateration] could've worked in any case 
 without firmware upgrades.
+
+[^trilateration]: Trilateration involves locating by making triangles out of observations.
 
 The sensors worked well enough to give you a live proximity-based location.
 This would just attach the sensor GPS location to a Bluetooth
@@ -735,7 +742,8 @@ for example, a sleep mode where we disable the sensors during off hours.
 I've never claimed to be good at firmware,
 but even a slowly produced implementation of these changes caused a huge impact.
 Despite how cooked internal politics is for this company.
-We're winning this game.
+With now 2 major customers, many sites and getting the award,
+we can say we're winning this unfair game.
 
 [^read-between-lines]: I did nothing "genius" of course, I just made a boring, traditional design out of it. 
                        The reason it was so flawed is because the previous tech lead was afraid of Haskell.
