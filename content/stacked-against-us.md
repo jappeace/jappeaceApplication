@@ -1,35 +1,35 @@
 Title: Stacked against us
-Date: 2025-03-23 15:44
+Date: 2025-03-26 15:44
 Category: tools
 OPTIONS: toc:nil
-Tags: haskell, programming, tools, reflex, frp, servant
-subreddit: haskell programming reflexfrp
+Tags: work, remote, haskell, programming
 
-I won this contract at September 2023 by having the best matching experience
-and priorities.
-Not only have I already coached other developers in a commercial setting,
-I also understood what was asked from me.
+September 2023, I knew I was in for a wild ride when I won this contract.
+I already coached other developers in a commercial setting,
+and I understood what was asked of me.
 My goal was to get two existing developers comfortable
-with Haskell while at the same time increasing producitvity.
-This records my wild experience on this project.
+with Haskell while at the same time increasing productivity.
 
-The first week I started with understanding 
-the code base and what they're building.
-They're putting bleutooth tags on precast walls, 
-known as units, 
-so people don't lose them at the factory.
+In my first week I started with understanding 
+the code base[^code-base] and what they're building.
+They help people find their walls.
 How do you lose a wall?
+Imagine a concrete precast factory that constantly is churning
+out walls and other precast elements.
 These walls are stored in a several football field wide yard, 
 filled with gray concrete.
-Normally they record where they're stored in SAP,
-but if they need a wall below the one it's stored on they may get moved,
-in practice they may be moved a lot and get lost.
-These walls can wait for months to be shipped to a construction site.
+Normally they record where they're stored in [SAP](https://www.sap.com/) an inventory tracking tool.
+If they need the wall below another one, they may move it somewhere else and SAP gets stale.
+In practice these walls may be moved a lot and get lost.
+These walls often wait for months to be shipped to a construction site.
+This project puts bleutooth tags on precast walls, 
+so people don't lose them at the factory.
 With these tags they can find them easily, because they provide an active signal.
-So the Haskell web app receives all that data and make a nice interface out of it.
+So the Haskell web app receives all that data and makes a nice interface out of it.
 Providing a text box to look for a unit[^eg-wall], which can be rendered on a map.
 
 [^eg-wall]: Eg a precast wall.
+[^code-base]: So this also involves get familiar with whatever style the organization is using. Usually various companies have various styles.
 
 Ironically enough my first contributions to this organization wasn't
 about haskell or teaching at all,
@@ -40,7 +40,8 @@ I brought up how slow it was to react like that in one of the first meetings.
 This caused shock waves trough the entire organization
 and they re-prioritized monitoring for all other projects as well.[^engineering]
 Not surprising that many of my initial Haskell contributions were just about improving the engineering side.
-For example by using annotated exceptions which gave us stack traces, 
+For example by using [annotated exceptions](https://hackage.haskell.org/package/annotated-exception) 
+which gave us stack traces, 
 or make katip[^katip] and logz work together, giving us production logs and monitoring.
 
 [^engineering]: You'd say having monitoring is rather important, but startups often forget these "basics" of software engineering.
@@ -53,21 +54,26 @@ When I joined there was only a single factory actually using this system,
 and the project was filled with bugs.
 My first impression was that the engineers were intensely focused on architecture,
 they are really afraid of losing productivity due to having "too much code".
-However this came at cost of getting stuff working right now.
+However this came at cost of getting stuff working.
 Since this is a mostly typescript organization that just adopted Haskell for this project as
 an experiment, it sorta makes sense I guess to be afraid of code bloat.
+Another issue was that the people who knew Haskell preferred
+using the most advanced features available, rather then just focusing on the basics.
+For example they would teach how to use lens, instead of simple record updates.
+This made it feel as if there was an endless mountain to climb of stuff to learn.
+I quickly proposed focusing on [simple Haskell](https://www.simplehaskell.org/).
 Furthermore the relational aspects of Postgres were in large parts of the system
 ignored. For example a load of units, 
 which in reality is a wagon of precast walls, 
 was represented as a JSON blob. [^mtl-issues]
-There was no load table and a load unit connection table, just a blob.
+There was no `load` table and a `load_unit_connection` table, just a blob.
 Ironically enough this caused additional code to retrieve the relational aspects.
-So culturally the focus was "architecture" rather then making something work.
+Culturally the focus was "architecture" rather then making something work.
 Over engineering things that don't matter was the name of the game.
 This isn't unique to this project, at other companies I've seen similar discussion.
 Trying the achieve perfect code essentially.
 What was special is that they were still obsessed
-over it despite how buggy and slow development was.
+over this, despite how buggy and slow development was.
 
 [^mtl-issues]: There still to this day is an entire MTL based framework to stub out 
                logic and run tests in memory.
@@ -102,8 +108,8 @@ He'd be gone in a month.
 He was seething against Haskell.
 He had been only using HLS for compiler feedback and it's unreliable, [^infuriating]
 furthermore he claimed Haskell had caused a huge amount of "mental overhead".[^architecutre-ii]
-But after talking to him I learned his underlying frustration 
-upper management ignored his recommendations.
+But after talking to him I learned his underlying frustration was with
+upper management ignoring his recommendations.
 Ironically enough, despite our differences in "ideology"[^ideology], I liked this guy.
 He wasn't bad at his job[^tech-choises], but dear lord, he was he pissed!
 
@@ -135,18 +141,23 @@ He wasn't bad at his job[^tech-choises], but dear lord, he was he pissed!
              or do you care about having a sufficiently large manpower pool?
              There are more javascript developers then Haskell developers.
 
-After 2 weeks we can safely say this project was literally falling apart,
-suposedly all because of "Haskell".
-This is bullshit of course.
+After two weeks we can safely say this project was literally falling apart,
+supposedly all because of "Haskell".
+Which is frankly absurd.
+They made it hard with an over engineered architecture,
+and by using unreliable tools such as HLS.
+Furthermore they insisted on using every feature under the
+sun creating an endless learning curve. [^linear]
+Perfection was the enemy of the good.
 I understood the tech lead's perception,
 HLS is not good for commercial development.
-and if you've to figure out compile errors within your (unreliable) editor and deal with an
-over engineered architecture it's going to be taxing. 
+and if you've to figure out compile errors within your unreliable editor and 
+also deal with an over engineered architecture it's going to be taxing. 
 I also think he never learned how to trust the compiler to guide changes,
 and how to read type signatures.
 All of the basics were skipped in favor of writing pristine code from the get go.
 I realized that at this point I had a choice,
-keep on going with this project that apparently was falling apart,
+keep going on with this project that apparently was falling apart,
 or jump ship, 
 I was still in conversations with other companies at this time, 
 so jumping ship would be easy.
@@ -157,6 +168,8 @@ but I also liked the colleagues on the project.
 I felt I could rely on them,
 and we could do it if we just got shit done.
 
+[^linear]: I myself never bothered learning linear haskell for example, or can't be bothered with the evaluation order of typefamilies, it's just not interesting. I don't think you gain a lot by learning that stuff. You could do something fun instead y'know, write a giant blogpost on your job for example..
+
 Anyway I was asked to take over as tech lead, and I agreed. 
 I don't mind I guess.
 My leadership would involve getting everyone to be independent anyway.[^success]
@@ -166,7 +179,7 @@ But fortunately she was smart, exceptionally smart.
 So we paired on some tasks, and her issues were mostly syntax related.
 We managed to get this small task over the line after two weeks of
 1 hour pairing sessions per day.
-At the final couple days they mostly worked on their own.
+At the final couple days she mostly worked on her own.
 However, at that point productivity had tanked so much that my colleague had
 to go back to doing frontend stuff and I had to take over the backend work.
 Just to make our customer set deadlines, or get close to them.
@@ -180,8 +193,8 @@ And we managed to do so,
 and everyone was sort off amazed how much we got done
 in a short amount of time despite being a man short.
 The previous lead had essentially be avoiding working on the backend,
-and making excuses to not do work, he said he was documenting[^doucmenting],
-because of his frustrations.
+and making excuses to not do work in that final month. 
+He said he was documenting.[^doucmenting]
 
 [^feeling-the-whip]: The product manager made it clear we had to get stuff done fast.
 
@@ -191,16 +204,16 @@ There were still many issues with this project. [^cf-firmware]
 Especially looking back in hindsight, 
 but we were tightly under our only customers "yoke",
 they decided what we would be building, or drop us.
-The product managers' role at this point was to do customer management. [^designer]
+The product managers' (PM) role at this point was to do customer management. [^designer]
 The project was slow to load,
 the search barely worked,
 and the units weren't always found.
 The lift system didn't work either.
 The customer wanted us to fix these frontend features first.
-Dealing with the slow loading, the random reloads, and search for example, 
-because it was just annoying to them.
-And to be fair, the system would be difficult to sell with
-a frontend that was so buggy.
+Dealing with the slow loading, the random reloads, and search for example. 
+It was just annoying for them to use.
+To be fair, the system would be difficult to sell with
+a frontend that was so buggy anyway.
 
 [^designer]: We also had a (full-time) designer and he was sitting on his hands for most of this time.
              I'm not sure why we were given a full time designer on two engineers,
@@ -225,7 +238,7 @@ that she was creating commercial code in this language.
 I wanted to move in a direction where she could
 create entire features, 
 front and backend.
-Because this is how I've always done implemented things.
+Because this is how I've learned to implemented things.
 Doing so will remove all communication barriers and
 help her think "larger".
 The goal was to get her to be independent.
@@ -248,6 +261,8 @@ And a single small bug can break the entire system.
 
 I think the end of the beginning was the customer visit in January 2024.
 Where I got to witness the problem at hand with my own eyes.
+I got to see the "yard" of gray concrete and how large these factories are.
+They're large.
 We also demoed some features to them and they seemed to be less annoyed with us.
 I wouldn't call it impressed, 
 considering how slow development
@@ -275,7 +290,7 @@ Now our main customer was happy with that, because they were already bought in.
 However, if you want to sell this locating system,
 this is the first bullshit check you do.
 I think one of the OKRs[^okr] at this time was to setup the project without
-any assistance from the internal team to set it up.
+any assistance from the internal team.
 In essence, to make it a do it yourself experience for the customer.
 This as a goal was batshit insane.
 Not only were the deals to large for this to be done.
@@ -305,22 +320,23 @@ I strongly argued in favor of making sales easier.
 Another topic was for example to add admin pages, 
 we were currently just modifying stuff directly into the database.
 We decided to go all in on 
-Just modify the technology so that we could pass technical trials
+just modifying the technology so that we could pass technical trials
 and satisfy customers.
 Whatever it took.
 There were two major issues:
-1. One being that customers had a poor or no mental
-  modal of how the (hardware) technology worked.
-  In that they didn't understand bleutooth[^radio] signals.
+
+1. Customers had a poor or no mental
+   modal of how the (hardware) technology worked.
+   In that they didn't understand bleutooth[^radio] signals.
 2. We'd also address taking a sensor and tag
-   to the yard and not get a ping on the map with a new algorithm called proximity.
+   to the yard and not get a ping on the map. The system had to become "live"
 
 [^radio]: Bleutooth just works over radio, all bleutooth does is specify a protocol.
 
 We "tackled" these problems with something called "trial" mode.
 The designer made a ton of screens explaining all this stuff
 and have an automated way of guiding a new user trough all of it.[^designer] [^hope]
-One nice thing is that I could let the junior
+One nice thing is that I could let the other engineer
 implement most of the frontend and backend features for supporting
 that, 
 while I focussed on actually making the signals available at all.
@@ -328,8 +344,11 @@ Keep in mind we did not just have a "there is a database" backend called the ser
 we also had the "figure out what a signal is" backend called reality capture.
 I worked on that reality capture part.
 The additional advantage was that this gave her the opportunity to grow more,
-and come up with her own designs which we could work with.
+and come up with her own designs which we could work with.[^make-mistakes]
 We finished most of this around May.
+
+[^make-mistakes]: I think the important part here was that she could make mistakes and learn from them. I was always available to bail her out if neccisarry. 
+                  Most of her issues were small details, such as having functions with the same name causing confusion. 
 
 [^hope]: Looking back, I think the product manager still had a small hope for creating a do it yourself experience. Which is fair because going to these factories and construction sites is a big undertaking. We later found out these screens wouldn't work, but the back end stuff to support it, and having live updates were fantastic!
 [^designer]: Finally the designer got to do something. This wasn't his fault.
@@ -343,17 +362,24 @@ The designers' contract just wasn't renewed at all. [^distraction]
 Despite the cash burn being lowered, this project was far from saved, 
 we were still scraping by.
 And the threats from upper management continued, 
-and sales kept on fumbling.
+and sales kept on fumbling.[^ireland]
 We knew the particle hardware we were using wasn't performing well.
 But obviously we'd get no hardware resources.
 It was just me and the 
 algorithms engineer left doing technical work.
 And the product manager to deal with customers and sales.
 
+[^ireland]: Asside story, around this time the one irish precast factory let out a competition
+            for a technical solution for precast factories that basically described our system.
+            There was some subsidy by the Irish government.
+            We were by far the best suited to win that and somehow lost.
+            I don't know what happened,
+            but people say there is a lot of corruption in construction, another fun thing 🙂
+
 One prospect customer who we were talking to for years
 at this point was located in Denmark.
 We knew the hardware wasn't performing well because 
-of trying the system to work with them.
+of trying get the system to work with them.
 They told us "show it works and we'll use it".
 It didn't work.
 For example they had sensors in their little trucks
@@ -364,13 +390,14 @@ times already up till that point.
 Everytime the algo engineer and the PM would have a new
 tactic to "crack" this yard.
 He went again around May, and failed.
-But as we now know there were serious [fundemental issues]({filename}/firmware-sins.md)
+But as we know now there were serious [fundemental issues]({filename}/firmware-sins.md)
 with the firmware.
-So I don't think trilateration could've worked in any case.
+So I don't think trilateration could've worked in any case 
+without firmware upgrades.
 
 The sensors worked good enough to give you a live proximity
 algorithm location.
-This would just attach the sensor gps location to a bleutooth
+This would just attach the sensor GPS location to a bleutooth
 tag on extremly close proximity, say smaller then a meter.
 We could just measure the signal strength required for that, 
 it is reliable. 
@@ -389,10 +416,10 @@ it was our ace in the hole.
 Something else happened around May,
 the head of software decided that this project could benefit from an app.
 And he decided to make a prototype.
-In fact the QRcode scanning was much better then whatever we could
+The QRcode scanning in app was much better then whatever we could
 provide on the web.
 And the app had bleutooth capabilities, 
-which browsers to this day can't access.
+which browsers to this day [can't access](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API).
 So I saw some good growth potential in this and was so relieved 
 he took the initiative.
 Now [flutter](https://flutter.dev/) is far from perfect,
@@ -452,8 +479,8 @@ even at the factory.
 [^reshuffle]: Reshuffling means, move a concrete wall from one trailer to another to be patched up.
               This happens with large diesel powered cranes.
 
-here I had a little Epiphany, 
-all that talk about Co2 reduction
+Here I had a little Epiphany, 
+all that talk about CO₂ reduction
 for the other projects,
 may be in fact also be true for this project.
 Upper management, 
@@ -488,7 +515,8 @@ Find a tag, press the sensor too it, wait a second, move on.[^firmware-bugs]
 Rinse and repeat while getting soaked.
 Before the check I went back into the office making sure everything
 was updated.
-Unfortunately some units had updated due to the other algorithm sending updates.
+Unfortunately some units had updated to the wrong location due to the other 
+trilateration algorithm sending updates, overriding proximity.
 Here the algorithm engineer, the PM and I had a healthy debate.
 The algorithm engineer wanted a fair check,
 I and the PM knew there was nothing fair here.
@@ -512,7 +540,7 @@ But the PM went hard against that.
 The sun had came in, and these checks became a pleasant walk.
 Bob started cracking jokes and smoking cigarettes.
 The next ones were all passing (of course), 
-in fact when the customer would check he'd at times
+in fact when the customer would check he would at times
 see the system update in front of his eyes.
 And just accept it as normal. 
 Not knowing we'd have sensors in our person. [^dishonest]
@@ -536,11 +564,11 @@ No longer could upper management blame the technical
 working of our system for sales failures.
 Annoyingly this particular deal fell trough anyway,
 but not because of the technical capabilities of the system.
-I think this did buy us a chuck of time however to actually
+I think this did buy us a chunk of time however to actually
 address the underlying issues.
 During this check we had spotted many other issues with
 the system.
-Fun things such as DDoSing ourselves by having a bag of beacons
+Fun things such as DDoSing ourselves by having a bag of tags
 next to the sensor, (which caused a bit of panic the day before judgment).
 I addressed all these issues.
 
@@ -548,16 +576,16 @@ I addressed all these issues.
 We also started doing another trial for a potential new large 
 customer, 
 similar to the one in denmark.
-This time it would not take 7 trips from the PM.
+This time it would not take seven trips from the PM.
 We had proximity algorithm to convince them that we could find locations of units.
 actually one of the sensors failed during this check, fortunately they had a backup,
 but asside that we past this tech trial on first go.
 We confirmed here that if you convince people it works swiftly,
 they'll be a lot less thorough in their technical checks.
 This trial in September I believe of 2024 was still on the old crummy firmware.
-We passed so "easily" because we failed so hard and often in Denmark.
+We passed so "easily" because we failed so hard and often in Denmark and learned.
 Furthermore the algo engineer did her magic, 
-and had convinced them the system could be used for lean manufacturing.
+and had convinced them the system could be used for [LEAN manufacturing](https://nl.wikipedia.org/wiki/Lean_manufacturing).
 Unfortunately the customer had arranged no experts for that check there at the time.
 So they didn't realize what they were sitting on.
 But they were convinced the system worked and was something that they wanted.
@@ -577,11 +605,11 @@ Around September I started working on the firmware,
 described [elsewhere]({filename}/firmware-sins.md) so I won't go into it.
 This made proximity significantly better, 
 and temporarily killed the other algorithms, 
-due to excess of data causing it to run out of memory.
+due to excess of data causing it to run out of memory.[^good-enough]
 
 Around October we won an award for smart data collection in construction,
 We were actually nominated by our one and only customer.
-Furthermore around christmass we got some really good feedback from them.
+Furthermore around Christmas we got good feedback from them.
 They had manage to lose around 30 units in SAP and managed to find them
 all with our system!
 I knew at the time it was just my proximity algo that was operational.
@@ -590,6 +618,7 @@ So I was a little confused by this.
 Furthermore our own audits showed that we could seriously work on accuracy.
 I think what happened was that one of their employees consistently took
 a sensor into the yard.
+I'm not really sure, but if they're happy, I'm happy.
 
 Even after winning the award and having this major customer in the pipeline,
 we still got more threats of upper management.
@@ -612,7 +641,7 @@ I've no idea how to deal with these requests.
 Spending two days on documenting while one of the 
 main algorithms is down seems downright irresponsible.
 I just stopped doing architecture changes, 
-they were mostly cost saving anyway.
+they were mostly cost saving anyway, and optional for now.
 
 The PM would become father,
 and he'd go on a three month break from the job in December.
@@ -624,7 +653,7 @@ Doing a weekly meeting turned out to be highly successful,
 actually the main sales guy liked doing them and requested to continue
 doing them after the PM got back.
 We made this work.
-Come on, what we've been trough in Denmark, this was easy right?
+Come on, compared to what we've been trough in Denmark, this was easy right?
 It was.
 
 For most of December I worked on signal processing.
@@ -634,9 +663,8 @@ This was one of the main features the new customer would use,
 to figure out on which site a unit is.
 It's a more general way of locating units, 
 rather then by coordinates you just give it a site name.
-This is easy because if a sensor picks it up, 
-and you know on which site a sensor is, 
-so locating is done at that point.
+This is easy because you know on which site a sensor is,
+so all you have to do is pickup a signal and associate it to a sensor.
 Before we fetched the signals from timestream but that was kind of expensive.
 This approach used a simple queue.
 
@@ -650,18 +678,20 @@ However I modified it so that it would highlight bad setting in red.
 This made sifting trough all these beacons (thousands of them) a lot faster.
 It's available [opensource](https://github.com/jappeace/kbeacon-ota-tool).
 With the things learned from that development I also build a liveliness
-check in the registration app.
+check in the registration app.[^registration-app]
 This should prevent the system from accepting any dead or low battery Bluetooth tags.
+
+[^registration-app]: The registration app is different from the setting check app. The setting check app isn't customer facing.
 
 We're in March now,
 that big customer signed the deal, and we likely got another construction site.
-so currently we're servicing 2 locations,
-soon this will be 14.
+Currently we're servicing two locations,
+soon this will grow to fourteen.
 We're winning and we likely won't be able to keep up with the work.
 Which is a much better problem to have then being threatened by cancellation.
-The really strange thing is that
-upper management still somehow comes with threats or weird rhetoric,
-for example "is this really alligned with our vision?".
+Whilst that's going on we're still surprised by leadership
+with cryptic and somewhat intimidating remarks—for example, 
+asking "is this really aligned with our vision?".
 Their vision being to tackle carbon impact in construction.
 Which is ironic, considering the experience in Denmark.
 I suppose they'd just not believe us.
