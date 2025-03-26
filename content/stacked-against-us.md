@@ -4,6 +4,17 @@ Category: tools
 OPTIONS: toc:nil
 Tags: work, remote, haskell, programming
 
+<style>
+img[src="images/2025/stacked.png"]{
+  height: 30em;
+  float: right;
+  margin: 2em;
+  width:unset;
+}
+</style>
+
+![Life and lemons](images/2025/stacked.png)
+
 September 2023, I knew I was in for a wild ride when I won this contract.
 I already coached other developers in a commercial setting,
 and I understood what was asked of me.
