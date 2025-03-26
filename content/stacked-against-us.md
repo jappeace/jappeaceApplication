@@ -16,13 +16,13 @@ They help people find their walls.
 How do you lose a wall?
 Imagine a concrete precast factory that constantly is churning
 out walls and other precast elements.
-These walls are stored in a several football field wide yard, 
+These walls are stored in a yard several football field wide, 
 filled with gray concrete.
 Normally they record where they're stored in [SAP](https://www.sap.com/) an inventory tracking tool.
 If they need the wall below another one, they may move it somewhere else and SAP gets stale.
 In practice these walls may be moved a lot and get lost.
 These walls often wait for months to be shipped to a construction site.
-This project puts bleutooth tags on precast walls, 
+This project puts bluetooth tags on precast walls, 
 so people don't lose them at the factory.
 With these tags they can find them easily, because they provide an active signal.
 So the Haskell web app receives all that data and makes a nice interface out of it.
@@ -37,7 +37,7 @@ there was an "escalation" on the Monday I started,
 and they managed to react 3 days after the event(!)
 Apparently they barely had any monitoring in place.
 I brought up how slow it was to react like that in one of the first meetings. 
-This caused shock waves trough the entire organization
+This caused shock waves through the entire organization
 and they re-prioritized monitoring for all other projects as well.[^engineering]
 Not surprising that many of my initial Haskell contributions were just about improving the engineering side.
 For example by using [annotated exceptions](https://hackage.haskell.org/package/annotated-exception) 
@@ -53,25 +53,25 @@ or make katip[^katip] and logz work together, giving us production logs and moni
 When I joined there was only a single factory actually using this system,
 and the project was filled with bugs.
 My first impression was that the engineers were intensely focused on architecture,
-they are really afraid of losing productivity due to having "too much code".
+they feared losing productivity due to having "too much code".
 However this came at cost of getting stuff working.
-Since this is a mostly typescript organization that just adopted Haskell for this project as
-an experiment, it sorta makes sense I guess to be afraid of code bloat.
+Since this is a mostly TypeScript organization that just adopted Haskell for this project as
+an experiment, it makes sense to be afraid of code bloat.
 Another issue was that the people who knew Haskell preferred
-using the most advanced features available, rather then just focusing on the basics.
+using the most advanced features available, rather than just focusing on the basics.
 For example they would teach how to use lens, instead of simple record updates.
 This made it feel as if there was an endless mountain to climb of stuff to learn.
 I quickly proposed focusing on [simple Haskell](https://www.simplehaskell.org/).
-Furthermore the relational aspects of Postgres were in large parts of the system
+Furthermore, the relational aspects of Postgres were in large parts of the system
 ignored. For example a load of units, 
 which in reality is a wagon of precast walls, 
 was represented as a JSON blob. [^mtl-issues]
 There was no `load` table and a `load_unit_connection` table, just a blob.
 Ironically enough this caused additional code to retrieve the relational aspects.
-Culturally the focus was "architecture" rather then making something work.
+Culturally the focus was "architecture" rather than making something work.
 Over engineering things that don't matter was the name of the game.
 This isn't unique to this project, at other companies I've seen similar discussion.
-Trying the achieve perfect code essentially.
+Trying to achieve perfect code essentially.
 What was special is that they were still obsessed
 over this, despite how buggy and slow development was.
 
@@ -103,56 +103,56 @@ It felt like everything was still going awfully and things were getting worse!
 
 In the second week I discovered that the teamlead was going to quit. 
 He was one of two people I was supposed to teach Haskell.
-I never had gotten the opportunity to do this.
+I never got the opportunity to do this.
 He'd be gone in a month.
 He was seething against Haskell.
 He had been only using HLS for compiler feedback and it's unreliable, [^infuriating]
-furthermore he claimed Haskell had caused a huge amount of "mental overhead".[^architecutre-ii]
+Furthermore, he claimed Haskell had caused a huge amount of "mental overhead".[^architecutre-ii]
 But after talking to him I learned his underlying frustration was with
 upper management ignoring his recommendations.
 Ironically enough, despite our differences in "ideology"[^ideology], I liked this guy.
-He wasn't bad at his job[^tech-choises], but dear lord, he was he pissed!
+He wasn't bad at his job[^tech-choises], but dear lord, he was pissed!
 
-[^tech-choises]: Later I found out that he made a bunch of suspicious technical choises, 
+[^tech-choises]: Later I found out that he made a bunch of suspicious technical choices, 
                  but I think most of these decisions came from being angry instead of lack of skill
 
 [^architecutre-ii]: If they were to not obsess over architecture all the time this wouldn't have been such a big problem.
                     By the time I joined this guy already knew how to navigate syntax and how to fix bugs rapidly.
                     The mental overhead was of his own creation.
 
-[^infuriating]: Asside the time pressure for producing features and having to learn haskell, 
+[^infuriating]: Asside from the time pressure for producing features and having to learn haskell, 
                 having this program randomly crash on you as your only source of feedback is infuriating.
 
 [^ideology]: I call it ideology because I think programming languages are more like a culture you buy into
-             then a mere technological choice.
+             rather than a mere technological choice.
              Every general purpose programming language is Turing complete and therefore equivalent in capability.
              So logically what remains is cultural preference.
              In this view choosing one is more like choosing a "workstyle", a "way of thinking" or set of ideas to buy into.
              As opposed the more traditional view which says.
-             It makes more sense to ask "what system of values does Haskell promotes versus JavaScript?",
-             then to ask "what can I do with  Haskell verses JavaScript?".
+             It makes more sense to ask "what system of values Haskell promotes versus JavaScript?",
+             rather than to ask "what can I do with  Haskell verses JavaScript?".
              The latter question is meaningless.
-             Having said that I do think you can be a lot more productive in Haskell then JavasScript because
+             Having said that I do think you can be a lot more productive in Haskell than JavasScript because
              the libraries are better designed, with fewer surprises and the type system will catch so
              many small issues in a thorough manner. 
              It's better then other commercially available typed languages because it reduces to a single expression.
              This difference can be reduced to a value question as well:
              Do you care about individual developer productivity, 
              or do you care about having a sufficiently large manpower pool?
-             There are more javascript developers then Haskell developers.
+             There are more JavaScript developers than Haskell developers.
 
 After two weeks we can safely say this project was literally falling apart,
 supposedly all because of "Haskell".
 Which is frankly absurd.
-They made it hard with an over engineered architecture,
+They made it hard with an over-engineered architecture,
 and by using unreliable tools such as HLS.
 Furthermore they insisted on using every feature under the
-sun creating an endless learning curve. [^linear]
+sun, creating an endless learning curve. [^linear]
 Perfection was the enemy of the good.
 I understood the tech lead's perception,
 HLS is not good for commercial development.
 and if you've to figure out compile errors within your unreliable editor and 
-also deal with an over engineered architecture it's going to be taxing. 
+also deal with an over-engineered architecture it's going to be taxing. 
 I also think he never learned how to trust the compiler to guide changes,
 and how to read type signatures.
 All of the basics were skipped in favor of writing pristine code from the get go.
@@ -168,10 +168,10 @@ but I also liked the colleagues on the project.
 I felt I could rely on them,
 and we could do it if we just got shit done.
 
-[^linear]: I myself never bothered learning linear haskell for example, or can't be bothered with the evaluation order of typefamilies, it's just not interesting. I don't think you gain a lot by learning that stuff. You could do something fun instead y'know, write a giant blogpost on your job for example..
+[^linear]: I myself never bothered learning Linear Haskell for example, or can't be bothered with the evaluation order of type families, it's just not interesting. I don't think you gain a lot by learning that stuff. You could do something fun instead y'know, write a giant blog post on your job for example..
 
 Anyway I was asked to take over as tech lead, and I agreed. 
-I don't mind I guess.
+I don't mind, I guess.
 My leadership would involve getting everyone to be independent anyway.[^success]
 I think during my third and fourth week I started teaching Haskell,
 unfortunately the colleague I had to teach had essentially no experience.
@@ -179,20 +179,20 @@ But fortunately she was smart, exceptionally smart.
 So we paired on some tasks, and her issues were mostly syntax related.
 We managed to get this small task over the line after two weeks of
 1 hour pairing sessions per day.
-At the final couple days she mostly worked on her own.
+In the final couple days she mostly worked on her own.
 However, at that point productivity had tanked so much that my colleague had
 to go back to doing frontend stuff and I had to take over the backend work.
-Just to make our customer set deadlines, or get close to them.
+This was done to ensure that we met our customers' deadlines.
 
 [^success]: I think I succeeded with this. People no longer shy from just jumping out of their comfort zone and helping eachother out.
 
 Then the actual lead quit, and it was strange,
-I had to do a bunch of management stuff all the sudden as well,
+I had to do a bunch of management stuff all of a sudden as well,
 which I just postponed as much as possible in favor of getting the features out. [^feeling-the-whip]
 And we managed to do so, 
 and everyone was sort off amazed how much we got done
 in a short amount of time despite being a man short.
-The previous lead had essentially be avoiding working on the backend,
+The previous lead had essentially been avoiding working on the backend,
 and making excuses to not do work in that final month. 
 He said he was documenting.[^doucmenting]
 
@@ -202,7 +202,7 @@ He said he was documenting.[^doucmenting]
 
 There were still many issues with this project. [^cf-firmware]
 Especially looking back in hindsight, 
-but we were tightly under our only customers "yoke",
+but we were tightly under our only customer's 'yoke',
 they decided what we would be building, or drop us.
 The product managers' (PM) role at this point was to do customer management. [^designer]
 The project was slow to load,
@@ -210,13 +210,13 @@ the search barely worked,
 and the units weren't always found.
 The lift system didn't work either.
 The customer wanted us to fix these frontend features first.
-Dealing with the slow loading, the random reloads, and search for example. 
+Dealing with the slow loading, the random reloads, and search, for example. 
 It was just annoying for them to use.
 To be fair, the system would be difficult to sell with
 a frontend that was so buggy anyway.
 
 [^designer]: We also had a (full-time) designer and he was sitting on his hands for most of this time.
-             I'm not sure why we were given a full time designer on two engineers,
+             I'm not sure why we were given a full-time designer on two engineers,
              like a single designer can crank out designs for around 6 to 10 engineers.
              At this point we were with 2 software engineers! 
              (also 1 algorithms engineer but that role is more akin to data scientist).
@@ -224,11 +224,11 @@ a frontend that was so buggy anyway.
              You can just make ugly functioning developer art based UI's.
              As long as the system is reliable and does what it supposed to do, you're fine.
              This particular designer didn't bother understanding how the system was supposed to work.
-             I was still explaining to them 3 months in what a gateway (the internal name for bleutooth sensors) was.
+             I was still explaining to them 3 months in what a gateway (the internal name for bluetooth sensors) was.
 
-Solving those involved me just digging through the typescript
+Solving those involved me just digging through the TypeScript
 and undoing most of the madness.
-They were using typescript as a relational database,
+They were using TypeScript as a relational database,
 so I just deleted all that and let the actual database
 be a relational database.
 This gave the developer who I was teaching
@@ -283,7 +283,7 @@ and it involved large amount of money.
 Of course they were going to expect "whiteglove" treatment
 and of course the customers rejected this.
 Prospects would take the "sensor",
-and bleutooth tag into the yard, and see if it appears on the map.
+and bluetooth tag into the yard, and see if it appears on the map.
 It didn't because the main algorithm took like 30 minutes to figure
 out locations of these units. [^engineering-issues]
 Now our main customer was happy with that, because they were already bought in.
@@ -327,11 +327,11 @@ There were two major issues:
 
 1. Customers had a poor or no mental
    modal of how the (hardware) technology worked.
-   In that they didn't understand bleutooth[^radio] signals.
+   In that they didn't understand bluetooth[^radio] signals.
 2. We'd also address taking a sensor and tag
    to the yard and not get a ping on the map. The system had to become "live"
 
-[^radio]: Bleutooth just works over radio, all bleutooth does is specify a protocol.
+[^radio]: Bluetooth just works over radio, all bluetooth does is specify a protocol.
 
 We "tackled" these problems with something called "trial" mode.
 The designer made a ton of screens explaining all this stuff
@@ -383,7 +383,7 @@ of trying get the system to work with them.
 They told us "show it works and we'll use it".
 It didn't work.
 For example they had sensors in their little trucks
-driving by these walls with bleutooth tags on them.
+driving by these walls with bluetooth tags on them.
 The sensors would pick up no signals at all.
 I think the product manager had visited this place five
 times already up till that point.
@@ -397,7 +397,7 @@ without firmware upgrades.
 
 The sensors worked good enough to give you a live proximity
 algorithm location.
-This would just attach the sensor GPS location to a bleutooth
+This would just attach the sensor GPS location to a bluetooth
 tag on extremly close proximity, say smaller then a meter.
 We could just measure the signal strength required for that, 
 it is reliable. 
@@ -418,7 +418,7 @@ the head of software decided that this project could benefit from an app.
 And he decided to make a prototype.
 The QRcode scanning in app was much better then whatever we could
 provide on the web.
-And the app had bleutooth capabilities, 
+And the app had bluetooth capabilities, 
 which browsers to this day [can't access](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API).
 So I saw some good growth potential in this and was so relieved 
 he took the initiative.
@@ -523,7 +523,7 @@ I and the PM knew there was nothing fair here.
 Me and the PM wanted to force update the wrongly located units in the database.
 We ended up doing that by matter of vote[^consensus]
 
-[^firmware-bugs]: We noticed at the time the procedure didn't always work. I now know that this process probably only worked half the time because the sensor would spend 20 seconds of the minute sending gps signals and not doing any bleutooth. These are all firmware issues I fixed *after* denmark... 
+[^firmware-bugs]: We noticed at the time the procedure didn't always work. I now know that this process probably only worked half the time because the sensor would spend 20 seconds of the minute sending gps signals and not doing any bluetooth. These are all firmware issues I fixed *after* denmark... 
 
 [^consensus]: Normally the three of us argue till we reach consensus, this is an advantage of a small team. 
               But there was no time to do this this time, the check was comming.
