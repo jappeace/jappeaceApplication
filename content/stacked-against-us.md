@@ -26,12 +26,12 @@ This project puts Bluetooth tags on precast walls,
 so people don't lose them at the factory.
 With these tags they can find them easily, because they provide an active signal.
 So the Haskell web app receives all that data and makes a nice interface out of it.
-Providing a text box to look for a unit[^eg-wall], which can be rendered on a map.
+The interface provides a text box to search for a unit[^eg-wall], which can be rendered on a map.
 
 [^eg-wall]: Eg a precast wall.
-[^code-base]: So this also involves get familiar with whatever style the organization is using. Usually various companies have various styles.
+[^code-base]: So this also involves getting familiar with whatever style the organization is using. Usually various companies have various styles.
 
-Ironically enough my first contributions to this organization wasn't
+Ironically enough my first contributions to this organization weren't
 about Haskell or teaching at all,
 there was an "escalation" on the Monday I started,
 and they managed to react 3 days after the event(!)
@@ -42,19 +42,19 @@ and they re-prioritized monitoring for all other projects as well.[^engineering]
 Not surprising that many of my initial Haskell contributions were just about improving the engineering side.
 For example by using [annotated exceptions](https://hackage.haskell.org/package/annotated-exception) 
 which gave us stack traces, 
-or make katip[^katip] and logz work together, giving us production logs and monitoring.
+or making [Katip](https://hackage.haskell.org/package/katip)[^katip] and logz work together, giving us production logs and monitoring.
 
 [^engineering]: You'd say having monitoring is rather important, but startups often forget these "basics" of software engineering.
 
-[^katip]: Katip is great btw, structured logging is really nice, 
+[^katip]: Katip is great and structured logging is really nice, 
           that service logz is fragile however,
-          it denies the existence of heterogeneous lists in Java which Haskell tuple's get encoded to as JSON.
+          it denies the existence of heterogeneous lists in Java which Haskell tuples get encoded to as JSON.
 
 When I joined there was only a single factory actually using this system,
 and the project was filled with bugs.
 My first impression was that the engineers were intensely focused on architecture,
 they feared losing productivity due to having "too much code".
-However this came at cost of getting stuff working.
+However, this came at the cost of getting stuff working.
 Since this is a mostly TypeScript organization that just adopted Haskell for this project as
 an experiment, it makes sense to be afraid of code bloat.
 Another issue was that the people who knew Haskell preferred
@@ -471,7 +471,7 @@ middle of the road.
 They may have been in the middle of the road.
 but we had no sensors in those reshuffle or QA areas,
 so our system wouldn't further update.
-Honestly, we were setup to fail from the start.
+Honestly, we were set up to fail from the start.
 But no one knew how unfair this tech check was,
 even at the factory.
 
@@ -561,7 +561,7 @@ We passed the check by the skin of our teeth.
               How do you judge us?
 
 
-This was huge,
+This was huge.
 We've been scraping by and losing members for the past
 half year.
 But we managed to sell.
@@ -584,10 +584,10 @@ similar to the one in denmark.
 This time it would not take seven trips from the PM.
 We had proximity algorithm to convince them that we could find locations of units.
 actually one of the sensors failed during this check, fortunately they had a backup,
-but asside that we past this tech trial on first go.
+but aside that we past this tech trial on first go.
 We confirmed here that if you convince people it works swiftly,
 they'll be a lot less thorough in their technical checks.
-This trial in September I believe of 2024 was still on the old crummy firmware.
+This trial in September 2024, I believe was still on the old crummy firmware.
 We passed so "easily" because we failed so hard and often in Denmark and learned.
 Furthermore the algorithm engineer did her magic, 
 and had convinced them the system could be used for [LEAN manufacturing](https://nl.wikipedia.org/wiki/Lean_manufacturing).
@@ -595,7 +595,7 @@ Unfortunately the customer had arranged no experts for that check there at the t
 So they didn't realize what they were sitting on.
 But they were convinced the system worked and was something that they wanted.
 This came back to us in January with some good news once they finally found
-a guy to judge that, and he was exalted.
+a guy to judge that, and he was enthusiastic.
 
 Then the next major issue started popping up for our existing customer.
 The Bluetooth tag batteries around July started dying.
@@ -637,7 +637,7 @@ I was supposed to help them for 2 weeks.
 I finished the task in 2 days.
 After which they started inventing other tasks, I said "no thanks".
 Other people from upper management who had been ignoring
-this project for years at this point all the sudden
+this project for years at this point all of a sudden
 wanted to get involved.
 I think people were noticing this project was starting to win.
 In their helpfulness they 
@@ -649,8 +649,8 @@ I just stopped doing architecture changes,
 they were mostly cost saving anyway, and optional for now.
 
 The PM would become father,
-and he'd go on a three month break from the job in December.
-We knew this was comming up so we were preparing for that point.
+and he'd go on a three-month break from the job in December.
+We knew this was coming up so we were preparing for that point.
 The algorithm engineer and I would share responsibilities.
 I was anxious for this period.
 One of our main concerns was to keep the commercial team focused.
@@ -658,18 +658,18 @@ Doing a weekly meeting turned out to be highly successful,
 actually the main sales guy liked doing them and requested to continue
 doing them after the PM got back.
 We made this work.
-Come on, compared to what we've been trough in Denmark, this was easy right?
+Come on, compared to what we've been through in Denmark, this was easy right?
 It was.
 
 For most of December I worked on signal processing.
-This was some new feature where we'd sent signals directly
+This was some new feature where we sent signals directly
 to the backend so we could support this "detected here" status.
 This was one of the main features the new customer would use,
-to figure out on which site a unit is.
+to determine on which site a unit is.
 It's a more general way of locating units, 
-rather then by coordinates you just give it a site name.
+rather than by coordinates you just give it a site name.
 This is easy because you know on which site a sensor is,
-so all you have to do is pickup a signal and associate it to a sensor.
+so all you have to do is pick up a signal and associate it to a sensor.
 Before we fetched the signals from timestream but that was kind of expensive.
 This approach used a simple queue.
 
@@ -679,18 +679,18 @@ we did some analyses on an existing batch and found that around
 5% of the new batteries were unacceptably low.
 I already had written an app to check for beacon settings and battery settings,
 it was just a bit slow.
-However I modified it so that it would highlight bad setting in red.
-This made sifting trough all these beacons (thousands of them) a lot faster.
+However I modified it so that it would highlight bad settings in red.
+This made sifting through all these beacons (thousands of them) a lot faster.
 It's available [opensource](https://github.com/jappeace/kbeacon-ota-tool).
-With the things learned from that development I also build a liveliness
+With the things learned from that development I also built a liveliness
 check in the registration app.[^registration-app]
 This should prevent the system from accepting any dead or low battery Bluetooth tags.
 
 [^registration-app]: The registration app is different from the setting check app. The setting check app isn't customer facing.
 
-We're in March now,
-that big customer signed the deal, and we likely got another construction site.
-Currently we're servicing two locations,
+We're in March now.
+That big customer signed the deal, and we likely got another construction site.
+Currently we're servicing two locations;
 soon this will grow to fourteen.
 We're winning and we likely won't be able to keep up with the work.
 Which is a much better problem to have than being threatened by cancellation.
@@ -701,18 +701,18 @@ Their vision being to tackle carbon impact in construction.
 Which is ironic, considering the experience in Denmark.
 I suppose they'd just not believe us.
 Despite the irony and the fact we just had this huge deal done,
-we're still having these kind of questions being raised.
+we're still having these kinds of questions being raised.
 I think I requested a warm body to deal with those battery replacements.
 This request got denied.
 It's an odd situation to be in, 
 where you sort of know already you're going to be short on manpower,
 but upper management still believes you're a bad project.
 We triumphed in Denmark, 
-you think a salty manager is going stop us?
+you think a salty manager is going to stop us?
 
 As long as we focus on the right stuff to build we'll be fine.
 We've been focusing on stuff that has impact,
-and I think about 90% of the things we worked on were.
+and I think about 90% of the things we worked on had impact.
 There are other large problems we have in this project.
 For example the particle data operations are hugely expensive,
 but this company can build its own hardware.
@@ -726,8 +726,8 @@ but even a slowly produced implementation of these changes caused a huge impact.
 Despite how cooked internal politics is for this company.
 We're winning this game.
 
-[^read-between-lines]: I did nothing "genius" of course, I just made a boring traditional design out of it. 
-                       The reason it was so fried is because the previous tech lead was afraid of Haskell.
+[^read-between-lines]: I did nothing "genius" of course, I just made a boring, traditional design out of it. 
+                       The reason it was so flawed is because the previous tech lead was afraid of Haskell.
 
 [^cf-firmware]: The foundational issue being the firmware.
 
