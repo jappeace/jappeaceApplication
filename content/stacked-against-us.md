@@ -1,5 +1,6 @@
 Title: Stacked against us
 Date: 2025-03-26 20:49
+Modified: 2025-03-27 13:09
 Category: tools
 OPTIONS: toc:nil
 Tags: work, remote, haskell, programming
