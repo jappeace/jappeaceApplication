@@ -11,6 +11,10 @@ img[src="images/2025/stacked.png"]{
   margin: 2em;
   width:unset;
 }
+figure {
+  float: right;
+  margin: 2em;
+}
 </style>
 
 ![Stacked against us](images/2025/stacked.png)
@@ -168,7 +172,7 @@ sun, creating an endless learning curve. [^linear]
 Perfection was the enemy of the good.
 I understood the tech lead's perception,
 HLS is not good for commercial development.
-and if you've to figure out compile errors within your unreliable editor and 
+If you have to figure out compile errors within your unreliable editor and 
 also deal with an over-engineered architecture it's going to be taxing. 
 I also think he never learned how to trust the compiler to guide changes,
 and how to read type signatures.
@@ -287,6 +291,7 @@ had been before I joined.
 But they were seeing movement, and this caused a renewal.
 We were free of their "yoke".
 
+<figure>
 <iframe 
     src="https://www.youtube.com/embed/DJruxQr3AiY"
     title="Denmark factory"
@@ -294,6 +299,8 @@ We were free of their "yoke".
     style="height: 30em; float: right;"
     allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     allowfullscreen></iframe>
+<figcaption>The Danish precast factory.</figcaption>
+</figure>
 
 # By the skin of our teeth
 Around January or February we started hearing signals or messages
@@ -346,7 +353,7 @@ Another topic was for example to add admin pages,
 we were currently just modifying stuff directly into the database.
 We decided to go all in on 
 just modifying the technology so that we could pass technical trials
-and satisfy customers.
+and sell to customers.
 Whatever it took.
 There were two major issues:
 
@@ -368,7 +375,7 @@ while I focused on actually making the signals available at all.
 Keep in mind we did not just have a "there is a database" backend called the server, 
 we also had the "figure out what a signal is" backend called reality capture.
 I worked on that reality capture part.
-The additional advantage was that this gave her the opportunity to grow more,
+This gave the other engineer the opportunity to grow more,
 and come up with her own designs which we could work with.[^make-mistakes]
 We finished most of this around May.
 
@@ -393,6 +400,19 @@ But obviously we'd get no hardware resources.
 It was just me and the 
 algorithms engineer left doing technical work.
 And the product manager to deal with customers and sales.
+
+
+<style>
+img[src="images/2025/particle.webp"]{
+  width:unset;
+  height: 20em;
+}
+</style>
+
+<figure id="particle">
+<img src="images/2025/particle.webp" alt="Particle sensor and bleutooth tag beacons" />
+<figcaption>Particle sensor and bleutooth tag beacons</figcaption>
+</figure>
 
 [^ireland]: Aside story: Around this time the one irish precast factory let out a competition
             for a technical solution for precast factories that basically described our system.
@@ -495,9 +515,10 @@ and at some point I started asking the PM about what was going on,
 which made him think about it.[^yard-guys]
 At several times the system would locate these units in the
 middle of the road.
-They may have been in the middle of the road.
+They probably were in the middle of the road for a while,
 but we had no sensors in those reshuffle or QA areas,
-so our system wouldn't further update.
+so our system wouldn't further update even if they got moved there.
+We had an in real life phantom read.
 Honestly, we were set up to fail from the start.
 But no one knew how unfair this tech check was,
 even at the factory.
@@ -565,7 +586,7 @@ The PM told me to also put one of these sensors
 in my bag, 
 we'd just walk with them on our person while doing the check.
 I was shivering from being soaked.
-I guess Bob didn't put two and two together as he didn't care.
+I guess Bob didn't put two and two together as he didn't care.[^soaked-beacause]
 With the first unit Bob tried to let us fail
 on a technicality.
 But the PM went hard against that.
@@ -580,6 +601,20 @@ Bob believed it worked.
 some rough spots were blamed on the newly developed app,
 but overall he was happy.
 We passed the check by the skin of our teeth.
+
+<style>
+img[src="images/2025/danish-rye-bread.jpeg"]{
+  width:unset;
+  height: 20em;
+}
+</style>
+
+<figure id="particle">
+<img src="images/2025/danish-rye-bread.jpeg" alt="Danish rye bread" />
+<figcaption>Danish rye bread, a local delicacy.</figcaption>
+</figure>
+
+[^soaked-beacause]: I was soaked because I just had spend 2 hours in the rain force updating the system.
 
 [^dishonest]: This is dishonest I suppose.
               We just needed time to figure out for example the firmware.
@@ -610,7 +645,7 @@ customer,
 similar to the one in denmark.
 This time it would not take seven trips from the PM.
 We had proximity algorithm to convince them that we could find locations of units.
-actually one of the sensors failed during this check, fortunately they had a backup,
+Actually one of the sensors failed during this check, fortunately they had a backup,
 but aside that we past this tech trial on first go.
 We confirmed here that if you convince people it works swiftly,
 they'll be a lot less thorough in their technical checks.
@@ -637,10 +672,10 @@ Around September I started working on the firmware,
 described [elsewhere]({filename}/firmware-sins.md) so I won't go into it.
 This made proximity significantly better, 
 and temporarily killed the other algorithms, 
-due to an excess of data causing it to run out of memory.[^good-enough]
+due to an excess of data causing it to run out of memory.
 
 Around October we won an award for smart data collection in construction,
-We were actually nominated by our one and only customer.
+we were nominated by our one and only customer.
 Furthermore around Christmas we got good feedback from them.
 They had managed to lose around 30 units in SAP and managed to find them
 all with our system!
@@ -671,7 +706,7 @@ In their helpfulness they
 blocked architecture changes until detailed documentation was made for example.
 I've no idea how to deal with these requests.
 Spending two days on documenting while one of the 
-main algorithms is down seems downright irresponsible.
+main algorithms is down seems irresponsible.
 I just stopped doing architecture changes, 
 they were mostly cost saving anyway, and optional for now.
 
@@ -713,6 +748,17 @@ With the things learned from that development I also built a liveliness
 check in the registration app.[^registration-app]
 This should prevent the system from accepting any dead or low battery Bluetooth tags.
 
+<figure>
+<iframe 
+    src="https://www.youtube.com/embed/rGtHcDdJSRY"
+    title="Ota app demo"
+    frameborder="0"
+    style="height: 30em; float: right;"
+    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen></iframe>
+<figcaption>Over the air settings check app demo</figcaption>
+</figure>
+
 [^registration-app]: The registration app is different from the setting check app. The setting check app isn't customer facing.
 
 We're in March now.
@@ -725,7 +771,7 @@ Whilst that's going on we're still surprised by leadership
 with cryptic and somewhat intimidating remarks—for example, 
 asking "is this really aligned with our vision?".
 Their vision being to tackle carbon impact in construction.
-Which is ironic, considering the experience in Denmark.
+Which is ironic, considering the experience in Denmark.[^danish-madness ]
 I suppose they'd just not believe us.
 Despite the irony and the fact we just had this huge deal done,
 we're still having these kinds of questions being raised.
@@ -737,24 +783,28 @@ but upper management still believes you're a bad project.
 We triumphed in Denmark, 
 you think a salty manager is going to stop us?
 
+[^danish-madness ]: Specically the fact they drag these walls around the yard all the time.
+
 As long as we focus on the right stuff to build we'll be fine.
 We've been focusing on stuff that has impact,
 and I think about 90% of the things we worked on had impact.
-We bought time by dealing with our customers request,
-that time we used to make the product sell able,
+We bought time by dealing with our customers request and get a renewal,
+that time we used to make the product sell able via proximity,
 which bought us more time to fix the fundamental firmware problems.
+Which made the product actually good.
 There are other large problems we have in this project.
 For example the particle data operations are hugely expensive,
 but this company can build its own hardware.
 Upper management just likes to kill our requests.
 Ironically enough, it's costing *them* money, not me.
-It causes more work for me as I work around it with more firmware
+It causes me more work because I work around it these problems with more firmware
 modifications, 
-for example, a sleep mode where we disable the sensors during off hours.
+for example, I introduced a sleep mode where we disable the sensors during off hours.
 I've never claimed to be good at firmware,
 but even a slowly produced implementation of these changes causes a huge impact.
-Despite how cooked internal politics is for this company.
-With two major customers now, many sites and getting the award,
+Despite how cooked internal politics is for this company,
+with two major customers now, 
+many sites and getting the award,
 we can say we're winning this unfair game.
 
 [^read-between-lines]: I did nothing "genius" of course, I just made a boring, traditional design out of it. 
