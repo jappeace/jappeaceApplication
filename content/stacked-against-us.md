@@ -23,21 +23,22 @@ with Haskell while at the same time increasing productivity.
 
 In my first week I started with understanding 
 the code base[^code-base] and what they're building.
-They help people find their walls.
-How do you lose a wall?
-Imagine a concrete precast factory that constantly is churning
-out walls and other precast elements.
-These walls are stored in a yard several football fields wide, 
-filled with gray concrete.
-Normally they record where they're stored in [SAP](https://www.sap.com/) an inventory tracking tool.
-If they need the wall below another one, they may move it somewhere else and SAP gets stale.
-In practice these walls may be moved a lot and get lost.
-These walls often wait for months to be shipped to a construction site.
+They help precast factories find their produced walls called units. [^find-wall]
 This project puts Bluetooth tags on precast walls, 
 so people don't lose them at the factory.
 With these tags they can find them easily, because they provide an active signal.
 So the Haskell web app receives all that data and makes a nice interface out of it.
 The interface provides a text box to search for a unit[^eg-wall], which can be rendered on a map.
+
+[^find-wall]: How do you lose a wall?
+              Imagine a concrete precast factory that constantly is churning
+              out walls and other precast elements.
+              These walls are stored in a yard several football fields wide, 
+              filled with gray concrete.
+              Normally they record where they're stored in [SAP](https://www.sap.com/) an inventory tracking tool.
+              If they need the wall below another one, they may move it somewhere else and SAP gets stale.
+              In practice these walls may be moved a lot and get lost.
+              These walls often wait for months to be shipped to a construction site.
 
 [^eg-wall]: Eg a precast wall.
 [^code-base]: So this also involves getting familiar with whatever style the organization is using. Usually various companies have various styles.
@@ -285,6 +286,14 @@ considering how slow development
 had been before I joined.
 But they were seeing movement, and this caused a renewal.
 We were free of their "yoke".
+
+<iframe 
+    src="https://www.youtube.com/embed/DJruxQr3AiY"
+    title="Denmark factory"
+    frameborder="0"
+    style="height: 30em; float: right;"
+    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen></iframe>
 
 # By the skin of our teeth
 Around January or February we started hearing signals or messages
@@ -731,6 +740,9 @@ you think a salty manager is going to stop us?
 As long as we focus on the right stuff to build we'll be fine.
 We've been focusing on stuff that has impact,
 and I think about 90% of the things we worked on had impact.
+We bought time by dealing with our customers request,
+that time we used to make the product sell able,
+which bought us more time to fix the fundamental firmware problems.
 There are other large problems we have in this project.
 For example the particle data operations are hugely expensive,
 but this company can build its own hardware.
@@ -740,9 +752,9 @@ It causes more work for me as I work around it with more firmware
 modifications, 
 for example, a sleep mode where we disable the sensors during off hours.
 I've never claimed to be good at firmware,
-but even a slowly produced implementation of these changes caused a huge impact.
+but even a slowly produced implementation of these changes causes a huge impact.
 Despite how cooked internal politics is for this company.
-With now 2 major customers, many sites and getting the award,
+With two major customers now, many sites and getting the award,
 we can say we're winning this unfair game.
 
 [^read-between-lines]: I did nothing "genius" of course, I just made a boring, traditional design out of it. 
