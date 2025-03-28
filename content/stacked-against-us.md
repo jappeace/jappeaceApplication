@@ -35,6 +35,7 @@ With these tags they can find them easily, because they provide an active signal
 So the Haskell web app receives all that data and makes a nice interface out of it.
 The interface provides a text box to search for a unit[^eg-wall], which can be rendered on a map.
 
+[^code-base]: So this also involves getting familiar with whatever style the organization is using. Usually various companies have various styles.
 [^find-wall]: How do you lose a wall?
               Imagine a concrete precast factory that constantly is churning
               out walls and other precast elements.
@@ -45,8 +46,6 @@ The interface provides a text box to search for a unit[^eg-wall], which can be r
               In practice these walls may be moved a lot and get lost.
               These walls often wait for months to be shipped to a construction site.
 
-[^eg-wall]: Eg a precast wall.
-[^code-base]: So this also involves getting familiar with whatever style the organization is using. Usually various companies have various styles.
 [^eg-wall]: Eg a precast wall. Several of which stacked upon eachother is called a stack.
 
 Ironically enough my first contributions to this organization weren't
@@ -136,15 +135,14 @@ He wasn't bad at his job[^tech-choises], but dear lord, he was pissed!
 
 [^hls]: Haskell language server. an LSP implementation for haskell. this provides IDE like experience for editors. It'll make your text editor give hints.
 
-[^tech-choises]: Later I found out that he made a bunch of suspicious technical choices, 
-                 but I think most of these decisions came from being angry instead of lack of skill
+[^infuriating]: Asside from the time pressure for producing features and having to learn haskell, 
+                having this program randomly crash on you as your only source of feedback is infuriating.
 
 [^architecutre-ii]: If they were to not obsess over architecture all the time this wouldn't have been such a big problem.
                     By the time I joined this guy already knew how to navigate syntax and how to fix bugs rapidly.
                     The mental overhead was of his own creation.
 
-[^infuriating]: Asside from the time pressure for producing features and having to learn haskell, 
-                having this program randomly crash on you as your only source of feedback is infuriating.
+
 
 [^ideology]: I call it ideology because I think programming languages are more like a culture you buy into
              rather than a mere technological choice.
@@ -163,6 +161,9 @@ He wasn't bad at his job[^tech-choises], but dear lord, he was pissed!
              Do you care about individual developer productivity, 
              or do you care about having a sufficiently large manpower pool?
              There are more JavaScript developers than Haskell developers.
+
+[^tech-choises]: Later I found out that he made a bunch of suspicious technical choices, 
+                 but I think most of these decisions came from being angry instead of lack of skill
 
 After two weeks we can safely say this project was literally falling apart,
 supposedly all because of "Haskell".
