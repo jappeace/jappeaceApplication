@@ -47,6 +47,7 @@ The interface provides a text box to search for a unit[^eg-wall], which can be r
 
 [^eg-wall]: Eg a precast wall.
 [^code-base]: So this also involves getting familiar with whatever style the organization is using. Usually various companies have various styles.
+[^eg-wall]: Eg a precast wall. Several of which stacked upon eachother is called a stack.
 
 Ironically enough my first contributions to this organization weren't
 about Haskell or teaching at all,
