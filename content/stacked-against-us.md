@@ -239,6 +239,8 @@ It was just annoying for them to use.
 To be fair, the system would be difficult to sell with
 a frontend that was so buggy anyway.
 
+[^cf-firmware]: The foundational issue being the firmware.
+
 [^designer]: We also had a full-time designer and he was sitting on his hands for most of this time.
              I'm not sure why we were given a full-time designer on two engineers,
              like a single designer can crank out designs for around 6 to 10 engineers.
@@ -282,6 +284,9 @@ and only accept something done if it all worked together.
 Unlike a normal web app we also have sensors and a pipeline of continuously flowing data.
 Because this is a complicated system you find many small issues.
 And a single small bug can break the entire system.
+
+[^read-between-lines]: I did nothing "genius" of course, I just made a boring, traditional design out of it. 
+                       The reason it was so flawed is because the previous tech lead was afraid of Haskell.
 
 I think the end of the beginning was the customer visit in January 2024.
 Where I got to witness the problem at hand with my own eyes.
@@ -335,7 +340,6 @@ so cheaping out on some manpower for a one-time setup cost is kinda crazy.
 I brought this to the attention of the product manager,
 and he agreed. [^bringup]
 
-[^okr]: Objective and key result.
 
 [^engineering-issues]: Rather than streaming the signals and doing trilateration on the fly, these were processed as a batch.
                        I don't think anyone at the time had expected live updates to be a requirement.
@@ -343,6 +347,8 @@ and he agreed. [^bringup]
                        There is no reason why it shouldn't be able to do this on the fly,
                        but the system was simply not implemented like that.
                        This algorithm was fully written in Python.
+
+[^okr]: Objective and key result.
 
 [^bringup]: This is one of the reasons I stuck around. 
             The fact they listen to uncomfortable things like this is one of the big reasons 
@@ -382,11 +388,13 @@ This gave the other engineer the opportunity to grow more,
 and come up with her own designs which we could work with.[^make-mistakes]
 We finished most of this around May.
 
+[^designer]: Finally the designer got to do something. This wasn't his fault.
+
+[^hope]: Looking back, I think the product manager still had a small hope for creating a do it yourself experience. Which is fair because going to these factories and construction sites is a big undertaking. We later found out these screens wouldn't work, but the back-end stuff to support it, and having live updates were fantastic!
+
 [^make-mistakes]: I think the important part here was that she could make mistakes and learn from them. I was always available to bail her out if necessary. 
                   Most of her issues were small details, such as having functions with the same name causing confusion. 
 
-[^hope]: Looking back, I think the product manager still had a small hope for creating a do it yourself experience. Which is fair because going to these factories and construction sites is a big undertaking. We later found out these screens wouldn't work, but the back-end stuff to support it, and having live updates were fantastic!
-[^designer]: Finally the designer got to do something. This wasn't his fault.
 
 I think around May in 2024 the money had run out for this project.
 So the other engineer got pulled,
@@ -404,6 +412,15 @@ It was just me and the
 algorithms engineer left doing technical work.
 And the product manager to deal with customers and sales.
 
+[^distraction]: He ended up being a giant distraction because he kept organizing meetings to discuss stuff which we just couldn't implement.
+
+[^ireland]: Aside story: Around this time the one irish precast factory let out a competition
+            for a technical solution for precast factories that basically described our system.
+            There was some subsidy by the Irish government.
+            We were by far the best suited to win that and somehow lost.
+            I don't know what happened,
+            but people say there is a lot of corruption in construction, another fun thing 🙂
+
 
 <style>
 img[src="images/2025/particle.webp"]{
@@ -416,13 +433,6 @@ img[src="images/2025/particle.webp"]{
 <img src="images/2025/particle.webp" alt="Particle sensor and bleutooth tag beacons" />
 <figcaption>Particle sensor and bleutooth tag beacons</figcaption>
 </figure>
-
-[^ireland]: Aside story: Around this time the one irish precast factory let out a competition
-            for a technical solution for precast factories that basically described our system.
-            There was some subsidy by the Irish government.
-            We were by far the best suited to win that and somehow lost.
-            I don't know what happened,
-            but people say there is a lot of corruption in construction, another fun thing 🙂
 
 One prospect customer who we were talking to for years
 at this point was located in Denmark.
@@ -460,7 +470,6 @@ it was our ace in the hole.
 
 [^influx]: I would've used influxdb, but one of the engineers who wrote reality capture went gungho on Amazon services.
 
-[^distraction]: He ended up being a giant distraction because he kept organizing meetings to discuss stuff which we just couldn't implement.
 
 Something else happened around May,
 the head of software decided that this project could benefit from an app.
@@ -526,14 +535,15 @@ Honestly, we were set up to fail from the start.
 But no one knew how unfair this tech check was,
 even at the factory.
 
+[^reshuffle]: Reshuffling means, moving a concrete wall from one trailer to another to be patched up.
+              This happens with large diesel powered cranes.
+
 [^yard-guys]: I think the PM just asked one of the guys in the yard. 
               But these people don't talk much to the office staff.
               Obviously people working in the yard know what's going on.
               However their managers' managers don't know.
               Which are the office staff and we were judged by office staff.
 
-[^reshuffle]: Reshuffling means, moving a concrete wall from one trailer to another to be patched up.
-              This happens with large diesel powered cranes.
 
 Here I had a little epiphany, 
 all that talk about CO₂ reduction
@@ -605,6 +615,14 @@ some rough spots were blamed on the newly developed app,
 but overall he was happy.
 We passed the check by the skin of our teeth.
 
+[^soaked-beacause]: I was soaked because I just had spend 2 hours in the rain force updating the system.
+
+[^dishonest]: This is dishonest I suppose.
+              We just needed time to figure out for example the firmware.
+              We needed internal confidence, to get firmware engineers.
+              We were setup to fail on this site.
+              How do you judge us?
+
 <style>
 img[src="images/2025/danish-rye-bread.jpeg"]{
   width:unset;
@@ -616,15 +634,6 @@ img[src="images/2025/danish-rye-bread.jpeg"]{
 <img src="images/2025/danish-rye-bread.jpeg" alt="Danish rye bread" />
 <figcaption>Danish rye bread, a local delicacy.</figcaption>
 </figure>
-
-[^soaked-beacause]: I was soaked because I just had spend 2 hours in the rain force updating the system.
-
-[^dishonest]: This is dishonest I suppose.
-              We just needed time to figure out for example the firmware.
-              We needed internal confidence, to get firmware engineers.
-              We were setup to fail on this site.
-              How do you judge us?
-
 
 This was huge.
 We've been scraping by and losing members for the past
@@ -751,6 +760,8 @@ With the things learned from that development I also built a liveliness
 check in the registration app.[^registration-app]
 This should prevent the system from accepting any dead or low battery Bluetooth tags.
 
+[^registration-app]: The registration app is different from the setting check app. The setting check app isn't customer facing.
+
 <figure>
 <iframe 
     src="https://www.youtube.com/embed/rGtHcDdJSRY"
@@ -762,7 +773,6 @@ This should prevent the system from accepting any dead or low battery Bluetooth 
 <figcaption>Over the air settings check app demo</figcaption>
 </figure>
 
-[^registration-app]: The registration app is different from the setting check app. The setting check app isn't customer facing.
 
 We're in March now.
 That big customer signed the deal, and we likely got another construction site.
@@ -810,10 +820,7 @@ with two major customers now,
 many sites and getting the award,
 we can say we're winning this unfair game.
 
-[^read-between-lines]: I did nothing "genius" of course, I just made a boring, traditional design out of it. 
-                       The reason it was so flawed is because the previous tech lead was afraid of Haskell.
 
-[^cf-firmware]: The foundational issue being the firmware.
 
 
 
