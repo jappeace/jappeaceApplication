@@ -596,6 +596,12 @@ ul.footlinks {
   div.highlight .kr {
     color: #9b5afb; }
 
+  div.highlight .ss {
+    color: #8c8cb5;
+  }
+  div.highlight .no {
+      color: #ff4343;
+  }
   code {
       background: radial-gradient(#134013, #121212); }
 
