@@ -32,7 +32,7 @@ Note the url format uses git+ssh instead of github:
         overrides = hnew: hold: {
 
           # shove in the privae dependency, the name before = needs to match cabal library
-          converge-lib-base = converge-lib-base.defaultPackage.x86_64-linux;
+          lib-base = lib-base.defaultPackage.x86_64-linux;
 
           # ... other overrides here
 
@@ -89,7 +89,7 @@ stable.
         overrides = hnew: hold: {
           # other overrides here
 
-          converge-lib-base = converge-lib-base.defaultPackage.x86_64-linux;
+          lib-base = lib-base.defaultPackage.x86_64-linux;
 
           the-project = lib.failOnAllWarnings ((lib.overrideCabal (hnew.callCabal2nix "the-project" ./. {}) (drv: {
             # reduce build times
