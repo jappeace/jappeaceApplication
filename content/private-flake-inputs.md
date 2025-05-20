@@ -1,5 +1,5 @@
 Title: Private repository flake input
-Date: 2025-04-20 18:21
+Date: 2025-05-20 15:42
 Category: story
 OPTIONS: toc:nil
 Tags: nix haskell
