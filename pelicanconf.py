@@ -39,6 +39,11 @@ LINKS_EX = [
     , 'https://jappiesoftware.com/'
     , "Jappie for hire"
     , 'hire'
+    ),
+    ( 'Coaching 🔥'
+    , 'https://jappie.me/fire'
+    , "Lern haskell by fire"
+    , 'fire'
     )
 ]
 

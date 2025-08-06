@@ -92,6 +92,8 @@ stdenv.mkDerivation {
     pelican content -D -s publishconf.py
     mkdir -p output/talks/
     cp -R ${talks}/* output/talks/
+    mkdir -p output/fire
+    cp -R fire/* output/fire
   '';
   installPhase = ''
     # Copy the generated result
