@@ -3,7 +3,6 @@ DATE: 2025-09-10 23:00
 CATEGORY: technique
 Tags: haskell, backpack
 OPTIONS: toc:nil
-Status: draft
 
 <style>
 img[src="/images/2025/death.jpg"]{
@@ -46,11 +45,7 @@ This ends up looking like [OCaml](https://ocaml.org/) in [Haskell](https://www.h
 Let us begin with Functor.
 
 ```haskell
-signature Death.Functor.Signature
-  ( Functor
-  , map
-  )
-where
+signature Death.Functor.Signature (Functor , map) where
 
 import Prelude ()
 
@@ -66,23 +61,25 @@ But it's also an ocaml module functor🐫, where the data keyword introduces a h
 into a signature, which we can later fill in with a proper type.[^ocaml-cat-tangent]
 
 [^ocaml-cat-tangent]: Now is the ocaml module functor🐫 a category functor😼.
-    It doesn't look like they actually mix modules with types.
-    Although I suspect you can unify these, it's not trivial!
-    So it's not the category of sets and functions at least.
-    It may be another category, there are many, but I've not defined it yet.
+    I think so if you consider [first class modules](https://ocaml.org/manual/5.3/firstclassmodules.html#s:first-class-modules)!
     I think the haskell signatures may also be some kind of category,
     because they can merge, it's a monoid. Looks like the module signature is just 
-    a set of type introductions. So the merge is a union of those.
-    But seriously this post has exploded in scope. So I let all this meandering as an
-    excessive to the reader.
+    a set of type introductions. 
+    So the merge is a union of those.
+    We're missing this first class-ness. 
+    You sort of want to be able to pass modules around like values,
+    which looks like a record.
+    But seriously this post has exploded in scope. 
+    So I let all this meandering as an
+    excercize to the reader.
 
 [^not-a-category]: Except [Hask is not a cateogry](https://math.andrej.com/2016/08/06/hask-is-not-a-category/), but it is unless you like splitting hairs
 
 [^not-a-category]: 
 
 We've to hide prelude because the Functor typeclass from base gets imported by default.
-We can use signatures, like the one just introduced, 
-by simply imorting them as if they were modules.
+Signatures like the one just introduced can be used by
+imorting them as if they were normal modules.
 All a signature does is promise to the compiler we'll make a proper module for that
 *later*.
 We can just start using our functor right now.
@@ -90,12 +87,7 @@ For example, in that same impl package I've an auxiliary module for Functor,
 providing some utilities:
 
 ```haskell
-module Death.Functor
-  ( module X
-  , (<$>)
-  , (<$)
-  )
-where
+module Death.Functor (module X , (<$>) , (<$)) where
 
 import Death.Functor.Signature as X
 import Prelude (const)
@@ -113,16 +105,12 @@ The code depending on the signature is abstract.
 You want to keep your signatures small so more code is abstract,
 similar to how you want to keep typeclass definitions small
 so you can have smaller instances,
-and more code depending on the typeclass is abstract.
+keeping code that depends on the typeclass abstract.
 Let's make an "instance" of our Functor signature,
 for the `Maybe` datatype,
 with the power of modules:
 ```haskell
-module Death.Functor.Maybe
-  ( Functor
-  , map
-  )
-where
+module Death.Functor.Maybe (Functor , map) where
 
 import Prelude(Maybe(..), ($))
 
@@ -135,10 +123,10 @@ map fab = \case
 ```
 
 Now it's worth pointing out that we've to do a fair bit of cabal work
-to make the compiler realize the instance, so in cabal,
+to make the compiler realize the instance. In cabal,
 our main library with the signatures looks like this:
 
-```cabal
+```
 library
   signatures:
       Death.Functor.Signature
@@ -147,7 +135,7 @@ library
   hs-source-dirs:
       src/sig
 ```
-Then our implementing code looks like:
+Then our implementing library definition looks like:
 ```cabal
 library impl
   exposed-modules:
@@ -157,7 +145,7 @@ library impl
 ```
 
 If cabal misses a module for a signature it'll give you an error like this:
-```
+```bash
 cabal build
 Resolving dependencies...
 Error:
@@ -167,8 +155,7 @@ Error:
 ```
 This guarantees all signatures have implementations whenever you build a final
 executable.
-To solve that error, 
-to realize it with "some" implementation.
+To solve that error you realize it with "some" implementation.
 The client doesn't care what implementation:
 ```cabal
 library app
@@ -187,15 +174,12 @@ Alternatively, we could've just called it by the same name in the impl package a
 I only discovered this later.
 However this renaming allows you to implement multiple module signatures
 in the same package, so you can use several functors within the
-same module as well, for example:
+same module as well, for example here we're using the `List`, `Maybe` and `IO` Functors all in one module:
 
 ```haskell
 {-# LANGUAGE RebindableSyntax #-}
 
-module Death
-  ( main
-  )
-where
+module Death (main) where
 
 import Maybe.Functor
 import Maybe.Applicative
@@ -221,9 +205,9 @@ main = (print @(Functor String) $ do
 ```
 
 We use `RebindableSyntax` to inform GHC to use whatever `>>=` is in scope for `do`.
-In this case that's the  `>>=` from Maybe.Monad. 
-As long as you satisfy the signature, it's happy. 😼
-`do` has nothing to do with Monads.
+In this case that's the  `>>=` from `Maybe.Monad`. 
+As long as you satisfy the signature, it's happy 😼.
+`do` has nothing to do with Monads!
 Who lied to you?
 
 Ah right about that business.
@@ -251,21 +235,17 @@ business = do
   writeLine uprisingAgainstDeceit
 ```
 At this point we don't know what Functor is,
-we want it to be IO in our realized impementation,
-but for testing we can set it to a state monad for example so we can
-make sure it does everything correct in memory.[^good-idea] 
-Without having to rely on these unreliable filesystems for example.
+we want it to be IO in our realized impementation.
+In our tests we can set it to a state monad for example.
+So we can make sure it does everything correct in memory,[^good-idea] 
+without having to rely on these unreliable file systems.
 
-[^good-idea]: I'm not sure if this is actually a good idea, seems like a lot of boilerplate for a marginal test speedup. But this is the only use case I can imagine for effect systems. I suppose you could theoretically buy libraries from copmeting vendors for signatures. But this never materialized as a business model (C already had this chance with header files for example!)
+[^good-idea]: I'm not sure if this is actually a good idea, seems like a lot of boilerplate for a marginal test speedup. But this is the only reasonable use case I can imagine for effect systems.
 
 Working backwards from our business logic implementation,
 We need to define some signatures to support our business logic:
 ```haskell
-signature Death.Effects.FileSystem
-  ( readFile
-  , writeFile
-  )
-where
+signature Death.Effects.FileSystem (readFile , writeFile) where
 
 import Prelude(String, FilePath)
 import Death.Functor.Signature
@@ -341,9 +321,9 @@ library app
 signatures with the modules from `death:effects-io`.
 This is a lot nicer to use then having to use that strange
 mixin DSL. Which is not hard, the cabal errors are just bad in formatting and output prioritization.
-Sometimes the important errors get burried in dozens of other not relevant lines![^example]
+Sometimes the important errors get burried in dozens of other not relevant lines![^example-cabal]
 
-[^example]: <details><summary>Cabal hides error example</summary><pre>
+[^example-cabal]: <details><summary>Cabal hides error example</summary><pre>
 $ cabal build
 \> Build profile: -w ghc-9.8.4 -O1
 \> In order, the following will be built (use -v for more details):
@@ -384,7 +364,7 @@ $ cabal build
 \> Failed to build lib:effects from death-1.0.0 (which is required by lib:effects-app from death-1.0.0).
 </pre></details>
 
-Our test suite uses the state one:
+Our test suite uses the state monad implementation instead:
 ```cabal
 test-suite unit
   main-is: Test.hs
@@ -413,33 +393,59 @@ unitTests = testGroup "Unit tests"
 ```
 
 
-I don't think it's a good idea to replace standard
-typeclasses such as Monad, Applicative and Functor like I've done here.
-but I do think you can replace whatever effect system with backpack.
-Backpack is more expressive, and very simple to use.
-It's more expressive because you can set your base Functor to whatever, including IO.
-This same argument goes for runtime performance.[^adoptation]
-So you'll get as good as IO by default.
+There, we created an effect system replacement by doing nothing.
+All we did was take a position of technical extremism, and then watched.
+This post wrote it self after we took up the initial position and watched.
+Everything flows, I'm sorry dear reader I tricked you!
+Doing nothing was the real system of values I wanted to show, to those who can see.
+This post isn't about backpack.
+<!-- I'm dead serious here! 
+But I didn't want to force this issue.
+Also, why are you reading comments?
+Please say hi and tell me you noticed this: hi@jappie.me
+-->
 
+What does our backpack effect system provide?
+No fancy types cause easy to solve error messages.
+Although in trade we get more cabal error messages, which could be improved.[^example-cabal]
+We have full IO support in capabilities, including [continuations](https://hackage.haskell.org/package/ghc-prim-0.13.0/docs/GHC-Prim.html#continuations).[^pointing-out]
+Monomorphic effects improve error messages over say mtl, where error messages point to wrong places due to the polymorphism. 
+It has different, potentially faster compile characteristics.
+All implementations can for example be compiled in parallel, 
+although the additional packages enforcement [goes against that](https://www.parsonsmatt.org/2019/11/27/keeping_compilation_fast.html).
+The runtime is as fast as IO, because we can set the underlying
+monad to anything as long as we provide the implementation.
+Even though I don't think speed is that important for effect systems.
+For production use the bottleneck is rarely CPU bound for effects.
+Although I suppose it can be for test suites that do everything in memory.
 
-I think it can also compile pretty fast because the module implementations are "orphaned" by design,
-so they can be compiled in parralel.
-Furthermore there is no instance resolution step.
-And finally it's simpler to use,
-no fancy types, no need to install anything,
+[^pointing-out]: I'm just pointing these out because [effectfull](https://hackage.haskell.org/package/effectful#any-downsides) lists continuations as problematic.
+
+In this post we also replaced the standard typeclasses.
+I don't think we're gaining a lot by doing this.
+We've to be explicit now which `Functor` or `Monad` we're importing, 
+and you can't have `do` notation for different monads in the  same module.
+Backpack actually can define constraints in the signatures.
+So you don't have to replace standard typeclasses like I did in this post to use backpack.
+I did this anyway because it allowed me to do some basic
+initial experimentation.
+Furthermore I felt it necessary to tear down these fake idols
+for shock and awe.
+
+I'd actually love to see someone taking backpack more seriously
+and build an effect system on top of that, 
+providing a bunch of default signatures and implementations.
 It's already baked in GHC and cabal.
-Give it a try! it's not every hard, and let me know what you think in the comment box below.
-
+Give it a try! 
+it's not every hard, and let me know what you think in the comment box below.
 
 [^adoptation]: Effect system people always seem so obsessed over this but I don't actually think it matters compared to the time spend on the actual IO part. You probably won't be CPU bound.
 
 ## sources
 
 + This repository has been invaluable: [danidiaz, really-small-backpack-example, Apr 7, 2021](https://github.com/danidiaz/really-small-backpack-example/tree/master/lesson2-signatures)
-https://github.com/danidiaz/really-small-backpack-example/tree/master/lesson2-signatures
 
 + Main backpack thesis, how it all works under the hood: [Edward Z. Yang, BACKPACK: TOWARDS PRACTICAL MIX-IN LINKING IN HASKELL, Oct 10, 2017 ](https://github.com/ezyang/thesis/releases)
-  Funny they actually mention typeclasses directly.
 
 + I made a [reference implementation](https://github.com/jappeace/death) just to make sure I wasn't talking out of my arse and verify it was all possible.
 
