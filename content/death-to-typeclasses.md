@@ -27,7 +27,7 @@ figcaption{
 </style>
 
 <figure>
-<img  alt="Death (XIII) tarot card" src="/images/2025/death.jpg" />
+<img  alt="Death (XIII) tarot card" src="/images/2025/death-2.jpg" />
 <figcaption> Death (XIII) Symbolizes significant change, transformation, and endings, rather than literal physical death. </figcaption>
 </figure>
 
@@ -449,5 +449,4 @@ Death💀 to type classes! Open the Backpack!
 + I made a [reference implementation](https://github.com/jappeace/death) just to make sure I wasn't talking out of my arse and verify it was all possible.
 + This repository has been invaluable: [danidiaz, really-small-backpack-example, Apr 7, 2021](https://github.com/danidiaz/really-small-backpack-example/tree/master/lesson2-signatures)
 + Main backpack thesis, how it all works under the hood: [Edward Z. Yang, BACKPACK: TOWARDS PRACTICAL MIX-IN LINKING IN HASKELL, Oct 10, 2017 ](https://github.com/ezyang/thesis/releases)
-
-
++ [Gabby wrote](https://www.haskellforall.com/2012/05/scrap-your-type-classes.html) a similar idea in a wildly different implementation. Although, some languages consider records and modules as the same thing.
