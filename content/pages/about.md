@@ -31,6 +31,11 @@ Lastly, I hate the number five.
 A brief overview of meaningful events and decisions in my life.
 
 <table>
+<tr><th> 2025 </th><td>
+<a href="https://jappie.me/stacked-against-us.html">Stacked against us.</a>
+I made it to the bronze division nationals finals in crossfit, ended up at 28th position! 
+Visited my sis in Iceland. My little  sis got pregnant.
+</td></tr>
 <tr><th> 2024 </th><td>
 Applying abstract maths to concrete factories.
 Dealing with my <a href="https://www.youtube.com/watch?v=qI_IIKW2YRY&list=PL6FatF00QFsM4TQwsr1bRt61AR9dBHDRh&index=2">debt arc</a>.
@@ -111,3 +116,16 @@ I also enjoy reading back on previous experience.
 Nostalgia can be a goal on itself.
 I take pride in this work and if you spot grammar issues or
 untruths, please let me know.
+
+## AI usage on writing articles
+
+I don't use AI to generate aritcles or paragraphs.
+I think I've only generated a paragraph in this [article](https://jappie.me/follow-up-release-rodeo.html).
+But I quickly decided against doing so because it felt no longer like my "voice" being used.
+I do use AI to check grammar and spell errors, for example with the prompt: "please list all grammar and spell errors, don't skip any as I'm dyslexic: <dump entire blogpost>".
+I also ask it for feedback, eg "what do you think about this blogpost: <dump entire blogpost>"
+The feedback especially helps me assess if I have sections
+that can be misinterpreted in a way I don't want it to be misinterpreted.
+I'll never ask it to rewrite it, 
+just list the issues,
+because I actually don't trust it.
