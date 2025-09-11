@@ -424,7 +424,7 @@ Although I suppose it can be for test suites that do everything in memory.
 In this post we also replaced the standard typeclasses.
 I don't think we're gaining a lot by doing this.
 We've to be explicit now which `Functor` or `Monad` we're importing, 
-and you can't have `do` notation for different monads in the  same module.
+and you can't have `do` notation for different Monads in the  same module.
 Backpack actually can define constraints in the signatures.
 So you don't have to replace standard typeclasses like I did in this post to use backpack.
 I did this anyway because it allowed me to do some basic
@@ -432,12 +432,12 @@ initial experimentation.
 Furthermore I felt it necessary to tear down these fake idols
 for shock and awe.
 
-I'd actually love to see someone taking backpack more seriously
+I'd actually love to see someone take backpack more seriously
 and build an effect system on top of that, 
 providing a bunch of default signatures and implementations.
-It's already baked in GHC and cabal.
-Give it a try! 
-it's not every hard, and let me know what you think in the comment box below.
+Experimenting with backpack is easy,
+it's already baked in GHC and cabal.
+Death💀 to type classes! Open the Backpack!
 
 [^adoptation]: Effect system people always seem so obsessed over this but I don't actually think it matters compared to the time spend on the actual IO part. You probably won't be CPU bound.
 
