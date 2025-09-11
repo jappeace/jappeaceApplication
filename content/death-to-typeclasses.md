@@ -1,8 +1,13 @@
-TITLE: Death💀 to typeclasses
+TITLE: Death💀 to type classes
 DATE: 2025-09-10 23:00
 CATEGORY: technique
 Tags: haskell, backpack
 OPTIONS: toc:nil
+
+<!-- 
+I'm well aware that to most people this post will
+be an ausault on the senses.
+-->
 
 <style>
 img[src="/images/2025/death.jpg"]{
@@ -22,7 +27,7 @@ figcaption{
 </style>
 
 <figure>
-<img  alt="Death (XIII) tarrot card" src="/images/2025/death.jpg" />
+<img  alt="Death (XIII) tarot card" src="/images/2025/death.jpg" />
 <figcaption> Death (XIII) Symbolizes significant change, transformation, and endings, rather than literal physical death. </figcaption>
 </figure>
 
@@ -39,7 +44,7 @@ but instead merged as a signature into a module.
 Come comrades, let us open the Backpack.
 
 
-In here we explore an alternative universe where
+Here we explore an alternative universe where
 we neglect the existence of type classes in favor of the backpack module system.
 This ends up looking like [OCaml](https://ocaml.org/) in [Haskell](https://www.haskell.org/?uwu=true).
 Let us begin with Functor.
@@ -53,16 +58,16 @@ data Functor a
 map :: (a -> b) -> Functor a -> Functor b
 ```
 
-This s a [functor😼](https://hackage.haskell.org/package/base-4.21.0.0/docs/Data-Functor.html#t:Functor), and this is also a [functor🐫](https://ocaml.org/docs/functors).
+This is a [functor😼](https://hackage.haskell.org/package/base-4.21.0.0/docs/Data-Functor.html#t:Functor), and this is also a [functor🐫](https://ocaml.org/docs/functors).
 Functor😼 being the categorical functor where we embed one category into another.
-The category in this case being that of set's and functions[^not-a-category],
+The category in this case being that of sets and functions[^not-a-category],
 where types are the sets and functions are the uh, functions.
-But it's also an ocaml module functor🐫, where the data keyword introduces a hole
+But it's also an OCaml module functor🐫, where the data keyword introduces a hole
 into a signature, which we can later fill in with a proper type.[^ocaml-cat-tangent]
 
 [^ocaml-cat-tangent]: Now is the ocaml module functor🐫 a category functor😼.
     I think so if you consider [first class modules](https://ocaml.org/manual/5.3/firstclassmodules.html#s:first-class-modules)!
-    I think the haskell signatures may also be some kind of category,
+    I think the Haskell signatures may also be some kind of category,
     because they can merge, it's a monoid. Looks like the module signature is just 
     a set of type introductions. 
     So the merge is a union of those.
@@ -71,15 +76,15 @@ into a signature, which we can later fill in with a proper type.[^ocaml-cat-tang
     which looks like a record.
     But seriously this post has exploded in scope. 
     So I let all this meandering as an
-    excercize to the reader.
+    exercise to the reader.
 
-[^not-a-category]: Except [Hask is not a cateogry](https://math.andrej.com/2016/08/06/hask-is-not-a-category/), but it is unless you like splitting hairs
+[^not-a-category]: Except [Hask is not a category](https://math.andrej.com/2016/08/06/hask-is-not-a-category/), but it is unless you like splitting hairs
 
 [^not-a-category]: 
 
-We've to hide prelude because the Functor typeclass from base gets imported by default.
+We've got to hide prelude because the Functor typeclass from base gets imported by default.
 Signatures like the one just introduced can be used by
-imorting them as if they were normal modules.
+importing them as if they were normal modules.
 All a signature does is promise to the compiler we'll make a proper module for that
 *later*.
 We can just start using our functor right now.
@@ -216,7 +221,7 @@ We need an effect system.[^effect-system]
 Fortunately, we've a versatile one trick pony.
 This is our business code:
 
-[^effect-system]: This is sarcasm. I don't think you need an effect system at all! Here I'm just defining a less awfull one.
+[^effect-system]: This is sarcasm. I don't think you need an effect system at all! Here I'm just defining a less awful one.
 
 ```haskell
 business :: Functor ()
@@ -235,9 +240,9 @@ business = do
   writeLine uprisingAgainstDeceit
 ```
 At this point we don't know what Functor is,
-we want it to be IO in our realized impementation.
+we want it to be IO in our realized implementation.
 In our tests we can set it to a state monad for example.
-So we can make sure it does everything correct in memory,[^good-idea] 
+So we can make sure it does everything correctly in memory,[^good-idea] 
 without having to rely on these unreliable file systems.
 
 [^good-idea]: I'm not sure if this is actually a good idea, seems like a lot of boilerplate for a marginal test speedup. But this is the only reasonable use case I can imagine for effect systems.
@@ -254,7 +259,7 @@ readFile  :: FilePath -> Functor String
 writeFile :: FilePath -> String -> Functor ()
 ```
 
-Actually I now realize we could've just renamed prelude on top
+Actually, I now realize we could've just renamed prelude on top
 of our FileSystem effect to get the realized implementation.
 Instead, I made a separate module:
 ```haskell
@@ -292,7 +297,7 @@ writeFile path contents = Functor $
     \state -> (state {fileSystem = Map.insert path contents (fileSystem state)}, ())
 ```
 It's interesting in that it's boring.
-For people out of the loop, this basically a one for one copy of the state monad.
+For people out of the loop, this is basically a one-for-one copy of the state monad.
 No fancy types at all.
 There is nothing going on here.
 I feel stupid for pointing out you can do this. [^crazy]
@@ -317,11 +322,11 @@ library app
       death:effects-app,
 ```
 
-`death:effects-app` declares our actual "business" logic. and we unifty the `death:effects`
+`death:effects-app` declares our actual "business" logic. and we unify the `death:effects`
 signatures with the modules from `death:effects-io`.
-This is a lot nicer to use then having to use that strange
+This is a lot nicer to use than having to use that strange
 mixin DSL. Which is not hard, the cabal errors are just bad in formatting and output prioritization.
-Sometimes the important errors get burried in dozens of other not relevant lines![^example-cabal]
+Sometimes the important errors get buried in dozens of other not relevant lines![^example-cabal]
 
 [^example-cabal]: <details><summary>Cabal hides error example</summary><pre>
 $ cabal build
@@ -381,13 +386,13 @@ unitTests = testGroup "Unit tests"
   [
     testCase "run business logic main" $ do
       let (result, ()) = unFunctor Death.business $ State {
-        lineInput = "awesemeFile",
+        lineInput = "awesomeFile",
         linesOutput = [],
         fileSystem = mempty
         }
       result @?= State {
         lineInput = "awesemeFile",
-        linesOutput = ["awesemeFile","reading it again to make sure its iso 42038 compliant","writing file...","file content:","file name:"],
+        linesOutput = ["awesomeFile","reading it again to make sure its iso 42038 compliant","writing file...","file content:","file name:"],
         fileSystem = Map.fromList[("awesemeFile", "awesemeFile")]
         }
 ```
@@ -395,7 +400,7 @@ unitTests = testGroup "Unit tests"
 
 There, we created an effect system replacement by doing nothing.
 All we did was take a position of technical extremism, and then watched.
-This post wrote it self after we took up the initial position and watched.
+This post wrote itself after we took up the initial position and watched.
 Everything flows, I'm sorry dear reader I tricked you!
 Doing nothing was the real system of values I wanted to show, to those who can see.
 This post isn't about backpack.
@@ -406,7 +411,7 @@ Please say hi and tell me you noticed this: hi@jappie.me
 -->
 
 What does our backpack effect system provide?
-No fancy types cause easy to solve error messages.
+No fancy types cause easy-to-solve error messages.
 Although in trade we get more cabal error messages, which could be improved.[^example-cabal]
 We have full IO support in capabilities, including [continuations](https://hackage.haskell.org/package/ghc-prim-0.13.0/docs/GHC-Prim.html#continuations).[^pointing-out]
 Monomorphic effects improve error messages over say mtl, where error messages point to wrong places due to the polymorphism. 
@@ -439,13 +444,10 @@ Experimenting with backpack is easy,
 it's already baked in GHC and cabal.
 Death💀 to type classes! Open the Backpack!
 
-[^adoptation]: Effect system people always seem so obsessed over this but I don't actually think it matters compared to the time spend on the actual IO part. You probably won't be CPU bound.
-
 ## sources
 
++ I made a [reference implementation](https://github.com/jappeace/death) just to make sure I wasn't talking out of my arse and verify it was all possible.
 + This repository has been invaluable: [danidiaz, really-small-backpack-example, Apr 7, 2021](https://github.com/danidiaz/really-small-backpack-example/tree/master/lesson2-signatures)
-
 + Main backpack thesis, how it all works under the hood: [Edward Z. Yang, BACKPACK: TOWARDS PRACTICAL MIX-IN LINKING IN HASKELL, Oct 10, 2017 ](https://github.com/ezyang/thesis/releases)
 
-+ I made a [reference implementation](https://github.com/jappeace/death) just to make sure I wasn't talking out of my arse and verify it was all possible.
 
