@@ -561,7 +561,15 @@ ul.footlinks {
   pointer-events: none;
 }
 
+.footnote li{
+  background: rgba(255, 255, 255, 0.85);
+}
+
 @media (prefers-color-scheme: dark) {
+
+.footnote li{
+  background: rgba(0, 0, 0, 0.85);
+}
 
   body {
     color: #eee;

@@ -74,6 +74,53 @@
   <link rel="stylesheet" href="{{ SITEURL }}/{{ ASSET_URL }}">
   {% endassets %}
   {% endif %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const links = document.querySelectorAll('a.footnote-ref[href^="#"]');
+
+  links.forEach(link => {
+    const getTarget = () => {
+      const id = (link.hash || '').slice(1);
+      return id ? document.getElementById(id) : null;
+    };
+
+    link.addEventListener('mouseenter', (e) => {
+      const t = getTarget();
+      if (!t) return;
+      t.style.position = 'fixed';
+      t.style.zIndex = '9999';
+      t.style.left = (e.clientX + 12) + 'px';
+      t.style.top  = (e.clientY + 12) + 'px';
+    });
+
+    link.addEventListener('mousemove', (e) => {
+      const t = getTarget();
+      if (!t) return;
+      t.style.left = (e.clientX + 12) + 'px';
+      t.style.top  = (e.clientY + 12) + 'px';
+    });
+
+    link.addEventListener('mouseleave', () => {
+      const t = getTarget();
+      if (!t) return;
+      reset(t);
+    });
+
+    function reset(t) {
+      t.style.left = '';
+      t.style.top = '';
+      t.style.position = '';
+      t.style.zIndex = '';
+    }
+
+    link.addEventListener('mousedown', () => {
+      const t = getTarget();
+      if (t) reset(t); // reset just before click
+      // default link behavior will continue
+    });
+  });
+});
+</script>
 </head>
 
 <body>

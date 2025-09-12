@@ -80,8 +80,6 @@ into a signature, which we can later fill in with a proper type.[^ocaml-cat-tang
 
 [^not-a-category]: Except [Hask is not a category](https://math.andrej.com/2016/08/06/hask-is-not-a-category/), but it is unless you like splitting hairs
 
-[^not-a-category]: 
-
 We've got to hide Prelude because the Functor type class from base gets imported by default.
 Signatures like the one just introduced can be used by
 importing them as if they were normal modules.
