@@ -20,6 +20,11 @@ figure {
   margin-top: 0em;
   width: 15em;
 }
+@media (max-width: 420px) {
+  figure {
+    float: none;
+  }
+}
 figcaption{
   font-size: xx-small;
   color: #999;
