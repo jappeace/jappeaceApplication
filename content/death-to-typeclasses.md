@@ -1,5 +1,5 @@
 TITLE: Death💀 to type classes
-DATE: 2025-09-10 23:00
+DATE: 2025-09-11 23:30
 CATEGORY: technique
 Tags: haskell, backpack
 OPTIONS: toc:nil
@@ -45,7 +45,7 @@ Come comrades, let us open the Backpack.
 
 
 Here we explore an alternative universe where
-we neglect the existence of type classes in favor of the backpack module system.
+we neglect the existence of type classes in favor of the Backpack module system.
 This ends up looking like [OCaml](https://ocaml.org/) in [Haskell](https://www.haskell.org/?uwu=true).
 Let us begin with Functor.
 
@@ -65,7 +65,7 @@ where types are the sets and functions are the uh, functions.
 But it's also an OCaml module functor🐫, where the data keyword introduces a hole
 into a signature, which we can later fill in with a proper type.[^ocaml-cat-tangent]
 
-[^ocaml-cat-tangent]: Now is the OCaml module functor🐫 a category functor😼.
+[^ocaml-cat-tangent]: Now, is the OCaml module functor🐫 a category functor😼.
     I think so if you consider [first class modules](https://ocaml.org/manual/5.3/firstclassmodules.html#s:first-class-modules)!
     I think the Haskell signatures may also be some kind of category,
     because they can merge, it's a monoid. Looks like the module signature is just 
