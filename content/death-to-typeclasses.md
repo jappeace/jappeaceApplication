@@ -406,7 +406,7 @@ Everything flows, I'm sorry dear reader I tricked you!
 Doing nothing was the real system of values I wanted to show, to those who can see.
 This post isn't about Backpack.[^dead-serious]
 
-[^dead-serious]: I'm dead serious here! 
+[^dead-serious]: This line is no mistake. I'm dead serious here! 
 
 What does our Backpack effect system provide?
 No fancy types mean easy-to-solve error messages.
