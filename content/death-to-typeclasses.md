@@ -10,7 +10,7 @@ be an ausault on the senses.
 -->
 
 <style>
-img[src="/images/2025/death.jpg"]{
+img[src="/images/2025/death-2.jpg"]{
   height: 20em;
   width:unset;
 }
