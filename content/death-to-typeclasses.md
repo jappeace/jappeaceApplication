@@ -59,13 +59,13 @@ map :: (a -> b) -> Functor a -> Functor b
 ```
 
 This is a [functor😼](https://hackage.haskell.org/package/base-4.21.0.0/docs/Data-Functor.html#t:Functor), and this is also a [functor🐫](https://ocaml.org/docs/functors).
-Functor😼 being the categorical functor where we embed one category into another.
-The category in this case being that of sets and functions[^not-a-category],
+Functor😼 is the categorical functor where we embed one category into another.
+In this case, the category is that of sets and functions[^not-a-category],
 where types are the sets and functions are the uh, functions.
 But it's also an OCaml module functor🐫, where the data keyword introduces a hole
 into a signature, which we can later fill in with a proper type.[^ocaml-cat-tangent]
 
-[^ocaml-cat-tangent]: Now is the ocaml module functor🐫 a category functor😼.
+[^ocaml-cat-tangent]: Now is the OCaml module functor🐫 a category functor😼.
     I think so if you consider [first class modules](https://ocaml.org/manual/5.3/firstclassmodules.html#s:first-class-modules)!
     I think the Haskell signatures may also be some kind of category,
     because they can merge, it's a monoid. Looks like the module signature is just 
@@ -75,20 +75,20 @@ into a signature, which we can later fill in with a proper type.[^ocaml-cat-tang
     You sort of want to be able to pass modules around like values,
     which looks like a record.
     But seriously this post has exploded in scope. 
-    So I let all this meandering as an
+    So I leave all this meandering as an
     exercise to the reader.
 
 [^not-a-category]: Except [Hask is not a category](https://math.andrej.com/2016/08/06/hask-is-not-a-category/), but it is unless you like splitting hairs
 
 [^not-a-category]: 
 
-We've got to hide prelude because the Functor typeclass from base gets imported by default.
+We've got to hide Prelude because the Functor type class from base gets imported by default.
 Signatures like the one just introduced can be used by
 importing them as if they were normal modules.
 All a signature does is promise to the compiler we'll make a proper module for that
 *later*.
 We can just start using our functor right now.
-For example, in that same impl package I've an auxiliary module for Functor,
+For example, in that same impl, package I've an auxiliary module for Functor,
 providing some utilities:
 
 ```haskell
@@ -127,8 +127,8 @@ map fab = \case
   Nothing -> Nothing
 ```
 
-Now it's worth pointing out that we've to do a fair bit of cabal work
-to make the compiler realize the instance. In cabal,
+Now it's worth pointing out that we've got to do a fair bit of cabal work
+to make the compiler realize the instance. In Cabal,
 our main library with the signatures looks like this:
 
 ```
@@ -149,7 +149,7 @@ library impl
       src/impl
 ```
 
-If cabal misses a module for a signature it'll give you an error like this:
+If Cabal misses a module for a signature it'll give you an error like this:
 ```bash
 cabal build
 Resolving dependencies...
@@ -172,14 +172,14 @@ library app
        death (Death.Functor.Signature as Death.Functor.Maybe)
 ```
 
-What we're saying in the mixin field is that the import `Death.Functor.Signature`,
+What we're saying in the mixin field is that the import `Death.Functor.Signature`
 should in fact be called `Death.Functor.Maybe`.
 Which makes it use the Maybe implementation whenever it encounters `Death.Functor.Signature`.
-Alternatively, we could've just called it by the same name in the impl package as the signature,
+Alternatively, we could've just called it by the same name in the impl package as the signature.
 I only discovered this later.
-However this renaming allows you to implement multiple module signatures
+However, this renaming allows you to implement multiple module signatures
 in the same package, so you can use several functors within the
-same module as well, for example here we're using the `List`, `Maybe` and `IO` Functors all in one module:
+same module as well, for example, here we're using the `List`, `Maybe` and `IO` Functors all in one module:
 
 ```haskell
 {-# LANGUAGE RebindableSyntax #-}
@@ -210,15 +210,15 @@ main = (print @(Functor String) $ do
 ```
 
 We use `RebindableSyntax` to inform GHC to use whatever `>>=` is in scope for `do`.
-In this case that's the  `>>=` from `Maybe.Monad`. 
+In this case that's the `>>=` from `Maybe.Monad`. 
 As long as you satisfy the signature, it's happy 😼.
 `do` has nothing to do with Monads!
 Who lied to you?
 
 Ah right about that business.
-Yes, we can't do commercial code like this, this is disgusting.
+Yes, we can't do commercial code like this; this is disgusting.
 We need an effect system.[^effect-system] 
-Fortunately, we've a versatile one trick pony.
+Fortunately, we've got a versatile one-trick pony.
 This is our business code:
 
 [^effect-system]: This is sarcasm. I don't think you need an effect system at all! Here I'm just defining a less awful one.
@@ -234,7 +234,7 @@ business = do
   writeLine "writing file..."
   writeFile systemOfValues truthOfTheFields
 
-  writeLine "reading it again to make sure its iso 42038 compliant"
+  writeLine "reading it again to make sure its ISO 42038 compliant"
   uprisingAgainstDeceit <- readFile systemOfValues
 
   writeLine uprisingAgainstDeceit
@@ -248,7 +248,7 @@ without having to rely on these unreliable file systems.
 [^good-idea]: I'm not sure if this is actually a good idea, seems like a lot of boilerplate for a marginal test speedup. But this is the only reasonable use case I can imagine for effect systems.
 
 Working backwards from our business logic implementation,
-We need to define some signatures to support our business logic:
+we need to define some signatures to support our business logic:
 ```haskell
 signature Death.Effects.FileSystem (readFile , writeFile) where
 
@@ -259,7 +259,7 @@ readFile  :: FilePath -> Functor String
 writeFile :: FilePath -> String -> Functor ()
 ```
 
-Actually, I now realize we could've just renamed prelude on top
+Actually, I now realize we could've just renamed Prelude on top
 of our FileSystem effect to get the realized implementation.
 Instead, I made a separate module:
 ```haskell
@@ -273,7 +273,7 @@ import Prelude(IO, readFile, writeFile)
 ```
 
 When you stare at hammers long enough everything becomes a nail!
-Actually I think the state implementation is more interesting:
+Actually, I think the state implementation is more interesting:
 
 ```haskell
 module Death.Effects.FileSystem
@@ -322,10 +322,11 @@ library app
       death:effects-app,
 ```
 
-`death:effects-app` declares our actual "business" logic. and we unify the `death:effects`
+`death:effects-app` declares our actual "business" logic, and we unify the `death:effects`
 signatures with the modules from `death:effects-io`.
 This is a lot nicer to use than having to use that strange
-mixin DSL. Which is not hard, the cabal errors are just bad in formatting and output prioritization.
+mixin DSL, which is not hard, 
+the Cabal errors are just bad in formatting and output prioritization.
 Sometimes the important errors get buried in dozens of other not relevant lines![^example-cabal]
 
 [^example-cabal]: <details><summary>Cabal hides error example</summary><pre>
@@ -391,9 +392,9 @@ unitTests = testGroup "Unit tests"
         fileSystem = mempty
         }
       result @?= State {
-        lineInput = "awesemeFile",
-        linesOutput = ["awesomeFile","reading it again to make sure its iso 42038 compliant","writing file...","file content:","file name:"],
-        fileSystem = Map.fromList[("awesemeFile", "awesemeFile")]
+        lineInput = "awesomeFile",
+        linesOutput = ["awesomeFile","reading it again to make sure its ISO 42038 compliant","writing file...","file content:","file name:"],
+        fileSystem = Map.fromList[("awesomeFile", "awesomeFile")]
         }
 ```
 
@@ -403,45 +404,42 @@ All we did was take a position of technical extremism, and then watched.
 This post wrote itself after we took up the initial position and watched.
 Everything flows, I'm sorry dear reader I tricked you!
 Doing nothing was the real system of values I wanted to show, to those who can see.
-This post isn't about backpack.
-<!-- I'm dead serious here! 
-But I didn't want to force this issue.
-Also, why are you reading comments?
-Please say hi and tell me you noticed this: hi@jappie.me
--->
+This post isn't about Backpack.[^dead-serious]
 
-What does our backpack effect system provide?
-No fancy types cause easy-to-solve error messages.
+[^dead-serious]: I'm dead serious here! 
+
+What does our Backpack effect system provide?
+No fancy types mean easy-to-solve error messages.
 Although in trade we get more cabal error messages, which could be improved.[^example-cabal]
 We have full IO support in capabilities, including [continuations](https://hackage.haskell.org/package/ghc-prim-0.13.0/docs/GHC-Prim.html#continuations).[^pointing-out]
-Monomorphic effects improve error messages over say mtl, where error messages point to wrong places due to the polymorphism. 
-It has different, potentially faster compile characteristics.
-All implementations can for example be compiled in parallel, 
+Monomorphic effects improve error messages over say, [MTL](https://jappie.me/a-brief-intro-to-mtl.html), where error messages point to wrong places due to the polymorphism. 
+It has different, potentially faster compile-time characteristics.
+All implementations can, for example, be compiled in parallel, 
 although the additional packages enforcement [goes against that](https://www.parsonsmatt.org/2019/11/27/keeping_compilation_fast.html).
 The runtime is as fast as IO, because we can set the underlying
 monad to anything as long as we provide the implementation.
 Even though I don't think speed is that important for effect systems.
-For production use the bottleneck is rarely CPU bound for effects.
-Although I suppose it can be for test suites that do everything in memory.
+For production use, the bottleneck is rarely CPU-bound for effects.
+However, it can be for test suites that do everything in memory.
 
 [^pointing-out]: I'm just pointing these out because [effectfull](https://hackage.haskell.org/package/effectful#any-downsides) lists continuations as problematic.
 
-In this post we also replaced the standard typeclasses.
+In this post we also replaced the standard type classes.
 I don't think we're gaining a lot by doing this.
-We've to be explicit now which `Functor` or `Monad` we're importing, 
-and you can't have `do` notation for different Monads in the  same module.
+We've got to be explicit now which `Functor` or `Monad` we're importing, 
+and you can't have `do` notation for different Monads in the same module.
 Backpack actually can define constraints in the signatures.
-So you don't have to replace standard typeclasses like I did in this post to use backpack.
+So you don't have to replace standard typeclasses like I did in this post to use Backpack.
 I did this anyway because it allowed me to do some basic
 initial experimentation.
 Furthermore I felt it necessary to tear down these fake idols
 for shock and awe.
 
-I'd actually love to see someone take backpack more seriously
+I'd actually love to see someone take Backpack more seriously
 and build an effect system on top of that, 
 providing a bunch of default signatures and implementations.
-Experimenting with backpack is easy,
-it's already baked in GHC and cabal.
+Experimenting with Backpack is easy,
+it's already baked in GHC and Cabal.
 Death💀 to type classes! Open the Backpack!
 
 ## sources
