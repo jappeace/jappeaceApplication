@@ -1,5 +1,24 @@
 #+TITLE: Source of https://jappieklooster.nl
 
+* Building
+
+```
+nix-shell
+./start-server
+
+```
+
+then another terminal
+```
+nix-shell
+make run
+```
+
+we don't use the standard python venv stuff because it sucks.
+(sorry).
+
+
+
 # TODO add badge
 
 * Deploy checklist
