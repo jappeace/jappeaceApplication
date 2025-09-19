@@ -2,7 +2,9 @@
 
 * Building
 
-then another terminal
+install nix
+https://nixos.org/
+
 #+BEGIN_SRc bash
 nix-shell
 ./start-server
