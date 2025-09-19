@@ -93,7 +93,7 @@ JINJA_FILTERS = {'regex_replace':regex_replace, 'add_abbr_tags':add_abbr_tags}
 
 # the best date format is obviously signifying each number with the right word
 # chinese happens to do that very concisely
-DEFAULT_DATE_FORMAT = '%d日 %m月 %Y年'
+DEFAULT_DATE_FORMAT = '%Y年%m月%d日'
 
 ORG_READER_EMACS_LOCATION = "emacs"
 ORG_READER_EMACS_SETTINGS = os.path.abspath('lisp/config.el')
