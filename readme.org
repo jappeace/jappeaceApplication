@@ -2,17 +2,17 @@
 
 * Building
 
-```
+then another terminal
+#+BEGIN_SRc bash
 nix-shell
 ./start-server
-
-```
+#+END_SRC
 
 then another terminal
-```
+#+BEGIN_SRc bash
 nix-shell
 make run
-```
+#+END_SRC
 
 we don't use the standard python venv stuff because it sucks.
 (sorry).
