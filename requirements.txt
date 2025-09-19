@@ -1,0 +1,7 @@
+#   This project also requires various pelican plugins that are submodules:
+#     git submodule update --init --recursive
+markdown
+pelican
+pelican-minify
+smartypants
+typogrify
