@@ -7,6 +7,16 @@
         <img src="/theme/images/beard.svg" /> 
         -->
         {% include '_navigation.html' %}
+  <div class="browser-warning">
+    <span>⚠️ Chrome mobile not supported, please upgrade to Firefox ⚠️</span>
+    <!-- for some reason on chrome mobile those gradients don't work,
+         but the position is fixed!
+         Rather then filing a bug report I thought it better to just
+         inform people their life choices suck.
+
+         (actually I wanted to do an alert, but that'd be too annoying).
+      -->
+  </div>
     </header>
     <div id="main">
       {% block content %}{% endblock %}

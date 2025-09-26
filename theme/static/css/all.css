@@ -633,3 +633,30 @@ ul.footlinks {
 /*   height: 1em; */
 /*   border-top: 1em solid gold; */
 /* } */
+
+.browser-warning{
+    display: none;
+    width: 100%;
+    background: #ff4444;
+    color: white;
+    font-weight: bold;
+    padding: 8px 0;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+
+.browser-warning span {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: scroll-left 12s linear infinite;
+}
+@keyframes scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}

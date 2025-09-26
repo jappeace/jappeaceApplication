@@ -119,6 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // default link behavior will continue
     });
   });
+
+  if (/Chrome/.test(navigator.userAgent) && /Mobile/.test(navigator.userAgent)) {
+      document.querySelector('.browser-warning').style.display = 'block';
+  }
+
 });
 </script>
 </head>
