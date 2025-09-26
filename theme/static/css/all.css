@@ -338,6 +338,10 @@ article {
 article header {
   margin-top: 1%; }
 
+.article li{
+    line-break: anywhere;
+}
+
 .entry-content img, .entry-content video {
   width: 99%;
   border: 2px lightslategrey solid; }
