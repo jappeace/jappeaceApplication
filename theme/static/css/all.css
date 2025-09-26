@@ -338,7 +338,7 @@ article {
 article header {
   margin-top: 1%; }
 
-.article li{
+article li{
     line-break: anywhere;
 }
 
