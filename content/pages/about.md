@@ -129,3 +129,10 @@ that can be misinterpreted in a way I don't want it to be misinterpreted.
 I'll never ask it to rewrite it, 
 just list the issues,
 because I actually don't trust it.
+
+## Why I manually format code
+I therapeutically manually add spaces,
+to take my mind of the horror I see before me,
+that was conjured through me as God's messenger.
+I am just a vessel and my abominations are Gods justice upon the world.
+I weep for the Mortal souls corrupted by witnessing the horrors I partook in creating.
