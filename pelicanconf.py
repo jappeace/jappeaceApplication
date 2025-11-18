@@ -5,7 +5,7 @@ import re
 import os
 
 AUTHOR = 'Jappie J. T. Klooster'
-SITENAME = 'Jappie'
+SITENAME = 'Spotify - Web Player: Music for everyone' # this will make the website appear at a different workspace for leana 😼
 SITEURL = '' # disabled otherwise debug will link wrongly (enabled in publish)
 
 PATH = 'content'
