@@ -14,12 +14,180 @@
 - On both ios and Android
 
 
-* Demo
-
-
 * Bad solutions
 - scan only given rssi.
 - add ui filter
 - UI UI UI
 
+
+* Actual solution
+- WHY?
+- no idea.
+- estimates (lol), -> timebox
+- spoiled garbage 
+
+* original code
+
+#+BEGIN_SRC java
+  Future<void> startScanning() async {
+    if (Platform.isIOS || await Permission.bluetoothScan.request().isGranted) {
+      if (Platform.isIOS ||
+          await Permission.bluetoothConnect.request().isGranted) {
+        if (await Permission.location.request().isGranted) {
+          startTimer();
+          var serviceEnabled = await Geolocator.isLocationServiceEnabled();
+          if (serviceEnabled) {
+            FlutterBluePlus.startScan(
+                timeout: const Duration(milliseconds: 2500));
+            bleScanningSubscription = FlutterBluePlus.onScanResults.listen(
+              (results) {
+                if (results.isNotEmpty) {
+                    ....
+      }})}}}}}
+#+END_SRC
+
+
+* garbage? 
+#+BEGIN_SRC C
+int* ble_packet_handler() {
+    int stack_rssi = -65; // 1
+    char stack_name[20] = "KBeacon_Pro"; 
+
+    int *heap_rssi = (int*)malloc(sizeof(int));  // 2
+    ,*heap_rssi = -65;
+
+    use_heap_rssi(heap_rssi);
+    return heap_rssi; // 3
+}
+main(){
+ int* res = ble_packet_handler(); // 4
+ do_other_stuff_with_heap(res);
+ free(res); // 5
+}
+
+#+END_SRC
  
+
+* wtf?
++ I never use C
++ I don't care about memory
++ you're gaslighting us!
+
+* TS garbage 
+
+#+BEGIN_SRC typescript
+function ble_packet_handler(): { value: number } {
+    let stack_rssi = -65; // 1
+    let stack_name = "KBeacon_Pro";
+
+    let heap_rssi = { value: -65 }; // 2
+
+    use_heap_rssi(heap_rssi); 
+    return heap_rssi; // 3
+}
+
+function main() {
+    let res: { value: number } | null = ble_packet_handler(); // 4
+    do_other_stuff_with_heap(res);
+}
+
+#+END_SRC
+
+* Garbage Collector
++ Finds all garbage.
+  + unused pointers.
+  + no thread root points.
++ Deletes them.
++ Cause pauses.
++ Cause slowdowns.
+
+* When slow?
++ to much work
++ simplify!
+
+* original code
+
+#+BEGIN_SRC java
+  Future<void> startScanning() async {
+    if (Platform.isIOS || await Permission.bluetoothScan.request().isGranted) {
+      if (Platform.isIOS ||
+          await Permission.bluetoothConnect.request().isGranted) {
+        if (await Permission.location.request().isGranted) {
+          startTimer(); 
+          var serviceEnabled = await Geolocator.isLocationServiceEnabled();
+          if (serviceEnabled) {
+            FlutterBluePlus.startScan(
+                timeout: const Duration(milliseconds: 2500));
+            bleScanningSubscription = FlutterBluePlus.onScanResults.listen(
+              (results) {
+                if (results.isNotEmpty) {
+                    ....
+      }})}}}}}
+#+END_SRC
+
+* relevant parts
+#+BEGIN_SRC java
+  Future<void> startScanning() async {
+
+          startTimer(); 
+
+          FlutterBluePlus.startScan(
+                timeout: const Duration(milliseconds: 2500));
+
+          bleScanningSubscription = FlutterBluePlus.onScanResults.listen(
+              (results) {
+                if (results.isNotEmpty) {
+                    ....
+          }})
+    }
+#+END_SRC
+
+* timer?
+#+BEGIN_SRC java
+  void startTimer() {
+    timer = Timer(seconds: 5, onTimeout);
+  }
+
+  Future<void> onTimeout() async {
+   FlutterBluePlus.stopScan();
+   timer?.cancel();
+    ...
+    startScanning();
+  }
+#+END_SRC
+
+* timer
++ async
++ every 5 seconds
++ startScan
++ construct FlutterBluePlus
+   + scans every 2.5 seconds
+
+* formally
+
++ timer loop 5 seconds
+  + FlBlePlus loops 2.5 seconds
+    + a callback
++ anyone?
+
+* the solution
+
+#+BEGIN_SRC java
+  void bleScanBatteries(void Function(BleResult bleRes) onBleResFound) {
+    if(FlutterBluePlus.isScanningNow){
+      return;
+    }
+
+    bleScanningSubscription = FlutterBluePlus.onScanResults.listen(
+      (results) {
+        if (results.isEmpty) {
+          return;
+        }
+        onBleResFound(BleResult(serial, min(batteryLevel, 100), identifier, r.rssi));
+    ...
+    })}
+
+#+END_SRC
+
+
+* questions?
