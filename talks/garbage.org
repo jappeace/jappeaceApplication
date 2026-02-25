@@ -1,0 +1,25 @@
+#+TITLE: Garbage collector: hero.
+
+* Ask questions!
+
+* Motivation
+
+- nasty bugs.
+- garbage knowledge.
+
+
+* Problem
+- Ble app scanning is slow
+- Why is it fast on kbeacon pro and slow on flutter
+- On both ios and Android
+
+
+* Demo
+
+
+* Bad solutions
+- scan only given rssi.
+- add ui filter
+- UI UI UI
+
+ 
