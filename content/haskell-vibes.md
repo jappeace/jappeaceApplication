@@ -1,5 +1,5 @@
 Title: Haskell 💜 Vibes
-Date: 2026.03.03 
+Date: 2026.03.08
 Category: reflection
 OPTIONS: toc:nil
 Tags: haskell, vibes
