@@ -160,7 +160,7 @@ I can focus on thinking about how to make the system reliable.
 I can focus on making sure we don't have throughput issues.
 I can do the actual engineering parts of this job.
 
-[^boring]: Solving one unique compile error is fun, solving 30 to 40 times the same one, or several simlar ones is not.
+[^boring]: Solving one unique compile error is fun, solving 30 to 40 times the same one, or several similar ones is not.
            This problems grows bigger the larger a code base gets. 
            Claude will happily grind through thousands of compile errors.
            You can refactor these massive code bases now.
