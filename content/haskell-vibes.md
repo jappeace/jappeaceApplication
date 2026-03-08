@@ -153,12 +153,17 @@ I don't actually ask it to solve my problems.
 I ask it to write implementations, 
 I give it steps to do.
 I know precisely what I want, 
-it just takes me a long time and it's mostly boring work.
+it just takes me a long time and it's mostly repetitive[^boring] work.
 I recognize Claude is much faster at grinding through the compile errors than I am,
 and it doesn't require my attention.
 I can focus on thinking about how to make the system reliable.
 I can focus on making sure we don't have throughput issues.
 I can do the actual engineering parts of this job.
+
+[^boring]: Solving one unique compile error is fun, solving 30 to 40 times the same one, or several simlar ones is not.
+           This problems grows bigger the larger a code base gets. 
+           Claude will happily grind through thousands of compile errors.
+           You can refactor these massive code bases now.
 
 ## Job
 What is my job?
