@@ -12,6 +12,8 @@ import qualified Data.Text.IO as T
 import qualified Data.Text.Lazy.IO as TL
 import Development.Shake
 import Development.Shake.FilePath
+import qualified Network.Wai.Application.Static as Static
+import qualified Network.Wai.Handler.Warp as Warp
 import qualified System.Directory as Dir
 import System.IO (hSetEncoding, utf8, stdout, stderr)
 import Text.Blaze.Html (Html)
@@ -27,6 +29,7 @@ import Text.Pandoc
   , pandocExtensions
   )
 import Text.Pandoc.Highlighting (pygments)
+import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
@@ -121,6 +124,16 @@ main = do
 
       -- Copy static assets
       copyStaticAssets
+
+    phony "serve" $ do
+      need ["build"]
+      let port = 8000 :: Int
+      putInfo $ "Serving _site on http://localhost:" ++ show port
+      liftIO $ Warp.run port $ Static.staticApp
+        (Static.defaultFileServerSettings "_site")
+          { ssIndices = [unsafeToPiece "index.html"]
+          , ssAddTrailingSlash = True
+          }
 
     phony "clean" $ do
       putInfo "Cleaning _site and _build"

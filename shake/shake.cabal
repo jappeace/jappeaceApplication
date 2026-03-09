@@ -27,7 +27,11 @@ executable shake-blog
     , containers >=0.6 && <0.8
     , directory >=1.3 && <1.5
     , filepath >=1.4 && <1.6
+    , http-types >=0.12 && <0.13
     , pandoc >=3.0 && <3.8
     , shake >=0.19 && <0.20
     , text >=1.2 && <2.2
     , time >=1.9 && <1.15
+    , wai >=3.2 && <3.3
+    , wai-app-static >=3.1 && <3.2
+    , warp >=3.3 && <3.5

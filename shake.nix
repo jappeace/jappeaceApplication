@@ -2,11 +2,7 @@
 , pkgs ? import sources.nixpkgs {}
 }:
 let
-  hpkgs = pkgs.haskellPackages.override {
-    overrides = hnew: hold: {
-      shake-blog = hnew.callCabal2nix "shake-blog" ./shake { };
-    };
-  };
+  shake-blog = import ./shake { inherit sources pkgs; };
   ignore = import ./nix/gitignoreSource.nix { inherit (pkgs) lib; };
   talks = import ./talks {};
 in
@@ -14,7 +10,7 @@ pkgs.stdenv.mkDerivation {
   name = "shake-blog-site";
   src = ignore.gitignoreSource ./.;
   nativeBuildInputs = [
-    hpkgs.shake-blog
+    shake-blog
     pkgs.glibcLocales
     pkgs.optipng
     pkgs.libjpeg
