@@ -1,4 +1,0 @@
-[submodule "pelican-plugins"]
-	path = pelican-plugins
-	url = https://github.com/jappeace/pelican-plugins
-	branch = jappie
