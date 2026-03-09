@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
+import Control.Exception (IOException, catch, finally)
 import qualified Data.ByteString as BS
 import Data.List (sortBy, nub)
 import qualified Data.Map.Strict as Map
@@ -50,12 +52,19 @@ import Types
   , defaultSiteConfig
   )
 
+lockFile :: FilePath
+lockFile = "_build/.shake.lock"
+
 main :: IO ()
 main = do
   hSetEncoding stdout utf8
   hSetEncoding stderr utf8
-  shakeArgs shakeOptions{shakeFiles="_build"} $ do
+  finally
+    (shakeArgs shakeOptions{shakeFiles="_build"} shakeRules)
+    (Dir.removeFile lockFile `catch` \(_ :: IOException) -> return ())
 
+shakeRules :: Rules ()
+shakeRules = do
     phony "build" $ do
       -- Discover content files
       mds <- getDirectoryFiles "content" ["//*.md"]
