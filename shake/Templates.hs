@@ -29,9 +29,9 @@ toValue = H.toValue
 toHtml :: Text -> Html
 toHtml = H.toHtml
 
--- | Prefix a root-relative path with the site URL
+-- | Root-relative URL (works locally and in production)
 absUrl :: SiteConfig -> Text -> Text
-absUrl config path = siteUrl config <> path
+absUrl _config path = path
 
 -- Date formatting
 formatDate :: Text -> UTCTime -> Text
