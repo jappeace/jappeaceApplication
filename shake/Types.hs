@@ -31,16 +31,18 @@ data SiteConfig = SiteConfig
   }
 
 data Article = Article
-  { articleTitle     :: Text
-  , articleSlug      :: Text
-  , articleCategory  :: Text
-  , articleDate      :: UTCTime
-  , articleModified  :: Maybe UTCTime
-  , articleTags      :: [Text]
-  , articleContent   :: Html
-  , articleSummary   :: Maybe Html
-  , articleSubreddit :: Maybe Text
-  , articleUrl       :: Text
+  { articleTitle       :: Text
+  , articleSlug        :: Text
+  , articleCategory    :: Text
+  , articleDate        :: UTCTime
+  , articleModified    :: Maybe UTCTime
+  , articleTags        :: [Text]
+  , articleContent     :: Html
+  , articleContentText :: Text   -- ^ Full article HTML as Text (for feed)
+  , articleSummary     :: Maybe Html
+  , articleSummaryText :: Maybe Text  -- ^ Summary HTML as Text (for feed)
+  , articleSubreddit   :: Maybe Text
+  , articleUrl         :: Text
   }
 
 data Page = Page

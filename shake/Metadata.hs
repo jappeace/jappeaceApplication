@@ -96,8 +96,8 @@ parseDateField txt =
 parseTags :: Text -> [Text]
 parseTags txt
   | T.null (T.strip txt) = []
-  | T.isInfixOf "," txt  = map T.strip (T.splitOn "," txt)
-  | otherwise             = [T.strip txt]
+  | T.isInfixOf "," txt  = map (T.toLower . T.strip) (T.splitOn "," txt)
+  | otherwise             = [T.toLower (T.strip txt)]
 
 -- | Check if a metadata map indicates the article is a draft.
 isDraft :: Map Text Text -> Bool

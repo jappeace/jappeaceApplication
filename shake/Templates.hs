@@ -11,7 +11,8 @@ module Templates
   ) where
 
 import Data.List (groupBy, sortBy)
-import Data.Ord (Down(..))
+import Data.Maybe (isJust)
+import Data.Ord (Down(..), comparing)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Time (UTCTime, formatTime, defaultTimeLocale)
@@ -27,6 +28,10 @@ toValue = H.toValue
 
 toHtml :: Text -> Html
 toHtml = H.toHtml
+
+-- | Prefix a root-relative path with the site URL
+absUrl :: SiteConfig -> Text -> Text
+absUrl config path = siteUrl config <> path
 
 -- Date formatting
 formatDate :: Text -> UTCTime -> Text
@@ -61,9 +66,9 @@ baseTemplate config isArticle title content = H.docTypeHtml ! A.class_ "no-js" !
     H.meta ! A.name "MobileOptimized" ! A.content "320"
     H.meta ! A.name "viewport" ! A.content "width=device-width, initial-scale=1"
     -- Favicon
-    H.link ! A.href (toValue (siteUrl config <> "/favicon.png")) ! A.rel "icon"
+    H.link ! A.href (toValue (absUrl config "/favicon.png")) ! A.rel "icon"
     -- CSS: base
-    H.link ! A.rel "stylesheet" ! A.href "/theme/css/base.css"
+    H.link ! A.rel "stylesheet" ! A.href (toValue (absUrl config "/theme/css/base.css"))
     -- MathJax for articles
     if isArticle
       then do
@@ -77,10 +82,10 @@ baseTemplate config isArticle title content = H.docTypeHtml ! A.class_ "no-js" !
     H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=UA-120139048-1" $ mempty
     H.script $ "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'UA-120139048-1');\ngtag('config', 'G-SJ36NEDJPD');"
     -- CSS: article or double column
-    H.link ! A.rel "stylesheet" ! A.href "/theme/css/all.css"
+    H.link ! A.rel "stylesheet" ! A.href (toValue (absUrl config "/theme/css/all.css"))
     if isArticle
-      then H.link ! A.rel "stylesheet" ! A.href "/theme/css/article.css"
-      else H.link ! A.rel "stylesheet" ! A.href "/theme/css/double_collumn.css"
+      then H.link ! A.rel "stylesheet" ! A.href (toValue (absUrl config "/theme/css/article.css"))
+      else H.link ! A.rel "stylesheet" ! A.href (toValue (absUrl config "/theme/css/double_collumn.css"))
     -- Footnote tooltip JS
     H.script $ H.preEscapedToHtml footnoteScript
   H.body $ do
@@ -92,17 +97,17 @@ baseTemplate config isArticle title content = H.docTypeHtml ! A.class_ "no-js" !
       H.p $ H.small $
         "Those who know do not speak. Those who speak do not know."
       H.p $ H.small $ do
-        H.a ! A.href "/atom" $
-          H.img ! A.class_ "category-glyph" ! A.alt "Atom feed" ! A.src "/theme/images/atom-icon.svg"
+        H.a ! A.href (toValue (absUrl config "/atom")) $
+          H.img ! A.class_ "category-glyph" ! A.alt "Atom feed" ! A.src (toValue (absUrl config "/theme/images/atom-icon.svg"))
         " Powered by "
         H.a ! A.href "https://github.com/jappeace/jappeaceApplication" $ "Shake"
         ". "
         H.a ! A.href "https://github.com/jappeace/jappeaceApplication" $ "Source code"
         ", licensed under GPLv3."
     -- Syntax highlighting CSS last
-    H.link ! A.rel "stylesheet" ! A.href "/theme/css/syntax.css"
+    H.link ! A.rel "stylesheet" ! A.href (toValue (absUrl config "/theme/css/syntax.css"))
     -- Pandoc syntax highlighting
-    H.link ! A.rel "stylesheet" ! A.href "/theme/css/pandoc-syntax.css"
+    H.link ! A.rel "stylesheet" ! A.href (toValue (absUrl config "/theme/css/pandoc-syntax.css"))
   where
     renderFootLink :: (Text, Text) -> Html
     renderFootLink (name, url) =
@@ -120,7 +125,7 @@ siteTemplate :: SiteConfig -> [Page] -> Bool -> Text -> Html -> Html
 siteTemplate config pages isArticle title body =
   baseTemplate config isArticle title $ do
     H.header ! A.id "title" ! A.class_ "window" ! customAttribute "role" "banner" $ do
-      H.h1 $ H.a ! A.id "sitename" ! A.href (toValue (siteUrl config <> "/")) $ "Jappie"
+      H.h1 $ H.a ! A.id "sitename" ! A.href (toValue (absUrl config "/")) $ "Jappie"
       navigationHtml config pages
       H.div ! A.class_ "browser-warning" $
         H.span "\9888\65039 Chrome mobile not supported, please upgrade to Firefox \9888\65039"
@@ -134,18 +139,18 @@ navigationHtml :: SiteConfig -> [Page] -> Html
 navigationHtml config pages = H.nav $
   H.ul ! A.class_ "navigation" $ do
     mapM_ renderNavLink (siteLinks config)
-    mapM_ renderPageNavLink pages
+    mapM_ renderPageNavLink (filter (isJust . pageHomeTitle) pages)
     mapM_ renderNavLink (siteSocial config)
   where
     renderNavLink :: NavLink -> Html
     renderNavLink nl =
       H.li ! A.class_ (toValue (navClass nl)) $
         H.a ! A.href (toValue (navUrl nl)) $ do
-          H.h3 ! A.class_ "bracket left-bracket" $ "&lt;"
+          H.h3 ! A.class_ "bracket left-bracket" $ H.preEscapedToHtml ("&lt;" :: Text)
           H.div ! A.class_ "link" $ do
             H.h2 $ toHtml (navTitle nl)
             H.p ! A.class_ "description" $ toHtml (navDesc nl)
-          H.h3 ! A.class_ "bracket right-bracket" $ "&gt;"
+          H.h3 ! A.class_ "bracket right-bracket" $ H.preEscapedToHtml ("&gt;" :: Text)
 
     renderPageNavLink :: Page -> Html
     renderPageNavLink page =
@@ -156,26 +161,26 @@ navigationHtml config pages = H.nav $
             Just hd -> hd
             Nothing -> ""
       in H.li $
-          H.a ! A.href (toValue ("/" <> pageUrl page)) $ do
-            H.h3 ! A.class_ "bracket left-bracket" $ "&lt;"
+          H.a ! A.href (toValue (absUrl config ("/" <> pageUrl page))) $ do
+            H.h3 ! A.class_ "bracket left-bracket" $ H.preEscapedToHtml ("&lt;" :: Text)
             H.div ! A.class_ "link" $ do
               H.h2 $ toHtml title'
               H.p ! A.class_ "description" $ toHtml desc
-            H.h3 ! A.class_ "bracket right-bracket" $ "&gt;"
+            H.h3 ! A.class_ "bracket right-bracket" $ H.preEscapedToHtml ("&gt;" :: Text)
 
 -- =============================================================================
 -- Category glyph
 -- =============================================================================
 
-categoryGlyph :: Text -> Html
-categoryGlyph catname =
+categoryGlyph :: SiteConfig -> Text -> Html
+categoryGlyph config catname =
   H.img ! A.class_ "category-glyph"
-        ! A.src (toValue ("/theme/images/category-" <> catname <> ".svg"))
+        ! A.src (toValue (absUrl config ("/theme/images/category-" <> catname <> ".svg")))
         ! customAttribute "onerror" onerrorVal
-        ! A.alt (toValue ("[" <> catname <> "]"))
+        ! A.alt "[]"
   where
     onerrorVal :: Text
-    onerrorVal = "this.src='/theme/images/category-" <> catname <> ".png'; this.onerror=null;"
+    onerrorVal = "this.src='" <> absUrl config ("/theme/images/category-" <> catname <> ".png") <> "'; this.onerror=null;"
 
 -- =============================================================================
 -- Article page
@@ -186,7 +191,7 @@ renderArticlePage config pages article allArticles tags =
   siteTemplate config pages True (articleTitle article <> " / " <> siteName config) $ do
     H.article ! A.class_ "single" ! customAttribute "role" "article" $ do
       -- Header
-      articleHead article
+      articleHead config article
       -- Content
       H.div ! A.class_ "entry-content" $
         articleContent article
@@ -206,38 +211,38 @@ renderArticlePage config pages article allArticles tags =
                    ! customAttribute "crossorigin" "anonymous"
                    ! A.async ""
                    $ mempty
-    -- Recent posts
+    -- Recent posts (Fix 5: sidebar links to site root)
     H.section $ do
-      H.h1 $ H.a ! A.href "/archives.html" $ "Recent stuff"
+      H.h1 $ H.a ! A.href (toValue (absUrl config "/")) $ "Recent stuff"
       H.ul ! A.id "recent_posts" $
         mapM_ recentPost (take 8 allArticles)
-    -- Tags sidebar
+    -- Tags sidebar (Fix 5: sidebar links to site root)
     H.section $ do
-      H.h1 $ H.a ! A.href "/tags.html" $ "Tags"
+      H.h1 $ H.a ! A.href (toValue (absUrl config "/")) $ "Tags"
       H.div ! A.class_ "sidebar-tags" $
-        mapM_ renderSidebarTag (filter (\(_, arts) -> length arts > 1) tags)
+        mapM_ renderSidebarTag (sortBy (comparing fst) (filter (\(_, arts) -> length arts > 1) tags))
   where
     recentPost :: Article -> Html
     recentPost a =
       H.li ! A.class_ "post" $
-        H.a ! A.href (toValue ("/" <> articleUrl a)) $ do
-          categoryGlyph (articleCategory a)
+        H.a ! A.href (toValue (absUrl config ("/" <> articleUrl a))) $ do
+          categoryGlyph config (articleCategory a)
           toHtml (" " <> articleTitle a)
 
     renderSidebarTag :: (Text, [Article]) -> Html
     renderSidebarTag (tag, _) =
-      H.a ! A.class_ "tag" ! A.href (toValue ("/tag/" <> tagSlug tag <> ".html")) $ toHtml tag
+      H.a ! A.class_ "tag" ! A.href (toValue (absUrl config ("/tag/" <> tagSlug tag <> ".html"))) $ toHtml tag
 
 -- =============================================================================
 -- Article header/footer helpers
 -- =============================================================================
 
-articleHead :: Article -> Html
-articleHead article = H.header $ do
+articleHead :: SiteConfig -> Article -> Html
+articleHead config article = H.header $ do
   H.h1 $
-    H.a ! A.href (toValue ("/" <> articleUrl article)) $ do
+    H.a ! A.href (toValue (absUrl config ("/" <> articleUrl article))) $ do
       toHtml (articleTitle article <> " ")
-      categoryGlyph (articleCategory article)
+      categoryGlyph config (articleCategory article)
   H.p ! A.class_ "meta" $
     articleTime article
 
@@ -255,14 +260,14 @@ articleTime article = do
     Nothing -> mempty
 
 articleFooter :: SiteConfig -> Article -> Html
-articleFooter _config article =
+articleFooter config article =
   H.ul ! A.class_ "meta" $ do
     H.li ! A.class_ "byline author vcard" $ do
       "Posted by "
       H.span ! A.class_ "fn" $ toHtml (("Jappie J. T. Klooster") :: Text)
       " in "
-      H.a ! A.class_ "category" ! A.href (toValue ("/category/" <> articleCategory article <> ".html")) $ do
-        categoryGlyph (articleCategory article)
+      H.a ! A.class_ "category" ! A.href (toValue (absUrl config ("/category/" <> articleCategory article <> ".html"))) $ do
+        categoryGlyph config (articleCategory article)
         " "
         toHtml (articleCategory article)
     H.li $ articleTime article
@@ -273,7 +278,7 @@ articleFooter _config article =
   where
     renderTag :: Text -> Html
     renderTag tag =
-      H.a ! A.class_ "tag" ! A.href (toValue ("/tag/" <> tagSlug tag <> ".html")) $
+      H.a ! A.class_ "tag" ! A.href (toValue (absUrl config ("/tag/" <> tagSlug tag <> ".html"))) $
         toHtml ("#" <> tag)
 
 -- =============================================================================
@@ -286,7 +291,7 @@ renderPagePage config pages page =
     H.article ! A.class_ "single" ! customAttribute "role" "article" $ do
       H.header $
         H.h1 $
-          H.a ! A.href (toValue ("/" <> pageUrl page)) $ toHtml (pageTitle page)
+          H.a ! A.href (toValue (absUrl config ("/" <> pageUrl page))) $ toHtml (pageTitle page)
       H.div ! A.class_ "entry-content" $
         pageContent page
 
@@ -296,19 +301,24 @@ renderPagePage config pages page =
 
 renderIndexPage :: SiteConfig -> [Page] -> [Article] -> Html
 renderIndexPage config pages articles =
-  siteTemplate config pages False (siteName config) $
-    mapM_ renderArticleSummary articles
+  siteTemplate config pages False (siteName config) $ do
+    mapM_ (renderArticleSummary config) articles
+    -- Pagination footer (Fix 11)
+    H.footer ! A.class_ "pagination" $ do
+      H.span ! A.class_ "prev" $ mempty
+      H.a ! A.href (toValue (absUrl config "/archives.html")) $ "Blog archive"
+      H.span ! A.class_ "next" $ mempty
 
-renderArticleSummary :: Article -> Html
-renderArticleSummary article =
+renderArticleSummary :: SiteConfig -> Article -> Html
+renderArticleSummary config article =
   H.article $ do
-    articleHead article
+    articleHead config article
     H.div ! A.class_ "entry-content" $
       case articleSummary article of
         Just s  -> s
         Nothing -> articleContent article
     H.footer $
-      H.a ! A.rel "full-article" ! A.href (toValue ("/" <> articleUrl article)) $
+      H.a ! A.rel "full-article" ! A.href (toValue (absUrl config ("/" <> articleUrl article))) $
         "Could there be more?"
 
 -- =============================================================================
@@ -341,8 +351,8 @@ renderArchivesPage config pages articles =
              ! customAttribute "pubdate" "" $
         toHtml (formatArchiveDate (articleDate article))
       H.h1 ! A.class_ (toValue ("category-" <> articleCategory article)) $
-        H.a ! A.href (toValue ("/" <> articleUrl article)) $ do
-          categoryGlyph (articleCategory article)
+        H.a ! A.href (toValue (absUrl config ("/" <> articleUrl article))) $ do
+          categoryGlyph config (articleCategory article)
           " "
           toHtml (articleTitle article)
       H.footer $
@@ -351,7 +361,7 @@ renderArchivesPage config pages articles =
             then mempty
             else H.li ! A.class_ "tags" $
                    mapM_ (\tag -> H.a ! A.class_ "tag"
-                                      ! A.href (toValue ("/tag/" <> tagSlug tag <> ".html"))
+                                      ! A.href (toValue (absUrl config ("/tag/" <> tagSlug tag <> ".html")))
                                       $ toHtml ("#" <> tag))
                          (articleTags article)
 
@@ -366,24 +376,25 @@ renderTagsListPage config pages tags =
       H.h1 "Tags"
       H.p "This page sure is exciting, wow!"
       H.ul $
-        mapM_ renderTagItem tags
+        mapM_ renderTagItem (sortBy (comparing fst) tags)
   where
     renderTagItem :: (Text, [Article]) -> Html
     renderTagItem (tag, arts) =
       H.li $ do
-        H.a ! A.href (toValue ("/tag/" <> tagSlug tag <> ".html")) $ toHtml tag
+        H.a ! A.href (toValue (absUrl config ("/tag/" <> tagSlug tag <> ".html"))) $ toHtml tag
         toHtml ((" \8212 " <> T.pack (show (length arts))) :: Text)
 
 renderTagPage :: SiteConfig -> [Page] -> Text -> [Article] -> Html
 renderTagPage config pages tag articles =
   siteTemplate config pages False ("\128278 " <> tag <> " / " <> siteName config) $ do
     H.h1 $ toHtml (("Tagged: " <> tag) :: Text)
-    mapM_ renderArticleSummary articles
+    mapM_ (renderArticleSummary config) articles
 
 -- =============================================================================
 -- Category pages
 -- =============================================================================
 
+-- | Fix 10: No article counts on categories page
 renderCategoriesListPage :: SiteConfig -> [Page] -> [(Text, [Article])] -> Html
 renderCategoriesListPage config pages categories =
   siteTemplate config pages False ("Categories / " <> siteName config) $
@@ -393,22 +404,21 @@ renderCategoriesListPage config pages categories =
         mapM_ renderCatItem categories
   where
     renderCatItem :: (Text, [Article]) -> Html
-    renderCatItem (cat, arts) =
-      H.li $ do
-        H.a ! A.href (toValue ("/category/" <> cat <> ".html")) $ do
-          categoryGlyph cat
+    renderCatItem (cat, _arts) =
+      H.li $
+        H.a ! A.href (toValue (absUrl config ("/category/" <> cat <> ".html"))) $ do
+          categoryGlyph config cat
           " "
           toHtml cat
-        toHtml ((" \8212 " <> T.pack (show (length arts))) :: Text)
 
 renderCategoryPage :: SiteConfig -> [Page] -> Text -> [Article] -> Html
 renderCategoryPage config pages cat articles =
   siteTemplate config pages False (cat <> " / " <> siteName config) $ do
     H.h1 ! A.id "category-title" $ do
-      categoryGlyph cat
+      categoryGlyph config cat
       " "
       toHtml cat
-    mapM_ renderArticleSummary articles
+    mapM_ (renderArticleSummary config) articles
 
 -- =============================================================================
 -- Helpers

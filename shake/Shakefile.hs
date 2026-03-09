@@ -11,7 +11,8 @@ import Data.Ord (Down(..))
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
-import qualified Data.Text.Lazy.IO as TL
+import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy.IO as TLIO
 import Development.Shake
 import Development.Shake.FilePath
 import qualified Network.Wai.Application.Static as Static
@@ -30,6 +31,7 @@ import Text.Pandoc
   , writerHighlightStyle
   , pandocExtensions
   )
+import Text.Pandoc.Definition (Pandoc(..), Block(..), Inline(..))
 import Text.Pandoc.Highlighting (pygments)
 import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
@@ -191,7 +193,7 @@ parseContentFile (path, ext) = do
           putStrLn $ "Warning: no valid date for " ++ path ++ ", skipping"
           return (Left "no date")
         Just date -> do
-          htmlContent <- renderPandoc ext body
+          (htmlContent, contentText, summaryHtml, summaryTextVal) <- renderPandocWithSummary ext body
           if isPage
             then return $ Right $ Right Page
               { pageTitle = title
@@ -210,7 +212,9 @@ parseContentFile (path, ext) = do
               , articleModified = mModified
               , articleTags = tags
               , articleContent = htmlContent
-              , articleSummary = Nothing
+              , articleContentText = contentText
+              , articleSummary = summaryHtml
+              , articleSummaryText = summaryTextVal
               , articleSubreddit = subreddit
               , articleUrl = slug <> ".html"
               }
@@ -218,14 +222,78 @@ parseContentFile (path, ext) = do
     prefixOf :: String -> String -> Bool
     prefixOf prefix str = take (length prefix) str == prefix
 
-renderPandoc :: String -> Text -> IO Html
-renderPandoc ext body = runIOorExplode $ do
+-- | Render Pandoc document, returning full HTML + summary HTML (~50 words)
+renderPandocWithSummary :: String -> Text -> IO (Html, Text, Maybe Html, Maybe Text)
+renderPandocWithSummary ext body = runIOorExplode $ do
   let ropts = def { readerExtensions = pandocExtensions }
       wopts = def { writerHighlightStyle = Just pygments }
   doc <- case ext of
     "org" -> readOrg ropts body
     _     -> readMarkdown ropts body
-  writeHtml5 wopts doc
+  fullHtml <- writeHtml5 wopts doc
+  let fullText = lazyToStrictText (renderHtml fullHtml)
+      summaryDoc = summarizeDoc doc
+  summaryHtmlVal <- writeHtml5 wopts summaryDoc
+  let summaryText = lazyToStrictText (renderHtml summaryHtmlVal)
+  return (fullHtml, fullText, Just summaryHtmlVal, Just summaryText)
+
+lazyToStrictText :: TL.Text -> Text
+lazyToStrictText = TL.toStrict
+
+-- | Take blocks from a Pandoc document until ~50 words
+summarizeDoc :: Pandoc -> Pandoc
+summarizeDoc (Pandoc meta blocks) = Pandoc meta (takeBlocksUntilWords 50 blocks)
+
+takeBlocksUntilWords :: Int -> [Block] -> [Block]
+takeBlocksUntilWords _ [] = []
+takeBlocksUntilWords remaining (b:bs)
+  | remaining <= 0 = []
+  | otherwise =
+      let wc = blockWordCount b
+      in b : takeBlocksUntilWords (remaining - wc) bs
+
+blockWordCount :: Block -> Int
+blockWordCount block = case block of
+  Para inlines        -> inlineWordsCount inlines
+  Plain inlines       -> inlineWordsCount inlines
+  Header _ _ inlines  -> inlineWordsCount inlines
+  BlockQuote blocks   -> sum (map blockWordCount blocks)
+  BulletList items    -> sum (map (sum . map blockWordCount) items)
+  OrderedList _ items -> sum (map (sum . map blockWordCount) items)
+  DefinitionList defs -> sum [inlineWordsCount term + sum (map (sum . map blockWordCount) defn) | (term, defn) <- defs]
+  Div _ blocks        -> sum (map blockWordCount blocks)
+  LineBlock lns       -> sum (map inlineWordsCount lns)
+  CodeBlock _ code    -> length (T.words code)
+  RawBlock _ raw      -> length (T.words raw)
+  Table {}            -> 20 -- rough estimate
+  Figure _ _ blocks   -> sum (map blockWordCount blocks)
+  HorizontalRule      -> 0
+
+inlineWordsCount :: [Inline] -> Int
+inlineWordsCount = sum . map inlineWordCount
+
+inlineWordCount :: Inline -> Int
+inlineWordCount inline = case inline of
+  Str t           -> length (T.words t)
+  Space           -> 0
+  SoftBreak       -> 0
+  LineBreak       -> 0
+  Emph inlines    -> inlineWordsCount inlines
+  Underline inlines -> inlineWordsCount inlines
+  Strong inlines  -> inlineWordsCount inlines
+  Strikeout inlines -> inlineWordsCount inlines
+  Superscript inlines -> inlineWordsCount inlines
+  Subscript inlines -> inlineWordsCount inlines
+  SmallCaps inlines -> inlineWordsCount inlines
+  Quoted _ inlines -> inlineWordsCount inlines
+  Cite _ inlines  -> inlineWordsCount inlines
+  Code _ t        -> length (T.words t)
+  Math _ t        -> length (T.words t)
+  RawInline _ t   -> length (T.words t)
+  Link _ inlines _ -> inlineWordsCount inlines
+  Image _ inlines _ -> inlineWordsCount inlines
+  Note blocks     -> sum (map blockWordCount blocks)
+  Span _ inlines  -> inlineWordsCount inlines
 
 -- =============================================================================
 -- Tag and category maps
@@ -252,7 +320,7 @@ buildCategoryMap articles =
 writeHtmlFile :: FilePath -> Html -> IO ()
 writeHtmlFile path html = do
   Dir.createDirectoryIfMissing True (takeDirectory path)
-  TL.writeFile path (renderHtml html)
+  TLIO.writeFile path (renderHtml html)
 
 tagSlugLocal :: Text -> Text
 tagSlugLocal = T.intercalate "-" . T.words . T.toLower
