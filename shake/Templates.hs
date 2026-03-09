@@ -138,9 +138,9 @@ siteTemplate config pages isArticle title body =
 navigationHtml :: SiteConfig -> [Page] -> Html
 navigationHtml config pages = H.nav $
   H.ul ! A.class_ "navigation" $ do
-    mapM_ renderNavLink (siteLinks config)
-    mapM_ renderPageNavLink (filter (isJust . pageHomeTitle) pages)
-    mapM_ renderNavLink (siteSocial config)
+    mapM_ (\nl -> renderNavLink nl >> "\n") (siteLinks config)
+    mapM_ (\p -> renderPageNavLink p >> "\n") (filter (isJust . pageHomeTitle) pages)
+    mapM_ (\nl -> renderNavLink nl >> "\n") (siteSocial config)
   where
     renderNavLink :: NavLink -> Html
     renderNavLink nl =
