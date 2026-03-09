@@ -20,6 +20,7 @@ import qualified Network.Wai.Handler.Warp as Warp
 import qualified System.Directory as Dir
 import System.IO (hSetEncoding, utf8, stdout, stderr)
 import Text.Blaze.Html (Html)
+import qualified Text.Blaze.Html5 as H
 import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Text.Pandoc
   ( runIOorExplode
@@ -31,7 +32,6 @@ import Text.Pandoc
   , writerHighlightStyle
   , pandocExtensions
   )
-import Text.Pandoc.Definition (Pandoc(..), Block(..), Inline(..))
 import Text.Pandoc.Highlighting (pygments)
 import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
@@ -137,7 +137,7 @@ shakeRules = do
       copyStaticAssets
 
     phony "serve" $ do
-      need ["build"]
+      need ["clean", "build"]
       let port = 8000 :: Int
       putInfo $ "Serving _site on http://localhost:" ++ show port
       liftIO $ Warp.run port $ Static.staticApp
@@ -232,68 +232,72 @@ renderPandocWithSummary ext body = runIOorExplode $ do
     _     -> readMarkdown ropts body
   fullHtml <- writeHtml5 wopts doc
   let fullText = lazyToStrictText (renderHtml fullHtml)
-      summaryDoc = summarizeDoc doc
-  summaryHtmlVal <- writeHtml5 wopts summaryDoc
-  let summaryText = lazyToStrictText (renderHtml summaryHtmlVal)
+      summaryText = truncateHtml 50 fullText
+      summaryHtmlVal = H.preEscapedToHtml summaryText
   return (fullHtml, fullText, Just summaryHtmlVal, Just summaryText)
 
 lazyToStrictText :: TL.Text -> Text
 lazyToStrictText = TL.toStrict
 
--- | Take blocks from a Pandoc document until ~50 words
-summarizeDoc :: Pandoc -> Pandoc
-summarizeDoc (Pandoc meta blocks) = Pandoc meta (takeBlocksUntilWords 50 blocks)
+-- | Truncate rendered HTML to ~N words, closing any unclosed tags.
+-- Counts only visible text words, skips inside tags and entities.
+truncateHtml :: Int -> Text -> Text
+truncateHtml maxWords html =
+  let (result, openTags) = go 0 [] (T.unpack html)
+      closingTags = concatMap (\t -> "</" ++ t ++ ">") openTags
+  in T.pack result <> T.pack closingTags
+  where
+    -- Track open tag stack, count words in text nodes
+    go :: Int -> [String] -> String -> (String, [String])
+    go _ tags [] = ([], tags)
+    go wc tags _ | wc >= maxWords = ([], tags)
+    go wc tags ('<':'/':rest) =
+      -- Closing tag: consume until '>', pop from stack
+      let (tagContent, after) = span (/= '>') rest
+          tagName = takeWhile (\c -> c /= ' ' && c /= '>') tagContent
+          closeStr = "</" ++ tagContent ++ ">"
+          tags' = dropFirst tagName tags
+          (remainder, finalTags) = go wc tags' (drop 1 after)
+      in (closeStr ++ remainder, finalTags)
+    go wc tags ('<':rest) =
+      -- Opening tag: consume until '>', push to stack if not void/self-closing
+      let (tagContent, after) = span (/= '>') rest
+          tagName = takeWhile (\c -> c /= ' ' && c /= '>' && c /= '/') tagContent
+          isSelfClosing = not (null tagContent) && last tagContent == '/'
+          isVoid = tagName `elem` voidElements
+          tagStr = "<" ++ tagContent ++ ">"
+          tags' = if isSelfClosing || isVoid || null tagName
+                  then tags
+                  else tagName : tags
+          (remainder, finalTags) = go wc tags' (drop 1 after)
+      in (tagStr ++ remainder, finalTags)
+    go wc tags ('&':rest) =
+      -- HTML entity: pass through without counting as word
+      let (entity, after) = span (/= ';') rest
+          entityStr = "&" ++ entity ++ ";"
+          (remainder, finalTags) = go wc tags (drop 1 after)
+      in (entityStr ++ remainder, finalTags)
+    go wc tags (c:rest)
+      | c == ' ' || c == '\n' || c == '\t' || c == '\r' =
+          let (remainder, finalTags) = go wc tags rest
+          in (c : remainder, finalTags)
+      | otherwise =
+          -- Start of a word: consume until whitespace or tag
+          let (word, after) = span (\ch -> ch /= ' ' && ch /= '\n' && ch /= '\t' && ch /= '\r' && ch /= '<' && ch /= '&') rest
+              fullWord = c : word
+              wc' = wc + 1
+              (remainder, finalTags) = go wc' tags after
+          in (fullWord ++ remainder, finalTags)
 
-takeBlocksUntilWords :: Int -> [Block] -> [Block]
-takeBlocksUntilWords _ [] = []
-takeBlocksUntilWords remaining (b:bs)
-  | remaining <= 0 = []
-  | otherwise =
-      let wc = blockWordCount b
-      in b : takeBlocksUntilWords (remaining - wc) bs
+    dropFirst :: String -> [String] -> [String]
+    dropFirst _ [] = []
+    dropFirst x (y:ys)
+      | x == y    = ys
+      | otherwise = y : dropFirst x ys
 
-blockWordCount :: Block -> Int
-blockWordCount block = case block of
-  Para inlines        -> inlineWordsCount inlines
-  Plain inlines       -> inlineWordsCount inlines
-  Header _ _ inlines  -> inlineWordsCount inlines
-  BlockQuote blocks   -> sum (map blockWordCount blocks)
-  BulletList items    -> sum (map (sum . map blockWordCount) items)
-  OrderedList _ items -> sum (map (sum . map blockWordCount) items)
-  DefinitionList defs -> sum [inlineWordsCount term + sum (map (sum . map blockWordCount) defn) | (term, defn) <- defs]
-  Div _ blocks        -> sum (map blockWordCount blocks)
-  LineBlock lns       -> sum (map inlineWordsCount lns)
-  CodeBlock _ code    -> length (T.words code)
-  RawBlock _ raw      -> length (T.words raw)
-  Table {}            -> 20 -- rough estimate
-  Figure _ _ blocks   -> sum (map blockWordCount blocks)
-  HorizontalRule      -> 0
-
-inlineWordsCount :: [Inline] -> Int
-inlineWordsCount = sum . map inlineWordCount
-
-inlineWordCount :: Inline -> Int
-inlineWordCount inline = case inline of
-  Str t           -> length (T.words t)
-  Space           -> 0
-  SoftBreak       -> 0
-  LineBreak       -> 0
-  Emph inlines    -> inlineWordsCount inlines
-  Underline inlines -> inlineWordsCount inlines
-  Strong inlines  -> inlineWordsCount inlines
-  Strikeout inlines -> inlineWordsCount inlines
-  Superscript inlines -> inlineWordsCount inlines
-  Subscript inlines -> inlineWordsCount inlines
-  SmallCaps inlines -> inlineWordsCount inlines
-  Quoted _ inlines -> inlineWordsCount inlines
-  Cite _ inlines  -> inlineWordsCount inlines
-  Code _ t        -> length (T.words t)
-  Math _ t        -> length (T.words t)
-  RawInline _ t   -> length (T.words t)
-  Link _ inlines _ -> inlineWordsCount inlines
-  Image _ inlines _ -> inlineWordsCount inlines
-  Note blocks     -> sum (map blockWordCount blocks)
-  Span _ inlines  -> inlineWordsCount inlines
+    voidElements :: [String]
+    voidElements = ["br", "img", "hr", "input", "meta", "link", "area",
+                    "base", "col", "embed", "source", "track", "wbr"]
 
 -- =============================================================================
 -- Tag and category maps
