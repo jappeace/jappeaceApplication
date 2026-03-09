@@ -1,4 +1,6 @@
 /* Pandoc syntax highlighting (pygments style) */
+/* Reset generic code styling inside pre blocks */
+pre > code { background-color: transparent; border: none; padding: 0; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
