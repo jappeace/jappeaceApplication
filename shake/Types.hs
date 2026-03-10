@@ -4,6 +4,7 @@ module Types
   , Article(..)
   , Page(..)
   , NavLink(..)
+  , PaginationInfo(..)
   , defaultSiteConfig
   ) where
 
@@ -41,7 +42,7 @@ data Article = Article
   , articleContentText :: Text   -- ^ Full article HTML as Text (for feed)
   , articleSummary     :: Maybe Html
   , articleSummaryText :: Maybe Text  -- ^ Summary HTML as Text (for feed)
-  , articleSubreddit   :: Maybe Text
+  , articleFootnotesHtml :: Maybe Html  -- ^ Extracted footnotes section
   , articleUrl         :: Text
   }
 
@@ -53,6 +54,13 @@ data Page = Page
   , pageUrl      :: Text
   , pageHomeTitle :: Maybe Text
   , pageHomeDesc  :: Maybe Text
+  }
+
+data PaginationInfo = PaginationInfo
+  { paginationCurrent :: Int
+  , paginationTotal   :: Int
+  , paginationPrevUrl :: Maybe Text
+  , paginationNextUrl :: Maybe Text
   }
 
 defaultSiteConfig :: SiteConfig

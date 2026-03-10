@@ -20,7 +20,7 @@ import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
-import Types (SiteConfig(..), Article(..), Page(..), NavLink(..))
+import Types (SiteConfig(..), Article(..), Page(..), NavLink(..), PaginationInfo(..))
 
 -- Helper to convert Text to AttributeValue
 toValue :: Text -> H.AttributeValue
@@ -192,14 +192,10 @@ renderArticlePage config pages article allArticles tags =
     H.article ! A.class_ "single" ! customAttribute "role" "article" $ do
       -- Header
       articleHead config article
-      -- Content
+      -- Content (without footnotes)
       H.div ! A.class_ "entry-content" $
         articleContent article
-      -- Subreddit
-      case articleSubreddit article of
-        Just sr -> H.small $ toHtml sr
-        Nothing -> mempty
-      -- Footer with metadata
+      -- Footer with metadata + utterances
       H.footer $ do
         articleFooter config article
         H.div ! A.class_ "comments" $
@@ -211,6 +207,10 @@ renderArticlePage config pages article allArticles tags =
                    ! customAttribute "crossorigin" "anonymous"
                    ! A.async ""
                    $ mempty
+      -- Footnotes section (after utterances)
+      case articleFootnotesHtml article of
+        Just fn -> fn
+        Nothing -> mempty
     -- Recent posts (Fix 5: sidebar links to site root)
     H.section $ do
       H.h1 $ H.a ! A.href (toValue (absUrl config "/")) $ "Recent stuff"
@@ -296,18 +296,21 @@ renderPagePage config pages page =
         pageContent page
 
 -- =============================================================================
--- Index page (article list without pagination since DEFAULT_PAGINATION = False)
+-- Index page (paginated, 10 articles per page)
 -- =============================================================================
 
-renderIndexPage :: SiteConfig -> [Page] -> [Article] -> Html
-renderIndexPage config pages articles =
+renderIndexPage :: SiteConfig -> [Page] -> [Article] -> PaginationInfo -> Html
+renderIndexPage config pages articles pagination =
   siteTemplate config pages False (siteName config) $ do
     mapM_ (renderArticleSummary config) articles
-    -- Pagination footer (Fix 11)
     H.footer ! A.class_ "pagination" $ do
-      H.span ! A.class_ "prev" $ mempty
+      case paginationPrevUrl pagination of
+        Just url -> H.a ! A.class_ "prev" ! A.href (toValue (absUrl config url)) $ "Newer"
+        Nothing  -> H.span ! A.class_ "prev" $ mempty
       H.a ! A.href (toValue (absUrl config "/archives.html")) $ "Blog archive"
-      H.span ! A.class_ "next" $ mempty
+      case paginationNextUrl pagination of
+        Just url -> H.a ! A.class_ "next" ! A.href (toValue (absUrl config url)) $ "Older"
+        Nothing  -> H.span ! A.class_ "next" $ mempty
 
 renderArticleSummary :: SiteConfig -> Article -> Html
 renderArticleSummary config article =

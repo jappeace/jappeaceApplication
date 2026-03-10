@@ -51,6 +51,7 @@ import Templates
 import Types
   ( Article(..)
   , Page(..)
+  , PaginationInfo(..)
   , defaultSiteConfig
   )
 
@@ -102,9 +103,22 @@ shakeRules = do
           (renderPagePage config pages page))
           pages
 
-        -- Index
-        writeHtmlFile "_site/index.html"
-          (renderIndexPage config pages sortedArticles)
+        -- Paginated index pages
+        let articlePages = chunksOf 10 sortedArticles
+            totalPages = length articlePages
+        mapM_ (\(pageNum, arts) ->
+          let pagination = PaginationInfo
+                { paginationCurrent = pageNum
+                , paginationTotal   = totalPages
+                , paginationPrevUrl = if pageNum > 1
+                    then Just ("/" <> indexFileName (pageNum - 1))
+                    else Nothing
+                , paginationNextUrl = if pageNum < totalPages
+                    then Just ("/" <> indexFileName (pageNum + 1))
+                    else Nothing
+                }
+          in writeHtmlFile ("_site" </> T.unpack (indexFileName pageNum)) (renderIndexPage config pages arts pagination)
+          ) (zip [1..] articlePages)
 
         -- Archives
         writeHtmlFile "_site/archives.html"
@@ -185,7 +199,6 @@ parseContentFile (path, ext) = do
           mDate = Map.lookup "date" meta >>= parseDateField
           mModified = Map.lookup "modified" meta >>= parseDateField
           tags = maybe [] parseTags (Map.lookup "tags" meta)
-          subreddit = Map.lookup "subreddit" meta
           isPage = "pages/" `prefixOf` path
 
       case mDate of
@@ -193,7 +206,7 @@ parseContentFile (path, ext) = do
           putStrLn $ "Warning: no valid date for " ++ path ++ ", skipping"
           return (Left "no date")
         Just date -> do
-          (htmlContent, contentText, summaryHtml, summaryTextVal) <- renderPandocWithSummary ext body
+          (htmlContent, contentText, summaryHtml, summaryTextVal, footnotesHtml) <- renderPandocWithSummary ext body
           if isPage
             then return $ Right $ Right Page
               { pageTitle = title
@@ -215,15 +228,16 @@ parseContentFile (path, ext) = do
               , articleContentText = contentText
               , articleSummary = summaryHtml
               , articleSummaryText = summaryTextVal
-              , articleSubreddit = subreddit
+              , articleFootnotesHtml = footnotesHtml
               , articleUrl = slug <> ".html"
               }
   where
     prefixOf :: String -> String -> Bool
     prefixOf prefix str = take (length prefix) str == prefix
 
--- | Render Pandoc document, returning full HTML + summary HTML (~50 words)
-renderPandocWithSummary :: String -> Text -> IO (Html, Text, Maybe Html, Maybe Text)
+-- | Render Pandoc document, returning content HTML (without footnotes),
+-- full text, summary HTML (~50 words), and extracted footnotes HTML.
+renderPandocWithSummary :: String -> Text -> IO (Html, Text, Maybe Html, Maybe Text, Maybe Html)
 renderPandocWithSummary ext body = runIOorExplode $ do
   let ropts = def { readerExtensions = pandocExtensions }
       wopts = def { writerHighlightStyle = Just pygments }
@@ -232,12 +246,25 @@ renderPandocWithSummary ext body = runIOorExplode $ do
     _     -> readMarkdown ropts body
   fullHtml <- writeHtml5 wopts doc
   let fullText = lazyToStrictText (renderHtml fullHtml)
+      (contentWithoutFn, mFootnotes) = splitFootnotes fullText
+      contentHtml = H.preEscapedToHtml contentWithoutFn
+      footnotesHtml = fmap H.preEscapedToHtml mFootnotes
       summaryText = truncateHtml 50 fullText
       summaryHtmlVal = H.preEscapedToHtml summaryText
-  return (fullHtml, fullText, Just summaryHtmlVal, Just summaryText)
+  return (contentHtml, fullText, Just summaryHtmlVal, Just summaryText, footnotesHtml)
 
 lazyToStrictText :: TL.Text -> Text
 lazyToStrictText = TL.toStrict
+
+-- | Split rendered HTML into (content-without-footnotes, Maybe footnotes-section).
+-- Pandoc generates @<section id="footnotes" class="footnotes"...>@ at the end.
+splitFootnotes :: Text -> (Text, Maybe Text)
+splitFootnotes html =
+  let marker = "<section id=\"footnotes\""
+  in case T.breakOn marker html of
+    (before, after)
+      | T.null after -> (html, Nothing)
+      | otherwise    -> (before, Just after)
 
 -- | Truncate rendered HTML to ~N words, closing any unclosed tags.
 -- Counts only visible text words, skips inside tags and entities.
@@ -328,6 +355,18 @@ writeHtmlFile path html = do
 
 tagSlugLocal :: Text -> Text
 tagSlugLocal = T.intercalate "-" . T.words . T.toLower
+
+-- | Split a list into chunks of at most n elements.
+chunksOf :: Int -> [a] -> [[a]]
+chunksOf _ [] = []
+chunksOf n xs =
+  let (chunk, rest) = splitAt n xs
+  in chunk : chunksOf n rest
+
+-- | File name for a paginated index page: page 1 = "index.html", page 2 = "index2.html", etc.
+indexFileName :: Int -> Text
+indexFileName 1 = "index.html"
+indexFileName n = "index" <> T.pack (show n) <> ".html"
 
 -- =============================================================================
 -- Static asset copying
