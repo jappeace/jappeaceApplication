@@ -1,6 +1,6 @@
 Title: Announcement: memory / ram fork
 Date: 2026-03-17 18:19
-Category: announcements
+Category: announcement
 OPTIONS: toc:nil
 Tags: programming, haskell, crypto
 
