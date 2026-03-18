@@ -100,7 +100,7 @@ baseTemplate config isArticle title content = H.docTypeHtml ! A.class_ "no-js" !
         H.a ! A.href (toValue (absUrl config "/atom")) $
           H.img ! A.class_ "category-glyph" ! A.alt "Atom feed" ! A.src (toValue (absUrl config "/theme/images/atom-icon.svg"))
         " Powered by "
-        H.a ! A.href "https://github.com/jappeace/jappeaceApplication" $ "Shake"
+        H.a ! A.href "https://hackage.haskell.org/package/shake" $ "Shake"
         ". "
         H.a ! A.href "https://github.com/jappeace/jappeaceApplication" $ "Source code"
         ", licensed under GPLv3."
