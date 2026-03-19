@@ -80,14 +80,10 @@ defaultSiteConfig = SiteConfig
       ]
   , siteFootLinks =
       [ ("Linkedin", "https://www.linkedin.com/in/jappie-klooster-1b8b4850/")
-      , ("Twitch", "https://www.twitch.tv/jappiejappie")
       , ("Youtube", "https://www.youtube.com/channel/UCQxmXSQEYyCeBC6urMWRPVw")
       , ("Github", "https://github.com/jappeace")
-      , ("Penguin", "http://penguin.engineer/")
       , ("Raster", "https://raster.click/")
       , ("Facebook", "https://www.facebook.com/jappie.kerk")
-      , ("Twitter", "https://twitter.com/jappieklooster")
-      , ("Reddit", "https://www.reddit.com/r/jappie/")
       , ("Discord", "https://discord.gg/Hp4agqy")
       ]
   , dateFormat = "%Y\24180%m\26376%d\26085"
