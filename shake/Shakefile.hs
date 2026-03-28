@@ -13,6 +13,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.IO as TLIO
+import qualified Data.Set as Set
 import Development.Shake
 import Development.Shake.FilePath
 import qualified Network.Wai.Application.Static as Static
@@ -52,7 +53,10 @@ import Types
   ( Article(..)
   , Page(..)
   , PaginationInfo(..)
+  , Lang(..)
+  , langPrefix
   , defaultSiteConfig
+  , SiteConfig(..)
   )
 
 lockFile :: FilePath
@@ -69,85 +73,40 @@ main = do
 shakeRules :: Rules ()
 shakeRules = do
     phony "build" $ do
-      -- Discover content files
+      -- Discover English content
       mds <- getDirectoryFiles "content" ["//*.md"]
       orgs <- getDirectoryFiles "content" ["//*.org"]
-      let contentFiles = [(f, "md") | f <- mds, not (isStaticPath f)]
-                      ++ [(f, "org") | f <- orgs, not (isStaticPath f)]
+      let enFiles = [(f, "md") | f <- mds, not (isStaticPath f)]
+                 ++ [(f, "org") | f <- orgs, not (isStaticPath f)]
 
-      -- Parse all articles and pages
-      (articles, pages) <- liftIO $ parseAllContent contentFiles
+      -- Discover Dutch content (if directory exists)
+      nlExists <- liftIO $ Dir.doesDirectoryExist "content-nl"
+      nlFiles <- if nlExists
+        then do
+          nlMds <- getDirectoryFiles "content-nl" ["//*.md"]
+          nlOrgs <- getDirectoryFiles "content-nl" ["//*.org"]
+          return $ [(f, "md") | f <- nlMds, not (isStaticPath f)]
+                ++ [(f, "org") | f <- nlOrgs, not (isStaticPath f)]
+        else return []
 
-      let sortedArticles = sortBy (\a b -> compare (Down (articleDate a)) (Down (articleDate b))) articles
-          tagMap = buildTagMap sortedArticles
-          catMap = buildCategoryMap sortedArticles
-          config = defaultSiteConfig
+      -- Parse all content
+      (enArticles, enPages) <- liftIO $ parseAllContent "content" enFiles
+      (nlArticles, nlPages) <- liftIO $ parseAllContent "content-nl" nlFiles
 
-      -- Generate all output
+      -- Build slug sets for cross-language toggle
+      let enSlugs = Set.fromList $ map articleSlug enArticles
+          nlSlugs = Set.fromList $ map articleSlug nlArticles
+          enPageSlugs = Set.fromList $ map pageSlug enPages
+          nlPageSlugs = Set.fromList $ map pageSlug nlPages
+
       liftIO $ do
-        -- Create output directories
-        Dir.createDirectoryIfMissing True "_site"
-        Dir.createDirectoryIfMissing True "_site/tag"
-        Dir.createDirectoryIfMissing True "_site/category"
-        Dir.createDirectoryIfMissing True "_site/pages"
+        -- Generate English site (default, at root)
+        generateSite En enArticles enPages nlSlugs nlPageSlugs
 
-        -- Article pages
-        mapM_ (\art -> writeHtmlFile
-          ("_site" </> T.unpack (articleUrl art))
-          (renderArticlePage config pages art sortedArticles tagMap))
-          sortedArticles
+        -- Generate Dutch site (at /nl/)
+        generateSite Nl nlArticles nlPages enSlugs enPageSlugs
 
-        -- Static pages
-        mapM_ (\page -> writeHtmlFile
-          ("_site" </> T.unpack (pageUrl page))
-          (renderPagePage config pages page))
-          pages
-
-        -- Paginated index pages
-        let articlePages = chunksOf 10 sortedArticles
-            totalPages = length articlePages
-        mapM_ (\(pageNum, arts) ->
-          let pagination = PaginationInfo
-                { paginationCurrent = pageNum
-                , paginationTotal   = totalPages
-                , paginationPrevUrl = if pageNum > 1
-                    then Just ("/" <> indexFileName (pageNum - 1))
-                    else Nothing
-                , paginationNextUrl = if pageNum < totalPages
-                    then Just ("/" <> indexFileName (pageNum + 1))
-                    else Nothing
-                }
-          in writeHtmlFile ("_site" </> T.unpack (indexFileName pageNum)) (renderIndexPage config pages arts pagination)
-          ) (zip [1..] articlePages)
-
-        -- Archives
-        writeHtmlFile "_site/archives.html"
-          (renderArchivesPage config pages sortedArticles)
-
-        -- Tags list
-        writeHtmlFile "_site/tags.html"
-          (renderTagsListPage config pages tagMap)
-
-        -- Individual tag pages
-        mapM_ (\(tag, arts) -> writeHtmlFile
-          ("_site/tag" </> T.unpack (tagSlugLocal tag) <.> "html")
-          (renderTagPage config pages tag arts))
-          tagMap
-
-        -- Categories list
-        writeHtmlFile "_site/categories.html"
-          (renderCategoriesListPage config pages catMap)
-
-        -- Individual category pages
-        mapM_ (\(cat, arts) -> writeHtmlFile
-          ("_site/category" </> T.unpack cat <.> "html")
-          (renderCategoryPage config pages cat arts))
-          catMap
-
-        -- Atom feed
-        T.writeFile "_site/atom" (generateAtomFeed config sortedArticles)
-
-      -- Copy static assets
+      -- Copy static assets (shared, only once)
       copyStaticAssets
 
     phony "serve" $ do
@@ -165,6 +124,110 @@ shakeRules = do
       removeFilesAfter "_site" ["//*"]
       removeFilesAfter "_build" ["//*"]
 
+-- | Generate a full site for one language.
+-- @otherSlugs@ and @otherPageSlugs@ are the slugs available in the other
+-- language, used to decide whether to show the language toggle.
+generateSite :: Lang -> [Article] -> [Page] -> Set.Set Text -> Set.Set Text -> IO ()
+generateSite lang articles pages otherSlugs otherPageSlugs = do
+  let config = defaultSiteConfig { siteLang = lang }
+      prefix = T.unpack (langPrefix lang)
+      sortedArticles = sortBy (\a b -> compare (Down (articleDate a)) (Down (articleDate b))) articles
+      tagMap = buildTagMap sortedArticles
+      catMap = buildCategoryMap sortedArticles
+
+  -- Create output directories
+  Dir.createDirectoryIfMissing True ("_site" </> prefix)
+  Dir.createDirectoryIfMissing True ("_site" </> prefix </> "tag")
+  Dir.createDirectoryIfMissing True ("_site" </> prefix </> "category")
+  Dir.createDirectoryIfMissing True ("_site" </> prefix </> "pages")
+
+  -- Article pages
+  mapM_ (\art ->
+    let mSwitch = switchUrlForArticle lang (articleSlug art) otherSlugs
+    in writeHtmlFile
+      ("_site" </> prefix </> T.unpack (articleUrl art))
+      (renderArticlePage config pages mSwitch art sortedArticles tagMap))
+    sortedArticles
+
+  -- Static pages
+  mapM_ (\page ->
+    let mSwitch = switchUrlForPage lang (pageSlug page) otherPageSlugs (pageUrl page)
+    in writeHtmlFile
+      ("_site" </> prefix </> T.unpack (pageUrl page))
+      (renderPagePage config pages mSwitch page))
+    pages
+
+  -- Paginated index pages
+  let articlePages = chunksOf 10 sortedArticles
+      totalPages = length articlePages
+      lp = langPrefix lang
+      -- Index pages always have a counterpart (both languages have an index)
+      indexSwitch = Just (switchPrefix lang <> "index.html")
+  mapM_ (\(pageNum, arts) ->
+    let pagination = PaginationInfo
+          { paginationCurrent = pageNum
+          , paginationTotal   = totalPages
+          , paginationPrevUrl = if pageNum > 1
+              then Just ("/" <> lp <> indexFileName (pageNum - 1))
+              else Nothing
+          , paginationNextUrl = if pageNum < totalPages
+              then Just ("/" <> lp <> indexFileName (pageNum + 1))
+              else Nothing
+          }
+    in writeHtmlFile ("_site" </> prefix </> T.unpack (indexFileName pageNum))
+         (renderIndexPage config pages indexSwitch arts pagination)
+    ) (zip [1..] articlePages)
+
+  -- Archives
+  let archiveSwitch = Just (switchPrefix lang <> "archives.html")
+  writeHtmlFile ("_site" </> prefix </> "archives.html")
+    (renderArchivesPage config pages archiveSwitch sortedArticles)
+
+  -- Tags list
+  let tagsSwitch = Just (switchPrefix lang <> "tags.html")
+  writeHtmlFile ("_site" </> prefix </> "tags.html")
+    (renderTagsListPage config pages tagsSwitch tagMap)
+
+  -- Individual tag pages
+  mapM_ (\(tag, arts) -> writeHtmlFile
+    ("_site" </> prefix </> "tag" </> T.unpack (tagSlugLocal tag) <.> "html")
+    (renderTagPage config pages Nothing tag arts))
+    tagMap
+
+  -- Categories list
+  let catsSwitch = Just (switchPrefix lang <> "categories.html")
+  writeHtmlFile ("_site" </> prefix </> "categories.html")
+    (renderCategoriesListPage config pages catsSwitch catMap)
+
+  -- Individual category pages
+  mapM_ (\(cat, arts) -> writeHtmlFile
+    ("_site" </> prefix </> "category" </> T.unpack cat <.> "html")
+    (renderCategoryPage config pages Nothing cat arts))
+    catMap
+
+  -- Atom feed
+  T.writeFile ("_site" </> prefix </> "atom") (generateAtomFeed config sortedArticles)
+
+-- | Compute the switch URL prefix for the other language.
+-- English pages switch to /nl/, Dutch pages switch to /.
+switchPrefix :: Lang -> Text
+switchPrefix En = "/nl/"
+switchPrefix Nl = "/"
+
+-- | Compute the toggle URL for an article, if the other language has it.
+switchUrlForArticle :: Lang -> Text -> Set.Set Text -> Maybe Text
+switchUrlForArticle lang slug otherSlugs =
+  if Set.member slug otherSlugs
+    then Just (switchPrefix lang <> slug <> ".html")
+    else Nothing
+
+-- | Compute the toggle URL for a page, if the other language has it.
+switchUrlForPage :: Lang -> Text -> Set.Set Text -> Text -> Maybe Text
+switchUrlForPage lang slug otherPageSlugs pageUrl' =
+  if Set.member slug otherPageSlugs
+    then Just (switchPrefix lang <> pageUrl')
+    else Nothing
+
 -- =============================================================================
 -- Content parsing
 -- =============================================================================
@@ -173,18 +236,18 @@ isStaticPath :: FilePath -> Bool
 isStaticPath f = any (`prefixOf` f) ["files/", "images/", "raw-html/"]
   where
     prefixOf :: String -> String -> Bool
-    prefixOf prefix str = take (length prefix) str == prefix
+    prefixOf pfx str = take (length pfx) str == pfx
 
-parseAllContent :: [(FilePath, String)] -> IO ([Article], [Page])
-parseAllContent files = do
-  results <- mapM parseContentFile files
+parseAllContent :: FilePath -> [(FilePath, String)] -> IO ([Article], [Page])
+parseAllContent contentDir files = do
+  results <- mapM (parseContentFile contentDir) files
   let articles = [a | Right (Left a) <- results]
       pages = [p | Right (Right p) <- results]
   return (articles, pages)
 
-parseContentFile :: (FilePath, String) -> IO (Either String (Either Article Page))
-parseContentFile (path, ext) = do
-  content <- T.readFile ("content" </> path)
+parseContentFile :: FilePath -> (FilePath, String) -> IO (Either String (Either Article Page))
+parseContentFile contentDir (path, ext) = do
+  content <- T.readFile (contentDir </> path)
   let (meta, body) = case ext of
         "org" -> parseOrgMeta content
         _     -> parseMarkdownMeta content
@@ -233,7 +296,7 @@ parseContentFile (path, ext) = do
               }
   where
     prefixOf :: String -> String -> Bool
-    prefixOf prefix str = take (length prefix) str == prefix
+    prefixOf pfx str = take (length pfx) str == pfx
 
 -- | Render Pandoc document, returning content HTML (without footnotes),
 -- full text, summary HTML (~50 words), and extracted footnotes HTML.

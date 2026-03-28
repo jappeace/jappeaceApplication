@@ -84,7 +84,7 @@ geofences on the sensor return list.
 You'd have to join the sensors on the geofences
 in the database.
 We use [Esqueleto](https://hackage.haskell.org/package/esqueleto) for that, 
-which uses some advanced type system features to create a nice DSL.
+which uses some advanced type system features to create a nice DSL (Domain Specific Language).
 No problem for Claude.
 I pushed this a little further on Friday, 
 I asked it to compare the postgis reference
