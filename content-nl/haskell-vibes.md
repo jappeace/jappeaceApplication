@@ -8,7 +8,7 @@ Het was vrijdag 27 februari 2026,
 toen ik herboren werd.
 bro. Ik ben nu een vibe coder.
 bro.
-echt waar.
+fr fr.
 
 <style>
 figure {
@@ -83,7 +83,7 @@ geofences op te nemen in de sensor-retourlijst.
 Je zou de sensors moeten joinen op de geofences
 in de database.
 We gebruiken [Esqueleto](https://hackage.haskell.org/package/esqueleto) daarvoor,
-dat wat geavanceerde typesysteemfuncties gebruikt om een mooie DSL te maken.
+dat wat geavanceerde typesysteemfuncties gebruikt om een mooie DSL (Domain Specific Language) te maken.
 Geen probleem voor Claude.
 Ik duwde dit op vrijdag wat verder,
 ik vroeg het om de postgis-referentie te vergelijken
@@ -105,7 +105,7 @@ Claude doet hetzelfde maar nog meer.
 
 De rest van de week was hetzelfde.
 Mijn baan veranderde. Ik veranderde.
-we vibben nu.
+we viben nu.
 Deze taal is voor vibes.
 Wat me op vragen brengt.
 
@@ -117,7 +117,7 @@ Soms "vergeet" het om tests te schrijven.[^compression]
 Haskell is goed voor claude omdat het het systeem dwingt intern consistent te zijn.
 In Haskell is alles een expressie, en elke expressie heeft een type.
 Het type moet overeenkomen met de expressie (ofwel checken) of anders krijg je geen programma maar een foutmelding.
-Claude kan je niet gaslighten om te geloven dat de fout is wat je wilt.[^hold-beyond]
+Claude kan je niet overtuigen dat de compilatiefout iets is wat je wilt.[^hold-beyond]
 Dus het moet intern consistent zijn,
 iets waar LLM's slecht in zijn.
 Ze doen gewoon maar wat.
