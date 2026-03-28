@@ -20,7 +20,10 @@ import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
-import Types (SiteConfig(..), Article(..), Page(..), NavLink(..), PaginationInfo(..))
+import Types
+  ( SiteConfig(..), Article(..), Page(..), NavLink(..), PaginationInfo(..)
+  , Translations(..), translationsFor, langPrefix, langCode
+  )
 
 -- Helper to convert Text to AttributeValue
 toValue :: Text -> H.AttributeValue
@@ -32,6 +35,13 @@ toHtml = H.toHtml
 -- | Root-relative URL (works locally and in production)
 absUrl :: SiteConfig -> Text -> Text
 absUrl _config path = path
+
+-- | Build a root-relative URL respecting the current language prefix.
+-- For English: /foo.html, for Dutch: /nl/foo.html
+langUrl :: SiteConfig -> Text -> Text
+langUrl config path =
+  let prefix = langPrefix (siteLang config)
+  in "/" <> prefix <> T.dropWhile (== '/') path
 
 -- Date formatting
 formatDate :: Text -> UTCTime -> Text
@@ -50,14 +60,19 @@ formatArchiveDate = formatDate "%b %d"
 -- Base template (_base.html equivalent)
 -- =============================================================================
 
-baseTemplate :: SiteConfig -> Bool -> Text -> Html -> Html
-baseTemplate config isArticle title content = H.docTypeHtml ! A.class_ "no-js" ! customAttribute "lang" "en" $ do
+-- | The @switchUrl@ parameter is @Just url@ when a translation exists for the
+-- current page in the other language, @Nothing@ otherwise (no toggle shown).
+baseTemplate :: SiteConfig -> Bool -> Maybe Text -> Text -> Html -> Html
+baseTemplate config isArticle mSwitchUrl title content =
+  let lang = siteLang config
+      trans = translationsFor lang
+  in H.docTypeHtml ! A.class_ "no-js" ! customAttribute "lang" (langCode lang) $ do
   H.head $ do
     H.title (toHtml title)
     H.meta ! A.name "author" ! A.content (toValue (siteAuthor config))
     H.meta ! customAttribute "charset" "utf-8"
     -- Atom feed
-    H.link ! A.href (toValue (feedDomain config <> "/" <> feedAtom config))
+    H.link ! A.href (toValue (feedDomain config <> "/" <> langPrefix lang <> feedAtom config))
            ! A.type_ "application/atom+xml"
            ! A.rel "alternate"
            ! A.title (toValue (siteName config <> " Atom Feed"))
@@ -88,6 +103,8 @@ baseTemplate config isArticle title content = H.docTypeHtml ! A.class_ "no-js" !
       else H.link ! A.rel "stylesheet" ! A.href (toValue (absUrl config "/theme/css/double_collumn.css"))
     -- Footnote tooltip JS
     H.script $ H.preEscapedToHtml footnoteScript
+    -- Language detection JS
+    H.script $ H.preEscapedToHtml langDetectScript
   H.body $ do
     content
     -- Footer
@@ -95,15 +112,23 @@ baseTemplate config isArticle title content = H.docTypeHtml ! A.class_ "no-js" !
       H.p $ H.ul ! A.class_ "footlinks" $
         mapM_ renderFootLink (siteFootLinks config)
       H.p $ H.small $
-        "Those who know do not speak. Those who speak do not know."
+        toHtml (tFooterQuote trans)
       H.p $ H.small $ do
-        H.a ! A.href (toValue (absUrl config "/atom")) $
+        H.a ! A.href (toValue (langUrl config (feedAtom config))) $
           H.img ! A.class_ "category-glyph" ! A.alt "Atom feed" ! A.src (toValue (absUrl config "/theme/images/atom-icon.svg"))
         " Powered by "
         H.a ! A.href "https://hackage.haskell.org/package/shake" $ "Shake"
         ". "
         H.a ! A.href "https://github.com/jappeace/jappeaceApplication" $ "Source code"
         ", licensed under GPLv3."
+      -- Language toggle in footer (if translation exists)
+      case mSwitchUrl of
+        Just switchUrl ->
+          H.p ! A.class_ "lang-switch" $
+            H.a ! A.href (toValue switchUrl)
+                ! customAttribute "onclick" "localStorage.setItem('lang',this.href.indexOf('/nl/')>=0?'nl':'en')"
+                $ toHtml (tSwitchLang trans <> " (" <> tSwitchLangDesc trans <> ")")
+        Nothing -> mempty
     -- Syntax highlighting CSS last
     H.link ! A.rel "stylesheet" ! A.href (toValue (absUrl config "/theme/css/syntax.css"))
     -- Pandoc syntax highlighting
@@ -121,12 +146,14 @@ customAttribute name val = H.customAttribute (H.textTag name) (toValue val)
 -- Site template (base.html equivalent - header + navigation)
 -- =============================================================================
 
-siteTemplate :: SiteConfig -> [Page] -> Bool -> Text -> Html -> Html
-siteTemplate config pages isArticle title body =
-  baseTemplate config isArticle title $ do
+siteTemplate :: SiteConfig -> [Page] -> Bool -> Maybe Text -> Text -> Html -> Html
+siteTemplate config pages isArticle mSwitchUrl title body =
+  let lang = siteLang config
+      trans = translationsFor lang
+  in baseTemplate config isArticle mSwitchUrl title $ do
     H.header ! A.id "title" ! A.class_ "window" ! customAttribute "role" "banner" $ do
-      H.h1 $ H.a ! A.id "sitename" ! A.href (toValue (absUrl config "/")) $ "Jappie"
-      navigationHtml config pages
+      H.h1 $ H.a ! A.id "sitename" ! A.href (toValue (langUrl config "")) $ "Jappie"
+      navigationHtml config pages mSwitchUrl trans
       H.div ! A.class_ "browser-warning" $
         H.span "\9888\65039 Chrome mobile not supported, please upgrade to Firefox \9888\65039"
     H.div ! A.id "main" $ body
@@ -135,12 +162,25 @@ siteTemplate config pages isArticle title body =
 -- Navigation
 -- =============================================================================
 
-navigationHtml :: SiteConfig -> [Page] -> Html
-navigationHtml config pages = H.nav $
+navigationHtml :: SiteConfig -> [Page] -> Maybe Text -> Translations -> Html
+navigationHtml config pages mSwitchUrl trans = H.nav $
   H.ul ! A.class_ "navigation" $ do
     mapM_ (\nl -> renderNavLink nl >> "\n") (siteLinks config)
     mapM_ (\p -> renderPageNavLink p >> "\n") (filter (isJust . pageHomeTitle) pages)
     mapM_ (\nl -> renderNavLink nl >> "\n") (siteSocial config)
+    -- Language toggle in navigation
+    case mSwitchUrl of
+      Just switchUrl ->
+        H.li ! A.class_ "lang-switch" $
+          H.a ! A.href (toValue switchUrl)
+              ! customAttribute "onclick" "localStorage.setItem('lang',this.href.indexOf('/nl/')>=0?'nl':'en')"
+              $ do
+            H.h3 ! A.class_ "bracket left-bracket" $ H.preEscapedToHtml ("&lt;" :: Text)
+            H.div ! A.class_ "link" $ do
+              H.h2 $ toHtml (tSwitchLang trans)
+              H.p ! A.class_ "description" $ toHtml (tSwitchLangDesc trans)
+            H.h3 ! A.class_ "bracket right-bracket" $ H.preEscapedToHtml ("&gt;" :: Text)
+      Nothing -> mempty
   where
     renderNavLink :: NavLink -> Html
     renderNavLink nl =
@@ -161,7 +201,7 @@ navigationHtml config pages = H.nav $
             Just hd -> hd
             Nothing -> ""
       in H.li $
-          H.a ! A.href (toValue (absUrl config ("/" <> pageUrl page))) $ do
+          H.a ! A.href (toValue (langUrl config (pageUrl page))) $ do
             H.h3 ! A.class_ "bracket left-bracket" $ H.preEscapedToHtml ("&lt;" :: Text)
             H.div ! A.class_ "link" $ do
               H.h2 $ toHtml title'
@@ -186,9 +226,10 @@ categoryGlyph config catname =
 -- Article page
 -- =============================================================================
 
-renderArticlePage :: SiteConfig -> [Page] -> Article -> [Article] -> [(Text, [Article])] -> Html
-renderArticlePage config pages article allArticles tags =
-  siteTemplate config pages True (articleTitle article <> " / " <> siteName config) $ do
+renderArticlePage :: SiteConfig -> [Page] -> Maybe Text -> Article -> [Article] -> [(Text, [Article])] -> Html
+renderArticlePage config pages mSwitchUrl article allArticles tags =
+  let trans = translationsFor (siteLang config)
+  in siteTemplate config pages True mSwitchUrl (articleTitle article <> " / " <> siteName config) $ do
     H.article ! A.class_ "single" ! customAttribute "role" "article" $ do
       -- Header
       articleHead config article
@@ -211,27 +252,27 @@ renderArticlePage config pages article allArticles tags =
       case articleFootnotesHtml article of
         Just fn -> fn
         Nothing -> mempty
-    -- Recent posts (Fix 5: sidebar links to site root)
+    -- Recent posts
     H.section $ do
-      H.h1 $ H.a ! A.href (toValue (absUrl config "/")) $ "Recent stuff"
+      H.h1 $ H.a ! A.href (toValue (langUrl config "")) $ toHtml (tRecentStuff trans)
       H.ul ! A.id "recent_posts" $
         mapM_ recentPost (take 8 allArticles)
-    -- Tags sidebar (Fix 5: sidebar links to site root)
+    -- Tags sidebar
     H.section $ do
-      H.h1 $ H.a ! A.href (toValue (absUrl config "/")) $ "Tags"
+      H.h1 $ H.a ! A.href (toValue (langUrl config "")) $ toHtml (tTags trans)
       H.div ! A.class_ "sidebar-tags" $
         mapM_ renderSidebarTag (sortBy (comparing fst) (filter (\(_, arts) -> length arts > 1) tags))
   where
     recentPost :: Article -> Html
     recentPost a =
       H.li ! A.class_ "post" $
-        H.a ! A.href (toValue (absUrl config ("/" <> articleUrl a))) $ do
+        H.a ! A.href (toValue (langUrl config (articleUrl a))) $ do
           categoryGlyph config (articleCategory a)
           toHtml (" " <> articleTitle a)
 
     renderSidebarTag :: (Text, [Article]) -> Html
     renderSidebarTag (tag, _) =
-      H.a ! A.class_ "tag" ! A.href (toValue (absUrl config ("/tag/" <> tagSlug tag <> ".html"))) $ toHtml tag
+      H.a ! A.class_ "tag" ! A.href (toValue (langUrl config ("tag/" <> tagSlug tag <> ".html"))) $ toHtml tag
 
 -- =============================================================================
 -- Article header/footer helpers
@@ -240,37 +281,40 @@ renderArticlePage config pages article allArticles tags =
 articleHead :: SiteConfig -> Article -> Html
 articleHead config article = H.header $ do
   H.h1 $
-    H.a ! A.href (toValue (absUrl config ("/" <> articleUrl article))) $ do
+    H.a ! A.href (toValue (langUrl config (articleUrl article))) $ do
       toHtml (articleTitle article <> " ")
       categoryGlyph config (articleCategory article)
   H.p ! A.class_ "meta" $
-    articleTime article
+    articleTime config article
 
-articleTime :: Article -> Html
-articleTime article = do
-  H.time ! customAttribute "datetime" (formatIsoDate (articleDate article))
-         ! customAttribute "pubdate" "" $ do
-    "published: "
-    toHtml (formatLocaleDate (articleDate article))
-  case articleModified article of
-    Just m ->
-      H.time ! customAttribute "datetime" (formatIsoDate m) $ do
-        ", last modified: "
-        toHtml (formatLocaleDate m)
-    Nothing -> mempty
+articleTime :: SiteConfig -> Article -> Html
+articleTime config article =
+  let trans = translationsFor (siteLang config)
+  in do
+    H.time ! customAttribute "datetime" (formatIsoDate (articleDate article))
+           ! customAttribute "pubdate" "" $ do
+      toHtml (tPublished trans)
+      toHtml (formatLocaleDate (articleDate article))
+    case articleModified article of
+      Just m ->
+        H.time ! customAttribute "datetime" (formatIsoDate m) $ do
+          toHtml (tLastModified trans)
+          toHtml (formatLocaleDate m)
+      Nothing -> mempty
 
 articleFooter :: SiteConfig -> Article -> Html
 articleFooter config article =
-  H.ul ! A.class_ "meta" $ do
+  let trans = translationsFor (siteLang config)
+  in H.ul ! A.class_ "meta" $ do
     H.li ! A.class_ "byline author vcard" $ do
-      "Posted by "
+      toHtml (tPostedBy trans)
       H.span ! A.class_ "fn" $ toHtml (("Jappie J. T. Klooster") :: Text)
       " in "
-      H.a ! A.class_ "category" ! A.href (toValue (absUrl config ("/category/" <> articleCategory article <> ".html"))) $ do
+      H.a ! A.class_ "category" ! A.href (toValue (langUrl config ("category/" <> articleCategory article <> ".html"))) $ do
         categoryGlyph config (articleCategory article)
         " "
         toHtml (articleCategory article)
-    H.li $ articleTime article
+    H.li $ articleTime config article
     if null (articleTags article)
       then mempty
       else H.li ! A.class_ "tags" $
@@ -278,20 +322,20 @@ articleFooter config article =
   where
     renderTag :: Text -> Html
     renderTag tag =
-      H.a ! A.class_ "tag" ! A.href (toValue (absUrl config ("/tag/" <> tagSlug tag <> ".html"))) $
+      H.a ! A.class_ "tag" ! A.href (toValue (langUrl config ("tag/" <> tagSlug tag <> ".html"))) $
         toHtml ("#" <> tag)
 
 -- =============================================================================
 -- Page
 -- =============================================================================
 
-renderPagePage :: SiteConfig -> [Page] -> Page -> Html
-renderPagePage config pages page =
-  siteTemplate config pages False (pageTitle page <> " / " <> siteName config) $
+renderPagePage :: SiteConfig -> [Page] -> Maybe Text -> Page -> Html
+renderPagePage config pages mSwitchUrl page =
+  siteTemplate config pages False mSwitchUrl (pageTitle page <> " / " <> siteName config) $
     H.article ! A.class_ "single" ! customAttribute "role" "article" $ do
       H.header $
         H.h1 $
-          H.a ! A.href (toValue (absUrl config ("/" <> pageUrl page))) $ toHtml (pageTitle page)
+          H.a ! A.href (toValue (langUrl config (pageUrl page))) $ toHtml (pageTitle page)
       H.div ! A.class_ "entry-content" $
         pageContent page
 
@@ -299,40 +343,43 @@ renderPagePage config pages page =
 -- Index page (paginated, 10 articles per page)
 -- =============================================================================
 
-renderIndexPage :: SiteConfig -> [Page] -> [Article] -> PaginationInfo -> Html
-renderIndexPage config pages articles pagination =
-  siteTemplate config pages False (siteName config) $ do
+renderIndexPage :: SiteConfig -> [Page] -> Maybe Text -> [Article] -> PaginationInfo -> Html
+renderIndexPage config pages mSwitchUrl articles pagination =
+  let trans = translationsFor (siteLang config)
+  in siteTemplate config pages False mSwitchUrl (siteName config) $ do
     mapM_ (renderArticleSummary config) articles
     H.footer ! A.class_ "pagination" $ do
       case paginationPrevUrl pagination of
-        Just url -> H.a ! A.class_ "prev" ! A.href (toValue (absUrl config url)) $ "Newer"
+        Just url -> H.a ! A.class_ "prev" ! A.href (toValue (absUrl config url)) $ toHtml (tNewer trans)
         Nothing  -> H.span ! A.class_ "prev" $ mempty
-      H.a ! A.href (toValue (absUrl config "/archives.html")) $ "Blog archive"
+      H.a ! A.href (toValue (langUrl config "archives.html")) $ toHtml (tBlogArchive trans)
       case paginationNextUrl pagination of
-        Just url -> H.a ! A.class_ "next" ! A.href (toValue (absUrl config url)) $ "Older"
+        Just url -> H.a ! A.class_ "next" ! A.href (toValue (absUrl config url)) $ toHtml (tOlder trans)
         Nothing  -> H.span ! A.class_ "next" $ mempty
 
 renderArticleSummary :: SiteConfig -> Article -> Html
 renderArticleSummary config article =
-  H.article $ do
+  let trans = translationsFor (siteLang config)
+  in H.article $ do
     articleHead config article
     H.div ! A.class_ "entry-content" $
       case articleSummary article of
         Just s  -> s
         Nothing -> articleContent article
     H.footer $
-      H.a ! A.rel "full-article" ! A.href (toValue (absUrl config ("/" <> articleUrl article))) $
-        "Could there be more?"
+      H.a ! A.rel "full-article" ! A.href (toValue (langUrl config (articleUrl article))) $
+        toHtml (tReadMore trans)
 
 -- =============================================================================
 -- Archives page
 -- =============================================================================
 
-renderArchivesPage :: SiteConfig -> [Page] -> [Article] -> Html
-renderArchivesPage config pages articles =
-  siteTemplate config pages False ("Archive / " <> siteName config) $
+renderArchivesPage :: SiteConfig -> [Page] -> Maybe Text -> [Article] -> Html
+renderArchivesPage config pages mSwitchUrl articles =
+  let trans = translationsFor (siteLang config)
+  in siteTemplate config pages False mSwitchUrl (tArchive trans <> " / " <> siteName config) $
     H.section ! A.class_ "archives" $ do
-      H.h1 "Archive"
+      H.h1 $ toHtml (tArchive trans)
       mapM_ renderYearGroup yearGroups
   where
     yearGroups :: [[Article]]
@@ -354,7 +401,7 @@ renderArchivesPage config pages articles =
              ! customAttribute "pubdate" "" $
         toHtml (formatArchiveDate (articleDate article))
       H.h1 ! A.class_ (toValue ("category-" <> articleCategory article)) $
-        H.a ! A.href (toValue (absUrl config ("/" <> articleUrl article))) $ do
+        H.a ! A.href (toValue (langUrl config (articleUrl article))) $ do
           categoryGlyph config (articleCategory article)
           " "
           toHtml (articleTitle article)
@@ -364,7 +411,7 @@ renderArchivesPage config pages articles =
             then mempty
             else H.li ! A.class_ "tags" $
                    mapM_ (\tag -> H.a ! A.class_ "tag"
-                                      ! A.href (toValue (absUrl config ("/tag/" <> tagSlug tag <> ".html")))
+                                      ! A.href (toValue (langUrl config ("tag/" <> tagSlug tag <> ".html")))
                                       $ toHtml ("#" <> tag))
                          (articleTags article)
 
@@ -372,11 +419,12 @@ renderArchivesPage config pages articles =
 -- Tag pages
 -- =============================================================================
 
-renderTagsListPage :: SiteConfig -> [Page] -> [(Text, [Article])] -> Html
-renderTagsListPage config pages tags =
-  siteTemplate config pages False ("Tags / " <> siteName config) $
+renderTagsListPage :: SiteConfig -> [Page] -> Maybe Text -> [(Text, [Article])] -> Html
+renderTagsListPage config pages mSwitchUrl tags =
+  let trans = translationsFor (siteLang config)
+  in siteTemplate config pages False mSwitchUrl (tTags trans <> " / " <> siteName config) $
     H.section ! A.class_ "tags" $ do
-      H.h1 "Tags"
+      H.h1 $ toHtml (tTags trans)
       H.p "This page sure is exciting, wow!"
       H.ul $
         mapM_ renderTagItem (sortBy (comparing fst) tags)
@@ -384,13 +432,14 @@ renderTagsListPage config pages tags =
     renderTagItem :: (Text, [Article]) -> Html
     renderTagItem (tag, arts) =
       H.li $ do
-        H.a ! A.href (toValue (absUrl config ("/tag/" <> tagSlug tag <> ".html"))) $ toHtml tag
+        H.a ! A.href (toValue (langUrl config ("tag/" <> tagSlug tag <> ".html"))) $ toHtml tag
         toHtml ((" \8212 " <> T.pack (show (length arts))) :: Text)
 
-renderTagPage :: SiteConfig -> [Page] -> Text -> [Article] -> Html
-renderTagPage config pages tag articles =
-  siteTemplate config pages False ("\128278 " <> tag <> " / " <> siteName config) $ do
-    H.h1 $ toHtml (("Tagged: " <> tag) :: Text)
+renderTagPage :: SiteConfig -> [Page] -> Maybe Text -> Text -> [Article] -> Html
+renderTagPage config pages mSwitchUrl tag articles =
+  let trans = translationsFor (siteLang config)
+  in siteTemplate config pages False mSwitchUrl ("\128278 " <> tag <> " / " <> siteName config) $ do
+    H.h1 $ toHtml (tTagged trans <> tag)
     mapM_ (renderArticleSummary config) articles
 
 -- =============================================================================
@@ -398,25 +447,26 @@ renderTagPage config pages tag articles =
 -- =============================================================================
 
 -- | Fix 10: No article counts on categories page
-renderCategoriesListPage :: SiteConfig -> [Page] -> [(Text, [Article])] -> Html
-renderCategoriesListPage config pages categories =
-  siteTemplate config pages False ("Categories / " <> siteName config) $
+renderCategoriesListPage :: SiteConfig -> [Page] -> Maybe Text -> [(Text, [Article])] -> Html
+renderCategoriesListPage config pages mSwitchUrl categories =
+  let trans = translationsFor (siteLang config)
+  in siteTemplate config pages False mSwitchUrl (tCategories trans <> " / " <> siteName config) $
     H.section ! A.class_ "categories" $ do
-      H.h1 "Categories"
+      H.h1 $ toHtml (tCategories trans)
       H.ul $
         mapM_ renderCatItem categories
   where
     renderCatItem :: (Text, [Article]) -> Html
     renderCatItem (cat, _arts) =
       H.li $
-        H.a ! A.href (toValue (absUrl config ("/category/" <> cat <> ".html"))) $ do
+        H.a ! A.href (toValue (langUrl config ("category/" <> cat <> ".html"))) $ do
           categoryGlyph config cat
           " "
           toHtml cat
 
-renderCategoryPage :: SiteConfig -> [Page] -> Text -> [Article] -> Html
-renderCategoryPage config pages cat articles =
-  siteTemplate config pages False (cat <> " / " <> siteName config) $ do
+renderCategoryPage :: SiteConfig -> [Page] -> Maybe Text -> Text -> [Article] -> Html
+renderCategoryPage config pages mSwitchUrl cat articles =
+  siteTemplate config pages False mSwitchUrl (cat <> " / " <> siteName config) $ do
     H.h1 ! A.id "category-title" $ do
       categoryGlyph config cat
       " "
@@ -475,4 +525,21 @@ footnoteScript = T.unlines
   , "      document.querySelector('.browser-warning').style.display = 'block';"
   , "  }"
   , "});"
+  ]
+
+-- | JavaScript for browser language auto-detection
+langDetectScript :: Text
+langDetectScript = T.unlines
+  [ "(function() {"
+  , "  var pref = localStorage.getItem('lang');"
+  , "  if (pref) return;"
+  , "  var isNl = /^nl\\b/i.test(navigator.language || '');"
+  , "  var onNl = /^\\/nl\\//.test(location.pathname);"
+  , "  if (isNl && !onNl) {"
+  , "    var nlPath = '/nl' + location.pathname;"
+  , "    fetch(nlPath, {method: 'HEAD'}).then(function(r) {"
+  , "      if (r.ok) location.replace(nlPath);"
+  , "    }).catch(function(){});"
+  , "  }"
+  , "})();"
   ]

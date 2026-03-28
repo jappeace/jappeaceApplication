@@ -5,12 +5,86 @@ module Types
   , Page(..)
   , NavLink(..)
   , PaginationInfo(..)
+  , Lang(..)
+  , Translations(..)
+  , translationsFor
+  , langPrefix
+  , langCode
   , defaultSiteConfig
   ) where
 
 import Data.Text (Text)
 import Data.Time (UTCTime)
 import Text.Blaze.Html (Html)
+
+-- | Supported languages
+data Lang = En | Nl deriving (Eq, Show)
+
+-- | All translatable UI strings
+data Translations = Translations
+  { tPublished      :: Text  -- "published: " / "gepubliceerd: "
+  , tLastModified   :: Text  -- ", last modified: " / ", laatst gewijzigd: "
+  , tPostedBy       :: Text  -- "Posted by " / "Geplaatst door "
+  , tReadMore       :: Text  -- "Could there be more?" / "Zou er meer zijn?"
+  , tNewer          :: Text  -- "Newer" / "Nieuwer"
+  , tOlder          :: Text  -- "Older" / "Ouder"
+  , tBlogArchive    :: Text  -- "Blog archive" / "Blog archief"
+  , tArchive        :: Text  -- "Archive" / "Archief"
+  , tTags           :: Text  -- "Tags" / "Tags"
+  , tCategories     :: Text  -- "Categories" / "Categorieën"
+  , tRecentStuff    :: Text  -- "Recent stuff" / "Recent"
+  , tTagged         :: Text  -- "Tagged: " / "Gelabeld: "
+  , tFooterQuote    :: Text  -- the Lao Tzu quote / Dutch equivalent
+  , tSwitchLang     :: Text  -- "NL" / "EN"
+  , tSwitchLangDesc :: Text  -- "Nederlands" / "English"
+  }
+
+-- | Look up translations for a given language
+translationsFor :: Lang -> Translations
+translationsFor En = Translations
+  { tPublished      = "published: "
+  , tLastModified   = ", last modified: "
+  , tPostedBy       = "Posted by "
+  , tReadMore       = "Could there be more?"
+  , tNewer          = "Newer"
+  , tOlder          = "Older"
+  , tBlogArchive    = "Blog archive"
+  , tArchive        = "Archive"
+  , tTags           = "Tags"
+  , tCategories     = "Categories"
+  , tRecentStuff    = "Recent stuff"
+  , tTagged         = "Tagged: "
+  , tFooterQuote    = "Those who know do not speak. Those who speak do not know."
+  , tSwitchLang     = "NL"
+  , tSwitchLangDesc = "Nederlands"
+  }
+translationsFor Nl = Translations
+  { tPublished      = "gepubliceerd: "
+  , tLastModified   = ", laatst gewijzigd: "
+  , tPostedBy       = "Geplaatst door "
+  , tReadMore       = "Zou er meer zijn?"
+  , tNewer          = "Nieuwer"
+  , tOlder          = "Ouder"
+  , tBlogArchive    = "Blog archief"
+  , tArchive        = "Archief"
+  , tTags           = "Tags"
+  , tCategories     = "Categorie\235n"
+  , tRecentStuff    = "Recent"
+  , tTagged         = "Gelabeld: "
+  , tFooterQuote    = "Wie weet spreekt niet. Wie spreekt weet niet."
+  , tSwitchLang     = "EN"
+  , tSwitchLangDesc = "English"
+  }
+
+-- | URL prefix for a language: "" for English, "nl/" for Dutch
+langPrefix :: Lang -> Text
+langPrefix En = ""
+langPrefix Nl = "nl/"
+
+-- | HTML lang attribute value
+langCode :: Lang -> Text
+langCode En = "en"
+langCode Nl = "nl"
 
 data NavLink = NavLink
   { navTitle :: Text
@@ -29,6 +103,7 @@ data SiteConfig = SiteConfig
   , siteSocial     :: [NavLink]
   , siteFootLinks  :: [(Text, Text)]
   , dateFormat      :: Text
+  , siteLang       :: Lang
   }
 
 data Article = Article
@@ -87,4 +162,5 @@ defaultSiteConfig = SiteConfig
       , ("Discord", "https://discord.gg/Hp4agqy")
       ]
   , dateFormat = "%Y\24180%m\26376%d\26085"
+  , siteLang   = En
   }
