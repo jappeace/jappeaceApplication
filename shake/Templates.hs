@@ -103,8 +103,6 @@ baseTemplate config isArticle mSwitchUrl title content =
       else H.link ! A.rel "stylesheet" ! A.href (toValue (absUrl config "/theme/css/double_collumn.css"))
     -- Footnote tooltip JS
     H.script $ H.preEscapedToHtml footnoteScript
-    -- Language detection JS
-    H.script $ H.preEscapedToHtml langDetectScript
   H.body $ do
     content
     -- Footer
@@ -527,19 +525,3 @@ footnoteScript = T.unlines
   , "});"
   ]
 
--- | JavaScript for browser language auto-detection
-langDetectScript :: Text
-langDetectScript = T.unlines
-  [ "(function() {"
-  , "  var pref = localStorage.getItem('lang');"
-  , "  if (pref) return;"
-  , "  var isNl = /^nl\\b/i.test(navigator.language || '');"
-  , "  var onNl = /^\\/nl\\//.test(location.pathname);"
-  , "  if (isNl && !onNl) {"
-  , "    var nlPath = '/nl' + location.pathname;"
-  , "    fetch(nlPath, {method: 'HEAD'}).then(function(r) {"
-  , "      if (r.ok) location.replace(nlPath);"
-  , "    }).catch(function(){});"
-  , "  }"
-  , "})();"
-  ]
