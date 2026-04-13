@@ -219,7 +219,7 @@ p {
     p + p > img {
       margin-left: -1.375em; }
 
-.entry-content p, pre, table {
+.entry-content p, table {
   line-height: 1.5rem;
   margin-top: 1.5rem; }
 
