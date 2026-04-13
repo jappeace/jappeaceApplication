@@ -74,12 +74,12 @@ module Main where
 import Data.IORef (newIORef, readIORef, modifyIORef')
 import Data.Text qualified as Text
 import Foreign.Ptr (Ptr)
-import HaskellMobile
+import Hatter
   ( startMobileApp, MobileApp(..), AppContext
   , loggingMobileContext
   , newActionState, runActionM, createAction, Action
   )
-import HaskellMobile.Widget
+import Hatter.Widget
 
 main :: IO (Ptr AppContext)
 main = do
