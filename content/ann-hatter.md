@@ -33,11 +33,15 @@ figcaption{
 <figcaption>Have I gone mad? I'm afraid so. You're entirely bonkers. But I'll tell you a secret. All the best people are.</figcaption>
 </figure>
 
-This project cross-compiles a Haskell library to Android (APK) and iOS (static library / IPA),
-with a thin platform-native UI layer (Kotlin for Android, Swift for iOS).
+This project cross-compiles a Haskell library to Android[^apk] and iOS[^static-lib],
+with a thin platform-native UI layer[^languages].
 There is support for android wear and wearOS as well,
 because I personally want to build apps for those. 
 iOS and Android support was just a side effect.
+
+[^apk]: APK
+[^static-lib]: static library / IPA
+[^languages]: Kotlin for Android, Swift for iOS
 
 Hatter fully controls the UI.
 This is different from say [Simplex chat](https://github.com/simplex-chat/simplex-chat) 
