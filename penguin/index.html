@@ -1,85 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="style.css">
-    <title>Jappie Software B.V.</title>
-      <script src="https://d3js.org/d3.v7.min.js"></script>
-    </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Fractional CTO and technical architecture for companies building correctness-critical financial systems. I make the decisions and build the systems." />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Jappie Software B.V. &mdash; Fractional CTO for Correctness-Critical Systems</title>
+  </head>
   <body>
     <header>
-      <h1>Jappie Software B.V.</h1>
-  <nav class="menu">
-  <ul>
-	<!-- <li><a href="https://jappieklooster.nl/pages/portfolio.html">Portfolio</a></li> -->
-	<li><a href="mailto:hi@jappie.me">Email</a></li>
-	<li><a href="tel:+31644237437">☎</a></li>
-	<li><a href="https://jappie.me/">Blog</a></li>
-  </ul>
-  </nav>
+      <nav class="top-nav">
+        <span class="logo">Jappie Software B.V.</span>
+        <ul>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#approach">Approach</a></li>
+          <li><a href="https://jappie.me/">Blog</a></li>
+          <li><a href="mailto:hi@jappie.me" class="cta-link">Get in touch</a></li>
+        </ul>
+      </nav>
     </header>
-    <article>
-      <p>
-      Hello, I'm Jappie and I make software projects succeed.</p>
 
-      <p>
-      I do this by:
-      <ul>
-      <li>Create value fast and correct. <em>By enhancing software debuggability and increasing system operation visibility, I help teams understand what's happening under the hood.</em></li>
-      <li>Boosting team productivity, <em>By focusing on what truly matters—sometimes by embracing approaches that <a href="https://paulgraham.com/ds.html">don't scale—to</a> drive immediate impact. </em></li>
-      <li>Resolving organizational roadblocks. <em>By understanding stakeholder needs and thoughtfully <a href="https://jappie.me/firmware-lemons.html">proposing solutions</a> that align with their goals. </em></li>
-      </ul>
-      </p>
+    <main>
+      <!-- Hero -->
+      <section class="hero">
+        <h1>I make technical architecture decisions for companies building correctness-critical systems &mdash; and then I build them.</h1>
+        <p class="subtitle">Fractional CTO + implementation for financial technology companies that need reliable systems and can't afford to get the architecture wrong.</p>
+        <a href="mailto:hi@jappie.me" class="cta-button">Book a conversation</a>
+      </section>
 
-      <p>
-      If these statements strike a chord, <a href="mailto:hi@jappie.me">let's chat!</a>
-      I can deliver significant results within a month and transform your project within half a year.
-      </p>
+      <!-- Who this is for -->
+      <section class="for-who" id="services">
+        <h2>Who I work with</h2>
+        <ul class="card-grid">
+          <li class="card">
+            <h3>Financial technology companies</h3>
+            <p>Where a bug in production means real money lost. You need systems that are correct by construction, not correct by accident.</p>
+          </li>
+          <li class="card">
+            <h3>Non-technical founders</h3>
+            <p>You need someone who makes technical decisions with authority, not someone who waits to be told what to build.</p>
+          </li>
+          <li class="card">
+            <h3>Teams drowning in technical debt</h3>
+            <p>Your system grew faster than your architecture. Incidents are increasing. You need someone to untangle the mess and build a path forward.</p>
+          </li>
+        </ul>
+      </section>
 
-      <p>
-      If this doesn't align with your current needs, no worries! You're welcome to join my
-      <a href="https://discord.gg/Hp4agqy">Discord community</a> to stay connected.
-      </p>
+      <!-- Entry offer -->
+      <section class="audit">
+        <h2>Start with a Technical Architecture Audit</h2>
+        <p>A two-week deep dive into your codebase, infrastructure, and technical decisions. You get a written report covering:</p>
+        <ul>
+          <li>Architectural risks and single points of failure</li>
+          <li>Technical debt hotspots costing you velocity</li>
+          <li>Reliability gaps that will bite you at scale</li>
+          <li>A prioritized roadmap with concrete next steps</li>
+        </ul>
+        <p>Fixed scope. Fixed price. No ongoing commitment required.</p>
+        <p>Most audits surface significant savings in wasted engineering time &mdash; making the ROI obvious before any further engagement.</p>
+        <a href="mailto:hi@jappie.me" class="cta-button">Discuss an audit</a>
+      </section>
 
-      <p>
-      Ready to elevate your project? <a href="mailto:hi@jappie.me">Hire me</a>!
-      </p>
-      <p>
-      My preferred tools of trade are:
-      <ul>
-        <li>Haskell</li>
-        <li>Nix</li>
-        <li>Agda</li>
-      </ul>
-      I'm also proficient with most major programming languages and am always ready to tackle new challenges.
+      <!-- Social proof -->
+      <section class="results" id="results">
+        <h2>Selected work</h2>
+        <div class="testimonials">
+          <blockquote>
+            <p>Architected and built core platform components for a <strong>reinsurance technology company</strong> streamlining the global reinsurance market. The system handles complex multi-party deal workflows where data integrity and correctness are non-negotiable.</p>
+          </blockquote>
+          <blockquote>
+            <p>Led technical architecture decisions for a <strong>financial technology platform</strong>, delivering production systems with the reliability guarantees that financial infrastructure demands.</p>
+          </blockquote>
+        </div>
+      </section>
 
-      For more insights and examples of my work, please visit my <a href="https://jappie.me">blog</a>.
-      </p>
-    </article>
+      <!-- Engagement model -->
+      <section class="engagement" id="approach">
+        <h2>How we work together</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h3>Advisory retainer</h3>
+            <p>Strategic technical oversight. Architecture reviews, technical hiring guidance, vendor evaluation. A few hours per week.</p>
+          </div>
+          <div class="card">
+            <h3>Operational retainer</h3>
+            <p>Embedded in your team 1&ndash;2 days per week. I make technical decisions and implement them. Full decision-making authority.</p>
+          </div>
+          <div class="card">
+            <h3>Project engagement</h3>
+            <p>Fixed-scope builds. I architect and deliver the system end to end. You get a working product, not a specification.</p>
+          </div>
+        </div>
+        <p class="engagement-note">All engagements start with a conversation about your situation. I'll tell you honestly whether I can help.</p>
+      </section>
+
+      <!-- About -->
+      <section class="about">
+        <h2>About</h2>
+        <p>I'm Jappie Klooster. I run a consultancy that makes technical decisions for companies and then executes on them. Not advice &mdash; decisions and delivery.</p>
+        <p>I build with technologies chosen for correctness and long-term maintainability, including Haskell, Nix, and formal verification tools. But the technology is an implementation detail &mdash; what matters is that your system works, scales, and doesn't wake anyone up at 3am.</p>
+        <p>For more technical writing and case studies, visit my <a href="https://jappie.me/">blog</a>.</p>
+      </section>
+
+      <!-- Final CTA -->
+      <section class="final-cta">
+        <h2>Let's talk about your situation</h2>
+        <p>I take on 2&ndash;3 new engagements per year. If you're building something where correctness matters, <a href="mailto:hi@jappie.me">get in touch</a>.</p>
+        <a href="mailto:hi@jappie.me" class="cta-button">Book a conversation</a>
+      </section>
+    </main>
+
     <footer>
-    <small>
-      KVK: 95097872
-    </small> <br />
+      <p>
+        <a href="mailto:hi@jappie.me">hi@jappie.me</a>
+        &middot;
+        <a href="tel:+31644237437">+31 6 4423 7437</a>
+        &middot;
+        <a href="https://jappie.me/">Blog</a>
+      </p>
+      <p><small>Jappie Software B.V. &middot; KVK: 95097872</small></p>
     </footer>
-
-  <svg class="voronoi"></svg>
-  <script language="javascript">
-const svg = d3.select("svg");
-  const width = svg.node().clientWidth;
-  const height = svg.node().clientHeight;
-
-const points = d3.range(100).map(() => [Math.random() * width, Math.random() * height]);
-const delaunay = d3.Delaunay.from(points);
-const voronoi = delaunay.voronoi([0, 0, width, height]);
-
-svg.append("g")
-  .selectAll("path")
-  .data(voronoi.cellPolygons())
-  .join("path")
-    .attr("d", d => "M" + d.join("L") + "Z")
-    .attr("stroke", "#000")
-    .attr("fill", "none");
-
-  </script>
   </body>
 </html>
