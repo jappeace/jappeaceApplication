@@ -6,6 +6,7 @@
     <meta name="description" content="Fractional CTO and technical architecture for companies building correctness-critical systems. I make the decisions and build the systems." />
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="favicon.ico" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <title>Jappie Software B.V. &mdash; Fractional CTO for Correctness-Critical Systems</title>
   </head>
   <body>
@@ -123,5 +124,21 @@
       </p>
       <p><small>Jappie Software B.V. &middot; KVK: 95097872</small></p>
     </footer>
+    <svg class="voronoi"></svg>
+    <script>
+      const svg = d3.select("svg.voronoi");
+      const width = svg.node().clientWidth;
+      const height = svg.node().clientHeight;
+      const points = d3.range(100).map(() => [Math.random() * width, Math.random() * height]);
+      const delaunay = d3.Delaunay.from(points);
+      const voronoi = delaunay.voronoi([0, 0, width, height]);
+      svg.append("g")
+        .selectAll("path")
+        .data(voronoi.cellPolygons())
+        .join("path")
+          .attr("d", d => "M" + d.join("L") + "Z")
+          .attr("stroke", "#ddd")
+          .attr("fill", "none");
+    </script>
   </body>
 </html>
