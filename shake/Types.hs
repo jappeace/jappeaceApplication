@@ -148,7 +148,6 @@ defaultSiteConfig = SiteConfig
   , siteLinks  =
       [ NavLink "About \128194" "/pages/about-me.html" "About me" "about"
       , NavLink "Consult \128039" "https://jappiesoftware.com/" "Fractional CTO for correctness-critical systems" "hire"
-      , NavLink "Coaching \128293" "https://jappie.me/fire" "Lern haskell by fire" "fire"
       ]
   , siteSocial =
       [ NavLink "Email \9993" "mailto:hi@jappie.me" "Contact me" "email"
