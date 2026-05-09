@@ -130,18 +130,30 @@
     <svg class="voronoi"></svg>
     <script>
       const svg = d3.select("svg.voronoi");
-      const width = svg.node().clientWidth;
-      const height = svg.node().clientHeight;
-      const points = d3.range(100).map(() => [Math.random() * width, Math.random() * height]);
-      const delaunay = d3.Delaunay.from(points);
-      const voronoi = delaunay.voronoi([0, 0, width, height]);
-      svg.append("g")
-        .selectAll("path")
-        .data(voronoi.cellPolygons())
-        .join("path")
-          .attr("d", d => "M" + d.join("L") + "Z")
-          .attr("stroke", "#ddd")
-          .attr("fill", "none");
+      function drawVoronoi() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const area = width * height;
+        const cellSize = 15000;
+        const numPoints = Math.max(100, Math.ceil(area / cellSize));
+        const points = d3.range(numPoints).map(() => [Math.random() * width, Math.random() * height]);
+        const delaunay = d3.Delaunay.from(points);
+        const voronoi = delaunay.voronoi([0, 0, width, height]);
+        svg.selectAll("g").remove();
+        svg.append("g")
+          .selectAll("path")
+          .data(voronoi.cellPolygons())
+          .join("path")
+            .attr("d", d => "M" + d.join("L") + "Z")
+            .attr("stroke", "#ddd")
+            .attr("fill", "none");
+      }
+      drawVoronoi();
+      let resizeTimer;
+      window.addEventListener("resize", function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(drawVoronoi, 150);
+      });
     </script>
   </body>
 </html>
