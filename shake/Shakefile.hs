@@ -2,6 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
+import Control.Concurrent (forkIO)
 import Control.Exception (IOException, catch, finally)
 import qualified Data.ByteString as BS
 import Data.List (sortBy, nub)
@@ -53,6 +54,7 @@ import Templates
 import Types
   ( Article(..)
   , Page(..)
+  , NavLink(..)
   , PaginationInfo(..)
   , Lang(..)
   , langPrefix
@@ -103,10 +105,10 @@ shakeRules = do
 
       liftIO $ do
         -- Generate English site (default, at root)
-        generateSite En enArticles enPages nlSlugs nlPageSlugs
+        generateSite defaultSiteConfig En enArticles enPages nlSlugs nlPageSlugs
 
         -- Generate Dutch site (at /nl/)
-        generateSite Nl nlArticles nlPages enSlugs enPageSlugs
+        generateSite defaultSiteConfig Nl nlArticles nlPages enSlugs enPageSlugs
 
       -- Copy static assets (shared, only once)
       copyStaticAssets
@@ -126,26 +128,70 @@ shakeRules = do
       copyPenguinStaticAssets
 
     phony "serve" $ do
-      need ["clean", "build"]
-      let port = 8000 :: Int
-      putInfo $ "Serving _site on http://localhost:" ++ show port
-      liftIO $ Warp.run port $ Static.staticApp
-        (Static.defaultFileServerSettings "_site")
-          { ssIndices = [unsafeToPiece "index.html"]
-          , ssAddTrailingSlash = True
-          }
+      need ["clean"]
+
+      -- Build jappieklooster.nl with local consult link pointing to penguin on port 8001
+      mds <- getDirectoryFiles "content" ["//*.md"]
+      orgs <- getDirectoryFiles "content" ["//*.org"]
+      let enFiles = [(f, "md") | f <- mds, not (isStaticPath f)]
+                 ++ [(f, "org") | f <- orgs, not (isStaticPath f)]
+      nlExists <- liftIO $ Dir.doesDirectoryExist "content-nl"
+      nlFiles <- if nlExists
+        then do
+          nlMds <- getDirectoryFiles "content-nl" ["//*.md"]
+          nlOrgs <- getDirectoryFiles "content-nl" ["//*.org"]
+          return $ [(f, "md") | f <- nlMds, not (isStaticPath f)]
+                ++ [(f, "org") | f <- nlOrgs, not (isStaticPath f)]
+        else return []
+      (enArticles, enPages) <- liftIO $ parseAllContent "content" enFiles
+      (nlArticles, nlPages) <- liftIO $ parseAllContent "content-nl" nlFiles
+      let enSlugs = Set.fromList $ map articleSlug enArticles
+          nlSlugs = Set.fromList $ map articleSlug nlArticles
+          enPageSlugs = Set.fromList $ map pageSlug enPages
+          nlPageSlugs = Set.fromList $ map pageSlug nlPages
+          localConfig = defaultSiteConfig
+            { siteLinks =
+                [ NavLink "About \128194" "/pages/about-me.html" "About me" "about"
+                , NavLink "Consult \128039" "http://localhost:8001/" "Fractional CTO for correctness-critical systems" "hire"
+                ]
+            }
+      liftIO $ do
+        generateSite localConfig En enArticles enPages nlSlugs nlPageSlugs
+        generateSite localConfig Nl nlArticles nlPages enSlugs enPageSlugs
+      copyStaticAssets
+
+      -- Build penguin site
+      need ["build-penguin"]
+
+      -- Serve both sites
+      let blogPort = 8000 :: Int
+          penguinPort = 8001 :: Int
+      putInfo $ "Serving _site on http://localhost:" ++ show blogPort
+      putInfo $ "Serving _penguin-site on http://localhost:" ++ show penguinPort
+      liftIO $ do
+        _ <- forkIO $ Warp.run penguinPort $ Static.staticApp
+          (Static.defaultFileServerSettings "_penguin-site")
+            { ssIndices = [unsafeToPiece "index.html"]
+            , ssAddTrailingSlash = True
+            }
+        Warp.run blogPort $ Static.staticApp
+          (Static.defaultFileServerSettings "_site")
+            { ssIndices = [unsafeToPiece "index.html"]
+            , ssAddTrailingSlash = True
+            }
 
     phony "clean" $ do
-      putInfo "Cleaning _site and _build"
+      putInfo "Cleaning _site, _penguin-site, and _build"
       removeFilesAfter "_site" ["//*"]
+      removeFilesAfter "_penguin-site" ["//*"]
       removeFilesAfter "_build" ["//*"]
 
 -- | Generate a full site for one language.
 -- @otherSlugs@ and @otherPageSlugs@ are the slugs available in the other
 -- language, used to decide whether to show the language toggle.
-generateSite :: Lang -> [Article] -> [Page] -> Set.Set Text -> Set.Set Text -> IO ()
-generateSite lang articles pages otherSlugs otherPageSlugs = do
-  let config = defaultSiteConfig { siteLang = lang }
+generateSite :: SiteConfig -> Lang -> [Article] -> [Page] -> Set.Set Text -> Set.Set Text -> IO ()
+generateSite baseConfig lang articles pages otherSlugs otherPageSlugs = do
+  let config = baseConfig { siteLang = lang }
       prefix = T.unpack (langPrefix lang)
       sortedArticles = sortBy (\a b -> compare (Down (articleDate a)) (Down (articleDate b))) articles
       tagMap = buildTagMap sortedArticles
