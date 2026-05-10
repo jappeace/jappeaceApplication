@@ -1,0 +1,137 @@
+#+TITLE: Agentic Development: A Founder's Guide to AI That Writes Your Code
+#+DATE: 2026-05-01
+#+CATEGORY: strategy
+
+* Your developers are about to 10x. Are you ready?
+
+AI coding agents — tools like Claude Code, Cursor, and GitHub Copilot — don't
+just autocomplete. They write entire features, run the tests, fix their own
+errors, and open pull requests. A single developer with an agent can produce what
+used to require a team of three.
+
+This is not hype. I've shipped 50,000 lines of production code in two months
+using agentic development. The code compiles, passes tests, and runs on devices.
+But it took hard-won lessons to get there. Most of those lessons aren't
+technical — they're about process, trust, and knowing what to verify.
+
+If you're a founder, CTO, or investor evaluating how AI changes your engineering
+team, here's what actually matters.
+
+* The verification shift
+
+Implementation is now cheap. Any agent can generate code fast. The bottleneck
+has moved: *knowing the code is correct is the hard part.*
+
+This is the single most important insight for founders. Your engineering team's
+value is no longer in writing code — it's in specifying what correct means and
+verifying that the output meets that standard.
+
+Practically, this means:
+
+- Your best engineers spend their time writing specifications, not implementations.
+- Test suites become critical infrastructure, not nice-to-haves.
+- Code review shifts from "does every line look right?" to "do the tests check
+  the right things, and is the architecture sane?"
+
+If your team doesn't have strong testing practices today, fix that before
+adopting agents. An agent without tests is a hallucination factory with commit
+access.
+
+* Distrust by design
+
+Here is the uncomfortable truth: AI agents are not trustworthy. They
+hallucinate. They cut corners. They will disable tests when a task seems hard.
+One of mine attempted a privilege escalation inside its container.
+
+The correct response is not to avoid agents — it's to *engineer trust from
+untrustworthy tools*. The same way you don't trust user input from a web form,
+you don't trust agent output. You validate it.
+
+The stack that makes this work:
+
+- *Automated tests* that the agent must pass before any code is merged.
+- *Type systems* that catch internal inconsistencies the agent introduces.
+- *Formatters and linters in CI* so style is enforced mechanically.
+- *Human review* focused on test correctness and architectural decisions — not
+  every line of code.
+
+This is a reliability engineering problem, not an AI problem. Companies that
+already invest in automated quality gates will adopt agents faster than those
+that rely on manual review.
+
+* Containerise your agents
+
+Your AI coding agent has shell access. It reads files, runs commands, installs
+packages. It is a remote employee with root access to a development machine.
+
+Treat it accordingly. Run agents in containers with no host access and
+restricted network. This is non-negotiable.
+
+The upside: containers also let you run multiple agents in parallel. One builds a
+feature, another waits on CI, a third refactors a different module. This is
+where the real throughput multiplication comes from.
+
+* CI as the self-healing loop
+
+The most powerful pattern in agentic development is closing the loop between the
+agent and your CI pipeline. When CI fails, the agent reads the error, fixes it,
+and re-submits. No human involved.
+
+This only works if your CI is reliable. Flaky tests — tests that sometimes pass
+and sometimes fail for reasons unrelated to the code — become agent excuses.
+The agent will "fix" a flaky test by weakening it or disabling it entirely. Then
+you've lost a safety net without realising it.
+
+Invest in CI reliability before scaling agent usage. Every flaky test is a hole
+in your verification layer.
+
+* The tech lead role changes
+
+With agents, a senior developer's job shifts from implementation to three things:
+
+1. *Specification*: defining what the system should do, precisely enough that an
+   agent can implement it and a test can verify it.
+2. *Architecture*: deciding how components fit together. Agents are terrible at
+   system design — they optimise locally and miss global constraints.
+3. *Verification*: reviewing the output for correctness, security, and
+   maintainability.
+
+This matters for hiring. The developers who thrive in an agentic workflow are
+those who can think in systems, write clear specifications, and evaluate code
+critically. Pure implementation speed — the thing most coding interviews measure
+— is now the cheapest skill in the room.
+
+* What this means for your startup
+
+The Netherlands has the highest AI talent density in Europe — 10.9 AI
+professionals per 10,000 inhabitants. Dutch startups are chronically
+understaffed, and the scaleup ratio (21.6%) lags the EU average. Agentic
+development doesn't replace your team. It makes your existing team cover more
+ground.
+
+But adoption isn't just "install Claude Code and go." It requires:
+
+- Setting up containerised agent environments.
+- Building or strengthening your test infrastructure.
+- Restructuring workflows around specification and verification.
+- Training your team to review agent output effectively.
+
+This is an engineering leadership problem. The companies that get this right will
+ship faster with smaller teams. The ones that don't will ship faster with more
+bugs.
+
+* Want the technical details?
+
+This guide distils lessons from producing 50,000 lines of code with AI agents
+across multiple production systems. For the full technical breakdown — including
+specific prompting techniques, testing strategies, and failure modes — see the
+[[https://penguin.engineer/blog/a-practical-guide-to-agentic-software-development.html][detailed technical write-up]].
+
+* Let's talk
+
+I help startups and scale-ups adopt agentic development properly — the
+containerisation, the test infrastructure, the workflow changes, and the
+verification mindset. If your team is experimenting with AI coding tools and you
+want to make sure the output is production-grade, I'd like to hear from you.
+
+[[https://jappiesoftware.com][jappiesoftware.com]] — book a conversation.
