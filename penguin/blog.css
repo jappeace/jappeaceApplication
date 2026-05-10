@@ -66,6 +66,13 @@
 }
 
 /* Article page */
+.blog-article article {
+  background: #ffffffc2;
+  padding: 1em;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
 .blog-article {
   max-width: 48rem;
   margin: 0 auto;
