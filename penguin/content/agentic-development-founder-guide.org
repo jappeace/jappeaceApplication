@@ -125,7 +125,7 @@ bugs.
 This guide distils lessons from producing 50,000 lines of code with AI agents
 across multiple production systems. For the full technical breakdown — including
 specific prompting techniques, testing strategies, and failure modes — see the
-[[https://penguin.engineer/blog/a-practical-guide-to-agentic-software-development.html][detailed technical write-up]].
+[[https://jappiesoftware.com/blog/a-practical-guide-to-agentic-software-development.html][detailed technical write-up]].
 
 * Let's talk
 
