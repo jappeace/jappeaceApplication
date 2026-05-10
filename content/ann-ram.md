@@ -2,7 +2,7 @@ Title: Announcement: memory / ram fork
 Date: 2026-03-17 18:19
 Category: announcement
 OPTIONS: toc:nil
-Tags: programming, haskell, crypto
+Tags: programming, haskell, crypto, vibes
 
 Hello 👋
 Recently there was some [discussion](https://discourse.haskell.org/t/fork-basement-as-baseplate/12415) around forking basement as baseplate.

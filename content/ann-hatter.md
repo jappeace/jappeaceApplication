@@ -2,7 +2,7 @@ Title: Hatter: Native Haskell mobile apps
 Date: 2026-04-13 01:00
 Category: announcement
 OPTIONS: toc:nil
-Tags: haskell, mobile
+Tags: haskell, mobile, vibes
 
 [Hatter](https://github.com/jappeace/hatter) is like [flutter](https://flutter.dev/) but instead of dart, haskell!
 

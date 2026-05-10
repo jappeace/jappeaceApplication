@@ -2,7 +2,7 @@ Title: Announcement: HSMin - more AI-friendly Haskell code!
 Date: 2026-04-01 09:00
 Category: announcement
 OPTIONS: toc:nil
-Tags: haskell, joke
+Tags: haskell, joke, vibes
 
 Code? 
 Reading code is such a 2025 activity,

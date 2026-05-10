@@ -2,7 +2,7 @@ Title: Announcement: unwitch
 Date: 2026-03-17 18:20
 Category: announcement
 OPTIONS: toc:nil
-Tags: programming, haskell, library
+Tags: programming, haskell, library, vibes
 
 Hello 👋
 Announcing [unwitch](https://hackage.haskell.org/package/unwitch).
