@@ -68,7 +68,7 @@
 /* Article page */
 .blog-article article {
   background: #ffffffc2;
-  padding: 1em;
+  padding: 1em 2em;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
 }
