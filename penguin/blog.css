@@ -4,6 +4,10 @@
   max-width: 48rem;
   margin: 0 auto;
   padding: 2rem 1.5rem;
+  background: #ffffffc2;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1em 2em;
 }
 
 .blog-listing h1 {
