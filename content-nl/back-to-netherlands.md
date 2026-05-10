@@ -83,7 +83,7 @@ en het aanbod van Daisee was niet zo mooi als ik had verwacht.
 Terug thuis ben ik,
 niet dat het slecht is, gewoon plotseling.
 Ik blijf hier een tijdje,
-op afstand werken voor Daisee als een [bedrijf](http://penguin.engineer/)!
+op afstand werken voor Daisee als een [bedrijf](https://jappiesoftware.com/)!
 Ondertussen werkt Daisee aan een werkvisum voor Australië.
 Dit lijkt veel beter dan de Filipijnen,
 dat voelde meer als een gouden kooi.

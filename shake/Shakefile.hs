@@ -536,7 +536,7 @@ copyStaticAssets = do
 -- Penguin site generation
 -- =============================================================================
 
--- | Generate the penguin.engineer site into _penguin-site/
+-- | Generate the jappiesoftware.com site into _penguin-site/
 generatePenguinSite :: SiteConfig -> [Article] -> IO ()
 generatePenguinSite config articles = do
   let sortedArticles = sortBy (\a b -> compare (Down (articleDate a)) (Down (articleDate b))) articles

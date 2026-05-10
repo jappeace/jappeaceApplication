@@ -83,7 +83,7 @@ and the offer from Daisee wasn't as nice as I expected.
 Back home I am,
 not that it's bad, just sudden.
 I'll be staying here for some time,
-doing remote work for Daisee as a [company](http://penguin.engineer/)!
+doing remote work for Daisee as a [company](https://jappiesoftware.com/)!
 Meanwhile Daisee is working on a work visa for Australia.
 This seems much better than the Philippines,
 which felt more like a golden prison.

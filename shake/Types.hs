@@ -169,8 +169,8 @@ penguinSiteConfig :: SiteConfig
 penguinSiteConfig = SiteConfig
   { siteAuthor = "Jappie J. T. Klooster"
   , siteName   = "Jappie Software B.V."
-  , siteUrl    = "https://penguin.engineer"
-  , feedDomain = "https://penguin.engineer"
+  , siteUrl    = "https://jappiesoftware.com"
+  , feedDomain = "https://jappiesoftware.com"
   , feedAtom   = "blog/atom"
   , siteLinks  =
       [ NavLink "Services" "#services" "What I offer" "services"
