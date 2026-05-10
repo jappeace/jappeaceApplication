@@ -11,6 +11,7 @@ executable shake-blog
   other-modules:
     Feed
     Metadata
+    PenguinTemplates
     Slug
     Templates
     Types

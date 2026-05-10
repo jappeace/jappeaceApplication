@@ -32,6 +32,6 @@ pkgs.stdenv.mkDerivation {
   installPhase = ''
     mkdir -p $out/jappieklooster.nl $out/penguin.engineer
     cp -r _site/* $out/jappieklooster.nl/
-    cp -r penguin/* $out/penguin.engineer/
+    cp -r _penguin-site/* $out/penguin.engineer/
   '';
 }
