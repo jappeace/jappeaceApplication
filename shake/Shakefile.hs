@@ -38,6 +38,7 @@ import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
+import PenguinTemplates (penguinIndexPage, penguinBlogIndexPage, penguinArticlePage)
 import Slug (toSlug)
 import Templates
   ( renderArticlePage
@@ -56,6 +57,7 @@ import Types
   , Lang(..)
   , langPrefix
   , defaultSiteConfig
+  , penguinSiteConfig
   , SiteConfig(..)
   )
 
@@ -108,6 +110,20 @@ shakeRules = do
 
       -- Copy static assets (shared, only once)
       copyStaticAssets
+
+      -- Build penguin site
+      need ["build-penguin"]
+
+    phony "build-penguin" $ do
+      -- Discover penguin blog content
+      penguinMds <- getDirectoryFiles "penguin/content" ["//*.md"]
+      penguinOrgs <- getDirectoryFiles "penguin/content" ["//*.org"]
+      let penguinFiles = [(f, "md") | f <- penguinMds]
+                      ++ [(f, "org") | f <- penguinOrgs]
+
+      (penguinArticles, _penguinPages) <- liftIO $ parseAllContent "penguin/content" penguinFiles
+      liftIO $ generatePenguinSite penguinSiteConfig penguinArticles
+      copyPenguinStaticAssets
 
     phony "serve" $ do
       need ["clean", "build"]
@@ -469,6 +485,72 @@ copyStaticAssets = do
           files <- getDirectoryFiles src ["//*"]
           liftIO $ mapM_ (\f -> copyBinaryFile (src </> f) (dst </> f)) files
         else return ()
+
+-- =============================================================================
+-- Penguin site generation
+-- =============================================================================
+
+-- | Generate the penguin.engineer site into _penguin-site/
+generatePenguinSite :: SiteConfig -> [Article] -> IO ()
+generatePenguinSite config articles = do
+  let sortedArticles = sortBy (\a b -> compare (Down (articleDate a)) (Down (articleDate b))) articles
+
+  -- Create output directories
+  Dir.createDirectoryIfMissing True "_penguin-site"
+  Dir.createDirectoryIfMissing True "_penguin-site/blog"
+
+  -- Landing page
+  writeHtmlFile "_penguin-site/index.html" penguinIndexPage
+
+  -- Individual article pages
+  mapM_ (\art ->
+    writeHtmlFile ("_penguin-site/blog" </> T.unpack (articleUrl art))
+      (penguinArticlePage config art))
+    sortedArticles
+
+  -- Paginated blog index
+  let articlePages = chunksOf 10 sortedArticles
+      totalPages = length articlePages
+  mapM_ (\(pageNum, arts) ->
+    let pagination = PaginationInfo
+          { paginationCurrent = pageNum
+          , paginationTotal   = totalPages
+          , paginationPrevUrl = if pageNum > 1
+              then Just ("/blog/" <> penguinIndexFileName (pageNum - 1))
+              else Nothing
+          , paginationNextUrl = if pageNum < totalPages
+              then Just ("/blog/" <> penguinIndexFileName (pageNum + 1))
+              else Nothing
+          }
+    in writeHtmlFile ("_penguin-site/blog" </> T.unpack (penguinIndexFileName pageNum))
+         (penguinBlogIndexPage config arts pagination)
+    ) (zip [1..] articlePages)
+
+  -- Atom feed
+  T.writeFile "_penguin-site/blog/atom" (generateAtomFeed config sortedArticles)
+
+-- | File name for penguin paginated blog index
+penguinIndexFileName :: Int -> Text
+penguinIndexFileName 1 = "index.html"
+penguinIndexFileName n = "index" <> T.pack (show n) <> ".html"
+
+-- | Copy static assets for the penguin site
+copyPenguinStaticAssets :: Action ()
+copyPenguinStaticAssets = do
+  -- Copy all non-content, non-HTML files from penguin/ to _penguin-site/
+  penguinFiles <- getDirectoryFiles "penguin" ["//*"]
+  let staticFiles = filter isPenguinStatic penguinFiles
+  liftIO $ mapM_ (\f -> copyBinaryFile ("penguin" </> f) ("_penguin-site" </> f)) staticFiles
+  where
+    isPenguinStatic :: FilePath -> Bool
+    isPenguinStatic f =
+      not ("content/" `isPrefixOfPath` f)
+      && not (f == "index.html")
+      && not (f == "cv.html")
+      && not (f == "readme.org")
+
+    isPrefixOfPath :: String -> String -> Bool
+    isPrefixOfPath pfx str = take (length pfx) str == pfx
 
 copyBinaryFile :: FilePath -> FilePath -> IO ()
 copyBinaryFile src dst = do

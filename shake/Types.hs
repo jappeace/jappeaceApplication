@@ -11,6 +11,7 @@ module Types
   , langPrefix
   , langCode
   , defaultSiteConfig
+  , penguinSiteConfig
   ) where
 
 import Data.Text (Text)
@@ -161,5 +162,28 @@ defaultSiteConfig = SiteConfig
       , ("Discord", "https://discord.gg/Hp4agqy")
       ]
   , dateFormat = "%Y\24180%m\26376%d\26085"
+  , siteLang   = En
+  }
+
+penguinSiteConfig :: SiteConfig
+penguinSiteConfig = SiteConfig
+  { siteAuthor = "Jappie J. T. Klooster"
+  , siteName   = "Jappie Software B.V."
+  , siteUrl    = "https://penguin.engineer"
+  , feedDomain = "https://penguin.engineer"
+  , feedAtom   = "blog/atom"
+  , siteLinks  =
+      [ NavLink "Services" "#services" "What I offer" "services"
+      , NavLink "Blog" "/blog/" "Technical writing" "blog"
+      ]
+  , siteSocial =
+      [ NavLink "Email" "mailto:hi@jappie.me" "Get in touch" "email"
+      ]
+  , siteFootLinks =
+      [ ("Linkedin", "https://www.linkedin.com/in/jappie-klooster-1b8b4850/")
+      , ("Github", "https://github.com/jappeace")
+      , ("Blog", "https://jappie.me/")
+      ]
+  , dateFormat = "%Y-%m-%d"
   , siteLang   = En
   }
