@@ -19,11 +19,11 @@ server {
 	listen [::]:80;
 
 	#main website
-	root /var/www/penguin.engineer;
+	root /var/www/jappiesoftware.com;
 
 	index index.html index.htm index.nginx-debian.html;
 
-	server_name penguin.engineer penguin.engineer;
+	server_name jappiesoftware.com jappiesoftware.com;
 
 	location / {
 		add_header X-Frame-Options "SAMEORIGIN";

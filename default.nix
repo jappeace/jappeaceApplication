@@ -30,8 +30,8 @@ pkgs.stdenv.mkDerivation {
     find _site \( -name '*.jpg' -o -name '*.jpeg' \) -exec jpegtran -copy none -optimize -progressive -outfile {} {} \;
   '';
   installPhase = ''
-    mkdir -p $out/jappieklooster.nl $out/penguin.engineer
+    mkdir -p $out/jappieklooster.nl $out/jappiesoftware.com
     cp -r _site/* $out/jappieklooster.nl/
-    cp -r _penguin-site/* $out/penguin.engineer/
+    cp -r _penguin-site/* $out/jappiesoftware.com/
   '';
 }
