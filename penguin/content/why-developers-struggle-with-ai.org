@@ -1,0 +1,251 @@
+#+TITLE: Why Most Developers Can't Use AI Effectively
+#+DATE: 2026-05-15
+#+CATEGORY: strategy
+
+* Introduction
+
+Most developers have access to AI coding tools. Few get meaningful
+leverage from them. The gap between "has Copilot installed" and
+"ships features 5x faster with an agent" is enormous, and it is
+not mainly a skill gap. There are structural reasons why agentic
+development fails to take root, even among competent engineers.
+
+I am a fractional CTO and I run multiple AI agents concurrently ---
+each in its own Docker container, each working on a different
+project. This setup has produced roughly 50,000 lines of compiled,
+tested Haskell across projects including cross-compilation
+frameworks, database libraries, and mobile apps. But getting here
+required solving problems that most developers and organisations are
+not even aware they have.
+
+Here are the five barriers I see.
+
+* The programming ecosystem optimised for the wrong thing
+
+LLMs hallucinate. Everyone knows this. What most people
+underestimate is how much your tooling determines whether
+hallucinations matter.
+
+The problem is not the AI tools. The problem is the programming
+ecosystem itself. For thirty years, the industry has obsessed over
+ease of learning. Python is the most popular language in the world
+not because it produces correct software, but because humans find it
+easy to pick up.
+JavaScript dominates the web for the same reason. The frameworks,
+the languages, the toolchains --- they were all selected for how
+quickly a human could become productive in them.
+
+That made sense when humans wrote all the code. It makes no sense
+now. Agents already know every language. What they need is toolchains
+that make it *hard to produce incorrect code* --- strong type systems
+that reject nonsense at compile time, compilers that enforce
+invariants the agent would otherwise hallucinate away.
+
+When an agent writes Haskell, the compiler catches the
+hallucination, the agent reads the error, and it fixes the mistake
+in seconds. When an agent writes Python, the hallucination lands
+silently in the codebase and nobody notices until production breaks.
+The language that is "harder to learn" is the one that actually
+works with agents, because "hard to learn" was always a proxy for
+"the compiler is strict" --- and strictness is exactly what you want
+when your code is written by a confident, fast, unreliable machine.
+
+Most codebases today are built on the "easy to learn" stack. This
+means they lack the guardrails that make agent output trustworthy.
+Adding an AI agent to a dynamically typed codebase without tests is
+just a faster way to produce unverified code. The developers who
+would benefit most from agents --- those drowning in mechanical
+work --- are often the ones whose codebases are least prepared to
+catch agent mistakes. They need to invest in verification
+infrastructure first, and that feels like a detour from the
+productivity gain they were promised.
+
+* Learned distrust of all code
+
+Years of tech debt, subtle bugs, and production incidents have
+trained developers to treat every line of code with suspicion. This
+is usually a virtue. With agentic development, it becomes a trap.
+
+When an agent submits a PR backed by a type checker and a passing
+test suite, reading every line is a waste of your time. The correct
+strategy shifts to "verify the tests check the right things and the
+architecture is sane." But most developers cannot make this shift.
+They spend as long reviewing agent output as they would have spent
+writing it, which destroys the entire productivity gain.
+
+The skill that matters is *knowing what to check*. In practice this
+is a short checklist:
+
+1. Did it do what I told it to do?
+2. Did it cheat? (stubbed out the hard part, disabled a test,
+   hardcoded a value that should be computed)
+3. Are there integration tests that verify this feature?
+4. Did it actually write the tests? (agents sometimes "forget")
+5. Are there design problems I will regret? For library code: did it
+   create Lovecraftian horrors in the public API that I cannot work
+   with?
+
+That is a different skill from line-by-line code review, and most
+developers have not practiced it.
+
+* Organisations assume human-authored code
+
+Every process in most software organisations assumes humans write
+code, one feature at a time, at human speed. These processes do not
+merely slow down agentic workflows --- they hard block them.
+
+Concrete example: I run multiple agents, each needs its own git
+identity to manage branches and wait on CI independently. One
+organisation refused to provision a second GitHub account. This
+single decision broke the entire "agents manage their own
+repositories and use PRs for review" workflow. Instead of agents
+autonomously pushing code, waiting on CI, and iterating, I spend
+thirty minutes a day manually managing git operations that the agent
+could handle itself. I also have to constantly context-switch between
+different agent working directories, which is cognitively expensive
+and error-prone.
+
+This goes deeper than individual policies. The entire agile/scrum
+methodology is built around the assumption that development is
+horribly slow. Standups, sprint planning, velocity tracking,
+burndown charts --- all of it exists to manage the bottleneck of
+humans writing code. When agents write the code, that bottleneck
+disappears and the entire framework is oriented around the wrong
+thing.
+
+The productivity tracking tools make this obvious. Story points
+measure implementation speed. But when implementation is trivial,
+what do you track? Verification speed. And how do you make
+verification more productive? You automate it --- type systems, CI,
+property tests, integration suites. The tools themselves are telling
+you what to build. If your process tracks how fast humans write code,
+it is already obsolete. You should be tracking how much of your
+verification is automated and how reliable that automation is.
+
+The same applies to manual approval gates, security policies that
+prevent running containers, and code review requirements calibrated
+for human throughput. None are wrong in a human-only context, but
+they were not designed for a developer supervising five agents in
+parallel.
+
+* The propaganda effect
+
+There has been a sustained campaign of alarm about AI: it will take
+your job, burn down the world, drain all the water. The cumulative
+effect on working developers is simple: fear and reluctance.
+
+A developer who believes AI is coming for their job has no incentive
+to become good at using it. Learning agents feels like training your
+replacement. The developers most threatened --- those doing routine,
+mechanical work --- are exactly the ones who would benefit most from
+agents, and also the most receptive to messaging that the technology
+should be resisted.
+
+Organisations that want to adopt agentic development need to address
+this head-on. Not with vague reassurances, but with explicit, clear
+messaging. In an all-hands, say it plainly:
+
+- *"We are not firing anyone because we are using AI."* The
+  companies announcing AI-driven layoffs are mostly using AI as
+  cover for the fact that they are not doing well. That is a PR
+  strategy, not a technology strategy. Do not let their headlines
+  set the tone inside your organisation.
+- *"Learning these tools makes you more valuable, not more
+  replaceable."* A developer who can effectively supervise agents
+  produces several times the output. That is leverage in salary
+  negotiations, not a threat to job security. Make this explicit:
+  mastering agentic workflows is a career upgrade.
+
+The developers who adopt agents earliest will be the ones defining
+how the technology is used inside your organisation. The ones who
+resist will eventually be working inside systems designed by the
+early adopters. Your job as a leader is to make sure fear is not the
+reason people end up in the second group.
+
+* Agent management is an untrained skill
+
+I gave non-developers access to a Claude instance with the same
+capabilities I use daily. They had no idea what to do with it. The
+questions I ask instinctively --- "generate a test for this," "find
+every caller of this API and update them" --- simply did not occur
+to them. They stared at a powerful tool and saw a chatbot.
+
+Nobody taught them. And nobody taught most developers either.
+
+Managing agents is a genuinely new skill --- not programming, not
+project management, but something in between: supervising
+semi-autonomous workers who are fast but unreliable on judgement
+calls. The specific skills include:
+
+- *Coordinating work across agents.* If you put two agents on the
+  same bit of code, you end up with a mountain of merge conflicts.
+  You need to partition work so agents operate on separate areas,
+  sequence tasks that touch shared code, and know when to serialise
+  rather than parallelise.
+- *Using agents for more than code.* Agents can research, write
+  reports, summarise documentation, and answer architectural
+  questions. The output of one agent becomes input for the next.
+  You want to keep everything text-based so it flows naturally
+  between stages --- agent-written design docs feeding into
+  agent-written implementations feeding into agent-written tests.
+- *Formulating the right requests.* The difference between a prompt
+  that produces useful output and one that produces plausible
+  garbage is often subtle. Developers have an advantage here because
+  they can express intent precisely, but even they need to learn
+  what level of specificity an agent needs.
+- *Designing the feedback loop.* Setting up the infrastructure so
+  agents can iterate autonomously --- CI that runs on agent PRs,
+  type checkers that catch mistakes, test suites that verify
+  behaviour --- is itself a skill that requires understanding both
+  the tooling and the failure modes.
+
+I figured these skills out through trial and error. But most people
+will try the tool, hit the first few frustrations, and go back to
+writing code manually. If we want agentic development widely
+adopted, we need to treat agent management as a trainable discipline
+--- structured onboarding, pairing sessions, not "here is a tool,
+figure it out."
+
+* What to do about it
+
+If you are a developer, the path is:
+
+1. *Invest in verification infrastructure.* Types, tests, CI. These
+   are the guardrails that make agent output trustworthy. Without
+   them, you are just generating code faster with no way to know if
+   it works.
+2. *Shift your review strategy.* Stop reading every line. Start
+   verifying test correctness and architectural decisions. Practice
+   the skill of knowing what to check.
+3. *Automate the git workflow.* Give agents their own branches,
+   their own CI runs, their own review process. The less manual
+   intervention required per agent iteration, the more leverage you
+   get.
+4. *Learn agent management deliberately.* Splitting attention,
+   knowing when to zoom in, formulating effective prompts --- these
+   are trainable skills, not innate talent. Pair with someone who
+   already runs agents if you can.
+5. *Start now.* The gap between developers who use agents
+   effectively and those who do not is widening every month.
+
+If you are a founder or technical leader:
+
+1. *Automate correctness, then drop human bottlenecks.* You cannot
+   remove manual review gates until you have something better in
+   place. Invest in strong type systems, reliable CI, and
+   comprehensive integration tests. An agent in a codebase without
+   these is a liability. Once your system self-validates, you can
+   safely reduce human sign-offs --- and that is what lets agents
+   iterate fast.
+2. *Address the fear directly in all-hands messaging.* Say plainly
+   that nobody is being replaced. Point out that AI layoff headlines
+   are mostly cover for struggling companies. Frame agent skills as
+   a career upgrade with upside in wage negotiations.
+3. *Hire for verification skill*, not just implementation speed. The
+   developers who will thrive in an agentic world are the ones who
+   can tell you whether the output is correct.
+4. *Invest in training.* Do not hand your team an AI tool and expect
+   them to figure it out. Agent management is a new discipline.
+   Budget for structured onboarding, pairing sessions, and time to
+   develop the workflow. The tool alone is not enough.
+
