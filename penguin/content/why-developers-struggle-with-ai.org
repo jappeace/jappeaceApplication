@@ -128,6 +128,14 @@ for human throughput. None are wrong in a human-only context, but
 they were not designed for a developer supervising five agents in
 parallel.
 
+To be blunt: if you think refusing to adapt your processes is
+"being cautious," you are sabotaging your own team. Every manual
+gate that could be replaced by automated verification, every account
+that is not provisioned, every approval step that adds hours of
+latency --- these are not protecting you. They are burning expensive
+developer time on work a machine should be doing. You are not being
+responsible. You are making your organisation slower on purpose.
+
 * The propaganda effect
 
 There has been a sustained campaign of alarm about AI: it will take
