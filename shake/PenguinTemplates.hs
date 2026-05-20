@@ -227,13 +227,9 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel naar Shopify mig
       H.h2 "Prijzen"
       H.div ! A.class_ "card-grid" $ do
         H.div ! A.class_ "card" $ do
-          H.h3 "Productmigratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;500" :: Text)
-          H.p $ H.preEscapedToHtml ("Alle producten, afbeeldingen, vertalingen, categorie&euml;n en SEO-redirects. Prijs afhankelijk van aantal producten en talen." :: Text)
-        H.div ! A.class_ "card" $ do
-          H.h3 "Klantdata & spaarpunten"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;250" :: Text)
-          H.p "Migratie van klantgegevens en spaarpuntensaldo naar Shopify."
+          H.h3 "Volledige migratie"
+          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;750" :: Text)
+          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata en SEO-redirects. Prijs afhankelijk van de omvang van uw webshop." :: Text)
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
     -- Why us
