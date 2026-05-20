@@ -3,6 +3,7 @@ module PenguinTemplates
   ( penguinIndexPage
   , penguinBlogIndexPage
   , penguinArticlePage
+  , mijnwebwinkelMigrationPage
   ) where
 
 import Data.Text (Text)
@@ -35,20 +36,20 @@ penguinBaseTemplate title content =
     H.head $ do
       H.meta ! A.charset "utf-8"
       H.meta ! A.name "viewport" ! A.content "width=device-width, initial-scale=1"
-      H.meta ! A.name "description" ! A.content "Fractional CTO for startups. Technical leadership for non-technical founders."
-      H.link ! A.rel "stylesheet" ! A.href "style.css"
-      H.link ! A.rel "stylesheet" ! A.href "blog.css"
-      H.link ! A.rel "icon" ! A.href "favicon.ico"
+      H.meta ! A.name "description" ! A.content "Software products and expert consulting. We build reliable systems that solve real problems."
+      H.link ! A.rel "stylesheet" ! A.href "/style.css"
+      H.link ! A.rel "stylesheet" ! A.href "/blog.css"
+      H.link ! A.rel "icon" ! A.href "/favicon.ico"
       H.script ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
       H.title (toHtml title)
     H.body $ do
       H.header $
         H.nav ! A.class_ "top-nav" $ do
-          H.span ! A.class_ "logo" $ "Jappie Software B.V."
+          H.span ! A.class_ "logo" $
+            H.a ! A.href "/" $ "Jappie Software B.V."
           H.ul $ do
-            H.li $ H.a ! A.href "#services" $ "Services"
-            H.li $ H.a ! A.href "#results" $ "Results"
-            H.li $ H.a ! A.href "#approach" $ "Approach"
+            H.li $ H.a ! A.href "/#products" $ "Products"
+            H.li $ H.a ! A.href "/#consulting" $ "Consulting"
             H.li $ H.a ! A.href "/blog/" $ "Blog"
             H.li $ H.a ! A.href "mailto:hi@jappie.me" ! A.class_ "cta-link" $ "Get in touch"
       content
@@ -85,9 +86,8 @@ penguinBlogBaseTemplate title content =
           H.span ! A.class_ "logo" $
             H.a ! A.href "/" $ "Jappie Software B.V."
           H.ul $ do
-            H.li $ H.a ! A.href "/#services" $ "Services"
-            H.li $ H.a ! A.href "/#results" $ "Results"
-            H.li $ H.a ! A.href "/#approach" $ "Approach"
+            H.li $ H.a ! A.href "/#products" $ "Products"
+            H.li $ H.a ! A.href "/#consulting" $ "Consulting"
             H.li $ H.a ! A.href "/blog/" $ "Blog"
             H.li $ H.a ! A.href "mailto:hi@jappie.me" ! A.class_ "cta-link" $ "Get in touch"
       content
@@ -107,95 +107,165 @@ penguinBlogBaseTemplate title content =
 -- =============================================================================
 
 penguinIndexPage :: Html
-penguinIndexPage = penguinBaseTemplate "Jappie Software B.V. \8212 Fractional CTO for Startups" $
+penguinIndexPage = penguinBaseTemplate "Jappie Software B.V. \8212 Software Products & Expert Consulting" $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
-      H.h1 $ H.preEscapedToHtml ("Your startup needs technical leadership &mdash; not just another developer." :: Text)
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("I&rsquo;m a fractional CTO who makes the technology decisions so you can focus on growing your business. No jargon, no guesswork &mdash; just a clear technical direction." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me" ! A.class_ "cta-button" $ "Book a conversation"
+      H.h1 "We build software that solves real problems."
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Software products and expert consulting from a team that ships reliable systems. We build tools we believe in &mdash; and help others do the same." :: Text)
 
-    -- Who this is for
-    H.section ! A.class_ "for-who" ! A.id "services" $ do
-      H.h2 "Who I work with"
+    -- Products
+    H.section ! A.class_ "for-who" ! A.id "products" $ do
+      H.h2 "Products"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
-          H.h3 "Non-technical founders building a tech product"
-          H.p $ H.preEscapedToHtml ("You have the vision and the customers, but you need someone who can translate that into the right technology choices &mdash; and make sure they get built properly." :: Text)
+          H.h3 "MijnWebwinkel Migration Tool"
+          H.p $ H.preEscapedToHtml ("Migrate your webshop from MijnWebwinkel to Shopify &mdash; products, categories, translations, images, and SEO redirects. Fully automated." :: Text)
+          H.a ! A.href "/migrate-mijnwebwinkel.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Learn more &rarr;" :: Text)
         H.li ! A.class_ "card" $ do
-          H.h3 "Startups scaling past their MVP"
-          H.p $ H.preEscapedToHtml ("Your agency-built prototype is breaking under real usage. You need someone to assess what you have, decide what to keep, and chart a path to a system that scales." :: Text)
+          H.h3 "Massapp"
+          H.p "Bulk WhatsApp messaging for businesses. Reach your customers at scale through the official WhatsApp Business API."
+          H.p ! A.class_ "coming-soon" $ "Rebuilding on official API. Contact us for early access."
         H.li ! A.class_ "card" $ do
-          H.h3 "Funded startups hiring their first engineers"
-          H.p $ H.preEscapedToHtml ("You&rsquo;re ready to build a team but don&rsquo;t know how to evaluate developers or set technical direction. I help you hire right and get your engineering culture started." :: Text)
+          H.h3 "IoT & Sensor Solutions"
+          H.p $ H.preEscapedToHtml ("Custom software for sensor data collection, monitoring, and dashboards. We have deep experience with IoT systems &mdash; from firmware to cloud." :: Text)
+          H.p ! A.class_ "coming-soon" $ "Looking for partners with domain expertise."
 
-    -- Entry offer
-    H.section ! A.class_ "audit" $ do
-      H.h2 "Start with a Technical Review"
-      H.p $ H.preEscapedToHtml ("A one-day assessment of where your technology stands and what to do next. You get a written report covering:" :: Text)
-      H.ul $ do
-        H.li $ H.preEscapedToHtml ("How your current setup is working (and where it&rsquo;s not)" :: Text)
-        H.li "The biggest risks that could slow you down or cost you money"
-        H.li "What to prioritize in the next 3 months"
-        H.li "Clear recommendations you can act on immediately"
-      H.p $ H.preEscapedToHtml ("&euro;1,000. Fixed scope. No ongoing commitment required." :: Text)
-      H.p $ H.preEscapedToHtml ("Most reviews uncover quick wins that save far more than the cost &mdash; and give you clarity on whether you need ongoing technical leadership." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me" ! A.class_ "cta-button" $ "Book a review"
-
-    -- Social proof
-    H.section ! A.class_ "results" ! A.id "results" $ do
-      H.h2 "Selected work"
+    -- Consulting
+    H.section ! A.class_ "results" ! A.id "consulting" $ do
+      H.h2 "Expert Consulting"
+      H.p $ H.preEscapedToHtml ("We also take on consulting engagements where our expertise makes a difference. 10+ years building production systems &mdash; we make technical decisions and then build them." :: Text)
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $
           H.p $ do
-            "Helped a "
+            "Built the core platform for a "
             H.strong "reinsurance technology startup"
-            H.preEscapedToHtml (" build and ship their core platform &mdash; taking the product from early architecture to handling live deals in production. " :: Text)
+            H.preEscapedToHtml (" &mdash; from early architecture to handling live deals in production. " :: Text)
             H.a ! A.href "https://jappie.me/the-peculiar-event-sourced-deadlock.html" $ H.preEscapedToHtml ("Read about solving a production issue &rarr;" :: Text)
         H.blockquote $
           H.p $ do
-            "Served as technical lead for a "
+            "Technical lead for a "
             H.strong "construction IoT startup"
-            H.preEscapedToHtml (", making architecture decisions that let them scale from pilot to production. Improved device performance 7x along the way. " :: Text)
+            H.preEscapedToHtml (". Architecture decisions that scaled from pilot to production. 7x device performance improvement. " :: Text)
             H.a ! A.href "https://jappie.me/stacked-against-us.html" $ H.preEscapedToHtml ("Read the full story &rarr;" :: Text)
             H.preEscapedToHtml (" &middot; " :: Text)
             H.a ! A.href "https://jappie.me/firmware-lemons.html" $ H.preEscapedToHtml ("The 7x improvement &rarr;" :: Text)
         H.blockquote $
-          H.p "Mentored early-stage founders on technical strategy through accelerator programs, helping non-technical teams make confident technology decisions without overspending."
-
-    -- Engagement model
-    H.section ! A.class_ "engagement" ! A.id "approach" $ do
-      H.h2 "How we work together"
-      H.div ! A.class_ "card-grid" $ do
-        H.div ! A.class_ "card" $ do
-          H.h3 "Advisory retainer"
-          H.p $ H.preEscapedToHtml ("A few hours per week of strategic guidance. I review your technical decisions, help you evaluate hires and vendors, and make sure you&rsquo;re spending your budget wisely." :: Text)
-        H.div ! A.class_ "card" $ do
-          H.h3 "Operational retainer"
-          H.p $ H.preEscapedToHtml ("Embedded in your team 1&ndash;2 days per week. I set the technical direction, work alongside your developers, and make sure things get built right." :: Text)
-        H.div ! A.class_ "card" $ do
-          H.h3 "Project engagement"
-          H.p "Fixed-scope builds. I design and deliver the system end to end. You get a working product, not a specification document."
-      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("All engagements start with a conversation about your situation. I\x2019ll tell you honestly whether I can help." :: Text)
+          H.p $ do
+            "Automated "
+            H.strong "e-commerce migration"
+            " for a multi-language webshop with 2,400+ products across three domains and three languages."
 
     -- About
     H.section ! A.class_ "about" $ do
       H.h2 "About"
-      H.p $ H.preEscapedToHtml ("I'm Jappie Klooster. I&rsquo;ve spent years helping startups make the right technical decisions &mdash; and then building the systems to back them up. Not advice that sits in a document &mdash; decisions and delivery." :: Text)
-      H.p $ H.preEscapedToHtml ("I use technologies chosen for reliability and long-term maintainability (including Haskell and Nix), but the technology is an implementation detail &mdash; what matters is that your product works, scales, and doesn&rsquo;t fall over when your users show up." :: Text)
+      H.p $ H.preEscapedToHtml ("I&rsquo;m Jappie Klooster. I build software products and help companies that need serious technical expertise. I use technologies chosen for reliability &mdash; Haskell, Nix, and whatever else gets the job done right." :: Text)
+      H.p $ H.preEscapedToHtml ("Based in the Netherlands. Available for product partnerships, consulting engagements, and co-founder conversations." :: Text)
       H.p $ do
-        "For more writing and case studies, visit my "
+        "For more writing and case studies, visit the "
         H.a ! A.href "/blog/" $ "blog"
         "."
 
     -- Final CTA
     H.section ! A.class_ "final-cta" $ do
-      H.h2 $ H.preEscapedToHtml ("Let\x2019s talk about your startup" :: Text)
+      H.h2 "Have a problem that needs solving?"
       H.p $ do
-        H.preEscapedToHtml ("If you&rsquo;re building something and need technical leadership you can trust, " :: Text)
+        H.preEscapedToHtml ("Whether you need a product, a technical partner, or expert consulting &mdash; " :: Text)
         H.a ! A.href "mailto:hi@jappie.me" $ "get in touch"
-        H.preEscapedToHtml (". I&rsquo;m always happy to have an initial conversation &mdash; no commitment required." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me" ! A.class_ "cta-button" $ "Book a conversation"
+        "."
+      H.a ! A.href "mailto:hi@jappie.me" ! A.class_ "cta-button" $ "Get in touch"
+
+-- =============================================================================
+-- MijnWebwinkel migration landing page
+-- =============================================================================
+
+mijnwebwinkelMigrationPage :: Html
+mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel naar Shopify migratie \8212 Jappie Software B.V." $
+  H.main $ do
+    -- Hero
+    H.section ! A.class_ "hero" $ do
+      H.h1 "Migreer van MijnWebwinkel naar Shopify"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Volledig geautomatiseerde migratie van uw webshop. Producten, categorie&euml;n, vertalingen, afbeeldingen en SEO-redirects &mdash; zonder handmatig overtypen." :: Text)
+      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+
+    -- What we migrate
+    H.section ! A.class_ "for-who" ! A.id "what" $ do
+      H.h2 "Wat we migreren"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 "Producten & varianten"
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het Shopify-formaat."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Meerdere talen"
+          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld via de Shopify Translations API. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "SEO-redirects"
+          H.p "301-redirects van elke oude URL naar de nieuwe Shopify-URL. Uw Google-posities en backlinks blijven behouden."
+        H.li ! A.class_ "card" $ do
+          H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
+          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Shopify Collections met vertaalde titels en het navigatiemenu." :: Text)
+
+    -- How it works
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Hoe het werkt"
+      H.ol $ do
+        H.li $ do
+          H.strong "Scan"
+          " \8212 Ons programma crawlt uw MijnWebwinkel-shop en slaat alle data op."
+        H.li $ do
+          H.strong "Controle"
+          " \8212 U krijgt een rapport met aantallen: producten, vertalingen, ontbrekende data."
+        H.li $ do
+          H.strong "Import"
+          " \8212 We importeren alles in uw Shopify-shop: producten, vertalingen, collections, redirects."
+        H.li $ do
+          H.strong "Verificatie"
+          " \8212 Samen controleren we steekproefsgewijs of alles klopt."
+
+    -- Pricing
+    H.section ! A.class_ "engagement" ! A.id "pricing" $ do
+      H.h2 "Prijzen"
+      H.div ! A.class_ "card-grid" $ do
+        H.div ! A.class_ "card" $ do
+          H.h3 "Volledige migratie"
+          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;750" :: Text)
+          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata en SEO-redirects. Prijs afhankelijk van de omvang van uw webshop." :: Text)
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
+
+    -- Why us
+    H.section ! A.class_ "results" $ do
+      H.h2 "Waarom via ons?"
+      H.div ! A.class_ "testimonials" $ do
+        H.blockquote $
+          H.p $ H.preEscapedToHtml ("Ons migratietool is gebouwd op basis van een echte migratie &mdash; een webshop met 2.400+ producten, drie talen (NL/DE/EN) en drie domeinen. Het werkt, want het is al gedaan." :: Text)
+      H.ul $ do
+        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
+        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
+        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via de offici&euml;le Shopify API" :: Text)
+        H.li $ H.strong "Controleerbaar" >> H.preEscapedToHtml (" &mdash; u krijgt een rapport en kunt alles verifi&euml;ren voor de overstap" :: Text)
+        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
+
+    -- FAQ
+    H.section ! A.class_ "about" $ do
+      H.h2 "Veelgestelde vragen"
+      H.dl $ do
+        H.dt "Hoe lang duurt een migratie?"
+        H.dd "De technische migratie duurt meestal 1-2 werkdagen. De voorbereiding en controle erbij: reken op een week totaal."
+        H.dt "Kan ik mijn domeinnaam behouden?"
+        H.dd "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd."
+        H.dt "Wat als er iets niet klopt na de migratie?"
+        H.dd "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs."
+        H.dt "Werkt het ook voor andere talen dan NL/DE/EN?"
+        H.dd "Ja. Het programma ondersteunt elke taalcombinatie die MijnWebwinkel en Shopify beide ondersteunen."
+
+    -- CTA
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Klaar om te migreren?"
+      H.p $ do
+        "Stuur een mail naar "
+        H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" $ "hi@jappie.me"
+        " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
+      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
 -- =============================================================================
 -- Blog index page (paginated listing)
