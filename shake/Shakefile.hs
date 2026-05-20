@@ -39,7 +39,7 @@ import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
-import PenguinTemplates (penguinIndexPage, penguinBlogIndexPage, penguinArticlePage)
+import PenguinTemplates (penguinIndexPage, penguinBlogIndexPage, penguinArticlePage, mijnwebwinkelMigrationPage)
 import Slug (toSlug)
 import Templates
   ( renderArticlePage
@@ -152,7 +152,7 @@ shakeRules = do
           localConfig = defaultSiteConfig
             { siteLinks =
                 [ NavLink "About \128194" "/pages/about-me.html" "About me" "about"
-                , NavLink "Consult \128039" "http://localhost:8001/" "Fractional CTO for correctness-critical systems" "hire"
+                , NavLink "Consult \128039" "http://localhost:8001/" "Software products & expert consulting" "hire"
                 ]
             }
       liftIO $ do
@@ -547,6 +547,9 @@ generatePenguinSite config articles = do
 
   -- Landing page
   writeHtmlFile "_penguin-site/index.html" penguinIndexPage
+
+  -- Product pages
+  writeHtmlFile "_penguin-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
 
   -- Individual article pages
   mapM_ (\art ->

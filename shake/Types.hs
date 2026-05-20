@@ -148,7 +148,7 @@ defaultSiteConfig = SiteConfig
   , feedAtom   = "atom"
   , siteLinks  =
       [ NavLink "About \128194" "/pages/about-me.html" "About me" "about"
-      , NavLink "Consult \128039" "https://jappiesoftware.com/" "Fractional CTO for correctness-critical systems" "hire"
+      , NavLink "Consult \128039" "https://jappiesoftware.com/" "Software products & expert consulting" "hire"
       ]
   , siteSocial =
       [ NavLink "Email \9993" "mailto:hi@jappie.me" "Contact me" "email"
