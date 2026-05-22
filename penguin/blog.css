@@ -50,6 +50,14 @@
 .summary {
   color: #444;
 }
+.summary h1,
+.summary h2,
+.summary h3 {
+  font-size: 1.1em;
+  color: #555;
+  margin-top: 0.5em;
+  margin-bottom: 0.3em;
+}
 
 /* Pagination */
 .pagination {

@@ -113,6 +113,10 @@ main section {
   color: #444;
   font-size: 0.95em;
 }
+.card .cta-button {
+  margin-top: 1em;
+  padding: 0.5em 1.2em;
+}
 
 /* Section headings */
 h2 {
