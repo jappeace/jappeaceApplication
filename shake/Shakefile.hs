@@ -418,11 +418,17 @@ truncateHtml maxWords html =
           isSelfClosing = not (null tagContent) && last tagContent == '/'
           isVoid = tagName `elem` voidElements
           tagStr = "<" ++ tagContent ++ ">"
-          tags' = if isSelfClosing || isVoid || null tagName
-                  then tags
-                  else tagName : tags
-          (remainder, finalTags) = go wc tags' (drop 1 after)
-      in (tagStr ++ remainder, finalTags)
+      in if tagName == "style"
+         then -- Skip style block content without counting words
+           let (styleBody, afterClose) = skipUntilClose "style" (drop 1 after)
+               (remainder, finalTags) = go wc tags afterClose
+           in (tagStr ++ styleBody ++ remainder, finalTags)
+         else
+           let tags' = if isSelfClosing || isVoid || null tagName
+                       then tags
+                       else tagName : tags
+               (remainder, finalTags) = go wc tags' (drop 1 after)
+           in (tagStr ++ remainder, finalTags)
     go wc tags ('&':rest) =
       -- HTML entity: pass through without counting as word
       let (entity, after) = span (/= ';') rest
@@ -450,6 +456,21 @@ truncateHtml maxWords html =
     voidElements :: [String]
     voidElements = ["br", "img", "hr", "input", "meta", "link", "area",
                     "base", "col", "embed", "source", "track", "wbr"]
+
+    -- | Consume everything up to and including a closing tag, returning
+    --   the consumed content (with closing tag) and the remainder.
+    skipUntilClose :: String -> String -> (String, String)
+    skipUntilClose _ [] = ([], [])
+    skipUntilClose name ('<':'/':rest) =
+      let (tagContent, after) = span (/= '>') rest
+          closeName = takeWhile (\c -> c /= ' ' && c /= '>') tagContent
+      in if closeName == name
+         then ("</" ++ tagContent ++ ">", drop 1 after)
+         else let (body, remaining) = skipUntilClose name (drop 1 after)
+              in ("</" ++ tagContent ++ ">" ++ body, remaining)
+    skipUntilClose name (c:rest) =
+      let (body, remaining) = skipUntilClose name rest
+      in (c : body, remaining)
 
 -- =============================================================================
 -- Tag and category maps
