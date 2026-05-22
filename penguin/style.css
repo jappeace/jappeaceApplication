@@ -128,11 +128,21 @@ h2 {
   max-width: 800px;
   padding: 3em 2em;
 }
-.audit ul {
+.audit ul,
+.audit ol {
   margin: 1em 0 1em 1.5em;
   color: #333;
 }
 .audit li {
+  margin-bottom: 0.4em;
+}
+
+/* Results section lists */
+.results ul {
+  margin: 1em 0 1em 1.5em;
+  color: #333;
+}
+.results li {
   margin-bottom: 0.4em;
 }
 
