@@ -41,6 +41,8 @@ penguinBaseTemplate title content =
       H.link ! A.rel "stylesheet" ! A.href "/blog.css"
       H.link ! A.rel "icon" ! A.href "/favicon.ico"
       H.script ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
+      H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-FMYV1PLWZ6" $ mempty
+      H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-FMYV1PLWZ6');" :: Text)
       H.title (toHtml title)
     H.body $ do
       H.header $
@@ -79,6 +81,8 @@ penguinBlogBaseTemplate title content =
              ! A.rel "alternate"
              ! A.title "Jappie Software B.V. Atom Feed"
       H.script ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
+      H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-FMYV1PLWZ6" $ mempty
+      H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-FMYV1PLWZ6');" :: Text)
       H.title (toHtml title)
     H.body $ do
       H.header $
