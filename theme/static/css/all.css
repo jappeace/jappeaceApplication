@@ -73,6 +73,22 @@ a.tag:first-letter {
 .entry-content figure {
   overflow: hidden; }
 
+/* Blog index: tighten summary spacing and float images */
+article:not(.single) .entry-content > :first-child {
+  margin-top: 0; }
+
+article:not(.single) .entry-content figure {
+  float: right;
+  width: 35%;
+  margin: 0 0 0.5em 1em;
+  max-height: 15em;
+  overflow: hidden; }
+
+article:not(.single) .entry-content figure img {
+  width: 100%;
+  max-height: 14em;
+  object-fit: cover; }
+
 .entry-content a:first-letter {
   color: lightslategrey;
   text-shadow: none; }
