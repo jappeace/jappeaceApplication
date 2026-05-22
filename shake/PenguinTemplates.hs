@@ -218,7 +218,7 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel naar Shopify mig
           " \8212 Ons programma crawlt uw MijnWebwinkel-shop en slaat alle data op."
         H.li $ do
           H.strong "Controle"
-          " \8212 U krijgt een rapport met aantallen: producten, vertalingen, ontbrekende data."
+          " \8212 U krijgt een werkende Shopify-testshop die u zelf kunt controleren voordat we live gaan."
         H.li $ do
           H.strong "Import"
           " \8212 We importeren alles in uw Shopify-shop: producten, vertalingen, collections, redirects."
