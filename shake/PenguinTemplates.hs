@@ -86,7 +86,7 @@ penguinBaseTemplate meta content =
       H.link ! A.rel "stylesheet" ! A.href "/style.css"
       H.link ! A.rel "stylesheet" ! A.href "/blog.css"
       H.link ! A.rel "icon" ! A.href "/favicon.ico"
-      H.script ! A.async "" ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
+      H.script ! A.defer "" ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-FMYV1PLWZ6" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-FMYV1PLWZ6');" :: Text)
       H.title (toHtml (pageMetaTitle meta))
@@ -147,7 +147,7 @@ penguinBlogBaseTemplate meta content =
              ! A.type_ "application/atom+xml"
              ! A.rel "alternate"
              ! A.title "Jappie Software B.V. Atom Feed"
-      H.script ! A.async "" ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
+      H.script ! A.defer "" ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-FMYV1PLWZ6" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-FMYV1PLWZ6');" :: Text)
       H.title (toHtml (pageMetaTitle meta))
@@ -557,29 +557,31 @@ formatHumanDate = T.pack . formatTime defaultTimeLocale "%B %e, %Y"
 
 voronoiScript :: Text
 voronoiScript = T.unlines
-  [ "const svg = d3.select(\"svg.voronoi\");"
-  , "function drawVoronoi() {"
-  , "  const width = window.innerWidth;"
-  , "  const height = window.innerHeight;"
-  , "  const area = width * height;"
-  , "  const cellSize = 15000;"
-  , "  const numPoints = Math.max(100, Math.ceil(area / cellSize));"
-  , "  const points = d3.range(numPoints).map(() => [Math.random() * width, Math.random() * height]);"
-  , "  const delaunay = d3.Delaunay.from(points);"
-  , "  const voronoi = delaunay.voronoi([0, 0, width, height]);"
-  , "  svg.selectAll(\"g\").remove();"
-  , "  svg.append(\"g\")"
-  , "    .selectAll(\"path\")"
-  , "    .data(voronoi.cellPolygons())"
-  , "    .join(\"path\")"
-  , "      .attr(\"d\", d => \"M\" + d.join(\"L\") + \"Z\")"
-  , "      .attr(\"stroke\", \"#ddd\")"
-  , "      .attr(\"fill\", \"none\");"
-  , "}"
-  , "drawVoronoi();"
-  , "let resizeTimer;"
-  , "window.addEventListener(\"resize\", function() {"
-  , "  clearTimeout(resizeTimer);"
-  , "  resizeTimer = setTimeout(drawVoronoi, 150);"
+  [ "document.addEventListener(\"DOMContentLoaded\", function() {"
+  , "  const svg = d3.select(\"svg.voronoi\");"
+  , "  function drawVoronoi() {"
+  , "    const width = window.innerWidth;"
+  , "    const height = window.innerHeight;"
+  , "    const area = width * height;"
+  , "    const cellSize = 15000;"
+  , "    const numPoints = Math.max(100, Math.ceil(area / cellSize));"
+  , "    const points = d3.range(numPoints).map(() => [Math.random() * width, Math.random() * height]);"
+  , "    const delaunay = d3.Delaunay.from(points);"
+  , "    const voronoi = delaunay.voronoi([0, 0, width, height]);"
+  , "    svg.selectAll(\"g\").remove();"
+  , "    svg.append(\"g\")"
+  , "      .selectAll(\"path\")"
+  , "      .data(voronoi.cellPolygons())"
+  , "      .join(\"path\")"
+  , "        .attr(\"d\", d => \"M\" + d.join(\"L\") + \"Z\")"
+  , "        .attr(\"stroke\", \"#ddd\")"
+  , "        .attr(\"fill\", \"none\");"
+  , "  }"
+  , "  drawVoronoi();"
+  , "  let resizeTimer;"
+  , "  window.addEventListener(\"resize\", function() {"
+  , "    clearTimeout(resizeTimer);"
+  , "    resizeTimer = setTimeout(drawVoronoi, 150);"
+  , "  });"
   , "});"
   ]
