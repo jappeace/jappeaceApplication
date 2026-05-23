@@ -8,6 +8,8 @@ module Templates
   , renderTagsListPage
   , renderCategoryPage
   , renderCategoriesListPage
+  , BlogPageMeta(..)
+  , defaultBlogMeta
   ) where
 
 import Data.List (groupBy, sortBy)
@@ -57,20 +59,61 @@ formatArchiveDate :: UTCTime -> Text
 formatArchiveDate = formatDate "%b %d"
 
 -- =============================================================================
+-- Per-page SEO metadata for the blog site
+-- =============================================================================
+
+-- | SEO metadata carried by each page for the base template to render.
+data BlogPageMeta = BlogPageMeta
+  { blogMetaDescription :: Text
+  , blogMetaCanonical   :: Maybe Text -- ^ Full canonical URL
+  }
+
+-- | Default English page metadata with generic blog description.
+defaultBlogMeta :: BlogPageMeta
+defaultBlogMeta = BlogPageMeta
+  { blogMetaDescription = "Technical blog by Jappie Klooster. Haskell, Nix, functional programming, and software engineering."
+  , blogMetaCanonical   = Nothing
+  }
+
+-- | Map language code to OG locale format
+ogLocale :: Text -> Text
+ogLocale "nl" = "nl_NL"
+ogLocale "en" = "en_US"
+ogLocale other = other
+
+-- =============================================================================
 -- Base template (_base.html equivalent)
 -- =============================================================================
 
 -- | The @switchUrl@ parameter is @Just url@ when a translation exists for the
 -- current page in the other language, @Nothing@ otherwise (no toggle shown).
-baseTemplate :: SiteConfig -> Bool -> Maybe Text -> Text -> Html -> Html
-baseTemplate config isArticle mSwitchUrl title content =
+baseTemplate :: SiteConfig -> Bool -> Maybe Text -> BlogPageMeta -> Text -> Html -> Html
+baseTemplate config isArticle mSwitchUrl pageMeta title content =
   let lang = siteLang config
       trans = translationsFor lang
-  in H.docTypeHtml ! A.class_ "no-js" ! customAttribute "lang" (langCode lang) $ do
+      lc = langCode lang
+  in H.docTypeHtml ! A.class_ "no-js" ! customAttribute "lang" lc $ do
   H.head $ do
     H.title (toHtml title)
     H.meta ! A.name "author" ! A.content (toValue (siteAuthor config))
     H.meta ! customAttribute "charset" "utf-8"
+    H.meta ! A.name "description" ! A.content (toValue (blogMetaDescription pageMeta))
+    -- Open Graph tags
+    H.meta ! customAttribute "property" "og:title" ! A.content (toValue title)
+    H.meta ! customAttribute "property" "og:description" ! A.content (toValue (blogMetaDescription pageMeta))
+    H.meta ! customAttribute "property" "og:type" ! A.content (if isArticle then "article" else "website")
+    H.meta ! customAttribute "property" "og:locale" ! A.content (toValue (ogLocale lc))
+    case blogMetaCanonical pageMeta of
+      Just canonicalUrl -> H.meta ! customAttribute "property" "og:url" ! A.content (toValue canonicalUrl)
+      Nothing -> mempty
+    -- Twitter Card tags
+    H.meta ! A.name "twitter:card" ! A.content "summary"
+    H.meta ! A.name "twitter:title" ! A.content (toValue title)
+    H.meta ! A.name "twitter:description" ! A.content (toValue (blogMetaDescription pageMeta))
+    -- Canonical URL
+    case blogMetaCanonical pageMeta of
+      Just canonicalUrl -> H.link ! A.rel "canonical" ! A.href (toValue canonicalUrl)
+      Nothing -> mempty
     -- Atom feed
     H.link ! A.href (toValue (feedDomain config <> "/" <> langPrefix lang <> feedAtom config))
            ! A.type_ "application/atom+xml"
@@ -90,6 +133,7 @@ baseTemplate config isArticle mSwitchUrl title content =
         H.script ! A.type_ "text/x-mathjax-config" $
           "MathJax.Hub.Config({\"HTML-CSS\": {styles: {\".MathJax .mo, .MathJax .mi\": {color: \"black ! important\"}}}, tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']],processEscapes: true}});"
         H.script ! A.type_ "text/javascript"
+                 ! A.async ""
                  ! A.src "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
                  $ mempty
       else mempty
@@ -144,11 +188,10 @@ customAttribute name val = H.customAttribute (H.textTag name) (toValue val)
 -- Site template (base.html equivalent - header + navigation)
 -- =============================================================================
 
-siteTemplate :: SiteConfig -> [Page] -> Bool -> Maybe Text -> Text -> Html -> Html
-siteTemplate config pages isArticle mSwitchUrl title body =
-  let lang = siteLang config
-      trans = translationsFor lang
-  in baseTemplate config isArticle mSwitchUrl title $ do
+siteTemplate :: SiteConfig -> [Page] -> Bool -> Maybe Text -> BlogPageMeta -> Text -> Html -> Html
+siteTemplate config pages isArticle mSwitchUrl pageMeta title body =
+  let trans = translationsFor (siteLang config)
+  in baseTemplate config isArticle mSwitchUrl pageMeta title $ do
     H.header ! A.id "title" ! A.class_ "window" ! customAttribute "role" "banner" $ do
       H.h1 $ H.a ! A.id "sitename" ! A.href (toValue (langUrl config "")) $ "Jappie"
       navigationHtml config pages mSwitchUrl trans
@@ -227,7 +270,11 @@ categoryGlyph config catname =
 renderArticlePage :: SiteConfig -> [Page] -> Maybe Text -> Article -> [Article] -> [(Text, [Article])] -> Html
 renderArticlePage config pages mSwitchUrl article allArticles tags =
   let trans = translationsFor (siteLang config)
-  in siteTemplate config pages True mSwitchUrl (articleTitle article <> " / " <> siteName config) $ do
+      articlePageMeta = defaultBlogMeta
+        { blogMetaDescription = articleDescriptionText article
+        , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> articleUrl article)
+        }
+  in siteTemplate config pages True mSwitchUrl articlePageMeta (articleTitle article <> " / " <> siteName config) $ do
     H.article ! A.class_ "single" ! customAttribute "role" "article" $ do
       -- Header
       articleHead config article
@@ -271,6 +318,27 @@ renderArticlePage config pages mSwitchUrl article allArticles tags =
     renderSidebarTag :: (Text, [Article]) -> Html
     renderSidebarTag (tag, _) =
       H.a ! A.class_ "tag" ! A.href (toValue (langUrl config ("tag/" <> tagSlug tag <> ".html"))) $ toHtml tag
+
+-- | Extract a plain-text description from an article's summary, falling back to the title.
+articleDescriptionText :: Article -> Text
+articleDescriptionText art = case articleSummaryText art of
+  Just summaryText -> T.take 160 (stripHtmlTags summaryText)
+  Nothing          -> articleTitle art
+
+-- | Strip HTML tags from text for use in meta descriptions.
+stripHtmlTags :: Text -> Text
+stripHtmlTags = go False
+  where
+    go :: Bool -> Text -> Text
+    go _ txt | T.null txt = T.empty
+    go inTag txt =
+      let (firstChar, rest) = (T.head txt, T.tail txt)
+      in case firstChar of
+        '<' -> go True rest
+        '>' -> go False rest
+        _   -> if inTag
+               then go True rest
+               else T.cons firstChar (go False rest)
 
 -- =============================================================================
 -- Article header/footer helpers
@@ -329,7 +397,11 @@ articleFooter config article =
 
 renderPagePage :: SiteConfig -> [Page] -> Maybe Text -> Page -> Html
 renderPagePage config pages mSwitchUrl page =
-  siteTemplate config pages False mSwitchUrl (pageTitle page <> " / " <> siteName config) $
+  let pagePageMeta = defaultBlogMeta
+        { blogMetaDescription = pageTitle page
+        , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> pageUrl page)
+        }
+  in siteTemplate config pages False mSwitchUrl pagePageMeta (pageTitle page <> " / " <> siteName config) $
     H.article ! A.class_ "single" ! customAttribute "role" "article" $ do
       H.header $
         H.h1 $
@@ -344,7 +416,10 @@ renderPagePage config pages mSwitchUrl page =
 renderIndexPage :: SiteConfig -> [Page] -> Maybe Text -> [Article] -> PaginationInfo -> Html
 renderIndexPage config pages mSwitchUrl articles pagination =
   let trans = translationsFor (siteLang config)
-  in siteTemplate config pages False mSwitchUrl (siteName config) $ do
+      indexPageMeta = defaultBlogMeta
+        { blogMetaCanonical = Just (siteUrl config <> "/" <> langPrefix (siteLang config))
+        }
+  in siteTemplate config pages False mSwitchUrl indexPageMeta (siteName config) $ do
     mapM_ (renderArticleSummary config) articles
     H.footer ! A.class_ "pagination" $ do
       case paginationPrevUrl pagination of
@@ -375,7 +450,11 @@ renderArticleSummary config article =
 renderArchivesPage :: SiteConfig -> [Page] -> Maybe Text -> [Article] -> Html
 renderArchivesPage config pages mSwitchUrl articles =
   let trans = translationsFor (siteLang config)
-  in siteTemplate config pages False mSwitchUrl (tArchive trans <> " / " <> siteName config) $
+      archivesPageMeta = defaultBlogMeta
+        { blogMetaDescription = "Full archive of blog posts by Jappie Klooster."
+        , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> "archives.html")
+        }
+  in siteTemplate config pages False mSwitchUrl archivesPageMeta (tArchive trans <> " / " <> siteName config) $
     H.section ! A.class_ "archives" $ do
       H.h1 $ toHtml (tArchive trans)
       mapM_ renderYearGroup yearGroups
@@ -420,7 +499,11 @@ renderArchivesPage config pages mSwitchUrl articles =
 renderTagsListPage :: SiteConfig -> [Page] -> Maybe Text -> [(Text, [Article])] -> Html
 renderTagsListPage config pages mSwitchUrl tags =
   let trans = translationsFor (siteLang config)
-  in siteTemplate config pages False mSwitchUrl (tTags trans <> " / " <> siteName config) $
+      tagsPageMeta = defaultBlogMeta
+        { blogMetaDescription = "All tags on the blog of Jappie Klooster."
+        , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> "tags.html")
+        }
+  in siteTemplate config pages False mSwitchUrl tagsPageMeta (tTags trans <> " / " <> siteName config) $
     H.section ! A.class_ "tags" $ do
       H.h1 $ toHtml (tTags trans)
       H.p "This page sure is exciting, wow!"
@@ -436,7 +519,11 @@ renderTagsListPage config pages mSwitchUrl tags =
 renderTagPage :: SiteConfig -> [Page] -> Maybe Text -> Text -> [Article] -> Html
 renderTagPage config pages mSwitchUrl tag articles =
   let trans = translationsFor (siteLang config)
-  in siteTemplate config pages False mSwitchUrl ("\128278 " <> tag <> " / " <> siteName config) $ do
+      tagPageMeta = defaultBlogMeta
+        { blogMetaDescription = "Posts tagged '" <> tag <> "' on the blog of Jappie Klooster."
+        , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> "tag/" <> tagSlug tag <> ".html")
+        }
+  in siteTemplate config pages False mSwitchUrl tagPageMeta ("\128278 " <> tag <> " / " <> siteName config) $ do
     H.h1 $ toHtml (tTagged trans <> tag)
     mapM_ (renderArticleSummary config) articles
 
@@ -448,7 +535,11 @@ renderTagPage config pages mSwitchUrl tag articles =
 renderCategoriesListPage :: SiteConfig -> [Page] -> Maybe Text -> [(Text, [Article])] -> Html
 renderCategoriesListPage config pages mSwitchUrl categories =
   let trans = translationsFor (siteLang config)
-  in siteTemplate config pages False mSwitchUrl (tCategories trans <> " / " <> siteName config) $
+      categoriesPageMeta = defaultBlogMeta
+        { blogMetaDescription = "All categories on the blog of Jappie Klooster."
+        , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> "categories.html")
+        }
+  in siteTemplate config pages False mSwitchUrl categoriesPageMeta (tCategories trans <> " / " <> siteName config) $
     H.section ! A.class_ "categories" $ do
       H.h1 $ toHtml (tCategories trans)
       H.ul $
@@ -464,7 +555,11 @@ renderCategoriesListPage config pages mSwitchUrl categories =
 
 renderCategoryPage :: SiteConfig -> [Page] -> Maybe Text -> Text -> [Article] -> Html
 renderCategoryPage config pages mSwitchUrl cat articles =
-  siteTemplate config pages False mSwitchUrl (cat <> " / " <> siteName config) $ do
+  let categoryPageMeta = defaultBlogMeta
+        { blogMetaDescription = "Posts in category '" <> cat <> "' on the blog of Jappie Klooster."
+        , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> "category/" <> cat <> ".html")
+        }
+  in siteTemplate config pages False mSwitchUrl categoryPageMeta (cat <> " / " <> siteName config) $ do
     H.h1 ! A.id "category-title" $ do
       categoryGlyph config cat
       " "
@@ -524,4 +619,3 @@ footnoteScript = T.unlines
   , "  }"
   , "});"
   ]
-

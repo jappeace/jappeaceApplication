@@ -1,2 +1,4 @@
 User-agent: *
-Dissalow: 
+Disallow:
+
+Sitemap: https://jappieklooster.nl/sitemap.xml
