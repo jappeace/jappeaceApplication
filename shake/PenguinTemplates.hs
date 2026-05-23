@@ -124,7 +124,7 @@ penguinIndexPage = penguinBaseTemplate "Jappie Software B.V. \8212 Software Prod
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.h3 "MijnWebwinkel Migration Tool"
-          H.p $ H.preEscapedToHtml ("Migrate your webshop from MijnWebwinkel to Shopify &mdash; products, categories, translations, images, and SEO redirects. Fully automated." :: Text)
+          H.p $ H.preEscapedToHtml ("Migrate your webshop from MijnWebwinkel to Shopify, WooCommerce or another platform &mdash; products, categories, translations, images, SEO redirects and bulk data modifications. Fully automated." :: Text)
           H.a ! A.href "/migrate-mijnwebwinkel.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Learn more &rarr;" :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Massapp"
@@ -184,12 +184,12 @@ penguinIndexPage = penguinBaseTemplate "Jappie Software B.V. \8212 Software Prod
 -- =============================================================================
 
 mijnwebwinkelMigrationPage :: Html
-mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel naar Shopify migratie \8212 Jappie Software B.V." $
+mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel migratie \8212 Jappie Software B.V." $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
-      H.h1 "Migreer van MijnWebwinkel naar Shopify"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Volledig geautomatiseerde migratie van uw webshop. Producten, categorie&euml;n, vertalingen, afbeeldingen en SEO-redirects &mdash; zonder handmatig overtypen." :: Text)
+      H.h1 "Migreer van MijnWebwinkel"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Volledig geautomatiseerde migratie van uw webshop naar Shopify, WooCommerce of een ander platform. Producten, categorie&euml;n, vertalingen, afbeeldingen en SEO-redirects &mdash; zonder handmatig overtypen." :: Text)
       H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
@@ -198,16 +198,19 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel naar Shopify mig
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.h3 "Producten & varianten"
-          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het Shopify-formaat."
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van uw doelplatform."
         H.li ! A.class_ "card" $ do
           H.h3 "Meerdere talen"
-          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld via de Shopify Translations API. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
+          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "SEO-redirects"
-          H.p "301-redirects van elke oude URL naar de nieuwe Shopify-URL. Uw Google-posities en backlinks blijven behouden."
+          H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw Google-posities en backlinks blijven behouden."
         H.li ! A.class_ "card" $ do
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
-          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Shopify Collections met vertaalde titels en het navigatiemenu." :: Text)
+          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Bulk-aanpassingen aan data"
+          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie &mdash; bijvoorbeeld alt-teksten voor alle afbeeldingen, prijsaanpassingen of het opschonen van beschrijvingen." :: Text)
 
     -- How it works
     H.section ! A.class_ "audit" $ do
@@ -218,10 +221,10 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel naar Shopify mig
           " \8212 Ons programma crawlt uw MijnWebwinkel-shop en slaat alle data op."
         H.li $ do
           H.strong "Controle"
-          " \8212 U krijgt een werkende Shopify-testshop die u zelf kunt controleren voordat we live gaan."
+          " \8212 U krijgt een werkende testshop die u zelf kunt controleren voordat we live gaan."
         H.li $ do
           H.strong "Import"
-          " \8212 We importeren alles in uw Shopify-shop: producten, vertalingen, collections, redirects."
+          " \8212 We importeren alles in uw nieuwe shop: producten, vertalingen, collections, redirects."
         H.li $ do
           H.strong "Verificatie"
           " \8212 Samen controleren we steekproefsgewijs of alles klopt."
@@ -233,7 +236,7 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel naar Shopify mig
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;750" :: Text)
-          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata en SEO-redirects. Prijs afhankelijk van de omvang van uw webshop." :: Text)
+          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en eventuele bulk-aanpassingen. Prijs afhankelijk van de omvang van uw webshop." :: Text)
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
     -- Why us
@@ -245,7 +248,9 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel naar Shopify mig
       H.ul $ do
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
-        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via de offici&euml;le Shopify API" :: Text)
+        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
+        H.li $ H.strong "Bulk-aanpassingen" >> H.preEscapedToHtml (" &mdash; data opschonen, alt-teksten toevoegen of prijzen aanpassen tijdens de migratie" :: Text)
+        H.li $ H.strong "Platformkeuze" >> H.preEscapedToHtml (" &mdash; migreer naar Shopify, WooCommerce of een ander platform naar keuze" :: Text)
         H.li $ H.strong "Controleerbaar" >> H.preEscapedToHtml (" &mdash; u krijgt een rapport en kunt alles verifi&euml;ren voor de overstap" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
@@ -260,7 +265,11 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel naar Shopify mig
         H.dt "Wat als er iets niet klopt na de migratie?"
         H.dd "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs."
         H.dt "Werkt het ook voor andere talen dan NL/DE/EN?"
-        H.dd "Ja. Het programma ondersteunt elke taalcombinatie die MijnWebwinkel en Shopify beide ondersteunen."
+        H.dd "Ja. Het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw doelplatform beide ondersteunen."
+        H.dt "Kan ik ook naar een ander platform dan Shopify migreren?"
+        H.dd "Ja. Shopify is het meest gekozen doelplatform, maar we kunnen ook migreren naar WooCommerce of andere platformen."
+        H.dt "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
+        H.dd "Ja. We kunnen grootschalige wijzigingen doorvoeren, bijvoorbeeld alt-teksten genereren voor alle afbeeldingen, prijzen aanpassen of beschrijvingen opschonen."
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
