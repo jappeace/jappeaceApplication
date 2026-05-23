@@ -282,8 +282,11 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
           H.h3 "Meerdere talen"
           H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
         H.li ! A.class_ "card" $ do
+          H.h3 "Spaarpunten"
+          H.p "Spaarpuntensaldi van uw klanten worden overgezet naar het loyaliteitsprogramma van uw nieuwe platform."
+        H.li ! A.class_ "card" $ do
           H.h3 "SEO-redirects"
-          H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw Google-posities en backlinks blijven behouden."
+          H.p $ H.preEscapedToHtml ("301-redirects van elke oude URL naar de nieuwe URL. We hebben de onderliggende logica van MijnWebwinkel-artikel-ID&rsquo;s in URLs achterhaald, waardoor we alle redirects volledig automatisch kunnen genereren. Uw Google-posities en backlinks blijven behouden." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
           H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
@@ -347,6 +350,10 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
         H.dd "Ja. Het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw doelplatform beide ondersteunen."
         H.dt "Kan ik ook naar een ander platform dan Shopify migreren?"
         H.dd "Ja. Shopify is het meest gekozen doelplatform, maar we kunnen ook migreren naar WooCommerce of andere platformen."
+        H.dt "Worden spaarpunten ook overgezet?"
+        H.dd "Ja. Spaarpuntensaldi van uw klanten worden meegenomen naar het loyaliteitsprogramma van uw nieuwe platform."
+        H.dt "Hoe werken de SEO-redirects precies?"
+        H.dd "We hebben de onderliggende logica achterhaald waarmee MijnWebwinkel artikel-ID's in URLs genereert. Daardoor kunnen we alle redirects volledig automatisch aanmaken, ook voor URLs met numerieke product-ID's."
         H.dt "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
         H.dd "Ja. We kunnen grootschalige wijzigingen doorvoeren, bijvoorbeeld alt-teksten genereren voor alle afbeeldingen, prijzen aanpassen of beschrijvingen opschonen."
 
@@ -399,6 +406,14 @@ migrationFaqJsonLd =
       , faqEntry
           "Kan ik ook naar een ander platform dan Shopify migreren?"
           "Ja. Shopify is het meest gekozen doelplatform, maar we kunnen ook migreren naar WooCommerce of andere platformen."
+      , ","
+      , faqEntry
+          "Worden spaarpunten ook overgezet?"
+          "Ja. Spaarpuntensaldi van uw klanten worden meegenomen naar het loyaliteitsprogramma van uw nieuwe platform."
+      , ","
+      , faqEntry
+          "Hoe werken de SEO-redirects precies?"
+          "We hebben de onderliggende logica achterhaald waarmee MijnWebwinkel artikel-ID's in URLs genereert. Daardoor kunnen we alle redirects volledig automatisch aanmaken, ook voor URLs met numerieke product-ID's."
       , ","
       , faqEntry
           "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
