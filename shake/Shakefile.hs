@@ -110,6 +110,10 @@ shakeRules = do
         -- Generate Dutch site (at /nl/)
         generateSite defaultSiteConfig Nl nlArticles nlPages enSlugs enPageSlugs
 
+        -- Generate sitemap.xml covering both languages
+        T.writeFile "_site/sitemap.xml"
+          (generateBlogSitemap defaultSiteConfig enArticles enPages nlArticles nlPages)
+
       -- Copy static assets (shared, only once)
       copyStaticAssets
 
@@ -660,3 +664,33 @@ penguinRobotsTxt = T.unlines
   , ""
   , "Sitemap: https://jappiesoftware.com/sitemap.xml"
   ]
+
+-- =============================================================================
+-- Blog (jappie.me) sitemap
+-- =============================================================================
+
+-- | Generate a sitemap.xml for jappieklooster.nl covering both EN and NL content.
+generateBlogSitemap :: SiteConfig -> [Article] -> [Page] -> [Article] -> [Page] -> Text
+generateBlogSitemap config enArticles enPages nlArticles nlPages =
+  let baseUrl = siteUrl config
+      enUrls = [ sitemapUrl (baseUrl <> "/")
+               , sitemapUrl (baseUrl <> "/archives.html")
+               , sitemapUrl (baseUrl <> "/tags.html")
+               , sitemapUrl (baseUrl <> "/categories.html")
+               ]
+            ++ map (\art -> sitemapUrl (baseUrl <> "/" <> articleUrl art)) enArticles
+            ++ map (\page -> sitemapUrl (baseUrl <> "/" <> pageUrl page)) enPages
+      nlUrls = [ sitemapUrl (baseUrl <> "/nl/")
+               , sitemapUrl (baseUrl <> "/nl/archives.html")
+               , sitemapUrl (baseUrl <> "/nl/tags.html")
+               , sitemapUrl (baseUrl <> "/nl/categories.html")
+               ]
+            ++ map (\art -> sitemapUrl (baseUrl <> "/nl/" <> articleUrl art)) nlArticles
+            ++ map (\page -> sitemapUrl (baseUrl <> "/nl/" <> pageUrl page)) nlPages
+  in T.unlines $
+    [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    , "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+    ]
+    ++ enUrls
+    ++ nlUrls
+    ++ ["</urlset>"]
