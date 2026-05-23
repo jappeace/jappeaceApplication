@@ -4,6 +4,8 @@ module PenguinTemplates
   , penguinBlogIndexPage
   , penguinArticlePage
   , mijnwebwinkelMigrationPage
+  , PageMeta(..)
+  , defaultPageMeta
   ) where
 
 import Data.Text (Text)
@@ -27,23 +29,68 @@ customAttribute :: Text -> Text -> H.Attribute
 customAttribute name val = H.customAttribute (H.textTag name) (toValue val)
 
 -- =============================================================================
+-- Per-page SEO metadata
+-- =============================================================================
+
+-- | SEO metadata carried by each page for the base template to render.
+data PageMeta = PageMeta
+  { pageMetaTitle       :: Text
+  , pageMetaDescription :: Text
+  , pageMetaLang        :: Text       -- ^ "en" or "nl"
+  , pageMetaCanonical   :: Maybe Text -- ^ Full canonical URL
+  , pageMetaOgImage     :: Maybe Text -- ^ Full URL to OG image
+  , pageMetaExtraHead   :: Html       -- ^ JSON-LD or other per-page head content
+  }
+
+-- | Default English page metadata with generic company description.
+defaultPageMeta :: Text -> PageMeta
+defaultPageMeta title = PageMeta
+  { pageMetaTitle       = title
+  , pageMetaDescription = "Software products and expert consulting. We build reliable systems that solve real problems."
+  , pageMetaLang        = "en"
+  , pageMetaCanonical   = Nothing
+  , pageMetaOgImage     = Nothing
+  , pageMetaExtraHead   = mempty
+  }
+
+-- =============================================================================
 -- Base template shared by all penguin pages
 -- =============================================================================
 
-penguinBaseTemplate :: Text -> Html -> Html
-penguinBaseTemplate title content =
-  H.docTypeHtml ! A.lang "en" $ do
+penguinBaseTemplate :: PageMeta -> Html -> Html
+penguinBaseTemplate meta content =
+  H.docTypeHtml ! A.lang (toValue (pageMetaLang meta)) $ do
     H.head $ do
       H.meta ! A.charset "utf-8"
       H.meta ! A.name "viewport" ! A.content "width=device-width, initial-scale=1"
-      H.meta ! A.name "description" ! A.content "Software products and expert consulting. We build reliable systems that solve real problems."
+      H.meta ! A.name "description" ! A.content (toValue (pageMetaDescription meta))
+      -- Open Graph tags
+      H.meta ! customAttribute "property" "og:title" ! A.content (toValue (pageMetaTitle meta))
+      H.meta ! customAttribute "property" "og:description" ! A.content (toValue (pageMetaDescription meta))
+      H.meta ! customAttribute "property" "og:type" ! A.content "website"
+      H.meta ! customAttribute "property" "og:locale" ! A.content (toValue (ogLocale (pageMetaLang meta)))
+      case pageMetaCanonical meta of
+        Just canonicalUrl -> H.meta ! customAttribute "property" "og:url" ! A.content (toValue canonicalUrl)
+        Nothing -> mempty
+      case pageMetaOgImage meta of
+        Just imageUrl -> H.meta ! customAttribute "property" "og:image" ! A.content (toValue imageUrl)
+        Nothing -> mempty
+      -- Twitter Card tags
+      H.meta ! A.name "twitter:card" ! A.content "summary"
+      H.meta ! A.name "twitter:title" ! A.content (toValue (pageMetaTitle meta))
+      H.meta ! A.name "twitter:description" ! A.content (toValue (pageMetaDescription meta))
+      -- Canonical URL
+      case pageMetaCanonical meta of
+        Just canonicalUrl -> H.link ! A.rel "canonical" ! A.href (toValue canonicalUrl)
+        Nothing -> mempty
       H.link ! A.rel "stylesheet" ! A.href "/style.css"
       H.link ! A.rel "stylesheet" ! A.href "/blog.css"
       H.link ! A.rel "icon" ! A.href "/favicon.ico"
-      H.script ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
+      H.script ! A.async "" ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-FMYV1PLWZ6" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-FMYV1PLWZ6');" :: Text)
-      H.title (toHtml title)
+      H.title (toHtml (pageMetaTitle meta))
+      pageMetaExtraHead meta
     H.body $ do
       H.header $
         H.nav ! A.class_ "top-nav" $ do
@@ -67,12 +114,32 @@ penguinBaseTemplate title content =
       H.script $ H.preEscapedToHtml voronoiScript
 
 -- | Blog-specific base template (uses root-relative paths for assets)
-penguinBlogBaseTemplate :: Text -> Html -> Html
-penguinBlogBaseTemplate title content =
-  H.docTypeHtml ! A.lang "en" $ do
+penguinBlogBaseTemplate :: PageMeta -> Html -> Html
+penguinBlogBaseTemplate meta content =
+  H.docTypeHtml ! A.lang (toValue (pageMetaLang meta)) $ do
     H.head $ do
       H.meta ! A.charset "utf-8"
       H.meta ! A.name "viewport" ! A.content "width=device-width, initial-scale=1"
+      H.meta ! A.name "description" ! A.content (toValue (pageMetaDescription meta))
+      -- Open Graph tags
+      H.meta ! customAttribute "property" "og:title" ! A.content (toValue (pageMetaTitle meta))
+      H.meta ! customAttribute "property" "og:description" ! A.content (toValue (pageMetaDescription meta))
+      H.meta ! customAttribute "property" "og:type" ! A.content "article"
+      H.meta ! customAttribute "property" "og:locale" ! A.content (toValue (ogLocale (pageMetaLang meta)))
+      case pageMetaCanonical meta of
+        Just canonicalUrl -> H.meta ! customAttribute "property" "og:url" ! A.content (toValue canonicalUrl)
+        Nothing -> mempty
+      case pageMetaOgImage meta of
+        Just imageUrl -> H.meta ! customAttribute "property" "og:image" ! A.content (toValue imageUrl)
+        Nothing -> mempty
+      -- Twitter Card tags
+      H.meta ! A.name "twitter:card" ! A.content "summary"
+      H.meta ! A.name "twitter:title" ! A.content (toValue (pageMetaTitle meta))
+      H.meta ! A.name "twitter:description" ! A.content (toValue (pageMetaDescription meta))
+      -- Canonical URL
+      case pageMetaCanonical meta of
+        Just canonicalUrl -> H.link ! A.rel "canonical" ! A.href (toValue canonicalUrl)
+        Nothing -> mempty
       H.link ! A.rel "stylesheet" ! A.href "/style.css"
       H.link ! A.rel "stylesheet" ! A.href "/blog.css"
       H.link ! A.rel "icon" ! A.href "/favicon.ico"
@@ -80,10 +147,11 @@ penguinBlogBaseTemplate title content =
              ! A.type_ "application/atom+xml"
              ! A.rel "alternate"
              ! A.title "Jappie Software B.V. Atom Feed"
-      H.script ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
+      H.script ! A.async "" ! A.src "https://d3js.org/d3.v7.min.js" $ mempty
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-FMYV1PLWZ6" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-FMYV1PLWZ6');" :: Text)
-      H.title (toHtml title)
+      H.title (toHtml (pageMetaTitle meta))
+      pageMetaExtraHead meta
     H.body $ do
       H.header $
         H.nav ! A.class_ "top-nav" $ do
@@ -106,12 +174,18 @@ penguinBlogBaseTemplate title content =
       H.preEscapedToHtml ("<svg class=\"voronoi\"></svg>" :: Text)
       H.script $ H.preEscapedToHtml voronoiScript
 
+-- | Map language code to OG locale format
+ogLocale :: Text -> Text
+ogLocale "nl" = "nl_NL"
+ogLocale "en" = "en_US"
+ogLocale other = other
+
 -- =============================================================================
 -- Landing page (index.html)
 -- =============================================================================
 
 penguinIndexPage :: Html
-penguinIndexPage = penguinBaseTemplate "Jappie Software B.V. \8212 Software Products & Expert Consulting" $
+penguinIndexPage = penguinBaseTemplate indexMeta $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
@@ -178,13 +252,18 @@ penguinIndexPage = penguinBaseTemplate "Jappie Software B.V. \8212 Software Prod
         H.a ! A.href "mailto:hi@jappie.me" $ "get in touch"
         "."
       H.a ! A.href "mailto:hi@jappie.me" ! A.class_ "cta-button" $ "Get in touch"
+  where
+    indexMeta :: PageMeta
+    indexMeta = (defaultPageMeta "Jappie Software B.V. \8212 Software Products & Expert Consulting")
+      { pageMetaCanonical = Just "https://jappiesoftware.com/"
+      }
 
 -- =============================================================================
 -- MijnWebwinkel migration landing page
 -- =============================================================================
 
 mijnwebwinkelMigrationPage :: Html
-mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel migratie \8212 Jappie Software B.V." $
+mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
@@ -279,6 +358,77 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel migratie \8212 J
         H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" $ "hi@jappie.me"
         " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
       H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+  where
+    migrationMeta :: PageMeta
+    migrationMeta = PageMeta
+      { pageMetaTitle       = "MijnWebwinkel migratie \8212 Jappie Software B.V."
+      , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364\&750."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaExtraHead   = migrationFaqJsonLd
+      }
+
+-- | FAQ structured data (JSON-LD) for the migration page.
+-- Makes the page eligible for Google rich snippets.
+migrationFaqJsonLd :: Html
+migrationFaqJsonLd =
+  H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml faqJson
+  where
+    faqJson :: Text
+    faqJson = T.concat
+      [ "{\"@context\":\"https://schema.org\""
+      , ",\"@type\":\"FAQPage\""
+      , ",\"mainEntity\":["
+      , faqEntry
+          "Hoe lang duurt een migratie?"
+          "De technische migratie duurt meestal 1-2 werkdagen. De voorbereiding en controle erbij: reken op een week totaal."
+      , ","
+      , faqEntry
+          "Kan ik mijn domeinnaam behouden?"
+          "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd."
+      , ","
+      , faqEntry
+          "Wat als er iets niet klopt na de migratie?"
+          "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs."
+      , ","
+      , faqEntry
+          "Werkt het ook voor andere talen dan NL/DE/EN?"
+          "Ja. Het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw doelplatform beide ondersteunen."
+      , ","
+      , faqEntry
+          "Kan ik ook naar een ander platform dan Shopify migreren?"
+          "Ja. Shopify is het meest gekozen doelplatform, maar we kunnen ook migreren naar WooCommerce of andere platformen."
+      , ","
+      , faqEntry
+          "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
+          "Ja. We kunnen grootschalige wijzigingen doorvoeren, bijvoorbeeld alt-teksten genereren voor alle afbeeldingen, prijzen aanpassen of beschrijvingen opschonen."
+      , "]}"
+      ]
+
+    faqEntry :: Text -> Text -> Text
+    faqEntry question answer = T.concat
+      [ "{\"@type\":\"Question\""
+      , ",\"name\":" <> jsonString question
+      , ",\"acceptedAnswer\":{\"@type\":\"Answer\""
+      , ",\"text\":" <> jsonString answer
+      , "}}"
+      ]
+
+    -- | Minimal JSON string escaping for known-safe Dutch text
+    jsonString :: Text -> Text
+    jsonString txt = "\"" <> escapeJsonText txt <> "\""
+
+    escapeJsonText :: Text -> Text
+    escapeJsonText = T.concatMap escapeJsonChar
+
+    escapeJsonChar :: Char -> Text
+    escapeJsonChar '"'  = "\\\""
+    escapeJsonChar '\\' = "\\\\"
+    escapeJsonChar '\n' = "\\n"
+    escapeJsonChar '\r' = "\\r"
+    escapeJsonChar '\t' = "\\t"
+    escapeJsonChar c    = T.singleton c
 
 -- =============================================================================
 -- Blog index page (paginated listing)
@@ -286,11 +436,17 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate "MijnWebwinkel migratie \8212 J
 
 penguinBlogIndexPage :: SiteConfig -> [Article] -> PaginationInfo -> Html
 penguinBlogIndexPage _config articles pagination =
-  penguinBlogBaseTemplate "Blog \8212 Jappie Software B.V." $
+  penguinBlogBaseTemplate blogIndexMeta $
     H.main ! A.class_ "blog-listing" $ do
       H.h1 "Blog"
       mapM_ renderBlogSummary articles
       renderPagination pagination
+  where
+    blogIndexMeta :: PageMeta
+    blogIndexMeta = (defaultPageMeta "Blog \8212 Jappie Software B.V.")
+      { pageMetaDescription = "Technical blog about Haskell, Nix, software architecture, and building reliable production systems."
+      , pageMetaCanonical   = Just "https://jappiesoftware.com/blog/"
+      }
 
 renderBlogSummary :: Article -> Html
 renderBlogSummary article =
@@ -326,7 +482,7 @@ renderPagination pagination =
 
 penguinArticlePage :: SiteConfig -> Article -> Html
 penguinArticlePage _config article =
-  penguinBlogBaseTemplate (articleTitle article <> " \8212 Jappie Software B.V.") $
+  penguinBlogBaseTemplate articleMeta $
     H.main ! A.class_ "blog-article" $
       H.article $ do
         H.header $ do
@@ -346,6 +502,33 @@ penguinArticlePage _config article =
           Nothing -> mempty
         H.footer ! A.class_ "article-footer" $
           H.a ! A.href "/blog/" $ H.preEscapedToHtml ("&larr; Back to blog" :: Text)
+  where
+    articleMeta :: PageMeta
+    articleMeta = (defaultPageMeta (articleTitle article <> " \8212 Jappie Software B.V."))
+      { pageMetaDescription = articleDescription article
+      , pageMetaCanonical   = Just ("https://jappiesoftware.com/blog/" <> articleUrl article)
+      }
+
+    -- | Use the article summary text as meta description, falling back to the title.
+    articleDescription :: Article -> Text
+    articleDescription art = case articleSummaryText art of
+      Just summaryText -> T.take 160 (stripHtmlTags summaryText)
+      Nothing          -> articleTitle art
+
+-- | Strip HTML tags from text for use in meta descriptions.
+stripHtmlTags :: Text -> Text
+stripHtmlTags = go False
+  where
+    go :: Bool -> Text -> Text
+    go _ txt | T.null txt = T.empty
+    go inTag txt =
+      let (firstChar, rest) = (T.head txt, T.tail txt)
+      in case firstChar of
+        '<' -> go True rest
+        '>' -> go False rest
+        _   -> if inTag
+               then go True rest
+               else T.cons firstChar (go False rest)
 
 -- =============================================================================
 -- Helpers

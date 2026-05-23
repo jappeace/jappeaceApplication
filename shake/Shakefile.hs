@@ -599,6 +599,12 @@ generatePenguinSite config articles = do
   -- Atom feed
   T.writeFile "_penguin-site/blog/atom" (generateAtomFeed config sortedArticles)
 
+  -- Sitemap
+  T.writeFile "_penguin-site/sitemap.xml" (generatePenguinSitemap sortedArticles)
+
+  -- Robots.txt
+  T.writeFile "_penguin-site/robots.txt" penguinRobotsTxt
+
 -- | File name for penguin paginated blog index
 penguinIndexFileName :: Int -> Text
 penguinIndexFileName 1 = "index.html"
@@ -626,3 +632,31 @@ copyBinaryFile :: FilePath -> FilePath -> IO ()
 copyBinaryFile src dst = do
   Dir.createDirectoryIfMissing True (takeDirectory dst)
   BS.readFile src >>= BS.writeFile dst
+
+-- =============================================================================
+-- Penguin sitemap and robots.txt
+-- =============================================================================
+
+-- | Generate a sitemap.xml for the penguin site with all known URLs.
+generatePenguinSitemap :: [Article] -> Text
+generatePenguinSitemap articles = T.unlines $
+  [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+  , "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+  , sitemapUrl "https://jappiesoftware.com/"
+  , sitemapUrl "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
+  , sitemapUrl "https://jappiesoftware.com/blog/"
+  ]
+  ++ map (\art -> sitemapUrl ("https://jappiesoftware.com/blog/" <> articleUrl art)) articles
+  ++ ["</urlset>"]
+
+sitemapUrl :: Text -> Text
+sitemapUrl loc = "  <url><loc>" <> loc <> "</loc></url>"
+
+-- | robots.txt for the penguin site, with sitemap reference.
+penguinRobotsTxt :: Text
+penguinRobotsTxt = T.unlines
+  [ "User-agent: *"
+  , "Disallow:"
+  , ""
+  , "Sitemap: https://jappiesoftware.com/sitemap.xml"
+  ]
