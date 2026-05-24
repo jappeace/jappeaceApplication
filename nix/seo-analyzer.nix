@@ -1,4 +1,4 @@
-{ lib, buildNpmPackage, fetchurl, jq }:
+{ lib, buildNpmPackage, fetchurl }:
 
 buildNpmPackage rec {
   pname = "seo-analyzer";
@@ -11,8 +11,6 @@ buildNpmPackage rec {
   };
 
   sourceRoot = "package";
-
-  nativeBuildInputs = [ jq ];
 
   # The npm tarball is missing bin/version.js and bin/analyzer.js
   # (publishing bug upstream — files field only lists dist/).
@@ -82,9 +80,9 @@ module.exports = options => {
 };
 BINEOF
 
-    # Add bin/ to files list so npm copies it during install
-    jq '.files += ["bin"]' package.json > package.json.tmp
-    mv package.json.tmp package.json
+    # Add bin/ to files list so npm copies it during install.
+    # Use sed instead of jq since jq isn't available in the npm deps derivation.
+    sed -i '/"dist"/a\    ,"bin"' package.json
   '';
 
   npmDepsHash = "sha256-kA0Ikr94a6GvsNUTLEKmsZx50Coud2JEjaAzjFlHjZU=";
