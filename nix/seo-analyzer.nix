@@ -1,28 +1,47 @@
-{ lib, buildNpmPackage, fetchurl }:
+{ lib, stdenv, fetchFromGitHub, fetchurl, fetchPnpmDeps, pnpmConfigHook
+, pnpm_8, nodejs, makeWrapper
+}:
 
-buildNpmPackage rec {
+let
+  # The npm tarball contains pre-built dist/ (compiled from TypeScript).
+  # The GitHub source's rollup build fails on this Node version, so we
+  # copy dist/ from the published tarball instead.
+  npmDist = fetchurl {
+    url = "https://registry.npmjs.org/seo-analyzer/-/seo-analyzer-3.2.0.tgz";
+    hash = "sha256-J15KGRIN5wVjNrajlzuMbwwSmsgv/HOmJ4C4qXSpPcg=";
+  };
+in
+stdenv.mkDerivation (finalAttrs: {
   pname = "seo-analyzer";
   version = "3.2.0";
 
-  # Use the npm registry tarball which already contains compiled JS (dist/)
-  src = fetchurl {
-    url = "https://registry.npmjs.org/seo-analyzer/-/seo-analyzer-${version}.tgz";
-    hash = "sha256-J15KGRIN5wVjNrajlzuMbwwSmsgv/HOmJ4C4qXSpPcg=";
+  src = fetchFromGitHub {
+    owner = "maddevsio";
+    repo = "seo-analyzer";
+    rev = "8ec76a346224e88a0508033a6494e34e5707aa73";
+    hash = "sha256-AlQRqwsmgST2N1TflRuicul9Rs5f48FSZ61PoIzGoEs=";
   };
 
-  sourceRoot = "package";
+  pnpmDeps = fetchPnpmDeps {
+    inherit (finalAttrs) pname version src;
+    pnpm = pnpm_8;
+    fetcherVersion = 3;
+    hash = "sha256-mEWG+UEVEFNasLUAF8dGjtkZqPNs0rzgLkifDskhN5I=";
+  };
 
-  # The npm tarball is missing bin/version.js and bin/analyzer.js
-  # (publishing bug upstream — files field only lists dist/).
-  # Restore them and add bin/ to the files list so npmInstallHook copies them.
+  nativeBuildInputs = [
+    pnpmConfigHook
+    pnpm_8
+    nodejs
+    makeWrapper
+  ];
+
   postPatch = ''
-    cp ${./seo-analyzer-package-lock.json} package-lock.json
+    # Copy pre-built dist/ from npm tarball (TS build fails on this Node)
+    tar xzf ${npmDist} package/dist --strip-components=1
 
-    cat > bin/version.js <<'BINEOF'
-const pkg = require('../package.json');
-module.exports = () => { console.log(pkg.version); };
-BINEOF
-
+    # Fix bin/analyzer.js: upstream addRule only accepts functions but the
+    # CLI passes rule name strings. Resolve names to functions via getDefaultRules().
     cat > bin/analyzer.js <<'BINEOF'
 const SeoAnalyzer = require('../dist/index.js');
 
@@ -79,19 +98,27 @@ module.exports = options => {
   analyzer.outputConsole().run();
 };
 BINEOF
-
-    # Add bin/ to files list so npm copies it during install.
-    # Use sed instead of jq since jq isn't available in the npm deps derivation.
-    sed -i '/"dist"/a\    ,"bin"' package.json
   '';
 
-  npmDepsHash = "sha256-kA0Ikr94a6GvsNUTLEKmsZx50Coud2JEjaAzjFlHjZU=";
+  dontBuild = true;
 
-  dontNpmBuild = true;
+  installPhase = ''
+    runHook preInstall
+
+    mkdir -p $out/lib/node_modules/seo-analyzer
+    cp -r bin dist package.json $out/lib/node_modules/seo-analyzer/
+    cp -r node_modules $out/lib/node_modules/seo-analyzer/
+
+    mkdir -p $out/bin
+    makeWrapper ${nodejs}/bin/node $out/bin/seo-analyzer \
+      --add-flags "$out/lib/node_modules/seo-analyzer/bin/index.js"
+
+    runHook postInstall
+  '';
 
   meta = {
     description = "SEO analyzer for static HTML files";
     homepage = "https://github.com/maddevsio/seo-analyzer";
     license = lib.licenses.mit;
   };
-}
+})
