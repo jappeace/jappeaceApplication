@@ -341,8 +341,10 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
           H.p $ do
             H.a ! A.href "/waarom-mijnwebwinkel.html" $ "Waarom wordt MijnWebwinkel niet meer doorontwikkeld?"
             H.preEscapedToHtml (" &rarr;" :: Text)
+      H.p $ H.preEscapedToHtml ("Wij zijn geen Shopify-partner die commissie verdient op uw overstap. Wij zijn migratie-specialisten. U kiest het platform &mdash; Shopify, WooCommerce, of iets anders &mdash; wij regelen de techniek." :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
+        H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (" &mdash; u kiest de bestemming, wij migreren naar elk platform" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
@@ -548,8 +550,10 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $
           H.p $ H.preEscapedToHtml ("U voelt het al langer: CCV Shop houdt u tegen. Beperkte features, achterblijvende ontwikkeling, en het gevoel dat uw shop kwetsbaar is op een platform dat niet meegroeit. Elke dag dat u wacht is een dag dat uw concurrent op Shopify u inhaalt. Wij hebben al meerdere webshops succesvol gemigreerd &mdash; inclusief shops met duizenden producten en meerdere talen." :: Text)
+      H.p $ H.preEscapedToHtml ("Wij zijn geen Shopify-partner die commissie verdient op uw overstap. Wij zijn migratie-specialisten. U kiest het platform &mdash; Shopify, WooCommerce, of iets anders &mdash; wij regelen de techniek." :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
+        H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (" &mdash; u kiest de bestemming, wij migreren naar elk platform" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
@@ -741,8 +745,10 @@ lightspeedMigrationPage = penguinBaseTemplate lightspeedMeta $
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $
           H.p $ H.preEscapedToHtml ("U bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding raakt u uw Google-posities kwijt &mdash; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat uw SEO intact blijft." :: Text)
+      H.p $ H.preEscapedToHtml ("Wij zijn geen Shopify-partner die commissie verdient op uw overstap. Wij zijn migratie-specialisten. U kiest het platform &mdash; Shopify, WooCommerce, of iets anders &mdash; wij regelen de techniek." :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
+        H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (" &mdash; u kiest de bestemming, wij migreren naar elk platform" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
