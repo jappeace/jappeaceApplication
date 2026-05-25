@@ -280,7 +280,7 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap MijnWebwinkel"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. MijnWebwinkel wordt al jaren niet meer doorontwikkeld, de community is gesloten, en support reageert niet. Hoelang blijft u nog wachten? Wij verhuizen uw complete shop naar Shopify &mdash; geautomatiseerd, zonder dataverlies, zonder downtime." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href "mailto:hi@jappie.me?subject=Migratie%20offerte" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
     H.section ! A.class_ "for-who" ! A.id "what" $ do
@@ -397,11 +397,8 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te ontsnappen?"
       H.p $ H.preEscapedToHtml ("U hoeft niet langer te wachten tot MijnWebwinkel beter wordt &mdash; dat gaat niet gebeuren. " :: Text)
-      H.p $ do
-        "Stuur een mail naar "
-        H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" $ "hi@jappie.me"
-        " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
-      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
+      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
@@ -493,7 +490,7 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap CCV Shop"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. CCV Shop voelt steeds beperkter, de features blijven achter, en u weet dat er betere opties zijn &mdash; maar hoe krijgt u alles veilig overgezet? Wij verhuizen uw complete shop naar Shopify. Geautomatiseerd, zonder dataverlies, zonder downtime." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href "mailto:hi@jappie.me?subject=Migratie%20offerte" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
     H.section ! A.class_ "for-who" ! A.id "what" $ do
@@ -603,11 +600,8 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te ontsnappen?"
       H.p $ H.preEscapedToHtml ("U hoeft niet langer te wachten tot CCV Shop beter wordt. Neem de controle terug over uw webshop." :: Text)
-      H.p $ do
-        "Stuur een mail naar "
-        H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" $ "hi@jappie.me"
-        " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
-      H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
+      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
@@ -689,7 +683,7 @@ lightspeedMigrationPage = penguinBaseTemplate lightspeedMeta $
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap Lightspeed"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt u richting hun nieuwe platform of de deur uit. Ondertussen draait uw webshop op verouderde software die steeds minder krijgt. Wij verhuizen uw complete shop naar Shopify &mdash; geautomatiseerd, zonder dataverlies, zonder SEO-verlies." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me?subject=Lightspeed%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href "mailto:hi@jappie.me?subject=Migratie%20offerte" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
     H.section ! A.class_ "for-who" ! A.id "what" $ do
@@ -799,11 +793,8 @@ lightspeedMigrationPage = penguinBaseTemplate lightspeedMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te ontsnappen?"
       H.p $ H.preEscapedToHtml ("Lightspeed gaat u niet helpen met deze overstap. Wij wel." :: Text)
-      H.p $ do
-        "Stuur een mail naar "
-        H.a ! A.href "mailto:hi@jappie.me?subject=Lightspeed%20migratie" $ "hi@jappie.me"
-        " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
-      H.a ! A.href "mailto:hi@jappie.me?subject=Lightspeed%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
+      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
@@ -977,7 +968,7 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
       H.p $ do
         H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Bekijk onze migratieservice"
         H.preEscapedToHtml (" &mdash; volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     waaromMeta :: PageMeta
     waaromMeta = PageMeta
