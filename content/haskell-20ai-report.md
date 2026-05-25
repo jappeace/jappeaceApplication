@@ -24,17 +24,19 @@ A Haskell program is a collection of *modules* (Chapter 5).
 The module `Main` must export `main :: IO ()`,
 unless you are writing a library,
 in which case you instead export a type class
-that nobody can figure out how to instantiate
-and a Template Haskell splice that does it for them.
+that nobody can figure out how to instantiate.
+(In Haskell 2010 you'd use a Template Haskell splice
+to generate the instances. In Haskell 20AI you ask the AI.
+See Chapter 9.)
 
-In Haskell 20AI, every `.hs` file begins with:
+In Haskell 20AI, your `.hs` files begin with... nothing.
+No `LANGUAGE` pragma at all.
+You set `default-language: Haskell20AI` once in your `.cabal` file
+and every module gets 55 extensions for free.
 
-```haskell
-{-# LANGUAGE GHC2024 #-}
-```
-
-This single pragma replaces the 30-line extension block
-that your project accumulated between 2016 and 2023.
+The 30-line extension block
+that your project accumulated between 2016 and 2023?
+Gone. Deleted. Composted.
 If you still maintain a per-file extension list longer than 5 lines,
 the compiler is entitled to emit a warning
 of severity `judgmental`.
@@ -422,94 +424,245 @@ are HTTP requests to REST APIs,
 which is technically a foreign function interface
 if you squint hard enough.
 
-## Chapter 9: The Complete GHC2024 Extension Set
+## Chapter 9: The Deprecation of Template Haskell and GHC.Generics
 
-For reference, `GHC2024` enables the following extensions.
-Extensions **new** compared to GHC2021 are marked with a star:
+This is the most controversial chapter
+and the Haskell 20AI report makes no apologies for it.
 
-| Extension | New in GHC2024 |
+Template Haskell and `GHC.Generics` are **soft-banned**.
+
+Not removed from the compiler. Not deleted from Hackage.
+You can still enable `TemplateHaskell` and use `GHC.Generics`
+if you want to.
+But Haskell 20AI does not enable them by default,
+officially discourages their use,
+and provides a better alternative:
+you ask the AI to write the code.
+
+### 9.1 The Case Against Template Haskell
+
+Template Haskell was always a hack.
+A glorious, powerful, stage-polymorphic hack,
+but a hack nonetheless.
+
+It breaks parallel compilation.
+It breaks cross-compilation.
+It makes your build times unpredictable.
+It produces error messages
+that reference generated code you cannot see.
+It requires `TemplateHaskell` and `QuasiQuotes`,
+neither of which made it into any language edition,
+because even the committee knew
+something was off.
+
+The main use of Template Haskell was code generation:
+deriving JSON instances, generating lenses,
+creating database schemas, writing boilerplate.
+In the year 20AI,
+that is what AI code generation does.
+It does it at development time, not compile time.
+The generated code is visible, reviewable, and editable.
+It doesn't break `-j8`.
+
+```haskell
+-- Haskell 2010 (Template Haskell era):
+$(deriveJSON defaultOptions ''User)
+$(makeLenses ''AppState)
+
+-- Haskell 20AI (vibe coding era):
+-- You asked the AI to write these.
+-- It wrote them. You reviewed them.
+-- They're right there in the file.
+-- You can read them. You can modify them.
+-- Your build doesn't recompile the entire universe
+-- because someone changed a type.
+instance ToJSON User where
+  toJSON User{..} = object
+    [ "name" .= userName
+    , "age"  .= userAge
+    ]
+instance FromJSON User where
+  parseJSON = withObject "User" $ \obj -> do
+    userName <- obj .: "name"
+    userAge  <- obj .: "age"
+    pure User{..}
+```
+
+### 9.2 The Case Against GHC.Generics
+
+`GHC.Generics` was the type-safe alternative to Template Haskell.
+Instead of generating code at compile time,
+you write a generic representation of your datatype
+and then write generic functions over that representation.
+
+The problem is that `GHC.Generics` code is unreadable.
+`Rep`, `M1`, `K1`, `(:*:)`, `(:+:)` --
+these are not identifiers,
+they are the cry of a type system in pain.
+Compile times for generics-heavy code
+can rival Template Haskell.
+Error messages are worse.
+
+The Haskell 20AI report recognizes that
+the problem TH and Generics both solve --
+"I don't want to write boilerplate" --
+has a simpler solution in 20AI:
+tell the AI what you want and it writes the boilerplate.
+The boilerplate is now visible source code.
+It compiles fast.
+It produces readable error messages.
+When it's wrong, you can see that it's wrong.
+
+### 9.3 What Replaces Them
+
+Vibe coding.
+
+Not as a joke.
+As a serious engineering practice.
+
+The macro system of Haskell 20AI
+is a programmer sitting next to an LLM
+saying "write me the `ToJSON` instance for this type"
+and the LLM writing it.
+The programmer reviews it.
+It goes into the source tree.
+It is checked by the type checker.
+It is tested by the test suite.
+
+This has several advantages
+over compile-time code generation:
+
+1. **Visibility**: the generated code is in the file, not hidden behind a splice
+2. **Debuggability**: when it's wrong, you can read it
+3. **Build performance**: no staged compilation, no recompilation cascades
+4. **Cross-compilation**: works everywhere, because it's just Haskell
+5. **Simplicity**: no need to learn the TH or Generics API
+
+The Haskell 20AI report acknowledges
+that this is a radical position.
+It also notes that most Haskell programmers
+are already doing this
+and just haven't admitted it yet.
+
+## Chapter 10: The Complete Haskell 20AI Extension Set
+
+
+Haskell 20AI starts from GHC2024 and goes further.
+The committee was too cautious. We are not.
+The following extensions are all enabled by default in Haskell 20AI.
+
+Extensions inherited from **GHC2024** are unmarked.
+Extensions **new in GHC2024** (compared to GHC2021) are marked with a star.
+Extensions **new in Haskell 20AI** (beyond GHC2024) are marked with two stars.
+
+| Extension | Origin |
 |---|---|
-| BangPatterns | |
-| BinaryLiterals | |
-| ConstrainedClassMethods | |
-| ConstraintKinds | |
-| **DataKinds** | yes |
-| DeriveDataTypeable | |
-| DeriveFoldable | |
-| DeriveFunctor | |
-| DeriveGeneric | |
-| DeriveLift | |
-| DeriveTraversable | |
-| **DerivingStrategies** | yes |
-| **DisambiguateRecordFields** | yes |
-| DoAndIfThenElse | |
-| EmptyCase | |
-| EmptyDataDecls | |
-| EmptyDataDeriving | |
-| ExistentialQuantification | |
-| ExplicitForAll | |
-| **ExplicitNamespaces** | yes |
-| FieldSelectors | |
-| FlexibleContexts | |
-| FlexibleInstances | |
-| ForeignFunctionInterface | |
-| **GADTs** | yes |
-| GADTSyntax | |
-| GeneralisedNewtypeDeriving | |
-| HexFloatLiterals | |
-| ImplicitPrelude | |
-| ImportQualifiedPost | |
-| InstanceSigs | |
-| KindSignatures | |
-| **LambdaCase** | yes |
-| **MonoLocalBinds** | yes |
-| MonomorphismRestriction | |
-| MultiParamTypeClasses | |
-| NamedFieldPuns | |
-| NamedWildCards | |
-| NumericUnderscores | |
-| PatternGuards | |
-| PolyKinds | |
-| PostfixOperators | |
-| RankNTypes | |
-| RelaxedPolyRec | |
-| **RoleAnnotations** | yes |
-| ScopedTypeVariables | |
-| StandaloneDeriving | |
-| StandaloneKindSignatures | |
-| StarIsType | |
-| TraditionalRecordSyntax | |
-| TupleSections | |
-| TypeApplications | |
-| TypeOperators | |
-| TypeSynonymInstances | |
+| BangPatterns | GHC2021 |
+| BinaryLiterals | GHC2021 |
+| **BlockArguments** | **20AI** |
+| ConstrainedClassMethods | GHC2021 |
+| ConstraintKinds | GHC2021 |
+| *DataKinds* | *GHC2024* |
+| DeriveDataTypeable | GHC2021 |
+| DeriveFoldable | GHC2021 |
+| DeriveFunctor | GHC2021 |
+| DeriveGeneric | GHC2021 |
+| DeriveLift | GHC2021 |
+| DeriveTraversable | GHC2021 |
+| *DerivingStrategies* | *GHC2024* |
+| **DerivingVia** | **20AI** |
+| *DisambiguateRecordFields* | *GHC2024* |
+| DoAndIfThenElse | GHC2021 |
+| **DuplicateRecordFields** | **20AI** |
+| EmptyCase | GHC2021 |
+| EmptyDataDecls | GHC2021 |
+| EmptyDataDeriving | GHC2021 |
+| ExistentialQuantification | GHC2021 |
+| ExplicitForAll | GHC2021 |
+| *ExplicitNamespaces* | *GHC2024* |
+| FieldSelectors | GHC2021 |
+| FlexibleContexts | GHC2021 |
+| FlexibleInstances | GHC2021 |
+| ForeignFunctionInterface | GHC2021 |
+| *GADTs* | *GHC2024* |
+| GADTSyntax | GHC2021 |
+| GeneralisedNewtypeDeriving | GHC2021 |
+| HexFloatLiterals | GHC2021 |
+| ImplicitPrelude | GHC2021 |
+| ImportQualifiedPost | GHC2021 |
+| InstanceSigs | GHC2021 |
+| KindSignatures | GHC2021 |
+| *LambdaCase* | *GHC2024* |
+| *MonoLocalBinds* | *GHC2024* |
+| MonomorphismRestriction | GHC2021 |
+| MultiParamTypeClasses | GHC2021 |
+| **MultiWayIf** | **20AI** |
+| NamedFieldPuns | GHC2021 |
+| NamedWildCards | GHC2021 |
+| NumericUnderscores | GHC2021 |
+| **OverloadedRecordDot** | **20AI** |
+| **OverloadedStrings** | **20AI** |
+| PatternGuards | GHC2021 |
+| PolyKinds | GHC2021 |
+| PostfixOperators | GHC2021 |
+| RankNTypes | GHC2021 |
+| **RecordWildCards** | **20AI** |
+| RelaxedPolyRec | GHC2021 |
+| *RoleAnnotations* | *GHC2024* |
+| ScopedTypeVariables | GHC2021 |
+| StandaloneDeriving | GHC2021 |
+| StandaloneKindSignatures | GHC2021 |
+| StarIsType | GHC2021 |
+| TraditionalRecordSyntax | GHC2021 |
+| TupleSections | GHC2021 |
+| **TypeFamilies** | **20AI** |
+| TypeApplications | GHC2021 |
+| TypeOperators | GHC2021 |
+| TypeSynonymInstances | GHC2021 |
 
-That is 48 extensions, enabled with one pragma.
-The Haskell 20AI report considers this a triumph
-of engineering over bureaucracy.
+That is 55 extensions, enabled with one pragma.
+GHC2024 gave us 48. Haskell 20AI adds 7 more
+because the committee was right to be cautious
+and we are right to be reckless.
 
-## Chapter 10: Extensions NOT in GHC2024 (But You'll Want Anyway)
+## Chapter 11: Why the 20AI Extensions Were Promoted
 
-The following extensions are commonly used
-but did not make the GHC2024 cut.
-The Haskell 20AI report documents them here
-for the sake of honesty:
+GHC2024 omitted seven extensions
+that every working Haskell programmer enables anyway.
+Haskell 20AI promotes them to default status.
+Here is why each one earned its place:
 
-- `OverloadedStrings` -- because `String` is `[Char]` and you know it
-- `OverloadedRecordDot` -- `user.name` instead of `name user`
-- `DuplicateRecordFields` -- every type has a `name` field
-- `TypeFamilies` -- you were going to enable it anyway
-- `MultiWayIf` -- like guards but inline
-- `BlockArguments` -- `when condition do` instead of `when condition $ do`
-- `RecordWildCards` -- controversial, but useful
+- `OverloadedStrings` -- `String` is `[Char]` and everyone uses `Text`.
+  The fiction that string literals produce `[Char]` by default
+  is a historical accident that costs every project one pragma.
+  Haskell 20AI ends the charade.
+- `OverloadedRecordDot` -- `user.name` instead of `name user`.
+  Every other language on earth uses dot syntax for field access.
+  Haskell held out for 34 years. That's long enough.
+- `DuplicateRecordFields` -- every data type has a field called `name`,
+  or `id`, or `value`. This extension lets them coexist.
+  Combined with `DisambiguateRecordFields` (already in GHC2024),
+  the record situation is finally livable.
+- `TypeFamilies` -- if you have `GADTs` and `DataKinds` enabled
+  (and in GHC2024 you do),
+  you are going to want type families.
+  Pretending otherwise is an exercise in self-deception.
+- `MultiWayIf` -- guards are great. Inline guards are greater.
+  `if | x > 0 -> "positive" | otherwise -> "non-positive"`
+  reads better than a chain of `if-then-else`.
+- `BlockArguments` -- `when condition do` instead of `when condition $ do`.
+  The dollar sign before `do` is noise.
+  `BlockArguments` removes it.
+  Your code becomes quieter and easier to read.
+- `RecordWildCards` -- controversial, yes.
+  But `RecordWildCards` is enabled in roughly 80% of Haskell codebases.
+  The committee can debate it. Haskell 20AI ships it.
+- `DerivingVia` -- the most powerful deriving strategy,
+  and inexplicably absent from GHC2024
+  even though `DerivingStrategies` is included.
+  Haskell 20AI corrects this oversight.
 
-These were omitted from GHC2024 either because
-they change the meaning of existing code,
-or because the committee had strong opinions,
-or because nobody could agree
-and tabling the issue was the only unanimous vote.
-
-## Chapter 11: Specification of Derived Instances
+## Chapter 12: Specification of Derived Instances
 
 Deriving instances works as in Haskell 2010,
 extended by `DerivingStrategies` (section 4.3).
@@ -520,19 +673,23 @@ The compiler can derive `Eq`, `Ord`, `Show`, `Read`,
 For anything else, you write it by hand
 or use `anyclass` deriving
 or `DerivingVia`.
-`DerivingVia` is not in GHC2024
-but the Haskell 20AI report believes in your ability
-to add one more pragma to your file.
+`DerivingVia` was inexplicably absent from GHC2024.
+Haskell 20AI corrects this. It's enabled by default.
 
-## Chapter 12: Compiler Pragmas
+## Chapter 13: Compiler Pragmas
 
 ```haskell
-{-# LANGUAGE GHC2024 #-}           -- the only one you need
 {-# OPTIONS_GHC -Wall #-}          -- catch warnings
 {-# OPTIONS_GHC -Wno-unused-do-bind #-}  -- if you must
 {-# INLINE myFunction #-}          -- for performance
 {-# SPECIALIZE myFunction :: Int -> Int #-}  -- for more performance
 ```
+
+Notice what's missing: no `LANGUAGE` pragma.
+Haskell 20AI is the default language.
+Set `default-language: Haskell20AI` in your `.cabal` file
+and every module gets all 55 extensions for free.
+No per-file pragma block. No copy-paste. No forgetting one.
 
 The Haskell 20AI report recommends `-Wall` in every module
 and `-Werror` in CI.
@@ -547,16 +704,19 @@ Let it help you.
 | 2010 | Haskell 2010 | 1 (FFI) | Cautious |
 | 2021 | GHC2021 | 40 | Ambitious |
 | 2024 | GHC2024 | 48 | Let's Go |
-| 20AI | Haskell 20AI | 48 + vibes | Inevitable |
+| 20AI | Haskell 20AI | 55 | Inevitable |
 
 ## Appendix B: How to Upgrade
 
-1. Replace your extension block with `{-# LANGUAGE GHC2024 #-}`
-2. Set `default-language: GHC2024` in your `.cabal` file
+1. Set `default-language: Haskell20AI` in your `.cabal` file
+2. Delete every `{-# LANGUAGE ... #-}` pragma that Haskell20AI covers (that's 55 of them)
 3. Run `cabal build`
 4. Fix the three warnings about `MonoLocalBinds` changing inference
-5. Marvel at how little broke
-6. Wonder why you didn't do this sooner
+5. Fix the one warning about `OverloadedStrings` changing a literal's type
+6. Marvel at how little broke
+7. Delete the now-empty pragma blocks from every file
+8. Feel the weight lift off your shoulders
+9. Wonder why you didn't do this sooner
 
 ## Appendix C: Acknowledgments
 
