@@ -272,7 +272,7 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
-      H.h1 "Migreer van MijnWebwinkel"
+      H.h1 "Ontsnap MijnWebwinkel"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Volledig geautomatiseerde migratie van uw webshop naar Shopify, WooCommerce of een ander platform. Producten, categorie&euml;n, vertalingen, afbeeldingen en SEO-redirects &mdash; zonder handmatig overtypen." :: Text)
       H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
@@ -373,7 +373,7 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
   where
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
-      { pageMetaTitle       = "MijnWebwinkel migratie \8212 Jappie Software B.V."
+      { pageMetaTitle       = "Ontsnap MijnWebwinkel \8212 Migratie naar Shopify \8212 Jappie Software B.V."
       , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364\&750."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
@@ -459,7 +459,7 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
-      H.h1 "Migreer van CCV Shop"
+      H.h1 "Ontsnap CCV Shop"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Volledig geautomatiseerde migratie van uw CCV Shop naar Shopify. Producten, categorie&euml;n, vertalingen, afbeeldingen en SEO-redirects &mdash; zonder handmatig overtypen." :: Text)
       H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
@@ -555,7 +555,7 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
   where
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
-      { pageMetaTitle       = "CCV Shop migratie \8212 Jappie Software B.V."
+      { pageMetaTitle       = "Ontsnap CCV Shop \8212 Migratie naar Shopify \8212 Jappie Software B.V."
       , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364\&750."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-ccvshop.html"
