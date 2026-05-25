@@ -6,6 +6,7 @@ module PenguinTemplates
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
+  , mijnwebwinkelWaaromPage
   , PageMeta(..)
   , defaultPageMeta
   ) where
@@ -335,8 +336,11 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
     H.section ! A.class_ "results" $ do
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
-        H.blockquote $
+        H.blockquote $ do
           H.p $ H.preEscapedToHtml ("U weet het al: MijnWebwinkel gaat nergens meer heen. Geen nieuwe features, geen community, trage support. Elke dag dat u wacht is een dag dat uw concurrent op Shopify u inhaalt. Wij hebben al een webshop met 2.400+ producten, drie talen en drie domeinen succesvol gemigreerd. Het werkt, want het is al gedaan." :: Text)
+          H.p $ do
+            H.a ! A.href "/waarom-mijnwebwinkel.html" $ "Waarom wordt MijnWebwinkel niet meer doorontwikkeld?"
+            H.preEscapedToHtml (" &rarr;" :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
@@ -869,6 +873,141 @@ lightspeedFaqJsonLd =
     escapeJsonChar '\r' = "\\r"
     escapeJsonChar '\t' = "\\t"
     escapeJsonChar c    = T.singleton c
+
+-- =============================================================================
+-- MijnWebwinkel "Waarom wordt het verwaarloosd?" article page
+-- =============================================================================
+
+mijnwebwinkelWaaromPage :: Html
+mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
+  H.main $ do
+    -- Hero
+    H.section ! A.class_ "hero" $ do
+      H.h1 "Waarom wordt MijnWebwinkel niet meer doorontwikkeld?"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Het korte antwoord: MijnWebwinkel is in 2021 verkocht aan een Noors softwareconglomeraat. Sindsdien is de code bevroren, zijn de prijzen verdubbeld, en wordt het platform afgebouwd ten gunste van een Noorse opvolger. Dit is geen complottheorie &mdash; het is gewoon de financi&euml;le logica van private equity." :: Text)
+
+    -- Timeline
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "De tijdlijn"
+      H.ol $ do
+        H.li $ do
+          H.strong "2005"
+          H.preEscapedToHtml (" &mdash; Alex Pansier richt MijnWebwinkel op in Oss. Het platform groeit organisch naar bijna 7.000 webshops." :: Text)
+        H.li $ do
+          H.strong "November 2021"
+          H.preEscapedToHtml (" &mdash; " :: Text)
+          H.a ! A.href "https://www.visma.com/news/visma-strengthens-its-position-in-the-benelux-e-commerce-market-with-the-acquisition-of-mijnwebwinkel" $ "Visma neemt MijnWebwinkel over"
+          ". De oprichter vertrekt. Visma is een Noors softwareconglomeraat (15.000 medewerkers, 170+ bedrijven) in handen van het Britse private-equityfonds Hg Capital."
+        H.li $ do
+          H.strong "2022\8211\&2025"
+          H.preEscapedToHtml (" &mdash; Prijzen verdubbelen (&euro;20 &rarr; &euro;40/maand). Ontwikkeling stopt. Het aantal webshops daalt van ~7.000 naar ~4.500." :: Text)
+        H.li $ do
+          H.strong "November 2025"
+          H.preEscapedToHtml (" &mdash; " :: Text)
+          H.a ! A.href "https://www.emerce.nl/wire/mijnwebwinkel-mystore-lanceren-acendy-nieuw-tijdperk-ecommerce" $ "MijnWebwinkel wordt samengevoegd met het Noorse Mystore"
+          H.preEscapedToHtml (" tot &ldquo;Acendy&rdquo;. De MijnWebwinkel-code is effectief end-of-life." :: Text)
+        H.li $ do
+          H.strong "Februari 2026"
+          H.preEscapedToHtml (" &mdash; " :: Text)
+          H.a ! A.href "https://www.privateequitywire.co.uk/hg-spins-out-e500m-of-visma-assets-as-ipo-plans-stall/" $ H.preEscapedToHtml ("Visma stoot &euro;500 miljoen aan bedrijven af" :: Text)
+          " (waaronder Acendy/MijnWebwinkel) in een nieuw vehikel genaamd Norvato. Reden: Visma bereidt een beursgang voor en wil alleen kernproducten behouden."
+
+    -- Why this happens
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Waarom wordt het verwaarloosd?"
+      H.p $ H.preEscapedToHtml ("MijnWebwinkel is geen slecht bedrijf met incompetente ontwikkelaars. Het is een <strong>winstgevend platform dat bewust wordt leeggemolken</strong> door de eigenaren. Dit is het standaard private-equity draaiboek:" :: Text)
+      H.ol $ do
+        H.li $ do
+          H.strong "Koop goedkoop"
+          " \8212 een winstgevend SaaS-platform met duizenden betalende klanten"
+        H.li $ do
+          H.strong "Verhoog prijzen"
+          H.preEscapedToHtml (" &mdash; van &euro;20 naar &euro;40/maand (+100%). Acendy gaat naar &euro;80\8211\&150/maand." :: Text)
+        H.li $ do
+          H.strong "Verlaag kosten"
+          " \8212 stop alle ontwikkeling, minimaliseer support"
+        H.li $ do
+          H.strong "Melk de marge"
+          H.preEscapedToHtml (" &mdash; 4.500 shops &times; &euro;40/maand = &euro;2,1 miljoen per jaar aan inkomsten met minimale kosten" :: Text)
+        H.li $ do
+          H.strong "Voeg samen of verkoop"
+          " \8212 als de melkkoe opdroogt, fuseer met een ander product of stoot af"
+
+    -- Acendy is not the answer
+    H.section ! A.class_ "results" $ do
+      H.h2 $ H.preEscapedToHtml ("Maar Acendy dan? Is dat niet de &ldquo;oplossing&rdquo;?" :: Text)
+      H.p $ H.preEscapedToHtml ("Acendy is gebouwd op de Noorse Mystore-code, niet op de MijnWebwinkel-code. Het is <strong>een compleet ander platform</strong>. U moet:" :: Text)
+      H.ul $ do
+        H.li "Uw hele webshop opnieuw inrichten"
+        H.li $ H.preEscapedToHtml ("Twee keer zoveel betalen (&euro;40 &rarr; &euro;80\8211\&150/maand)" :: Text)
+        H.li "Wennen aan een nieuwe interface met Noorse roots"
+        H.li $ H.preEscapedToHtml ("Vertrouwen op dezelfde eigenaren die MijnWebwinkel al hebben verwaarloosd" :: Text)
+      H.p $ do
+        "Onafhankelijke analyses concluderen dat Acendy "
+        H.a ! A.href "https://www.syncer.io/blogs/migration-knowledge/mijnwebwinkel-becomes-acendy-what-this-is-going-to-mean" $ H.preEscapedToHtml ("&ldquo;fundamenteel duurder is dan Shopify&rdquo;" :: Text)
+        " terwijl het minder flexibiliteit en minder apps biedt. "
+        H.a ! A.href "https://opklopper.nl/blog/acendy" $ "Opklopper adviseert"
+        " winkeliers om alternatieven te overwegen."
+
+    -- The numbers
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "De cijfers"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 "-35%"
+          H.p "Daling in het aantal MijnWebwinkel-shops sinds de piek in 2022. Van ~7.000 naar ~4.500."
+        H.li ! A.class_ "card" $ do
+          H.h3 "10:1"
+          H.p "Verhouding vertrek vs. aankomst in de afgelopen 90 dagen. 40 shops vertrokken, 4 bijgekomen."
+        H.li ! A.class_ "card" $ do
+          H.h3 "55%"
+          H.p "Van de vertrekkende MijnWebwinkel-shops kiest 55% voor Shopify als bestemming."
+        H.li ! A.class_ "card" $ do
+          H.h3 "+100%"
+          H.p $ H.preEscapedToHtml ("Prijsstijging sinds de overname: van &euro;20 naar &euro;40/maand, zonder nieuwe features." :: Text)
+      H.p ! A.class_ "engagement-note" $ do
+        "Bron: "
+        H.a ! A.href "https://storeleads.app/reports/mijnwebwinkel" $ "StorLeads.app"
+        " (mei 2026)"
+
+    -- Sources
+    H.section ! A.class_ "about" $ do
+      H.h2 "Bronnen"
+      H.ul $ do
+        H.li $ do
+          H.a ! A.href "https://www.visma.com/news/visma-strengthens-its-position-in-the-benelux-e-commerce-market-with-the-acquisition-of-mijnwebwinkel" $ "Visma persbericht: overname MijnWebwinkel"
+          " (2021)"
+        H.li $ do
+          H.a ! A.href "https://www.emerce.nl/wire/mijnwebwinkel-mystore-lanceren-acendy-nieuw-tijdperk-ecommerce" $ "Emerce: MijnWebwinkel en Mystore lanceren Acendy"
+          " (november 2025)"
+        H.li $ do
+          H.a ! A.href "https://www.privateequitywire.co.uk/hg-spins-out-e500m-of-visma-assets-as-ipo-plans-stall/" $ H.preEscapedToHtml ("Private Equity Wire: Hg stoot &euro;500M aan Visma-assets af" :: Text)
+          " (mei 2026)"
+        H.li $ do
+          H.a ! A.href "https://www.syncer.io/blogs/migration-knowledge/mijnwebwinkel-becomes-acendy-what-this-is-going-to-mean" $ "Syncer: MijnWebwinkel becomes Acendy"
+        H.li $ do
+          H.a ! A.href "https://opklopper.nl/blog/acendy" $ "Opklopper: Acendy kosten, features & transitie"
+        H.li $ do
+          H.a ! A.href "https://storeleads.app/reports/mijnwebwinkel" $ "StorLeads: MijnWebwinkel platformrapport"
+
+    -- CTA
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Klaar om te vertrekken?"
+      H.p $ H.preEscapedToHtml ("MijnWebwinkel wordt niet meer beter. Het platform is verkocht, de code is bevroren, en de opvolger kost het dubbele. U kunt wachten tot u <em>gedwongen</em> wordt te migreren naar Acendy &mdash; of u kunt nu zelf kiezen waar u naartoe gaat." :: Text)
+      H.p $ do
+        H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Bekijk onze migratieservice"
+        H.preEscapedToHtml (" &mdash; volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
+      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
+  where
+    waaromMeta :: PageMeta
+    waaromMeta = PageMeta
+      { pageMetaTitle       = "Waarom wordt MijnWebwinkel niet meer doorontwikkeld? \8212 Jappie Software B.V."
+      , pageMetaDescription = "MijnWebwinkel is in 2021 overgenomen door Visma/Hg Capital en wordt sindsdien niet meer doorontwikkeld. De code is bevroren, prijzen zijn verdubbeld, en het platform wordt afgebouwd. Dit is waarom."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://jappiesoftware.com/waarom-mijnwebwinkel.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaExtraHead   = mempty
+      }
 
 -- =============================================================================
 -- Blog index page (paginated listing)

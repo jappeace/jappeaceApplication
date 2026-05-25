@@ -39,7 +39,7 @@ import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
-import PenguinTemplates (penguinIndexPage, penguinBlogIndexPage, penguinArticlePage, mijnwebwinkelMigrationPage, ccvshopMigrationPage, lightspeedMigrationPage)
+import PenguinTemplates (penguinIndexPage, penguinBlogIndexPage, penguinArticlePage, mijnwebwinkelMigrationPage, ccvshopMigrationPage, lightspeedMigrationPage, mijnwebwinkelWaaromPage)
 import Slug (toSlug)
 import Templates
   ( renderArticlePage
@@ -577,6 +577,7 @@ generatePenguinSite config articles = do
   writeHtmlFile "_penguin-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
   writeHtmlFile "_penguin-site/migrate-ccvshop.html" ccvshopMigrationPage
   writeHtmlFile "_penguin-site/migrate-lightspeed.html" lightspeedMigrationPage
+  writeHtmlFile "_penguin-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
 
   -- Individual article pages
   mapM_ (\art ->
@@ -652,6 +653,7 @@ generatePenguinSitemap articles = T.unlines $
   , sitemapUrl "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
   , sitemapUrl "https://jappiesoftware.com/migrate-ccvshop.html"
   , sitemapUrl "https://jappiesoftware.com/migrate-lightspeed.html"
+  , sitemapUrl "https://jappiesoftware.com/waarom-mijnwebwinkel.html"
   , sitemapUrl "https://jappiesoftware.com/blog/"
   ]
   ++ map (\art -> sitemapUrl ("https://jappiesoftware.com/blog/" <> articleUrl art)) articles
