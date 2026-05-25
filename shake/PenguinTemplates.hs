@@ -938,7 +938,7 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
       H.h2 "De cijfers"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
-          H.h3 "-35%"
+          H.h3 $ H.a ! A.href "https://storeleads.app/reports/mijnwebwinkel" $ "-35%"
           H.p "Daling in het aantal MijnWebwinkel-shops sinds de piek in 2022. Van ~7.000 naar ~4.500."
         H.li ! A.class_ "card" $ do
           H.h3 "10:1"
