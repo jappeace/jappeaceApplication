@@ -4,6 +4,7 @@ module PenguinTemplates
   , penguinBlogIndexPage
   , penguinArticlePage
   , mijnwebwinkelMigrationPage
+  , ccvshopMigrationPage
   , PageMeta(..)
   , defaultPageMeta
   ) where
@@ -200,6 +201,10 @@ penguinIndexPage = penguinBaseTemplate indexMeta $
           H.h3 "MijnWebwinkel Migration Tool"
           H.p $ H.preEscapedToHtml ("Migrate your webshop from MijnWebwinkel to Shopify, WooCommerce or another platform &mdash; products, categories, translations, images, SEO redirects and bulk data modifications. Fully automated." :: Text)
           H.a ! A.href "/migrate-mijnwebwinkel.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Learn more &rarr;" :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "CCV Shop Migration Tool"
+          H.p $ H.preEscapedToHtml ("Migrate your webshop from CCV Shop to Shopify &mdash; products, categories, translations, images, inventory and SEO redirects. Fully automated." :: Text)
+          H.a ! A.href "/migrate-ccvshop.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Learn more &rarr;" :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Massapp"
           H.p "Bulk WhatsApp messaging for businesses. Reach your customers at scale through the official WhatsApp Business API."
@@ -431,6 +436,178 @@ migrationFaqJsonLd =
       ]
 
     -- | Minimal JSON string escaping for known-safe Dutch text
+    jsonString :: Text -> Text
+    jsonString txt = "\"" <> escapeJsonText txt <> "\""
+
+    escapeJsonText :: Text -> Text
+    escapeJsonText = T.concatMap escapeJsonChar
+
+    escapeJsonChar :: Char -> Text
+    escapeJsonChar '"'  = "\\\""
+    escapeJsonChar '\\' = "\\\\"
+    escapeJsonChar '\n' = "\\n"
+    escapeJsonChar '\r' = "\\r"
+    escapeJsonChar '\t' = "\\t"
+    escapeJsonChar c    = T.singleton c
+
+-- =============================================================================
+-- CCV Shop migration landing page
+-- =============================================================================
+
+ccvshopMigrationPage :: Html
+ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
+  H.main $ do
+    -- Hero
+    H.section ! A.class_ "hero" $ do
+      H.h1 "Migreer van CCV Shop"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Volledig geautomatiseerde migratie van uw CCV Shop naar Shopify. Producten, categorie&euml;n, vertalingen, afbeeldingen en SEO-redirects &mdash; zonder handmatig overtypen." :: Text)
+      H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+
+    -- What we migrate
+    H.section ! A.class_ "for-who" ! A.id "what" $ do
+      H.h2 "Wat we migreren"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 "Producten & varianten"
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar Shopify-formaat."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Meerdere talen"
+          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Klantaccounts"
+          H.p "Klantgegevens en bestelgeschiedenis worden overgezet zodat uw klanten direct kunnen inloggen op de nieuwe shop."
+        H.li ! A.class_ "card" $ do
+          H.h3 "SEO-redirects"
+          H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw Google-posities en backlinks blijven behouden."
+        H.li ! A.class_ "card" $ do
+          H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
+          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Shopify Collections met vertaalde titels en het navigatiemenu." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Voorraad & prijzen"
+          H.p "Voorraadinformatie en staffelprijzen worden meegenomen. Per-variant prijzen en voorraadbeheer werken direct in Shopify."
+
+    -- How it works
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Hoe het werkt"
+      H.ol $ do
+        H.li $ do
+          H.strong "Scan"
+          " \8212 Ons programma leest uw CCV Shop uit en slaat alle data op."
+        H.li $ do
+          H.strong "Controle"
+          " \8212 U krijgt een werkende testshop die u zelf kunt controleren voordat we live gaan."
+        H.li $ do
+          H.strong "Import"
+          " \8212 We importeren alles in uw Shopify-shop: producten, vertalingen, collections, redirects."
+        H.li $ do
+          H.strong "Verificatie"
+          " \8212 Samen controleren we steekproefsgewijs of alles klopt."
+
+    -- Pricing
+    H.section ! A.class_ "engagement" ! A.id "pricing" $ do
+      H.h2 "Prijzen"
+      H.div ! A.class_ "card-grid" $ do
+        H.div ! A.class_ "card" $ do
+          H.h3 "Volledige migratie"
+          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;750" :: Text)
+          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad. Prijs afhankelijk van de omvang van uw webshop." :: Text)
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
+
+    -- Why us
+    H.section ! A.class_ "results" $ do
+      H.h2 "Waarom via ons?"
+      H.div ! A.class_ "testimonials" $ do
+        H.blockquote $
+          H.p $ H.preEscapedToHtml ("We hebben al meerdere webshopmigraties succesvol uitgevoerd &mdash; inclusief shops met duizenden producten en meerdere talen. De tool is bewezen en betrouwbaar." :: Text)
+      H.ul $ do
+        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
+        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
+        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
+        H.li $ H.strong "Voorraad intact" >> H.preEscapedToHtml (" &mdash; voorraadbeheer en per-variant prijzen worden correct overgezet" :: Text)
+        H.li $ H.strong "Controleerbaar" >> H.preEscapedToHtml (" &mdash; u krijgt een testshop en kunt alles verifi&euml;ren voor de overstap" :: Text)
+        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
+
+    -- FAQ
+    H.section ! A.class_ "about" $ do
+      H.h2 "Veelgestelde vragen"
+      H.dl $ do
+        H.dt "Hoe lang duurt een migratie?"
+        H.dd "De technische migratie duurt meestal 1-2 werkdagen. De voorbereiding en controle erbij: reken op een week totaal."
+        H.dt "Kan ik mijn domeinnaam behouden?"
+        H.dd "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd."
+        H.dt "Wat als er iets niet klopt na de migratie?"
+        H.dd "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs."
+        H.dt "Werkt het ook voor meerdere talen?"
+        H.dd "Ja. Het programma ondersteunt elke taalcombinatie die CCV Shop en Shopify beide ondersteunen."
+        H.dt "Worden mijn klantaccounts overgezet?"
+        H.dd "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen."
+        H.dt "Hoe werken de SEO-redirects precies?"
+        H.dd "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings en backlinks blijven behouden."
+
+    -- CTA
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Klaar om te migreren?"
+      H.p $ do
+        "Stuur een mail naar "
+        H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" $ "hi@jappie.me"
+        " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
+      H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+  where
+    ccvMeta :: PageMeta
+    ccvMeta = PageMeta
+      { pageMetaTitle       = "CCV Shop migratie \8212 Jappie Software B.V."
+      , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364\&750."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-ccvshop.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaExtraHead   = ccvFaqJsonLd
+      }
+
+-- | FAQ structured data (JSON-LD) for the CCV migration page.
+ccvFaqJsonLd :: Html
+ccvFaqJsonLd =
+  H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml ccvFaqJson
+  where
+    ccvFaqJson :: Text
+    ccvFaqJson = T.concat
+      [ "{\"@context\":\"https://schema.org\""
+      , ",\"@type\":\"FAQPage\""
+      , ",\"mainEntity\":["
+      , faqEntry
+          "Hoe lang duurt een migratie?"
+          "De technische migratie duurt meestal 1-2 werkdagen. De voorbereiding en controle erbij: reken op een week totaal."
+      , ","
+      , faqEntry
+          "Kan ik mijn domeinnaam behouden?"
+          "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd."
+      , ","
+      , faqEntry
+          "Wat als er iets niet klopt na de migratie?"
+          "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs."
+      , ","
+      , faqEntry
+          "Werkt het ook voor meerdere talen?"
+          "Ja. Het programma ondersteunt elke taalcombinatie die CCV Shop en Shopify beide ondersteunen."
+      , ","
+      , faqEntry
+          "Worden mijn klantaccounts overgezet?"
+          "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen."
+      , ","
+      , faqEntry
+          "Hoe werken de SEO-redirects precies?"
+          "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings en backlinks blijven behouden."
+      , "]}"
+      ]
+
+    faqEntry :: Text -> Text -> Text
+    faqEntry question answer = T.concat
+      [ "{\"@type\":\"Question\""
+      , ",\"name\":" <> jsonString question
+      , ",\"acceptedAnswer\":{\"@type\":\"Answer\""
+      , ",\"text\":" <> jsonString answer
+      , "}}"
+      ]
+
     jsonString :: Text -> Text
     jsonString txt = "\"" <> escapeJsonText txt <> "\""
 
