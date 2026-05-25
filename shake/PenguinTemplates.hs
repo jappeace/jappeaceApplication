@@ -280,7 +280,7 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap MijnWebwinkel"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. MijnWebwinkel wordt al jaren niet meer doorontwikkeld, de community is gesloten, en support reageert niet. Hoelang blijft u nog wachten? Wij verhuizen uw complete shop naar Shopify &mdash; geautomatiseerd, zonder dataverlies, zonder downtime." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href "mailto:hi@jappie.me?subject=Migratie%20offerte" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
     H.section ! A.class_ "for-who" ! A.id "what" $ do
@@ -397,11 +397,8 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te ontsnappen?"
       H.p $ H.preEscapedToHtml ("U hoeft niet langer te wachten tot MijnWebwinkel beter wordt &mdash; dat gaat niet gebeuren. " :: Text)
-      H.p $ do
-        "Stuur een mail naar "
-        H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" $ "hi@jappie.me"
-        " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
-      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
+      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
@@ -493,7 +490,7 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap CCV Shop"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. CCV Shop voelt steeds beperkter, de features blijven achter, en u weet dat er betere opties zijn &mdash; maar hoe krijgt u alles veilig overgezet? Wij verhuizen uw complete shop naar Shopify. Geautomatiseerd, zonder dataverlies, zonder downtime." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href "mailto:hi@jappie.me?subject=Migratie%20offerte" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
     H.section ! A.class_ "for-who" ! A.id "what" $ do
@@ -603,11 +600,8 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te ontsnappen?"
       H.p $ H.preEscapedToHtml ("U hoeft niet langer te wachten tot CCV Shop beter wordt. Neem de controle terug over uw webshop." :: Text)
-      H.p $ do
-        "Stuur een mail naar "
-        H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" $ "hi@jappie.me"
-        " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
-      H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
+      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
@@ -689,7 +683,7 @@ lightspeedMigrationPage = penguinBaseTemplate lightspeedMeta $
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap Lightspeed"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt u richting hun nieuwe platform of de deur uit. Ondertussen draait uw webshop op verouderde software die steeds minder krijgt. Wij verhuizen uw complete shop naar Shopify &mdash; geautomatiseerd, zonder dataverlies, zonder SEO-verlies." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me?subject=Lightspeed%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href "mailto:hi@jappie.me?subject=Migratie%20offerte" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
     H.section ! A.class_ "for-who" ! A.id "what" $ do
@@ -799,11 +793,8 @@ lightspeedMigrationPage = penguinBaseTemplate lightspeedMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te ontsnappen?"
       H.p $ H.preEscapedToHtml ("Lightspeed gaat u niet helpen met deze overstap. Wij wel." :: Text)
-      H.p $ do
-        "Stuur een mail naar "
-        H.a ! A.href "mailto:hi@jappie.me?subject=Lightspeed%20migratie" $ "hi@jappie.me"
-        " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
-      H.a ! A.href "mailto:hi@jappie.me?subject=Lightspeed%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
+      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
@@ -884,7 +875,7 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
     -- Hero
     H.section ! A.class_ "hero" $ do
       H.h1 "Waarom wordt MijnWebwinkel niet meer doorontwikkeld?"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Het korte antwoord: MijnWebwinkel is in 2021 verkocht aan een Noors softwareconglomeraat. Sindsdien is de code bevroren, zijn de prijzen verdubbeld, en wordt het platform afgebouwd ten gunste van een Noorse opvolger. Dit is geen complottheorie &mdash; het is gewoon de financi&euml;le logica van private equity." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Het korte antwoord: MijnWebwinkel is in 2021 verkocht aan een Noors softwareconglomeraat. Sindsdien is de code bevroren en zijn de prijzen verdubbeld. Dit is geen complottheorie &mdash; het is gewoon de financi&euml;le logica van private equity." :: Text)
 
     -- Timeline
     H.section ! A.class_ "for-who" $ do
@@ -900,12 +891,12 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
           ". De oprichter vertrekt. Visma is een Noors softwareconglomeraat (15.000 medewerkers, 170+ bedrijven) in handen van het Britse private-equityfonds Hg Capital."
         H.li $ do
           H.strong "2022\8211\&2025"
-          H.preEscapedToHtml (" &mdash; Prijzen verdubbelen (&euro;20 &rarr; &euro;40/maand). Ontwikkeling stopt. Het aantal webshops daalt van ~7.000 naar ~4.500." :: Text)
+          H.preEscapedToHtml (" &mdash; De &euro;20-tier wordt beperkt tot 25 producten. Serieuze shops betalen nu &euro;40\8211\&70/maand. Ontwikkeling stopt. Het aantal webshops daalt van ~7.000 naar ~4.500." :: Text)
         H.li $ do
           H.strong "November 2025"
           H.preEscapedToHtml (" &mdash; " :: Text)
           H.a ! A.href "https://www.emerce.nl/wire/mijnwebwinkel-mystore-lanceren-acendy-nieuw-tijdperk-ecommerce" $ "MijnWebwinkel wordt samengevoegd met het Noorse Mystore"
-          H.preEscapedToHtml (" tot &ldquo;Acendy&rdquo;. De MijnWebwinkel-code is effectief end-of-life." :: Text)
+          H.preEscapedToHtml (" tot &ldquo;Acendy&rdquo;. Dit werd kort daarna weer teruggedraaid." :: Text)
         H.li $ do
           H.strong "Februari 2026"
           H.preEscapedToHtml (" &mdash; " :: Text)
@@ -922,7 +913,7 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
           " \8212 een winstgevend SaaS-platform met duizenden betalende klanten"
         H.li $ do
           H.strong "Verhoog prijzen"
-          H.preEscapedToHtml (" &mdash; van &euro;20 naar &euro;40/maand (+100%). Acendy gaat naar &euro;80\8211\&150/maand." :: Text)
+          H.preEscapedToHtml (" &mdash; beperk het goedkope plan tot 25 producten, duw serieuze shops naar &euro;40\8211\&70/maand" :: Text)
         H.li $ do
           H.strong "Verlaag kosten"
           " \8212 stop alle ontwikkeling, minimaliseer support"
@@ -933,28 +924,12 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
           H.strong "Voeg samen of verkoop"
           " \8212 als de melkkoe opdroogt, fuseer met een ander product of stoot af"
 
-    -- Acendy is not the answer
-    H.section ! A.class_ "results" $ do
-      H.h2 $ H.preEscapedToHtml ("Maar Acendy dan? Is dat niet de &ldquo;oplossing&rdquo;?" :: Text)
-      H.p $ H.preEscapedToHtml ("Acendy is gebouwd op de Noorse Mystore-code, niet op de MijnWebwinkel-code. Het is <strong>een compleet ander platform</strong>. U moet:" :: Text)
-      H.ul $ do
-        H.li "Uw hele webshop opnieuw inrichten"
-        H.li $ H.preEscapedToHtml ("Twee keer zoveel betalen (&euro;40 &rarr; &euro;80\8211\&150/maand)" :: Text)
-        H.li "Wennen aan een nieuwe interface met Noorse roots"
-        H.li $ H.preEscapedToHtml ("Vertrouwen op dezelfde eigenaren die MijnWebwinkel al hebben verwaarloosd" :: Text)
-      H.p $ do
-        "Onafhankelijke analyses concluderen dat Acendy "
-        H.a ! A.href "https://www.syncer.io/blogs/migration-knowledge/mijnwebwinkel-becomes-acendy-what-this-is-going-to-mean" $ H.preEscapedToHtml ("&ldquo;fundamenteel duurder is dan Shopify&rdquo;" :: Text)
-        " terwijl het minder flexibiliteit en minder apps biedt. "
-        H.a ! A.href "https://opklopper.nl/blog/acendy" $ "Opklopper adviseert"
-        " winkeliers om alternatieven te overwegen."
-
     -- The numbers
     H.section ! A.class_ "for-who" $ do
       H.h2 "De cijfers"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
-          H.h3 "-35%"
+          H.h3 $ H.a ! A.href "https://storeleads.app/reports/mijnwebwinkel" $ "-35%"
           H.p "Daling in het aantal MijnWebwinkel-shops sinds de piek in 2022. Van ~7.000 naar ~4.500."
         H.li ! A.class_ "card" $ do
           H.h3 "10:1"
@@ -963,8 +938,8 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
           H.h3 "55%"
           H.p "Van de vertrekkende MijnWebwinkel-shops kiest 55% voor Shopify als bestemming."
         H.li ! A.class_ "card" $ do
-          H.h3 "+100%"
-          H.p $ H.preEscapedToHtml ("Prijsstijging sinds de overname: van &euro;20 naar &euro;40/maand, zonder nieuwe features." :: Text)
+          H.h3 "25 producten"
+          H.p $ H.preEscapedToHtml ("Het goedkoopste plan (&euro;20/maand) is beperkt tot 25 producten. Serieuze shops betalen &euro;40\8211\&70/maand." :: Text)
       H.p ! A.class_ "engagement-note" $ do
         "Bron: "
         H.a ! A.href "https://storeleads.app/reports/mijnwebwinkel" $ "StorLeads.app"
@@ -984,10 +959,6 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
           H.a ! A.href "https://www.privateequitywire.co.uk/hg-spins-out-e500m-of-visma-assets-as-ipo-plans-stall/" $ H.preEscapedToHtml ("Private Equity Wire: Hg stoot &euro;500M aan Visma-assets af" :: Text)
           " (mei 2026)"
         H.li $ do
-          H.a ! A.href "https://www.syncer.io/blogs/migration-knowledge/mijnwebwinkel-becomes-acendy-what-this-is-going-to-mean" $ "Syncer: MijnWebwinkel becomes Acendy"
-        H.li $ do
-          H.a ! A.href "https://opklopper.nl/blog/acendy" $ "Opklopper: Acendy kosten, features & transitie"
-        H.li $ do
           H.a ! A.href "https://storeleads.app/reports/mijnwebwinkel" $ "StorLeads: MijnWebwinkel platformrapport"
 
     -- CTA
@@ -997,7 +968,7 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
       H.p $ do
         H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Bekijk onze migratieservice"
         H.preEscapedToHtml (" &mdash; volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
-      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     waaromMeta :: PageMeta
     waaromMeta = PageMeta
