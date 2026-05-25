@@ -361,6 +361,29 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
         H.dt "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
         H.dd "Ja. We kunnen grootschalige wijzigingen doorvoeren, bijvoorbeeld alt-teksten genereren voor alle afbeeldingen, prijzen aanpassen of beschrijvingen opschonen."
 
+    -- Technical details
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "Technische details"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 "SEO-redirects"
+          H.p $ H.preEscapedToHtml ("Volledige 301-redirect mapping van elke oude URL. We hebben de interne logica van MijnWebwinkel artikel-ID&rsquo;s in URLs achterhaald &mdash; alle redirects worden volledig automatisch gegenereerd, inclusief URLs met numerieke product-ID&rsquo;s." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Bulk-aanpassingen"
+          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren voor alle afbeeldingen, prijzen aanpassen, beschrijvingen opschonen, HTML-tags verwijderen &mdash; alles in &eacute;&eacute;n keer." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Platformkeuze"
+          H.p $ H.preEscapedToHtml ("Shopify is het meest gekozen doelplatform, maar we ondersteunen ook WooCommerce of andere platformen. U kiest, wij regelen de techniek." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Vertalingen & URL-slugs"
+          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via offici&euml;le platform APIs. Inclusief vertaalde URL-slugs &mdash; niet alleen productteksten." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Klantdata & spaarpunten"
+          H.p "Klantaccounts, bestelgeschiedenis en spaarpuntensaldi worden overgezet naar het loyaliteitsprogramma van uw nieuwe platform."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Testshop & verificatie"
+          H.p "U krijgt een volledige testshop om alles te controleren. Pas na uw goedkeuring gaan we live. Correcties zijn inbegrepen."
+
     -- CTA
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te ontsnappen?"
@@ -543,6 +566,29 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
         H.dd "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen."
         H.dt "Hoe werken de SEO-redirects precies?"
         H.dd "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings en backlinks blijven behouden."
+
+    -- Technical details
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "Technische details"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 "SEO-redirects"
+          H.p "Volledige 301-redirect mapping van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings, backlinks en organisch verkeer blijven behouden."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Bulk-aanpassingen"
+          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen &mdash; alles in &eacute;&eacute;n keer." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Voorraad & staffelprijzen"
+          H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar Shopify. Inclusief prijsverschillen per maat of kleur."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Vertalingen & URL-slugs"
+          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via de offici&euml;le Shopify API. Inclusief vertaalde URL-slugs." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Klantdata & accounts"
+          H.p "Klantaccounts en bestelgeschiedenis worden overgezet zodat uw klanten direct verder kunnen op de nieuwe shop."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Testshop & verificatie"
+          H.p "U krijgt een volledige testshop om alles te controleren. Pas na uw goedkeuring gaan we live. Correcties zijn inbegrepen."
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
