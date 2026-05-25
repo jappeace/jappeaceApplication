@@ -272,8 +272,8 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
-      H.h1 "Migreer van MijnWebwinkel"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Volledig geautomatiseerde migratie van uw webshop naar Shopify, WooCommerce of een ander platform. Producten, categorie&euml;n, vertalingen, afbeeldingen en SEO-redirects &mdash; zonder handmatig overtypen." :: Text)
+      H.h1 "Ontsnap MijnWebwinkel"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. MijnWebwinkel wordt al jaren niet meer doorontwikkeld, de community is gesloten, en support reageert niet. Hoelang blijft u nog wachten? Wij verhuizen uw complete shop naar Shopify &mdash; geautomatiseerd, zonder dataverlies, zonder downtime." :: Text)
       H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
@@ -331,14 +331,13 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $
-          H.p $ H.preEscapedToHtml ("Ons migratietool is gebouwd op basis van een echte migratie &mdash; een webshop met 2.400+ producten, drie talen (NL/DE/EN) en drie domeinen. Het werkt, want het is al gedaan." :: Text)
+          H.p $ H.preEscapedToHtml ("U weet het al: MijnWebwinkel gaat nergens meer heen. Geen nieuwe features, geen community, trage support. Elke dag dat u wacht is een dag dat uw concurrent op Shopify u inhaalt. Wij hebben al een webshop met 2.400+ producten, drie talen en drie domeinen succesvol gemigreerd. Het werkt, want het is al gedaan." :: Text)
       H.ul $ do
+        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
-        H.li $ H.strong "Bulk-aanpassingen" >> H.preEscapedToHtml (" &mdash; data opschonen, alt-teksten toevoegen of prijzen aanpassen tijdens de migratie" :: Text)
-        H.li $ H.strong "Platformkeuze" >> H.preEscapedToHtml (" &mdash; migreer naar Shopify, WooCommerce of een ander platform naar keuze" :: Text)
-        H.li $ H.strong "Controleerbaar" >> H.preEscapedToHtml (" &mdash; u krijgt een rapport en kunt alles verifi&euml;ren voor de overstap" :: Text)
+        H.li $ H.strong "Controleerbaar" >> H.preEscapedToHtml (" &mdash; u krijgt een testshop en kunt alles verifi&euml;ren voor de overstap" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
     -- FAQ
@@ -362,18 +361,42 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
         H.dt "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
         H.dd "Ja. We kunnen grootschalige wijzigingen doorvoeren, bijvoorbeeld alt-teksten genereren voor alle afbeeldingen, prijzen aanpassen of beschrijvingen opschonen."
 
+    -- Technical details
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "Technische details"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 "SEO-redirects"
+          H.p $ H.preEscapedToHtml ("Volledige 301-redirect mapping van elke oude URL. We hebben de interne logica van MijnWebwinkel artikel-ID&rsquo;s in URLs achterhaald &mdash; alle redirects worden volledig automatisch gegenereerd, inclusief URLs met numerieke product-ID&rsquo;s." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Bulk-aanpassingen"
+          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren voor alle afbeeldingen, prijzen aanpassen, beschrijvingen opschonen, HTML-tags verwijderen &mdash; alles in &eacute;&eacute;n keer." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Platformkeuze"
+          H.p $ H.preEscapedToHtml ("Shopify is het meest gekozen doelplatform, maar we ondersteunen ook WooCommerce of andere platformen. U kiest, wij regelen de techniek." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Vertalingen & URL-slugs"
+          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via offici&euml;le platform APIs. Inclusief vertaalde URL-slugs &mdash; niet alleen productteksten." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Klantdata & spaarpunten"
+          H.p "Klantaccounts, bestelgeschiedenis en spaarpuntensaldi worden overgezet naar het loyaliteitsprogramma van uw nieuwe platform."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Testshop & verificatie"
+          H.p "U krijgt een volledige testshop om alles te controleren. Pas na uw goedkeuring gaan we live. Correcties zijn inbegrepen."
+
     -- CTA
     H.section ! A.class_ "final-cta" $ do
-      H.h2 "Klaar om te migreren?"
+      H.h2 "Klaar om te ontsnappen?"
+      H.p $ H.preEscapedToHtml ("U hoeft niet langer te wachten tot MijnWebwinkel beter wordt &mdash; dat gaat niet gebeuren. " :: Text)
       H.p $ do
         "Stuur een mail naar "
         H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" $ "hi@jappie.me"
         " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
-      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href "mailto:hi@jappie.me?subject=MijnWebwinkel%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
-      { pageMetaTitle       = "MijnWebwinkel migratie \8212 Jappie Software B.V."
+      { pageMetaTitle       = "Ontsnap MijnWebwinkel \8212 Migratie naar Shopify \8212 Jappie Software B.V."
       , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364\&750."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
@@ -459,8 +482,8 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
-      H.h1 "Migreer van CCV Shop"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Volledig geautomatiseerde migratie van uw CCV Shop naar Shopify. Producten, categorie&euml;n, vertalingen, afbeeldingen en SEO-redirects &mdash; zonder handmatig overtypen." :: Text)
+      H.h1 "Ontsnap CCV Shop"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. CCV Shop voelt steeds beperkter, de features blijven achter, en u weet dat er betere opties zijn &mdash; maar hoe krijgt u alles veilig overgezet? Wij verhuizen uw complete shop naar Shopify. Geautomatiseerd, zonder dataverlies, zonder downtime." :: Text)
       H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
@@ -518,12 +541,12 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $
-          H.p $ H.preEscapedToHtml ("We hebben al meerdere webshopmigraties succesvol uitgevoerd &mdash; inclusief shops met duizenden producten en meerdere talen. De tool is bewezen en betrouwbaar." :: Text)
+          H.p $ H.preEscapedToHtml ("U voelt het al langer: CCV Shop houdt u tegen. Beperkte features, achterblijvende ontwikkeling, en het gevoel dat uw shop kwetsbaar is op een platform dat niet meegroeit. Elke dag dat u wacht is een dag dat uw concurrent op Shopify u inhaalt. Wij hebben al meerdere webshops succesvol gemigreerd &mdash; inclusief shops met duizenden producten en meerdere talen." :: Text)
       H.ul $ do
+        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
-        H.li $ H.strong "Voorraad intact" >> H.preEscapedToHtml (" &mdash; voorraadbeheer en per-variant prijzen worden correct overgezet" :: Text)
         H.li $ H.strong "Controleerbaar" >> H.preEscapedToHtml (" &mdash; u krijgt een testshop en kunt alles verifi&euml;ren voor de overstap" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
@@ -544,18 +567,42 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
         H.dt "Hoe werken de SEO-redirects precies?"
         H.dd "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings en backlinks blijven behouden."
 
+    -- Technical details
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "Technische details"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 "SEO-redirects"
+          H.p "Volledige 301-redirect mapping van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings, backlinks en organisch verkeer blijven behouden."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Bulk-aanpassingen"
+          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen &mdash; alles in &eacute;&eacute;n keer." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Voorraad & staffelprijzen"
+          H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar Shopify. Inclusief prijsverschillen per maat of kleur."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Vertalingen & URL-slugs"
+          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via de offici&euml;le Shopify API. Inclusief vertaalde URL-slugs." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Klantdata & accounts"
+          H.p "Klantaccounts en bestelgeschiedenis worden overgezet zodat uw klanten direct verder kunnen op de nieuwe shop."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Testshop & verificatie"
+          H.p "U krijgt een volledige testshop om alles te controleren. Pas na uw goedkeuring gaan we live. Correcties zijn inbegrepen."
+
     -- CTA
     H.section ! A.class_ "final-cta" $ do
-      H.h2 "Klaar om te migreren?"
+      H.h2 "Klaar om te ontsnappen?"
+      H.p $ H.preEscapedToHtml ("U hoeft niet langer te wachten tot CCV Shop beter wordt. Neem de controle terug over uw webshop." :: Text)
       H.p $ do
         "Stuur een mail naar "
         H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" $ "hi@jappie.me"
         " met een link naar uw webshop. U ontvangt binnen twee werkdagen een offerte."
-      H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href "mailto:hi@jappie.me?subject=CCV%20Shop%20migratie" ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
-      { pageMetaTitle       = "CCV Shop migratie \8212 Jappie Software B.V."
+      { pageMetaTitle       = "Ontsnap CCV Shop \8212 Migratie naar Shopify \8212 Jappie Software B.V."
       , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364\&750."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-ccvshop.html"
