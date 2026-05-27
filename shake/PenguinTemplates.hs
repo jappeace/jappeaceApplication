@@ -7,6 +7,7 @@ module PenguinTemplates
   , ccvshopMigrationPage
   , lightspeedMigrationPage
   , mijnwebwinkelWaaromPage
+  , lightspeedWaaromPage
   , PageMeta(..)
   , defaultPageMeta
   ) where
@@ -743,8 +744,11 @@ lightspeedMigrationPage = penguinBaseTemplate lightspeedMeta $
     H.section ! A.class_ "results" $ do
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
-        H.blockquote $
+        H.blockquote $ do
           H.p $ H.preEscapedToHtml ("U bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding raakt u uw Google-posities kwijt &mdash; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat uw SEO intact blijft." :: Text)
+          H.p $ do
+            H.a ! A.href "/waarom-lightspeed.html" $ "Waarom verlaten steeds meer webshops Lightspeed?"
+            H.preEscapedToHtml (" &rarr;" :: Text)
       H.p $ H.preEscapedToHtml ("Wij zijn geen Shopify-partner die commissie verdient op uw overstap. Wij zijn migratie-specialisten. U kiest het platform &mdash; Shopify, WooCommerce, of iets anders &mdash; wij regelen de techniek." :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
@@ -985,6 +989,191 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
       , pageMetaOgImage     = Nothing
       , pageMetaExtraHead   = mempty
       }
+
+-- =============================================================================
+-- Lightspeed "Waarom verlaten webshops Lightspeed?" article page
+-- =============================================================================
+
+lightspeedWaaromPage :: Html
+lightspeedWaaromPage = penguinBaseTemplate waaromLsMeta $
+  H.main $ do
+    -- Hero
+    H.section ! A.class_ "hero" $ do
+      H.h1 "Waarom verlaten steeds meer webshops Lightspeed?"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed is een beursgenoteerd bedrijf. Dat klinkt als stabiliteit, maar het betekent het tegenovergestelde: het management moet elk kwartaal de aandeelhouders laten zien dat de omzet per klant stijgt. De makkelijkste manier? Prijzen verhogen en kleine webshops eruit drukken." :: Text)
+
+    -- The stock market logic
+    H.section ! A.class_ "audit" $ do
+      H.h2 "De beurslogica"
+      H.p $ H.preEscapedToHtml ("Lightspeed Commerce (NYSE/TSX: LSPD) ging in 2019 naar de beurs in Toronto en in 2020 naar New York. Sindsdien is het bedrijf niet meer van de oprichter &mdash; het is van de aandeelhouders. En aandeelhouders willen &eacute;&eacute;n ding: groei." :: Text)
+      H.p "Groei kan op twee manieren:"
+      H.ol $ do
+        H.li $ do
+          H.strong "Meer klanten"
+          " \8212 maar de markt is verzadigd en Lightspeed verliest netto klanten"
+        H.li $ do
+          H.strong "Meer omzet per klant"
+          H.preEscapedToHtml (" &mdash; en d&aacute;t is precies wat er gebeurt" :: Text)
+      H.p $ H.preEscapedToHtml ("Het gevolg: de goedkoopste plannen worden duurder, features worden weggehaald uit lagere tiers, en het hele platform wordt opgeschoven richting grotere winkeliers die meer betalen. <strong>U als kleine webshop bent niet de doelgroep &mdash; u bent de ballast.</strong>" :: Text)
+      H.p $ H.preEscapedToHtml ("Wij vinden dat fundamenteel verkeerd. Kleine webshops groeien &mdash; dat is het hele punt. De webshop van vandaag met 200 producten is de webshop van volgend jaar met 2.000 producten. Maar als Lightspeed niet in die groei gelooft, hoeft u daar niet op te wachten. Wij helpen u graag naar een platform dat w&eacute;l in u investeert." :: Text)
+
+    -- Timeline
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "Wat er is gebeurd"
+      H.ol $ do
+        H.li $ do
+          H.strong "2019"
+          H.preEscapedToHtml (" &mdash; Lightspeed gaat naar de beurs in Toronto. Haalt $240 miljoen op. Het bedrijf moet nu elk kwartaal groeicijfers laten zien." :: Text)
+        H.li $ do
+          H.strong "2020"
+          H.preEscapedToHtml (" &mdash; Tweede beursnotering in New York. Nog eens $376 miljoen opgehaald. Begint agressief bedrijven op te kopen: ShopKeep, Vend, Ecwid, NuORDER. Dit lijkt op een leveraged-buyout-strategie: groei door overnames in plaats van door het eigen product te verbeteren. Het probleem is dat Lightspeed hun eigen platform niet kon laten groeien &mdash; en nu alle toekomstige groei opoffert voor kortetermijnwinst." :: Text)
+        H.li $ do
+          H.strong "2021"
+          H.preEscapedToHtml (" &mdash; Aandeel piekt rond $125. Kort daarna publiceert " :: Text)
+          H.a ! A.href "https://www.sprucepointcap.com/lightspeed-commerce-inc" $ "Spruce Point Capital"
+          H.preEscapedToHtml (" een vernietigend rapport dat de groeicijfers in twijfel trekt. Het aandeel keldert." :: Text)
+        H.li $ do
+          H.strong "2022\8211\&2024"
+          H.preEscapedToHtml (" &mdash; Prijzen worden verhoogd. Het goedkoopste plan (Essential) kost nu &euro;68/maand voor slechts 250 productvarianten. Het oude eCom-platform (C-Series) wordt afgebouwd richting E-Series (Ecwid)." :: Text)
+        H.li $ do
+          H.strong "2025\8211\&2026"
+          H.preEscapedToHtml (" &mdash; Het aantal actieve Lightspeed-webshops daalt van 23.700 naar 18.500. Een verlies van 22% in drie jaar." :: Text)
+
+    -- The numbers
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "De cijfers"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 $ H.a ! A.href "https://storeleads.app/reports/lightspeed" $ "-22%"
+          H.p "Daling in het aantal Lightspeed-webshops sinds de piek in Q3 2023. Van 23.700 naar 18.500."
+        H.li ! A.class_ "card" $ do
+          H.h3 "10:1"
+          H.p "Verhouding vertrek vs. aankomst in de afgelopen 90 dagen. 160 shops vertrokken, 16 bijgekomen."
+        H.li ! A.class_ "card" $ do
+          H.h3 "59%"
+          H.p "Van de vertrekkende Lightspeed-shops kiest 59% voor Shopify als bestemming."
+        H.li ! A.class_ "card" $ do
+          H.h3 $ H.preEscapedToHtml ("&euro;68/mnd" :: Text)
+          H.p $ H.preEscapedToHtml ("Het goedkoopste plan (Essential) kost &euro;68/maand en is beperkt tot 250 productvarianten en 1 taal. Serieuze shops betalen &euro;120\8211\&259/maand." :: Text)
+      H.p ! A.class_ "engagement-note" $ do
+        "Bron: "
+        H.a ! A.href "https://storeleads.app/reports/lightspeed" $ "StoreLeads.app"
+        " (mei 2026)"
+
+    -- Why this is structural
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Dit wordt niet beter"
+      H.p $ do
+        "Bij andere platforms zoals "
+        H.a ! A.href "/waarom-mijnwebwinkel.html" $ "MijnWebwinkel"
+        H.preEscapedToHtml (" (een Nederlands webshopplatform dat hetzelfde overkomt) kon je nog hopen dat een nieuwe eigenaar het platform nieuw leven zou inblazen. Bij Lightspeed is dat uitgesloten. Dit is een beursgenoteerd bedrijf met een duidelijke strategie:" :: Text)
+      H.ol $ do
+        H.li $ do
+          H.strong "Consolideer platforms"
+          H.preEscapedToHtml (" &mdash; het oude eCom (C-Series) wordt afgebouwd. De opvolger is E-Series, gebaseerd op het opgekochte Ecwid. Uw huidige shop is legacy." :: Text)
+        H.li $ do
+          H.strong "Verschuif naar enterprise"
+          H.preEscapedToHtml (" &mdash; het Professional-plan kost &euro;259/maand, Enterprise is op offerte. Lightspeed wil minder klanten die meer betalen." :: Text)
+        H.li $ do
+          H.strong "Verhoog de opbrengst per klant"
+          H.preEscapedToHtml (" &mdash; via hogere abonnementen, betaalverwerking (Lightspeed Payments), en kapitaalverstrekking (Lightspeed Capital). Elk kwartaal moet dit cijfer omhoog." :: Text)
+        H.li $ do
+          H.strong "Laat kleine shops vanzelf vertrekken"
+          H.preEscapedToHtml (" &mdash; door de prijs hoog genoeg te maken dat het voor kleine shops niet meer rendabel is. Dat is geen vergissing &mdash; dat is de strategie." :: Text)
+      H.p $ H.preEscapedToHtml ("De aandelenkoers is gedaald van $125 naar rond de $20. Het management staat onder druk om winstgevender te worden. Dat betekent: <strong>hogere prijzen, minder support, en focus op grote klanten</strong>. Kleine webshops passen niet in dat plaatje." :: Text)
+
+    -- Nederland specifiek
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "Nederland als melkkoe"
+      H.p $ H.preEscapedToHtml ("27% van alle Lightspeed-webshops zit in Nederland &mdash; bijna 5.000 shops. Nederland is veruit de grootste markt, groter dan de VS en Canada samen. Toch wordt het platform bestuurd vanuit Montreal, met Amerikaanse prioriteiten." :: Text)
+      H.p $ H.preEscapedToHtml ("De E-Series migratie is <strong>alleen beschikbaar in Noord-Amerika</strong>. Nederlandse shops zitten vast op de C-Series &mdash; een platform dat niet meer wordt doorontwikkeld, met prijzen die wel doorstijgen." :: Text)
+
+    -- Sources
+    H.section ! A.class_ "about" $ do
+      H.h2 "Bronnen"
+      H.ul $ do
+        H.li $ do
+          H.a ! A.href "https://storeleads.app/reports/lightspeed" $ "StoreLeads: Lightspeed platformrapport"
+          " (mei 2026)"
+        H.li $ do
+          H.a ! A.href "https://www.lightspeedhq.nl/ecommerce/prijzen/" $ "Lightspeed prijzen Nederland"
+        H.li $ do
+          H.a ! A.href "https://stockanalysis.com/stocks/lspd/" $ "LSPD aandelenkoers"
+        H.li $ do
+          H.a ! A.href "https://www.sprucepointcap.com/lightspeed-commerce-inc" $ "Spruce Point Capital: short-seller rapport"
+          " (2021)"
+        H.li $ do
+          H.a ! A.href "https://ecom-support.lightspeedhq.com/hc/en-us/articles/9034086949531-Lightspeed-eCom-E-Series-upgrade-FAQ" $ "Lightspeed E-Series upgrade FAQ"
+
+    -- CTA
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Klaar om te vertrekken?"
+      H.p $ H.preEscapedToHtml ("Lightspeed wordt elk kwartaal duurder en elk kwartaal minder gericht op u. U kunt wachten tot de volgende prijsverhoging &mdash; of u kunt nu zelf kiezen waar u naartoe gaat." :: Text)
+      H.p $ do
+        H.a ! A.href "/migrate-lightspeed.html" $ "Bekijk onze migratieservice"
+        H.preEscapedToHtml (" &mdash; volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
+      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
+  where
+    waaromLsMeta :: PageMeta
+    waaromLsMeta = PageMeta
+      { pageMetaTitle       = "Waarom verlaten steeds meer webshops Lightspeed? \8212 Jappie Software B.V."
+      , pageMetaDescription = "Lightspeed is beursgenoteerd en verschuift richting enterprise-klanten. Prijzen stijgen, kleine shops worden eruit gedrukt. 22% minder webshops in drie jaar. Dit is waarom."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://jappiesoftware.com/waarom-lightspeed.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaExtraHead   = lightspeedWaaromFaqJsonLd
+      }
+
+-- | FAQ structured data (JSON-LD) for the Lightspeed waarom page.
+lightspeedWaaromFaqJsonLd :: Html
+lightspeedWaaromFaqJsonLd =
+  H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml lsWaaromFaqJson
+  where
+    lsWaaromFaqJson :: Text
+    lsWaaromFaqJson = T.concat
+      [ "{\"@context\":\"https://schema.org\""
+      , ",\"@type\":\"FAQPage\""
+      , ",\"mainEntity\":["
+      , faqEntry
+          "Waarom wordt Lightspeed steeds duurder?"
+          "Lightspeed is beursgenoteerd (NYSE/TSX: LSPD) en moet elk kwartaal groei laten zien aan aandeelhouders. Omdat de markt verzadigd is, verhoogt het management de prijs per klant in plaats van meer klanten te werven."
+      , ","
+      , faqEntry
+          "Wat is er met Lightspeed eCom C-Series?"
+          "De C-Series wordt afgebouwd. De opvolger is E-Series, gebaseerd op het opgekochte Ecwid. De E-Series migratie is alleen beschikbaar in Noord-Amerika \8212 Nederlandse shops zitten vast op het oude platform."
+      , ","
+      , faqEntry
+          "Hoeveel webshops verlaten Lightspeed?"
+          "In de afgelopen 90 dagen vertrokken 160 webshops terwijl er slechts 16 bijkwamen. Sinds Q3 2023 is het totaal gedaald van 23.700 naar 18.500 shops \8212 een daling van 22%."
+      , ","
+      , faqEntry
+          "Waar gaan vertrekkende Lightspeed-shops naartoe?"
+          "59% van de vertrekkende Lightspeed-shops kiest Shopify als bestemming."
+      , "]}"
+      ]
+
+    faqEntry :: Text -> Text -> Text
+    faqEntry question answer = T.concat
+      [ "{\"@type\":\"Question\""
+      , ",\"name\":" <> jsonString question
+      , ",\"acceptedAnswer\":{\"@type\":\"Answer\""
+      , ",\"text\":" <> jsonString answer
+      , "}}"
+      ]
+
+    jsonString :: Text -> Text
+    jsonString txt = "\"" <> escapeJsonText txt <> "\""
+
+    escapeJsonText :: Text -> Text
+    escapeJsonText = T.concatMap escapeJsonChar
+
+    escapeJsonChar :: Char -> Text
+    escapeJsonChar '"'  = "\\\""
+    escapeJsonChar '\\' = "\\\\"
+    escapeJsonChar '\n' = "\\n"
+    escapeJsonChar '\r' = "\\r"
+    escapeJsonChar '\t' = "\\t"
+    escapeJsonChar c    = T.singleton c
 
 -- =============================================================================
 -- Blog index page (paginated listing)
