@@ -1015,6 +1015,7 @@ lightspeedWaaromPage = penguinBaseTemplate waaromLsMeta $
           H.strong "Meer omzet per klant"
           H.preEscapedToHtml (" &mdash; en d&aacute;t is precies wat er gebeurt" :: Text)
       H.p $ H.preEscapedToHtml ("Het gevolg: de goedkoopste plannen worden duurder, features worden weggehaald uit lagere tiers, en het hele platform wordt opgeschoven richting grotere winkeliers die meer betalen. <strong>U als kleine webshop bent niet de doelgroep &mdash; u bent de ballast.</strong>" :: Text)
+      H.p $ H.preEscapedToHtml ("Wij vinden dat fundamenteel verkeerd. Kleine webshops groeien &mdash; dat is het hele punt. De webshop van vandaag met 200 producten is de webshop van volgend jaar met 2.000 producten. Maar als Lightspeed niet in die groei gelooft, hoeft u daar niet op te wachten. Wij helpen u graag naar een platform dat w&eacute;l in u investeert." :: Text)
 
     -- Timeline
     H.section ! A.class_ "for-who" $ do
@@ -1025,7 +1026,7 @@ lightspeedWaaromPage = penguinBaseTemplate waaromLsMeta $
           H.preEscapedToHtml (" &mdash; Lightspeed gaat naar de beurs in Toronto. Haalt $240 miljoen op. Het bedrijf moet nu elk kwartaal groeicijfers laten zien." :: Text)
         H.li $ do
           H.strong "2020"
-          H.preEscapedToHtml (" &mdash; Tweede beursnotering in New York. Nog eens $376 miljoen opgehaald. Begint agressief bedrijven op te kopen: ShopKeep, Vend, Ecwid, NuORDER." :: Text)
+          H.preEscapedToHtml (" &mdash; Tweede beursnotering in New York. Nog eens $376 miljoen opgehaald. Begint agressief bedrijven op te kopen: ShopKeep, Vend, Ecwid, NuORDER. Dit lijkt op een leveraged-buyout-strategie: groei door overnames in plaats van door het eigen product te verbeteren. Het probleem is dat Lightspeed hun eigen platform niet kon laten groeien &mdash; en nu alle toekomstige groei opoffert voor kortetermijnwinst." :: Text)
         H.li $ do
           H.strong "2021"
           H.preEscapedToHtml (" &mdash; Aandeel piekt rond $125. Kort daarna publiceert " :: Text)
@@ -1062,7 +1063,10 @@ lightspeedWaaromPage = penguinBaseTemplate waaromLsMeta $
     -- Why this is structural
     H.section ! A.class_ "audit" $ do
       H.h2 "Dit wordt niet beter"
-      H.p "Bij MijnWebwinkel kon je nog hopen dat een nieuwe eigenaar het platform nieuw leven zou inblazen. Bij Lightspeed is dat uitgesloten. Dit is een beursgenoteerd bedrijf met een duidelijke strategie:"
+      H.p $ do
+        "Bij andere platforms zoals "
+        H.a ! A.href "/waarom-mijnwebwinkel.html" $ "MijnWebwinkel"
+        H.preEscapedToHtml (" (een Nederlands webshopplatform dat hetzelfde overkomt) kon je nog hopen dat een nieuwe eigenaar het platform nieuw leven zou inblazen. Bij Lightspeed is dat uitgesloten. Dit is een beursgenoteerd bedrijf met een duidelijke strategie:" :: Text)
       H.ol $ do
         H.li $ do
           H.strong "Consolideer platforms"
@@ -1075,7 +1079,7 @@ lightspeedWaaromPage = penguinBaseTemplate waaromLsMeta $
           H.preEscapedToHtml (" &mdash; via hogere abonnementen, betaalverwerking (Lightspeed Payments), en kapitaalverstrekking (Lightspeed Capital). Elk kwartaal moet dit cijfer omhoog." :: Text)
         H.li $ do
           H.strong "Laat kleine shops vanzelf vertrekken"
-          H.preEscapedToHtml (" &mdash; door de prijs hoog genoeg te maken dat het voor kleine shops niet meer rendabel is. Dat is geen bug, dat is de strategie." :: Text)
+          H.preEscapedToHtml (" &mdash; door de prijs hoog genoeg te maken dat het voor kleine shops niet meer rendabel is. Dat is geen vergissing &mdash; dat is de strategie." :: Text)
       H.p $ H.preEscapedToHtml ("De aandelenkoers is gedaald van $125 naar rond de $20. Het management staat onder druk om winstgevender te worden. Dat betekent: <strong>hogere prijzen, minder support, en focus op grote klanten</strong>. Kleine webshops passen niet in dat plaatje." :: Text)
 
     -- Nederland specifiek
