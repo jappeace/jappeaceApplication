@@ -329,7 +329,7 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
       H.div ! A.class_ "card-grid" $ do
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;750" :: Text)
+          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;999" :: Text)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en eventuele bulk-aanpassingen. Prijs afhankelijk van de omvang van uw webshop." :: Text)
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
@@ -406,7 +406,7 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
       { pageMetaTitle       = "Ontsnap MijnWebwinkel \8212 Migratie naar Shopify \8212 Jappie Software B.V."
-      , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364\&750."
+      , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364\&999."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
       , pageMetaOgImage     = Nothing
@@ -541,7 +541,7 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
       H.div ! A.class_ "card-grid" $ do
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;750" :: Text)
+          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;999" :: Text)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad. Prijs afhankelijk van de omvang van uw webshop." :: Text)
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
@@ -611,7 +611,7 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
       { pageMetaTitle       = "Ontsnap CCV Shop \8212 Migratie naar Shopify \8212 Jappie Software B.V."
-      , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364\&750."
+      , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364\&999."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-ccvshop.html"
       , pageMetaOgImage     = Nothing
@@ -736,7 +736,7 @@ lightspeedMigrationPage = penguinBaseTemplate lightspeedMeta $
       H.div ! A.class_ "card-grid" $ do
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;750" :: Text)
+          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;999" :: Text)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad. Prijs afhankelijk van de omvang van uw webshop." :: Text)
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
@@ -809,7 +809,7 @@ lightspeedMigrationPage = penguinBaseTemplate lightspeedMeta $
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
       { pageMetaTitle       = "Ontsnap Lightspeed \8212 Migratie naar Shopify \8212 Jappie Software B.V."
-      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Geen verkeersverlies. Vanaf \8364\&750."
+      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Geen verkeersverlies. Vanaf \8364\&999."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-lightspeed.html"
       , pageMetaOgImage     = Nothing
