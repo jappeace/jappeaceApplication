@@ -12,6 +12,7 @@
   },
   org-files ? [
     "category-adts"
+    "ai-talk"
     "keter-nix"
     "mtl"
     "excel-in-haskell"
