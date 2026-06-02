@@ -17,10 +17,10 @@
       "version_upper_bound": null,
       "release_prefix": null,
       "submodules": false,
-      "version": "4.1.0",
-      "revision": "0582f57517c97a4c7bfeb58762138c78883f94c5",
-      "url": "https://api.github.com/repos/hakimel/reveal.js/tarball/refs/tags/4.1.0",
-      "hash": "sha256-oN77CUmmvrzObhQbORXAujjb+4IkiYbKVLsi7hddsIM="
+      "version": "5.2.1",
+      "revision": "25e52e26af09933a98afb24cfdd3574e9055034d",
+      "url": "https://api.github.com/repos/hakimel/reveal.js/tarball/refs/tags/5.2.1",
+      "hash": "sha256-f5g09Xj4XF+v6Y6zW13R4PUTWkAt3wwGpa9nSypUV6w="
     }
   },
   "version": 7
