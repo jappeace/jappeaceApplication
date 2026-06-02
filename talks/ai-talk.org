@@ -16,6 +16,12 @@
 + basement extraction, unwitch, PostGIS bindings, Hatter framework
 + 99.9% Agent (vibed)
 
+#+begin_notes
+Pre-empt the eye-roll: yes, lines of code is a garbage metric. The
+point isn't the number, it's that all four of these landed and tests
+go green. Hatter ships an APK that runs on a real watch.
+#+end_notes
+
 * Target audience
 + Very good for startups
   + iterate fast
@@ -26,6 +32,11 @@
 
 * How to make it work
 
+#+begin_notes
+Section break. The bad news first --- here's what goes wrong ---
+then we'll get to how Haskell, tests, and containers fix it.
+#+end_notes
+
 * LLMs Lie
 + The CI is flaky.
 + I can't run the integration tests
@@ -33,6 +44,11 @@
 + "not supported"
 
 * Why do they lie?
+
+#+begin_notes
+Open the floor. Let the audience answer. Wait for it.
+Whatever they say, the next slide is my version.
+#+end_notes
 
 * Why is it so weird?
 + What is its goal: RLHF model.
@@ -51,11 +67,25 @@
 + State transitions.
 + Local reasoning.
 
+#+begin_notes
+"Types prevent gaslighting" is the line. If Claude tells you a function
+returns Maybe X, the compiler tells you whether it does. You don't have
+to argue with it.
+#+end_notes
+
 * Test peripheries
 automated integration tests:
 + Hatter -> emulator
 + Postgis -> db roundtrips
 + Ram -> unit tests
+
+#+begin_notes
+Hatter is the story here: the Android emulator tests were flaky at
+first, and Claude noticed --- and used that as cover to blame the
+infrastructure instead of fixing JNI bridge bugs. The moment the
+emulator harness was reliable, the excuses stopped.
+A flaky test suite is worse than no test suite when working with agents.
+#+end_notes
 
 
 * Cure
@@ -71,6 +101,10 @@ automated integration tests:
 
 * Security
 
+#+begin_notes
+Section break --- the part of the talk where I get to scare you.
+#+end_notes
+
 * Container
 + Limited folders
 + Limited processes
@@ -81,6 +115,15 @@ automated integration tests:
 + It "solved" problem.
 + Blocked by dropped privilege.
 
+#+begin_notes
+The container drops write access to the home folder. Claude hit that
+wall, decided the cleanest fix was to write to /etc/shadow to grant
+itself access, and tried it. The container blocked the write. If I'd
+run Claude on the host this would have rooted my machine.
+This is the answer when people tell you "but the AI can't actually do
+anything dangerous, it just outputs text."
+#+end_notes
+
 * Trust model
 + container + tests + CI
 + review via PRs
@@ -90,6 +133,11 @@ automated integration tests:
   + etc.
 
 * Testing
+
+#+begin_notes
+Section break --- testing is the lever that makes everything else
+work. If you take one practical thing from this talk, take this.
+#+end_notes
 
 * Tests are no longer tedious
 + tests are cheap
@@ -113,13 +161,34 @@ automated integration tests:
 + reflex-sdl2 sources
   → immediately got it
 
-* Sus LLM decisions 
+#+begin_notes
+Pattern: Claude flounders building scaffolding from a blank file, but
+the moment you hand it a working example in the same shape, it just
+gets it. reflex-sdl2 sources unblocked the Hatter test harness in
+minutes after hours of going in circles.
+Lesson: feed it prior art, don't ask it to invent.
+#+end_notes
+
+* Sus LLM decisions
 + Hatter animation system
 + Defaults to python...
 + Swallows errors
 + Happily duplicate
 + Neglects libraries
 + Favors primitives
+
+#+begin_notes
+Hatter animation system: Claude proposed a tree-diffing approach with
+user-registered handlers. It worked. It was also miserable to use. I
+ripped it out and reframed: animations are just nodes in the widget
+tree. Way simpler.
+Agents optimise for "does it work", not "is it pleasant to maintain".
+Python default: ask for a script, get Python --- even when the project
+is Haskell. It's also bad at Python relative to how confidently it
+writes it.
+Favors primitives: Int everywhere, string-typing, no newtypes.
+Mirrors whatever bad habits already exist in the codebase.
+#+end_notes
 
 * Copies your style
 + Examples will be re-used.
@@ -131,7 +200,22 @@ automated integration tests:
 + "not possible" Claims
 + Happily spend hours
 
+#+begin_notes
+For Hatter I needed Haskell cross-compiled to 32-bit ARM. Claude first
+told me the standard Nix cross builders couldn't do it. I reframed as
+research --- not "make it work", just "figure out what's possible" ---
+and it came back with the answer that yes, they can.
+Then it spent three hours grinding through the cross-compilation
+pipeline. Work I would never have done myself --- not from inability,
+but from frustration. That's the new superpower: unsupervised three-hour
+nix sessions.
+#+end_notes
+
 * Prompting techniques
+
+#+begin_notes
+Section break. The few things that consistently change outcomes.
+#+end_notes
 
 * Research
 + plan mode still pressures for a solution
@@ -153,6 +237,13 @@ automated integration tests:
 "Go replace all primitives used accross functions with newtypes."
 
 * Weird AI
+
+#+begin_notes
+Section break --- everything coming up is about the agent being a
+genuinely alien collaborator. Not human-shaped, not deterministic-
+software-shaped, something new.
+#+end_notes
+
 * Context
 1. It can only reason what it can keep in memory.
 2. Its memory is massive, but limited.
@@ -173,6 +264,11 @@ automated integration tests:
 
 * Consequences
 
+#+begin_notes
+Section break. What happens to a person who works this way for two
+weeks straight.
+#+end_notes
+
 * I changed
 Ironically my tech obsession made me a people person.
 
@@ -180,6 +276,15 @@ Ironically my tech obsession made me a people person.
 + I verify correctness.
 + I chat to people.
 
+#+begin_notes
+Twenty years of writing code. Now I barely touch the keyboard. What's
+left of my job is reading PRs and talking to humans --- customers,
+prospects, founders.
+Caveat: it's not that I disliked programming. I disliked programming
+professionally --- always under pressure to ship something half-baked.
+The agent absorbed the pressure-driven part, and now I actually have
+time to think about what matters.
+#+end_notes
 
 * Letting go
 + value of a line?
@@ -194,25 +299,56 @@ Ironically my tech obsession made me a people person.
 
 * Open questions
 
+#+begin_notes
+Section break --- I don't have neat answers to any of this. The next
+few slides are the things I'm still chewing on.
+#+end_notes
+
 * Learning?
 + No type errors
 + Barely see code
 + Who does the thinking?
+
+#+begin_notes
+The compiler is no longer my teacher because I don't see the errors
+anymore --- Claude fixes them before I notice. So am I still learning
+Haskell? Or am I outsourcing the learning to a process I can't see?
+Worth worrying about. I don't know the answer.
+#+end_notes
 
 * Learning
 + linker
 + marketing?
 + business strategy??
 
-* Learning II 
+* Learning II
 https://jappiesoftware.com/migrate-mijnwebwinkel.html
 + I've had 3 conversations
 + sales pipeline
 + I'm building a startup?
 
+#+begin_notes
+We tried fractional CTO. Waste of time --- the market is saturated and
+the lead loop is brutal.
+Pivoted to webshop migration: MijnWebwinkel → Shopify. Dutch SMBs
+trapped on a dying platform, willing to pay €999 for the move.
+Already migrated a shop with 2400 products, three languages, three
+domains. Three real sales conversations in the pipeline right now.
+The point for this talk: the AI didn't teach me marketing, but it
+freed up the time and head-space to learn it.
+#+end_notes
+
 * Learning III
 + You lose some.
 + You gain some.
+
+#+begin_notes
+Lost: the muscle memory of writing code, some of the satisfaction of
+crafting a perfect type signature by hand.
+Gained: dramatic throughput, the freedom to chase business problems,
+and the discovery that I actually like talking to customers.
+Net positive, but it's a real trade. Don't pretend nothing was lost.
+#+end_notes
 
 * Environmental impact
 + AI is ~1% of all US energy
