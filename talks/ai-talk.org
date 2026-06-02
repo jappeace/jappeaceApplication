@@ -12,7 +12,7 @@
 + Therapy.
 
 * ~50K lines 2 weeks
-+ It all works too.
++ It works too.
 + basement extraction, unwitch, PostGIS bindings, Hatter framework
 + 99.9% Agent (vibed)
 
@@ -43,16 +43,18 @@
 + Counteract lies.
 + Distrust it.
 
+* What does Haskell give us?
+
 * For free
-+ internal consistency
++ Internal consistency.
++ State transitions.
++ Local reasoning.
 
 * Test peripheries
 automated integration tests:
-
-Hatter -> emulator
-Postgis -> db roundtrips
-ram -> unit tests
-
++ Hatter -> emulator
++ Postgis -> db roundtrips
++ Ram -> unit tests
 
 
 * Cure
@@ -66,17 +68,12 @@ ram -> unit tests
   + hallucination
   + disobedience
 
-* Why Haskell + Agent
-
-* MAXIMUM LAZINESS
-
-
 * Security
 
 * Container
-+ Only access to a select few folders.
-+ Blocks it from process access.
-+ bonus: run several claudes in parallel
++ Limited folders
++ Limited processes
++ Parallelization 
 
 * /etc/shadow incident
 
@@ -102,9 +99,8 @@ ram -> unit tests
 + Creative tests
    + Allocation counting.
 
-* The AI still cheats
+* Cheating
 + disables tests 
-+ swallows errors,
 + weakens assertions (assertTrue(true))
 + hard tasks
 
@@ -113,10 +109,10 @@ ram -> unit tests
 + reflex-sdl2 sources
   → immediately got it
 
-* AI decisions are shit
+* Sus LLM decisions 
 + Hatter animation system
-+ Defaults to python.
-  + bad at it.
++ Defaults to python...
++ Swallows errors
 + Happily duplicate
 + Neglects libraries
 + Favors primitives
@@ -129,110 +125,60 @@ ram -> unit tests
 * Nix cross-compilation
 + Replace standard builders
 + "not possible" Claims
-
-* Template Haskell
-+ cross-compilation TH: persistent failure mode
-+ executing code on wrong architecture
-+ AI ground for three hours on builds
-+ I don't know what it actually did.
-  + but it works?
++ Happily spend hours
 
 * Prompting techniques
 
-* Research (not standard)
+* Research
 + plan mode still pressures for a solution
 + "research" has no right answer --- removes the pressure
 + AI explores freely, no deliverable expected
 
 * Research beyond code
-+ not just for programming
-+ finding cheaper energy providers, comparing cars
-+ budget analysis on the Dutch government (why are taxes this high?)
-  + Dutch gov spent 2.5 billion on building museums and theatres while in a housing crisis.
-+ the mode generalises to any domain where you need exploration
++ Energy contract
++ Used cars
++ Interview prep
 
 * New meaning to simple haskell
 + Claude comes with cheapo models.
-+ Use it for "simple haskell"
-+ small model explains a function to big model.
-+ Big model has to make it understandable to the small one.
++ Use it for "simple Haskell"
++ Small explains to big.
++ If wrong: Big makes it understandable.
 
 * Primitives
 "Go replace all primitives used accross functions with newtypes."
 
-* Task decomposition
-+ large tasks → AI flounders, cuts corners
-+ small focused tasks → reliable output
-+ one feature + one test per task
+* Weird AI
+* Context
+1. It can only reason what it can keep in memory.
+2. It's memory is massive, but limited.
 
-* Why is it so weird? II
-+ Context
-  1. It can only reason what it can keep in memory.
-  2. It's memory is massive, but limited.
-
-* Why is it so weird III
+* State
 + It's bad at state, it keeps failing at git.
-  + solves esqueleto in no time.
   + opening a PR is hard.
   + can't reason about what it can't "see"
+
+
+* Senses
++ Describe color to the blind
 + It can see if you explain how.
-  + playwright goes hard.
-    + solves captcha, anubis etc.
-    + just takes screenshots and sees.
++ mcp
+  + playwright 
+  + tui
+  + can control vm's
 
-* Why is it so weird IV
-+ it's a 1 dimensional being.
-+ No ethics.
-+ No (real) consequences asside losing AI good boy points.
+* Consequences
 
-* Results and scale
-
-* What worked
-+ mechanical refactoring (basement extraction)
-+ implementing known APIs (PostGIS bindings)
-+ grinding through build errors (nix, TH)
-+ test writing when properly constrained
-+ unsupervised nix battles --- 3 hour sessions, often wins
-+ having AI grind hours of nix work is a blessing
-
-* What didn't work
-+ system architecture and design
-+ anything requiring foresight
-
-* The role shift
-+ implementation → commodity
-+ verification → the bottleneck
-+ but verification doesn't mean reading every line
-+ it means: are the tests right? is the design sane?
+* I changed
++ Verification
++ People
 
 * Letting go
 + value of a line?
-  + 50K lines 
 + Focus on what matters:
    + test correctness
    + architectural sanity
 + let go of the rest
-
-* 50K lines in two weeks
-+ Hatter: Android + iOS cross-compilation framework
-+ Prrrrrrr: gym tracking app built on Hatter
-+ Nix cross-compilation, JNI bridge, APK packaging
-+ AI lacks foresight but compensates with speed
-
-* Summary
-
-* Practical rules
-+ containerise your LLM environment
-+ force integration tests per feature in CLAUDE.md
-+ reviewing is the bottleneck --- be selective about it
-+ two questions: do tests check the right thing? is the code sane?
-+ formatter in CI for style, decompose tasks for architecture
-+ let go of the details --- that's what makes vibing work
-
-* Compiler as reviewer
-+ types prevent gaslighting
-+ feedback loop suits LLM iteration
-+ but types alone aren't enough
 
 * Open questions
 
@@ -246,10 +192,9 @@ ram -> unit tests
 + marketing?
 + business strategy??
 
-
 * Learning II 
 https://jappiesoftware.com/migrate-mijnwebwinkel.html
-+ I've had 2 converstaions
++ I've had 3 conversations
 + pipeline
 + I'm building a startup?
 
@@ -262,12 +207,15 @@ https://jappiesoftware.com/migrate-mijnwebwinkel.html
 + I went from 4 queries/day to everything via agents
   + order of magnitude.
 + This is growing
++ Singling out AI is hypocritical
+  + Construction (11% of co2)
+  + Airplanes (2.5%)
 
-
-* AI is being subsidized
-+ don't build a business on inference.
-+ harvest code.
-
+* Summary
++ Distrust AI.
++ Haskell 💜 Vibes
+   + Spectacular 4 startups!
++ Harvest the code!
 
 * Questions?
 + Blog posts:
