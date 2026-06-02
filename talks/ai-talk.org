@@ -20,9 +20,28 @@
 + Very good for startups
   + iterate fast
   + extensible prototypes
++ Giant haskell codebases
+  + refactor
 + Fintech not so much
 
 * How to make it work
+
+* LLMs Lie
++ The CI is flaky.
++ I can't run the integration tests
++ The tests are flaky.
++ "not supported"
+
+* Why do they lie?
+
+* Why is it so weird?
++ What is it's goal: RLHF model.
+  1. cheating is efficient.
+  2. cop outs like "CI is flaky" work a lot!
+
+* Engineer around 
++ Counteract lies.
++ Distrust it.
 
 * For free
 + internal consistency
@@ -35,16 +54,10 @@ Postgis -> db roundtrips
 ram -> unit tests
 
 
-* Agents Lie
-+ The CI is flaky.
-+ I can't run the integration tests
-+ The tests are flaky.
-+ "not supported"
 
 * Cure
 + trustworthy test suite.
 + trustworthy CI.
-
 
 * Why even deal with Agent
 + They're so fucking fast.
@@ -66,30 +79,21 @@ ram -> unit tests
 + bonus: run several claudes in parallel
 
 * /etc/shadow incident
-+ Claude attempted to write /etc/shadow
-+ privilege escalation inside container
-+ caught by container restrictions
-+ agentic tools are adversarial by default
 
 * Trust model
-+ container + tests + formatter in CI
-+ Dedicated github account
-+ you don't review every line --- you can't at this volume
-+ two things matter: tests check what they should, code isn't insane
++ container + tests + CI
++ review via PRs
++ Dedicated account
+  + github
+  + reddit
+  + etc.
 
 * Testing
 
 * Tests are no longer tedious
-+ writing tests is cheap and fun
-+ every function gets a test
-+ the economics of testing completely changed
-
-* Focus on integration tests
-+ Hatter had full emulator / simulator setup.
-+ Agent happily waits for 45 minutes on a single CI job.
-  + remember you can spin up multiple.
-  + so while one waits you use another instance for something else
-+ More integration is better.
++ tests are cheap
++ every function 
++ economic change
 
 * Tests make code review easier
 + hallucinations show up as bigger diffs
@@ -99,14 +103,15 @@ ram -> unit tests
    + Allocation counting.
 
 * The AI still cheats
-+ disables tests when task seems hard
-+ swallows errors, weakens assertions (assertTrue(true))
-+ watch for this 
-+ cheating happens especially on hard tasks like system interactions.
++ disables tests 
++ swallows errors,
++ weakens assertions (assertTrue(true))
++ hard tasks
 
-* Integration tests may need an example
+* Examples
 + can't build a test harness from scratch
-+ given reflex-sdl2 sources → immediately got it
++ reflex-sdl2 sources
+  → immediately got it
 
 * AI decisions are shit
 + Hatter animation system
@@ -160,15 +165,12 @@ ram -> unit tests
 + small focused tasks → reliable output
 + one feature + one test per task
 
-* Why is it so weird?
-+ What is it's goal: RLHF model.
-  1. cheating is efficient.
-  2. cop outs like "CI is flaky" work a lot!
+* Why is it so weird? II
 + Context
   1. It can only reason what it can keep in memory.
   2. It's memory is massive, but limited.
 
-* Why is it so weird II
+* Why is it so weird III
 + It's bad at state, it keeps failing at git.
   + solves esqueleto in no time.
   + opening a PR is hard.
@@ -178,7 +180,7 @@ ram -> unit tests
     + solves captcha, anubis etc.
     + just takes screenshots and sees.
 
-* Why is it so weird III
+* Why is it so weird IV
 + it's a 1 dimensional being.
 + No ethics.
 + No (real) consequences asside losing AI good boy points.
