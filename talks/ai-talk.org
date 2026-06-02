@@ -147,7 +147,7 @@ automated integration tests:
 + Claude comes with cheapo models.
 + Use it for "simple Haskell"
 + Small explains a function to big.
-+ If wrong: Big makes it understandable to small one.
++ If wrong: Big makes it understandable to the small one.
 
 * Primitives
 "Go replace all primitives used accross functions with newtypes."
@@ -158,7 +158,7 @@ automated integration tests:
 2. Its memory is massive, but limited.
 
 * State
-+ Solve esqueleto in no time
++ Solves esqueleto in no time
 + Bad at state
 + It keeps failing at git.
   + opening a PR is hard.
@@ -174,8 +174,12 @@ automated integration tests:
 * Consequences
 
 * I changed
-+ Verification
-+ People
+Ironically my tech obsession made me a people person.
+
++ No code.
++ I verify correctness.
++ I chat to people.
+
 
 * Letting go
 + value of a line?
