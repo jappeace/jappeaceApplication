@@ -35,7 +35,7 @@
 * Why do they lie?
 
 * Why is it so weird?
-+ What is it's goal: RLHF model.
++ What is its goal: RLHF model.
   1. cheating is efficient.
   2. cop outs like "CI is flaky" work a lot!
 
@@ -46,6 +46,7 @@
 * What does Haskell give us?
 
 * For free
++ Types prevent gaslighting
 + Internal consistency.
 + State transitions.
 + Local reasoning.
@@ -76,6 +77,9 @@ automated integration tests:
 + Parallelization 
 
 * /etc/shadow incident
++ No write access to home
++ It "solved" problem.
++ Blocked by dropped privilege.
 
 * Trust model
 + container + tests + CI
@@ -142,8 +146,8 @@ automated integration tests:
 * New meaning to simple haskell
 + Claude comes with cheapo models.
 + Use it for "simple Haskell"
-+ Small explains to big.
-+ If wrong: Big makes it understandable.
++ Small explains a function to big.
++ If wrong: Big makes it understandable to small one.
 
 * Primitives
 "Go replace all primitives used accross functions with newtypes."
@@ -151,17 +155,17 @@ automated integration tests:
 * Weird AI
 * Context
 1. It can only reason what it can keep in memory.
-2. It's memory is massive, but limited.
+2. Its memory is massive, but limited.
 
 * State
-+ It's bad at state, it keeps failing at git.
++ Solve esqueleto in no time
++ Bad at state
++ It keeps failing at git.
   + opening a PR is hard.
   + can't reason about what it can't "see"
 
-
 * Senses
 + Describe color to the blind
-+ It can see if you explain how.
 + mcp
   + playwright 
   + tui
@@ -180,6 +184,10 @@ automated integration tests:
    + architectural sanity
 + let go of the rest
 
+* AI subsidies
++ Don't build on inference.
++ Harvest code!
+
 * Open questions
 
 * Learning?
@@ -195,7 +203,7 @@ automated integration tests:
 * Learning II 
 https://jappiesoftware.com/migrate-mijnwebwinkel.html
 + I've had 3 conversations
-+ pipeline
++ sales pipeline
 + I'm building a startup?
 
 * Learning III
@@ -210,6 +218,7 @@ https://jappiesoftware.com/migrate-mijnwebwinkel.html
 + Singling out AI is hypocritical
   + Construction (11% of co2)
   + Airplanes (2.5%)
+
 
 * Summary
 + Distrust AI.
