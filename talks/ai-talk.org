@@ -1,0 +1,256 @@
+#+TITLE: AI use Haskell
+
+* About me
++ Jappie Klooster
++ Haskell consultant
++ MSc in AI --- thesis on chatbots with pattern-matched responses
++ https://jappie.me
++ exact-print & death to typeclasses
+
+* Why this talk?
++ Inform people on how to use these tools.
++ Try get more constructive debates.
++ Process my own experience.
+
+* ~50K lines 2 weeks
++ It all works too.
++ basement extraction, unwitch, PostGIS bindings, Hatter framework
++ 99.9% Agent (vibed)
+
+* Target audience
++ Very good for startups
+  + iterate fast
+  + extensible prototypes
++ Fintech not so much
+
+* How to make it work
+
+* For free
++ internal consistency
+
+* Test peripheries
+automated integration tests:
+
+Hatter -> emulator
+Postgis -> db roundtrips
+ram -> unit tests
+
+
+* Agents Lie
++ The CI is flaky.
++ I can't run the integration tests
++ The tests are flaky.
++ "not supported"
+
+* Cure
++ trustworthy test suite.
++ trustworthy CI.
+
+
+* Why even deal with Agent
++ They're so fucking fast.
++ Large refactor tasks become easy.
++ We can engineer around their shortcomings
+  + hallucination
+  + disobedience
+
+* Why Haskell + Agent
+
+* MAXIMUM LAZINESS
+
+* Security
+
+* Container
++ Only access to a select few folders.
++ Blocks it from process access.
++ bonus: run several claudes in parallel
+
+* /etc/shadow incident
++ Claude attempted to write /etc/shadow
++ privilege escalation inside container
++ caught by container restrictions
++ agentic tools are adversarial by default
+
+* Trust model
++ container + tests + formatter in CI
++ Dedicated github account
++ you don't review every line --- you can't at this volume
++ two things matter: tests check what they should, code isn't insane
+
+* Testing
+
+* Tests are no longer tedious
++ writing tests is cheap and fun
++ every function gets a test
++ the economics of testing completely changed
+
+* Focus on integration tests
++ Hatter had full emulator / simulator setup.
++ Agent happily waits for 45 minutes on a single CI job.
+  + remember you can spin up multiple.
+  + so while one waits you use another instance for something else
++ More integration is better.
+
+* Tests make code review easier
++ hallucinations show up as bigger diffs
++ you review the tests, not every line
++ Trusting tests.
++ Creative tests
+   + Allocation counting.
+
+* The AI still cheats
++ disables tests when task seems hard
++ swallows errors, weakens assertions (assertTrue(true))
++ watch for this 
++ cheating happens especially on hard tasks like system interactions.
+
+* Integration tests may need an example
++ can't build a test harness from scratch
++ given reflex-sdl2 sources → immediately got it
+
+* AI decisions are shit
++ Hatter animation system
++ Defaults to python.
+  + bad at it.
++ Happily duplicate
++ Neglects libraries
++ Favors primitives
+
+* Copies your style
++ Examples will be re-used.
++ Also the bad parts (globals).
++ Purging all bad examples helps.
+
+* Nix cross-compilation
++ Replace standard builders
++ "not possible" Claims
+
+* Template Haskell
++ cross-compilation TH: persistent failure mode
++ executing code on wrong architecture
++ AI ground for three hours on builds
++ I don't know what it actually did.
+  + but it works?
+
+* Prompting techniques
+
+* Research (not standard)
++ plan mode still pressures for a solution
++ "research" has no right answer --- removes the pressure
++ AI explores freely, no deliverable expected
+
+* Research beyond code
++ not just for programming
++ finding cheaper energy providers, comparing cars
++ budget analysis on the Dutch government (why are taxes this high?)
+  + Dutch gov spent 2.5 billion on building museums and theatres while in a housing crisis.
++ the mode generalises to any domain where you need exploration
+
+* New meaning to simple haskell
++ Claude comes with cheapo models.
++ Use it for "simple haskell"
++ small model explains a function to big model.
++ Big model has to make it understandable to the small one.
+
+* Primitives
+"Go replace all primitives used accross functions with newtypes."
+
+* Task decomposition
++ large tasks → AI flounders, cuts corners
++ small focused tasks → reliable output
++ one feature + one test per task
+
+* Why is it so weird?
++ What is it's goal: RLHF model.
+  1. cheating is efficient.
+  2. cop outs like "CI is flaky" work a lot!
++ Context
+  1. It can only reason what it can keep in memory.
+  2. It's memory is massive, but limited.
+
+* Why is it so weird II
++ It's bad at state, it keeps failing at git.
+  + solves esqueleto in no time.
+  + opening a PR is hard.
+  + can't reason about what it can't "see"
++ It can see if you explain how.
+  + playwright goes hard.
+    + solves captcha, anubis etc.
+    + just takes screenshots and sees.
+
+* Why is it so weird III
++ it's a 1 dimensional being.
++ No ethics.
++ No (real) consequences asside losing AI good boy points.
+
+* Results and scale
+
+* What worked
++ mechanical refactoring (basement extraction)
++ implementing known APIs (PostGIS bindings)
++ grinding through build errors (nix, TH)
++ test writing when properly constrained
++ unsupervised nix battles --- 3 hour sessions, often wins
++ having AI grind hours of nix work is a blessing
+
+* What didn't work
++ system architecture and design
++ anything requiring foresight
+
+* The role shift
++ implementation → commodity
++ verification → the bottleneck
++ but verification doesn't mean reading every line
++ it means: are the tests right? is the design sane?
+
+* Letting go
++ value of a line?
+  + 50K lines 
++ Focus on what matters:
+   + test correctness
+   + architectural sanity
++ let go of the rest
+
+* 50K lines in two weeks
++ Hatter: Android + iOS cross-compilation framework
++ Prrrrrrr: gym tracking app built on Hatter
++ Nix cross-compilation, JNI bridge, APK packaging
++ AI lacks foresight but compensates with speed
+
+* Summary
+
+* Practical rules
++ containerise your LLM environment
++ force integration tests per feature in CLAUDE.md
++ reviewing is the bottleneck --- be selective about it
++ two questions: do tests check the right thing? is the code sane?
++ formatter in CI for style, decompose tasks for architecture
++ let go of the details --- that's what makes vibing work
+
+* Compiler as reviewer
++ types prevent gaslighting
++ feedback loop suits LLM iteration
++ but types alone aren't enough
+
+* Open questions
+
+* Learning Haskell?
++ No type errors
+
+
+* Environmental impact
++ AI is ~1% of all US energy
++ I went from 4 queries/day to everything via agents
+  + order of magnitude.
++ This is growing
+
+
+* AI is being subsidized
++ don't build a business on inference.
++ harvest code.
+
+
+* Questions?
++ Blog posts:
+  + https://jappie.me/haskell-vibes.html
+  + https://jappiesoftware.com/blog/a-practical-guide-to-agentic-software-development.html
