@@ -5,6 +5,22 @@
       "name": "nixpkgs-unstable",
       "url": "https://releases.nixos.org/nixpkgs/nixpkgs-26.05pre960315.608d0cadfed2/nixexprs.tar.xz",
       "hash": "sha256-ng4mTBcXO6Nc1cTlXxCPkI49nDJbwFNg/DBhx7YkymE="
+    },
+    "reveal.js": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "hakimel",
+        "repo": "reveal.js"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "submodules": false,
+      "version": "4.1.0",
+      "revision": "0582f57517c97a4c7bfeb58762138c78883f94c5",
+      "url": "https://api.github.com/repos/hakimel/reveal.js/tarball/refs/tags/4.1.0",
+      "hash": "sha256-oN77CUmmvrzObhQbORXAujjb+4IkiYbKVLsi7hddsIM="
     }
   },
   "version": 7
