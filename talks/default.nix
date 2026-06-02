@@ -41,11 +41,8 @@ pkgs.runCommand "talks" { } (
   ''
   + pkgs.lib.concatStrings (
     pkgs.lib.forEach file-paths (file: ''
-      ${pkgs.pandoc}/bin/pandoc -s -V theme=${theme} -t revealjs -o $out/${file.name}.html ${file.path}
+      ${pkgs.pandoc}/bin/pandoc -s -V theme=${theme} -V revealjs-url=reveal.js -t revealjs -o $out/${file.name}.html ${file.path}
     '')
   )
-  + ''
-    sed -i 's#//dist#/dist#g; s#//plugin#/plugin#g' $out/garbage.html
-  ''
 )
 # sed -i "s/plugins:\ \[/plugins: [ RevealHighlight, /" $out/${talk-name}.html
