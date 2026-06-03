@@ -302,7 +302,7 @@ time to think about what matters.
 + Trust
 + Startups
 
-* Why most orgs fail
+* Adaptation fail
 + Process for human
 + Agile/Scrum
   + producitivy measures?
