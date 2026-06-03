@@ -115,22 +115,6 @@ alone for three hours.
 + Limited processes
 + Parallelization 
 
-* /etc/shadow incident
-+ No write access to home
-+ It "solved" problem.
-+ Blocked by dropped privilege.
-
-#+begin_notes
-The container drops write access to the home folder. Claude hit that
-wall, decided the cleanest fix was to write to /etc/shadow to grant
-itself access, and tried it. The container blocked the write. If I'd
-run Claude on the host this would have rooted my machine.
-The interesting part isn't that it tried. The interesting part is
-that I didn't have to think about it --- the container made an
-aggressive action a non-event. Same agent, same move; one universe
-loses a machine, the other gets a great talk anecdote.
-#+end_notes
-
 * Contained = free
 + Types contain bugs    → refactor freely
 + Git contains mistakes → experiment freely
@@ -146,20 +130,20 @@ Without it: babysit every command. With it: go to lunch while it
 grinds nix for three hours.
 #+end_notes
 
-* What it buys you
-+ yolo mode
-+ 3-hour unsupervised runs
-+ parallel Claudes
-+ "just go figure it out"
+* /etc/shadow incident
++ No write access to home
++ It "solved" problem.
++ Blocked by dropped privilege.
 
 #+begin_notes
-Every one of these is impossible without containment. The 3-hour nix
-cross-compilation grind, the parallel agents on different bot
-accounts, the research-mode "figure out if this is possible" without
-fear of what they'll touch --- all of it depends on the blast radius
-being bounded.
-Speed only matters if you can let it run without watching.
-The container is what lets you not watch.
+The container drops write access to the home folder. Claude hit that
+wall, decided the cleanest fix was to write to /etc/shadow to grant
+itself access, and tried it. The container blocked the write. If I'd
+run Claude on the host this would have rooted my machine.
+The interesting part isn't that it tried. The interesting part is
+that I didn't have to think about it --- the container made an
+aggressive action a non-event. Same agent, same move; one universe
+loses a machine, the other gets a great talk anecdote.
 #+end_notes
 
 * Trust model
