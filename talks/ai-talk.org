@@ -297,6 +297,17 @@ time to think about what matters.
 + Don't build on inference.
 + Harvest code!
 
+* Job security
++ Value shift
++ Trust
++ Startups
+
+* Why most orgs fail
++ Process for human
++ Agile/Scrum
+  + producitivy measures?
+
+
 * Open questions
 
 #+begin_notes
