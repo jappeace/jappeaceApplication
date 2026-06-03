@@ -1,9 +1,12 @@
 #+TITLE: Agent use
 #+SUBTITLE: Jappie's long rant on AI
 
-* Jappie 
+* Jappie
+#+ATTR_HTML: :width 250 :style border-radius:50%;
+[[./img/jappeace.jpg]]
+
 + Haskell consultant
-+ MSc in AI 
++ MSc in AI
 + https://jappie.me
 
 * Why this talk?
