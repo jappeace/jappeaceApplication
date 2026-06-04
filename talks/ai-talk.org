@@ -53,8 +53,16 @@ Open the floor. Let the audience answer. Wait for it.
 Whatever they say, the next slide is my version.
 #+end_notes
 
-* Why is it so weird?
-+ What is its goal: RLHF model.
+* Capability
++ Train on tons of data
+  + text
+  + images
+  + video
++ result: non confirming model
+
+* Alignment
++ Good for human
++ Goal: RLHF model.
   1. cheating is efficient.
   2. cop outs like "CI is flaky" work a lot!
 
@@ -96,7 +104,7 @@ A flaky test suite is worse than no test suite when working with agents.
 + trustworthy CI.
 
 * Why even deal with Agent
-+ They're so fucking fast.
++ They're so fast.
 + Large refactor tasks become easy.
 + We can engineer around their shortcomings
   + hallucination
