@@ -325,7 +325,9 @@ time to think about what matters.
 
 * AI subsidies
 + Don't build on inference.
-+ Harvest code!
++ Harvest features!
++ Local models.
+  + gauging cap.
 
 * Job security
 + Value shift
