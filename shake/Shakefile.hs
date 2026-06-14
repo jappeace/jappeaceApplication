@@ -9,6 +9,7 @@ import Data.List (sortBy, nub)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe)
 import Data.Ord (Down(..))
+import Data.Time (UTCTime, formatTime, defaultTimeLocale)
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
@@ -658,11 +659,28 @@ generatePenguinSitemap articles = T.unlines $
   , sitemapUrl "https://jappiesoftware.com/waarom-lightspeed.html"
   , sitemapUrl "https://jappiesoftware.com/blog/"
   ]
-  ++ map (\art -> sitemapUrl ("https://jappiesoftware.com/blog/" <> articleUrl art)) articles
+  ++ map (\art -> sitemapUrlDated ("https://jappiesoftware.com/blog/" <> articleUrl art) (articleLastmod art)) articles
   ++ ["</urlset>"]
 
 sitemapUrl :: Text -> Text
 sitemapUrl loc = "  <url><loc>" <> loc <> "</loc></url>"
+
+-- | Sitemap entry that includes a @\<lastmod\>@ date. Used for content that has
+-- a real modification date (blog articles) so search engines get an honest
+-- freshness signal. Static pages keep 'sitemapUrl' (loc only) rather than
+-- fabricate a date.
+sitemapUrlDated :: Text -> UTCTime -> Text
+sitemapUrlDated loc modified =
+  "  <url><loc>" <> loc <> "</loc><lastmod>" <> formatSitemapDate modified <> "</lastmod></url>"
+
+-- | W3C date (YYYY-MM-DD), the format the sitemap protocol accepts for lastmod.
+formatSitemapDate :: UTCTime -> Text
+formatSitemapDate = T.pack . formatTime defaultTimeLocale "%Y-%m-%d"
+
+-- | Most recent known modification date for an article: the explicit modified
+-- date when present, otherwise the original publication date.
+articleLastmod :: Article -> UTCTime
+articleLastmod article = fromMaybe (articleDate article) (articleModified article)
 
 -- | robots.txt for the penguin site, with sitemap reference.
 penguinRobotsTxt :: Text
@@ -686,14 +704,14 @@ generateBlogSitemap config enArticles enPages nlArticles nlPages =
                , sitemapUrl (baseUrl <> "/tags.html")
                , sitemapUrl (baseUrl <> "/categories.html")
                ]
-            ++ map (\art -> sitemapUrl (baseUrl <> "/" <> articleUrl art)) enArticles
+            ++ map (\art -> sitemapUrlDated (baseUrl <> "/" <> articleUrl art) (articleLastmod art)) enArticles
             ++ map (\page -> sitemapUrl (baseUrl <> "/" <> pageUrl page)) enPages
       nlUrls = [ sitemapUrl (baseUrl <> "/nl/")
                , sitemapUrl (baseUrl <> "/nl/archives.html")
                , sitemapUrl (baseUrl <> "/nl/tags.html")
                , sitemapUrl (baseUrl <> "/nl/categories.html")
                ]
-            ++ map (\art -> sitemapUrl (baseUrl <> "/nl/" <> articleUrl art)) nlArticles
+            ++ map (\art -> sitemapUrlDated (baseUrl <> "/nl/" <> articleUrl art) (articleLastmod art)) nlArticles
             ++ map (\page -> sitemapUrl (baseUrl <> "/nl/" <> pageUrl page)) nlPages
   in T.unlines $
     [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
