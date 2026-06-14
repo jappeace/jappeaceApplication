@@ -72,10 +72,13 @@ redirects in te kloppen. En geen organisch verkeer dat u kwijtraakt aan een
 foutpagina. Uw bezoekers en uw Google-posities komen gewoon op de nieuwe
 shop terecht.
 
-Wilt u eerst lezen @@html:<a href="/waarom-mijnwebwinkel.html">waarom MijnWebwinkel niet meer wordt doorontwikkeld</a>@@, of meteen weten hoe @@html:<a href="/migrate-mijnwebwinkel.html">onze migratieservice</a>@@ werkt? Beide leggen we graag uit. En als u liever direct
-spart over uw eigen winkel: [[https://calendar.app.google/9h9uTzsPQoryEc6S7][plan
-een vrijblijvend gesprek]]. We kijken samen naar uw shop en geven een eerlijke
-inschatting van de migratie en de redirects.
+Wilt u eerst lezen [[https://jappiesoftware.com/waarom-mijnwebwinkel.html][waarom
+MijnWebwinkel niet meer wordt doorontwikkeld]], of meteen weten hoe
+[[https://jappiesoftware.com/migrate-mijnwebwinkel.html][onze migratieservice]]
+werkt? Beide leggen we graag uit. En als u liever direct spart over uw eigen
+winkel: [[https://calendar.app.google/9h9uTzsPQoryEc6S7][plan een vrijblijvend
+gesprek]]. We kijken samen naar uw shop en geven een eerlijke inschatting van de
+migratie en de redirects.
 
 * Veelgestelde vragen
 
