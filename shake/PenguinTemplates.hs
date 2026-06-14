@@ -12,6 +12,7 @@ module PenguinTemplates
   , defaultPageMeta
   ) where
 
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Time (UTCTime, formatTime, defaultTimeLocale)
@@ -76,13 +77,14 @@ penguinBaseTemplate meta content =
       case pageMetaCanonical meta of
         Just canonicalUrl -> H.meta ! customAttribute "property" "og:url" ! A.content (toValue canonicalUrl)
         Nothing -> mempty
-      case pageMetaOgImage meta of
-        Just imageUrl -> H.meta ! customAttribute "property" "og:image" ! A.content (toValue imageUrl)
-        Nothing -> mempty
+      H.meta ! customAttribute "property" "og:image" ! A.content (toValue (resolveOgImage meta))
+      H.meta ! customAttribute "property" "og:image:width" ! A.content "1200"
+      H.meta ! customAttribute "property" "og:image:height" ! A.content "630"
       -- Twitter Card tags
-      H.meta ! A.name "twitter:card" ! A.content "summary"
+      H.meta ! A.name "twitter:card" ! A.content "summary_large_image"
       H.meta ! A.name "twitter:title" ! A.content (toValue (pageMetaTitle meta))
       H.meta ! A.name "twitter:description" ! A.content (toValue (pageMetaDescription meta))
+      H.meta ! A.name "twitter:image" ! A.content (toValue (resolveOgImage meta))
       -- Canonical URL
       case pageMetaCanonical meta of
         Just canonicalUrl -> H.link ! A.rel "canonical" ! A.href (toValue canonicalUrl)
@@ -94,6 +96,7 @@ penguinBaseTemplate meta content =
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-FMYV1PLWZ6" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-FMYV1PLWZ6');" :: Text)
       H.title (toHtml (pageMetaTitle meta))
+      organizationJsonLd
       pageMetaExtraHead meta
     H.body $ do
       H.header $
@@ -133,13 +136,14 @@ penguinBlogBaseTemplate meta content =
       case pageMetaCanonical meta of
         Just canonicalUrl -> H.meta ! customAttribute "property" "og:url" ! A.content (toValue canonicalUrl)
         Nothing -> mempty
-      case pageMetaOgImage meta of
-        Just imageUrl -> H.meta ! customAttribute "property" "og:image" ! A.content (toValue imageUrl)
-        Nothing -> mempty
+      H.meta ! customAttribute "property" "og:image" ! A.content (toValue (resolveOgImage meta))
+      H.meta ! customAttribute "property" "og:image:width" ! A.content "1200"
+      H.meta ! customAttribute "property" "og:image:height" ! A.content "630"
       -- Twitter Card tags
-      H.meta ! A.name "twitter:card" ! A.content "summary"
+      H.meta ! A.name "twitter:card" ! A.content "summary_large_image"
       H.meta ! A.name "twitter:title" ! A.content (toValue (pageMetaTitle meta))
       H.meta ! A.name "twitter:description" ! A.content (toValue (pageMetaDescription meta))
+      H.meta ! A.name "twitter:image" ! A.content (toValue (resolveOgImage meta))
       -- Canonical URL
       case pageMetaCanonical meta of
         Just canonicalUrl -> H.link ! A.rel "canonical" ! A.href (toValue canonicalUrl)
@@ -155,6 +159,7 @@ penguinBlogBaseTemplate meta content =
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-FMYV1PLWZ6" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-FMYV1PLWZ6');" :: Text)
       H.title (toHtml (pageMetaTitle meta))
+      organizationJsonLd
       pageMetaExtraHead meta
     H.body $ do
       H.header $
@@ -183,6 +188,86 @@ ogLocale :: Text -> Text
 ogLocale "nl" = "nl_NL"
 ogLocale "en" = "en_US"
 ogLocale other = other
+
+-- =============================================================================
+-- Site-wide structured data and social-share image
+-- =============================================================================
+
+-- | Site-wide fallback Open Graph / Twitter share image (1200x630 PNG).
+-- Used for every page that does not set its own 'pageMetaOgImage', so social
+-- shares always render a branded preview card instead of a bare link.
+defaultOgImage :: Text
+defaultOgImage = "https://jappiesoftware.com/og-default.png"
+
+-- | Resolve the share image URL for a page, falling back to 'defaultOgImage'.
+resolveOgImage :: PageMeta -> Text
+resolveOgImage = fromMaybe defaultOgImage . pageMetaOgImage
+
+-- | Site-wide Organization structured data, rendered in the head of every page.
+-- Lets search engines treat Jappie Software B.V. as a known entity (name, logo,
+-- contact details, profiles) rather than re-deriving it per page.
+-- Decision: chose schema.org Organization over LocalBusiness because the
+-- migration service is delivered remotely, not from a walk-in storefront, so the
+-- LocalBusiness address/opening-hours fields would be misleading.
+organizationJsonLd :: Html
+organizationJsonLd =
+  H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml organizationJson
+  where
+    organizationJson :: Text
+    organizationJson = T.concat
+      [ "{\"@context\":\"https://schema.org\""
+      , ",\"@type\":\"Organization\""
+      , ",\"name\":\"Jappie Software B.V.\""
+      , ",\"url\":\"https://jappiesoftware.com/\""
+      , ",\"logo\":\"https://jappiesoftware.com/logo.svg\""
+      , ",\"image\":" <> jsonLdString defaultOgImage
+      , ",\"email\":\"hi@jappie.me\""
+      , ",\"telephone\":\"+31644237437\""
+      , ",\"vatID\":\"NL\""
+      , ",\"identifier\":\"KVK 95097872\""
+      , ",\"areaServed\":\"NL\""
+      , ",\"sameAs\":[\"https://jappie.me/\",\"https://github.com/jappeace\"]"
+      , "}"
+      ]
+
+-- | Service structured data for a migration landing page. Makes the priced
+-- service offering itself eligible for rich results, complementing the FAQ
+-- markup already present on these pages.
+serviceJsonLd :: Text -> Text -> Text -> Html
+serviceJsonLd serviceName serviceDescription pageUrl =
+  H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml serviceJson
+  where
+    serviceJson :: Text
+    serviceJson = T.concat
+      [ "{\"@context\":\"https://schema.org\""
+      , ",\"@type\":\"Service\""
+      , ",\"serviceType\":\"Webshop migratie\""
+      , ",\"name\":" <> jsonLdString serviceName
+      , ",\"description\":" <> jsonLdString serviceDescription
+      , ",\"url\":" <> jsonLdString pageUrl
+      , ",\"areaServed\":\"NL\""
+      , ",\"provider\":{\"@type\":\"Organization\""
+      , ",\"name\":\"Jappie Software B.V.\""
+      , ",\"url\":\"https://jappiesoftware.com/\"}"
+      , ",\"offers\":{\"@type\":\"Offer\""
+      , ",\"priceCurrency\":\"EUR\""
+      , ",\"price\":\"750\""
+      , ",\"url\":" <> jsonLdString pageUrl <> "}"
+      , "}"
+      ]
+
+-- | Render a Text value as a JSON string literal, escaping the characters that
+-- would otherwise break the surrounding JSON-LD document.
+jsonLdString :: Text -> Text
+jsonLdString txt = "\"" <> T.concatMap escapeJsonLdChar txt <> "\""
+
+escapeJsonLdChar :: Char -> Text
+escapeJsonLdChar '"'  = "\\\""
+escapeJsonLdChar '\\' = "\\\\"
+escapeJsonLdChar '\n' = "\\n"
+escapeJsonLdChar '\r' = "\\r"
+escapeJsonLdChar '\t' = "\\t"
+escapeJsonLdChar c    = T.singleton c
 
 -- =============================================================================
 -- Landing page (index.html)
@@ -410,7 +495,10 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
       , pageMetaOgImage     = Nothing
-      , pageMetaExtraHead   = migrationFaqJsonLd
+      , pageMetaExtraHead   = migrationFaqJsonLd <> serviceJsonLd
+          "MijnWebwinkel naar Shopify migratie"
+          "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform: producten, vertalingen, afbeeldingen, categorieboom en SEO-redirects."
+          "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
       }
 
 -- | FAQ structured data (JSON-LD) for the migration page.
@@ -615,7 +703,10 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-ccvshop.html"
       , pageMetaOgImage     = Nothing
-      , pageMetaExtraHead   = ccvFaqJsonLd
+      , pageMetaExtraHead   = ccvFaqJsonLd <> serviceJsonLd
+          "CCV Shop naar Shopify migratie"
+          "Geautomatiseerde migratie van CCV Shop naar Shopify: producten, vertalingen, afbeeldingen, voorraad, klantdata en SEO-redirects."
+          "https://jappiesoftware.com/migrate-ccvshop.html"
       }
 
 -- | FAQ structured data (JSON-LD) for the CCV migration page.
@@ -813,7 +904,10 @@ lightspeedMigrationPage = penguinBaseTemplate lightspeedMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-lightspeed.html"
       , pageMetaOgImage     = Nothing
-      , pageMetaExtraHead   = lightspeedFaqJsonLd
+      , pageMetaExtraHead   = lightspeedFaqJsonLd <> serviceJsonLd
+          "Lightspeed naar Shopify migratie"
+          "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, vertalingen, afbeeldingen, voorraad en SEO-redirects, zonder verkeersverlies."
+          "https://jappiesoftware.com/migrate-lightspeed.html"
       }
 
 -- | FAQ structured data (JSON-LD) for the Lightspeed migration page.
