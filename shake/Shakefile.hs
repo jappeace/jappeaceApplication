@@ -40,7 +40,7 @@ import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
-import PenguinTemplates (penguinIndexPage, penguinBlogIndexPage, penguinArticlePage, mijnwebwinkelMigrationPage, ccvshopMigrationPage, lightspeedMigrationPage, mijnwebwinkelWaaromPage, lightspeedWaaromPage)
+import PenguinTemplates (penguinIndexPage, penguinBlogIndexPage, penguinArticlePage, mijnwebwinkelMigrationPage, ccvshopMigrationPage, lightspeedMigrationPage, mijnwebwinkelWaaromPage, lightspeedWaaromPage, mijnwebwinkelGooglePositiesPage)
 import Slug (toSlug)
 import Templates
   ( renderArticlePage
@@ -580,6 +580,7 @@ generatePenguinSite config articles = do
   writeHtmlFile "_penguin-site/migrate-lightspeed.html" lightspeedMigrationPage
   writeHtmlFile "_penguin-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
   writeHtmlFile "_penguin-site/waarom-lightspeed.html" lightspeedWaaromPage
+  writeHtmlFile "_penguin-site/mijnwebwinkel-google-posities-behouden.html" mijnwebwinkelGooglePositiesPage
 
   -- Individual article pages
   mapM_ (\art ->
@@ -657,6 +658,7 @@ generatePenguinSitemap articles = T.unlines $
   , sitemapUrl "https://jappiesoftware.com/migrate-lightspeed.html"
   , sitemapUrl "https://jappiesoftware.com/waarom-mijnwebwinkel.html"
   , sitemapUrl "https://jappiesoftware.com/waarom-lightspeed.html"
+  , sitemapUrl "https://jappiesoftware.com/mijnwebwinkel-google-posities-behouden.html"
   , sitemapUrl "https://jappiesoftware.com/blog/"
   ]
   ++ map (\art -> sitemapUrlDated ("https://jappiesoftware.com/blog/" <> articleUrl art) (articleLastmod art)) articles
