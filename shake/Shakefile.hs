@@ -132,6 +132,10 @@ shakeRules = do
       liftIO $ generatePenguinSite penguinSiteConfig penguinArticles
       copyPenguinStaticAssets
 
+      -- Build webwinkelverhuis.nl (the webshop-migration brand domain)
+      liftIO generateWebwinkelverhuisSite
+      copyPenguinStaticAssetsTo "_webwinkelverhuis-site"
+
     phony "serve" $ do
       need ["clean"]
 
@@ -186,9 +190,10 @@ shakeRules = do
             }
 
     phony "clean" $ do
-      putInfo "Cleaning _site, _penguin-site, and _build"
+      putInfo "Cleaning _site, _penguin-site, _webwinkelverhuis-site, and _build"
       removeFilesAfter "_site" ["//*"]
       removeFilesAfter "_penguin-site" ["//*"]
+      removeFilesAfter "_webwinkelverhuis-site" ["//*"]
       removeFilesAfter "_build" ["//*"]
 
 -- | Generate a full site for one language.
@@ -574,13 +579,6 @@ generatePenguinSite config articles = do
   -- Landing page
   writeHtmlFile "_penguin-site/index.html" penguinIndexPage
 
-  -- Product pages
-  writeHtmlFile "_penguin-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
-  writeHtmlFile "_penguin-site/migrate-ccvshop.html" ccvshopMigrationPage
-  writeHtmlFile "_penguin-site/migrate-lightspeed.html" lightspeedMigrationPage
-  writeHtmlFile "_penguin-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
-  writeHtmlFile "_penguin-site/waarom-lightspeed.html" lightspeedWaaromPage
-
   -- Individual article pages
   mapM_ (\art ->
     writeHtmlFile ("_penguin-site/blog" </> T.unpack (articleUrl art))
@@ -614,6 +612,25 @@ generatePenguinSite config articles = do
   -- Robots.txt
   T.writeFile "_penguin-site/robots.txt" penguinRobotsTxt
 
+-- | Generate the webwinkelverhuis.nl site into _webwinkelverhuis-site/.
+-- This is the dedicated cold-outreach brand domain for the webshop-migration
+-- funnel. The migration and "waarom" pages live here with their canonical URLs
+-- on this domain; jappiesoftware.com 302-redirects their old URLs here (in the
+-- megavid nginx config), and the bare domain is redirected to the MijnWebwinkel
+-- migration page there as well. Static assets are shared with the penguin theme.
+generateWebwinkelverhuisSite :: IO ()
+generateWebwinkelverhuisSite = do
+  Dir.createDirectoryIfMissing True "_webwinkelverhuis-site"
+
+  writeHtmlFile "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
+  writeHtmlFile "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage
+  writeHtmlFile "_webwinkelverhuis-site/migrate-lightspeed.html" lightspeedMigrationPage
+  writeHtmlFile "_webwinkelverhuis-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
+  writeHtmlFile "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
+
+  T.writeFile "_webwinkelverhuis-site/sitemap.xml" generateWebwinkelverhuisSitemap
+  T.writeFile "_webwinkelverhuis-site/robots.txt" webwinkelverhuisRobotsTxt
+
 -- | File name for penguin paginated blog index
 penguinIndexFileName :: Int -> Text
 penguinIndexFileName 1 = "index.html"
@@ -621,11 +638,16 @@ penguinIndexFileName n = "index" <> T.pack (show n) <> ".html"
 
 -- | Copy static assets for the penguin site
 copyPenguinStaticAssets :: Action ()
-copyPenguinStaticAssets = do
-  -- Copy all non-content, non-HTML files from penguin/ to _penguin-site/
+copyPenguinStaticAssets = copyPenguinStaticAssetsTo "_penguin-site"
+
+-- | Copy the penguin theme's static assets (css, images, favicon, og image,
+-- logo) into the given output directory. Shared by the jappiesoftware.com and
+-- webwinkelverhuis.nl sites, which render with the same theme.
+copyPenguinStaticAssetsTo :: FilePath -> Action ()
+copyPenguinStaticAssetsTo outDir = do
   penguinFiles <- getDirectoryFiles "penguin" ["//*"]
   let staticFiles = filter isPenguinStatic penguinFiles
-  liftIO $ mapM_ (\f -> copyBinaryFile ("penguin" </> f) ("_penguin-site" </> f)) staticFiles
+  liftIO $ mapM_ (\f -> copyBinaryFile ("penguin" </> f) (outDir </> f)) staticFiles
   where
     isPenguinStatic :: FilePath -> Bool
     isPenguinStatic f =
@@ -652,11 +674,6 @@ generatePenguinSitemap articles = T.unlines $
   [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   , "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
   , sitemapUrl "https://jappiesoftware.com/"
-  , sitemapUrl "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
-  , sitemapUrl "https://jappiesoftware.com/migrate-ccvshop.html"
-  , sitemapUrl "https://jappiesoftware.com/migrate-lightspeed.html"
-  , sitemapUrl "https://jappiesoftware.com/waarom-mijnwebwinkel.html"
-  , sitemapUrl "https://jappiesoftware.com/waarom-lightspeed.html"
   , sitemapUrl "https://jappiesoftware.com/blog/"
   ]
   ++ map (\art -> sitemapUrlDated ("https://jappiesoftware.com/blog/" <> articleUrl art) (articleLastmod art)) articles
@@ -689,6 +706,29 @@ penguinRobotsTxt = T.unlines
   , "Disallow:"
   , ""
   , "Sitemap: https://jappiesoftware.com/sitemap.xml"
+  ]
+
+-- | Sitemap for the webwinkelverhuis.nl migration funnel. Static pages only, so
+-- no lastmod (we don't fabricate dates for hand-written pages).
+generateWebwinkelverhuisSitemap :: Text
+generateWebwinkelverhuisSitemap = T.unlines
+  [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+  , "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+  , sitemapUrl "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
+  , sitemapUrl "https://webwinkelverhuis.nl/migrate-ccvshop.html"
+  , sitemapUrl "https://webwinkelverhuis.nl/migrate-lightspeed.html"
+  , sitemapUrl "https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html"
+  , sitemapUrl "https://webwinkelverhuis.nl/waarom-lightspeed.html"
+  , "</urlset>"
+  ]
+
+-- | robots.txt for the webwinkelverhuis.nl site.
+webwinkelverhuisRobotsTxt :: Text
+webwinkelverhuisRobotsTxt = T.unlines
+  [ "User-agent: *"
+  , "Disallow:"
+  , ""
+  , "Sitemap: https://webwinkelverhuis.nl/sitemap.xml"
   ]
 
 -- =============================================================================

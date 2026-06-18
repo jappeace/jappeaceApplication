@@ -288,15 +288,15 @@ penguinIndexPage = penguinBaseTemplate indexMeta $
         H.li ! A.class_ "card" $ do
           H.h3 "MijnWebwinkel Migration Tool"
           H.p $ H.preEscapedToHtml ("Migrate your webshop from MijnWebwinkel to Shopify, WooCommerce or another platform &mdash; products, categories, translations, images, SEO redirects and bulk data modifications. Fully automated." :: Text)
-          H.a ! A.href "/migrate-mijnwebwinkel.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Learn more &rarr;" :: Text)
+          H.a ! A.href "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Learn more &rarr;" :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "CCV Shop Migration Tool"
           H.p $ H.preEscapedToHtml ("Migrate your webshop from CCV Shop to Shopify &mdash; products, categories, translations, images, inventory and SEO redirects. Fully automated." :: Text)
-          H.a ! A.href "/migrate-ccvshop.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Learn more &rarr;" :: Text)
+          H.a ! A.href "https://webwinkelverhuis.nl/migrate-ccvshop.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Learn more &rarr;" :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Lightspeed Migration Tool"
           H.p $ H.preEscapedToHtml ("Migrate your webshop from Lightspeed to Shopify &mdash; products, categories, translations, images, inventory and SEO redirects. No traffic loss." :: Text)
-          H.a ! A.href "/migrate-lightspeed.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Learn more &rarr;" :: Text)
+          H.a ! A.href "https://webwinkelverhuis.nl/migrate-lightspeed.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Learn more &rarr;" :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Massapp"
           H.p "Bulk WhatsApp messaging for businesses. Reach your customers at scale through the official WhatsApp Business API."
@@ -493,12 +493,12 @@ mijnwebwinkelMigrationPage = penguinBaseTemplate migrationMeta $
       { pageMetaTitle       = "Ontsnap MijnWebwinkel \8212 Migratie naar Shopify \8212 Jappie Software B.V."
       , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364\&999."
       , pageMetaLang        = "nl"
-      , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
       , pageMetaOgImage     = Nothing
       , pageMetaExtraHead   = migrationFaqJsonLd <> serviceJsonLd
           "MijnWebwinkel naar Shopify migratie"
           "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform: producten, vertalingen, afbeeldingen, categorieboom en SEO-redirects."
-          "https://jappiesoftware.com/migrate-mijnwebwinkel.html"
+          "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
       }
 
 -- | FAQ structured data (JSON-LD) for the migration page.
@@ -701,12 +701,12 @@ ccvshopMigrationPage = penguinBaseTemplate ccvMeta $
       { pageMetaTitle       = "Ontsnap CCV Shop \8212 Migratie naar Shopify \8212 Jappie Software B.V."
       , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364\&999."
       , pageMetaLang        = "nl"
-      , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-ccvshop.html"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       , pageMetaOgImage     = Nothing
       , pageMetaExtraHead   = ccvFaqJsonLd <> serviceJsonLd
           "CCV Shop naar Shopify migratie"
           "Geautomatiseerde migratie van CCV Shop naar Shopify: producten, vertalingen, afbeeldingen, voorraad, klantdata en SEO-redirects."
-          "https://jappiesoftware.com/migrate-ccvshop.html"
+          "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       }
 
 -- | FAQ structured data (JSON-LD) for the CCV migration page.
@@ -902,12 +902,12 @@ lightspeedMigrationPage = penguinBaseTemplate lightspeedMeta $
       { pageMetaTitle       = "Ontsnap Lightspeed \8212 Migratie naar Shopify \8212 Jappie Software B.V."
       , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Geen verkeersverlies. Vanaf \8364\&999."
       , pageMetaLang        = "nl"
-      , pageMetaCanonical   = Just "https://jappiesoftware.com/migrate-lightspeed.html"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       , pageMetaOgImage     = Nothing
       , pageMetaExtraHead   = lightspeedFaqJsonLd <> serviceJsonLd
           "Lightspeed naar Shopify migratie"
           "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, vertalingen, afbeeldingen, voorraad en SEO-redirects, zonder verkeersverlies."
-          "https://jappiesoftware.com/migrate-lightspeed.html"
+          "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       }
 
 -- | FAQ structured data (JSON-LD) for the Lightspeed migration page.
@@ -1079,7 +1079,7 @@ mijnwebwinkelWaaromPage = penguinBaseTemplate waaromMeta $
       { pageMetaTitle       = "Waarom wordt MijnWebwinkel niet meer doorontwikkeld? \8212 Jappie Software B.V."
       , pageMetaDescription = "MijnWebwinkel is in 2021 overgenomen door Visma/Hg Capital en wordt sindsdien niet meer doorontwikkeld. De code is bevroren, prijzen zijn verdubbeld, en het platform wordt afgebouwd. Dit is waarom."
       , pageMetaLang        = "nl"
-      , pageMetaCanonical   = Just "https://jappiesoftware.com/waarom-mijnwebwinkel.html"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html"
       , pageMetaOgImage     = Nothing
       , pageMetaExtraHead   = mempty
       }
@@ -1213,7 +1213,7 @@ lightspeedWaaromPage = penguinBaseTemplate waaromLsMeta $
       { pageMetaTitle       = "Waarom verlaten steeds meer webshops Lightspeed? \8212 Jappie Software B.V."
       , pageMetaDescription = "Lightspeed is beursgenoteerd en verschuift richting enterprise-klanten. Prijzen stijgen, kleine shops worden eruit gedrukt. 22% minder webshops in drie jaar. Dit is waarom."
       , pageMetaLang        = "nl"
-      , pageMetaCanonical   = Just "https://jappiesoftware.com/waarom-lightspeed.html"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/waarom-lightspeed.html"
       , pageMetaOgImage     = Nothing
       , pageMetaExtraHead   = lightspeedWaaromFaqJsonLd
       }
