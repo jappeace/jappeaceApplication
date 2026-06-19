@@ -43,4 +43,4 @@ The fractional model works best when you're:
 - Building your first engineering team
 
 If any of these describe your situation,
-[let's have a conversation](mailto:hi@jappie.me).
+[let's have a conversation](mailto:hallo@jappiesoftware.com).

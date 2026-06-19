@@ -7,7 +7,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Time (UTCTime, formatTime, defaultTimeLocale)
 
-import Types (Article(..), SiteConfig(..), Lang(..), langPrefix)
+import Types (Article(..), SiteConfig(..), langPrefix)
 
 -- | Generate an Atom XML feed from a list of articles.
 -- The feed URL and article URLs respect the language prefix.
@@ -16,7 +16,7 @@ generateAtomFeed config articles =
   let lang = siteLang config
       prefix = langPrefix lang
       feedUrl = siteUrl config <> "/" <> prefix <> feedAtom config
-      altUrl  = siteUrl config <> "/" <> prefix
+      altUrl  = siteUrl config <> "/" <> prefix <> feedDirectory config
   in T.concat
     [ "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
     , "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n"
@@ -31,15 +31,22 @@ generateAtomFeed config articles =
     , "</feed>\n"
     ]
 
+-- | The directory the blog (and its feed) live in, derived from 'feedAtom'.
+-- @"blog/atom"@ yields @"blog/"@ and a root-level @"atom"@ yields @""@. Used so
+-- the feed's alternate and per-entry links point at the actual article paths
+-- (e.g. @\/blog\/slug.html@) rather than the site root.
+feedDirectory :: SiteConfig -> Text
+feedDirectory config = fst (T.breakOnEnd "/" (feedAtom config))
+
 renderEntry :: SiteConfig -> Article -> Text
 renderEntry config article =
   let prefix = langPrefix (siteLang config)
-      entryUrl = siteUrl config <> "/" <> prefix <> articleUrl article
+      entryUrl = siteUrl config <> "/" <> prefix <> feedDirectory config <> articleUrl article
   in T.concat
     [ "  <entry>\n"
     , "    <title>" , xmlEscape (articleTitle article) , "</title>\n"
     , "    <link href=\"" , entryUrl , "\" rel=\"alternate\"/>\n"
-    , "    <id>" , tagUri (siteLang config) article , "</id>\n"
+    , "    <id>" , tagUri config article , "</id>\n"
     , "    <published>" , formatAtomDate (articleDate article) , "</published>\n"
     , "    <updated>"
     , case articleModified article of
@@ -57,15 +64,22 @@ renderEntry config article =
     , "  </entry>\n"
     ]
 
--- | Generate a tag URI for an article: tag:domain,YYYY-MM-DD:/[nl/]slug.html
-tagUri :: Lang -> Article -> Text
-tagUri lang article =
-  let prefix = langPrefix lang
+-- | Generate a tag URI for an article: tag:domain,YYYY-MM-DD:/[nl/][blog/]slug.html
+-- The authority is the site's own host so each brand site's feed gets stable,
+-- non-colliding entry ids rather than all sharing jappieklooster.nl.
+tagUri :: SiteConfig -> Article -> Text
+tagUri config article =
+  let prefix = langPrefix (siteLang config)
   in T.concat
-    [ "tag:jappieklooster.nl,"
+    [ "tag:" , feedHost config , ","
     , T.pack (formatTime defaultTimeLocale "%Y-%m-%d" (articleDate article))
-    , ":/" , prefix , articleUrl article
+    , ":/" , prefix , feedDirectory config , articleUrl article
     ]
+
+-- | The bare host of a site (no scheme), for use as a tag URI authority.
+feedHost :: SiteConfig -> Text
+feedHost config =
+  T.replace "http://" "" (T.replace "https://" "" (siteUrl config))
 
 formatAtomDate :: UTCTime -> Text
 formatAtomDate = T.pack . formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%SZ"
