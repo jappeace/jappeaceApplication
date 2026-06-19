@@ -54,16 +54,26 @@ pkgs.stdenv.mkDerivation {
          metaBaseRule \
          metaSocialRule='{"properties":["og:title","og:description","og:type","og:locale","og:url"]}'
 
+    seo-analyzer \
+      -f $(find _webwinkelverhuis-site -name '*.html' \
+           -not -name 'google4043c908cce5ef76.html' \
+         ) \
+      -r titleLengthRule='{"min":10,"max":120}' \
+         metaBaseRule \
+         metaSocialRule='{"properties":["og:title","og:description","og:type","og:locale","og:url"]}'
+
     xmllint --noout _site/sitemap.xml
     xmllint --noout _penguin-site/sitemap.xml
+    xmllint --noout _webwinkelverhuis-site/sitemap.xml
 
     # Optimize images
     find _site -name '*.png' -exec optipng -quiet {} \;
     find _site \( -name '*.jpg' -o -name '*.jpeg' \) -exec jpegtran -copy none -optimize -progressive -outfile {} {} \;
   '';
   installPhase = ''
-    mkdir -p $out/jappieklooster.nl $out/jappiesoftware.com
+    mkdir -p $out/jappieklooster.nl $out/jappiesoftware.com $out/webwinkelverhuis.nl
     cp -r _site/* $out/jappieklooster.nl/
     cp -r _penguin-site/* $out/jappiesoftware.com/
+    cp -r _webwinkelverhuis-site/* $out/webwinkelverhuis.nl/
   '';
 }
