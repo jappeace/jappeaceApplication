@@ -194,7 +194,9 @@ escapeJsonLdChar c    = T.singleton c
 -- Blog listing markup (shared by both sites' blogs)
 -- =============================================================================
 
--- | One article summary in a paginated blog index.
+-- | One article summary in a paginated blog index. Both brand blogs
+-- (jappiesoftware.com and webwinkelverhuis.nl) live under @/blog/@, so the
+-- link path is fixed here rather than threaded through from the SiteConfig.
 renderBlogSummary :: Article -> Html
 renderBlogSummary article =
   H.article ! A.class_ "post-summary" $ do
