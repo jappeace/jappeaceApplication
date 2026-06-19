@@ -29,7 +29,7 @@ import PageChrome
   , organizationJsonLd
   , formatIsoDate
   , formatHumanDate
-  , stripHtmlTags
+  , articleMetaDescription
   , renderBlogSummary
   , renderPagination
   )
@@ -253,15 +253,9 @@ penguinArticlePage _config article =
   where
     articleMeta :: PageMeta
     articleMeta = (defaultPageMeta (articleTitle article <> " \8212 Jappie Software B.V."))
-      { pageMetaDescription = articleDescription article
+      { pageMetaDescription = articleMetaDescription article
       , pageMetaCanonical   = Just ("https://jappiesoftware.com/blog/" <> articleUrl article)
       }
-
-    -- | Use the article summary text as meta description, falling back to the title.
-    articleDescription :: Article -> Text
-    articleDescription art = case articleSummaryText art of
-      Just summaryText -> T.take 160 (stripHtmlTags summaryText)
-      Nothing          -> articleTitle art
 
 -- =============================================================================
 -- Voronoi background

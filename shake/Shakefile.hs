@@ -692,23 +692,12 @@ copyPenguinStaticAssets :: Action ()
 copyPenguinStaticAssets = copyPenguinStaticAssetsTo "_penguin-site"
 
 -- | Copy the penguin theme's static assets (css, images, favicon, og image,
--- logo) into the given output directory. Shared by the jappiesoftware.com and
--- webwinkelverhuis.nl sites, which render with the same theme.
+-- logo) for jappiesoftware.com into the given output directory.
 copyPenguinStaticAssetsTo :: FilePath -> Action ()
 copyPenguinStaticAssetsTo outDir = do
   penguinFiles <- getDirectoryFiles "penguin" ["//*"]
   let staticFiles = filter isPenguinStatic penguinFiles
   liftIO $ mapM_ (\f -> copyBinaryFile ("penguin" </> f) (outDir </> f)) staticFiles
-  where
-    isPenguinStatic :: FilePath -> Bool
-    isPenguinStatic f =
-      not ("content/" `isPrefixOfPath` f)
-      && not (f == "index.html")
-      && not (f == "cv.html")
-      && not (f == "readme.org")
-
-    isPrefixOfPath :: String -> String -> Bool
-    isPrefixOfPath pfx str = take (length pfx) str == pfx
 
 -- | Copy the webwinkelverhuis.nl theme's static assets (its own css, favicon
 -- and og image) from the @webwinkel/@ directory into the output. The blog
@@ -718,14 +707,25 @@ copyWebwinkelStaticAssets = do
   webwinkelFiles <- getDirectoryFiles "webwinkel" ["//*"]
   let staticFiles = filter isWebwinkelStatic webwinkelFiles
   liftIO $ mapM_ (\f -> copyBinaryFile ("webwinkel" </> f) ("_webwinkelverhuis-site" </> f)) staticFiles
-  where
-    isWebwinkelStatic :: FilePath -> Bool
-    isWebwinkelStatic f =
-      not ("content/" `isPrefixOfPath` f)
-      && not (f == "readme.org")
 
-    isPrefixOfPath :: String -> String -> Bool
-    isPrefixOfPath pfx str = take (length pfx) str == pfx
+-- | Whether a file discovered under a theme directory is a static asset to copy
+-- verbatim, versus source the build renders itself (content, landing pages, the
+-- readme). One predicate per theme because they exclude different entry files.
+isPenguinStatic :: FilePath -> Bool
+isPenguinStatic f =
+  not ("content/" `isPathPrefixOf` f)
+  && not (f == "index.html")
+  && not (f == "cv.html")
+  && not (f == "readme.org")
+
+isWebwinkelStatic :: FilePath -> Bool
+isWebwinkelStatic f =
+  not ("content/" `isPathPrefixOf` f)
+  && not (f == "readme.org")
+
+-- | Is @pfx@ a prefix of the path string @str@?
+isPathPrefixOf :: String -> String -> Bool
+isPathPrefixOf pfx str = take (length pfx) str == pfx
 
 copyBinaryFile :: FilePath -> FilePath -> IO ()
 copyBinaryFile src dst = do

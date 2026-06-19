@@ -21,6 +21,7 @@ module PageChrome
   , formatIsoDate
   , formatHumanDate
   , stripHtmlTags
+  , articleMetaDescription
   , renderBlogSummary
   , renderPagination
   ) where
@@ -157,25 +158,23 @@ serviceJsonLd serviceName serviceDescription pageUrl =
 -- that previously duplicated this builder on every migration landing page.
 faqPageJsonLd :: [(Text, Text)] -> Html
 faqPageJsonLd entries =
-  H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml faqJson
-  where
-    faqJson :: Text
-    faqJson = T.concat
-      [ "{\"@context\":\"https://schema.org\""
-      , ",\"@type\":\"FAQPage\""
-      , ",\"mainEntity\":["
-      , T.intercalate "," (map faqEntry entries)
-      , "]}"
-      ]
+  H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml $ T.concat
+    [ "{\"@context\":\"https://schema.org\""
+    , ",\"@type\":\"FAQPage\""
+    , ",\"mainEntity\":["
+    , T.intercalate "," (map faqEntryJson entries)
+    , "]}"
+    ]
 
-    faqEntry :: (Text, Text) -> Text
-    faqEntry (question, answer) = T.concat
-      [ "{\"@type\":\"Question\""
-      , ",\"name\":" <> jsonLdString question
-      , ",\"acceptedAnswer\":{\"@type\":\"Answer\""
-      , ",\"text\":" <> jsonLdString answer
-      , "}}"
-      ]
+-- | One @Question@/@Answer@ node of a 'faqPageJsonLd' document.
+faqEntryJson :: (Text, Text) -> Text
+faqEntryJson (question, answer) = T.concat
+  [ "{\"@type\":\"Question\""
+  , ",\"name\":" <> jsonLdString question
+  , ",\"acceptedAnswer\":{\"@type\":\"Answer\""
+  , ",\"text\":" <> jsonLdString answer
+  , "}}"
+  ]
 
 -- | Render a 'Text' value as a JSON string literal, escaping the characters that
 -- would otherwise break the surrounding JSON-LD document.
@@ -238,15 +237,25 @@ formatHumanDate = T.pack . formatTime defaultTimeLocale "%B %e, %Y"
 
 -- | Strip HTML tags from text for use in meta descriptions.
 stripHtmlTags :: Text -> Text
-stripHtmlTags = go False
-  where
-    go :: Bool -> Text -> Text
-    go _ txt | T.null txt = T.empty
-    go inTag txt =
+stripHtmlTags = stripTagsLoop False
+
+-- | Worker for 'stripHtmlTags': walk the text dropping everything between a
+-- '<' and the next '>'. @inTag@ records whether we are currently inside a tag.
+stripTagsLoop :: Bool -> Text -> Text
+stripTagsLoop inTag txt
+  | T.null txt = T.empty
+  | otherwise =
       let (firstChar, rest) = (T.head txt, T.tail txt)
       in case firstChar of
-        '<' -> go True rest
-        '>' -> go False rest
+        '<' -> stripTagsLoop True rest
+        '>' -> stripTagsLoop False rest
         _   -> if inTag
-               then go True rest
-               else T.cons firstChar (go False rest)
+               then stripTagsLoop True rest
+               else T.cons firstChar (stripTagsLoop False rest)
+
+-- | Meta description for a blog article: its summary text (first 160 chars with
+-- tags stripped), falling back to the title. Shared by both brand blogs.
+articleMetaDescription :: Article -> Text
+articleMetaDescription article = case articleSummaryText article of
+  Just summaryText -> T.take 160 (stripHtmlTags summaryText)
+  Nothing          -> articleTitle article

@@ -18,7 +18,6 @@ module WebwinkelTemplates
   ) where
 
 import Data.Text (Text)
-import qualified Data.Text as T
 import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -38,7 +37,7 @@ import PageChrome
   , faqPageJsonLd
   , formatIsoDate
   , formatHumanDate
-  , stripHtmlTags
+  , articleMetaDescription
   , renderBlogSummary
   , renderPagination
   )
@@ -971,13 +970,7 @@ webwinkelArticlePage _config article =
   where
     articleMeta :: PageMeta
     articleMeta = (defaultPageMeta (articleTitle article <> " \8212 Webwinkelverhuis"))
-      { pageMetaDescription = articleDescription article
+      { pageMetaDescription = articleMetaDescription article
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just ("https://webwinkelverhuis.nl/blog/" <> articleUrl article)
       }
-
-    -- | Use the article summary text as meta description, falling back to the title.
-    articleDescription :: Article -> Text
-    articleDescription art = case articleSummaryText art of
-      Just summaryText -> T.take 160 (stripHtmlTags summaryText)
-      Nothing          -> articleTitle art
