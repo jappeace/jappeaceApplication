@@ -108,6 +108,8 @@ penguinBaseWith ogType includeFeed meta content =
           H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
           H.preEscapedToHtml (" &middot; " :: Text)
           H.a ! A.href "/blog/" $ "Blog"
+          H.preEscapedToHtml (" &middot; " :: Text)
+          H.a ! A.href "https://jappie.me/" $ "jappie.me"
         H.p $ H.small $ H.preEscapedToHtml ("Jappie Software B.V. &middot; KVK: 95097872" :: Text)
       H.preEscapedToHtml ("<svg class=\"voronoi\"></svg>" :: Text)
       H.script $ H.preEscapedToHtml voronoiScript
