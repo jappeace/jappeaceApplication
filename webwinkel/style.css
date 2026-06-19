@@ -1,0 +1,286 @@
+/* Webwinkelverhuis theme. Structurally the same component classes as the
+   jappiesoftware.com penguin theme, but its own identity: a blue/orange
+   commerce palette and a soft gradient background instead of the voronoi. */
+
+/* Reset & base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.7;
+  color: #1a2430;
+  background: #f4f7fb;
+  background-image: linear-gradient(180deg, #eaf1f8 0%, #f4f7fb 320px);
+}
+
+/* Top navigation */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em 2em;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.top-nav .logo {
+  font-weight: 700;
+  font-size: 1.1em;
+}
+.top-nav .logo a {
+  color: #0c2f47;
+  text-decoration: none;
+}
+.top-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5em;
+  flex-wrap: wrap;
+}
+.top-nav a {
+  color: #1a2430;
+  text-decoration: none;
+}
+.top-nav a:hover {
+  color: #e8590c;
+}
+.cta-link {
+  font-weight: 600;
+  color: #c44d06 !important;
+}
+
+/* Shared section spacing */
+main section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3em 2em;
+}
+
+/* Hero */
+.hero {
+  padding-top: 5em;
+  padding-bottom: 4em;
+  max-width: 800px;
+  background: #fff;
+  border: 1px solid #dbe5ef;
+  border-radius: 6px;
+  border-top: 4px solid #10456b;
+}
+.hero h1 {
+  font-size: 2em;
+  line-height: 1.3;
+  font-weight: 700;
+  margin-bottom: 0.8em;
+  color: #0c2f47;
+}
+.hero .subtitle {
+  font-size: 1.15em;
+  color: #41505f;
+  margin-bottom: 1.5em;
+  max-width: 650px;
+}
+
+/* CTA button */
+.cta-button {
+  display: inline-block;
+  padding: 0.75em 2em;
+  background: #e8590c;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1em;
+  transition: background 0.2s;
+}
+.cta-button:hover {
+  background: #c44d06;
+}
+
+/* Card grid */
+.card-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5em;
+  margin-top: 1.5em;
+}
+.card {
+  background: #fff;
+  border: 1px solid #dbe5ef;
+  border-radius: 6px;
+  padding: 1.5em;
+}
+.card h3 {
+  font-size: 1.1em;
+  margin-bottom: 0.5em;
+  color: #0c2f47;
+}
+.card h3 a {
+  color: #10456b;
+  text-decoration: none;
+}
+.card p {
+  color: #41505f;
+  font-size: 0.95em;
+}
+.card .cta-button {
+  margin-top: 1em;
+  padding: 0.5em 1.2em;
+}
+.card .price {
+  font-size: 1.4em;
+  font-weight: 700;
+  color: #10456b;
+  margin-bottom: 0.3em;
+}
+
+/* Section headings */
+h2 {
+  font-size: 1.6em;
+  margin-bottom: 0.8em;
+  color: #0c2f47;
+}
+
+/* Audit section */
+.audit {
+  background: #eaf1f8;
+  border-radius: 8px;
+  max-width: 800px;
+  padding: 3em 2em;
+}
+.audit ul,
+.audit ol {
+  margin: 1em 0 1em 1.5em;
+  color: #33414f;
+}
+.audit li {
+  margin-bottom: 0.4em;
+}
+
+/* Results section lists */
+.results ul {
+  margin: 1em 0 1em 1.5em;
+  color: #33414f;
+}
+.results li {
+  margin-bottom: 0.4em;
+}
+
+/* Testimonials / social proof */
+.testimonials {
+  display: grid;
+  gap: 1.5em;
+  margin-top: 1em;
+}
+blockquote {
+  background: #fff;
+  border-left: 4px solid #e8590c;
+  padding: 1.5em 1.5em 1.5em 2em;
+  border-radius: 0 6px 6px 0;
+  margin: 0;
+  color: #33414f;
+  font-size: 0.95em;
+}
+blockquote strong {
+  color: #0c2f47;
+}
+
+/* FAQ definition list */
+.about dl {
+  margin-top: 1em;
+}
+.about dt {
+  font-weight: 600;
+  color: #0c2f47;
+  margin-top: 1em;
+}
+.about dd {
+  margin: 0.25em 0 0 0;
+  color: #33414f;
+}
+
+/* Engagement model */
+.engagement-note {
+  margin-top: 1.5em;
+  color: #50606f;
+  font-style: italic;
+}
+
+/* About */
+.about p {
+  margin-bottom: 1em;
+  color: #33414f;
+}
+.about a {
+  color: #10456b;
+}
+
+/* Final CTA */
+.final-cta {
+  text-align: center;
+  padding: 4em 2em;
+}
+.final-cta p {
+  margin-bottom: 1.5em;
+  color: #41505f;
+  font-size: 1.1em;
+}
+.final-cta a:not(.cta-button) {
+  color: #10456b;
+  font-weight: 600;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 2em;
+  border-top: 1px solid #dbe5ef;
+  color: #50606f;
+}
+footer a {
+  color: #10456b;
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline;
+}
+footer small {
+  font-size: 0.8em;
+  color: #8493a2;
+}
+
+/* Section dividers */
+.for-who {
+  border-top: 1px solid #e2e9f1;
+}
+.results {
+  border-top: 1px solid #e2e9f1;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .top-nav {
+    flex-direction: column;
+    gap: 0.5em;
+    text-align: center;
+  }
+  .top-nav ul {
+    justify-content: center;
+  }
+  .hero h1 {
+    font-size: 1.5em;
+  }
+  .hero {
+    padding-top: 3em;
+  }
+  main section {
+    padding: 2em 1.2em;
+  }
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}

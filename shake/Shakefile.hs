@@ -40,7 +40,17 @@ import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
-import PenguinTemplates (penguinIndexPage, penguinBlogIndexPage, penguinArticlePage, mijnwebwinkelMigrationPage, ccvshopMigrationPage, lightspeedMigrationPage, mijnwebwinkelWaaromPage, lightspeedWaaromPage)
+import PenguinTemplates (penguinIndexPage, penguinBlogIndexPage, penguinArticlePage)
+import WebwinkelTemplates
+  ( webwinkelIndexPage
+  , webwinkelBlogIndexPage
+  , webwinkelArticlePage
+  , mijnwebwinkelMigrationPage
+  , ccvshopMigrationPage
+  , lightspeedMigrationPage
+  , mijnwebwinkelWaaromPage
+  , lightspeedWaaromPage
+  )
 import Slug (toSlug)
 import Templates
   ( renderArticlePage
@@ -61,6 +71,7 @@ import Types
   , langPrefix
   , defaultSiteConfig
   , penguinSiteConfig
+  , webwinkelSiteConfig
   , SiteConfig(..)
   )
 
@@ -132,9 +143,15 @@ shakeRules = do
       liftIO $ generatePenguinSite penguinSiteConfig penguinArticles
       copyPenguinStaticAssets
 
-      -- Build webwinkelverhuis.nl (the webshop-migration brand domain)
-      liftIO generateWebwinkelverhuisSite
-      copyPenguinStaticAssetsTo "_webwinkelverhuis-site"
+      -- Build webwinkelverhuis.nl (the webshop-migration brand domain), with its
+      -- own theme and blog.
+      webwinkelMds <- getDirectoryFiles "webwinkel/content" ["//*.md"]
+      webwinkelOrgs <- getDirectoryFiles "webwinkel/content" ["//*.org"]
+      let webwinkelFiles = [(f, "md") | f <- webwinkelMds]
+                        ++ [(f, "org") | f <- webwinkelOrgs]
+      (webwinkelArticles, _webwinkelPages) <- liftIO $ parseAllContent "webwinkel/content" webwinkelFiles
+      liftIO $ generateWebwinkelverhuisSite webwinkelSiteConfig webwinkelArticles
+      copyWebwinkelStaticAssets
 
     phony "serve" $ do
       need ["clean"]
@@ -613,22 +630,56 @@ generatePenguinSite config articles = do
   T.writeFile "_penguin-site/robots.txt" penguinRobotsTxt
 
 -- | Generate the webwinkelverhuis.nl site into _webwinkelverhuis-site/.
--- This is the dedicated cold-outreach brand domain for the webshop-migration
--- funnel. The migration and "waarom" pages live here with their canonical URLs
--- on this domain; jappiesoftware.com 302-redirects their old URLs here (in the
--- megavid nginx config), and the bare domain is redirected to the MijnWebwinkel
--- migration page there as well. Static assets are shared with the penguin theme.
-generateWebwinkelverhuisSite :: IO ()
-generateWebwinkelverhuisSite = do
-  Dir.createDirectoryIfMissing True "_webwinkelverhuis-site"
+-- This is the dedicated brand domain for the webshop-migration funnel, with its
+-- own theme ('WebwinkelTemplates') and blog. The landing page, migration and
+-- "waarom" pages carry their canonical URLs on this domain; jappiesoftware.com
+-- 302-redirects the old migration URLs here (in the megavid nginx config). The
+-- bare domain now serves a real landing page rather than redirecting away.
+generateWebwinkelverhuisSite :: SiteConfig -> [Article] -> IO ()
+generateWebwinkelverhuisSite config articles = do
+  let sortedArticles = sortBy (\a b -> compare (Down (articleDate a)) (Down (articleDate b))) articles
 
+  Dir.createDirectoryIfMissing True "_webwinkelverhuis-site"
+  Dir.createDirectoryIfMissing True "_webwinkelverhuis-site/blog"
+
+  -- Landing page
+  writeHtmlFile "_webwinkelverhuis-site/index.html" webwinkelIndexPage
+
+  -- Migration and explainer pages
   writeHtmlFile "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
   writeHtmlFile "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage
   writeHtmlFile "_webwinkelverhuis-site/migrate-lightspeed.html" lightspeedMigrationPage
   writeHtmlFile "_webwinkelverhuis-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
   writeHtmlFile "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
 
-  T.writeFile "_webwinkelverhuis-site/sitemap.xml" generateWebwinkelverhuisSitemap
+  -- Individual blog article pages
+  mapM_ (\art ->
+    writeHtmlFile ("_webwinkelverhuis-site/blog" </> T.unpack (articleUrl art))
+      (webwinkelArticlePage config art))
+    sortedArticles
+
+  -- Paginated blog index
+  let articlePages = chunksOf 10 sortedArticles
+      totalPages = length articlePages
+  mapM_ (\(pageNum, arts) ->
+    let pagination = PaginationInfo
+          { paginationCurrent = pageNum
+          , paginationTotal   = totalPages
+          , paginationPrevUrl = if pageNum > 1
+              then Just ("/blog/" <> penguinIndexFileName (pageNum - 1))
+              else Nothing
+          , paginationNextUrl = if pageNum < totalPages
+              then Just ("/blog/" <> penguinIndexFileName (pageNum + 1))
+              else Nothing
+          }
+    in writeHtmlFile ("_webwinkelverhuis-site/blog" </> T.unpack (penguinIndexFileName pageNum))
+         (webwinkelBlogIndexPage config arts pagination)
+    ) (zip [1..] articlePages)
+
+  -- Atom feed
+  T.writeFile "_webwinkelverhuis-site/blog/atom" (generateAtomFeed config sortedArticles)
+
+  T.writeFile "_webwinkelverhuis-site/sitemap.xml" (generateWebwinkelverhuisSitemap sortedArticles)
   T.writeFile "_webwinkelverhuis-site/robots.txt" webwinkelverhuisRobotsTxt
 
 -- | File name for penguin paginated blog index
@@ -654,6 +705,23 @@ copyPenguinStaticAssetsTo outDir = do
       not ("content/" `isPrefixOfPath` f)
       && not (f == "index.html")
       && not (f == "cv.html")
+      && not (f == "readme.org")
+
+    isPrefixOfPath :: String -> String -> Bool
+    isPrefixOfPath pfx str = take (length pfx) str == pfx
+
+-- | Copy the webwinkelverhuis.nl theme's static assets (its own css, favicon
+-- and og image) from the @webwinkel/@ directory into the output. The blog
+-- content under @webwinkel/content/@ is rendered separately, not copied verbatim.
+copyWebwinkelStaticAssets :: Action ()
+copyWebwinkelStaticAssets = do
+  webwinkelFiles <- getDirectoryFiles "webwinkel" ["//*"]
+  let staticFiles = filter isWebwinkelStatic webwinkelFiles
+  liftIO $ mapM_ (\f -> copyBinaryFile ("webwinkel" </> f) ("_webwinkelverhuis-site" </> f)) staticFiles
+  where
+    isWebwinkelStatic :: FilePath -> Bool
+    isWebwinkelStatic f =
+      not ("content/" `isPrefixOfPath` f)
       && not (f == "readme.org")
 
     isPrefixOfPath :: String -> String -> Bool
@@ -708,19 +776,22 @@ penguinRobotsTxt = T.unlines
   , "Sitemap: https://jappiesoftware.com/sitemap.xml"
   ]
 
--- | Sitemap for the webwinkelverhuis.nl migration funnel. Static pages only, so
--- no lastmod (we don't fabricate dates for hand-written pages).
-generateWebwinkelverhuisSitemap :: Text
-generateWebwinkelverhuisSitemap = T.unlines
+-- | Sitemap for the webwinkelverhuis.nl site. Hand-written pages get a loc only
+-- (we don't fabricate dates), while blog articles carry a real lastmod.
+generateWebwinkelverhuisSitemap :: [Article] -> Text
+generateWebwinkelverhuisSitemap articles = T.unlines $
   [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   , "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+  , sitemapUrl "https://webwinkelverhuis.nl/"
   , sitemapUrl "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
   , sitemapUrl "https://webwinkelverhuis.nl/migrate-ccvshop.html"
   , sitemapUrl "https://webwinkelverhuis.nl/migrate-lightspeed.html"
   , sitemapUrl "https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html"
   , sitemapUrl "https://webwinkelverhuis.nl/waarom-lightspeed.html"
-  , "</urlset>"
+  , sitemapUrl "https://webwinkelverhuis.nl/blog/"
   ]
+  ++ map (\art -> sitemapUrlDated ("https://webwinkelverhuis.nl/blog/" <> articleUrl art) (articleLastmod art)) articles
+  ++ ["</urlset>"]
 
 -- | robots.txt for the webwinkelverhuis.nl site.
 webwinkelverhuisRobotsTxt :: Text

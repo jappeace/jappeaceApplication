@@ -12,6 +12,7 @@ module Types
   , langCode
   , defaultSiteConfig
   , penguinSiteConfig
+  , webwinkelSiteConfig
   ) where
 
 import Data.Text (Text)
@@ -177,7 +178,7 @@ penguinSiteConfig = SiteConfig
       , NavLink "Blog" "/blog/" "Technical writing" "blog"
       ]
   , siteSocial =
-      [ NavLink "Email" "mailto:hi@jappie.me" "Get in touch" "email"
+      [ NavLink "Email" "mailto:hallo@jappiesoftware.com" "Get in touch" "email"
       ]
   , siteFootLinks =
       [ ("Linkedin", "https://www.linkedin.com/in/jappie-klooster-1b8b4850/")
@@ -185,5 +186,35 @@ penguinSiteConfig = SiteConfig
       , ("Blog", "https://jappie.me/")
       ]
   , dateFormat = "%Y-%m-%d"
+  , siteLang   = En
+  }
+
+-- | Configuration for webwinkelverhuis.nl, the webshop-migration brand site.
+-- The operating company is still Jappie Software B.V.; this is used mainly for
+-- the blog's Atom feed (author, title and feed URLs).
+webwinkelSiteConfig :: SiteConfig
+webwinkelSiteConfig = SiteConfig
+  { siteAuthor = "Jappie J. T. Klooster"
+  , siteName   = "Webwinkelverhuis"
+  , siteUrl    = "https://webwinkelverhuis.nl"
+  , feedDomain = "https://webwinkelverhuis.nl"
+  , feedAtom   = "blog/atom"
+  , siteLinks  =
+      [ NavLink "MijnWebwinkel" "/migrate-mijnwebwinkel.html" "Migratie vanaf MijnWebwinkel" "migrate"
+      , NavLink "Blog" "/blog/" "Gidsen over webshop-migratie" "blog"
+      ]
+  , siteSocial =
+      [ NavLink "Email" "mailto:hallo@jappiesoftware.com" "Vraag een offerte aan" "email"
+      ]
+  , siteFootLinks =
+      [ ("MijnWebwinkel", "/migrate-mijnwebwinkel.html")
+      , ("Lightspeed", "/migrate-lightspeed.html")
+      , ("CCV Shop", "/migrate-ccvshop.html")
+      ]
+  , dateFormat = "%Y-%m-%d"
+  -- The content is Dutch, but like 'penguinSiteConfig' this is a single-language
+  -- site served at the root (no /nl/ URL prefix). 'siteLang' only drives the
+  -- Feed module's URL prefixing, so En is the correct "no prefix" choice here;
+  -- the page templates set @html lang="nl"@ themselves.
   , siteLang   = En
   }
