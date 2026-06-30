@@ -40,7 +40,7 @@ import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
-import PenguinTemplates (penguinIndexPage, penguinBlogIndexPage, penguinArticlePage)
+import PenguinTemplates (penguinIndexPage, penguinIndexPageNl, penguinWordpressPage, penguinWordpressPageNl, penguinBlogIndexPage, penguinArticlePage)
 import WebwinkelTemplates
   ( webwinkelIndexPage
   , webwinkelBlogIndexPage
@@ -593,8 +593,14 @@ generatePenguinSite config articles = do
   Dir.createDirectoryIfMissing True "_penguin-site"
   Dir.createDirectoryIfMissing True "_penguin-site/blog"
 
-  -- Landing page
+  -- Landing page (English at /, Dutch at /nl/)
   writeHtmlFile "_penguin-site/index.html" penguinIndexPage
+  Dir.createDirectoryIfMissing True "_penguin-site/nl"
+  writeHtmlFile "_penguin-site/nl/index.html" penguinIndexPageNl
+
+  -- WordPress websites service page (English at /, Dutch at /nl/)
+  writeHtmlFile "_penguin-site/wordpress-websites.html" penguinWordpressPage
+  writeHtmlFile "_penguin-site/nl/wordpress-websites.html" penguinWordpressPageNl
 
   -- Individual article pages
   mapM_ (\art ->
@@ -742,6 +748,9 @@ generatePenguinSitemap articles = T.unlines $
   [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   , "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
   , sitemapUrl "https://jappiesoftware.com/"
+  , sitemapUrl "https://jappiesoftware.com/nl/"
+  , sitemapUrl "https://jappiesoftware.com/wordpress-websites.html"
+  , sitemapUrl "https://jappiesoftware.com/nl/wordpress-websites.html"
   , sitemapUrl "https://jappiesoftware.com/blog/"
   ]
   ++ map (\art -> sitemapUrlDated ("https://jappiesoftware.com/blog/" <> articleUrl art) (articleLastmod art)) articles

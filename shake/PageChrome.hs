@@ -63,6 +63,7 @@ data PageMeta = PageMeta
   , pageMetaLang        :: Text       -- ^ "en" or "nl"
   , pageMetaCanonical   :: Maybe Text -- ^ Full canonical URL
   , pageMetaOgImage     :: Maybe Text -- ^ Full URL to OG image
+  , pageMetaSwitchUrl   :: Maybe Text -- ^ Same page in the other language, for the language toggle
   , pageMetaExtraHead   :: Html       -- ^ JSON-LD or other per-page head content
   }
 
@@ -74,6 +75,7 @@ defaultPageMeta title = PageMeta
   , pageMetaLang        = "en"
   , pageMetaCanonical   = Nothing
   , pageMetaOgImage     = Nothing
+  , pageMetaSwitchUrl   = Nothing
   , pageMetaExtraHead   = mempty
   }
 

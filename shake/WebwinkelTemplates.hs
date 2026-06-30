@@ -182,6 +182,16 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.strong "Verificatie"
           " \8212 Samen controleren we steekproefsgewijs of alles klopt."
 
+    -- Recent werk
+    H.section ! A.class_ "results" $ do
+      H.h2 "Recent werk"
+      H.div ! A.class_ "testimonials" $ do
+        H.blockquote $
+          H.p $ do
+            H.strong "Panzer-ShopNL"
+            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat de Google-posities behouden bleven. " :: Text)
+            H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
+
     -- Why us
     H.section ! A.class_ "results" $ do
       H.h2 "Waarom via ons?"
@@ -209,6 +219,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = mempty
       }
 
@@ -347,6 +358,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd mijnwebwinkelFaq <> serviceJsonLd
           "MijnWebwinkel naar Shopify migratie"
           "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform: producten, vertalingen, afbeeldingen, categorieboom en SEO-redirects."
@@ -494,6 +506,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd ccvshopFaq <> serviceJsonLd
           "CCV Shop naar Shopify migratie"
           "Geautomatiseerde migratie van CCV Shop naar Shopify: producten, vertalingen, afbeeldingen, voorraad, klantdata en SEO-redirects."
@@ -640,6 +653,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd lightspeedFaq <> serviceJsonLd
           "Lightspeed naar Shopify migratie"
           "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, vertalingen, afbeeldingen, voorraad en SEO-redirects, zonder verkeersverlies."
@@ -774,6 +788,7 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = mempty
       }
 
@@ -908,6 +923,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/waarom-lightspeed.html"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd lightspeedWaaromFaq
       }
 
@@ -953,6 +969,7 @@ webwinkelBlogIndexPage _config articles pagination =
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/blog/"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = mempty
       }
 
