@@ -182,6 +182,16 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.strong "Verificatie"
           " \8212 Samen controleren we steekproefsgewijs of alles klopt."
 
+    -- Recent werk
+    H.section ! A.class_ "results" $ do
+      H.h2 "Recent werk"
+      H.div ! A.class_ "testimonials" $ do
+        H.blockquote $
+          H.p $ do
+            H.strong "Panzer-ShopNL"
+            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat de Google-posities behouden bleven. " :: Text)
+            H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
+
     -- Why us
     H.section ! A.class_ "results" $ do
       H.h2 "Waarom via ons?"

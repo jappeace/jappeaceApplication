@@ -421,7 +421,8 @@ penguinWordpressPage = penguinBaseTemplate En wordpressMeta $
           H.h3 "A handover, so it stays yours"
           H.p $ H.preEscapedToHtml ("A personal video walkthrough plus a short written manual: edit text, update a page, replace a photo, manage the bookings. You are not tied to us for day-to-day changes." :: Text)
 
-    -- Recent work
+    -- Recent work: hidden until these projects are actually delivered and live.
+    {-
     H.section ! A.class_ "results" $ do
       H.h2 "Recent work"
       H.div ! A.class_ "testimonials" $ do
@@ -435,6 +436,7 @@ penguinWordpressPage = penguinBaseTemplate En wordpressMeta $
             H.strong "Het Waardegebaar"
             H.preEscapedToHtml (": a one-page site built from a wireframe, with a hero, a \"who it is for\" section, a three-step approach, reviews, an inspiration gallery and a contact portal. Responsive, with basic SEO built in. " :: Text)
             H.a ! A.href "https://waardegebaar.nl/" $ H.preEscapedToHtml ("waardegebaar.nl &rarr;" :: Text)
+    -}
 
     -- How it works
     H.section ! A.class_ "audit" $ do
@@ -516,7 +518,8 @@ penguinWordpressPageNl = penguinBaseTemplate Nl wordpressMetaNl $
           H.h3 "Een overdracht, zodat het van u blijft"
           H.p $ H.preEscapedToHtml ("Een persoonlijke videorondleiding plus een korte handleiding: tekst aanpassen, een pagina bijwerken, een foto vervangen, de afspraken beheren. U bent voor dagelijkse aanpassingen niet afhankelijk van ons." :: Text)
 
-    -- Recent werk
+    -- Recent werk: verborgen tot deze projecten daadwerkelijk opgeleverd en live zijn.
+    {-
     H.section ! A.class_ "results" $ do
       H.h2 "Recent werk"
       H.div ! A.class_ "testimonials" $ do
@@ -530,6 +533,7 @@ penguinWordpressPageNl = penguinBaseTemplate Nl wordpressMetaNl $
             H.strong "Het Waardegebaar"
             H.preEscapedToHtml (": een \233\233n-pagina-site gebouwd vanaf een wireframe, met een hero, een \"voor wie\"-sectie, een werkwijze in drie stappen, reviews, een inspiratie-galerij en een contactportaal. Responsive, met basis-SEO ingebouwd. " :: Text)
             H.a ! A.href "https://waardegebaar.nl/" $ H.preEscapedToHtml ("waardegebaar.nl &rarr;" :: Text)
+    -}
 
     -- Hoe het werkt
     H.section ! A.class_ "audit" $ do
