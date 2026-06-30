@@ -14,6 +14,8 @@ module PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , companyWhatsappNumber
+  , whatsappFloatingButton
   , organizationJsonLd
   , serviceJsonLd
   , faqPageJsonLd
@@ -29,7 +31,9 @@ module PageChrome
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
+import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import Data.Time (UTCTime, formatTime, defaultTimeLocale)
+import Network.HTTP.Types.URI (urlEncode)
 import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -93,6 +97,51 @@ resolveOgImage siteDefault = fromMaybe siteDefault . pageMetaOgImage
 -- sites and the Organization structured data.
 companyEmail :: Text
 companyEmail = "hallo@jappiesoftware.com"
+
+-- =============================================================================
+-- Floating WhatsApp contact button ("bolletje")
+-- =============================================================================
+
+-- | The company WhatsApp number in wa.me format: country code, no leading plus,
+-- no spaces. The same line shown as +31 6 4423 7437 in the site footers.
+companyWhatsappNumber :: Text
+companyWhatsappNumber = "31644237437"
+
+-- | A floating WhatsApp contact button pinned to the bottom-right corner of the
+-- viewport. Tapping it opens a WhatsApp chat with the company, pre-filled with
+-- @prefilledMessage@. @accessibleLabel@ is the screen-reader label, passed in so
+-- each brand site supplies it in its own language (English on jappiesoftware.com,
+-- Dutch on webwinkelverhuis.nl). The visual styling (the green circle, position
+-- and hover) lives in each site's @.whatsapp-bolletje@ stylesheet rule; the
+-- inline glyph is filled with @currentColor@ so the stylesheet controls colour.
+whatsappFloatingButton :: Text -> Text -> Html
+whatsappFloatingButton accessibleLabel prefilledMessage =
+  H.a ! A.href (toValue (whatsappChatUrl prefilledMessage))
+      ! A.class_ "whatsapp-bolletje"
+      ! A.target "_blank"
+      ! customAttribute "rel" "noopener noreferrer"
+      ! customAttribute "aria-label" (toValue accessibleLabel)
+      $ H.preEscapedToHtml whatsappGlyphSvg
+
+-- | The wa.me deep link that opens a WhatsApp chat with the company, pre-filled
+-- with @prefilledMessage@ (percent-encoded into the @text@ query parameter).
+whatsappChatUrl :: Text -> Text
+whatsappChatUrl prefilledMessage =
+  "https://wa.me/" <> companyWhatsappNumber
+    <> "?text=" <> percentEncodeQuery prefilledMessage
+
+-- | Percent-encode text for use as a URL query value. Encodes the UTF-8 bytes
+-- per RFC 3986 (so spaces become %20 and any non-ASCII is escaped), keeping the
+-- pre-filled WhatsApp message intact regardless of punctuation or accents.
+percentEncodeQuery :: Text -> Text
+percentEncodeQuery = decodeUtf8 . urlEncode True . encodeUtf8
+
+-- | The WhatsApp glyph as an inline SVG (single path, official logo outline).
+-- Filled with @currentColor@ so the surrounding @.whatsapp-bolletje@ colour
+-- applies. Marked @aria-hidden@ because the link itself carries the label.
+whatsappGlyphSvg :: Text
+whatsappGlyphSvg =
+  "<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"currentColor\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.359.101 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.582 0 11.943-5.359 11.945-11.893a11.821 11.821 0 0 0-3.418-8.45\"/></svg>"
 
 -- | Company-level Open Graph / logo asset, used inside the Organization
 -- structured data. Always points at the canonical company domain, even on

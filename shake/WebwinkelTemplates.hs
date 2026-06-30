@@ -32,6 +32,7 @@ import PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , whatsappFloatingButton
   , organizationJsonLd
   , serviceJsonLd
   , faqPageJsonLd
@@ -215,8 +216,19 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
 -- MijnWebwinkel migration landing page
 -- =============================================================================
 
+-- | Screen-reader label for the WhatsApp button on the MijnWebwinkel migration
+-- page. Dutch, matching the page's audience.
+mijnwebwinkelWhatsappLabel :: Text
+mijnwebwinkelWhatsappLabel = "Open een WhatsApp-gesprek met ons"
+
+-- | Pre-filled message for the WhatsApp button on the MijnWebwinkel migration
+-- page. Dutch, matching the page's audience.
+mijnwebwinkelWhatsappMessage :: Text
+mijnwebwinkelWhatsappMessage = "Hallo, ik heb een vraag over de migratie van mijn MijnWebwinkel-shop."
+
 mijnwebwinkelMigrationPage :: Html
-mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
+mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
+  whatsappFloatingButton mijnwebwinkelWhatsappLabel mijnwebwinkelWhatsappMessage
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
