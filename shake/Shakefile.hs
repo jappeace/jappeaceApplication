@@ -45,6 +45,7 @@ import WebwinkelTemplates
   ( webwinkelIndexPage
   , webwinkelBlogIndexPage
   , webwinkelArticlePage
+  , appPage
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
@@ -650,6 +651,9 @@ generateWebwinkelverhuisSite config articles = do
 
   -- Landing page
   writeHtmlFile "_webwinkelverhuis-site/index.html" webwinkelIndexPage
+
+  -- Shopify migration app's App URL landing page
+  writeHtmlFile "_webwinkelverhuis-site/app.html" appPage
 
   -- Migration and explainer pages
   writeHtmlFile "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
