@@ -26,6 +26,7 @@ import PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , whatsappFloatingButton
   , organizationJsonLd
   , formatIsoDate
   , formatHumanDate
@@ -111,8 +112,19 @@ penguinBaseWith ogType includeFeed meta content =
           H.preEscapedToHtml (" &middot; " :: Text)
           H.a ! A.href "https://jappie.me/" $ "jappie.me"
         H.p $ H.small $ H.preEscapedToHtml ("Jappie Software B.V. &middot; KVK: 95097872" :: Text)
+      whatsappFloatingButton penguinWhatsappLabel penguinWhatsappMessage
       H.preEscapedToHtml ("<svg class=\"voronoi\"></svg>" :: Text)
       H.script $ H.preEscapedToHtml voronoiScript
+
+-- | Screen-reader label for the jappiesoftware.com WhatsApp button. English to
+-- match the rest of the company site.
+penguinWhatsappLabel :: Text
+penguinWhatsappLabel = "Open a WhatsApp chat with us"
+
+-- | Pre-filled message for the jappiesoftware.com WhatsApp button. English to
+-- match the rest of the company site.
+penguinWhatsappMessage :: Text
+penguinWhatsappMessage = "Hi! I have a question about Jappie Software."
 
 -- | Landing page skeleton (Open Graph type "website").
 penguinBaseTemplate :: PageMeta -> Html -> Html

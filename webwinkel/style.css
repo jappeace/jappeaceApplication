@@ -284,3 +284,41 @@ footer small {
     grid-template-columns: 1fr;
   }
 }
+
+/* WhatsApp floating contact button ("bolletje") */
+.whatsapp-bolletje {
+  position: fixed;
+  right: 1.25em;
+  bottom: 1.25em;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5em;
+  height: 3.5em;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  box-shadow: 0 0.25em 0.75em rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.whatsapp-bolletje:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0.4em 1em rgba(0, 0, 0, 0.3);
+}
+.whatsapp-bolletje svg {
+  width: 2em;
+  height: 2em;
+}
+@media (max-width: 700px) {
+  .whatsapp-bolletje {
+    width: 3em;
+    height: 3em;
+    right: 1em;
+    bottom: 1em;
+  }
+  .whatsapp-bolletje svg {
+    width: 1.7em;
+    height: 1.7em;
+  }
+}
