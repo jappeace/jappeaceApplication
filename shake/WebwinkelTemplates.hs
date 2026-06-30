@@ -297,12 +297,22 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en eventuele bulk-aanpassingen. Prijs afhankelijk van de omvang van uw webshop." :: Text)
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
+    -- Recent werk
+    H.section ! A.class_ "results" $ do
+      H.h2 "Recent werk"
+      H.div ! A.class_ "testimonials" $ do
+        H.blockquote $
+          H.p $ do
+            H.strong "Panzer-ShopNL"
+            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat de Google-posities behouden bleven. " :: Text)
+            H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
+
     -- Why us
     H.section ! A.class_ "results" $ do
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $ do
-          H.p $ H.preEscapedToHtml ("U weet het al: MijnWebwinkel gaat nergens meer heen. Geen nieuwe features, geen community, trage support. Elke dag dat u wacht is een dag dat uw concurrent op Shopify u inhaalt. Wij hebben al een webshop met 2.400+ producten, drie talen en drie domeinen succesvol gemigreerd. Het werkt, want het is al gedaan." :: Text)
+          H.p $ H.preEscapedToHtml ("U weet het al: MijnWebwinkel gaat nergens meer heen. Geen nieuwe features, geen community, trage support. Elke dag dat u wacht is een dag dat uw concurrent op Shopify u inhaalt. Het werkt, want het is al gedaan." :: Text)
           H.p $ do
             H.a ! A.href "/waarom-mijnwebwinkel.html" $ "Waarom wordt MijnWebwinkel niet meer doorontwikkeld?"
             H.preEscapedToHtml (" &rarr;" :: Text)
