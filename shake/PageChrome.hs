@@ -120,7 +120,7 @@ whatsappFloatingButton accessibleLabel prefilledMessage =
       ! A.class_ "whatsapp-bolletje"
       ! A.target "_blank"
       ! customAttribute "rel" "noopener noreferrer"
-      ! customAttribute "aria-label" (toValue accessibleLabel)
+      ! customAttribute "aria-label" accessibleLabel
       $ H.preEscapedToHtml whatsappGlyphSvg
 
 -- | The wa.me deep link that opens a WhatsApp chat with the company, pre-filled
