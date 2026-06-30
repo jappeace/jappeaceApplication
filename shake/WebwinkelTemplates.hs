@@ -209,6 +209,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = mempty
       }
 
@@ -347,6 +348,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd mijnwebwinkelFaq <> serviceJsonLd
           "MijnWebwinkel naar Shopify migratie"
           "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform: producten, vertalingen, afbeeldingen, categorieboom en SEO-redirects."
@@ -494,6 +496,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd ccvshopFaq <> serviceJsonLd
           "CCV Shop naar Shopify migratie"
           "Geautomatiseerde migratie van CCV Shop naar Shopify: producten, vertalingen, afbeeldingen, voorraad, klantdata en SEO-redirects."
@@ -640,6 +643,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd lightspeedFaq <> serviceJsonLd
           "Lightspeed naar Shopify migratie"
           "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, vertalingen, afbeeldingen, voorraad en SEO-redirects, zonder verkeersverlies."
@@ -774,6 +778,7 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = mempty
       }
 
@@ -908,6 +913,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/waarom-lightspeed.html"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd lightspeedWaaromFaq
       }
 
@@ -953,6 +959,7 @@ webwinkelBlogIndexPage _config articles pagination =
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/blog/"
       , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = mempty
       }
 
