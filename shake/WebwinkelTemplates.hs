@@ -10,6 +10,7 @@ module WebwinkelTemplates
   ( webwinkelIndexPage
   , webwinkelBlogIndexPage
   , webwinkelArticlePage
+  , appPage
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
@@ -236,6 +237,64 @@ mijnwebwinkelWhatsappLabel = "Open een WhatsApp-gesprek met ons"
 -- page. Dutch, matching the page's audience.
 mijnwebwinkelWhatsappMessage :: Text
 mijnwebwinkelWhatsappMessage = "Hallo, ik heb een vraag over de migratie van mijn MijnWebwinkel-shop."
+
+-- | The migration app's landing page (webwinkelverhuis.nl/app.html). This is
+-- the App URL of the custom Shopify app we install in a client's store to run
+-- the import; Shopify shows the merchant this page on install. It explains, in
+-- plain Dutch, what the app is and why it asks for access, so the install does
+-- not look like a black box. Marked noindex: it is a utility page, not part of
+-- the marketing funnel.
+appPage :: Html
+appPage = webwinkelBaseTemplate appMeta $ do
+  H.main $ do
+    H.section ! A.class_ "hero" $ do
+      H.h1 "De migratie-app"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("U ziet deze pagina omdat de migratie-app van Webwinkelverhuis in uw Shopify-winkel is ge&iuml;nstalleerd. Dat is precies de bedoeling: de app is het gereedschap waarmee wij uw webshop naar Shopify overzetten." :: Text)
+      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+
+    H.section ! A.class_ "for-who" ! A.id "what" $ do
+      H.h2 "Wat de app doet"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 "Producten plaatsen"
+          H.p "De app zet uw producten, varianten, afbeeldingen, prijzen en SKU's in uw nieuwe Shopify-winkel."
+        H.li ! A.class_ "card" $ do
+          H.h3 $ H.preEscapedToHtml ("Categorie&euml;n en pagina&rsquo;s" :: Text)
+          H.p $ H.preEscapedToHtml ("Uw categorie&euml;n worden Shopify-collections en uw informatiepagina&rsquo;s worden meegenomen, inclusief het navigatiemenu." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "SEO-redirects"
+          H.p "De app legt 301-redirects aan van elke oude URL naar de juiste nieuwe pagina, zodat uw Google-posities behouden blijven."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Thema"
+          H.p "De app bouwt en plaatst een Shopify-thema dat de uitstraling van uw huidige winkel volgt."
+
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Waarom de app toegang vraagt"
+      H.p "Om dit werk te doen vraagt de app toegang tot precies de onderdelen die hij plaatst:"
+      H.ul $ do
+        H.li $ H.strong "Producten" >> ": om uw artikelen, varianten en collections aan te maken."
+        H.li $ H.strong "Content" >> ": om uw pagina's, navigatie en redirects over te zetten."
+        H.li $ H.strong "Klanten" >> ": om bestaande klantaccounts mee te nemen."
+        H.li $ H.preEscapedToHtml ("<strong>Thema&rsquo;s</strong>: om het nieuwe thema te plaatsen." :: Text)
+        H.li $ H.strong "Vertalingen" >> ": om meertalige content correct te koppelen."
+
+    H.section ! A.class_ "about" $ do
+      H.h2 "Veilig en tijdelijk"
+      H.p "De app is alleen nodig tijdens de migratie. Wij installeren hem in uw winkel om uw data te plaatsen, en daarna kan hij verwijderd worden. Hij maakt geen onderdeel uit van uw winkel voor uw bezoekers. U betaalt pas na een succesvolle migratie."
+      H.p $ do
+        H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Lees hoe de migratie werkt"
+        H.preEscapedToHtml (" &rarr;" :: Text)
+  where
+    appMeta :: PageMeta
+    appMeta = PageMeta
+      { pageMetaTitle       = "De migratie-app van Webwinkelverhuis"
+      , pageMetaDescription = "Uitleg over de migratie-app van Webwinkelverhuis: het gereedschap waarmee wij uw webshop naar Shopify overzetten, en waarom de app toegang vraagt."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/app.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = H.meta ! A.name "robots" ! A.content "noindex"
+      }
 
 mijnwebwinkelMigrationPage :: Html
 mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
