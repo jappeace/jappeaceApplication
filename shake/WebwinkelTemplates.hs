@@ -289,7 +289,7 @@ appPage = webwinkelBaseTemplate appMeta $ do
 
     H.section ! A.class_ "about" $ do
       H.h2 "Veilig en tijdelijk"
-      H.p "De app is alleen nodig tijdens de migratie. Wij installeren hem in uw winkel om uw data te plaatsen, en daarna kan hij verwijderd worden. Hij maakt geen onderdeel uit van uw winkel voor uw bezoekers. U betaalt pas na een succesvolle migratie."
+      H.p "De app is alleen nodig tijdens de migratie. Wij installeren hem in uw winkel om uw data te plaatsen, en daarna kan hij verwijderd worden. Hij maakt geen onderdeel uit van uw winkel voor uw bezoekers."
       H.p $ do
         H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Lees hoe de migratie werkt"
         H.preEscapedToHtml (" &rarr;" :: Text)
