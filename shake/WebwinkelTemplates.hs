@@ -56,6 +56,13 @@ webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
 offerteMailto :: H.AttributeValue
 offerteMailto = toValue ("mailto:" <> companyEmail <> "?subject=Migratie%20offerte")
 
+-- | Mailto for merchants whose migration is already running or done and who
+-- want follow-up work (mass edits, theme changes, integrations). The subject
+-- differs from 'offerteMailto' so these mails are recognisable as
+-- existing-client work rather than new leads.
+uitbreidingMailto :: H.AttributeValue
+uitbreidingMailto = toValue ("mailto:" <> companyEmail <> "?subject=Uitbreiding%20webshop")
+
 -- =============================================================================
 -- Base template
 -- =============================================================================
@@ -240,9 +247,11 @@ mijnwebwinkelWhatsappMessage = "Hallo, ik heb een vraag over de migratie van mij
 
 -- | The migration app's landing page (webwinkelverhuis.nl/app.html). This is
 -- the App URL of the custom Shopify app we install in a client's store to run
--- the import; Shopify shows the merchant this page on install. It explains, in
--- plain Dutch, what the app is and why it asks for access, so the install does
--- not look like a black box. Marked noindex: it is a utility page, not part of
+-- the import; Shopify shows the merchant this page on install. The audience is
+-- a merchant who already agreed to the migration, not a new lead, so instead
+-- of a quote button it explains what the app is and why it asks for access,
+-- and lists the follow-up services we offer after the migration (mass edits,
+-- theme work, integrations). Marked noindex: it is a utility page, not part of
 -- the marketing funnel.
 appPage :: Html
 appPage = webwinkelBaseTemplate appMeta $ do
@@ -250,7 +259,7 @@ appPage = webwinkelBaseTemplate appMeta $ do
     H.section ! A.class_ "hero" $ do
       H.h1 "De migratie-app"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("U ziet deze pagina omdat de migratie-app van Webwinkelverhuis in uw Shopify-winkel is ge&iuml;nstalleerd. Dat is precies de bedoeling: de app is het gereedschap waarmee wij uw webshop naar Shopify overzetten." :: Text)
-      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href "#meer" ! A.class_ "cta-button" $ "Wat we verder voor u kunnen doen"
 
     H.section ! A.class_ "for-who" ! A.id "what" $ do
       H.h2 "Wat de app doet"
@@ -284,11 +293,33 @@ appPage = webwinkelBaseTemplate appMeta $ do
       H.p $ do
         H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Lees hoe de migratie werkt"
         H.preEscapedToHtml (" &rarr;" :: Text)
+
+    H.section ! A.class_ "for-who" ! A.id "meer" $ do
+      H.h2 "Wat we verder voor u kunnen doen"
+      H.p $ H.preEscapedToHtml ("Dezelfde techniek waarmee we uw shop verhuizen, zetten we ook na de migratie voor u in. Enkele voorbeelden van wat we voor andere webwinkels hebben gedaan:" :: Text)
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 "Massabewerkingen"
+          H.p $ H.preEscapedToHtml ("Duizenden producten in &eacute;&eacute;n batch aanpassen: merknamen corrigeren, verkeerd vertaalde termen rechtzetten of prijzen bijwerken, over de hele catalogus en in alle talen tegelijk." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "SEO in bulk"
+          H.p $ H.preEscapedToHtml ("Alle meta titles en meta descriptions opnieuw opbouwen in &eacute;&eacute;n uniforme stijl, per taal en per categorie." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "Thema-uitbreidingen"
+          H.p "Uw Shopify-thema uitbreiden met extra secties of functionaliteit, of de vormgeving verder afstemmen op uw huisstijl."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Koppelingen en apps"
+          H.p "Uw boekhouding of facturatie koppelen aan Shopify, een verhuur-app inrichten, of een extra taal toevoegen inclusief vertaalde URL's en redirects."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Training"
+          H.p $ H.preEscapedToHtml ("Een rondleiding door uw nieuwe shop met beknopte handleiding, of een cursus Shopify van twee uur, &eacute;&eacute;n-op-&eacute;&eacute;n." :: Text)
+      H.p "Alles tegen een vaste prijs per klus, geen uurtarief. U weet vooraf waar u aan toe bent."
+      H.a ! A.href uitbreidingMailto ! A.class_ "cta-button" $ "Bespreek uw idee met ons"
   where
     appMeta :: PageMeta
     appMeta = PageMeta
       { pageMetaTitle       = "De migratie-app van Webwinkelverhuis"
-      , pageMetaDescription = "Uitleg over de migratie-app van Webwinkelverhuis: het gereedschap waarmee wij uw webshop naar Shopify overzetten, en waarom de app toegang vraagt."
+      , pageMetaDescription = "Uitleg over de migratie-app van Webwinkelverhuis: het gereedschap waarmee wij uw webshop naar Shopify overzetten, en wat we na de migratie verder voor uw shop kunnen doen."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/app.html"
       , pageMetaOgImage     = Nothing
