@@ -106,8 +106,8 @@ webwinkelBaseWith ogType includeFeed meta content =
                     ! A.rel "alternate"
                     ! A.title "Webwinkelverhuis blog"
         else mempty
-      H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-FMYV1PLWZ6" $ mempty
-      H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-FMYV1PLWZ6');" :: Text)
+      H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-GD4S885G6F" $ mempty
+      H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-GD4S885G6F');" :: Text)
       H.title (toHtml (pageMetaTitle meta))
       organizationJsonLd
       pageMetaExtraHead meta
