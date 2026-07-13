@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- CCV Shop platform card icon: a padlocked box, "limited features". -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <circle cx="32" cy="32" r="30" fill="#eaf1f8"/>
+  <rect x="18" y="28" width="28" height="20" rx="3" fill="#ffffff" stroke="#10456b" stroke-width="3"/>
+  <path d="M24 28 v-5 a8 8 0 0 1 16 0 v5" fill="none" stroke="#10456b" stroke-width="3"/>
+  <circle cx="32" cy="37" r="3" fill="#e8590c"/>
+  <path d="M32 39 v4" stroke="#e8590c" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -30,6 +30,14 @@ import PenguinTemplates
   , penguinWordpressPage
   , penguinWordpressPageNl
   )
+import WebwinkelTemplates
+  ( webwinkelIndexPage
+  , mijnwebwinkelMigrationPage
+  , ccvshopMigrationPage
+  , lightspeedMigrationPage
+  , mijnwebwinkelWaaromPage
+  , lightspeedWaaromPage
+  )
 
 -- | A recognisable fake origin: it can only appear in the output when the
 -- page honours the parameter instead of a hardcoded domain.
@@ -57,7 +65,34 @@ linksFollowOriginCase (pageName, page) = testCase pageName $ do
   assertBool "links the hardcoded live domain instead of the passed origin"
     (not ("href=\"https://webwinkelverhuis.nl" `T.isInfixOf` rendered))
 
+-- | Every webwinkelverhuis.nl page with a "plan een gesprek" button, named
+-- for test output.
+meetLinkPages :: [(String, Html)]
+meetLinkPages =
+  [ ("webwinkelIndexPage", webwinkelIndexPage)
+  , ("mijnwebwinkelMigrationPage", mijnwebwinkelMigrationPage)
+  , ("ccvshopMigrationPage", ccvshopMigrationPage)
+  , ("lightspeedMigrationPage", lightspeedMigrationPage)
+  , ("mijnwebwinkelWaaromPage", mijnwebwinkelWaaromPage)
+  , ("lightspeedWaaromPage", lightspeedWaaromPage)
+  ]
+
+-- | Scheduling buttons must use the branded meet.jappiesoftware.com redirect,
+-- never a raw calendar.app.google URL: the raw link routed to the wrong
+-- calendar once, and the redirect is the single place the target may change.
+usesMeetLinkCase :: (String, Html) -> TestTree
+usesMeetLinkCase (pageName, page) = testCase pageName $ do
+  let rendered = TL.toStrict (renderHtml page)
+  assertBool "expected a link to https://meet.jappiesoftware.com but found none"
+    ("href=\"https://meet.jappiesoftware.com\"" `T.isInfixOf` rendered)
+  assertBool "links a raw calendar.app.google URL instead of the meet redirect"
+    (not ("calendar.app.google" `T.isInfixOf` rendered))
+
 main :: IO ()
 main = defaultMain $
-  testGroup "webwinkel links follow WebwinkelverhuisUrl"
-    (map linksFollowOriginCase pagesUnderTest)
+  testGroup "shake-blog templates"
+    [ testGroup "webwinkel links follow WebwinkelverhuisUrl"
+        (map linksFollowOriginCase pagesUnderTest)
+    , testGroup "scheduling buttons use meet.jappiesoftware.com"
+        (map usesMeetLinkCase meetLinkPages)
+    ]

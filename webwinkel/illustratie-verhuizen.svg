@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hero illustration for webwinkelverhuis.nl: boxes moving from a faded old
+     shop to a bright new one. Same composition as the penguin site's
+     illustratie-verhuizen.svg but in this theme's navy/orange palette. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img">
+  <!-- soft backdrop -->
+  <circle cx="200" cy="150" r="130" fill="#eaf1f8"/>
+  <!-- old shop, faded -->
+  <g opacity="0.45">
+    <rect x="48" y="130" width="90" height="80" fill="#ffffff" stroke="#0c2f47" stroke-width="3"/>
+    <path d="M40 130 l8 -26 h74 l8 26 z" fill="#dbe5ef" stroke="#0c2f47" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M40 130 h90" stroke="#0c2f47" stroke-width="3"/>
+    <rect x="62" y="152" width="26" height="26" fill="#dbe5ef" stroke="#0c2f47" stroke-width="3"/>
+    <rect x="98" y="152" width="26" height="58" fill="#dbe5ef" stroke="#0c2f47" stroke-width="3"/>
+  </g>
+  <!-- arrow of travel -->
+  <path d="M150 176 C 185 120, 225 120, 258 168" fill="none" stroke="#e8590c" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 14"/>
+  <path d="M250 148 l10 22 l-24 -4 z" fill="#e8590c"/>
+  <!-- moving boxes -->
+  <g transform="rotate(-8 196 132)">
+    <rect x="172" y="112" width="48" height="40" rx="4" fill="#f6c89f" stroke="#0c2f47" stroke-width="3"/>
+    <path d="M172 128 h48" stroke="#0c2f47" stroke-width="3"/>
+    <path d="M196 112 v16" stroke="#0c2f47" stroke-width="3"/>
+  </g>
+  <!-- new shop, bright -->
+  <g>
+    <rect x="252" y="118" width="110" height="98" fill="#ffffff" stroke="#0c2f47" stroke-width="3"/>
+    <path d="M242 118 l10 -30 h90 l10 30 z" fill="#10456b" stroke="#0c2f47" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M242 118 h130" stroke="#0c2f47" stroke-width="3"/>
+    <rect x="266" y="142" width="30" height="30" fill="#dbe5ef" stroke="#0c2f47" stroke-width="3"/>
+    <rect x="310" y="142" width="30" height="74" fill="#e8590c" stroke="#0c2f47" stroke-width="3"/>
+    <circle cx="316" cy="180" r="2.5" fill="#0c2f47"/>
+    <!-- awning scallops -->
+    <path d="M246 118 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 14 0" fill="#e8590c" stroke="#0c2f47" stroke-width="3"/>
+  </g>
+  <!-- delivered box at the door -->
+  <rect x="270" y="196" width="22" height="20" rx="3" fill="#f6c89f" stroke="#0c2f47" stroke-width="3"/>
+  <path d="M270 204 h22" stroke="#0c2f47" stroke-width="3"/>
+</svg>
