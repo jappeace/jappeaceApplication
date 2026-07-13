@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- "Wat we migreren" card icon: an arrow rerouting to a new destination,
+     301 redirects that keep Google rankings. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <circle cx="32" cy="32" r="30" fill="#eaf1f8"/>
+  <circle cx="20" cy="44" r="4" fill="#ffffff" stroke="#10456b" stroke-width="3"/>
+  <path d="M24 40 C 30 28, 38 26, 44 26" fill="none" stroke="#e8590c" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M40 20 l8 6 l-8 6 z" fill="#e8590c"/>
+  <path d="M28 46 h14 M30 51 h10" stroke="#10456b" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+</svg>

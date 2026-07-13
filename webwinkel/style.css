@@ -53,11 +53,12 @@ body {
   color: #c44d06 !important;
 }
 
-/* Shared section spacing */
+/* Shared section spacing. A touch more vertical air than the penguin theme:
+   these pages are text-dense sales pages and need the breathing room. */
 main section {
   max-width: 800px;
   margin: 0 auto;
-  padding: 3em 2em;
+  padding: 3.5em 2em;
 }
 
 /* Hero */

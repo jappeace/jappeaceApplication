@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- "Wat we migreren" card icon: a category tree with nodes. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <circle cx="32" cy="32" r="30" fill="#eaf1f8"/>
+  <rect x="26" y="14" width="12" height="10" rx="2" fill="#10456b" stroke="#0c2f47" stroke-width="2.5"/>
+  <path d="M32 24 v8 M32 32 h-12 v6 M32 32 h12 v6" fill="none" stroke="#10456b" stroke-width="3"/>
+  <rect x="14" y="38" width="12" height="10" rx="2" fill="#ffffff" stroke="#10456b" stroke-width="2.5"/>
+  <rect x="38" y="38" width="12" height="10" rx="2" fill="#f6c89f" stroke="#10456b" stroke-width="2.5"/>
+</svg>

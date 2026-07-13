@@ -356,32 +356,54 @@ mijnwebwinkelMigrationPage :: Html
 mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
   whatsappFloatingButton mijnwebwinkelWhatsappLabel mijnwebwinkelWhatsappMessage
   H.main $ do
-    -- Hero
-    H.section ! A.class_ "hero" $ do
-      H.h1 "Ontsnap MijnWebwinkel"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. MijnWebwinkel wordt al jaren niet meer doorontwikkeld, de community is gesloten, en support reageert niet. Hoelang blijft u nog wachten? Wij verhuizen uw complete shop naar Shopify &mdash; geautomatiseerd, zonder dataverlies, zonder downtime." :: Text)
-      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+    -- Hero: friendly reassurance rather than pressure, with the escape
+    -- illustration. The visitor already knows the platform is stuck; this
+    -- page's job is making the move feel safe.
+    H.section ! A.class_ "hero" $
+      H.div ! A.class_ "hero-grid" $ do
+        H.div $ do
+          H.h1 "Ontsnap MijnWebwinkel"
+          H.p ! A.class_ "subtitle" $ "Uw webshop is uw broodwinning, en MijnWebwinkel staat al jaren stil. Verhuizen voelt als een grote stap, maar het hoeft geen sprong in het diepe te zijn: wij zetten uw complete shop geautomatiseerd over, zonder dataverlies en zonder downtime. U betaalt pas na een succesvolle migratie."
+          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+        H.img ! A.class_ "hero-image"
+              ! A.src "/illustratie-ontsnappen.svg"
+              ! A.alt "Illustratie van dozen die een bevroren webshop verlaten richting een zonnige nieuwe winkel"
+              ! A.width "400" ! A.height "300"
 
-    -- What we migrate
+    -- What we migrate. One card per data type, each with a pictogram; the
+    -- technical depth (redirect internals, platform choice) lives in the FAQ
+    -- instead of a second near-duplicate card grid.
     H.section ! A.class_ "for-who" ! A.id "what" $ do
       H.h2 "Wat we migreren"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
+                ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
           H.h3 "Producten & varianten"
           H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van uw doelplatform."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
+                ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
           H.h3 "Meerdere talen"
           H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
+                ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
           H.h3 "Spaarpunten"
           H.p "Spaarpuntensaldi van uw klanten worden overgezet naar het loyaliteitsprogramma van uw nieuwe platform."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
           H.h3 "SEO-redirects"
-          H.p $ H.preEscapedToHtml ("301-redirects van elke oude URL naar de nieuwe URL. We hebben de onderliggende logica van MijnWebwinkel-artikel-ID&rsquo;s in URLs achterhaald, waardoor we alle redirects volledig automatisch kunnen genereren. Uw Google-posities en backlinks blijven behouden." :: Text)
+          H.p "301-redirects van elke oude URL naar de nieuwe, volledig automatisch gegenereerd. Uw Google-posities en backlinks blijven behouden."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
           H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
+                ! A.alt "Toverstaf met sterretjes" ! A.width "56" ! A.height "56"
           H.h3 "Bulk-aanpassingen aan data"
           H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie &mdash; bijvoorbeeld alt-teksten voor alle afbeeldingen, prijsaanpassingen of het opschonen van beschrijvingen." :: Text)
 
@@ -394,13 +416,23 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           " \8212 Ons programma crawlt uw MijnWebwinkel-shop en slaat alle data op."
         H.li $ do
           H.strong "Controle"
-          " \8212 U krijgt een werkende testshop die u zelf kunt controleren voordat we live gaan."
+          " \8212 U krijgt een werkende testshop die u op uw gemak kunt bekijken voordat we live gaan."
         H.li $ do
           H.strong "Import"
           " \8212 We importeren alles in uw nieuwe shop: producten, vertalingen, collections, redirects."
         H.li $ do
           H.strong "Verificatie"
           " \8212 Samen controleren we steekproefsgewijs of alles klopt."
+
+    -- Recent werk: proof before price, so the number lands on trust.
+    H.section ! A.class_ "results" $ do
+      H.h2 "Recent werk"
+      H.div ! A.class_ "testimonials" $ do
+        H.blockquote $
+          H.p $ do
+            H.strong "Panzer-ShopNL"
+            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat de Google-posities behouden bleven. " :: Text)
+            H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
 
     -- Pricing
     H.section ! A.class_ "engagement" ! A.id "pricing" $ do
@@ -413,33 +445,21 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
-    -- Recent werk
-    H.section ! A.class_ "results" $ do
-      H.h2 "Recent werk"
-      H.div ! A.class_ "testimonials" $ do
-        H.blockquote $
-          H.p $ do
-            H.strong "Panzer-ShopNL"
-            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat de Google-posities behouden bleven. " :: Text)
-            H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
-
     -- Why us
     H.section ! A.class_ "results" $ do
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $ do
-          H.p $ H.preEscapedToHtml ("U weet het al: MijnWebwinkel gaat nergens meer heen. Geen nieuwe features, geen community, trage support. Elke dag dat u wacht is een dag dat uw concurrent op Shopify u inhaalt. Het werkt, want het is al gedaan." :: Text)
+          H.p "U weet het al: MijnWebwinkel gaat nergens meer heen. Geen nieuwe features, geen community, trage support. Gelukkig hoeft u daar niet op te wachten: verhuizen is inmiddels een gebaande weg."
           H.p $ do
             H.a ! A.href "/waarom-mijnwebwinkel.html" $ "Waarom wordt MijnWebwinkel niet meer doorontwikkeld?"
             H.preEscapedToHtml (" &rarr;" :: Text)
       H.p $ H.preEscapedToHtml ("Wij zijn geen Shopify-partner die commissie verdient op uw overstap. Wij zijn migratie-specialisten. U kiest het platform &mdash; Shopify, WooCommerce, of iets anders &mdash; wij regelen de techniek." :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
-        H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (" &mdash; u kiest de bestemming, wij migreren naar elk platform" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
-        H.li $ H.strong "Controleerbaar" >> H.preEscapedToHtml (" &mdash; u krijgt een testshop en kunt alles verifi&euml;ren voor de overstap" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
     -- FAQ
@@ -447,35 +467,11 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       H.h2 "Veelgestelde vragen"
       H.dl $ mapM_ renderFaqItem mijnwebwinkelFaq
 
-    -- Technical details
-    H.section ! A.class_ "for-who" $ do
-      H.h2 "Technische details"
-      H.ul ! A.class_ "card-grid" $ do
-        H.li ! A.class_ "card" $ do
-          H.h3 "SEO-redirects"
-          H.p $ H.preEscapedToHtml ("Volledige 301-redirect mapping van elke oude URL. We hebben de interne logica van MijnWebwinkel artikel-ID&rsquo;s in URLs achterhaald &mdash; alle redirects worden volledig automatisch gegenereerd, inclusief URLs met numerieke product-ID&rsquo;s." :: Text)
-        H.li ! A.class_ "card" $ do
-          H.h3 "Bulk-aanpassingen"
-          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren voor alle afbeeldingen, prijzen aanpassen, beschrijvingen opschonen, HTML-tags verwijderen &mdash; alles in &eacute;&eacute;n keer." :: Text)
-        H.li ! A.class_ "card" $ do
-          H.h3 "Platformkeuze"
-          H.p $ H.preEscapedToHtml ("Shopify is het meest gekozen doelplatform, maar we ondersteunen ook WooCommerce of andere platformen. U kiest, wij regelen de techniek." :: Text)
-        H.li ! A.class_ "card" $ do
-          H.h3 "Vertalingen & URL-slugs"
-          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via offici&euml;le platform APIs. Inclusief vertaalde URL-slugs &mdash; niet alleen productteksten." :: Text)
-        H.li ! A.class_ "card" $ do
-          H.h3 "Klantdata & spaarpunten"
-          H.p "Klantaccounts, bestelgeschiedenis en spaarpuntensaldi worden overgezet naar het loyaliteitsprogramma van uw nieuwe platform."
-        H.li ! A.class_ "card" $ do
-          H.h3 "Testshop & verificatie"
-          H.p "U krijgt een volledige testshop om alles te controleren. Pas na uw goedkeuring gaan we live. Correcties zijn inbegrepen."
-
     -- CTA
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te ontsnappen?"
-      H.p $ H.preEscapedToHtml ("U hoeft niet langer te wachten tot MijnWebwinkel beter wordt &mdash; dat gaat niet gebeuren. " :: Text)
-      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven een eerlijke inschatting."
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gratis gesprek"
   where
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
