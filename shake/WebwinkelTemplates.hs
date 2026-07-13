@@ -169,16 +169,13 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       H.ol $ do
         H.li $ do
           H.strong "Scan"
-          " \8212 Ons programma leest uw huidige webshop volledig uit en slaat alle data op."
+          " \8212 Ons programma leest uw huidige webshop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
         H.li $ do
-          H.strong "Controle"
-          " \8212 U krijgt een werkende testshop die u zelf kunt controleren voordat we live gaan."
+          H.strong "Wennen en controle"
+          " \8212 De testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met het nieuwe systeem en controleert of alles klopt."
         H.li $ do
-          H.strong "Import"
-          " \8212 We importeren alles in uw nieuwe shop: producten, vertalingen, collections, redirects."
-        H.li $ do
-          H.strong "Verificatie"
-          " \8212 Samen controleren we steekproefsgewijs of alles klopt."
+          H.strong "DNS-overzet"
+          " \8212 Klopt alles? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
 
     -- Recent werk
     H.section ! A.class_ "results" $ do
@@ -369,12 +366,29 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
     -- instead of a second near-duplicate card grid.
     H.section ! A.class_ "for-who" ! A.id "what" $ do
       H.h2 "Wat we migreren"
+      -- SEO-redirects lead the grid: keeping Google rankings is the
+      -- service's biggest selling point.
       H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
+          H.h3 "SEO-redirects"
+          H.p "301-redirects van elke oude URL naar de nieuwe, volledig automatisch gegenereerd. Uw Google-posities en backlinks blijven behouden."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
                 ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
           H.h3 "Producten & varianten"
           H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van uw doelplatform."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
+          H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
+          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-thema.svg"
+                ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
+          H.h3 "Thema"
+          H.p "Uw nieuwe shop krijgt een thema dat de uitstraling van uw huidige winkel volgt. U begint niet met een kale winkel."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
                 ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
@@ -385,21 +399,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
                 ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
           H.h3 "Klanten & spaarpunten"
           H.p "Klantaccounts, bestelgeschiedenis en spaarpuntensaldi verhuizen mee. Uw klanten kunnen direct inloggen, met hun spaarpunten in het loyaliteitsprogramma van uw nieuwe platform."
-        H.li ! A.class_ "card" $ do
-          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
-                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
-          H.h3 "SEO-redirects"
-          H.p "301-redirects van elke oude URL naar de nieuwe, volledig automatisch gegenereerd. Uw Google-posities en backlinks blijven behouden."
-        H.li ! A.class_ "card" $ do
-          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
-                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
-          H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
-          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
-        H.li ! A.class_ "card" $ do
-          H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
-                ! A.alt "Toverstaf met sterretjes" ! A.width "56" ! A.height "56"
-          H.h3 "Bulk-aanpassingen aan data"
-          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie &mdash; bijvoorbeeld alt-teksten voor alle afbeeldingen, prijsaanpassingen of het opschonen van beschrijvingen." :: Text)
+      H.p ! A.class_ "engagement-note" $ "Ook mogelijk als aparte dienst: grootschalige bulk-aanpassingen aan uw productdata tijdens de migratie, zoals alt-teksten voor alle afbeeldingen, prijsaanpassingen of het opschonen van beschrijvingen. Handig, maar lang niet altijd nodig."
 
     -- How it works
     H.section ! A.class_ "audit" $ do
@@ -407,16 +407,13 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       H.ol $ do
         H.li $ do
           H.strong "Scan"
-          " \8212 Ons programma crawlt uw MijnWebwinkel-shop en slaat alle data op."
+          " \8212 Ons programma leest uw MijnWebwinkel-shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
         H.li $ do
-          H.strong "Controle"
-          " \8212 U krijgt een werkende testshop die u op uw gemak kunt bekijken voordat we live gaan."
+          H.strong "Wennen en controle"
+          " \8212 De testshop draait naast uw MijnWebwinkel-shop, die gewoon doordraait. U raakt op uw gemak bekend met het nieuwe systeem en controleert of alles klopt."
         H.li $ do
-          H.strong "Import"
-          " \8212 We importeren alles in uw nieuwe shop: producten, vertalingen, collections, redirects."
-        H.li $ do
-          H.strong "Verificatie"
-          " \8212 Samen controleren we steekproefsgewijs of alles klopt."
+          H.strong "DNS-overzet"
+          " \8212 Klopt alles? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
 
     -- Recent werk: proof before price, so the number lands on trust.
     H.section ! A.class_ "results" $ do
@@ -543,16 +540,13 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       H.ol $ do
         H.li $ do
           H.strong "Scan"
-          " \8212 Ons programma leest uw CCV Shop uit en slaat alle data op."
+          " \8212 Ons programma leest uw CCV Shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
         H.li $ do
-          H.strong "Controle"
-          " \8212 U krijgt een werkende testshop die u zelf kunt controleren voordat we live gaan."
+          H.strong "Wennen en controle"
+          " \8212 De testshop draait naast uw CCV Shop, die gewoon doordraait. U raakt op uw gemak bekend met het nieuwe systeem en controleert of alles klopt."
         H.li $ do
-          H.strong "Import"
-          " \8212 We importeren alles in uw Shopify-shop: producten, vertalingen, collections, redirects."
-        H.li $ do
-          H.strong "Verificatie"
-          " \8212 Samen controleren we steekproefsgewijs of alles klopt."
+          H.strong "DNS-overzet"
+          " \8212 Klopt alles? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
 
     -- Pricing
     H.section ! A.class_ "engagement" ! A.id "pricing" $ do
@@ -688,16 +682,13 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.ol $ do
         H.li $ do
           H.strong "Scan"
-          " \8212 Ons programma leest uw Lightspeed-shop volledig uit en slaat alle data op."
+          " \8212 Ons programma leest uw Lightspeed-shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
         H.li $ do
-          H.strong "Controle"
-          " \8212 U krijgt een werkende testshop die u zelf kunt controleren voordat we live gaan."
+          H.strong "Wennen en controle"
+          " \8212 De testshop draait naast uw Lightspeed-shop, die gewoon doordraait. U raakt op uw gemak bekend met het nieuwe systeem en controleert of alles klopt."
         H.li $ do
-          H.strong "Import"
-          " \8212 We importeren alles in uw Shopify-shop: producten, vertalingen, collections, redirects."
-        H.li $ do
-          H.strong "Verificatie"
-          " \8212 Samen controleren we steekproefsgewijs of alles klopt."
+          H.strong "DNS-overzet"
+          " \8212 Klopt alles? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
 
     -- Pricing
     H.section ! A.class_ "engagement" ! A.id "pricing" $ do
