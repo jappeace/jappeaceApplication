@@ -107,7 +107,7 @@ wordpressServiceEn = ServiceBlock
   { serviceImageSource = "/illustratie-website.svg"
   , serviceImageAlt = "Illustration of a website being built, with a pencil editing the page"
   , serviceTitle = "Have a website built"
-  , serviceBody = "A clean, fast WordPress website for your business, for one fixed price. You see a sketch before we build, and after delivery you can update everything yourself."
+  , serviceBody = "A clean, fast WordPress website for your business, for one fixed price. You bring the design, we realise it, and after delivery you update everything yourself."
   , serviceLinkHref = "/wordpress-websites.html"
   , serviceLinkLabel = "What you can expect"
   , serviceNote = Nothing
@@ -132,7 +132,7 @@ wordpressServiceNl = ServiceBlock
   { serviceImageSource = "/illustratie-website.svg"
   , serviceImageAlt = "Illustratie van een website in aanbouw, met een potlood dat de pagina bewerkt"
   , serviceTitle = "Laat een website bouwen"
-  , serviceBody = "Een verzorgde, snelle WordPress-website voor uw bedrijf, voor \233\233n vaste prijs. U ziet eerst een schets, en na oplevering kunt u alles zelf aanpassen."
+  , serviceBody = "Een verzorgde, snelle WordPress-website voor uw bedrijf, voor \233\233n vaste prijs. U levert het ontwerp, wij realiseren het, en na oplevering past u alles zelf aan."
   , serviceLinkHref = "/nl/wordpress-websites.html"
   , serviceLinkLabel = "Wat u kunt verwachten"
   , serviceNote = Nothing
@@ -303,8 +303,9 @@ penguinIndexPage webwinkelUrl = penguinBaseTemplate En indexMeta $
     -- What we do: the two services
     H.section ! A.class_ "for-who" ! A.id "products" $ do
       H.h2 "What we do"
-      renderServiceBlock wordpressServiceEn
+      -- Migration first: it is the better business, so it gets the top slot.
       renderServiceBlock (migrationServiceEn webwinkelUrl)
+      renderServiceBlock wordpressServiceEn
 
     -- How we work: the same three steps every subpage elaborates on
     H.section ! A.class_ "audit" $ do
@@ -378,8 +379,9 @@ penguinIndexPageNl webwinkelUrl = penguinBaseTemplate Nl indexMetaNl $
     -- Wat we doen: de twee diensten
     H.section ! A.class_ "for-who" ! A.id "products" $ do
       H.h2 "Wat we doen"
-      renderServiceBlock wordpressServiceNl
+      -- Migratie eerst: dat is de betere business, dus die krijgt de toppositie.
       renderServiceBlock (migrationServiceNl webwinkelUrl)
+      renderServiceBlock wordpressServiceNl
 
     -- Hoe we werken: dezelfde drie stappen die elke subpagina uitwerkt
     H.section ! A.class_ "audit" $ do
@@ -446,7 +448,7 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
           H.h1 "Have a website built that works for your business."
-          H.p ! A.class_ "subtitle" $ "A clean, fast WordPress site for practices, coaches and other small businesses. One fixed price, you see a sketch up front, and after delivery you update everything yourself."
+          H.p ! A.class_ "subtitle" $ "A clean, fast WordPress site for practices, coaches and other small businesses. One fixed price, your design realised faithfully, and after delivery you update everything yourself."
           H.a ! A.href contactMailto ! A.class_ "cta-button" $ "Get in touch"
         H.img ! A.class_ "hero-image"
               ! A.src "/huiskamer.jpg"
@@ -460,8 +462,8 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-ontwerp.svg"
                 ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
-          H.h3 "A design in your own style"
-          H.p "We set up the site in your colours and logo, and lay out the pages you need. You pick from two proposals with sample content up front, so you know what you are getting."
+          H.h3 "Your design, built faithfully"
+          H.p "We realise the design you bring: a sketch, a wireframe or a theme you picked as the starting point. The design comes from you; if it is not there yet, we refine it together over a few iterations."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-apparaten.svg"
                 ! A.alt "Laptop en telefoon" ! A.width "56" ! A.height "56"
@@ -475,8 +477,8 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-vindbaar.svg"
                 ! A.alt "Vergrootglas boven een pagina" ! A.width "56" ! A.height "56"
-          H.h3 "Being found on Google"
-          H.p "Clean page titles, descriptions and headings so Google understands your site. You tell us what you want to be found for, we build it in correctly."
+          H.h3 "Clean page titles and headings"
+          H.p "Meta titles, descriptions and a clear heading structure, built in correctly so Google can read your site. You decide the keywords; we do not offer SEO advice."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-veilig.svg"
                 ! A.alt "Schild met bliksem" ! A.width "56" ! A.height "56"
@@ -513,14 +515,11 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
           H.strong "Meet"
           ": we talk through your goals, the pages you need and the style you want. Free, no obligations."
         H.li $ do
-          H.strong "Sketch (wireframe)"
-          ": you get a simple sketch of the layout first, so you see where everything goes before anything is built."
-        H.li $ do
-          H.strong "Design proposal"
-          ": you pick from two worked-out proposals with sample content, in your own colours."
+          H.strong "Your design"
+          ": you deliver the design: a sketch, a wireframe or a theme as the starting point. The design comes from you; if it is not there yet, we refine it together over a few iterations."
         H.li $ do
           H.strong "Build"
-          ": we set up the pages and place your texts, photos and brand colours."
+          ": we realise your design and place your texts, photos and brand colours."
         H.li $ do
           H.strong "Handover"
           ": the site goes live and you get a video walkthrough plus a short manual, so you can update everything yourself."
@@ -546,7 +545,7 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
   where
     wordpressMeta :: PageMeta
     wordpressMeta = (defaultPageMeta "Have a Website Built \8212 Fixed-Price WordPress \8212 Jappie Software B.V.")
-      { pageMetaDescription = "Have a website built for one fixed price: a clean, fast WordPress site. You see a sketch (wireframe) up front and can update everything yourself after delivery."
+      { pageMetaDescription = "Have a website built for one fixed price: a clean, fast WordPress site realising your design, handed over so you can update everything yourself."
       , pageMetaCanonical   = Just "https://jappiesoftware.com/wordpress-websites.html"
       , pageMetaSwitchUrl   = Just "/nl/wordpress-websites.html"
       }
@@ -565,7 +564,7 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
           H.h1 "Laat een website bouwen die voor uw bedrijf werkt."
-          H.p ! A.class_ "subtitle" $ "Een verzorgde, snelle WordPress-site voor praktijken, coaches en andere kleine ondernemers. E\233n vaste prijs, u ziet vooraf een schets, en na oplevering past u alles zelf aan."
+          H.p ! A.class_ "subtitle" $ "Een verzorgde, snelle WordPress-site voor praktijken, coaches en andere kleine ondernemers. E\233n vaste prijs, uw ontwerp trouw gerealiseerd, en na oplevering past u alles zelf aan."
           H.a ! A.href contactMailto ! A.class_ "cta-button" $ "Neem contact op"
         H.img ! A.class_ "hero-image"
               ! A.src "/huiskamer.jpg"
@@ -579,8 +578,8 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-ontwerp.svg"
                 ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
-          H.h3 "Een ontwerp in uw eigen stijl"
-          H.p "We richten de site in met uw kleuren en logo, en zetten de pagina's op die u nodig hebt. U kiest vooraf uit twee voorstellen met voorbeeldinhoud, zodat u weet wat u krijgt."
+          H.h3 "Uw ontwerp, trouw gebouwd"
+          H.p "Wij realiseren het ontwerp dat u aanlevert: een schets, een wireframe of een gekozen thema als vertrekpunt. Het ontwerp komt van u; komt u er nog niet uit, dan verfijnen we het samen in een paar iteraties."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-apparaten.svg"
                 ! A.alt "Laptop en telefoon" ! A.width "56" ! A.height "56"
@@ -594,8 +593,8 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-vindbaar.svg"
                 ! A.alt "Vergrootglas boven een pagina" ! A.width "56" ! A.height "56"
-          H.h3 "Gevonden worden in Google"
-          H.p "Nette paginatitels, beschrijvingen en koppen zodat Google uw site begrijpt. U vertelt waarop u gevonden wilt worden, wij bouwen het correct in."
+          H.h3 "Nette paginatitels en koppen"
+          H.p "Meta-titels, beschrijvingen en een duidelijke koppenstructuur, correct ingebouwd zodat Google uw site kan lezen. U bepaalt de zoekwoorden; SEO-advies geven we niet."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-veilig.svg"
                 ! A.alt "Schild met bliksem" ! A.width "56" ! A.height "56"
@@ -632,14 +631,11 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
           H.strong "Kennismaken"
           ": we bespreken uw doelen, de pagina's die u nodig hebt en de stijl die u wilt. Gratis en vrijblijvend."
         H.li $ do
-          H.strong "Schets (wireframe)"
-          ": u krijgt eerst een eenvoudige schets van de indeling, zodat u ziet waar alles komt te staan voordat er iets gebouwd wordt."
-        H.li $ do
-          H.strong "Ontwerpvoorstel"
-          ": u kiest uit twee uitgewerkte voorstellen met voorbeeldinhoud, in uw eigen kleuren."
+          H.strong "Uw ontwerp"
+          ": u levert het ontwerp aan: een schets, een wireframe of een thema als vertrekpunt. Het ontwerp komt van u; komt u er nog niet uit, dan verfijnen we het samen in een paar iteraties."
         H.li $ do
           H.strong "Bouw"
-          ": we zetten de pagina's op en verwerken uw teksten, foto's en merkkleuren."
+          ": wij realiseren uw ontwerp en verwerken uw teksten, foto's en merkkleuren."
         H.li $ do
           H.strong "Overdracht"
           ": de site gaat live en u krijgt een videorondleiding plus een korte handleiding, zodat u alles zelf kunt aanpassen."
@@ -665,7 +661,7 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
   where
     wordpressMetaNl :: PageMeta
     wordpressMetaNl = (defaultPageMeta "Laat een website bouwen \8212 WordPress met vaste prijs \8212 Jappie Software B.V.")
-      { pageMetaDescription = "Laat een website bouwen voor \233\233n vaste prijs: een verzorgde, snelle WordPress-site. U ziet vooraf een schets (wireframe) en kunt na oplevering alles zelf aanpassen."
+      { pageMetaDescription = "Laat een website bouwen voor \233\233n vaste prijs: een verzorgde, snelle WordPress-site die uw ontwerp realiseert. Na oplevering past u alles zelf aan."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/nl/wordpress-websites.html"
       , pageMetaSwitchUrl   = Just "/wordpress-websites.html"
