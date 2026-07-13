@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- "Wat we migreren" card icon: an open box with items, products & variants. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <circle cx="32" cy="32" r="30" fill="#eaf1f8"/>
+  <rect x="18" y="28" width="28" height="18" rx="2" fill="#ffffff" stroke="#10456b" stroke-width="3"/>
+  <path d="M18 28 l-4 -7 h14 l4 7 M46 28 l4 -7 h-14 l-4 7" fill="#dbe5ef" stroke="#10456b" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M27 37 h10" stroke="#e8590c" stroke-width="3" stroke-linecap="round"/>
+</svg>

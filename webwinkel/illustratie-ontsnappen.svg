@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hero illustration for the MijnWebwinkel migration page: boxes escaping a
+     frozen (snowflake) old shop toward a bright new one with the sun out.
+     Remix of illustratie-verhuizen.svg in the same navy/orange palette. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img">
+  <!-- soft backdrop -->
+  <circle cx="200" cy="150" r="130" fill="#eaf1f8"/>
+  <!-- snowflake over the old shop -->
+  <g stroke="#7fa3c0" stroke-width="3" stroke-linecap="round" opacity="0.9">
+    <path d="M92 62 v36"/>
+    <path d="M76.5 71 l31 18"/>
+    <path d="M76.5 89 l31 -18"/>
+    <path d="M92 62 l-4 5 M92 62 l4 5"/>
+    <path d="M92 98 l-4 -5 M92 98 l4 -5"/>
+  </g>
+  <!-- old shop, faded -->
+  <g opacity="0.45">
+    <rect x="48" y="130" width="90" height="80" fill="#ffffff" stroke="#0c2f47" stroke-width="3"/>
+    <path d="M40 130 l8 -26 h74 l8 26 z" fill="#dbe5ef" stroke="#0c2f47" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M40 130 h90" stroke="#0c2f47" stroke-width="3"/>
+    <rect x="62" y="152" width="26" height="26" fill="#dbe5ef" stroke="#0c2f47" stroke-width="3"/>
+    <rect x="98" y="152" width="26" height="58" fill="#dbe5ef" stroke="#0c2f47" stroke-width="3"/>
+  </g>
+  <!-- sun over the new shop -->
+  <g stroke="#e8590c" stroke-width="3" stroke-linecap="round">
+    <circle cx="330" cy="66" r="10" fill="#f6c89f"/>
+    <path d="M330 48 v-6 M330 84 v6 M312 66 h-6 M348 66 h6"/>
+    <path d="M317 53 l-4 -4 M343 53 l4 -4 M317 79 l-4 4 M343 79 l4 4"/>
+  </g>
+  <!-- arrow of travel -->
+  <path d="M150 176 C 185 120, 225 120, 258 168" fill="none" stroke="#e8590c" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 14"/>
+  <path d="M250 148 l10 22 l-24 -4 z" fill="#e8590c"/>
+  <!-- moving boxes -->
+  <g transform="rotate(-8 196 132)">
+    <rect x="172" y="112" width="48" height="40" rx="4" fill="#f6c89f" stroke="#0c2f47" stroke-width="3"/>
+    <path d="M172 128 h48" stroke="#0c2f47" stroke-width="3"/>
+    <path d="M196 112 v16" stroke="#0c2f47" stroke-width="3"/>
+  </g>
+  <!-- new shop, bright -->
+  <g>
+    <rect x="252" y="118" width="110" height="98" fill="#ffffff" stroke="#0c2f47" stroke-width="3"/>
+    <path d="M242 118 l10 -30 h90 l10 30 z" fill="#10456b" stroke="#0c2f47" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M242 118 h130" stroke="#0c2f47" stroke-width="3"/>
+    <rect x="266" y="142" width="30" height="30" fill="#dbe5ef" stroke="#0c2f47" stroke-width="3"/>
+    <rect x="310" y="142" width="30" height="74" fill="#e8590c" stroke="#0c2f47" stroke-width="3"/>
+    <circle cx="316" cy="180" r="2.5" fill="#0c2f47"/>
+    <path d="M246 118 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 16 0 a8 8 0 0 0 14 0" fill="#e8590c" stroke="#0c2f47" stroke-width="3"/>
+  </g>
+  <!-- delivered box at the door -->
+  <rect x="270" y="196" width="22" height="20" rx="3" fill="#f6c89f" stroke="#0c2f47" stroke-width="3"/>
+  <path d="M270 204 h22" stroke="#0c2f47" stroke-width="3"/>
+</svg>
