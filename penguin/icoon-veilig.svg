@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- WordPress-page card icon: shield with a lightning bolt, safe and fast. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <circle cx="32" cy="32" r="30" fill="#f0f5f1"/>
+  <path d="M32 14 l14 5 v12 c0 10 -6 16 -14 19 c-8 -3 -14 -9 -14 -19 v-12 z" fill="#ffffff" stroke="#2a5a3a" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M34 22 l-7 11 h5 l-2 9 l8 -12 h-5 z" fill="#7fb08f" stroke="#2a5a3a" stroke-width="2" stroke-linejoin="round"/>
+</svg>

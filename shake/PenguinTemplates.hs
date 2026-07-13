@@ -1,9 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
--- | Templates for jappiesoftware.com: the company's products-and-consulting
--- site and its technical blog. Carries the penguin theme (voronoi background,
--- green palette). Shared SEO/structured-data/blog markup lives in 'PageChrome';
--- the webshop-migration brand site lives in 'WebwinkelTemplates'.
+-- | Templates for jappiesoftware.com: the company's site for fixed-price,
+-- transactional services (WordPress websites, webshop migrations). Carries
+-- the penguin theme (voronoi background, green palette). The technical blog
+-- remains reachable but unpromoted; consulting lives on jappie.me. Shared
+-- SEO/structured-data/blog markup lives in 'PageChrome'; the
+-- webshop-migration brand site lives in 'WebwinkelTemplates'.
 module PenguinTemplates
   ( WebwinkelverhuisUrl(..)
   , penguinIndexPage
@@ -38,6 +40,7 @@ import PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , meetLink
   , whatsappFloatingButton
   , organizationJsonLd
   , formatIsoDate
@@ -222,10 +225,11 @@ penguinNav lang switchUrl =
   H.nav ! A.class_ "top-nav" $ do
     H.span ! A.class_ "logo" $
       H.a ! A.href (penguinHome lang) $ "Jappie Software B.V."
+    -- No Blog entry: the technical blog stays reachable (footer link, old
+    -- URLs live) but is not maintained or promoted; the menu sells only the
+    -- transactional services.
     H.ul $ do
       H.li $ H.a ! A.href (penguinAnchor lang "products") $ toHtml (navProducts lang)
-      H.li $ H.a ! A.href (penguinAnchor lang "consulting") $ toHtml (navConsulting lang)
-      H.li $ H.a ! A.href "/blog/" $ "Blog"
       H.li $ H.a ! A.href contactMailto ! A.class_ "cta-link" $ toHtml (navContact lang)
       penguinLangToggle lang switchUrl
 
@@ -259,11 +263,6 @@ penguinAnchor Nl section = toValue ("/nl/#" <> section)
 navProducts :: Lang -> Text
 navProducts En = "Services"
 navProducts Nl = "Diensten"
-
--- | Navigation label for the consulting section.
-navConsulting :: Lang -> Text
-navConsulting En = "Consulting"
-navConsulting Nl = "Consultancy"
 
 -- | Navigation label for the "get in touch" call to action.
 navContact :: Lang -> Text
@@ -321,41 +320,23 @@ penguinIndexPage webwinkelUrl = penguinBaseTemplate En indexMeta $
           H.strong "Build and deliver"
           ": you check everything before it goes live, and you pay on delivery."
 
-    -- Consulting
-    H.section ! A.class_ "results" ! A.id "consulting" $ do
-      H.h2 "Expert Consulting"
-      H.p $ H.preEscapedToHtml ("We also take on consulting engagements where our expertise makes a difference. 10+ years building production systems &mdash; we make technical decisions and then build them." :: Text)
-      H.div ! A.class_ "testimonials" $ do
-        H.blockquote $
-          H.p $ do
-            "Built the core platform for a "
-            H.strong "reinsurance technology startup"
-            H.preEscapedToHtml (" &mdash; from early architecture to handling live deals in production. " :: Text)
-            H.a ! A.href "https://jappie.me/the-peculiar-event-sourced-deadlock.html" $ H.preEscapedToHtml ("Read about solving a production issue &rarr;" :: Text)
-        H.blockquote $
-          H.p $ do
-            "Technical lead for a "
-            H.strong "construction IoT startup"
-            H.preEscapedToHtml (". Architecture decisions that scaled from pilot to production. 7x device performance improvement. " :: Text)
-            H.a ! A.href "https://jappie.me/stacked-against-us.html" $ H.preEscapedToHtml ("Read the full story &rarr;" :: Text)
-            H.preEscapedToHtml (" &middot; " :: Text)
-            H.a ! A.href "https://jappie.me/firmware-lemons.html" $ H.preEscapedToHtml ("The 7x improvement &rarr;" :: Text)
-        H.blockquote $
-          H.p $ do
-            "Automated "
-            H.strong "e-commerce migration"
-            " for a multi-language webshop with 2,400+ products across three domains and three languages."
+    -- Decision: no consulting section. Consulting leads never came through
+    -- this site and Jappie does not want to push that work here; the site
+    -- sells fixed-price, transactional services (websites, migrations).
+    -- Consulting and case studies live on jappie.me, which the About section
+    -- and footer still link. Alternative considered: keeping a slimmed
+    -- consulting mention, rejected because it muddies the transactional
+    -- positioning for the Ellen/Laura audience.
 
     -- About
     H.section ! A.class_ "about" $ do
       H.h2 "About"
       H.div ! A.class_ "about-grid" $ do
         H.div $ do
-          H.p $ H.preEscapedToHtml ("I&rsquo;m Jappie Klooster. I build websites, webshops and software products, and I help companies that need serious technical expertise. I use technology chosen for reliability, and I explain what I do in plain language." :: Text)
-          H.p "Based in the Netherlands. Available for product partnerships, consulting engagements, and co-founder conversations."
+          H.p $ H.preEscapedToHtml ("I&rsquo;m Jappie Klooster. I build websites and webshops for entrepreneurs, for a fixed price and in plain language. Behind the scenes I bring ten-plus years of software engineering, so the technology is chosen for reliability." :: Text)
           H.p $ do
-            "For more writing and case studies, visit the "
-            H.a ! A.href "/blog/" $ "blog"
+            "Based in the Netherlands. For consulting and case studies, see "
+            H.a ! A.href "https://jappie.me/" $ "jappie.me"
             "."
         H.img ! A.class_ "about-portrait"
               ! A.src "/selfie.png"
@@ -366,13 +347,13 @@ penguinIndexPage webwinkelUrl = penguinBaseTemplate En indexMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Have a problem that needs solving?"
       H.p $ do
-        "Whether you need a website, a webshop migration, or expert consulting: "
+        "Whether you need a website or a webshop migration: "
         H.a ! A.href contactMailto $ "get in touch"
         "."
       H.a ! A.href contactMailto ! A.class_ "cta-button" $ "Get in touch"
   where
     indexMeta :: PageMeta
-    indexMeta = (defaultPageMeta "Jappie Software B.V. \8212 Websites, Webshop Migrations & Consulting")
+    indexMeta = (defaultPageMeta "Jappie Software B.V. \8212 Websites & Webshop Migrations")
       { pageMetaDescription = "We build websites for small businesses and move webshops to a better platform. Fixed price, plain language, and you pay on delivery."
       , pageMetaCanonical = Just "https://jappiesoftware.com/"
       , pageMetaSwitchUrl = Just "/nl/"
@@ -414,41 +395,17 @@ penguinIndexPageNl webwinkelUrl = penguinBaseTemplate Nl indexMetaNl $
           H.strong "Bouwen en opleveren"
           ": u controleert alles voordat het live gaat, en u betaalt na oplevering."
 
-    -- Consultancy
-    H.section ! A.class_ "results" ! A.id "consulting" $ do
-      H.h2 "Deskundig advies"
-      H.p $ H.preEscapedToHtml ("We nemen ook adviesopdrachten aan waar onze expertise het verschil maakt. 10+ jaar bouwen aan productiesystemen: we maken technische keuzes en bouwen ze ook." :: Text)
-      H.div ! A.class_ "testimonials" $ do
-        H.blockquote $
-          H.p $ do
-            "Het kernplatform gebouwd voor een "
-            H.strong "herverzekerings-startup"
-            ", van de eerste architectuur tot live deals in productie. "
-            H.a ! A.href "https://jappie.me/the-peculiar-event-sourced-deadlock.html" $ H.preEscapedToHtml ("Lees over het oplossen van een productieprobleem &rarr;" :: Text)
-        H.blockquote $
-          H.p $ do
-            "Technisch lead voor een "
-            H.strong "bouw-IoT-startup"
-            ". Architectuurkeuzes die meeschaalden van pilot naar productie. 7x snellere apparaten. "
-            H.a ! A.href "https://jappie.me/stacked-against-us.html" $ H.preEscapedToHtml ("Lees het hele verhaal &rarr;" :: Text)
-            H.preEscapedToHtml (" &middot; " :: Text)
-            H.a ! A.href "https://jappie.me/firmware-lemons.html" $ H.preEscapedToHtml ("De 7x verbetering &rarr;" :: Text)
-        H.blockquote $
-          H.p $ do
-            "Geautomatiseerde "
-            H.strong "e-commerce-migratie"
-            " voor een meertalige webshop met 2.400+ producten over drie domeinen en drie talen."
+    -- Geen adviessectie: zie de Decision-notitie op de Engelse pagina.
 
     -- Over
     H.section ! A.class_ "about" $ do
       H.h2 "Over ons"
       H.div ! A.class_ "about-grid" $ do
         H.div $ do
-          H.p "Ik ben Jappie Klooster. Ik bouw websites, webshops en softwareproducten, en help bedrijven die serieuze technische expertise nodig hebben. Ik kies technologie op betrouwbaarheid, en leg in gewone taal uit wat ik doe."
-          H.p "Gevestigd in Nederland. Beschikbaar voor productpartnerschappen, adviesopdrachten en gesprekken over medeoprichterschap."
+          H.p "Ik ben Jappie Klooster. Ik bouw websites en webshops voor ondernemers, voor een vaste prijs en in gewone taal. Achter de schermen zit ruim tien jaar software-ervaring, dus de techniek is gekozen op betrouwbaarheid."
           H.p $ do
-            "Meer schrijfsels en cases vindt u op de "
-            H.a ! A.href "/blog/" $ "blog"
+            "Gevestigd in Nederland. Voor adviesopdrachten en cases: "
+            H.a ! A.href "https://jappie.me/" $ "jappie.me"
             "."
         H.img ! A.class_ "about-portrait"
               ! A.src "/selfie.png"
@@ -459,13 +416,13 @@ penguinIndexPageNl webwinkelUrl = penguinBaseTemplate Nl indexMetaNl $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Een probleem dat opgelost moet worden?"
       H.p $ do
-        "Of u nu een website, een webshopverhuizing of deskundig advies nodig hebt, "
+        "Of u nu een website of een webshopverhuizing nodig hebt, "
         H.a ! A.href contactMailto $ "neem contact op"
         "."
       H.a ! A.href contactMailto ! A.class_ "cta-button" $ "Neem contact op"
   where
     indexMetaNl :: PageMeta
-    indexMetaNl = (defaultPageMeta "Jappie Software B.V. \8212 Websites, webshopverhuizingen & advies")
+    indexMetaNl = (defaultPageMeta "Jappie Software B.V. \8212 Websites & webshopverhuizingen")
       { pageMetaDescription = "Wij bouwen websites voor ondernemers en verhuizen webshops naar een beter platform. Vaste prijs, gewone taal, en u betaalt na oplevering."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://jappiesoftware.com/nl/"
@@ -501,21 +458,33 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
       H.h2 "What you can expect"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-ontwerp.svg"
+                ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
           H.h3 "A design in your own style"
           H.p "We set up the site in your colours and logo, and lay out the pages you need. You pick from two proposals with sample content up front, so you know what you are getting."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-apparaten.svg"
+                ! A.alt "Laptop en telefoon" ! A.width "56" ! A.height "56"
           H.h3 "Looks right on phone and computer"
           H.p "Built and tested on phone, laptop and desktop, so it looks right everywhere: consistent margins, sensible proportions, a layout that works on a small screen."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-contact.svg"
+                ! A.alt "Tekstballon en kalender" ! A.width "56" ! A.height "56"
           H.h3 "Contact, WhatsApp and bookings"
           H.p "A contact form, your email and phone in plain sight, and a WhatsApp button. Optionally a booking tool so clients can plan an appointment themselves."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-vindbaar.svg"
+                ! A.alt "Vergrootglas boven een pagina" ! A.width "56" ! A.height "56"
           H.h3 "Being found on Google"
           H.p "Clean page titles, descriptions and headings so Google understands your site. You tell us what you want to be found for, we build it in correctly."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-veilig.svg"
+                ! A.alt "Schild met bliksem" ! A.width "56" ! A.height "56"
           H.h3 "Safe and fast"
           H.p "The padlock in the browser (SSL), images sized right and a site that loads quickly. That is part of a tidy build, not a separate expensive package."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-zelf-aanpassen.svg"
+                ! A.alt "Potlood op een pagina" ! A.width "56" ! A.height "56"
           H.h3 "Update it yourself, no need to call us"
           H.p "A personal video walkthrough plus a short written manual: edit text, replace a photo, update a page. After that you can do it yourself, and we stay available for bigger jobs."
 
@@ -565,14 +534,15 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
         H.a ! A.href (toValue (webwinkelUrl <> "/")) $ "webwinkelverhuis.nl"
         " for the webshop side."
 
-    -- Final CTA
+    -- Final CTA: direct booking is the lowest-friction step for this
+    -- audience; email stays available as the text link.
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Thinking about a new website?"
       H.p $ do
-        H.preEscapedToHtml ("Tell us what your business does and we will sketch what a fixed-price site would look like. " :: Text)
+        "Tell us what your business does and we will sketch what a fixed-price site would look like. Prefer email? "
         H.a ! A.href contactMailto $ "Get in touch"
         "."
-      H.a ! A.href contactMailto ! A.class_ "cta-button" $ "Get in touch"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Book a free chat"
   where
     wordpressMeta :: PageMeta
     wordpressMeta = (defaultPageMeta "Have a Website Built \8212 Fixed-Price WordPress \8212 Jappie Software B.V.")
@@ -607,21 +577,33 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
       H.h2 "Wat u kunt verwachten"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-ontwerp.svg"
+                ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
           H.h3 "Een ontwerp in uw eigen stijl"
           H.p "We richten de site in met uw kleuren en logo, en zetten de pagina's op die u nodig hebt. U kiest vooraf uit twee voorstellen met voorbeeldinhoud, zodat u weet wat u krijgt."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-apparaten.svg"
+                ! A.alt "Laptop en telefoon" ! A.width "56" ! A.height "56"
           H.h3 "Mooi op telefoon en computer"
           H.p "Gebouwd en getest op telefoon, laptop en desktop, zodat het overal klopt: nette marges, kloppende verhoudingen en een indeling die op een klein scherm werkt."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-contact.svg"
+                ! A.alt "Tekstballon en kalender" ! A.width "56" ! A.height "56"
           H.h3 "Contact, WhatsApp en afspraken"
           H.p "Een contactformulier, uw e-mail en telefoon goed zichtbaar, en een WhatsApp-knop. Optioneel een afsprakentool zodat klanten zelf een afspraak inplannen."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-vindbaar.svg"
+                ! A.alt "Vergrootglas boven een pagina" ! A.width "56" ! A.height "56"
           H.h3 "Gevonden worden in Google"
           H.p "Nette paginatitels, beschrijvingen en koppen zodat Google uw site begrijpt. U vertelt waarop u gevonden wilt worden, wij bouwen het correct in."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-veilig.svg"
+                ! A.alt "Schild met bliksem" ! A.width "56" ! A.height "56"
           H.h3 "Veilig en snel"
           H.p "Het slotje in de browser (SSL), afbeeldingen in de juiste maat en een site die vlot laadt. Dat hoort bij een nette bouw, niet bij een apart duur pakket."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-zelf-aanpassen.svg"
+                ! A.alt "Potlood op een pagina" ! A.width "56" ! A.height "56"
           H.h3 "Zelf aanpassen zonder ons te bellen"
           H.p "Een persoonlijke videorondleiding plus een korte handleiding: tekst aanpassen, een foto vervangen, een pagina bijwerken. U kunt het daarna zelf, en voor grotere klussen blijven we bereikbaar."
 
@@ -671,14 +653,15 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
         H.a ! A.href (toValue (webwinkelUrl <> "/")) $ "webwinkelverhuis.nl"
         " voor de webshop-kant."
 
-    -- Laatste CTA
+    -- Laatste CTA: direct een gesprek inplannen is voor deze doelgroep de
+    -- laagste drempel; mailen kan via de tekstlink.
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Denkt u na over een nieuwe website?"
       H.p $ do
-        "Vertel ons wat uw bedrijf doet, dan schetsen we hoe een site met vaste prijs eruit zou zien. "
+        "Vertel ons wat uw bedrijf doet, dan schetsen we hoe een site met vaste prijs eruit zou zien. Liever mailen? "
         H.a ! A.href contactMailto $ "Neem contact op"
         "."
-      H.a ! A.href contactMailto ! A.class_ "cta-button" $ "Neem contact op"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gratis kennismaking"
   where
     wordpressMetaNl :: PageMeta
     wordpressMetaNl = (defaultPageMeta "Laat een website bouwen \8212 WordPress met vaste prijs \8212 Jappie Software B.V.")

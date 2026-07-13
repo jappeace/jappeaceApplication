@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- WordPress-page card icon: pencil writing on a page, update it yourself. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <circle cx="32" cy="32" r="30" fill="#f0f5f1"/>
+  <rect x="16" y="18" width="24" height="28" rx="2" fill="#ffffff" stroke="#2a5a3a" stroke-width="3"/>
+  <path d="M21 26 h14 M21 32 h14 M21 38 h9" stroke="#cfe3d5" stroke-width="3" stroke-linecap="round"/>
+  <g transform="rotate(45 44 32)">
+    <rect x="41" y="18" width="7" height="20" rx="1.5" fill="#7fb08f" stroke="#2a5a3a" stroke-width="2.5"/>
+    <path d="M41 38 h7 l-3.5 7 z" fill="#f6d9a0" stroke="#2a5a3a" stroke-width="2.5" stroke-linejoin="round"/>
+  </g>
+</svg>

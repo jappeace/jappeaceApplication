@@ -14,6 +14,7 @@ module PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , meetLink
   , companyWhatsappNumber
   , whatsappFloatingButton
   , organizationJsonLd
@@ -99,6 +100,14 @@ resolveOgImage siteDefault = fromMaybe siteDefault . pageMetaOgImage
 -- sites and the Organization structured data.
 companyEmail :: Text
 companyEmail = "hallo@jappiesoftware.com"
+
+-- | Branded scheduling link used by every "plan een gesprek" button across
+-- the sites and the outreach mails. It is a 302 redirect on our own
+-- infrastructure (megavid blog/vhost.nix) to the current Google Calendar
+-- booking page, so the underlying calendar can change without touching
+-- built pages or already-sent mails.
+meetLink :: H.AttributeValue
+meetLink = "https://meet.jappiesoftware.com"
 
 -- =============================================================================
 -- Floating WhatsApp contact button ("bolletje")

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- WordPress-page card icon: laptop and phone, looks right on every screen. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <circle cx="32" cy="32" r="30" fill="#f0f5f1"/>
+  <rect x="14" y="20" width="30" height="20" rx="2" fill="#ffffff" stroke="#2a5a3a" stroke-width="3"/>
+  <path d="M11 44 h36 l-3 -4 h-30 z" fill="#cfe3d5" stroke="#2a5a3a" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="40" y="26" width="12" height="20" rx="3" fill="#ffffff" stroke="#2a5a3a" stroke-width="3"/>
+  <circle cx="46" cy="42" r="1.5" fill="#2a5a3a"/>
+  <rect x="19" y="25" width="14" height="3" rx="1.5" fill="#7fb08f"/>
+  <rect x="19" y="31" width="10" height="3" rx="1.5" fill="#cfe3d5"/>
+</svg>

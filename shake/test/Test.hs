@@ -75,6 +75,8 @@ meetLinkPages =
   , ("lightspeedMigrationPage", lightspeedMigrationPage)
   , ("mijnwebwinkelWaaromPage", mijnwebwinkelWaaromPage)
   , ("lightspeedWaaromPage", lightspeedWaaromPage)
+  , ("penguinWordpressPage", penguinWordpressPage (WebwinkelverhuisUrl testOrigin))
+  , ("penguinWordpressPageNl", penguinWordpressPageNl (WebwinkelverhuisUrl testOrigin))
   ]
 
 -- | Scheduling buttons must use the branded meet.jappiesoftware.com redirect,
