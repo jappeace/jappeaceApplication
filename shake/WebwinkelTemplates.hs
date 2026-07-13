@@ -389,8 +389,8 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
                 ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
-          H.h3 "Spaarpunten"
-          H.p "Spaarpuntensaldi van uw klanten worden overgezet naar het loyaliteitsprogramma van uw nieuwe platform."
+          H.h3 "Klanten & spaarpunten"
+          H.p "Klantaccounts, bestelgeschiedenis en spaarpuntensaldi verhuizen mee. Uw klanten kunnen direct inloggen, met hun spaarpunten in het loyaliteitsprogramma van uw nieuwe platform."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
                 ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
