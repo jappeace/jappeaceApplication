@@ -7,6 +7,14 @@
 -- origin is missing or the live domain is still hardcoded in a href.
 module Main (main) where
 
+-- Decision: tasty + tasty-hunit as the test framework, suite named "unit",
+-- following the haskell-template-project convention used across the other
+-- repositories (mijn-webwinkel-migraine's suite has the same shape).
+-- Alternatives considered: a hand-rolled exitcode-stdio main (zero extra
+-- dependencies, but no per-case output and off-convention; this suite's
+-- first version was written that way and ported) and hspec (no house
+-- precedent).
+
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
