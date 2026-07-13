@@ -33,6 +33,7 @@ import PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , meetLink
   , whatsappFloatingButton
   , organizationJsonLd
   , serviceJsonLd
@@ -62,13 +63,6 @@ offerteMailto = toValue ("mailto:" <> companyEmail <> "?subject=Migratie%20offer
 -- existing-client work rather than new leads.
 uitbreidingMailto :: H.AttributeValue
 uitbreidingMailto = toValue ("mailto:" <> companyEmail <> "?subject=Uitbreiding%20webshop")
-
--- | Branded scheduling link used by every "plan een gesprek" button. It is a
--- 302 redirect on our own infrastructure (megavid blog/vhost.nix) to the
--- current Google Calendar booking page, so the underlying calendar can change
--- without touching built pages or already-sent outreach mails.
-meetLink :: H.AttributeValue
-meetLink = "https://meet.jappiesoftware.com"
 
 -- =============================================================================
 -- Base template

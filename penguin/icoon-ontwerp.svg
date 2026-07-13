@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- WordPress-page card icon: paint palette, a design in your own style.
+     Penguin palette (greens), matching the webwinkel icon style. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <circle cx="32" cy="32" r="30" fill="#f0f5f1"/>
+  <path d="M32 14 a18 18 0 1 0 0 36 c4 0 4 -3 2.5 -5 c-2 -2.5 -0.5 -6 3.5 -6 h5 a7 7 0 0 0 7 -7 a18 18 0 0 0 -18 -18 z" fill="#ffffff" stroke="#2a5a3a" stroke-width="3"/>
+  <circle cx="24" cy="26" r="3" fill="#7fb08f"/>
+  <circle cx="34" cy="22" r="3" fill="#2a5a3a"/>
+  <circle cx="43" cy="28" r="3" fill="#f6d9a0"/>
+  <circle cx="22" cy="37" r="3" fill="#cfe3d5"/>
+</svg>

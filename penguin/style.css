@@ -141,6 +141,13 @@ main section {
   border: 1px solid #e0e0e0;
 }
 
+/* Small pictogram at the top of a card */
+.card-icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 0.75em;
+}
+
 /* Hero with an image beside the text (WordPress page) */
 .hero-grid {
   display: grid;

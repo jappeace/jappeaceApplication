@@ -40,6 +40,7 @@ import PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , meetLink
   , whatsappFloatingButton
   , organizationJsonLd
   , formatIsoDate
@@ -457,21 +458,33 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
       H.h2 "What you can expect"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-ontwerp.svg"
+                ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
           H.h3 "A design in your own style"
           H.p "We set up the site in your colours and logo, and lay out the pages you need. You pick from two proposals with sample content up front, so you know what you are getting."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-apparaten.svg"
+                ! A.alt "Laptop en telefoon" ! A.width "56" ! A.height "56"
           H.h3 "Looks right on phone and computer"
           H.p "Built and tested on phone, laptop and desktop, so it looks right everywhere: consistent margins, sensible proportions, a layout that works on a small screen."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-contact.svg"
+                ! A.alt "Tekstballon en kalender" ! A.width "56" ! A.height "56"
           H.h3 "Contact, WhatsApp and bookings"
           H.p "A contact form, your email and phone in plain sight, and a WhatsApp button. Optionally a booking tool so clients can plan an appointment themselves."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-vindbaar.svg"
+                ! A.alt "Vergrootglas boven een pagina" ! A.width "56" ! A.height "56"
           H.h3 "Being found on Google"
           H.p "Clean page titles, descriptions and headings so Google understands your site. You tell us what you want to be found for, we build it in correctly."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-veilig.svg"
+                ! A.alt "Schild met bliksem" ! A.width "56" ! A.height "56"
           H.h3 "Safe and fast"
           H.p "The padlock in the browser (SSL), images sized right and a site that loads quickly. That is part of a tidy build, not a separate expensive package."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-zelf-aanpassen.svg"
+                ! A.alt "Potlood op een pagina" ! A.width "56" ! A.height "56"
           H.h3 "Update it yourself, no need to call us"
           H.p "A personal video walkthrough plus a short written manual: edit text, replace a photo, update a page. After that you can do it yourself, and we stay available for bigger jobs."
 
@@ -521,14 +534,15 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
         H.a ! A.href (toValue (webwinkelUrl <> "/")) $ "webwinkelverhuis.nl"
         " for the webshop side."
 
-    -- Final CTA
+    -- Final CTA: direct booking is the lowest-friction step for this
+    -- audience; email stays available as the text link.
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Thinking about a new website?"
       H.p $ do
-        H.preEscapedToHtml ("Tell us what your business does and we will sketch what a fixed-price site would look like. " :: Text)
+        "Tell us what your business does and we will sketch what a fixed-price site would look like. Prefer email? "
         H.a ! A.href contactMailto $ "Get in touch"
         "."
-      H.a ! A.href contactMailto ! A.class_ "cta-button" $ "Get in touch"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Book a free chat"
   where
     wordpressMeta :: PageMeta
     wordpressMeta = (defaultPageMeta "Have a Website Built \8212 Fixed-Price WordPress \8212 Jappie Software B.V.")
@@ -563,21 +577,33 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
       H.h2 "Wat u kunt verwachten"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-ontwerp.svg"
+                ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
           H.h3 "Een ontwerp in uw eigen stijl"
           H.p "We richten de site in met uw kleuren en logo, en zetten de pagina's op die u nodig hebt. U kiest vooraf uit twee voorstellen met voorbeeldinhoud, zodat u weet wat u krijgt."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-apparaten.svg"
+                ! A.alt "Laptop en telefoon" ! A.width "56" ! A.height "56"
           H.h3 "Mooi op telefoon en computer"
           H.p "Gebouwd en getest op telefoon, laptop en desktop, zodat het overal klopt: nette marges, kloppende verhoudingen en een indeling die op een klein scherm werkt."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-contact.svg"
+                ! A.alt "Tekstballon en kalender" ! A.width "56" ! A.height "56"
           H.h3 "Contact, WhatsApp en afspraken"
           H.p "Een contactformulier, uw e-mail en telefoon goed zichtbaar, en een WhatsApp-knop. Optioneel een afsprakentool zodat klanten zelf een afspraak inplannen."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-vindbaar.svg"
+                ! A.alt "Vergrootglas boven een pagina" ! A.width "56" ! A.height "56"
           H.h3 "Gevonden worden in Google"
           H.p "Nette paginatitels, beschrijvingen en koppen zodat Google uw site begrijpt. U vertelt waarop u gevonden wilt worden, wij bouwen het correct in."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-veilig.svg"
+                ! A.alt "Schild met bliksem" ! A.width "56" ! A.height "56"
           H.h3 "Veilig en snel"
           H.p "Het slotje in de browser (SSL), afbeeldingen in de juiste maat en een site die vlot laadt. Dat hoort bij een nette bouw, niet bij een apart duur pakket."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-zelf-aanpassen.svg"
+                ! A.alt "Potlood op een pagina" ! A.width "56" ! A.height "56"
           H.h3 "Zelf aanpassen zonder ons te bellen"
           H.p "Een persoonlijke videorondleiding plus een korte handleiding: tekst aanpassen, een foto vervangen, een pagina bijwerken. U kunt het daarna zelf, en voor grotere klussen blijven we bereikbaar."
 
@@ -627,14 +653,15 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
         H.a ! A.href (toValue (webwinkelUrl <> "/")) $ "webwinkelverhuis.nl"
         " voor de webshop-kant."
 
-    -- Laatste CTA
+    -- Laatste CTA: direct een gesprek inplannen is voor deze doelgroep de
+    -- laagste drempel; mailen kan via de tekstlink.
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Denkt u na over een nieuwe website?"
       H.p $ do
-        "Vertel ons wat uw bedrijf doet, dan schetsen we hoe een site met vaste prijs eruit zou zien. "
+        "Vertel ons wat uw bedrijf doet, dan schetsen we hoe een site met vaste prijs eruit zou zien. Liever mailen? "
         H.a ! A.href contactMailto $ "Neem contact op"
         "."
-      H.a ! A.href contactMailto ! A.class_ "cta-button" $ "Neem contact op"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gratis kennismaking"
   where
     wordpressMetaNl :: PageMeta
     wordpressMetaNl = (defaultPageMeta "Laat een website bouwen \8212 WordPress met vaste prijs \8212 Jappie Software B.V.")
