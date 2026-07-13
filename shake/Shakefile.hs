@@ -40,7 +40,7 @@ import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
-import PenguinTemplates (penguinIndexPage, penguinIndexPageNl, penguinWordpressPage, penguinWordpressPageNl, penguinBlogIndexPage, penguinArticlePage)
+import PenguinTemplates (WebwinkelverhuisUrl(..), penguinIndexPage, penguinIndexPageNl, penguinWordpressPage, penguinWordpressPageNl, penguinBlogIndexPage, penguinArticlePage)
 import WebwinkelTemplates
   ( webwinkelIndexPage
   , webwinkelBlogIndexPage
@@ -133,26 +133,8 @@ shakeRules = do
       -- Build penguin site
       need ["build-penguin"]
 
-    phony "build-penguin" $ do
-      -- Discover penguin blog content
-      penguinMds <- getDirectoryFiles "penguin/content" ["//*.md"]
-      penguinOrgs <- getDirectoryFiles "penguin/content" ["//*.org"]
-      let penguinFiles = [(f, "md") | f <- penguinMds]
-                      ++ [(f, "org") | f <- penguinOrgs]
-
-      (penguinArticles, _penguinPages) <- liftIO $ parseAllContent "penguin/content" penguinFiles
-      liftIO $ generatePenguinSite penguinSiteConfig penguinArticles
-      copyPenguinStaticAssets
-
-      -- Build webwinkelverhuis.nl (the webshop-migration brand domain), with its
-      -- own theme and blog.
-      webwinkelMds <- getDirectoryFiles "webwinkel/content" ["//*.md"]
-      webwinkelOrgs <- getDirectoryFiles "webwinkel/content" ["//*.org"]
-      let webwinkelFiles = [(f, "md") | f <- webwinkelMds]
-                        ++ [(f, "org") | f <- webwinkelOrgs]
-      (webwinkelArticles, _webwinkelPages) <- liftIO $ parseAllContent "webwinkel/content" webwinkelFiles
-      liftIO $ generateWebwinkelverhuisSite webwinkelSiteConfig webwinkelArticles
-      copyWebwinkelStaticAssets
+    phony "build-penguin" $
+      buildPenguinSites productionWebwinkelUrl
 
     phony "serve" $ do
       need ["clean"]
@@ -187,17 +169,25 @@ shakeRules = do
         generateSite localConfig Nl nlArticles nlPages enSlugs enPageSlugs
       copyStaticAssets
 
-      -- Build penguin site
-      need ["build-penguin"]
-
-      -- Serve both sites
+      -- Build penguin + webwinkel sites, with penguin's webwinkelverhuis.nl
+      -- links pointing at the locally served copy instead of the live site.
       let blogPort = 8000 :: Int
           penguinPort = 8001 :: Int
+          webwinkelPort = 8002 :: Int
+      buildPenguinSites (WebwinkelverhuisUrl (T.pack ("http://localhost:" ++ show webwinkelPort)))
+
+      -- Serve all three sites
       putInfo $ "Serving _site on http://localhost:" ++ show blogPort
       putInfo $ "Serving _penguin-site on http://localhost:" ++ show penguinPort
+      putInfo $ "Serving _webwinkelverhuis-site on http://localhost:" ++ show webwinkelPort
       liftIO $ do
         _ <- forkIO $ Warp.run penguinPort $ Static.staticApp
           (Static.defaultFileServerSettings "_penguin-site")
+            { ssIndices = [unsafeToPiece "index.html"]
+            , ssAddTrailingSlash = True
+            }
+        _ <- forkIO $ Warp.run webwinkelPort $ Static.staticApp
+          (Static.defaultFileServerSettings "_webwinkelverhuis-site")
             { ssIndices = [unsafeToPiece "index.html"]
             , ssAddTrailingSlash = True
             }
@@ -585,9 +575,38 @@ copyStaticAssets = do
 -- Penguin site generation
 -- =============================================================================
 
+-- | The real webwinkelverhuis.nl origin, used for links from jappiesoftware.com
+-- in production builds.
+productionWebwinkelUrl :: WebwinkelverhuisUrl
+productionWebwinkelUrl = WebwinkelverhuisUrl "https://webwinkelverhuis.nl"
+
+-- | Build jappiesoftware.com into _penguin-site and webwinkelverhuis.nl into
+-- _webwinkelverhuis-site. The penguin pages link to the webwinkel site at the
+-- given origin: production builds pass the real domain, serve mode passes the
+-- local port so the sites cross-link locally.
+buildPenguinSites :: WebwinkelverhuisUrl -> Action ()
+buildPenguinSites webwinkelUrl = do
+  penguinMds <- getDirectoryFiles "penguin/content" ["//*.md"]
+  penguinOrgs <- getDirectoryFiles "penguin/content" ["//*.org"]
+  let penguinFiles = map (\f -> (f, "md")) penguinMds
+                  ++ map (\f -> (f, "org")) penguinOrgs
+  (penguinArticles, _penguinPages) <- liftIO $ parseAllContent "penguin/content" penguinFiles
+  liftIO $ generatePenguinSite webwinkelUrl penguinSiteConfig penguinArticles
+  copyPenguinStaticAssets
+
+  -- webwinkelverhuis.nl (the webshop-migration brand domain), with its own
+  -- theme and blog.
+  webwinkelMds <- getDirectoryFiles "webwinkel/content" ["//*.md"]
+  webwinkelOrgs <- getDirectoryFiles "webwinkel/content" ["//*.org"]
+  let webwinkelFiles = map (\f -> (f, "md")) webwinkelMds
+                    ++ map (\f -> (f, "org")) webwinkelOrgs
+  (webwinkelArticles, _webwinkelPages) <- liftIO $ parseAllContent "webwinkel/content" webwinkelFiles
+  liftIO $ generateWebwinkelverhuisSite webwinkelSiteConfig webwinkelArticles
+  copyWebwinkelStaticAssets
+
 -- | Generate the jappiesoftware.com site into _penguin-site/
-generatePenguinSite :: SiteConfig -> [Article] -> IO ()
-generatePenguinSite config articles = do
+generatePenguinSite :: WebwinkelverhuisUrl -> SiteConfig -> [Article] -> IO ()
+generatePenguinSite webwinkelUrl config articles = do
   let sortedArticles = sortBy (\a b -> compare (Down (articleDate a)) (Down (articleDate b))) articles
 
   -- Create output directories
@@ -595,13 +614,13 @@ generatePenguinSite config articles = do
   Dir.createDirectoryIfMissing True "_penguin-site/blog"
 
   -- Landing page (English at /, Dutch at /nl/)
-  writeHtmlFile "_penguin-site/index.html" penguinIndexPage
+  writeHtmlFile "_penguin-site/index.html" (penguinIndexPage webwinkelUrl)
   Dir.createDirectoryIfMissing True "_penguin-site/nl"
-  writeHtmlFile "_penguin-site/nl/index.html" penguinIndexPageNl
+  writeHtmlFile "_penguin-site/nl/index.html" (penguinIndexPageNl webwinkelUrl)
 
   -- WordPress websites service page (English at /, Dutch at /nl/)
-  writeHtmlFile "_penguin-site/wordpress-websites.html" penguinWordpressPage
-  writeHtmlFile "_penguin-site/nl/wordpress-websites.html" penguinWordpressPageNl
+  writeHtmlFile "_penguin-site/wordpress-websites.html" (penguinWordpressPage webwinkelUrl)
+  writeHtmlFile "_penguin-site/nl/wordpress-websites.html" (penguinWordpressPageNl webwinkelUrl)
 
   -- Individual article pages
   mapM_ (\art ->

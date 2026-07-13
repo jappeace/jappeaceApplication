@@ -5,7 +5,8 @@
 -- green palette). Shared SEO/structured-data/blog markup lives in 'PageChrome';
 -- the webshop-migration brand site lives in 'WebwinkelTemplates'.
 module PenguinTemplates
-  ( penguinIndexPage
+  ( WebwinkelverhuisUrl(..)
+  , penguinIndexPage
   , penguinIndexPageNl
   , penguinWordpressPage
   , penguinWordpressPageNl
@@ -53,6 +54,12 @@ penguinOgImage = "https://jappiesoftware.com/og-default.png"
 -- | The "get in touch" mailto used across the company site.
 contactMailto :: H.AttributeValue
 contactMailto = toValue ("mailto:" <> companyEmail)
+
+-- | Origin (no trailing slash) of the webwinkelverhuis.nl site as linked from
+-- jappiesoftware.com pages. Production passes the real domain; the local
+-- serve mode passes http://localhost:8002 so both locally served sites
+-- cross-link to each other instead of jumping to the live site.
+newtype WebwinkelverhuisUrl = WebwinkelverhuisUrl Text
 
 -- Decision: the landing page shows exactly two service blocks (websites,
 -- webshop migration) instead of the previous six-card product grid. Client
@@ -105,13 +112,13 @@ wordpressServiceEn = ServiceBlock
 
 -- | English webshop-migration service block. This one leaves the site, so the
 -- note says so explicitly instead of surprising the visitor.
-migrationServiceEn :: ServiceBlock
-migrationServiceEn = ServiceBlock
+migrationServiceEn :: WebwinkelverhuisUrl -> ServiceBlock
+migrationServiceEn (WebwinkelverhuisUrl url) = ServiceBlock
   { serviceImageSource = "/illustratie-verhuizen.svg"
   , serviceImageAlt = "Illustration of boxes moving from an old webshop to a new one"
   , serviceTitle = "Move your webshop"
   , serviceBody = "Stuck on MijnWebwinkel, CCV Shop or Lightspeed? We move your complete webshop to Shopify or another platform: products, translations, images and the redirects that keep your Google rankings."
-  , serviceLinkHref = "https://webwinkelverhuis.nl/"
+  , serviceLinkHref = url <> "/"
   , serviceLinkLabel = "Visit Webwinkelverhuis"
   , serviceNote = Just "Opens webwinkelverhuis.nl, our dedicated migration site."
   }
@@ -130,13 +137,13 @@ wordpressServiceNl = ServiceBlock
 
 -- | Dutch webshop-migration service block. This one leaves the site, so the
 -- note says so explicitly instead of surprising the visitor.
-migrationServiceNl :: ServiceBlock
-migrationServiceNl = ServiceBlock
+migrationServiceNl :: WebwinkelverhuisUrl -> ServiceBlock
+migrationServiceNl (WebwinkelverhuisUrl url) = ServiceBlock
   { serviceImageSource = "/illustratie-verhuizen.svg"
   , serviceImageAlt = "Illustratie van dozen die van een oude webshop naar een nieuwe verhuizen"
   , serviceTitle = "Verhuis uw webshop"
   , serviceBody = "Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw complete webshop naar Shopify of een ander platform: producten, vertalingen, afbeeldingen en de redirects die uw Google-posities behouden."
-  , serviceLinkHref = "https://webwinkelverhuis.nl/"
+  , serviceLinkHref = url <> "/"
   , serviceLinkLabel = "Naar Webwinkelverhuis"
   , serviceNote = Just "Opent webwinkelverhuis.nl, onze aparte migratie-site."
   }
@@ -285,8 +292,8 @@ penguinBlogBaseTemplate lang = penguinBaseWith lang "article" True
 -- Landing page (index.html)
 -- =============================================================================
 
-penguinIndexPage :: Html
-penguinIndexPage = penguinBaseTemplate En indexMeta $
+penguinIndexPage :: WebwinkelverhuisUrl -> Html
+penguinIndexPage webwinkelUrl = penguinBaseTemplate En indexMeta $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
@@ -298,7 +305,7 @@ penguinIndexPage = penguinBaseTemplate En indexMeta $
     H.section ! A.class_ "for-who" ! A.id "products" $ do
       H.h2 "What we do"
       renderServiceBlock wordpressServiceEn
-      renderServiceBlock migrationServiceEn
+      renderServiceBlock (migrationServiceEn webwinkelUrl)
 
     -- How we work: the same three steps every subpage elaborates on
     H.section ! A.class_ "audit" $ do
@@ -378,8 +385,8 @@ penguinIndexPage = penguinBaseTemplate En indexMeta $
 -- | Dutch counterpart of 'penguinIndexPage'. Same structure and section ids (so
 -- the in-page anchors keep working), Dutch copy. The webshop-migration cards
 -- still point at webwinkelverhuis.nl, which is Dutch already.
-penguinIndexPageNl :: Html
-penguinIndexPageNl = penguinBaseTemplate Nl indexMetaNl $
+penguinIndexPageNl :: WebwinkelverhuisUrl -> Html
+penguinIndexPageNl webwinkelUrl = penguinBaseTemplate Nl indexMetaNl $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $ do
@@ -391,7 +398,7 @@ penguinIndexPageNl = penguinBaseTemplate Nl indexMetaNl $
     H.section ! A.class_ "for-who" ! A.id "products" $ do
       H.h2 "Wat we doen"
       renderServiceBlock wordpressServiceNl
-      renderServiceBlock migrationServiceNl
+      renderServiceBlock (migrationServiceNl webwinkelUrl)
 
     -- Hoe we werken: dezelfde drie stappen die elke subpagina uitwerkt
     H.section ! A.class_ "audit" $ do
@@ -474,8 +481,8 @@ penguinIndexPageNl = penguinBaseTemplate Nl indexMetaNl $
 -- gives that work a home and frames it as the natural first step before a
 -- webshop, linking onward to the migration service on webwinkelverhuis.nl. The
 -- two recent builds (Voedzame Kost, Het Waardegebaar) are the proof of work.
-penguinWordpressPage :: Html
-penguinWordpressPage = penguinBaseTemplate En wordpressMeta $
+penguinWordpressPage :: WebwinkelverhuisUrl -> Html
+penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En wordpressMeta $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $
@@ -555,7 +562,7 @@ penguinWordpressPage = penguinBaseTemplate En wordpressMeta $
       H.p $ H.preEscapedToHtml ("Plenty of businesses start with a site to be found, and later want to sell online. When you are ready to open a webshop, or to move an existing one without losing your Google rankings, we build and migrate those too." :: Text)
       H.p $ do
         "See "
-        H.a ! A.href "https://webwinkelverhuis.nl/" $ "webwinkelverhuis.nl"
+        H.a ! A.href (toValue (webwinkelUrl <> "/")) $ "webwinkelverhuis.nl"
         " for the webshop side."
 
     -- Final CTA
@@ -580,8 +587,8 @@ penguinWordpressPage = penguinBaseTemplate En wordpressMeta $
 
 -- | Dutch counterpart of 'penguinWordpressPage'. This is the page the
 -- warm-intro SMB leads actually land on, so the Dutch copy is the important one.
-penguinWordpressPageNl :: Html
-penguinWordpressPageNl = penguinBaseTemplate Nl wordpressMetaNl $
+penguinWordpressPageNl :: WebwinkelverhuisUrl -> Html
+penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate Nl wordpressMetaNl $
   H.main $ do
     -- Hero
     H.section ! A.class_ "hero" $
@@ -661,7 +668,7 @@ penguinWordpressPageNl = penguinBaseTemplate Nl wordpressMetaNl $
       H.p $ H.preEscapedToHtml ("Veel bedrijven beginnen met een site om gevonden te worden, en willen later online verkopen. Als u klaar bent om een webshop te openen, of een bestaande te verhuizen zonder uw Google-posities te verliezen, bouwen en migreren we die ook." :: Text)
       H.p $ do
         "Zie "
-        H.a ! A.href "https://webwinkelverhuis.nl/" $ "webwinkelverhuis.nl"
+        H.a ! A.href (toValue (webwinkelUrl <> "/")) $ "webwinkelverhuis.nl"
         " voor de webshop-kant."
 
     -- Laatste CTA
