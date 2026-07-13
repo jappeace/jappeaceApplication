@@ -517,6 +517,21 @@ writeHtmlFile path html = do
   Dir.createDirectoryIfMissing True (takeDirectory path)
   TLIO.writeFile path (renderHtml html)
 
+-- | Write a webwinkelverhuis.nl page, refusing to emit one that links a raw
+-- calendar.app.google URL. Scheduling links must use the
+-- https://meet.jappiesoftware.com redirect ('meetLink' in
+-- 'WebwinkelTemplates'): a raw link in blog content once routed visitors to
+-- the wrong calendar, and the template test suite cannot see rendered
+-- content. Crashing the build here beats publishing the bad link silently.
+writeWebwinkelHtmlFile :: FilePath -> Html -> IO ()
+writeWebwinkelHtmlFile path html = do
+  let rendered = renderHtml html
+  if TL.pack "calendar.app.google" `TL.isInfixOf` rendered
+    then error (path <> " links a raw calendar.app.google URL; use https://meet.jappiesoftware.com instead")
+    else do
+      Dir.createDirectoryIfMissing True (takeDirectory path)
+      TLIO.writeFile path rendered
+
 tagSlugLocal :: Text -> Text
 tagSlugLocal = T.intercalate "-" . T.words . T.toLower
 
@@ -669,21 +684,21 @@ generateWebwinkelverhuisSite config articles = do
   Dir.createDirectoryIfMissing True "_webwinkelverhuis-site/blog"
 
   -- Landing page
-  writeHtmlFile "_webwinkelverhuis-site/index.html" webwinkelIndexPage
+  writeWebwinkelHtmlFile "_webwinkelverhuis-site/index.html" webwinkelIndexPage
 
   -- Shopify migration app's App URL landing page
-  writeHtmlFile "_webwinkelverhuis-site/app.html" appPage
+  writeWebwinkelHtmlFile "_webwinkelverhuis-site/app.html" appPage
 
   -- Migration and explainer pages
-  writeHtmlFile "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
-  writeHtmlFile "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage
-  writeHtmlFile "_webwinkelverhuis-site/migrate-lightspeed.html" lightspeedMigrationPage
-  writeHtmlFile "_webwinkelverhuis-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
-  writeHtmlFile "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
+  writeWebwinkelHtmlFile "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
+  writeWebwinkelHtmlFile "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage
+  writeWebwinkelHtmlFile "_webwinkelverhuis-site/migrate-lightspeed.html" lightspeedMigrationPage
+  writeWebwinkelHtmlFile "_webwinkelverhuis-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
+  writeWebwinkelHtmlFile "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
 
   -- Individual blog article pages
   mapM_ (\art ->
-    writeHtmlFile ("_webwinkelverhuis-site/blog" </> T.unpack (articleUrl art))
+    writeWebwinkelHtmlFile ("_webwinkelverhuis-site/blog" </> T.unpack (articleUrl art))
       (webwinkelArticlePage config art))
     sortedArticles
 
@@ -701,7 +716,7 @@ generateWebwinkelverhuisSite config articles = do
               then Just ("/blog/" <> penguinIndexFileName (pageNum + 1))
               else Nothing
           }
-    in writeHtmlFile ("_webwinkelverhuis-site/blog" </> T.unpack (penguinIndexFileName pageNum))
+    in writeWebwinkelHtmlFile ("_webwinkelverhuis-site/blog" </> T.unpack (penguinIndexFileName pageNum))
          (webwinkelBlogIndexPage config arts pagination)
     ) (zip [1..] articlePages)
 

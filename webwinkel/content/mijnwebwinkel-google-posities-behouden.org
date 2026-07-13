@@ -76,7 +76,7 @@ Wilt u eerst lezen [[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][waar
 MijnWebwinkel niet meer wordt doorontwikkeld]], of meteen weten hoe
 [[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][onze migratieservice]]
 werkt? Beide leggen we graag uit. En als u liever direct spart over uw eigen
-winkel: [[https://calendar.app.google/9h9uTzsPQoryEc6S7][plan een vrijblijvend
+winkel: [[https://meet.jappiesoftware.com][plan een vrijblijvend
 gesprek]]. We kijken samen naar uw shop en geven een eerlijke inschatting van de
 migratie en de redirects.
 

@@ -119,7 +119,7 @@ main section {
   color: #fff;
 }
 .card .cta-button-secondary {
-  margin-top: 1em;
+  margin-top: auto;
   padding: 0.5em 1.2em;
 }
 
@@ -155,6 +155,11 @@ main section {
   border: 1px solid #dbe5ef;
   border-radius: 6px;
   padding: 1.5em;
+  /* Flex column so buttons in a card row line up on one baseline,
+     whatever the text length above them. */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 .card h3 {
   font-size: 1.1em;
@@ -168,9 +173,13 @@ main section {
 .card p {
   color: #41505f;
   font-size: 0.95em;
+  margin-bottom: 1em;
+}
+.card > :last-child {
+  margin-bottom: 0;
 }
 .card .cta-button {
-  margin-top: 1em;
+  margin-top: auto;
   padding: 0.5em 1.2em;
 }
 .card .price {
