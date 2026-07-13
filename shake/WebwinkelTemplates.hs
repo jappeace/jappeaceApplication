@@ -171,11 +171,11 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.strong "Scan"
           " \8212 Ons programma leest uw huidige webshop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
         H.li $ do
-          H.strong "Wennen en controle"
-          " \8212 De testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met het nieuwe systeem en controleert of alles klopt."
+          H.strong "Wennen"
+          " \8212 De testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Klopt alles? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
 
     -- Recent werk
     H.section ! A.class_ "results" $ do
@@ -194,6 +194,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na een succesvolle migratie" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
       H.p $ do
@@ -409,11 +410,11 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           H.strong "Scan"
           " \8212 Ons programma leest uw MijnWebwinkel-shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
         H.li $ do
-          H.strong "Wennen en controle"
-          " \8212 De testshop draait naast uw MijnWebwinkel-shop, die gewoon doordraait. U raakt op uw gemak bekend met het nieuwe systeem en controleert of alles klopt."
+          H.strong "Wennen"
+          " \8212 De testshop draait naast uw MijnWebwinkel-shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Klopt alles? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
 
     -- Recent werk: proof before price, so the number lands on trust.
     H.section ! A.class_ "results" $ do
@@ -449,6 +450,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
@@ -481,11 +483,11 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
 mijnwebwinkelFaq :: [(Text, Text)]
 mijnwebwinkelFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en de controle van de testshop op uw tempo. Reken daarom op ongeveer een maand van start tot livegang." )
+    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs." )
+    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk met een uitgebreide testbatterij. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
     , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw doelplatform beide ondersteunen. Ook de vertaalde URL's verhuizen mee." )
   , ( "Kan ik ook naar een ander platform dan Shopify migreren?"
@@ -542,11 +544,11 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.strong "Scan"
           " \8212 Ons programma leest uw CCV Shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
         H.li $ do
-          H.strong "Wennen en controle"
-          " \8212 De testshop draait naast uw CCV Shop, die gewoon doordraait. U raakt op uw gemak bekend met het nieuwe systeem en controleert of alles klopt."
+          H.strong "Wennen"
+          " \8212 De testshop draait naast uw CCV Shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Klopt alles? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
 
     -- Pricing
     H.section ! A.class_ "engagement" ! A.id "pricing" $ do
@@ -572,7 +574,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
-        H.li $ H.strong "Controleerbaar" >> H.preEscapedToHtml (" &mdash; u krijgt een testshop en kunt alles verifi&euml;ren voor de overstap" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
     -- FAQ
@@ -600,8 +602,8 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.h3 "Klantdata & accounts"
           H.p "Klantaccounts en bestelgeschiedenis worden overgezet zodat uw klanten direct verder kunnen op de nieuwe shop."
         H.li ! A.class_ "card" $ do
-          H.h3 "Testshop & verificatie"
-          H.p "U krijgt een volledige testshop om alles te controleren. Pas na uw goedkeuring gaan we live. Correcties zijn inbegrepen."
+          H.h3 "Testshop"
+          H.p "U krijgt een volledige testshop naast uw huidige shop om alvast te wennen. Pas na uw akkoord gaan we live; eventuele correcties zijn inbegrepen."
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
@@ -627,11 +629,11 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
 ccvshopFaq :: [(Text, Text)]
 ccvshopFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en de controle van de testshop op uw tempo. Reken daarom op ongeveer een maand van start tot livegang." )
+    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs." )
+    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk met een uitgebreide testbatterij. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
     , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en Shopify beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
@@ -684,11 +686,11 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.strong "Scan"
           " \8212 Ons programma leest uw Lightspeed-shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
         H.li $ do
-          H.strong "Wennen en controle"
-          " \8212 De testshop draait naast uw Lightspeed-shop, die gewoon doordraait. U raakt op uw gemak bekend met het nieuwe systeem en controleert of alles klopt."
+          H.strong "Wennen"
+          " \8212 De testshop draait naast uw Lightspeed-shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Klopt alles? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
 
     -- Pricing
     H.section ! A.class_ "engagement" ! A.id "pricing" $ do
@@ -717,7 +719,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
-        H.li $ H.strong "Controleerbaar" >> H.preEscapedToHtml (" &mdash; u krijgt een testshop en kunt alles verifi&euml;ren voor de overstap" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
     -- FAQ
@@ -745,8 +747,8 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.h3 "Klantdata & accounts"
           H.p "Klantaccounts en bestelgeschiedenis worden overgezet zodat uw klanten direct verder kunnen op de nieuwe shop."
         H.li ! A.class_ "card" $ do
-          H.h3 "Testshop & verificatie"
-          H.p "U krijgt een volledige testshop om alles te controleren. Pas na uw goedkeuring gaan we live. Correcties zijn inbegrepen."
+          H.h3 "Testshop"
+          H.p "U krijgt een volledige testshop naast uw huidige shop om alvast te wennen. Pas na uw akkoord gaan we live; eventuele correcties zijn inbegrepen."
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
@@ -772,11 +774,11 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
 lightspeedFaq :: [(Text, Text)]
 lightspeedFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en de controle van de testshop op uw tempo. Reken daarom op ongeveer een maand van start tot livegang." )
+    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs." )
+    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk met een uitgebreide testbatterij. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Verlies ik mijn Google-posities?"
     , "Nee. Wij genereren automatisch 301-redirects voor elke URL. Dit is het belangrijkste onderdeel van een veilige migratie en de reden dat u dit niet zelf wilt doen." )
   , ( "Werkt het ook voor meertalige webshops?"
