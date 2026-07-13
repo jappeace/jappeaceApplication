@@ -100,6 +100,48 @@ main section {
   background: #c44d06;
 }
 
+/* Secondary button: navy outline for routing links such as the platform
+   cards, so the one orange primary action per screen keeps its weight. */
+.cta-button-secondary {
+  display: inline-block;
+  padding: 0.75em 2em;
+  background: transparent;
+  color: #10456b;
+  text-decoration: none;
+  border: 2px solid #10456b;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1em;
+  transition: background 0.2s, color 0.2s;
+}
+.cta-button-secondary:hover {
+  background: #10456b;
+  color: #fff;
+}
+.card .cta-button-secondary {
+  margin-top: 1em;
+  padding: 0.5em 1.2em;
+}
+
+/* Hero with an illustration beside the text */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 2em;
+  align-items: center;
+}
+.hero-image {
+  width: 100%;
+  height: auto;
+}
+
+/* Small pictogram at the top of a platform card */
+.card-icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 0.75em;
+}
+
 /* Card grid */
 .card-grid {
   list-style: none;
@@ -281,6 +323,9 @@ footer small {
     padding: 2em 1.2em;
   }
   .card-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-grid {
     grid-template-columns: 1fr;
   }
 }

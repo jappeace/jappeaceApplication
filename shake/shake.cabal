@@ -46,6 +46,7 @@ test-suite unit
     PageChrome
     PenguinTemplates
     Types
+    WebwinkelTemplates
   hs-source-dirs:   test .
   default-language: Haskell2010
   ghc-options:      -Wall -Werror

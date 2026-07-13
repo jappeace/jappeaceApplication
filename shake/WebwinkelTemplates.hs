@@ -63,6 +63,13 @@ offerteMailto = toValue ("mailto:" <> companyEmail <> "?subject=Migratie%20offer
 uitbreidingMailto :: H.AttributeValue
 uitbreidingMailto = toValue ("mailto:" <> companyEmail <> "?subject=Uitbreiding%20webshop")
 
+-- | Branded scheduling link used by every "plan een gesprek" button. It is a
+-- 302 redirect on our own infrastructure (megavid blog/vhost.nix) to the
+-- current Google Calendar booking page, so the underlying calendar can change
+-- without touching built pages or already-sent outreach mails.
+meetLink :: H.AttributeValue
+meetLink = "https://meet.jappiesoftware.com"
+
 -- =============================================================================
 -- Base template
 -- =============================================================================
@@ -151,27 +158,16 @@ webwinkelIndexPage :: Html
 webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
   H.main $ do
     -- Hero
-    H.section ! A.class_ "hero" $ do
-      H.h1 "Verhuis uw webshop. Zonder dataverlies, zonder SEO-verlies."
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw complete webshop geautomatiseerd naar Shopify of een ander platform &mdash; producten, vertalingen, afbeeldingen, klantdata en SEO-redirects. U betaalt pas na een succesvolle migratie." :: Text)
-      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
-
-    -- Platform cards
-    H.section ! A.class_ "for-who" ! A.id "platforms" $ do
-      H.h2 "Vanaf welk platform verhuist u?"
-      H.ul ! A.class_ "card-grid" $ do
-        H.li ! A.class_ "card" $ do
-          H.h3 "MijnWebwinkel"
-          H.p $ H.preEscapedToHtml ("Bevroren platform, verdubbelde prijzen, gesloten community. Wij zetten alles over &mdash; inclusief de automatisch gegenereerde 301-redirects voor uw artikel-URLs." :: Text)
-          H.a ! A.href "/migrate-mijnwebwinkel.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
-        H.li ! A.class_ "card" $ do
-          H.h3 "Lightspeed"
-          H.p $ H.preEscapedToHtml ("Beursgenoteerd en steeds duurder voor kleine shops. Wij verhuizen u veilig, met behoud van uw Google-posities &mdash; geen 70% verkeersverlies." :: Text)
-          H.a ! A.href "/migrate-lightspeed.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
-        H.li ! A.class_ "card" $ do
-          H.h3 "CCV Shop"
-          H.p $ H.preEscapedToHtml ("Beperkte features en achterblijvende ontwikkeling. Wij zetten uw producten, talen, klantaccounts en voorraad volledig geautomatiseerd over." :: Text)
-          H.a ! A.href "/migrate-ccvshop.html" ! A.class_ "cta-button" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
+    H.section ! A.class_ "hero" $
+      H.div ! A.class_ "hero-grid" $ do
+        H.div $ do
+          H.h1 "Verhuis uw webshop. Zonder dataverlies, zonder SEO-verlies."
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw complete webshop geautomatiseerd naar Shopify of een ander platform &mdash; producten, vertalingen, afbeeldingen, klantdata en SEO-redirects. U betaalt pas na een succesvolle migratie." :: Text)
+          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+        H.img ! A.class_ "hero-image"
+              ! A.src "/illustratie-verhuizen.svg"
+              ! A.alt "Illustratie van dozen die van een oude webshop naar een nieuwe verhuizen"
+              ! A.width "400" ! A.height "300"
 
     -- How it works
     H.section ! A.class_ "audit" $ do
@@ -214,11 +210,40 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
         H.a ! A.href "/blog/" $ "blog"
         "."
 
+    -- Platform cards: the routing step, at the bottom so the visitor first
+    -- reads the promise, the process and the proof before picking a platform.
+    -- Secondary buttons: the orange primary is reserved for the offerte and
+    -- plan-een-gesprek actions.
+    H.section ! A.class_ "for-who" ! A.id "platforms" $ do
+      H.h2 "Vanaf welk platform verhuist u?"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-bevroren.svg"
+                ! A.alt "Sneeuwvlok: het platform is bevroren"
+                ! A.width "56" ! A.height "56"
+          H.h3 "MijnWebwinkel"
+          H.p $ H.preEscapedToHtml ("Bevroren platform, verdubbelde prijzen, gesloten community. Wij zetten alles over &mdash; inclusief de automatisch gegenereerde 301-redirects voor uw artikel-URLs." :: Text)
+          H.a ! A.href "/migrate-mijnwebwinkel.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-prijsstijging.svg"
+                ! A.alt "Grafiek met stijgende prijzen"
+                ! A.width "56" ! A.height "56"
+          H.h3 "Lightspeed"
+          H.p $ H.preEscapedToHtml ("Beursgenoteerd en steeds duurder voor kleine shops. Wij verhuizen u veilig, met behoud van uw Google-posities &mdash; geen 70% verkeersverlies." :: Text)
+          H.a ! A.href "/migrate-lightspeed.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-beperkt.svg"
+                ! A.alt "Hangslot: beperkte mogelijkheden"
+                ! A.width "56" ! A.height "56"
+          H.h3 "CCV Shop"
+          H.p $ H.preEscapedToHtml ("Beperkte features en achterblijvende ontwikkeling. Wij zetten uw producten, talen, klantaccounts en voorraad volledig geautomatiseerd over." :: Text)
+          H.a ! A.href "/migrate-ccvshop.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
+
     -- Final CTA
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te verhuizen?"
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
-      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     indexMeta :: PageMeta
     indexMeta = PageMeta
@@ -450,7 +475,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       H.h2 "Klaar om te ontsnappen?"
       H.p $ H.preEscapedToHtml ("U hoeft niet langer te wachten tot MijnWebwinkel beter wordt &mdash; dat gaat niet gebeuren. " :: Text)
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
-      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
@@ -599,7 +624,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       H.h2 "Klaar om te ontsnappen?"
       H.p $ H.preEscapedToHtml ("U hoeft niet langer te wachten tot CCV Shop beter wordt. Neem de controle terug over uw webshop." :: Text)
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
-      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
@@ -747,7 +772,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.h2 "Klaar om te ontsnappen?"
       H.p $ H.preEscapedToHtml ("Lightspeed gaat u niet helpen met deze overstap. Wij wel." :: Text)
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
-      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
@@ -882,7 +907,7 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
       H.p $ do
         H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Bekijk onze migratieservice"
         H.preEscapedToHtml (" &mdash; volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
-      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     waaromMeta :: PageMeta
     waaromMeta = PageMeta
@@ -1017,7 +1042,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       H.p $ do
         H.a ! A.href "/migrate-lightspeed.html" $ "Bekijk onze migratieservice"
         H.preEscapedToHtml (" &mdash; volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
-      H.a ! A.href "https://calendar.app.google/9h9uTzsPQoryEc6S7" ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     waaromLsMeta :: PageMeta
     waaromLsMeta = PageMeta
