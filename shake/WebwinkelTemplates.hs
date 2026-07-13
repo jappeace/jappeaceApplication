@@ -385,6 +385,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;999" :: Text)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en eventuele bulk-aanpassingen. Prijs afhankelijk van de omvang van uw webshop." :: Text)
+          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
     -- Recent werk
@@ -468,13 +469,13 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
 mijnwebwinkelFaq :: [(Text, Text)]
 mijnwebwinkelFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "De technische migratie duurt meestal 1-2 werkdagen. De voorbereiding en controle erbij: reken op een week totaal." )
+    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en de controle van de testshop op uw tempo. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
     , "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs." )
-  , ( "Werkt het ook voor andere talen dan NL/DE/EN?"
-    , "Ja. Het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw doelplatform beide ondersteunen." )
+  , ( "Werkt het ook voor meertalige webshops?"
+    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw doelplatform beide ondersteunen. Ook de vertaalde URL's verhuizen mee." )
   , ( "Kan ik ook naar een ander platform dan Shopify migreren?"
     , "Ja. Shopify is het meest gekozen doelplatform, maar we kunnen ook migreren naar WooCommerce of andere platformen." )
   , ( "Worden spaarpunten ook overgezet?"
@@ -546,6 +547,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;999" :: Text)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad. Prijs afhankelijk van de omvang van uw webshop." :: Text)
+          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
     -- Why us
@@ -616,13 +618,13 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
 ccvshopFaq :: [(Text, Text)]
 ccvshopFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "De technische migratie duurt meestal 1-2 werkdagen. De voorbereiding en controle erbij: reken op een week totaal." )
+    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en de controle van de testshop op uw tempo. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
     , "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs." )
-  , ( "Werkt het ook voor meerdere talen?"
-    , "Ja. Het programma ondersteunt elke taalcombinatie die CCV Shop en Shopify beide ondersteunen." )
+  , ( "Werkt het ook voor meertalige webshops?"
+    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en Shopify beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
     , "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
   , ( "Hoe werken de SEO-redirects precies?"
@@ -690,6 +692,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;999" :: Text)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad. Prijs afhankelijk van de omvang van uw webshop." :: Text)
+          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
     -- Why us
@@ -763,15 +766,15 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
 lightspeedFaq :: [(Text, Text)]
 lightspeedFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "De technische migratie duurt meestal 1-2 werkdagen. De voorbereiding en controle erbij: reken op een week totaal." )
+    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en de controle van de testshop op uw tempo. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
     , "We controleren samen steekproefsgewijs. Eventuele correcties zijn inbegrepen in de vaste prijs." )
   , ( "Verlies ik mijn Google-posities?"
     , "Nee. Wij genereren automatisch 301-redirects voor elke URL. Dit is het belangrijkste onderdeel van een veilige migratie en de reden dat u dit niet zelf wilt doen." )
-  , ( "Werkt het ook voor meerdere talen?"
-    , "Ja. Het programma ondersteunt elke taalcombinatie die Lightspeed en Shopify beide ondersteunen." )
+  , ( "Werkt het ook voor meertalige webshops?"
+    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die Lightspeed en Shopify beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
     , "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
   ]
