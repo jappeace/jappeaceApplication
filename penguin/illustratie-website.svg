@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Decision: homepage service-block illustrations are hand-drawn inline SVGs
+     in the site palette (#2a5a3a greens) instead of stock photos, so the site
+     stays self-hosted, fast, and visually consistent with the voronoi theme.
+     Alternatives considered: stock photography (generic, off-palette) and
+     client screenshots (not yet live, permission needed). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img">
+  <!-- soft backdrop -->
+  <circle cx="200" cy="150" r="130" fill="#f0f5f1"/>
+  <!-- browser window -->
+  <g>
+    <rect x="70" y="60" width="260" height="180" rx="10" fill="#ffffff" stroke="#0d1f12" stroke-width="3"/>
+    <path d="M70 90 h260" stroke="#0d1f12" stroke-width="3"/>
+    <circle cx="88" cy="75" r="4" fill="#2a5a3a"/>
+    <circle cx="102" cy="75" r="4" fill="#7fb08f"/>
+    <circle cx="116" cy="75" r="4" fill="#cfe3d5"/>
+    <!-- hero banner inside the page -->
+    <rect x="86" y="104" width="152" height="52" rx="6" fill="#2a5a3a"/>
+    <rect x="96" y="118" width="90" height="8" rx="4" fill="#ffffff" opacity="0.9"/>
+    <rect x="96" y="132" width="60" height="8" rx="4" fill="#ffffff" opacity="0.6"/>
+    <!-- image placeholder with mountain icon -->
+    <rect x="250" y="104" width="64" height="52" rx="6" fill="#cfe3d5"/>
+    <path d="M256 148 l16 -20 l10 12 l8 -9 l14 17 z" fill="#2a5a3a"/>
+    <circle cx="268" cy="116" r="5" fill="#ffffff"/>
+    <!-- text lines -->
+    <rect x="86" y="172" width="228" height="8" rx="4" fill="#cfe3d5"/>
+    <rect x="86" y="188" width="200" height="8" rx="4" fill="#cfe3d5"/>
+    <rect x="86" y="204" width="214" height="8" rx="4" fill="#cfe3d5"/>
+  </g>
+  <!-- pencil, editing the page yourself -->
+  <g transform="rotate(40 318 218)">
+    <rect x="304" y="150" width="28" height="96" rx="4" fill="#7fb08f" stroke="#0d1f12" stroke-width="3"/>
+    <path d="M304 246 h28 l-14 26 z" fill="#f6d9a0" stroke="#0d1f12" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M311 258 l7 14 l7 -14 z" fill="#0d1f12"/>
+    <rect x="304" y="140" width="28" height="12" rx="3" fill="#2a5a3a" stroke="#0d1f12" stroke-width="3"/>
+  </g>
+</svg>
