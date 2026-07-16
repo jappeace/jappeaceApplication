@@ -432,7 +432,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       H.div ! A.class_ "card-grid" $ do
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;999" :: Text)
+          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;1499" :: Text)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en eventuele bulk-aanpassingen. Prijs afhankelijk van de omvang van uw webshop." :: Text)
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
@@ -469,7 +469,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
       { pageMetaTitle       = "Ontsnap MijnWebwinkel \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364\&999."
+      , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364\&1499."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
       , pageMetaOgImage     = Nothing
@@ -556,7 +556,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       H.div ! A.class_ "card-grid" $ do
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;999" :: Text)
+          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;1499" :: Text)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad. Prijs afhankelijk van de omvang van uw webshop." :: Text)
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
@@ -615,7 +615,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
       { pageMetaTitle       = "Ontsnap CCV Shop \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364\&999."
+      , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364\&1499."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       , pageMetaOgImage     = Nothing
@@ -698,7 +698,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.div ! A.class_ "card-grid" $ do
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;999" :: Text)
+          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;1499" :: Text)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad. Prijs afhankelijk van de omvang van uw webshop." :: Text)
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
@@ -760,7 +760,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
       { pageMetaTitle       = "Ontsnap Lightspeed \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Geen verkeersverlies. Vanaf \8364\&999."
+      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Geen verkeersverlies. Vanaf \8364\&1499."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       , pageMetaOgImage     = Nothing

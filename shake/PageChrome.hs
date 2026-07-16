@@ -208,7 +208,7 @@ serviceJsonLd serviceName serviceDescription pageUrl =
       , ",\"url\":\"https://jappiesoftware.com/\"}"
       , ",\"offers\":{\"@type\":\"Offer\""
       , ",\"priceCurrency\":\"EUR\""
-      , ",\"price\":\"999\""
+      , ",\"price\":\"1499\""
       , ",\"url\":" <> jsonLdString pageUrl <> "}"
       , "}"
       ]
