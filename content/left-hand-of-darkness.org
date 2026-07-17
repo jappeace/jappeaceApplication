@@ -1,0 +1,115 @@
+#+TITLE: Musings on Le darkness
+#+DATE: 2026-07-17
+#+OPTIONS: toc:nil
+#+CATEGORY: story
+#+Tags: book, poetry, daoism
+
+I was partly tempted to just drop these musings on my
+blog with no explanation or analysis. 
+Nobody would understand them though.
+In here they're marked as quotes.
+
+There is this book "The Left Hand of Darkness"
+by miss Ursula Le Guin which I've thought
+about a long time.
+Especially chapter 12 "On Time and Darkness."
+It's very much the heart of the book,
+you may even call it the center.
+Now in the eye of Meshe all is bright,
+saying there is darkness is very foolish, foolish.
+To Meshe there is no time either, he sees it all on the moment of seeing.
+The entire chapter is foolish, foolish.
+Because here we are in the dark.
+Not knowing makes it worth living.
+
+The first two quotes I had to fish up from discord.
+I didn't realize so much time had passed between the things said.
+I think it's interesting though, there is a little arc here.
+The third time prompted me to make this collection, because again,
+nobody is going to connect these dots without me guiding a little better.
+
+* 2025.04.21 
+
+ #+BEGIN_QUOTE
+Yak: imagine a world where ekmett had instead designed everyone's ocular prosthetics
+Jappie: We'd have eyes of Meshe, and see all the stars and the darkness between the stars and all be bright.
+#+END_QUOTE
+
+This was a discord chat I had with a friend.
+I think at this point I just had finished the book and 
+remembered these lines,
+because it just happened to fit so well as a reaction.
+They're from that chapter "On Time and Darkness."
+
+* 2025.11.05
+
+ #+BEGIN_QUOTE
+A fruit-tree in the heart of the Forest of No Return,
+which lies a hundred miles long and a hundred miles wide,
+was old and greatly grown,
+with a hundred branches and on every branch a thousand twigs and on every twig a hundred fruits.
+The tree said in its rooted being,
+"All my fruits are seen, but one, this one in the darkness cast by all the others.
+This one fruit I keep secret to myself.
+Who will see it in the darkness of my fruits?
+and who will count the number of them?"
+Benji passed through the Forest of No Return in his wanderings,
+and from that one tree plucked that one fruit.
+#+END_QUOTE
+
+This is another paragraph I adapted from "On Time and Darkness".
+My dear friend Benji started on his journey of [[https://discourse.haskell.org/t/monad-of-no-return-next-steps/11443][no return]].
+I don't think he realized what honor I did him, replacing Meshe.
+He now is doing [[https://discourse.haskell.org/t/monad-of-no-return-the-great-patchening/14207?u=jappie][the great patchening]]. 
+And his journey continues.
+At the time I sent it to him and a few other friends.
+I wonder if they realized what they read.
+
+* 2026.07.12 
+
+ #+BEGIN_QUOTE
+One day I'll say all the integers,
+and on the moment of saying, 
+I'll exist in between all the integers.
+Realizing half of all wholes,
+wholesome words of all worlds.
+#+END_QUOTE
+
+I said this in reply to friends making a counting joke.
+Here I created something new,
+adapted the words and they are fully integrated into my mind.
+I put it into an LLM and it blew up nicely,
+it spun out thousands of words just analyzing the meaning here.
+Good.
+
+* Ending
+Writing pretty dense things brings me joy. 
+It feels like I'm copying miss Le Guin.
+It's not quite a book yet,
+but a little poem, maybe the beginning of one.
+
+I suppose what I lack is the meta play Ursula does quite hard:
+Meshe appears wise, because he sees it all,
+but he also suffers because he sees.
+And his seeing was inflicted upon him:
+
+#+BEGIN_QUOTE
+Do you know the story of the Lord of Shorth,
+who forced the Foretellers of Asen Fastness to answer the question: What is the meaning of life?
+Well, it was a couple of thousand years ago.
+The Foretellers stayed in the darkness for six days and nights.
+At the end, all the Celibates were catatonic, the Zanies were dead,
+the Pervert clubbed the Lord of Shorth to death with a stone,
+and the Weaver… He was a man named Meshe.
+
+-- chapter 5, "The Domestication of Hunch". 
+#+END_QUOTE
+
+Meshe died that day.
+Meshe points out the foolishness of darkness; to him all is bright.
+The foolishness of beginnings and endings, he sees it all in the one moment.
+But we foolish, foolish mortals need this.
+For without uncertainty, there is no life.
+
+Should I ask someone to care as much about these things as I do even?
+Of course not.
