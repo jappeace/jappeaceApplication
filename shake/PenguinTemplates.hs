@@ -58,6 +58,12 @@ penguinOgImage = "https://jappiesoftware.com/og-default.png"
 contactMailto :: H.AttributeValue
 contactMailto = toValue ("mailto:" <> companyEmail)
 
+-- | Laura's LinkedIn post announcing the voedzamekost.nl launch, linked as
+-- social proof next to the site itself. Tracking parameters (utm_*, rcm)
+-- are stripped: rcm identifies the account the share link was copied from.
+voedzameKostAnnouncementUrl :: H.AttributeValue
+voedzameKostAnnouncementUrl = "https://www.linkedin.com/posts/laura-koster-852458a4_voeding-diaebtist-gedragsverandering-share-7483083081000681473-yX2e/"
+
 -- | Origin (no trailing slash) of the webwinkelverhuis.nl site as linked from
 -- jappiesoftware.com pages. Production passes the real domain; the local
 -- serve mode passes http://localhost:8002 so both locally served sites
@@ -438,8 +444,9 @@ penguinIndexPageNl webwinkelUrl = penguinBaseTemplate Nl indexMetaNl $
 -- | The "WordPress Websites" service landing page. We build fixed-price
 -- WordPress sites for small businesses (warm-intro leads so far), and this page
 -- gives that work a home and frames it as the natural first step before a
--- webshop, linking onward to the migration service on webwinkelverhuis.nl. The
--- two recent builds (Voedzame Kost, Het Waardegebaar) are the proof of work.
+-- webshop, linking onward to the migration service on webwinkelverhuis.nl.
+-- The delivered build (Voedzame Kost, live since July 2026) is the proof of
+-- work; Het Waardegebaar joins the list once it is delivered.
 penguinWordpressPage :: WebwinkelverhuisUrl -> Html
 penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En wordpressMeta $
   H.main $ do
@@ -490,16 +497,20 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
           H.h3 "Update it yourself, no need to call us"
           H.p "A personal video walkthrough plus a short written manual: edit text, replace a photo, update a page. After that you can do it yourself, and we stay available for bigger jobs."
 
-    -- Recent work: hidden until these projects are actually delivered and live.
-    {-
+    -- Recent work: Voedzame Kost was delivered (live 2026-07) and shows here;
+    -- Het Waardegebaar stays hidden below until it is delivered and live.
     H.section ! A.class_ "results" $ do
       H.h2 "Recent work"
-      H.div ! A.class_ "testimonials" $ do
+      H.div ! A.class_ "testimonials" $
         H.blockquote $
           H.p $ do
             H.strong "Voedzame Kost"
             H.preEscapedToHtml (": a warm, calm site for a dietitian and ACT coach. A two-colour system separates private clients from organisations, with a workshop showcase and WhatsApp contact. " :: Text)
             H.a ! A.href "https://voedzamekost.nl/" $ H.preEscapedToHtml ("voedzamekost.nl &rarr;" :: Text)
+            " ("
+            H.a ! A.href voedzameKostAnnouncementUrl $ "announcement"
+            ")"
+    {-
         H.blockquote $
           H.p $ do
             H.strong "Het Waardegebaar"
@@ -606,16 +617,20 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
           H.h3 "Zelf aanpassen zonder ons te bellen"
           H.p "Een persoonlijke videorondleiding plus een korte handleiding: tekst aanpassen, een foto vervangen, een pagina bijwerken. U kunt het daarna zelf, en voor grotere klussen blijven we bereikbaar."
 
-    -- Recent werk: verborgen tot deze projecten daadwerkelijk opgeleverd en live zijn.
-    {-
+    -- Recent werk: Voedzame Kost is opgeleverd (live juli 2026) en staat hier;
+    -- Het Waardegebaar blijft hieronder verborgen tot het opgeleverd en live is.
     H.section ! A.class_ "results" $ do
       H.h2 "Recent werk"
-      H.div ! A.class_ "testimonials" $ do
+      H.div ! A.class_ "testimonials" $
         H.blockquote $
           H.p $ do
             H.strong "Voedzame Kost"
             H.preEscapedToHtml (": een warme, rustige site voor een di\235tist en ACT-coach. Een twee-kleurensysteem scheidt particulieren van organisaties, met een workshop-showcase en WhatsApp-contact. " :: Text)
             H.a ! A.href "https://voedzamekost.nl/" $ H.preEscapedToHtml ("voedzamekost.nl &rarr;" :: Text)
+            " ("
+            H.a ! A.href voedzameKostAnnouncementUrl $ "aankondiging"
+            ")"
+    {-
         H.blockquote $
           H.p $ do
             H.strong "Het Waardegebaar"

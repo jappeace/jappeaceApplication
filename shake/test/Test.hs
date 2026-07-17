@@ -90,6 +90,26 @@ usesMeetLinkCase (pageName, page) = testCase pageName $ do
   assertBool "links a raw calendar.app.google URL instead of the meet redirect"
     (not ("calendar.app.google" `T.isInfixOf` rendered))
 
+-- | Every statically renderable page of both brand sites: the index pages
+-- plus everything already in 'meetLinkPages' (which contains the wordpress
+-- and webwinkel service pages).
+allStaticPages :: [(String, Html)]
+allStaticPages =
+  [ ("penguinIndexPage", penguinIndexPage (WebwinkelverhuisUrl testOrigin))
+  , ("penguinIndexPageNl", penguinIndexPageNl (WebwinkelverhuisUrl testOrigin))
+  ] <> meetLinkPages
+
+-- | No page may publish share-URL tracking parameters. URLs copied from a
+-- platform's share button (LinkedIn in particular) embed utm_* junk and an
+-- rcm token that identifies the account the link was copied from; pasting
+-- one verbatim into a template leaks that token to every visitor. Links
+-- must be cleaned before they go in (see voedzameKostAnnouncementUrl).
+noTrackingParamsCase :: (String, Html) -> TestTree
+noTrackingParamsCase (pageName, page) = testCase pageName $ do
+  let rendered = TL.toStrict (renderHtml page)
+  assertBool "a link carries share-URL tracking parameters (utm_* or rcm=)"
+    (not ("utm_" `T.isInfixOf` rendered) && not ("rcm=" `T.isInfixOf` rendered))
+
 main :: IO ()
 main = defaultMain $
   testGroup "shake-blog templates"
@@ -97,4 +117,6 @@ main = defaultMain $
         (map linksFollowOriginCase pagesUnderTest)
     , testGroup "scheduling buttons use meet.jappiesoftware.com"
         (map usesMeetLinkCase meetLinkPages)
+    , testGroup "no page publishes share-URL tracking parameters"
+        (map noTrackingParamsCase allStaticPages)
     ]
