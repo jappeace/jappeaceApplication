@@ -4,11 +4,6 @@
 #+CATEGORY: story
 #+Tags: book, poetry, daoism
 
-I was partly tempted to just drop these musings on my
-blog with no explanation or analysis. 
-Nobody would understand them though.
-In here they're marked as quotes.
-
 There is this book "The Left Hand of Darkness"
 by miss Ursula Le Guin which I've thought
 about a long time.
@@ -20,11 +15,19 @@ saying there is darkness is very foolish, foolish.
 To Meshe there is no time either, he sees it all on the moment of seeing.
 The entire chapter is foolish, foolish.
 Because here we are in the dark.
-Not knowing makes it worth living.
+
+On the internet I reacted to people several times in the spirit of this book.
+I was partly tempted to just drop these musings on my
+blog with no explanation or analysis. 
+Nobody would understand them though.
+And not understanding is different from uncertainty.
+Not knowing makes it worth living,
+but never understanding is a missed opportunity.
+So here they're marked as quotes and I offer more guidance.
 
 The first two quotes I had to fish up from discord.
 I didn't realize so much time had passed between the things said.
-I think it's interesting though, there is a little arc here.
+I think it's interesting though, there is a little personal arc here.
 The third time prompted me to make this collection, because again,
 nobody is going to connect these dots without me guiding a little better.
 
@@ -32,6 +35,8 @@ nobody is going to connect these dots without me guiding a little better.
 
  #+BEGIN_QUOTE
 Yak: imagine a world where ekmett had instead designed everyone's ocular prosthetics
+#+END_QUOTE
+#+BEGIN_QUOTE
 Jappie: We'd have eyes of Meshe, and see all the stars and the darkness between the stars and all be bright.
 #+END_QUOTE
 
@@ -40,6 +45,10 @@ I think at this point I just had finished the book and
 remembered these lines,
 because it just happened to fit so well as a reaction.
 They're from that chapter "On Time and Darkness."
+
+ekmett stands for Edward Kmett,
+a famous Haskell developer who created many [[https://hackage.haskell.org/user/EdwardKmett][fantastic libraries]].
+Yak is an internet friend.
 
 * 2025.11.05
 
@@ -88,7 +97,7 @@ It feels like I'm copying miss Le Guin.
 It's not quite a book yet,
 but a little poem, maybe the beginning of one.
 
-I suppose what I lack is the meta play Ursula does quite hard:
+I suppose what I lack is the meta play Ursula does:
 Meshe appears wise, because he sees it all,
 but he also suffers because he sees.
 And his seeing was inflicted upon him:
