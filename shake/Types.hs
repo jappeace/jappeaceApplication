@@ -143,7 +143,7 @@ data PaginationInfo = PaginationInfo
 defaultSiteConfig :: SiteConfig
 defaultSiteConfig = SiteConfig
   { siteAuthor = "Jappie J. T. Klooster"
-  , siteName   = "Spotify - Web Player: Music for everyone"
+  , siteName   = "Jappie Journal"
   , siteUrl    = "https://jappieklooster.nl"
   , feedDomain = "https://jappieklooster.nl"
   , feedAtom   = "atom"
