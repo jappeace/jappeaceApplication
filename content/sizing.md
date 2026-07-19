@@ -273,13 +273,13 @@ This [experiment](https://elmwealth.com/lessons-from-betting-on-a-biased-coin-co
 was run with finance students and young professionals, and apparently 28% of them managed
 to go bust as well, so don't feel bad.
 Two thirds of the players even bet on tails at some point.
-Everyone knew heads was the better bet, and they fucked it up anyway.
+Everyone knew heads was the better bet, and they fucked it up anyway.[^why]
 
 The trick is bet sizing. 
 I mean the entire game is bet sizing so it may seem a bit silly as an observation. 
 All you have to do is place small bets and hit the 60% win button.
 There is an optimal sizing which you can calculate via the [Kelly criterion](https://en.wikipedia.org/wiki/Kelly_criterion).
-In this case the optimal size is 20%: `2*60%-1 = 20%` 
+In this case the optimal size is 20%: `2*60%-1 = 20%`[^one-one] 
 although I found it easier to just use 10%
 and keep smashing, occasionally resizing to 10% on significant balance changes.
 The criterion says: Too small sizing is fine, but too big sizing can lead to ruin.
@@ -302,9 +302,11 @@ So like the above game shows, you want to diversify.
 Which is made pretty hard by most incentive schemes.
 Allowing employees to trade their options with those of other startups would help this problem. 
 All of the schemes I've seen ban any peer to peer trading.
-So the only thing you can do is switch jobs after a while.
+So the only thing you can do is switch jobs after a while.[^correlation]
 I'm not sure if people are aware that the incentive structure meant to keep
 you there does the opposite.
+
+[^correlation]: There is another big problem in that both savings (equity) and your income are now corrolated to the success of that one company. If the startup goes under you don't just lose your job but also a ton of money. I suppose this is intentional however because your wealth is alligned with the founders. If a company gives you shares for whatever reason, the best thing you can almost always do is sell them and buy shares of companies you don't work for, preferably in a different sector.
 
 [^other-problems]: Ignoring the many other problems these option structures have,
   such as: 
@@ -319,3 +321,7 @@ I'm not sure if the people in the experiment were allowed to smash the bet butto
 but I'm pretty sure I'd have maxed out the original's $250 payout cap because I'm "Kelly aware".
 If you went bust, I invite you to retry the above game now that you're "Kelly aware" too.
 You can reset it by refreshing the page.
+
+[^one-one]: Assuming a 1:1 payout
+
+[^why]: Aside people just trying out the buttons, this could also be due to [gambers falacy](https://en.wikipedia.org/wiki/Gambler%27s_fallacy). Feeling that the tails is "due".
