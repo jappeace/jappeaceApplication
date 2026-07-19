@@ -292,21 +292,21 @@ It's fine to take on some risk, just don't go put everything on black,
 which will lead to [gambler's ruin](https://en.wikipedia.org/wiki/Gambler%27s_ruin).
 
 
-Ironically enough a lot of software jobs' incentive structures with equity
+Ironically enough, a lot of software jobs' incentive structures with equity
 break this fundamental law as well.
 If you get awarded options for a startup, the mathematics says that, despite the fat equity payouts, 
 you probably should leave after a while anyway just to diversify.[^other-problems]
 Because if you have all your options on a single company, 
-it's like doing one *big* bet on that company.
+it's like making one *big* bet on that company.
 So like the above game shows, you want to diversify. 
 Which is made pretty hard by most incentive schemes.
-Allowing employees to trade their options with those of other startups would help this problem. 
+Allowing employees to trade their options with those of other startups would help with this problem. 
 All of the schemes I've seen ban any peer to peer trading.
 So the only thing you can do is switch jobs after a while.[^correlation]
 I'm not sure if people are aware that the incentive structure meant to keep
 you there does the opposite.
 
-[^correlation]: There is another big problem in that both savings (equity) and your income are now corrolated to the success of that one company. If the startup goes under you don't just lose your job but also a ton of money. I suppose this is intentional however because your wealth is alligned with the founders. If a company gives you shares for whatever reason, the best thing you can almost always do is sell them and buy shares of companies you don't work for, preferably in a different sector.
+[^correlation]: There is another big problem in that both your savings (equity) and your income are now correlated to the success of that one company. If the startup goes under, you don't just lose your job but also a ton of money. I suppose this is intentional however, because your wealth is aligned with the founders'. If a company gives you shares for whatever reason, the best thing you can almost always do is sell them and buy shares of companies you don't work for, preferably in a different sector.
 
 [^other-problems]: Ignoring the many other problems these option structures have,
   such as: 
@@ -322,6 +322,6 @@ but I'm pretty sure I'd have maxed out the original's $250 payout cap because I'
 If you went bust, I invite you to retry the above game now that you're "Kelly aware" too.
 You can reset it by refreshing the page.
 
-[^one-one]: Assuming a 1:1 payout
+[^one-one]: Assuming a 1:1 payout.
 
-[^why]: Aside people just trying out the buttons, this could also be due to [gambers falacy](https://en.wikipedia.org/wiki/Gambler%27s_fallacy). Feeling that the tails is "due".
+[^why]: Aside from people just trying out the buttons, this could also be due to the [gambler's fallacy](https://en.wikipedia.org/wiki/Gambler%27s_fallacy), feeling that tails is "due".
