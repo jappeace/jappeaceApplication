@@ -1,4 +1,4 @@
-Title: Even with an edge you lose?
+Title: Even with an edge, you lose?
 Date: 2026-07-19 22:30
 Category: reflection
 OPTIONS: toc:nil
@@ -269,7 +269,7 @@ All you have to do is place small bets and hit the 60% win button.
 There is an optimal sizing which you can calculate via the [Kelly criterion](https://en.wikipedia.org/wiki/Kelly_criterion).
 In this case the optimal size is 20%: `2*60%-1 = 20%` 
 although I found it easier to just use 10%
-and keep smashing, occasionally resizing at 10% on significant balance changes.
+and keep smashing, occasionally resizing to 10% on significant balance changes.
 The criterion says: Too small sizing is fine, but too big sizing can lead to ruin.
 My 10% strategy gave me some leeway, 
 allowing a couple losses before the winnings came in again.
@@ -285,11 +285,11 @@ break this fundamental law as well.
 If you get awarded options for a startup, the mathematics says that, despite the fat equity payouts, 
 you probably should leave after a while anyway just to diversify.[^other-problems]
 Because if you have all your options on a single company, 
-it's like doing one /big/ bet on that company.
+it's like doing one *big* bet on that company.
 So like the above game shows, you want to diversify. 
-Which is made pretty hard by most incentive schemes.[^trading]
-Allowing employees to trade their options with those of other startups would solve this problem. 
-All of the scheme's I've seen ban any peer to peer trading.
+Which is made pretty hard by most incentive schemes.
+Allowing employees to trade their options with those of other startups would help this problem. 
+All of the schemes I've seen ban any peer to peer trading.
 So the only thing you can do is switch jobs after a while.
 I'm not sure if people are aware that the incentive structure meant to keep
 you there does the opposite.
@@ -305,5 +305,5 @@ after seeing it mentioned in [Patrick Boyle's video](https://www.youtube.com/wat
 I was curious to know if I would win and how long it'd take, about 90 seconds apparently.
 I'm not sure if the people in the experiment were allowed to smash the bet button like in my implementation,
 but I'm pretty sure I'd have maxed out the original's $250 payout cap because I'm "Kelly aware".
-If you went bust, I invite you to retry the above game now you're "Kelly aware" too.
+If you went bust, I invite you to retry the above game now that you're "Kelly aware" too.
 You can reset it by refreshing the page.
