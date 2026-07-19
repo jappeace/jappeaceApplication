@@ -128,13 +128,21 @@ baseTemplate config isArticle mSwitchUrl pageMeta title content =
     -- CSS: base
     H.link ! A.rel "stylesheet" ! A.href (toValue (absUrl config "/theme/css/base.css"))
     -- MathJax for articles
+    -- Decision: keep MathJax v2 but load it from jsDelivr instead of
+    -- cdn.mathjax.org. That host was retired in 2017 and now serves only a
+    -- redirect shim that loads MathJax 2.7.1 from cdnjs and logs a
+    -- deprecation warning, so math still rendered but through a frozen
+    -- extra hop. Upgrading to MathJax v3 was considered, but the inline
+    -- MathJax.Hub.Config below is v2-only API and v3 needs a rewritten
+    -- config, so the URL swap (jsDelivr serves current 2.7.x directly) is
+    -- the minimal working fix.
     if isArticle
       then do
         H.script ! A.type_ "text/x-mathjax-config" $
           "MathJax.Hub.Config({\"HTML-CSS\": {styles: {\".MathJax .mo, .MathJax .mi\": {color: \"black ! important\"}}}, tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']],processEscapes: true}});"
         H.script ! A.type_ "text/javascript"
                  ! A.async ""
-                 ! A.src "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
+                 ! A.src "https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"
                  $ mempty
       else mempty
     -- Google Analytics
