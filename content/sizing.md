@@ -13,7 +13,7 @@ Try it out:
 
 <style>
   #coin-flip-game {
-    border: 2px solid #30bb30;
+    border: 2px solid #196019;
     border-radius: 6px;
     overflow: hidden;
     max-width: 26em;
@@ -23,7 +23,7 @@ Try it out:
     background: rgba(255, 255, 255, 0.85);
   }
   #coin-flip-game h3 {
-    background: #30bb30;
+    background: #196019;
     color: white;
     margin: 0 -1em 1em;
     padding: 0.4em 1em;
@@ -43,7 +43,7 @@ Try it out:
   #coin-flip-game .controls > div { margin: 0.6em 0; }
   #coin-flip-game button {
     font-family: inherit;
-    background: #30bb30;
+    background: #196019;
     color: white;
     border: none;
     border-radius: 4px;
@@ -56,7 +56,7 @@ Try it out:
   #coin-flip-game .gamble-actions button { flex: 1; padding: 0.6em; font-weight: bold; }
   #coin-flip-game input[type="number"] {
     font-family: inherit;
-    border: 1px solid #30bb30;
+    border: 1px solid #196019;
     border-radius: 4px;
     padding: 0.3em 0.5em;
     width: 7em;
@@ -68,7 +68,7 @@ Try it out:
     overflow-y: auto;
     font-size: 0.85em;
     text-align: left;
-    border-top: 1px dashed #30bb30;
+    border-top: 1px dashed #196019;
     padding-top: 0.5em;
     margin-top: 0.8em;
   }
@@ -108,7 +108,7 @@ Try it out:
         of balance
       </div>
       <div>
-        <label>Bet $: <input class="bet-amount" type="number" step="0.01" min="0.01" value="1.00"></label>
+        <label>Bet $: <input class="bet-amount" type="number" step="0.01" min="0.01" value="0.00"></label>
       </div>
       <div class="gamble-actions">
         <button type="button" data-choice="heads">Bet HEADS (60%)</button>
