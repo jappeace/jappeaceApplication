@@ -262,6 +262,8 @@ If you went bust, this is the most valuable investment lesson you'll learn at a 
 This [experiment](https://elmwealth.com/lessons-from-betting-on-a-biased-coin-cool-heads-and-cautionary-tales/)
 was run with finance students and young professionals, and apparently 28% of them managed
 to go bust as well, so don't feel bad.
+Two thirds of the players even bet on tails at some point.
+Everyone knew heads was the better bet, and they fucked it up anyway.
 
 The trick is bet sizing. 
 I mean the entire game is bet sizing so it may seem a bit silly as an observation. 
