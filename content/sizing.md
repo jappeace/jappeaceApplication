@@ -129,6 +129,7 @@ Try it out:
   let gameActive = true;
   let timerInterval = null;
   let flipCount = 0;
+  let tailsBetCount = 0;
 
   const balanceDisplay = root.querySelector('.balance');
   const timerDisplay = root.querySelector('.timer');
@@ -179,6 +180,9 @@ Try it out:
     }
 
     flipCount++;
+    if (playerChoice === 'tails') {
+      tailsBetCount++;
+    }
 
     const landedHeads = Math.random() < headsProbability;
     const landedSide = landedHeads ? 'Heads' : 'Tails';
@@ -232,9 +236,15 @@ Try it out:
     clearInterval(timerInterval);
     controls.style.display = 'none';
     gameOverScreen.style.display = 'block';
+    // Only revealed at the end, so the reader can incriminate themselves first.
+    const tailsCallout = tailsBetCount === 0 ? '' : `
+      <div>You bet on tails <strong>${tailsBetCount}</strong> ${tailsBetCount === 1 ? 'time' : 'times'}.
+      The coin was rigged for heads, dear reader.</div>
+    `;
     gameOverScreen.innerHTML = `
       ${message}
       <div>It took you exactly <strong>${flipCount}</strong> presses to get here.</div>
+      ${tailsCallout}
     `;
     gameOverScreen.className = `game-over ${isWin ? 'win-text' : 'lose-text'}`;
     updateUI();
