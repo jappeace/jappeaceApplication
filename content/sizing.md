@@ -42,6 +42,7 @@ Try it out:
   #coin-flip-game .controls { text-align: center; }
   #coin-flip-game .controls > div { margin: 0.6em 0; }
   #coin-flip-game button {
+    touch-action: manipulation;
     font-family: inherit;
     background: #196019;
     color: white;
