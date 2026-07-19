@@ -165,6 +165,8 @@ Try it out:
       balance = 0;
       endGame("\u{1F480} REKT! You hit $0.00. Bankrupt.", false);
     }
+  }
+
   function endGame(message, isWin) {
     gameActive = false;
     clearInterval(timerInterval);
