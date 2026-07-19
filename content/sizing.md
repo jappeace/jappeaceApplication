@@ -193,7 +193,7 @@ Try it out:
 })();
 </script>
 
-If you're not a finance professional or economic students there is a decent
+There is a decent
 chance you went bust.
 If you went bust, this is the most valuable investment lesson you'll learn at a bargain price of free.
 
@@ -235,7 +235,3 @@ after seeing it mentioned in [Patrick Boyle's video](https://www.youtube.com/wat
 I was curious to know if I would win and how long it'd take, about 90 seconds apparently.
 I'm not sure if the people in the experiment were allowed to smash the bet button like in my implementation,
 but I'm pretty sure I'd max out because I'm "kelly aware".
-I wanted to make a similar game I think last year, but gave up
-because it was to much work. 
-This time I just vibed coded the game,
-the actual code is just not all that important for the story I want to tell.
