@@ -12,15 +12,75 @@ Try it out:
 <div id="coin-flip-game"></div>
 
 <style>
-  #coin-flip-game .stats { display: flex; justify-content: space-between; }
-  #coin-flip-game .balance { font-size: 2em; margin: 0.5em 0; }
-  #coin-flip-game .progress-track { background: #ddd; height: 10px; margin: 0.5em 0; }
-  #coin-flip-game .progress-fill { background: #7aa87a; height: 100%; transition: width 0.3s; }
-  #coin-flip-game .controls > div { margin: 0.5em 0; }
-  #coin-flip-game .log { height: 8em; overflow-y: auto; font-size: 0.9em; }
-  #coin-flip-game .win-text { color: #2a7d2a; }
+  #coin-flip-game {
+    border: 2px solid #30bb30;
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 26em;
+    margin: 1.5em auto;
+    padding: 0 1em 1em;
+    font-family: "Inconsolata", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
+    background: rgba(255, 255, 255, 0.85);
+  }
+  #coin-flip-game h3 {
+    background: #30bb30;
+    color: white;
+    margin: 0 -1em 1em;
+    padding: 0.4em 1em;
+    font-size: 1.1em;
+  }
+  #coin-flip-game .stats { display: flex; justify-content: space-between; font-weight: bold; }
+  #coin-flip-game .progress-track {
+    background: #d3d7cf;
+    height: 12px;
+    margin: 0.5em 0;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  #coin-flip-game .progress-fill { background: #30bb30; height: 100%; transition: width 0.3s; }
+  #coin-flip-game .balance { font-size: 2.2em; font-weight: bold; text-align: center; margin: 0.3em 0; }
+  #coin-flip-game .controls { text-align: center; }
+  #coin-flip-game .controls > div { margin: 0.6em 0; }
+  #coin-flip-game button {
+    font-family: inherit;
+    background: #30bb30;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25em 0.7em;
+    cursor: pointer;
+  }
+  #coin-flip-game button:hover { background: #259025; }
+  #coin-flip-game button:active { transform: scale(0.97); }
+  #coin-flip-game .gamble-actions { display: flex; gap: 0.6em; }
+  #coin-flip-game .gamble-actions button { flex: 1; padding: 0.6em; font-weight: bold; }
+  #coin-flip-game input[type="number"] {
+    font-family: inherit;
+    border: 1px solid #30bb30;
+    border-radius: 4px;
+    padding: 0.3em 0.5em;
+    width: 7em;
+    background: transparent;
+    color: inherit;
+  }
+  #coin-flip-game .log {
+    height: 8em;
+    overflow-y: auto;
+    font-size: 0.85em;
+    text-align: left;
+    border-top: 1px dashed #30bb30;
+    padding-top: 0.5em;
+    margin-top: 0.8em;
+  }
+  #coin-flip-game .win-text { color: #1e7d1e; }
   #coin-flip-game .lose-text { color: #b03030; }
-  #coin-flip-game .game-over { font-weight: bold; margin: 0.5em 0; }
+  #coin-flip-game .game-over { font-weight: bold; text-align: center; font-size: 1.1em; margin: 0.5em 0; }
+  @media (prefers-color-scheme: dark) {
+    #coin-flip-game { background: rgba(0, 0, 0, 0.85); }
+    #coin-flip-game .progress-track { background: #134013; }
+    #coin-flip-game .win-text { color: #7dff7d; }
+    #coin-flip-game .lose-text { color: #ff6b6b; }
+  }
 </style>
 
 <script>
