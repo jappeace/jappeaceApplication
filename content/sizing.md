@@ -4,9 +4,9 @@ Category: reflection
 OPTIONS: toc:nil
 Tags: gambling, stocks
 
-I rigged the coin such that it lands head 60% of the time.
-All you have to do is place your bet and start harvesting,
-the goal of the game is to reach $999 within 30 minutes.
+I rigged the coin such that it lands heads 60% of the time.
+All you have to do is place your bet and start harvesting.
+The goal of the game is to reach $999 within 30 minutes.
 Try it out:
 
 <div id="coin-flip-game"></div>
@@ -260,40 +260,41 @@ chance you went bust.
 If you went bust, this is the most valuable investment lesson you'll learn at a bargain price of free.
 
 This [experiment](https://elmwealth.com/lessons-from-betting-on-a-biased-coin-cool-heads-and-cautionary-tales/)
-was run with finance professionals, and apparently 28% of them managed
-to get bust as well, so don't feel bad if you bust.
-Even some risk management professionals fucked up.
+was run with finance students and young professionals, and apparently 28% of them managed
+to go bust as well, so don't feel bad.
+Two thirds of the players even bet on tails at some point.
+Everyone knew heads was the better bet, and they fucked it up anyway.
 
 The trick is bet sizing. 
 I mean the entire game is bet sizing so it may seem a bit silly as an observation. 
 All you have to do is place small bets and hit the 60% win button.
-There is an optimal sizing which you can calculate via the [kelly criterion](https://en.wikipedia.org/wiki/Kelly_criterion).
+There is an optimal sizing which you can calculate via the [Kelly criterion](https://en.wikipedia.org/wiki/Kelly_criterion).
 In this case the optimal size is 20%: `2*60%-1 = 20%` 
 although I found it easier to just use 10%
 and keep smashing.
-The criterion says: Too small sizing is fine, but to big sizing can lead to ruin.
+The criterion says: Too small sizing is fine, but too big sizing can lead to ruin.
 My 10% strategy gave me some leeway, 
 allowing a couple losses before the winnings came in again.
 
 Bet sizing is a fundamental law in investing.
-It's fine to take on some risk, just don't go put everything on black.
-Which will lead to [gambler's ruin](https://en.wikipedia.org/wiki/Gambler%27s_ruin)
+It's fine to take on some risk, just don't go put everything on black,
+which will lead to [gambler's ruin](https://en.wikipedia.org/wiki/Gambler%27s_ruin).
 
-Ironically enough a lot of software jobs incentive structures with equity
+Ironically enough a lot of software jobs' incentive structures with equity
 break this fundamental law as well.
-If you get awarded options for a startup, the mathematics says despite the fat equity payouts, 
+If you get awarded options for a startup, the mathematics says that, despite the fat equity payouts, 
 you probably should leave after a while anyway just to diversify.[^other-problems]
-I'm not sure if people are aware the incentive structure meant to keep
-you there does the opposite?
+I'm not sure if people are aware that the incentive structure meant to keep
+you there does the opposite.
 
-[^other-problems]: Ignoring the many other problems these option structures have
+[^other-problems]: Ignoring the many other problems these option structures have,
   such as: 
-  These are complicated contracts which you probably shouldn't even be trading,
+  these are complicated contracts which you probably shouldn't even be trading,
   and companies put all kinds of conditions within the contract that are unfair and 
-  frankly crazy compared to normal money (vesting periods, clawback clauses, etc).
+  frankly crazy compared to normal money (vesting periods, clawback clauses, etc.).
 
 I made this post because I wanted to see how this game actually worked,
 after seeing it mentioned in [Patrick Boyle's video](https://www.youtube.com/watch?v=nJtL9MBVj48).
 I was curious to know if I would win and how long it'd take, about 90 seconds apparently.
 I'm not sure if the people in the experiment were allowed to smash the bet button like in my implementation,
-but I'm pretty sure I'd max out because I'm "kelly aware".
+but I'm pretty sure I'd have maxed out the original's $250 payout cap because I'm "Kelly aware".
