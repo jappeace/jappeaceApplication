@@ -1,4 +1,4 @@
-Title: Rigged coin trading
+Title: Even with an edge you lose?
 Date: 2026-07-19 22:30
 Category: reflection
 OPTIONS: toc:nil
@@ -262,8 +262,6 @@ If you went bust, this is the most valuable investment lesson you'll learn at a 
 This [experiment](https://elmwealth.com/lessons-from-betting-on-a-biased-coin-cool-heads-and-cautionary-tales/)
 was run with finance students and young professionals, and apparently 28% of them managed
 to go bust as well, so don't feel bad.
-Two thirds of the players even bet on tails at some point.
-Everyone knew heads was the better bet, and they fucked it up anyway.
 
 The trick is bet sizing. 
 I mean the entire game is bet sizing so it may seem a bit silly as an observation. 
@@ -271,19 +269,28 @@ All you have to do is place small bets and hit the 60% win button.
 There is an optimal sizing which you can calculate via the [Kelly criterion](https://en.wikipedia.org/wiki/Kelly_criterion).
 In this case the optimal size is 20%: `2*60%-1 = 20%` 
 although I found it easier to just use 10%
-and keep smashing.
+and keep smashing, occasionally resizing at 10% on significant balance changes.
 The criterion says: Too small sizing is fine, but too big sizing can lead to ruin.
 My 10% strategy gave me some leeway, 
 allowing a couple losses before the winnings came in again.
 
 Bet sizing is a fundamental law in investing.
+Even with a good edge like the above game, you may still lose if you do this wrong.
 It's fine to take on some risk, just don't go put everything on black,
 which will lead to [gambler's ruin](https://en.wikipedia.org/wiki/Gambler%27s_ruin).
+
 
 Ironically enough a lot of software jobs' incentive structures with equity
 break this fundamental law as well.
 If you get awarded options for a startup, the mathematics says that, despite the fat equity payouts, 
 you probably should leave after a while anyway just to diversify.[^other-problems]
+Because if you have all your options on a single company, 
+it's like doing one /big/ bet on that company.
+So like the above game shows, you want to diversify. 
+Which is made pretty hard by most incentive schemes.[^trading]
+Allowing employees to trade their options with those of other startups would solve this problem. 
+All of the scheme's I've seen ban any peer to peer trading.
+So the only thing you can do is switch jobs after a while.
 I'm not sure if people are aware that the incentive structure meant to keep
 you there does the opposite.
 
@@ -298,3 +305,5 @@ after seeing it mentioned in [Patrick Boyle's video](https://www.youtube.com/wat
 I was curious to know if I would win and how long it'd take, about 90 seconds apparently.
 I'm not sure if the people in the experiment were allowed to smash the bet button like in my implementation,
 but I'm pretty sure I'd have maxed out the original's $250 payout cap because I'm "Kelly aware".
+If you went bust, I invite you to retry the above game now you're "Kelly aware" too.
+You can reset it by refreshing the page.
