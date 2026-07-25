@@ -49,13 +49,15 @@ Als laatste stap controleren we het resultaat op de winkel zelf, niet
 alleen in het beheer: wat uw klant ziet is de maatstaf.
 
 #+BEGIN_EXPORT html
-<details><summary>Voor de techneuten: waarom is dit moeilijker dan het klinkt?</summary><p>Shopify laat maar een beperkt aantal wijzigingen per seconde toe, en meertalige velden hebben elk een eigen schrijfroute. Het echte werk zit niet in het schrijven maar in het bewijzen dat elke wijziging is aangekomen: onze tooling draait daarom een controlelus die elk product per taal naleest, tot op de storefront.</p></details>
+<details><summary>Voor de techneuten: waarom is dit moeilijker dan het klinkt?</summary><p>Webshops laten maar een beperkt aantal wijzigingen per seconde toe, en meertalige velden hebben elk een eigen schrijfroute. Het echte werk zit niet in het schrijven maar in het bewijzen dat elke wijziging is aangekomen: onze tooling draait daarom een controlelus die elk product per taal naleest, tot op de storefront.</p></details>
 #+END_EXPORT
 
 * Ook zonder verhuizing
 
 Dit staat los van een migratie. De aanpak werkt op elke bestaande
-Shopify-shop, ook als wij die niet zelf hebben opgezet.
+webshop, ook als wij die niet zelf hebben opgezet; de meeste ervaring
+hebben we met Shopify-shops, andere webshoptypes ondersteunen we op
+aanvraag.
 
 * Wat dat voor u betekent
 
@@ -89,10 +91,12 @@ heeft, geen uurtarief. Eenvoudige regelsets beginnen rond de €750.
 
 *Moet mijn shop daarvoor door jullie gemigreerd zijn?*
 
-Nee. Dit werkt op elke Shopify-shop, ongeacht wie hem heeft gebouwd.
+Nee, en hij hoeft ook geen Shopify-shop te zijn: daar hebben we de
+meeste ervaring mee, maar andere webshoptypes ondersteunen we op
+aanvraag.
 
 #+BEGIN_EXPORT html
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Wat als er iets misgaat?","acceptedAnswer":{"@type":"Answer","text":"Voor we ook maar een veld aanraken maken we een volledige reservekopie van alles wat we gaan wijzigen, in alle talen. Elk veld kan daardoor worden teruggezet, en na afloop controleren we het resultaat op de winkelpagina zelf."}},{"@type":"Question","name":"Werkt dit ook bij meertalige shops?","acceptedAnswer":{"@type":"Answer","text":"Ja. De regels worden per taal uitgevoerd, inclusief de vertaalde velden, zodat elke taal zijn eigen correcte tekst krijgt."}},{"@type":"Question","name":"Wat kost zo'n catalogus-brede aanpassing?","acceptedAnswer":{"@type":"Answer","text":"U krijgt vooraf een vaste prijs op basis van de regels die u nodig heeft, geen uurtarief. Eenvoudige regelsets beginnen rond de 750 euro."}},{"@type":"Question","name":"Moet mijn shop daarvoor door jullie gemigreerd zijn?","acceptedAnswer":{"@type":"Answer","text":"Nee. Dit werkt op elke Shopify-shop, ongeacht wie hem heeft gebouwd."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Wat als er iets misgaat?","acceptedAnswer":{"@type":"Answer","text":"Voor we ook maar een veld aanraken maken we een volledige reservekopie van alles wat we gaan wijzigen, in alle talen. Elk veld kan daardoor worden teruggezet, en na afloop controleren we het resultaat op de winkelpagina zelf."}},{"@type":"Question","name":"Werkt dit ook bij meertalige shops?","acceptedAnswer":{"@type":"Answer","text":"Ja. De regels worden per taal uitgevoerd, inclusief de vertaalde velden, zodat elke taal zijn eigen correcte tekst krijgt."}},{"@type":"Question","name":"Wat kost zo'n catalogus-brede aanpassing?","acceptedAnswer":{"@type":"Answer","text":"U krijgt vooraf een vaste prijs op basis van de regels die u nodig heeft, geen uurtarief. Eenvoudige regelsets beginnen rond de 750 euro."}},{"@type":"Question","name":"Moet mijn shop daarvoor door jullie gemigreerd zijn?","acceptedAnswer":{"@type":"Answer","text":"Nee, en hij hoeft ook geen Shopify-shop te zijn: daar hebben we de meeste ervaring mee, maar andere webshoptypes ondersteunen we op aanvraag."}}]}
 </script>
 #+END_EXPORT
