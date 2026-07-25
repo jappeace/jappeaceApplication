@@ -1,0 +1,98 @@
+#+TITLE: Duizenden Shopify-producten in bulk aanpassen, zonder brokken
+#+DATE: 2026-07-25
+#+CATEGORY: shopify
+#+TAGS: shopify, bulk, productteksten
+
+Sommige klussen zijn te groot voor handwerk. Alle meta-titels van uw
+webshop herschrijven. Een leveranciersnaam die overal uit de teksten
+moet. Prijzen die per categorie anders omhoog moeten. Bij een paar
+honderd producten is dat dagen klikwerk; bij duizenden begint niemand
+eraan, en blijft de catalogus dus jaren zoals hij is.
+
+Toch kan het in één run. Voor een klant met 2270 producten hebben we
+onlangs alle meta-titels in één keer herschreven, in meerdere talen
+tegelijk, met behoud van het belangrijkste trefwoord per product. De
+hele catalogus, gecontroleerd tot op de winkelpagina.
+
+* Waarom handwerk en simpele apps het niet redden
+
+Handwerk schaalt niet: 2270 producten keer twee minuten is ruim een
+volle werkweek, en ergens halverwege sluipt de eerste kopieerfout
+erin. Niemand houdt dat foutloos vol, en een half aangepaste catalogus
+oogt slordiger dan een ongemoeide.
+
+Er bestaan apps die zoeken-en-vervangen over uw producten heen leggen,
+en voor een simpele woordwissel zijn die prima. Maar echte klussen
+hebben volgorde en uitzonderingen: "de categorienaam wint van de
+merknaam, behalve bij cadeausets". Zulke regels passen niet in een
+zoek-en-vervangveldje.
+
+Bij meertalige shops komt daar nog een laag bij: elke taal heeft zijn
+eigen velden, en een aanpassing die alleen het Nederlands raakt laat
+uw Duitse winkel achter met de oude tekst.
+
+En het grootste risico is onzichtbaar: geen reservekopie en geen
+controle achteraf. Wie merkt het als product 1800 verkeerd is
+overgeschreven?
+
+* Hoe wij het aanpakken
+
+Eerst worden uw wensen expliciete regels. Die leggen we ter
+goedkeuring aan u voor, met voorbeelden uit uw eigen catalogus, zodat
+u vooraf ziet wat er met echte producten gebeurt.
+
+Daarna maken we een volledige reservekopie van elk veld dat we gaan
+raken, in alle talen. Pas dan voert ons programma de regels uit over
+de hele catalogus.
+
+Als laatste stap controleren we het resultaat op de winkel zelf, niet
+alleen in het beheer: wat uw klant ziet is de maatstaf.
+
+#+BEGIN_EXPORT html
+<details><summary>Voor de techneuten: waarom is dit moeilijker dan het klinkt?</summary><p>Shopify laat maar een beperkt aantal wijzigingen per seconde toe, en meertalige velden hebben elk een eigen schrijfroute. Het echte werk zit niet in het schrijven maar in het bewijzen dat elke wijziging is aangekomen: onze tooling draait daarom een controlelus die elk product per taal naleest, tot op de storefront.</p></details>
+#+END_EXPORT
+
+* Ook zonder verhuizing
+
+Dit staat los van een migratie. De aanpak werkt op elke bestaande
+Shopify-shop, ook als wij die niet zelf hebben opgezet.
+
+* Wat dat voor u betekent
+
+Eén afgesproken prijs, één run, en een catalogus die van product 1 tot
+product 2270 dezelfde stijl volgt. Geen weken klikwerk, geen half
+aangepaste winkel, en een reservekopie voor het geval u toch terug
+wilt.
+
+Benieuwd wat er met uw catalogus kan? [[https://meet.jappiesoftware.com][Plan
+een vrijblijvend gesprek]], dan kijken we samen naar uw shop en de
+regels die u nodig heeft.
+
+* Veelgestelde vragen
+
+*Wat als er iets misgaat?*
+
+Voor we ook maar één veld aanraken maken we een volledige reservekopie
+van alles wat we gaan wijzigen, in alle talen. Elk veld kan daardoor
+worden teruggezet, en na afloop controleren we het resultaat op de
+winkelpagina zelf.
+
+*Werkt dit ook bij meertalige shops?*
+
+Ja. De regels worden per taal uitgevoerd, inclusief de vertaalde
+velden, zodat elke taal zijn eigen correcte tekst krijgt.
+
+*Wat kost zo'n catalogus-brede aanpassing?*
+
+U krijgt vooraf een vaste prijs op basis van de regels die u nodig
+heeft, geen uurtarief. Eenvoudige regelsets beginnen rond de €750.
+
+*Moet mijn shop daarvoor door jullie gemigreerd zijn?*
+
+Nee. Dit werkt op elke Shopify-shop, ongeacht wie hem heeft gebouwd.
+
+#+BEGIN_EXPORT html
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Wat als er iets misgaat?","acceptedAnswer":{"@type":"Answer","text":"Voor we ook maar een veld aanraken maken we een volledige reservekopie van alles wat we gaan wijzigen, in alle talen. Elk veld kan daardoor worden teruggezet, en na afloop controleren we het resultaat op de winkelpagina zelf."}},{"@type":"Question","name":"Werkt dit ook bij meertalige shops?","acceptedAnswer":{"@type":"Answer","text":"Ja. De regels worden per taal uitgevoerd, inclusief de vertaalde velden, zodat elke taal zijn eigen correcte tekst krijgt."}},{"@type":"Question","name":"Wat kost zo'n catalogus-brede aanpassing?","acceptedAnswer":{"@type":"Answer","text":"U krijgt vooraf een vaste prijs op basis van de regels die u nodig heeft, geen uurtarief. Eenvoudige regelsets beginnen rond de 750 euro."}},{"@type":"Question","name":"Moet mijn shop daarvoor door jullie gemigreerd zijn?","acceptedAnswer":{"@type":"Answer","text":"Nee. Dit werkt op elke Shopify-shop, ongeacht wie hem heeft gebouwd."}}]}
+</script>
+#+END_EXPORT

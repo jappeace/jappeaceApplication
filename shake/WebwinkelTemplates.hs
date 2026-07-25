@@ -239,7 +239,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
   where
     indexMeta :: PageMeta
     indexMeta = PageMeta
-      { pageMetaTitle       = "Webwinkelverhuis \8212 Verhuis uw webshop naar Shopify"
+      { pageMetaTitle       = "Webwinkelverhuis \8212 Verhuis uw webshop zonder zorgen"
       , pageMetaDescription = "Geautomatiseerde webshop-migratie van MijnWebwinkel, CCV Shop of Lightspeed naar Shopify. Producten, vertalingen, klantdata en SEO-redirects. Betaling na succesvolle migratie."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/"
