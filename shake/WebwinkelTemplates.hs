@@ -434,7 +434,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
-          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en eventuele bulk-aanpassingen. Inclusief 1.000 producten en &eacute;&eacute;n taal; grotere catalogi en extra talen tegen een kleine meerprijs per product, vooraf berekend in de offerte." :: Text)
+          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en eventuele bulk-aanpassingen." :: Text)
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
@@ -558,7 +558,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
-          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad. Inclusief 1.000 producten en &eacute;&eacute;n taal; grotere catalogi en extra talen tegen een kleine meerprijs per product, vooraf berekend in de offerte." :: Text)
+          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad." :: Text)
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
@@ -700,7 +700,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
-          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad. Inclusief 1.000 producten en &eacute;&eacute;n taal; grotere catalogi en extra talen tegen een kleine meerprijs per product, vooraf berekend in de offerte." :: Text)
+          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad." :: Text)
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
