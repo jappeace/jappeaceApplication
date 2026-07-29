@@ -14,6 +14,7 @@ module PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , migratieBasisprijsEuro
   , meetLink
   , companyWhatsappNumber
   , whatsappFloatingButton
@@ -100,6 +101,14 @@ resolveOgImage siteDefault = fromMaybe siteDefault . pageMetaOgImage
 -- sites and the Organization structured data.
 companyEmail :: Text
 companyEmail = "hallo@jappiesoftware.com"
+
+-- | Advertised base price for a webshop migration, in euros, digits
+-- only. Single source of truth for every surface that shows it: the
+-- price cards, the meta descriptions and the schema.org Offer markup.
+-- The decision trail lives in jappiesoft
+-- strategy/pricing-business-model.org (staffel-2026-07-29).
+migratieBasisprijsEuro :: Text
+migratieBasisprijsEuro = "1999"
 
 -- | Branded scheduling link used by every "plan een gesprek" button across
 -- the sites and the outreach mails. It is a 302 redirect on our own
@@ -208,7 +217,7 @@ serviceJsonLd serviceName serviceDescription pageUrl =
       , ",\"url\":\"https://jappiesoftware.com/\"}"
       , ",\"offers\":{\"@type\":\"Offer\""
       , ",\"priceCurrency\":\"EUR\""
-      , ",\"price\":\"1499\""
+      , ",\"price\":\"" <> migratieBasisprijsEuro <> "\""
       , ",\"url\":" <> jsonLdString pageUrl <> "}"
       , "}"
       ]
