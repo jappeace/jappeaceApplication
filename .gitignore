@@ -8,3 +8,11 @@ __pycache__
 *.pyc
 redditconf.py
 result
+
+# build output and tool scratch
+_build/
+_site/
+_penguin-site/
+_webwinkelverhuis-site/
+.playwright-mcp/
+result-shake
