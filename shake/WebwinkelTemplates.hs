@@ -185,7 +185,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
         H.blockquote $
           H.p $ do
             H.strong "Panzer-ShopNL"
-            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat de Google-posities behouden bleven. " :: Text)
+            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat elke oude link bleef werken en de opgebouwde SEO meeverhuisde. " :: Text)
             H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
 
     -- Why us
@@ -196,7 +196,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na een succesvolle migratie" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
+        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
       H.p $ do
         "Meer weten over waarom shops vertrekken? Lees onze "
@@ -222,7 +222,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
                 ! A.alt "Grafiek met stijgende prijzen"
                 ! A.width "56" ! A.height "56"
           H.h3 "Lightspeed"
-          H.p $ H.preEscapedToHtml ("Beursgenoteerd en steeds duurder voor kleine shops. Wij verhuizen u veilig, met behoud van uw Google-posities &mdash; geen 70% verkeersverlies." :: Text)
+          H.p $ H.preEscapedToHtml ("Beursgenoteerd en steeds duurder voor kleine shops. Wij verhuizen u veilig, met een 301-redirect voor elke oude URL; bij onbegeleide migraties zagen we verhalen van 70% verkeersverlies." :: Text)
           H.a ! A.href "/migrate-lightspeed.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-beperkt.svg"
@@ -290,7 +290,7 @@ appPage = webwinkelBaseTemplate appMeta $ do
           H.p $ H.preEscapedToHtml ("Uw categorie&euml;n worden Shopify-collections en uw informatiepagina&rsquo;s worden meegenomen, inclusief het navigatiemenu." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "SEO-redirects"
-          H.p "De app legt 301-redirects aan van elke oude URL naar de juiste nieuwe pagina, zodat uw Google-posities behouden blijven."
+          H.p "De app legt 301-redirects aan van elke oude URL naar de juiste nieuwe pagina, zodat elke bestaande link blijft werken en uw opgebouwde SEO meeverhuist."
         H.li ! A.class_ "card" $ do
           H.h3 "Thema"
           H.p "De app bouwt en plaatst een Shopify-thema dat de uitstraling van uw huidige winkel volgt."
@@ -375,7 +375,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
                 ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
           H.h3 "SEO-redirects"
-          H.p "301-redirects van elke oude URL naar de nieuwe, volledig automatisch gegenereerd. Uw Google-posities en backlinks blijven behouden."
+          H.p "301-redirects van elke oude URL naar de nieuwe, volledig automatisch gegenereerd. Uw backlinks blijven werken en uw opgebouwde SEO verhuist mee."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
                 ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
@@ -424,7 +424,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
         H.blockquote $
           H.p $ do
             H.strong "Panzer-ShopNL"
-            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat de Google-posities behouden bleven. " :: Text)
+            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat elke oude link bleef werken en de opgebouwde SEO meeverhuisde. " :: Text)
             H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
 
     -- Pricing
@@ -452,7 +452,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
+        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
@@ -529,7 +529,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.p "Klantgegevens en bestelgeschiedenis worden overgezet zodat uw klanten direct kunnen inloggen op de nieuwe shop."
         H.li ! A.class_ "card" $ do
           H.h3 "SEO-redirects"
-          H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw Google-posities en backlinks blijven behouden."
+          H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw backlinks blijven werken en uw opgebouwde SEO verhuist mee."
         H.li ! A.class_ "card" $ do
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
           H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Shopify Collections met vertaalde titels en het navigatiemenu." :: Text)
@@ -573,7 +573,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
         H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (" &mdash; u kiest de bestemming, wij migreren naar elk platform" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
+        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
         H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
@@ -671,7 +671,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.p "Klantgegevens, bestelgeschiedenis en accountdata worden overgezet zodat uw klanten direct kunnen inloggen op de nieuwe shop."
         H.li ! A.class_ "card" $ do
           H.h3 "SEO-redirects"
-          H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw Google-posities en backlinks blijven behouden. Geen 70% verkeersverlies zoals bij een onbegeleide migratie."
+          H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw backlinks blijven werken en uw opgebouwde SEO verhuist mee; bij onbegeleide migraties zagen we verhalen van 70% verkeersverlies."
         H.li ! A.class_ "card" $ do
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n & navigatie" :: Text)
           H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Shopify Collections met vertaalde titels en het navigatiemenu." :: Text)
@@ -709,7 +709,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $ do
-          H.p $ H.preEscapedToHtml ("U bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding raakt u uw Google-posities kwijt &mdash; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat uw SEO intact blijft." :: Text)
+          H.p $ H.preEscapedToHtml ("U bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding gaan bij de overstap vaak oude URLs kapot; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat elke oude URL blijft doorverwijzen en uw opgebouwde SEO meeverhuist." :: Text)
           H.p $ do
             H.a ! A.href "/waarom-lightspeed.html" $ "Waarom verlaten steeds meer webshops Lightspeed?"
             H.preEscapedToHtml (" &rarr;" :: Text)
@@ -717,7 +717,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
         H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (" &mdash; u kiest de bestemming, wij migreren naar elk platform" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects zodat uw Google-posities niet verloren gaan" :: Text)
+        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
         H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
@@ -761,14 +761,14 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
       { pageMetaTitle       = "Ontsnap Lightspeed \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Geen verkeersverlies. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd lightspeedFaq <> serviceJsonLd
           "Lightspeed naar Shopify migratie"
-          "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, vertalingen, afbeeldingen, voorraad en SEO-redirects, zonder verkeersverlies."
+          "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, vertalingen, afbeeldingen, voorraad en SEO-redirects."
           "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       }
 
@@ -781,7 +781,7 @@ lightspeedFaq =
   , ( "Wat als er iets niet klopt na de migratie?"
     , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk met een uitgebreide testbatterij. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Verlies ik mijn Google-posities?"
-    , "Nee. Wij genereren automatisch 301-redirects voor elke URL. Dit is het belangrijkste onderdeel van een veilige migratie en de reden dat u dit niet zelf wilt doen." )
+    , "Elke oude URL krijgt automatisch een 301-redirect, zodat al uw links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Werkt het ook voor meertalige webshops?"
     , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die Lightspeed en Shopify beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"

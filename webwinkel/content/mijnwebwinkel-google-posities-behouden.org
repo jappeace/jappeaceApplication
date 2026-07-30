@@ -58,8 +58,8 @@ nieuwe pagina, zonder kopieerfouten.
 Voordat er ook maar iets live gaat krijgt u een testshop en een
 verificatieoverzicht, zodat u zelf kunt controleren dat de adressen kloppen.
 Pas als dat goed staat schakelen we over. Vanaf dag één zijn alle redirects
-actief, dus ook in de weken waarin Google de nieuwe URLs oppikt verliest u
-geen verkeer.
+actief, dus ook in de weken waarin Google de nieuwe URLs oppikt komt elke
+bezoeker en elke oude link gewoon op de juiste pagina uit.
 
 #+BEGIN_EXPORT html
 <details><summary>Voor de techneuten: maar die artikelcodes veranderen toch?</summary><p>Klopt, de a-codes in MijnWebwinkel-URLs lijken te veranderen, wat het idee geeft dat een redirectkaart binnen no-time verouderd is. Wij hebben die codes over meerdere weken systematisch geobserveerd en vastgesteld dat ze een vast, eenduidig patroon volgen. Daardoor kunnen we de oude URLs betrouwbaar koppelen aan de nieuwe pagina's, ook de adressen met numerieke product-ID's. De volledige redirectkaart genereren we automatisch, niet met de hand.</p></details>
@@ -67,10 +67,10 @@ geen verkeer.
 
 * Wat dat voor u betekent
 
-Geen onverwachte omzetdip na de overstap. Geen weken werk om met de hand
-redirects in te kloppen. En geen organisch verkeer dat u kwijtraakt aan een
-foutpagina. Uw bezoekers en uw Google-posities komen gewoon op de nieuwe
-shop terecht.
+Geen weken werk om met de hand redirects in te kloppen, en geen organisch
+verkeer dat u kwijtraakt aan een foutpagina: uw bezoekers en uw backlinks
+komen gewoon op de nieuwe shop terecht. Google kan na een grote wijziging
+altijd tijdelijk schommelen; wat wij afdekken is dat er niets kapotgaat.
 
 Wilt u eerst lezen [[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][waarom
 MijnWebwinkel niet meer wordt doorontwikkeld]], of meteen weten hoe
@@ -84,9 +84,11 @@ migratie en de redirects.
 
 *Verlies ik mijn Google-posities als ik van MijnWebwinkel migreer?*
 
-Niet als het goed gebeurt. Het verlies ontstaat doordat oude URLs na de
-overstap niet meer bestaan en geen 301-redirect hebben. Met een redirect voor
-elke oude URL blijven uw posities en backlinks behouden.
+Blijvend verlies ontstaat doordat oude URLs na de overstap niet meer
+bestaan en geen 301-redirect hebben; dat dekken wij volledig af, met een
+redirect voor elke oude URL, zodat al uw links en backlinks blijven werken
+en de opgebouwde SEO meeverhuist. Tijdelijke schommelingen na een grote
+wijziging kunnen altijd bij Google.
 
 *Hoe weet u zeker dat alle URLs worden afgevangen?*
 
@@ -103,10 +105,10 @@ betrouwbaar naar de juiste nieuwe URL doorsturen.
 *Hoe lang duurt het voordat Google de nieuwe URLs oppikt?*
 
 Doorgaans enkele weken. Doordat de redirects vanaf dag één actief zijn,
-verliest u in de tussentijd geen verkeer.
+komt elke bezoeker in de tussentijd gewoon op de juiste pagina uit.
 
 #+BEGIN_EXPORT html
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Verlies ik mijn Google-posities als ik van MijnWebwinkel migreer?","acceptedAnswer":{"@type":"Answer","text":"Niet als het goed gebeurt. Het verlies ontstaat doordat oude URLs na de overstap niet meer bestaan en geen 301-redirect hebben. Met een redirect voor elke oude URL blijven uw posities en backlinks behouden."}},{"@type":"Question","name":"Hoe weet u zeker dat alle URLs worden afgevangen?","acceptedAnswer":{"@type":"Answer","text":"Ons programma crawlt uw volledige webshop en legt elke URL vast, niet een steekproef. Elke vastgelegde URL krijgt een redirect, die we voor de overstap samen met u verifiëren."}},{"@type":"Question","name":"De artikelcodes lijken te veranderen. Werkt het dan wel?","acceptedAnswer":{"@type":"Answer","text":"Ja. We hebben die codes over meerdere weken geobserveerd en vastgesteld dat ze een vast, eenduidig patroon volgen. Daardoor kunnen we elke oude URL betrouwbaar naar de juiste nieuwe URL doorsturen."}},{"@type":"Question","name":"Hoe lang duurt het voordat Google de nieuwe URLs oppikt?","acceptedAnswer":{"@type":"Answer","text":"Doorgaans enkele weken. Doordat de redirects vanaf dag een actief zijn, verliest u in de tussentijd geen verkeer."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Verlies ik mijn Google-posities als ik van MijnWebwinkel migreer?","acceptedAnswer":{"@type":"Answer","text":"Blijvend verlies ontstaat door oude URLs zonder 301-redirect; dat dekken wij volledig af met een redirect voor elke oude URL, zodat alle links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Tijdelijke schommelingen na een grote wijziging kunnen altijd bij Google."}},{"@type":"Question","name":"Hoe weet u zeker dat alle URLs worden afgevangen?","acceptedAnswer":{"@type":"Answer","text":"Ons programma crawlt uw volledige webshop en legt elke URL vast, niet een steekproef. Elke vastgelegde URL krijgt een redirect, die we voor de overstap samen met u verifiëren."}},{"@type":"Question","name":"De artikelcodes lijken te veranderen. Werkt het dan wel?","acceptedAnswer":{"@type":"Answer","text":"Ja. We hebben die codes over meerdere weken geobserveerd en vastgesteld dat ze een vast, eenduidig patroon volgen. Daardoor kunnen we elke oude URL betrouwbaar naar de juiste nieuwe URL doorsturen."}},{"@type":"Question","name":"Hoe lang duurt het voordat Google de nieuwe URLs oppikt?","acceptedAnswer":{"@type":"Answer","text":"Doorgaans enkele weken. Doordat de redirects vanaf dag een actief zijn, komt elke bezoeker in de tussentijd gewoon op de juiste pagina uit."}}]}
 </script>
 #+END_EXPORT
