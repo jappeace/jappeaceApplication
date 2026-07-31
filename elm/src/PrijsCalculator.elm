@@ -27,9 +27,10 @@ is en niet een toezegging.
 -}
 
 import Browser
-import Html exposing (Html, div, fieldset, h3, input, label, legend, li, option, p, select, span, strong, text, ul)
+import Html exposing (Html, a, div, fieldset, h3, input, label, legend, li, option, p, select, span, strong, text, ul)
 import Html.Attributes as Attr
 import Html.Events exposing (onCheck, onInput)
+import Url
 
 
 
@@ -229,6 +230,39 @@ themaNaarWaarde thema =
 
         ThemaNieuw ->
             "nieuw"
+
+
+{-| Leesbare omschrijving van een bronplatform, gebruikt in de dropdown en in
+de vooringevulde offerte-mail. -}
+bronOmschrijving : BronPlatform -> String
+bronOmschrijving bron =
+    case bron of
+        BronMijnwebwinkel ->
+            "MijnWebwinkel"
+
+        BronCcvShop ->
+            "CCV Shop"
+
+        BronLightspeed ->
+            "Lightspeed"
+
+        BronAnders ->
+            "Een ander systeem / weet ik niet"
+
+
+{-| Leesbare omschrijving van een themakeuze, gebruikt in de dropdown en in de
+vooringevulde offerte-mail. -}
+themaOmschrijving : ThemaKeuze -> String
+themaOmschrijving thema =
+    case thema of
+        ThemaStandaard ->
+            "Zelf inrichten (standaard thema)"
+
+        ThemaOverzetten ->
+            "Uitstraling overzetten"
+
+        ThemaNieuw ->
+            "Nieuw ontwerp"
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -447,10 +481,10 @@ bronVeld bron =
     label [ Attr.class "calc-field" ]
         [ span [ Attr.class "calc-label" ] [ text "Waar draait uw webshop nu?" ]
         , select [ onInput BronGewijzigd ]
-            [ keuzeOptie (bronNaarWaarde bron) "mijnwebwinkel" "MijnWebwinkel"
-            , keuzeOptie (bronNaarWaarde bron) "ccv" "CCV Shop"
-            , keuzeOptie (bronNaarWaarde bron) "lightspeed" "Lightspeed"
-            , keuzeOptie (bronNaarWaarde bron) "anders" "Een ander systeem / weet ik niet"
+            [ keuzeOptie (bronNaarWaarde bron) "mijnwebwinkel" (bronOmschrijving BronMijnwebwinkel)
+            , keuzeOptie (bronNaarWaarde bron) "ccv" (bronOmschrijving BronCcvShop)
+            , keuzeOptie (bronNaarWaarde bron) "lightspeed" (bronOmschrijving BronLightspeed)
+            , keuzeOptie (bronNaarWaarde bron) "anders" (bronOmschrijving BronAnders)
             ]
         ]
 
@@ -460,9 +494,9 @@ themaVeld thema =
     label [ Attr.class "calc-field" ]
         [ span [ Attr.class "calc-label" ] [ text "Hoe moet uw nieuwe shop eruitzien?" ]
         , select [ onInput ThemaGewijzigd ]
-            [ keuzeOptie (themaNaarWaarde thema) "standaard" "Standaard Shopify-thema, dat ik zelf inricht"
-            , keuzeOptie (themaNaarWaarde thema) "overzetten" "Mijn huidige uitstraling, door ons 1-op-1 overgezet"
-            , keuzeOptie (themaNaarWaarde thema) "nieuw" "Een volledig nieuw ontwerp door ons"
+            [ keuzeOptie (themaNaarWaarde thema) "standaard" (themaOmschrijving ThemaStandaard)
+            , keuzeOptie (themaNaarWaarde thema) "overzetten" (themaOmschrijving ThemaOverzetten)
+            , keuzeOptie (themaNaarWaarde thema) "nieuw" (themaOmschrijving ThemaNieuw)
             ]
         ]
 
@@ -504,6 +538,20 @@ optioneleRegel toon omschrijving centen =
         []
 
 
+{-| Zet een aantal voor een enkelvoud- of meervoud-zelfstandignaamwoord, zodat
+"1 extra taal" en "2 extra talen" allebei goed lopen. -}
+aantalLabel : Int -> String -> String -> String
+aantalLabel aantal enkelvoud meervoud =
+    String.fromInt aantal
+        ++ " "
+        ++ (if aantal == 1 then
+                enkelvoud
+
+            else
+                meervoud
+           )
+
+
 bronRegel : Model -> List (Html Msg)
 bronRegel model =
     case model.bron of
@@ -527,7 +575,7 @@ themaRegel model =
             []
 
         ThemaOverzetten ->
-            [ regel "Huidige uitstraling 1-op-1 overzetten" themaOverzettenCenten ]
+            [ regel "Uitstraling overzetten" themaOverzettenCenten ]
 
         ThemaNieuw ->
             []
@@ -539,15 +587,15 @@ uitsplitsing model =
         [ regel "Basismigratie (t/m 1.000 producten, 1 taal)" basisMigratieCenten ]
             ++ optioneleRegel
                 (extraProducten model > 0)
-                (String.fromInt (extraProducten model) ++ " extra producten \u{00D7} \u{20AC}0,25")
+                (aantalLabel (extraProducten model) "extra product \u{00D7} \u{20AC}0,25" "extra producten \u{00D7} \u{20AC}0,25")
                 (extraProductenCenten model)
             ++ optioneleRegel
                 (extraTalen model > 0)
-                (String.fromInt (extraTalen model) ++ " extra taal/talen: vertaalwerk per product")
+                (aantalLabel (extraTalen model) "extra taal: vertaalwerk per product" "extra talen: vertaalwerk per product")
                 (extraTaalProductenCenten model)
             ++ optioneleRegel
                 (extraTalen model > 0)
-                (String.fromInt (extraTalen model) ++ " extra taal/talen: configuratie \u{00D7} \u{20AC}250")
+                (aantalLabel (extraTalen model) "extra taal: configuratie \u{00D7} \u{20AC}250" "extra talen: configuratie \u{00D7} \u{20AC}250")
                 (extraTaalConfiguratieCenten model)
             ++ bronRegel model
             ++ themaRegel model
@@ -559,34 +607,30 @@ uitsplitsing model =
             ++ optioneleRegel model.emailBijMijnwebwinkel "E-mail-setup" emailSetupCenten
 
 
-{-| Toelichting bij de themakeuze. Het standaard-thema kost bij ons niets omdat
-u het zelf (of via een ander) inricht; een nieuw ontwerp is los ontwerpwerk op
-aanvraag. Bij 1-op-1 overzetten is geen extra uitleg nodig. -}
+{-| Korte signaalregel bij een keuze die we niet kant-en-klaar prijzen, zodat
+het totaal niet stilzwijgend een op-aanvraag-post weglaat. De volledige uitleg
+staat als voetnoot onder de rekenhulp op de pagina, niet in de app zelf. -}
 themaNoot : ThemaKeuze -> List (Html Msg)
 themaNoot thema =
     case thema of
-        ThemaStandaard ->
-            [ p [ Attr.class "calc-note" ]
-                [ text "Na de migratie staat uw shop op een standaard Shopify-thema dat u zelf inricht. Theming hoeft niet via ons: u kunt het zelf doen of een ontwerper naar keuze inhuren. Wij doen het ook, en zijn er inmiddels aardig goed in." ]
-            ]
-
         ThemaNieuw ->
             [ p [ Attr.class "calc-note" ]
-                [ text "Een volledig nieuw ontwerp is los ontwerpwerk. Dat prijzen we op aanvraag, dus het staat nog niet in het totaal." ]
+                [ text "Nieuw ontwerp: op aanvraag, nog niet meegerekend in het totaal." ]
             ]
+
+        ThemaStandaard ->
+            []
 
         ThemaOverzetten ->
             []
 
 
-{-| Waarschuwing bij een onbekend bronplatform: de prijs hangt af van hoe de
-data eruit komt, dus het getoonde totaal is dan een ondergrens. -}
 bronNoot : BronPlatform -> List (Html Msg)
 bronNoot bron =
     case bron of
         BronAnders ->
             [ p [ Attr.class "calc-note" ]
-                [ text "Bij een ander bronplatform hangt de prijs af van hoe uw data eruit komt. Dat bekijken we samen; het totaal hieronder is dan een ondergrens." ]
+                [ text "Ander platform: prijs op aanvraag, dit totaal is dan een ondergrens." ]
             ]
 
         BronMijnwebwinkel ->
@@ -638,7 +682,7 @@ view model =
                 ]
             ]
                 ++ opAanvraagNoten model
-                ++ [ lockInNoot ]
+                ++ [ lockInNoot, offerteKnop model ]
         ]
 
 
@@ -646,6 +690,77 @@ lockInNoot : Html Msg
 lockInNoot =
     p [ Attr.class "calc-lockin" ]
         [ text "Dit is een richtprijs, geen offerte. Alleen een offerte legt uw prijs vast. Wilt u tegen deze prijs verhuizen? Vraag nu een offerte aan." ]
+
+
+{-| Knop die een offerte-mail opent met alle gekozen opties al ingevuld, zodat
+de bezoeker alleen nog op verzenden hoeft te drukken. -}
+offerteKnop : Model -> Html Msg
+offerteKnop model =
+    a
+        [ Attr.href (offerteMailtoUrl model)
+        , Attr.class "cta-button calc-offerte"
+        ]
+        [ text "Vraag deze offerte aan" ]
+
+
+offerteMailtoUrl : Model -> String
+offerteMailtoUrl model =
+    "mailto:hallo@jappiesoftware.com?subject="
+        ++ Url.percentEncode "Offerte-aanvraag webshop-migratie"
+        ++ "&body="
+        ++ Url.percentEncode (offerteBody model)
+
+
+{-| De vooringevulde mailtekst: een samenvatting van de gekozen opties en de
+richtprijs, in gewone zinnen zodat de bezoeker hem meteen kan versturen. -}
+offerteBody : Model -> String
+offerteBody model =
+    String.join "\n"
+        ([ "Hallo,"
+         , ""
+         , "Ik wil graag een offerte voor het verhuizen van mijn webshop. Op basis van de rekenhulp heb ik dit ingevuld:"
+         , ""
+         , "Aantal producten: " ++ String.fromInt (aantalProducten model)
+         , "Aantal talen: " ++ String.fromInt (aantalTalen model)
+         , "Huidig platform: " ++ bronOmschrijving model.bron
+         , "Thema: " ++ themaOmschrijving model.thema
+         ]
+            ++ meenemenRegels model
+            ++ [ "Domeinverhuizing nodig: " ++ jaNee model.domeinBijMijnwebwinkel
+               , "E-mail-setup nodig: " ++ jaNee model.emailBijMijnwebwinkel
+               , ""
+               , "Richtprijs uit de rekenhulp: " ++ formatteerEuro (totaalCenten model) ++ " (excl. BTW)"
+               , ""
+               , "Kunt u mij hiervoor een offerte sturen?"
+               ]
+        )
+
+
+jaNee : Bool -> String
+jaNee waar =
+    if waar then
+        "ja"
+
+    else
+        "nee"
+
+
+optioneleTekst : Bool -> String -> List String
+optioneleTekst toon tekst =
+    if toon then
+        [ tekst ]
+
+    else
+        []
+
+
+{-| Eén regel per aangevinkte overzet-module, voor in de offerte-mail. -}
+meenemenRegels : Model -> List String
+meenemenRegels model =
+    optioneleTekst model.klantaccounts "Meenemen: klantaccounts"
+        ++ optioneleTekst model.orderhistorie "Meenemen: bestelgeschiedenis"
+        ++ optioneleTekst model.nieuwsbrief "Meenemen: nieuwsbrief-aanmeldingen"
+        ++ optioneleTekst model.voorraad "Meenemen: voorraadaantallen"
 
 
 

@@ -535,3 +535,28 @@ footer small {
   justify-content: center;
   align-items: center;
 }
+
+/* Toelichting/voetnoten onder de rekenhulp: klein en rustig, de details die
+   niet in de calculator-app zelf horen. */
+.calc-footnotes {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eef2f7;
+  font-size: 0.9em;
+  color: #50606f;
+}
+.calc-footnotes h3 {
+  font-size: 1em;
+  color: #0c2f47;
+  margin: 0 0 0.5rem;
+}
+.calc-footnotes p {
+  margin: 0.4rem 0;
+}
+
+/* Offerte-knop onder de richtprijs: prominente primaire actie in de kaart. */
+.calc-offerte {
+  display: block;
+  margin-top: 1rem;
+  text-align: center;
+}
