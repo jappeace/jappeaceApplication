@@ -154,7 +154,7 @@ webwinkelBaseWith ogType includeFeed meta content =
       content
       H.footer $ do
         H.p $ do
-          H.a ! A.href (toValue ("mailto:" <> companyEmail)) $ toHtml companyEmail
+          H.a ! A.href (toValue ("mailto:" <> companyEmail)) ! A.class_ "footer-mail" $ toHtml companyEmail
           H.preEscapedToHtml (" &middot; " :: Text)
           H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
           H.preEscapedToHtml (" &middot; " :: Text)
@@ -168,14 +168,16 @@ webwinkelBaseWith ogType includeFeed meta content =
 -- | Track clicks on the call-to-action buttons in Google Analytics, so we see
 -- the dropoff per acquisition path: the plain "vraag een offerte aan" mailto
 -- buttons (offerte_mailto_klik) and the "plan een gesprek" meeting links
--- (gesprek_knop_klik). The calculator's own button (.calc-offerte) is skipped;
--- Elm reports that one itself with richer params. Page views are collected by
--- GA4 automatically, so the migration pages need no extra event here.
+-- (gesprek_knop_klik). Skipped: the calculator's own button (.calc-offerte),
+-- which Elm reports itself with richer params, and the footer contact-mail
+-- (.footer-mail), which is general contact, not an offerte-CTA, so it would
+-- pollute the button metric. Page views are collected by GA4 automatically, so
+-- the migration pages need no extra event here.
 ctaTrackScript :: Text
 ctaTrackScript =
   "document.addEventListener('DOMContentLoaded',function(){"
     <> "function track(sel,ev){document.querySelectorAll(sel).forEach(function(a){"
-    <> "if(a.classList.contains('calc-offerte'))return;"
+    <> "if(a.classList.contains('calc-offerte')||a.classList.contains('footer-mail'))return;"
     <> "a.addEventListener('click',function(){"
     <> "if(window.gtag){gtag('event',ev,{knop_tekst:(a.textContent||'').trim().slice(0,60)});}"
     <> "});});}"
