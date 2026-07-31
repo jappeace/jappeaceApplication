@@ -1,10 +1,12 @@
 port module PrijsCalculator exposing
     ( BronPlatform(..)
     , Model
+    , Msg(..)
     , ThemaKeuze(..)
     , initieelModel
     , main
     , totaalCenten
+    , update
     )
 
 {-| Interactieve prijsindicatie voor een webshop-migratie op webwinkelverhuis.nl.
@@ -32,6 +34,15 @@ import Html.Attributes as Attr
 import Html.Events exposing (onCheck, onClick, onInput)
 import Json.Encode as Encode
 import Url
+
+
+-- Decision: analytics loopt via een uitgaande Elm-port naar JS, dat het aan
+-- gtag (GA4) doorgeeft. Gekozen boven (a) JS dat in de Elm-DOM/-state graait
+-- (breekt de Elm-garanties) en (b) niets meten. De port houdt Elm puur; JS raakt
+-- de state niet aan. De bedragwaarde sturen we als GA4's gereserveerde
+-- "value"/"currency" (native herkend), niet als eigen param; "bron"/"doel" zijn
+-- custom params die je als GA4 custom dimension moet registreren om erop uit te
+-- splitsen (registratie is niet retroactief).
 
 
 {-| Stuurt een analytics-event naar JavaScript, waar de pagina het aan Google
