@@ -423,14 +423,23 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td "Voorraadaantallen live overzetten"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
         H.tr $ do
+          H.td "Reviews / beoordelingen overzetten"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
+        H.tr $ do
           H.td $ H.preEscapedToHtml ("Domeinverhuizing (uw domeinnaam staat nog bij MijnWebwinkel)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
         H.tr $ do
           H.td $ H.preEscapedToHtml ("E-mail-setup (mailboxen, SPF/DKIM, doorstuurregels)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
         H.tr $ do
-          H.td $ H.preEscapedToHtml ("Toeslag ander bronsysteem (CCV Shop of Lightspeed)" :: Text)
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+          H.td $ H.preEscapedToHtml ("Verzendkoppeling (bijv. DHL: pakketten en labels vanuit uw shop)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("B2B-kanaal (aparte prijzen en inlog voor zakelijke klanten)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;750" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Kassa / point-of-sale (Shopify POS in uw fysieke winkel)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;750" :: Text)
         H.tr $ do
           H.td "Volledig nieuw ontwerp"
           H.td ! A.class_ "price-cell" $ "op aanvraag"
@@ -438,11 +447,13 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td "Catalogus-brede teksttransformaties"
           H.td ! A.class_ "price-cell" $ "op aanvraag"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat uw shop op een standaard Shopify-thema dat u zelf inricht. De vormgeving hoeft niet via ons: u kunt het zelf doen of een ontwerper naar keuze inhuren. Wilt u het uit handen geven, dan benaderen wij uw huidige uitstraling zo dicht mogelijk (&euro;749) of ontwerpen we iets nieuws (op aanvraag)." :: Text)
+      H.p ! A.class_ "engagement-note" $ "Kassa/point-of-sale zetten we bij u op locatie op. Installatie en reiskosten komen daar los bij, op aanvraag."
 
     H.section ! A.class_ "results" $ do
       H.h2 "Altijd inbegrepen"
       H.ul $ do
         H.li $ H.preEscapedToHtml ("Producten, afbeeldingen, categorie&euml;n, klantdata en voorraad." :: Text)
+        H.li $ H.preEscapedToHtml ("Uw teksten, meta-titels en informatiepagina&apos;s (zoals over-ons en blog) verhuizen mee." :: Text)
         H.li "SEO-redirects (301) voor elke oude URL, zodat uw links en opgebouwde SEO meeverhuizen."
         H.li "Een testshop naast uw draaiende winkel; DNS-overzet met zo min mogelijk downtime."
         H.li "Betaling pas na een succesvolle migratie."

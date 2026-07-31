@@ -82,9 +82,14 @@ voorraadCenten =
     25000
 
 
-bronToeslagCenten : Int
-bronToeslagCenten =
-    25000
+reviewsCenten : Int
+reviewsCenten =
+    15000
+
+
+verzendkoppelingCenten : Int
+verzendkoppelingCenten =
+    15000
 
 
 domeinverhuizingCenten : Int
@@ -97,13 +102,24 @@ emailSetupCenten =
     15000
 
 
+b2bKanaalCenten : Int
+b2bKanaalCenten =
+    75000
+
+
+pointOfSaleCenten : Int
+pointOfSaleCenten =
+    75000
+
+
 
 -- MODEL
 
 
-{-| Waar draait de webshop nu? Bepaalt de bron-toeslag: MijnWebwinkel is de
-basis (geen toeslag), CCV en Lightspeed kosten een vaste toeslag, en een ander
-platform prijzen we op aanvraag omdat de import-laag dan per geval verschilt.
+{-| Waar draait de webshop nu? MijnWebwinkel, CCV en Lightspeed kennen we en
+prijzen we gelijk (het extra werk zit alleen in de eenmalige import-laag per
+platform, niet per klant). Een onbekend platform prijzen we op aanvraag omdat de
+import dan per geval verschilt. De keuze is verder informatief voor de offerte.
 -}
 type BronPlatform
     = BronMijnwebwinkel
@@ -131,8 +147,12 @@ type alias Model =
     , orderhistorie : Bool
     , nieuwsbrief : Bool
     , voorraad : Bool
+    , reviews : Bool
     , domeinBijMijnwebwinkel : Bool
     , emailBijMijnwebwinkel : Bool
+    , verzendkoppeling : Bool
+    , b2bKanaal : Bool
+    , pointOfSale : Bool
     }
 
 
@@ -146,8 +166,12 @@ initieelModel =
     , orderhistorie = False
     , nieuwsbrief = False
     , voorraad = False
+    , reviews = False
     , domeinBijMijnwebwinkel = False
     , emailBijMijnwebwinkel = False
+    , verzendkoppeling = False
+    , b2bKanaal = False
+    , pointOfSale = False
     }
 
 
@@ -169,8 +193,12 @@ type Msg
     | OrderhistorieGewijzigd Bool
     | NieuwsbriefGewijzigd Bool
     | VoorraadGewijzigd Bool
+    | ReviewsGewijzigd Bool
     | DomeinGewijzigd Bool
     | EmailGewijzigd Bool
+    | VerzendkoppelingGewijzigd Bool
+    | B2bKanaalGewijzigd Bool
+    | PointOfSaleGewijzigd Bool
 
 
 leesBron : String -> BronPlatform
@@ -292,11 +320,23 @@ update msg model =
         VoorraadGewijzigd aan ->
             ( { model | voorraad = aan }, Cmd.none )
 
+        ReviewsGewijzigd aan ->
+            ( { model | reviews = aan }, Cmd.none )
+
         DomeinGewijzigd aan ->
             ( { model | domeinBijMijnwebwinkel = aan }, Cmd.none )
 
         EmailGewijzigd aan ->
             ( { model | emailBijMijnwebwinkel = aan }, Cmd.none )
+
+        VerzendkoppelingGewijzigd aan ->
+            ( { model | verzendkoppeling = aan }, Cmd.none )
+
+        B2bKanaalGewijzigd aan ->
+            ( { model | b2bKanaal = aan }, Cmd.none )
+
+        PointOfSaleGewijzigd aan ->
+            ( { model | pointOfSale = aan }, Cmd.none )
 
 
 
@@ -356,22 +396,6 @@ extraTaalConfiguratieCenten model =
     extraTalen model * perTaalConfiguratieCenten
 
 
-bronToeslag : Model -> Int
-bronToeslag model =
-    case model.bron of
-        BronMijnwebwinkel ->
-            0
-
-        BronCcvShop ->
-            bronToeslagCenten
-
-        BronLightspeed ->
-            bronToeslagCenten
-
-        BronAnders ->
-            0
-
-
 themaCenten : Model -> Int
 themaCenten model =
     case model.thema of
@@ -401,14 +425,17 @@ totaalCenten model =
         + extraProductenCenten model
         + extraTaalProductenCenten model
         + extraTaalConfiguratieCenten model
-        + bronToeslag model
         + themaCenten model
         + indienAan model.klantaccounts klantaccountsCenten
         + indienAan model.orderhistorie orderhistorieCenten
         + indienAan model.nieuwsbrief nieuwsbriefCenten
         + indienAan model.voorraad voorraadCenten
+        + indienAan model.reviews reviewsCenten
         + indienAan model.domeinBijMijnwebwinkel domeinverhuizingCenten
         + indienAan model.emailBijMijnwebwinkel emailSetupCenten
+        + indienAan model.verzendkoppeling verzendkoppelingCenten
+        + indienAan model.b2bKanaal b2bKanaalCenten
+        + indienAan model.pointOfSale pointOfSaleCenten
 
 
 
@@ -521,18 +548,17 @@ aanvinkVeld veldLabel toelichting aan naarBericht =
 -- UITSPLITSING
 
 
-regel : String -> Int -> Html Msg
-regel omschrijving centen =
-    li [ Attr.class "calc-line" ]
-        [ span [ Attr.class "calc-line-label" ] [ text omschrijving ]
-        , span [ Attr.class "calc-line-price" ] [ text (formatteerEuro centen) ]
-        ]
+{-| Eén prijsregel: omschrijving plus bedrag in centen. -}
+type alias PrijsRegel =
+    { omschrijving : String
+    , centen : Int
+    }
 
 
-optioneleRegel : Bool -> String -> Int -> List (Html Msg)
-optioneleRegel toon omschrijving centen =
+optioneleP : Bool -> String -> Int -> List PrijsRegel
+optioneleP toon omschrijving centen =
     if toon then
-        [ regel omschrijving centen ]
+        [ PrijsRegel omschrijving centen ]
 
     else
         []
@@ -552,59 +578,61 @@ aantalLabel aantal enkelvoud meervoud =
            )
 
 
-bronRegel : Model -> List (Html Msg)
-bronRegel model =
-    case model.bron of
-        BronMijnwebwinkel ->
-            []
-
-        BronCcvShop ->
-            [ regel "Bron-toeslag CCV Shop" bronToeslagCenten ]
-
-        BronLightspeed ->
-            [ regel "Bron-toeslag Lightspeed" bronToeslagCenten ]
-
-        BronAnders ->
-            []
-
-
-themaRegel : Model -> List (Html Msg)
-themaRegel model =
+themaRegels : Model -> List PrijsRegel
+themaRegels model =
     case model.thema of
         ThemaStandaard ->
             []
 
         ThemaOverzetten ->
-            [ regel "Uitstraling overzetten" themaOverzettenCenten ]
+            [ PrijsRegel "Uitstraling overzetten" themaOverzettenCenten ]
 
         ThemaNieuw ->
             []
 
 
+{-| De volledige lijst prijsregels voor de huidige keuzes. Eén bron voor zowel
+de uitsplitsing op het scherm als de vooringevulde offerte-mail, zodat die twee
+nooit uit elkaar lopen. -}
+prijsRegels : Model -> List PrijsRegel
+prijsRegels model =
+    [ PrijsRegel "Basismigratie (t/m 1.000 producten, 1 taal)" basisMigratieCenten ]
+        ++ optioneleP
+            (extraProducten model > 0)
+            (aantalLabel (extraProducten model) "extra product \u{00D7} \u{20AC}0,25" "extra producten \u{00D7} \u{20AC}0,25")
+            (extraProductenCenten model)
+        ++ optioneleP
+            (extraTalen model > 0)
+            (aantalLabel (extraTalen model) "extra taal: vertaalwerk per product" "extra talen: vertaalwerk per product")
+            (extraTaalProductenCenten model)
+        ++ optioneleP
+            (extraTalen model > 0)
+            (aantalLabel (extraTalen model) "extra taal: configuratie \u{00D7} \u{20AC}250" "extra talen: configuratie \u{00D7} \u{20AC}250")
+            (extraTaalConfiguratieCenten model)
+        ++ themaRegels model
+        ++ optioneleP model.klantaccounts "Klantaccounts meenemen" klantaccountsCenten
+        ++ optioneleP model.orderhistorie "Bestelgeschiedenis meenemen" orderhistorieCenten
+        ++ optioneleP model.nieuwsbrief "Nieuwsbrief-aanmeldingen meenemen" nieuwsbriefCenten
+        ++ optioneleP model.voorraad "Voorraadaantallen live overzetten" voorraadCenten
+        ++ optioneleP model.reviews "Reviews / beoordelingen overzetten" reviewsCenten
+        ++ optioneleP model.domeinBijMijnwebwinkel "Domeinverhuizing" domeinverhuizingCenten
+        ++ optioneleP model.emailBijMijnwebwinkel "E-mail-setup" emailSetupCenten
+        ++ optioneleP model.verzendkoppeling "Verzendkoppeling (bijv. DHL)" verzendkoppelingCenten
+        ++ optioneleP model.b2bKanaal "B2B-kanaal (zakelijke prijzen)" b2bKanaalCenten
+        ++ optioneleP model.pointOfSale "Kassa / point-of-sale" pointOfSaleCenten
+
+
+regelNaarHtml : PrijsRegel -> Html Msg
+regelNaarHtml prijsregel =
+    li [ Attr.class "calc-line" ]
+        [ span [ Attr.class "calc-line-label" ] [ text prijsregel.omschrijving ]
+        , span [ Attr.class "calc-line-price" ] [ text (formatteerEuro prijsregel.centen) ]
+        ]
+
+
 uitsplitsing : Model -> Html Msg
 uitsplitsing model =
-    ul [ Attr.class "calc-lines" ] <|
-        [ regel "Basismigratie (t/m 1.000 producten, 1 taal)" basisMigratieCenten ]
-            ++ optioneleRegel
-                (extraProducten model > 0)
-                (aantalLabel (extraProducten model) "extra product \u{00D7} \u{20AC}0,25" "extra producten \u{00D7} \u{20AC}0,25")
-                (extraProductenCenten model)
-            ++ optioneleRegel
-                (extraTalen model > 0)
-                (aantalLabel (extraTalen model) "extra taal: vertaalwerk per product" "extra talen: vertaalwerk per product")
-                (extraTaalProductenCenten model)
-            ++ optioneleRegel
-                (extraTalen model > 0)
-                (aantalLabel (extraTalen model) "extra taal: configuratie \u{00D7} \u{20AC}250" "extra talen: configuratie \u{00D7} \u{20AC}250")
-                (extraTaalConfiguratieCenten model)
-            ++ bronRegel model
-            ++ themaRegel model
-            ++ optioneleRegel model.klantaccounts "Klantaccounts meenemen" klantaccountsCenten
-            ++ optioneleRegel model.orderhistorie "Bestelgeschiedenis meenemen" orderhistorieCenten
-            ++ optioneleRegel model.nieuwsbrief "Nieuwsbrief-aanmeldingen meenemen" nieuwsbriefCenten
-            ++ optioneleRegel model.voorraad "Voorraadaantallen live overzetten" voorraadCenten
-            ++ optioneleRegel model.domeinBijMijnwebwinkel "Domeinverhuizing" domeinverhuizingCenten
-            ++ optioneleRegel model.emailBijMijnwebwinkel "E-mail-setup" emailSetupCenten
+    ul [ Attr.class "calc-lines" ] (List.map regelNaarHtml (prijsRegels model))
 
 
 {-| Korte signaalregel bij een keuze die we niet kant-en-klaar prijzen, zodat
@@ -647,7 +675,20 @@ bronNoot bron =
 een nieuw ontwerp en een onbekend bronplatform gaan altijd op aanvraag. -}
 opAanvraagNoten : Model -> List (Html Msg)
 opAanvraagNoten model =
-    themaNoot model.thema ++ bronNoot model.bron
+    themaNoot model.thema ++ bronNoot model.bron ++ posNoot model.pointOfSale
+
+
+{-| Bij point-of-sale komt de installatie op locatie: die en de reiskosten
+rekenen we los, op aanvraag, dus ze zitten niet in het getoonde totaal. -}
+posNoot : Bool -> List (Html Msg)
+posNoot pos =
+    if pos then
+        [ p [ Attr.class "calc-note" ]
+            [ text "Kassa/point-of-sale zetten we bij u op locatie op. Installatie en reiskosten rekenen we daar los bij, op aanvraag." ]
+        ]
+
+    else
+        []
 
 
 
@@ -669,9 +710,16 @@ view model =
                 , aanvinkVeld "Bestelgeschiedenis" "Alle eerdere bestellingen van uw klanten" model.orderhistorie OrderhistorieGewijzigd
                 , aanvinkVeld "Nieuwsbrief-aanmeldingen" "De adressenlijst van uw nieuwsbrief" model.nieuwsbrief NieuwsbriefGewijzigd
                 , aanvinkVeld "Voorraadaantallen" "De actuele voorraad per product" model.voorraad VoorraadGewijzigd
+                , aanvinkVeld "Reviews / beoordelingen" "Uw opgebouwde productbeoordelingen" model.reviews ReviewsGewijzigd
                 ]
-            , aanvinkVeld "Mijn domeinnaam staat nog bij MijnWebwinkel" "Het internetadres van uw shop (bijv. uwshop.nl). Weet u het niet zeker? Dan zoeken we het samen uit." model.domeinBijMijnwebwinkel DomeinGewijzigd
-            , aanvinkVeld "Mijn e-mailadressen horen bij MijnWebwinkel" "Bijvoorbeeld info@uwshop.nl die u via MijnWebwinkel gebruikt" model.emailBijMijnwebwinkel EmailGewijzigd
+            , div [ Attr.class "calc-check-group" ]
+                [ span [ Attr.class "calc-label" ] [ text "Extra diensten en koppelingen" ]
+                , aanvinkVeld "Mijn domeinnaam staat nog bij MijnWebwinkel" "Het internetadres van uw shop (bijv. uwshop.nl). Weet u het niet zeker? Dan zoeken we het samen uit." model.domeinBijMijnwebwinkel DomeinGewijzigd
+                , aanvinkVeld "Mijn e-mailadressen horen bij MijnWebwinkel" "Bijvoorbeeld info@uwshop.nl die u via MijnWebwinkel gebruikt" model.emailBijMijnwebwinkel EmailGewijzigd
+                , aanvinkVeld "Verzendkoppeling (bijv. DHL)" "Pakketten en labels rechtstreeks vanuit uw shop" model.verzendkoppeling VerzendkoppelingGewijzigd
+                , aanvinkVeld "B2B-kanaal (zakelijke klanten)" "Aparte prijzen en inlog voor zakelijke klanten" model.b2bKanaal B2bKanaalGewijzigd
+                , aanvinkVeld "Kassa / point-of-sale voor mijn fysieke winkel" "Verkopen in de winkel \u{00E9}n online met \u{00E9}\u{00E9}n systeem (Shopify POS)" model.pointOfSale PointOfSaleGewijzigd
+                ]
             ]
         , div [ Attr.class "calc-result" ] <|
             [ h3 [] [ text "Uw richtprijs" ]
@@ -711,8 +759,9 @@ offerteMailtoUrl model =
         ++ Url.percentEncode (offerteBody model)
 
 
-{-| De vooringevulde mailtekst: een samenvatting van de gekozen opties en de
-richtprijs, in gewone zinnen zodat de bezoeker hem meteen kan versturen. -}
+{-| De vooringevulde mailtekst: de shopgegevens plus de volledige prijsregels
+(dezelfde als op het scherm) en het totaal, zodat we de indicatie na validatie
+zo in de offerte kunnen overnemen. -}
 offerteBody : Model -> String
 offerteBody model =
     String.join "\n"
@@ -724,43 +773,32 @@ offerteBody model =
          , "Aantal talen: " ++ String.fromInt (aantalTalen model)
          , "Huidig platform: " ++ bronOmschrijving model.bron
          , "Thema: " ++ themaOmschrijving model.thema
+         , ""
+         , "Prijsindicatie (excl. BTW):"
          ]
-            ++ meenemenRegels model
-            ++ [ "Domeinverhuizing nodig: " ++ jaNee model.domeinBijMijnwebwinkel
-               , "E-mail-setup nodig: " ++ jaNee model.emailBijMijnwebwinkel
-               , ""
-               , "Richtprijs uit de rekenhulp: " ++ formatteerEuro (totaalCenten model) ++ " (excl. BTW)"
-               , ""
+            ++ List.map prijsRegelTekst (prijsRegels model)
+            ++ [ "Totaal: " ++ formatteerEuro (totaalCenten model) ]
+            ++ posReiskostenRegel model
+            ++ [ ""
                , "Kunt u mij hiervoor een offerte sturen?"
                ]
         )
 
 
-jaNee : Bool -> String
-jaNee waar =
-    if waar then
-        "ja"
-
-    else
-        "nee"
+prijsRegelTekst : PrijsRegel -> String
+prijsRegelTekst prijsregel =
+    "- " ++ prijsregel.omschrijving ++ ": " ++ formatteerEuro prijsregel.centen
 
 
-optioneleTekst : Bool -> String -> List String
-optioneleTekst toon tekst =
-    if toon then
-        [ tekst ]
+{-| Reiskosten-voorbehoud voor point-of-sale, alleen als die gekozen is; het
+staat los van het getoonde totaal. -}
+posReiskostenRegel : Model -> List String
+posReiskostenRegel model =
+    if model.pointOfSale then
+        [ "(Kassa/point-of-sale: installatie op locatie en reiskosten komen hier los bij, op aanvraag.)" ]
 
     else
         []
-
-
-{-| Eén regel per aangevinkte overzet-module, voor in de offerte-mail. -}
-meenemenRegels : Model -> List String
-meenemenRegels model =
-    optioneleTekst model.klantaccounts "Meenemen: klantaccounts"
-        ++ optioneleTekst model.orderhistorie "Meenemen: bestelgeschiedenis"
-        ++ optioneleTekst model.nieuwsbrief "Meenemen: nieuwsbrief-aanmeldingen"
-        ++ optioneleTekst model.voorraad "Meenemen: voorraadaantallen"
 
 
 

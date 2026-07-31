@@ -62,10 +62,26 @@ suite =
             \_ ->
                 Expect.equal 199900
                     (totaalCenten { initieelModel | bron = BronAnders })
-        , test "CCV-bron voegt 250 toeslag toe" <|
+        , test "CCV-bron rekent geen toeslag (alleen eerste import is werk)" <|
             \_ ->
-                Expect.equal 224900
+                Expect.equal 199900
                     (totaalCenten { initieelModel | bron = BronCcvShop })
+        , test "reviews overzetten voegt 150 toe" <|
+            \_ ->
+                Expect.equal 214900
+                    (totaalCenten { initieelModel | reviews = True })
+        , test "verzendkoppeling voegt 150 toe" <|
+            \_ ->
+                Expect.equal 214900
+                    (totaalCenten { initieelModel | verzendkoppeling = True })
+        , test "B2B-kanaal voegt 750 toe" <|
+            \_ ->
+                Expect.equal 274900
+                    (totaalCenten { initieelModel | b2bKanaal = True })
+        , test "point-of-sale voegt 750 toe (excl. reiskosten op aanvraag)" <|
+            \_ ->
+                Expect.equal 274900
+                    (totaalCenten { initieelModel | pointOfSale = True })
         , test "alle overzet-modules samen tellen 4 x 250 op" <|
             \_ ->
                 Expect.equal 299900

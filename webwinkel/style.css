@@ -398,16 +398,15 @@ footer small {
 /* Prijs-calculator (Elm) op /prijzen. Twee kolommen op desktop (invoer |
    uitkomst), gestapeld op mobiel. Kleuren volgen de rest van de site:
    navy koppen, oranje het totaal, lichte kaderlijnen. */
+/* Eén kolom: eerst alle vragen, daaronder de prijzen, dan de offerte-knop.
+   Bewust niet naast elkaar, zodat het op mobiel prettig van boven naar beneden
+   leest. */
 .prijs-calculator {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
   margin-top: 1rem;
-}
-@media (max-width: 720px) {
-  .prijs-calculator {
-    grid-template-columns: 1fr;
-  }
+  max-width: 640px;
 }
 .calc-inputs {
   border: 1px solid #dbe5ef;
@@ -554,9 +553,19 @@ footer small {
   margin: 0.4rem 0;
 }
 
-/* Offerte-knop onder de richtprijs: prominente primaire actie in de kaart. */
+/* Offerte-knop onder de richtprijs: grote, volle-breedte primaire actie. */
 .calc-offerte {
   display: block;
-  margin-top: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 1.25rem;
+  padding: 1em 2em;
   text-align: center;
+  font-size: 1.15em;
+  font-weight: 600;
+}
+
+/* De prijsregel mag op smalle schermen netjes afbreken i.p.v. te knellen. */
+.calc-line {
+  flex-wrap: wrap;
 }
