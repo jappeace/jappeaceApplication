@@ -43,6 +43,7 @@ import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isD
 import PenguinTemplates (WebwinkelverhuisUrl(..), penguinIndexPage, penguinIndexPageNl, penguinWordpressPage, penguinWordpressPageNl, penguinBlogIndexPage, penguinArticlePage)
 import WebwinkelTemplates
   ( webwinkelIndexPage
+  , prijzenPage
   , webwinkelBlogIndexPage
   , webwinkelArticlePage
   , appPage
@@ -690,6 +691,7 @@ generateWebwinkelverhuisSite config articles = do
   writeWebwinkelHtmlFile "_webwinkelverhuis-site/app.html" appPage
 
   -- Migration and explainer pages
+  writeWebwinkelHtmlFile "_webwinkelverhuis-site/prijzen.html" prijzenPage
   writeWebwinkelHtmlFile "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
   writeWebwinkelHtmlFile "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage
   writeWebwinkelHtmlFile "_webwinkelverhuis-site/migrate-lightspeed.html" lightspeedMigrationPage
@@ -830,6 +832,7 @@ generateWebwinkelverhuisSitemap articles = T.unlines $
   [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   , "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
   , sitemapUrl "https://webwinkelverhuis.nl/"
+  , sitemapUrl "https://webwinkelverhuis.nl/prijzen.html"
   , sitemapUrl "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
   , sitemapUrl "https://webwinkelverhuis.nl/migrate-ccvshop.html"
   , sitemapUrl "https://webwinkelverhuis.nl/migrate-lightspeed.html"

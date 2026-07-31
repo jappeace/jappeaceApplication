@@ -8,6 +8,7 @@
 -- blog markup come from 'PageChrome'.
 module WebwinkelTemplates
   ( webwinkelIndexPage
+  , prijzenPage
   , webwinkelBlogIndexPage
   , webwinkelArticlePage
   , appPage
@@ -122,6 +123,7 @@ webwinkelBaseWith ogType includeFeed meta content =
             H.li $ H.a ! A.href "/migrate-mijnwebwinkel.html" $ "MijnWebwinkel"
             H.li $ H.a ! A.href "/migrate-lightspeed.html" $ "Lightspeed"
             H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
+            H.li $ H.a ! A.href "/prijzen.html" $ "Prijzen"
             H.li $ H.a ! A.href "/blog/" $ "Blog"
             H.li $ H.a ! A.href offerteMailto ! A.class_ "cta-link" $ "Offerte"
       content
@@ -243,12 +245,10 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
         H.div ! A.class_ "card" $ do
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
-          H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects." :: Text)
-          H.ul $ do
-            H.li $ H.preEscapedToHtml ("Grotere catalogus: &euro;0,25 per product boven de 1.000." :: Text)
-            H.li $ H.preEscapedToHtml ("Extra taal: &euro;0,25 per product over de hele catalogus, plus &euro;250 configuratie per taal." :: Text)
+          H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects. Grotere catalogi, extra talen en losse diensten (domeinverhuizing, e-mail-setup) hebben een vaste meerprijs." :: Text)
+          H.p $ H.a ! A.href "/prijzen.html" $ H.preEscapedToHtml ("Bekijk de volledige prijzen &rarr;" :: Text)
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
-      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken, en u betaalt pas na een succesvolle migratie. De hier getoonde prijzen zijn een indicatie en kunnen in de loop van de tijd wijzigen; uw offerte is de enige echte prijsgarantie." :: Text)
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken, en u betaalt pas na een succesvolle migratie. Getoonde prijzen zijn een indicatie; uw offerte is de echte prijsgarantie." :: Text)
 
     -- Final CTA
     H.section ! A.class_ "final-cta" $ do
@@ -361,6 +361,84 @@ appPage = webwinkelBaseTemplate appMeta $ do
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = H.meta ! A.name "robots" ! A.content "noindex"
+      }
+
+-- | The full public price list on its own page. The homepage keeps a
+-- short teaser and links here; this page carries every line so a
+-- doubtful merchant who wants the whole picture finds it openly, no
+-- "bel ons om te horen wat het kost". The lock-in note states plainly
+-- that shown prices are indicative and only an offerte binds them, so
+-- a later price change is never a broken promise.
+prijzenPage :: Html
+prijzenPage = webwinkelBaseTemplate prijzenMeta $
+  H.main $ do
+    H.section ! A.class_ "hero" $ do
+      H.h1 "Prijzen"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vaste prijzen, vooraf afgesproken. U betaalt pas na een succesvolle migratie. Hieronder ziet u precies waar u aan toe bent." :: Text)
+
+    H.section ! A.class_ "engagement" $ do
+      H.h2 "De migratie"
+      H.table ! A.class_ "price-table" $ H.tbody $ do
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Basismigratie &mdash; t/m 1.000 producten, 1 taal" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1.999" :: Text)
+        H.tr $ do
+          H.td "Extra producten, boven de 1.000 (eerste taal)"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Extra taal &mdash; per product over de hele catalogus" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Extra taal &mdash; configuratie, per taal" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+
+    H.section ! A.class_ "engagement" $ do
+      H.h2 "Extra diensten"
+      H.table ! A.class_ "price-table" $ H.tbody $ do
+        H.tr $ do
+          H.td "Domeinverhuizing"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("E-mail-setup (mailboxen, SPF/DKIM, doorstuurregels)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
+        H.tr $ do
+          H.td "Catalogus-brede teksttransformaties"
+          H.td ! A.class_ "price-cell" $ "op aanvraag"
+
+    H.section ! A.class_ "results" $ do
+      H.h2 "Altijd inbegrepen"
+      H.ul $ do
+        H.li $ H.preEscapedToHtml ("Producten, afbeeldingen, categorie&euml;n, klantdata en voorraad." :: Text)
+        H.li "SEO-redirects (301) voor elke oude URL, zodat uw links en opgebouwde SEO meeverhuizen."
+        H.li "Een testshop naast uw draaiende winkel; DNS-overzet zonder downtime."
+        H.li "Betaling pas na een succesvolle migratie."
+
+    H.section ! A.class_ "engagement" $ do
+      H.h2 "Rekenvoorbeelden"
+      H.ul $ do
+        H.li $ H.preEscapedToHtml ("Modeltreinwinkel, 2.400 producten, 3 talen: &euro;1.999 + 1.400 &times; &euro;0,25 + 2 &times; 2.400 &times; &euro;0,25 + 2 &times; &euro;250 = &euro;4.049." :: Text)
+        H.li $ H.preEscapedToHtml ("Winkel met 3.000 producten, 1 taal: &euro;1.999 + 2.000 &times; &euro;0,25 = &euro;2.499." :: Text)
+        H.li $ H.preEscapedToHtml ("Kleine shop, t/m 1.000 producten, 1 taal: &euro;1.999." :: Text)
+
+    H.section ! A.class_ "results" $ do
+      H.h2 "Geldt deze prijs voor mij?"
+      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt uw prijs vast. Wilt u tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat uw prijs zwart-op-wit."
+      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Liever eerst even sparren?"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+  where
+    prijzenMeta :: PageMeta
+    prijzenMeta = PageMeta
+      { pageMetaTitle       = "Prijzen \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Vaste prijzen voor uw webshop-migratie naar Shopify: vanaf \8364\&1.999 inclusief 1.000 producten en 1 taal. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/prijzen.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = mempty
       }
 
 mijnwebwinkelMigrationPage :: Html
