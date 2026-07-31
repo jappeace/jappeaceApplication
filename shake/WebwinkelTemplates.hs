@@ -178,7 +178,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           " \8212 De testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Recent werk
     H.section ! A.class_ "results" $ do
@@ -410,7 +410,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.ul $ do
         H.li $ H.preEscapedToHtml ("Producten, afbeeldingen, categorie&euml;n, klantdata en voorraad." :: Text)
         H.li "SEO-redirects (301) voor elke oude URL, zodat uw links en opgebouwde SEO meeverhuizen."
-        H.li "Een testshop naast uw draaiende winkel; DNS-overzet zonder downtime."
+        H.li "Een testshop naast uw draaiende winkel; DNS-overzet met zo min mogelijk downtime."
         H.li "Betaling pas na een succesvolle migratie."
 
     H.section ! A.class_ "engagement" $ do
@@ -452,7 +452,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
           H.h1 "Ontsnap MijnWebwinkel"
-          H.p ! A.class_ "subtitle" $ "Uw webshop is uw broodwinning, en MijnWebwinkel staat al jaren stil. Verhuizen voelt als een grote stap, maar het hoeft geen sprong in het diepe te zijn: wij zetten uw complete shop geautomatiseerd over, zonder dataverlies en zonder downtime. U betaalt pas na een succesvolle migratie."
+          H.p ! A.class_ "subtitle" $ "Uw webshop is uw broodwinning, en MijnWebwinkel staat al jaren stil. Verhuizen voelt als een grote stap, maar het hoeft geen sprong in het diepe te zijn: wij zetten uw complete shop geautomatiseerd over, zonder dataverlies en met zo min mogelijk downtime. U betaalt pas na een succesvolle migratie."
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
         H.img ! A.class_ "hero-image"
               ! A.src "/illustratie-ontsnappen.svg"
@@ -511,7 +511,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           " \8212 De testshop draait naast uw MijnWebwinkel-shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Recent werk: proof before price, so the number lands on trust.
     H.section ! A.class_ "results" $ do
@@ -607,7 +607,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- Hero
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap CCV Shop"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. CCV Shop voelt steeds beperkter, de features blijven achter, en u weet dat er betere opties zijn &mdash; maar hoe krijgt u alles veilig overgezet? Wij verhuizen uw complete shop naar Shopify. Geautomatiseerd, zonder dataverlies, zonder downtime." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. CCV Shop voelt steeds beperkter, de features blijven achter, en u weet dat er betere opties zijn &mdash; maar hoe krijgt u alles veilig overgezet? Wij verhuizen uw complete shop naar Shopify. Geautomatiseerd, zonder dataverlies, met zo min mogelijk downtime." :: Text)
       H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
@@ -645,7 +645,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           " \8212 De testshop draait naast uw CCV Shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Pricing
     H.section ! A.class_ "engagement" ! A.id "pricing" $ do
@@ -787,7 +787,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           " \8212 De testshop draait naast uw Lightspeed-shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Pricing
     H.section ! A.class_ "engagement" ! A.id "pricing" $ do
