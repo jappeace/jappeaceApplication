@@ -69,6 +69,14 @@ fysiek verkooppunt erbij: het kan zonder platformwissel. De
 grootste valkuil van een beginnersplatform is dat u er pas achter
 komt dat u eruit gegroeid bent als de verhuizing het duurst is.
 
+Heeft u ook een fysieke winkel, dan telt de kassa mee. De
+Mijnwebwinkel Kassa App is begin 2026 uit de App Store verdwenen
+(de pagina geeft "niet gevonden", gecontroleerd juli 2026): wie
+zijn iPad reset of vervangt, kan de app niet opnieuw installeren.
+Shopify POS wordt daarentegen actief doorontwikkeld en ondersteunt
+in Nederland geïntegreerd pinnen en sinds eind 2025 iDEAL via
+QR-code.
+
 Eerlijkheidshalve: Shopify is geen automatisch feest. Per maand
 betalen is duurder dan de jaartarieven hierboven, sommige apps
 kosten extra, en u moet bij de inrichting meer keuzes maken dan bij

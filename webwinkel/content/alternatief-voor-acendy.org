@@ -50,6 +50,15 @@ cijfers van [[https://storeleads.app/reports/mijnwebwinkel][StoreLeads]]
 2022 met 35 procent, van zo'n 7.000 naar zo'n 4.500. In de laatste 90
 dagen vertrokken er 40 shops en kwamen er 4 bij.
 
+Hoe die verwaarlozing er in de praktijk uitziet, merkte een klant
+van ons met een fysieke winkel: de Mijnwebwinkel Kassa App is begin
+2026 stilletjes uit de App Store verdwenen. De laatste versie stamt
+uit februari 2025 en de App Store-pagina geeft inmiddels "niet
+gevonden" (gecontroleerd juli 2026), terwijl de kassa-add-on gewoon
+wordt doorverkocht. Geïnstalleerde exemplaren blijven werken, maar
+een nieuwe of gereset iPad kan de app niet meer installeren: gaat
+uw iPad stuk, dan staat u van de ene op de andere dag zonder kassa.
+
 Waarom dat zo loopt, en waarom dit geen incompetentie maar een
 bewuste keuze van de eigenaren is, leggen we uit op onze pagina
 [[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][waarom wordt
