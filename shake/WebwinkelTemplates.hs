@@ -163,6 +163,36 @@ webwinkelBaseWith ogType includeFeed meta content =
           "Webwinkelverhuis is een dienst van "
           H.a ! A.href "https://jappiesoftware.com/" $ "Jappie Software B.V."
           H.preEscapedToHtml (" &middot; KVK: 95097872 &middot; Ooievaarstraat 38, 8262 AN Kampen" :: Text)
+      H.script $ H.preEscapedToHtml ctaTrackScript
+
+-- | Track clicks on the call-to-action buttons in Google Analytics, so we see
+-- the dropoff per acquisition path: the plain "vraag een offerte aan" mailto
+-- buttons (offerte_mailto_klik) and the "plan een gesprek" meeting links
+-- (gesprek_knop_klik). The calculator's own button (.calc-offerte) is skipped;
+-- Elm reports that one itself with richer params. Page views are collected by
+-- GA4 automatically, so the migration pages need no extra event here.
+ctaTrackScript :: Text
+ctaTrackScript =
+  "document.addEventListener('DOMContentLoaded',function(){"
+    <> "function track(sel,ev){document.querySelectorAll(sel).forEach(function(a){"
+    <> "if(a.classList.contains('calc-offerte'))return;"
+    <> "a.addEventListener('click',function(){"
+    <> "if(window.gtag){gtag('event',ev,{knop_tekst:(a.textContent||'').trim().slice(0,60)});}"
+    <> "});});}"
+    <> "track('a[href^=\"mailto:\"]','offerte_mailto_klik');"
+    <> "track('a[href^=\"https://meet.jappiesoftware.com\"]','gesprek_knop_klik');"
+    <> "});"
+
+-- | Boot the Elm price calculator and forward its analytics port to gtag, so the
+-- calculator's funnel events (engaged, blocked, requested) land in Google
+-- Analytics alongside the page views.
+prijsCalculatorInitScript :: Text
+prijsCalculatorInitScript =
+  "var prijsCalcApp = Elm.PrijsCalculator.init({node: document.getElementById('prijs-calculator-mount')});"
+    <> "if(prijsCalcApp.ports&&prijsCalcApp.ports.analyticsEvent){"
+    <> "prijsCalcApp.ports.analyticsEvent.subscribe(function(e){"
+    <> "if(window.gtag){gtag('event', e.name, e.params||{});}"
+    <> "});}"
 
 -- | Landing / migration page skeleton (Open Graph type "website").
 webwinkelBaseTemplate :: PageMeta -> Html -> Html
@@ -491,8 +521,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.a ! A.href meetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
 
     H.script ! A.src "/prijs-calculator.js" $ mempty
-    H.script $ H.preEscapedToHtml
-      ("Elm.PrijsCalculator.init({node: document.getElementById('prijs-calculator-mount')});" :: Text)
+    H.script $ H.preEscapedToHtml prijsCalculatorInitScript
   where
     prijzenMeta :: PageMeta
     prijzenMeta = PageMeta
