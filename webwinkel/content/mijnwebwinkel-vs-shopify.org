@@ -14,7 +14,7 @@ overstap in de praktijk betekent.
 | | MijnWebwinkel | Shopify |
 |---|---|---|
 | Abonnement | 20 euro/mnd (max 25 producten), serieuze shops 40 tot 70 euro/mnd | Basic 21 euro/mnd bij jaarbetaling, Grow 59 euro/mnd |
-| Doorontwikkeling | MijnWebwinkel zelf bevroren sinds 2021; vernieuwing zit in opvolger Acendy | Doorlopend, meerdere grote releases per jaar |
+| Doorontwikkeling | Feitelijk gestopt sinds de overname in 2021 | Doorlopend, meerdere grote releases per jaar |
 | Apps en koppelingen | Beperkt, vast aanbod | Duizenden apps van externe ontwikkelaars |
 | iDEAL en lokale betaalmethoden | Ja | Ja |
 | Eigenaarschap platform | Visma/Hg Capital, sinds 2026 ondergebracht in Norvato | Beursgenoteerd, e-commerce is het kernproduct |
@@ -36,13 +36,10 @@ moet doen, dan is er geen acute reden om te vertrekken. Dat zeggen we
 er eerlijk bij, want een migratie kost geld en aandacht.
 
 Het probleem zit in de toekomst, niet in het heden. Sinds de
-overname door Visma in 2021 wordt MijnWebwinkel zelf niet meer
-doorontwikkeld en zijn de prijzen verhoogd. Eind 2025 ging het
-platform samen met het Noorse Mystore op in de opvolger Acendy,
-waar bestaande shops gefaseerd naartoe worden overgezet, en begin
-2026 verhuisde het geheel naar het nieuwe vehikel Norvato. Wie op
-MijnWebwinkel zit gaat dus hoe dan ook migreren; de vraag is alleen
-waarheen. Wat er precies is gebeurd leest u in
+overname door Visma in 2021 is de ontwikkeling feitelijk gestopt,
+zijn de prijzen verhoogd, en is het platform twee keer van naam en
+eigenaar gewisseld (Acendy, daarna Norvato). Wat er precies is
+gebeurd leest u in
 [[https://webwinkelverhuis.nl/blog/alternatief-voor-acendy-zo-zit-het-met-mijnwebwinkel-mystore-en-norvato.html][ons
 artikel over Acendy, Mystore en Norvato]] en op de pagina
 [[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][waarom wordt
@@ -59,9 +56,8 @@ er het kernproduct, niet een bijvangst in een portefeuille. Dat
 merkt u vooral op drie punten.
 
 Het platform wordt actief doorontwikkeld. Functionaliteit die er nu
-niet is, komt er vaak alsnog; bij MijnWebwinkel komt vernieuwing
-alleen nog via de overzetting naar Acendy, op de tijdlijn van de
-eigenaar.
+niet is, komt er vaak alsnog; bij een bevroren platform is wat u
+ziet wat u houdt.
 
 Het app-aanbod is enorm. Reviews, spaarpunten, verzendkoppelingen,
 boekhoudkoppelingen: voor vrijwel elke wens bestaat een app, vaak

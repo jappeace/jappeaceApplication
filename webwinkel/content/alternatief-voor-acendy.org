@@ -3,13 +3,12 @@
 #+CATEGORY: migratie
 #+TAGS: acendy, mijnwebwinkel, migratie
 
-Zoekt u een alternatief voor Acendy? Acendy is het platform waarin
-MijnWebwinkel en het Noorse Mystore eind 2025 zijn samengegaan.
-Nieuwe klanten starten direct op Acendy, en bestaande
-MijnWebwinkel-shops worden gefaseerd naar de nieuwe techniek
-overgezet. Wie nu op MijnWebwinkel zit, gaat dus hoe dan ook een
-keer verhuizen; de enige echte vraag is of u de bestemming zelf
-kiest. In dit artikel zetten we op een rij wat er precies is
+Zoekt u een alternatief voor Acendy? Acendy is de naam waaronder
+MijnWebwinkel eind 2025 kort verderging na een samenvoeging met het
+Noorse Mystore. Die naamswijziging werd snel teruggedraaid, maar de
+onrust eromheen is begrijpelijk: het platform is de afgelopen jaren
+meerdere keren van eigenaar en naam gewisseld, terwijl de ontwikkeling
+stilstaat. In dit artikel zetten we op een rij wat er precies is
 gebeurd, wat het voor uw webshop betekent, en welke alternatieven u
 heeft.
 
@@ -21,55 +20,47 @@ De korte versie, met bronnen:
    [[https://www.visma.com/news/visma-strengthens-its-position-in-the-benelux-e-commerce-market-with-the-acquisition-of-mijnwebwinkel][overgenomen
    door Visma]], een Noors softwareconglomeraat in handen van het
    Britse private-equityfonds Hg Capital. De oprichter vertrok.
-2. In november 2025 kondigden
-   [[https://www.emerce.nl/wire/mijnwebwinkel-mystore-lanceren-acendy-nieuw-tijdperk-ecommerce][MijnWebwinkel
-   en het Noorse Mystore aan samen verder te gaan als "Acendy"]].
-   Volgens
-   [[https://www.mijnwebwinkel.nl/blog/mijnwebwinkel-en-het-noorse-mystore-lanceren-acendy][de
-   eigen aankondiging van MijnWebwinkel]] blijft MijnWebwinkel nog
-   een tijd beschikbaar, maar ligt de toekomst bij Acendy: nieuwe
-   klanten starten daar direct, en voor bestaande shops kwam er
-   vanaf begin 2026 een overzet-traject naar de nieuwe techniek.
+2. In november 2025 kondigde Visma aan dat MijnWebwinkel en het
+   Noorse Mystore
+   [[https://www.emerce.nl/wire/mijnwebwinkel-mystore-lanceren-acendy-nieuw-tijdperk-ecommerce][samen
+   verdergaan als "Acendy"]]. Kort daarna werd die naamswijziging
+   weer teruggedraaid.
 3. In februari 2026 stootte Visma
    [[https://www.privateequitywire.co.uk/hg-spins-out-e500m-of-visma-assets-as-ipo-plans-stall/][voor
-   500 miljoen euro aan bedrijven af]], waaronder
-   Acendy/MijnWebwinkel, in een nieuw vehikel genaamd Norvato. Visma
-   bereidt een beursgang voor en houdt alleen kernproducten aan.
+   500 miljoen euro aan bedrijven af]], waaronder Acendy/MijnWebwinkel,
+   in een nieuw vehikel genaamd Norvato. Visma bereidt een beursgang
+   voor en houdt alleen kernproducten aan.
 
-Voor u als winkelier is de naam het minst belangrijke deel.
-Belangrijker is wat dit betekent: het vertrouwde MijnWebwinkel wordt
-afgebouwd, en uw shop wordt op termijn overgezet naar een ander
-platform, op het tempo en de voorwaarden van de nieuwe eigenaar.
+Drie namen in drie maanden dus: MijnWebwinkel, Acendy, en nu een
+plek in de Norvato-portefeuille. Voor u als winkelier is de naam
+het minst belangrijke deel. Belangrijker is wat er ondertussen met
+het product gebeurt.
 
 * Wat dit voor uw webshop betekent
 
-MijnWebwinkel zelf wordt sinds de overname in 2021 niet meer
-doorontwikkeld; de vernieuwing zit in de opvolger Acendy, die op de
-technologie van Mystore is gebouwd. Ondertussen stegen de prijzen:
-het goedkoopste plan van 20 euro per maand is beperkt tot 25
-producten, serieuze shops betalen 40 tot 70 euro per maand. De
-gevolgen zijn zichtbaar in de cijfers van
-[[https://storeleads.app/reports/mijnwebwinkel][StoreLeads]] (mei
-2026): het aantal shops op het platform daalde sinds de piek in 2022
-met 35 procent, van zo'n 7.000 naar zo'n 4.500. In de laatste 90
+Sinds de overname in 2021 is de ontwikkeling van het platform
+feitelijk gestopt, terwijl de prijzen stegen: het goedkoopste plan
+van 20 euro per maand is beperkt tot 25 producten, serieuze shops
+betalen 40 tot 70 euro per maand. De gevolgen zijn zichtbaar in de
+cijfers van [[https://storeleads.app/reports/mijnwebwinkel][StoreLeads]]
+(mei 2026): het aantal shops op het platform daalde sinds de piek in
+2022 met 35 procent, van zo'n 7.000 naar zo'n 4.500. In de laatste 90
 dagen vertrokken er 40 shops en kwamen er 4 bij.
 
-Waarom dat zo loopt, en waarom dit geen incompetentie maar de
-normale gang van zaken bij dit soort eigenaren is, leggen we uit op
-onze pagina
+Waarom dat zo loopt, en waarom dit geen incompetentie maar een
+bewuste keuze van de eigenaren is, leggen we uit op onze pagina
 [[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][waarom wordt
 MijnWebwinkel niet meer doorontwikkeld]].
 
 * Welke alternatieven heeft u?
 
-Eerlijk is eerlijk: meeverhuizen naar Acendy is een optie, en voor
-wie vooral rust wil is het de weg van de minste weerstand. U zit dan
-wel opnieuw bij dezelfde eigenaar, na een reeks prijsverhogingen en
-eigenaarswissels, en de overzetting gebeurt op hun tijdlijn. Omdat u
-toch al een platformwissel doormaakt, is dit hét moment om de markt
-te vergelijken: de verhuisdrempel betaalt u nu sowieso.
+Eerlijk is eerlijk: u hoeft niet per se weg. Uw shop blijft
+vooralsnog gewoon draaien, en als uw winkel klein is en u tevreden
+bent, is afwachten een legitieme keuze. U loopt wel het risico dat
+u op een later moment op andermans tijdlijn moet verhuizen, in
+plaats van op de uwe.
 
-Kiest u ervoor om écht te vertrekken, dan zijn dit de gangbare
+Kiest u er wél voor om te vertrekken, dan zijn dit de gangbare
 bestemmingen:
 
 1. Shopify is het meest gekozen alternatief: van de vertrekkende
@@ -102,24 +93,23 @@ Lees hoe [[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][onze
 migratieservice]] werkt, of
 [[https://meet.jappiesoftware.com][plan een vrijblijvend gesprek]]:
 we kijken samen naar uw shop en geven een eerlijke inschatting, ook
-als die inschatting "meeverhuizen naar Acendy is voor u prima" is.
+als die inschatting "blijf voorlopig zitten" is.
 
 * Veelgestelde vragen
 
 *Is Acendy hetzelfde als MijnWebwinkel?*
 
-Het is de opvolger. Acendy is het platform waarin MijnWebwinkel en
-het Noorse Mystore eind 2025 zijn samengegaan, gebouwd op de
-technologie van Mystore. Nieuwe klanten starten direct op Acendy;
-bestaande MijnWebwinkel-shops worden gefaseerd overgezet.
+In de praktijk wel. Acendy was de naam waaronder MijnWebwinkel en
+het Noorse Mystore eind 2025 zouden samengaan; die naamswijziging
+werd kort daarna teruggedraaid. Het onderliggende platform en uw
+shop zijn dezelfde gebleven.
 
 *Moet ik verplicht overstappen?*
 
-Op termijn wel: MijnWebwinkel zelf wordt afgebouwd en de toekomst
-ligt volgens de eigen aankondiging bij Acendy. Een harde einddatum
-is niet gepubliceerd, maar de echte keuze is niet óf u verhuist,
-maar waarheen: mee naar Acendy, of naar een platform dat u zelf
-kiest.
+Nee, er is geen aangekondigde einddatum en uw shop blijft gewoon
+draaien. Wel is de ontwikkeling sinds 2021 feitelijk gestopt en
+wisselt het platform regelmatig van eigenaar, waardoor u het risico
+loopt later op andermans voorwaarden te moeten verhuizen.
 
 *Wat is het meest gekozen alternatief voor Acendy/MijnWebwinkel?*
 
@@ -136,6 +126,6 @@ meeverhuizen.
 
 #+BEGIN_EXPORT html
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Acendy hetzelfde als MijnWebwinkel?","acceptedAnswer":{"@type":"Answer","text":"Het is de opvolger. Acendy is het platform waarin MijnWebwinkel en het Noorse Mystore eind 2025 zijn samengegaan, gebouwd op de technologie van Mystore. Nieuwe klanten starten direct op Acendy; bestaande MijnWebwinkel-shops worden gefaseerd overgezet."}},{"@type":"Question","name":"Moet ik verplicht overstappen?","acceptedAnswer":{"@type":"Answer","text":"Op termijn wel: MijnWebwinkel zelf wordt afgebouwd en de toekomst ligt volgens de eigen aankondiging bij Acendy. Een harde einddatum is niet gepubliceerd, maar de echte keuze is niet of u verhuist, maar waarheen: mee naar Acendy, of naar een platform dat u zelf kiest."}},{"@type":"Question","name":"Wat is het meest gekozen alternatief voor Acendy/MijnWebwinkel?","acceptedAnswer":{"@type":"Answer","text":"Volgens StoreLeads (mei 2026) kiest 55 procent van de vertrekkende MijnWebwinkel-shops voor Shopify. WooCommerce en andere platformen kunnen ook; u kiest het platform, wij regelen de techniek."}},{"@type":"Question","name":"Kan ik mijn producten en klanten meenemen?","acceptedAnswer":{"@type":"Answer","text":"Ja. Producten, teksten, afbeeldingen, vertalingen, klanten en de categoriestructuur worden bij onze migratie automatisch overgezet, en elke oude URL krijgt een 301-redirect zodat uw Google-posities meeverhuizen."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Acendy hetzelfde als MijnWebwinkel?","acceptedAnswer":{"@type":"Answer","text":"In de praktijk wel. Acendy was de naam waaronder MijnWebwinkel en het Noorse Mystore eind 2025 zouden samengaan; die naamswijziging werd kort daarna teruggedraaid. Het onderliggende platform en uw shop zijn dezelfde gebleven."}},{"@type":"Question","name":"Moet ik verplicht overstappen?","acceptedAnswer":{"@type":"Answer","text":"Nee, er is geen aangekondigde einddatum en uw shop blijft gewoon draaien. Wel is de ontwikkeling sinds 2021 feitelijk gestopt en wisselt het platform regelmatig van eigenaar, waardoor u het risico loopt later op andermans voorwaarden te moeten verhuizen."}},{"@type":"Question","name":"Wat is het meest gekozen alternatief voor Acendy/MijnWebwinkel?","acceptedAnswer":{"@type":"Answer","text":"Volgens StoreLeads (mei 2026) kiest 55 procent van de vertrekkende MijnWebwinkel-shops voor Shopify. WooCommerce en andere platformen kunnen ook; u kiest het platform, wij regelen de techniek."}},{"@type":"Question","name":"Kan ik mijn producten en klanten meenemen?","acceptedAnswer":{"@type":"Answer","text":"Ja. Producten, teksten, afbeeldingen, vertalingen, klanten en de categoriestructuur worden bij onze migratie automatisch overgezet, en elke oude URL krijgt een 301-redirect zodat uw Google-posities meeverhuizen."}}]}
 </script>
 #+END_EXPORT
