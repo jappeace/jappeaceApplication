@@ -217,8 +217,13 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
           H.h1 "Verhuis uw webshop. Zonder dataverlies, zonder SEO-verlies."
-          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw complete webshop geautomatiseerd naar Shopify of een ander platform &mdash; producten, vertalingen, afbeeldingen, klantdata en SEO-redirects. U betaalt pas na een succesvolle migratie." :: Text)
-          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw complete webshop geautomatiseerd naar Shopify of een ander platform &mdash; producten, vertalingen, afbeeldingen, klantdata en SEO-redirects." :: Text)
+          H.p ! A.class_ "hero-prijs" $ do
+            H.strong $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
+            H.preEscapedToHtml (". U betaalt pas na een succesvolle migratie. Bereken in een minuut wat uw eigen migratie kost." :: Text)
+          H.div ! A.class_ "hero-cta" $ do
+            H.a ! A.href "/prijzen.html" ! A.class_ "cta-button" $ "Bereken uw prijs"
+            H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Vraag een offerte aan"
         H.img ! A.class_ "hero-image"
               ! A.src "/illustratie-verhuizen.svg"
               ! A.alt "Illustratie van dozen die van een oude webshop naar een nieuwe verhuizen"

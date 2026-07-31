@@ -599,3 +599,21 @@ footer small {
 .calc-offerte {
   cursor: pointer;
 }
+
+/* Prijs vooraan in de hero: het eerste dat prospects vragen is "wat kost het". */
+.hero-prijs {
+  margin-bottom: 1.25rem;
+  color: #33414f;
+  font-size: 1.05em;
+}
+.hero-prijs strong {
+  color: #e8590c;
+  font-size: 1.25em;
+}
+/* Twee hero-knoppen naast elkaar, links uitgelijnd (niet gecentreerd). */
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
