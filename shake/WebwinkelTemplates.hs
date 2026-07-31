@@ -37,7 +37,7 @@ import PageChrome
   , migratieBasisprijsEuro
   , meetLink
   , whatsappFloatingButton
-  , organizationJsonLd
+  , jsonLdString
   , serviceJsonLd
   , faqPageJsonLd
   , formatIsoDate
@@ -54,6 +54,30 @@ import PageChrome
 -- | Site-default social-share image, hosted on this domain.
 webwinkelOgImage :: Text
 webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
+
+-- | Organization structured data for the webwinkelverhuis.nl brand. Presents
+-- Webwinkelverhuis as its own entity (own name, url, email, logo) to Google and
+-- rich-result consumers, with Jappie Software B.V. as the accurate legal parent,
+-- instead of inheriting jappiesoftware.com's shared 'organizationJsonLd'.
+webwinkelOrganizationJsonLd :: Html
+webwinkelOrganizationJsonLd =
+  H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml organizationJson
+  where
+    organizationJson :: Text
+    organizationJson = mconcat
+      [ "{\"@context\":\"https://schema.org\""
+      , ",\"@type\":\"Organization\""
+      , ",\"name\":\"Webwinkelverhuis\""
+      , ",\"url\":\"https://webwinkelverhuis.nl/\""
+      , ",\"logo\":\"https://webwinkelverhuis.nl/favicon.svg\""
+      , ",\"image\":" <> jsonLdString webwinkelOgImage
+      , ",\"email\":" <> jsonLdString webwinkelEmail
+      , ",\"telephone\":\"+31644237437\""
+      , ",\"identifier\":\"KVK 95097872\""
+      , ",\"areaServed\":\"NL\""
+      , ",\"parentOrganization\":{\"@type\":\"Organization\",\"name\":\"Jappie Software B.V.\",\"url\":\"https://jappiesoftware.com/\"}"
+      , "}"
+      ]
 
 -- | Contact address for the webwinkelverhuis.nl brand. On-brand with the domain
 -- the visitor is on (the jappiesoftware.com penguin site keeps its own
@@ -144,7 +168,7 @@ webwinkelBaseWith ogType includeFeed meta content =
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-GD4S885G6F" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-GD4S885G6F');" :: Text)
       H.title (toHtml (pageMetaTitle meta))
-      organizationJsonLd
+      webwinkelOrganizationJsonLd
       pageMetaExtraHead meta
     H.body $ do
       H.header $
