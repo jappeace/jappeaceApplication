@@ -392,12 +392,15 @@ markeerEngagement model =
         ( { model | analyticsEngaged = True }, gaEvent "calculator_engaged" [] )
 
 
-{-| Conversie-event met de richtprijs en de gekozen platforms, zodat we in GA
-zien welke aanvragen binnenkomen en voor welk bedrag. -}
+{-| Conversie-event met de richtprijs en de gekozen platforms. "value" en
+"currency" zijn GA4's gereserveerde geldparameters, dus de waarde wordt native
+herkend; "bron" en "doel" zijn custom parameters die in GA4 als custom dimension
+geregistreerd moeten worden voordat je erop kunt uitsplitsen. -}
 offerteAangevraagdEvent : Model -> Cmd Msg
 offerteAangevraagdEvent model =
     gaEvent "offerte_aangevraagd"
-        [ ( "waarde_euro", Encode.int (totaalCenten model // 100) )
+        [ ( "value", Encode.int (totaalCenten model // 100) )
+        , ( "currency", Encode.string "EUR" )
         , ( "bron", Encode.string (bronOmschrijving model.bron) )
         , ( "doel", Encode.string (doelOmschrijving model.doel) )
         ]
