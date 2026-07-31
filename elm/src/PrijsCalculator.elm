@@ -29,7 +29,7 @@ is en niet een toezegging.
 import Browser
 import Html exposing (Html, a, div, fieldset, h3, input, label, legend, li, option, p, select, span, strong, text, ul)
 import Html.Attributes as Attr
-import Html.Events exposing (onCheck, onInput)
+import Html.Events exposing (onCheck, onClick, onInput)
 import Url
 
 
@@ -125,6 +125,7 @@ type BronPlatform
     = BronMijnwebwinkel
     | BronCcvShop
     | BronLightspeed
+    | BronWoocommerce
     | BronAnders
 
 
@@ -162,6 +163,9 @@ type alias Model =
     , verzendkoppeling : Bool
     , b2bKanaal : Bool
     , pointOfSale : Bool
+    , naam : String
+    , webshopDomein : String
+    , offertePoging : Bool
     }
 
 
@@ -182,6 +186,9 @@ initieelModel =
     , verzendkoppeling = False
     , b2bKanaal = False
     , pointOfSale = False
+    , naam = ""
+    , webshopDomein = ""
+    , offertePoging = False
     }
 
 
@@ -210,6 +217,9 @@ type Msg
     | VerzendkoppelingGewijzigd Bool
     | B2bKanaalGewijzigd Bool
     | PointOfSaleGewijzigd Bool
+    | NaamGewijzigd String
+    | WebshopDomeinGewijzigd String
+    | OfferteGepoogd
 
 
 leesBron : String -> BronPlatform
@@ -219,6 +229,9 @@ leesBron waarde =
 
     else if waarde == "lightspeed" then
         BronLightspeed
+
+    else if waarde == "woocommerce" then
+        BronWoocommerce
 
     else if waarde == "anders" then
         BronAnders
@@ -264,6 +277,9 @@ bronNaarWaarde bron =
 
         BronLightspeed ->
             "lightspeed"
+
+        BronWoocommerce ->
+            "woocommerce"
 
         BronAnders ->
             "anders"
@@ -322,6 +338,9 @@ bronOmschrijving bron =
 
         BronLightspeed ->
             "Lightspeed"
+
+        BronWoocommerce ->
+            "WooCommerce"
 
         BronAnders ->
             "Een ander systeem / weet ik niet"
@@ -389,6 +408,15 @@ update msg model =
 
         PointOfSaleGewijzigd aan ->
             ( { model | pointOfSale = aan }, Cmd.none )
+
+        NaamGewijzigd waarde ->
+            ( { model | naam = waarde }, Cmd.none )
+
+        WebshopDomeinGewijzigd waarde ->
+            ( { model | webshopDomein = waarde }, Cmd.none )
+
+        OfferteGepoogd ->
+            ( { model | offertePoging = True }, Cmd.none )
 
 
 
@@ -461,6 +489,41 @@ themaCenten model =
             0
 
 
+{-| Platforms die het domein en de e-mail vaak zelf bundelen, dus waar een
+registrar-transfer nodig kán zijn. Zelf-gehoste platforms zoals WooCommerce
+niet: daar staat het domein al bij een gewone registrar (alleen DNS-cutover).
+Een onbekend platform laten we ook weg; dat vragen we in de discovery uit. -}
+bundeltDomeinEnEmail : BronPlatform -> Bool
+bundeltDomeinEnEmail bron =
+    case bron of
+        BronMijnwebwinkel ->
+            True
+
+        BronCcvShop ->
+            True
+
+        BronLightspeed ->
+            True
+
+        BronWoocommerce ->
+            False
+
+        BronAnders ->
+            False
+
+
+{-| Domeinverhuizing telt alleen als het bronplatform het domein bundelt én de
+bezoeker aangeeft dat het domein daar staat. -}
+domeinGekozen : Model -> Bool
+domeinGekozen model =
+    bundeltDomeinEnEmail model.bron && model.domeinBijMijnwebwinkel
+
+
+emailGekozen : Model -> Bool
+emailGekozen model =
+    bundeltDomeinEnEmail model.bron && model.emailBijMijnwebwinkel
+
+
 {-| Tel een module alleen mee als de bezoeker hem heeft aangevinkt. -}
 indienAan : Bool -> Int -> Int
 indienAan aan centen =
@@ -483,8 +546,8 @@ totaalCenten model =
         + indienAan model.nieuwsbrief nieuwsbriefCenten
         + indienAan model.voorraad voorraadCenten
         + indienAan model.reviews reviewsCenten
-        + indienAan model.domeinBijMijnwebwinkel domeinverhuizingCenten
-        + indienAan model.emailBijMijnwebwinkel emailSetupCenten
+        + indienAan (domeinGekozen model) domeinverhuizingCenten
+        + indienAan (emailGekozen model) emailSetupCenten
         + indienAan model.verzendkoppeling verzendkoppelingCenten
         + indienAan model.b2bKanaal b2bKanaalCenten
         + indienAan model.pointOfSale pointOfSaleCenten
@@ -546,6 +609,48 @@ getalVeld veldLabel waarde tekstNaVeld naarBericht =
         ]
 
 
+isLeeg : String -> Bool
+isLeeg waarde =
+    String.trim waarde == ""
+
+
+{-| Een verplicht tekstveld: bij een verzendpoging met lege waarde krijgt het
+een foutrand en een korte melding, zodat de bezoeker ziet wat nog moet. -}
+verplichtVeld : Bool -> String -> String -> String -> (String -> Msg) -> Html Msg
+verplichtVeld poging veldLabel plaatshouder waarde naarBericht =
+    label [ Attr.class "calc-field" ]
+        [ span [ Attr.class "calc-label" ] [ text veldLabel ]
+        , input
+            ([ Attr.type_ "text"
+             , Attr.value waarde
+             , Attr.placeholder plaatshouder
+             , onInput naarBericht
+             ]
+                ++ foutRandKlasse poging waarde
+            )
+            []
+        , foutMelding poging waarde
+        ]
+
+
+foutRandKlasse : Bool -> String -> List (Html.Attribute msg)
+foutRandKlasse poging waarde =
+    if poging && isLeeg waarde then
+        [ Attr.class "calc-veld-fout" ]
+
+    else
+        []
+
+
+foutMelding : Bool -> String -> Html msg
+foutMelding poging waarde =
+    if poging && isLeeg waarde then
+        span [ Attr.class "calc-fout" ] [ text "Vul dit in om een offerte aan te vragen." ]
+
+    else
+        text ""
+
+
 keuzeOptie : String -> String -> String -> Html Msg
 keuzeOptie huidig waarde omschrijving =
     option
@@ -563,6 +668,7 @@ bronVeld bron =
             [ keuzeOptie (bronNaarWaarde bron) "mijnwebwinkel" (bronOmschrijving BronMijnwebwinkel)
             , keuzeOptie (bronNaarWaarde bron) "ccv" (bronOmschrijving BronCcvShop)
             , keuzeOptie (bronNaarWaarde bron) "lightspeed" (bronOmschrijving BronLightspeed)
+            , keuzeOptie (bronNaarWaarde bron) "woocommerce" (bronOmschrijving BronWoocommerce)
             , keuzeOptie (bronNaarWaarde bron) "anders" (bronOmschrijving BronAnders)
             ]
         ]
@@ -619,8 +725,8 @@ type alias PrijsRegel =
     }
 
 
-optioneleP : Bool -> String -> Int -> List PrijsRegel
-optioneleP toon omschrijving centen =
+optioneleRegel : Bool -> String -> Int -> List PrijsRegel
+optioneleRegel toon omschrijving centen =
     if toon then
         [ PrijsRegel omschrijving centen ]
 
@@ -661,29 +767,29 @@ nooit uit elkaar lopen. -}
 prijsRegels : Model -> List PrijsRegel
 prijsRegels model =
     [ PrijsRegel "Basismigratie (t/m 1.000 producten, 1 taal)" basisMigratieCenten ]
-        ++ optioneleP
+        ++ optioneleRegel
             (extraProducten model > 0)
             (aantalLabel (extraProducten model) "extra product \u{00D7} \u{20AC}0,25" "extra producten \u{00D7} \u{20AC}0,25")
             (extraProductenCenten model)
-        ++ optioneleP
+        ++ optioneleRegel
             (extraTalen model > 0)
             (aantalLabel (extraTalen model) "extra taal: vertaalwerk per product" "extra talen: vertaalwerk per product")
             (extraTaalProductenCenten model)
-        ++ optioneleP
+        ++ optioneleRegel
             (extraTalen model > 0)
             (aantalLabel (extraTalen model) "extra taal: configuratie \u{00D7} \u{20AC}250" "extra talen: configuratie \u{00D7} \u{20AC}250")
             (extraTaalConfiguratieCenten model)
         ++ themaRegels model
-        ++ optioneleP model.klantaccounts "Klantaccounts meenemen" klantaccountsCenten
-        ++ optioneleP model.orderhistorie "Bestelgeschiedenis meenemen" orderhistorieCenten
-        ++ optioneleP model.nieuwsbrief "Nieuwsbrief-aanmeldingen meenemen" nieuwsbriefCenten
-        ++ optioneleP model.voorraad "Voorraadaantallen live overzetten" voorraadCenten
-        ++ optioneleP model.reviews "Reviews / beoordelingen overzetten" reviewsCenten
-        ++ optioneleP model.domeinBijMijnwebwinkel "Domeinverhuizing" domeinverhuizingCenten
-        ++ optioneleP model.emailBijMijnwebwinkel "E-mail-setup" emailSetupCenten
-        ++ optioneleP model.verzendkoppeling "Verzendkoppeling (bijv. DHL)" verzendkoppelingCenten
-        ++ optioneleP model.b2bKanaal "B2B-kanaal (zakelijke prijzen)" b2bKanaalCenten
-        ++ optioneleP model.pointOfSale "Kassa / point-of-sale" pointOfSaleCenten
+        ++ optioneleRegel model.klantaccounts "Klantaccounts meenemen" klantaccountsCenten
+        ++ optioneleRegel model.orderhistorie "Bestelgeschiedenis meenemen" orderhistorieCenten
+        ++ optioneleRegel model.nieuwsbrief "Nieuwsbrief-aanmeldingen meenemen" nieuwsbriefCenten
+        ++ optioneleRegel model.voorraad "Voorraadaantallen live overzetten" voorraadCenten
+        ++ optioneleRegel model.reviews "Reviews / beoordelingen overzetten" reviewsCenten
+        ++ optioneleRegel (domeinGekozen model) "Domeinverhuizing" domeinverhuizingCenten
+        ++ optioneleRegel (emailGekozen model) "E-mail-setup" emailSetupCenten
+        ++ optioneleRegel model.verzendkoppeling "Verzendkoppeling (bijv. DHL)" verzendkoppelingCenten
+        ++ optioneleRegel model.b2bKanaal "B2B-kanaal (zakelijke prijzen)" b2bKanaalCenten
+        ++ optioneleRegel model.pointOfSale "Kassa / point-of-sale" pointOfSaleCenten
 
 
 regelNaarHtml : PrijsRegel -> Html Msg
@@ -734,19 +840,22 @@ bronNoot bron =
         BronLightspeed ->
             []
 
+        BronWoocommerce ->
+            []
+
 
 {-| Losse waarschuwingen voor keuzes die we niet kant-en-klaar kunnen prijzen:
 een nieuw ontwerp en een onbekend bronplatform gaan altijd op aanvraag. -}
 opAanvraagNoten : Model -> List (Html Msg)
 opAanvraagNoten model =
-    themaNoot model.thema ++ bronNoot model.bron ++ posNoot model.pointOfSale
+    themaNoot model.thema ++ bronNoot model.bron ++ pointOfSaleNoot model.pointOfSale
 
 
 {-| Bij point-of-sale komt de installatie op locatie: die en de reiskosten
 rekenen we los, op aanvraag, dus ze zitten niet in het getoonde totaal. -}
-posNoot : Bool -> List (Html Msg)
-posNoot pos =
-    if pos then
+pointOfSaleNoot : Bool -> List (Html Msg)
+pointOfSaleNoot pointOfSale =
+    if pointOfSale then
         [ p [ Attr.class "calc-note" ]
             [ text "Kassa/point-of-sale zetten we bij u op locatie op. Installatie en reiskosten rekenen we daar los bij, op aanvraag." ]
         ]
@@ -764,10 +873,10 @@ view model =
     div [ Attr.class "prijs-calculator" ]
         [ fieldset [ Attr.class "calc-inputs" ]
             [ legend [] [ text "Uw webshop" ]
-            , getalVeld "Hoeveel producten heeft uw webshop ongeveer?" model.productenInvoer "t/m 1.000 zit in de basisprijs" ProductenGewijzigd
-            , getalVeld "In hoeveel talen staat uw webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
             , bronVeld model.bron
             , doelVeld model.doel
+            , getalVeld "Hoeveel producten heeft uw webshop ongeveer?" model.productenInvoer "t/m 1.000 zit in de basisprijs" ProductenGewijzigd
+            , getalVeld "In hoeveel talen staat uw webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
             , themaVeld model.thema
             , div [ Attr.class "calc-check-group" ]
                 [ span [ Attr.class "calc-label" ] [ text "Wat wilt u meenemen naar de nieuwe shop?" ]
@@ -777,14 +886,13 @@ view model =
                 , aanvinkVeld "Voorraadaantallen" "De actuele voorraad per product" model.voorraad VoorraadGewijzigd
                 , aanvinkVeld "Reviews / beoordelingen" "Uw opgebouwde productbeoordelingen" model.reviews ReviewsGewijzigd
                 ]
-            , div [ Attr.class "calc-check-group" ]
-                [ span [ Attr.class "calc-label" ] [ text "Extra diensten en koppelingen" ]
-                , aanvinkVeld "Mijn domeinnaam staat nog bij MijnWebwinkel" "Het internetadres van uw shop (bijv. uwshop.nl). Weet u het niet zeker? Dan zoeken we het samen uit." model.domeinBijMijnwebwinkel DomeinGewijzigd
-                , aanvinkVeld "Mijn e-mailadressen horen bij MijnWebwinkel" "Bijvoorbeeld info@uwshop.nl die u via MijnWebwinkel gebruikt" model.emailBijMijnwebwinkel EmailGewijzigd
-                , aanvinkVeld "Verzendkoppeling (bijv. DHL)" "Pakketten en labels rechtstreeks vanuit uw shop" model.verzendkoppeling VerzendkoppelingGewijzigd
-                , aanvinkVeld "B2B-kanaal (zakelijke klanten)" "Aparte prijzen en inlog voor zakelijke klanten" model.b2bKanaal B2bKanaalGewijzigd
-                , aanvinkVeld "Kassa / point-of-sale voor mijn fysieke winkel" "Verkopen in de winkel \u{00E9}n online met \u{00E9}\u{00E9}n systeem (Shopify POS)" model.pointOfSale PointOfSaleGewijzigd
-                ]
+            , div [ Attr.class "calc-check-group" ] <|
+                [ span [ Attr.class "calc-label" ] [ text "Extra diensten en koppelingen" ] ]
+                    ++ domeinEmailVelden model
+                    ++ [ aanvinkVeld "Verzendkoppeling (bijv. DHL)" "Pakketten en labels rechtstreeks vanuit uw shop" model.verzendkoppeling VerzendkoppelingGewijzigd
+                       , aanvinkVeld "B2B-kanaal (zakelijke klanten)" "Aparte prijzen en inlog voor zakelijke klanten" model.b2bKanaal B2bKanaalGewijzigd
+                       , aanvinkVeld "Kassa / point-of-sale voor mijn fysieke winkel" "Verkopen in de winkel \u{00E9}n online met \u{00E9}\u{00E9}n systeem (Shopify POS)" model.pointOfSale PointOfSaleGewijzigd
+                       ]
             ]
         , div [ Attr.class "calc-result" ] <|
             [ h3 [] [ text "Uw richtprijs" ]
@@ -795,7 +903,39 @@ view model =
                 ]
             ]
                 ++ opAanvraagNoten model
-                ++ [ lockInNoot, offerteKnop model ]
+                ++ [ lockInNoot, contactVelden model, offerteKnop model ]
+        ]
+
+
+{-| De domein- en e-mailvragen tonen we alleen voor bronplatforms die die zaken
+zelf bundelen, met de platformnaam erin. Bij een zelf-gehost of onbekend
+platform laten we ze weg. -}
+domeinEmailVelden : Model -> List (Html Msg)
+domeinEmailVelden model =
+    if bundeltDomeinEnEmail model.bron then
+        [ aanvinkVeld
+            ("Mijn domeinnaam staat nog bij " ++ bronOmschrijving model.bron)
+            "Het internetadres van uw shop (bijv. uwshop.nl). Weet u het niet zeker? Dan zoeken we het samen uit."
+            model.domeinBijMijnwebwinkel
+            DomeinGewijzigd
+        , aanvinkVeld
+            ("Mijn e-mailadressen horen bij " ++ bronOmschrijving model.bron)
+            "Bijvoorbeeld info@uwshop.nl die u via dat platform gebruikt"
+            model.emailBijMijnwebwinkel
+            EmailGewijzigd
+        ]
+
+    else
+        []
+
+
+{-| De twee verplichte contactvelden onder de richtprijs: naam en het
+webshop-domein. Beide moeten ingevuld zijn voordat de offerte-knop verstuurt. -}
+contactVelden : Model -> Html Msg
+contactVelden model =
+    div [ Attr.class "calc-contact" ]
+        [ verplichtVeld model.offertePoging "Uw naam" "Voor- en achternaam" model.naam NaamGewijzigd
+        , verplichtVeld model.offertePoging "Uw webshop (domeinnaam)" "bijv. uwshop.nl" model.webshopDomein WebshopDomeinGewijzigd
         ]
 
 
@@ -805,15 +945,30 @@ lockInNoot =
         [ text "Dit is een richtprijs, geen offerte. Alleen een offerte legt uw prijs vast. Wilt u tegen deze prijs verhuizen? Vraag nu een offerte aan." ]
 
 
-{-| Knop die een offerte-mail opent met alle gekozen opties al ingevuld, zodat
-de bezoeker alleen nog op verzenden hoeft te drukken. -}
+formulierGeldig : Model -> Bool
+formulierGeldig model =
+    not (isLeeg model.naam) && not (isLeeg model.webshopDomein)
+
+
+{-| Knop die een offerte-mail opent met alle gekozen opties al ingevuld. Pas
+klikbaar naar de mail als naam en webshop-domein ingevuld zijn; daarvoor markeert
+een klik alleen de ontbrekende verplichte velden (geen href, dus geen navigatie).
+-}
 offerteKnop : Model -> Html Msg
 offerteKnop model =
-    a
-        [ Attr.href (offerteMailtoUrl model)
-        , Attr.class "cta-button calc-offerte"
-        ]
-        [ text "Vraag deze offerte aan" ]
+    if formulierGeldig model then
+        a
+            [ Attr.href (offerteMailtoUrl model)
+            , Attr.class "cta-button calc-offerte"
+            ]
+            [ text "Vraag deze offerte aan" ]
+
+    else
+        a
+            [ Attr.class "cta-button calc-offerte"
+            , onClick OfferteGepoogd
+            ]
+            [ text "Vraag deze offerte aan" ]
 
 
 offerteMailtoUrl : Model -> String
@@ -834,6 +989,8 @@ offerteBody model =
          , ""
          , "Ik wil graag een offerte voor het verhuizen van mijn webshop. Op basis van de rekenhulp heb ik dit ingevuld:"
          , ""
+         , "Naam: " ++ model.naam
+         , "Webshop: " ++ model.webshopDomein
          , "Aantal producten: " ++ String.fromInt (aantalProducten model)
          , "Aantal talen: " ++ String.fromInt (aantalTalen model)
          , "Huidig platform: " ++ bronOmschrijving model.bron
@@ -844,7 +1001,7 @@ offerteBody model =
          ]
             ++ List.map prijsRegelTekst (prijsRegels model)
             ++ [ "Totaal: " ++ formatteerEuro (totaalCenten model) ]
-            ++ posReiskostenRegel model
+            ++ pointOfSaleReiskostenRegel model
             ++ [ ""
                , "Kunt u mij hiervoor een offerte sturen?"
                ]
@@ -858,8 +1015,8 @@ prijsRegelTekst prijsregel =
 
 {-| Reiskosten-voorbehoud voor point-of-sale, alleen als die gekozen is; het
 staat los van het getoonde totaal. -}
-posReiskostenRegel : Model -> List String
-posReiskostenRegel model =
+pointOfSaleReiskostenRegel : Model -> List String
+pointOfSaleReiskostenRegel model =
     if model.pointOfSale then
         [ "(Kassa/point-of-sale: installatie op locatie en reiskosten komen hier los bij, op aanvraag.)" ]
 

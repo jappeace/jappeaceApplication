@@ -78,6 +78,20 @@ suite =
             \_ ->
                 Expect.equal 274900
                     (totaalCenten { initieelModel | b2bKanaal = True })
+        , test "WooCommerce-bron rekent geen domeinverhuizing (zelf-gehost)" <|
+            \_ ->
+                Expect.equal 199900
+                    (totaalCenten
+                        { initieelModel
+                            | bron = BronWoocommerce
+                            , domeinBijMijnwebwinkel = True
+                            , emailBijMijnwebwinkel = True
+                        }
+                    )
+        , test "MijnWebwinkel-bron rekent domeinverhuizing wel (250)" <|
+            \_ ->
+                Expect.equal 224900
+                    (totaalCenten { initieelModel | domeinBijMijnwebwinkel = True })
         , test "point-of-sale voegt 750 toe (excl. reiskosten op aanvraag)" <|
             \_ ->
                 Expect.equal 274900

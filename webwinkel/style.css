@@ -569,3 +569,33 @@ footer small {
 .calc-line {
   flex-wrap: wrap;
 }
+
+/* Verplichte contactvelden (naam + webshop-domein) onder de richtprijs. */
+.calc-contact {
+  margin-top: 1rem;
+}
+.calc-field input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #c3d2e2;
+  border-radius: 4px;
+  font-size: 1em;
+  background: #fff;
+  color: #0c2f47;
+}
+/* Foutstaat bij een leeg verplicht veld na een verzendpoging. */
+.calc-field input.calc-veld-fout {
+  border-color: #e03131;
+  background: #fff5f5;
+}
+.calc-fout {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.85em;
+  color: #e03131;
+}
+/* De offerte-knop is ook zonder href klikbaar (om de fouten te tonen). */
+.calc-offerte {
+  cursor: pointer;
+}
