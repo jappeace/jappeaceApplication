@@ -14,6 +14,7 @@ module PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , percentEncodeQuery
   , migratieBasisprijsEuro
   , meetLink
   , companyWhatsappNumber

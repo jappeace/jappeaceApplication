@@ -128,6 +128,14 @@ type BronPlatform
     | BronAnders
 
 
+{-| Waar migreren we naartoe? Beïnvloedt de prijs niet, maar is nuttig voor de
+offerte. Shopify is onze standaard; WooCommerce doen we ook. -}
+type DoelPlatform
+    = DoelShopify
+    | DoelWoocommerce
+    | DoelAnders
+
+
 {-| Hoe moet de nieuwe shop eruitzien? Een net standaard-uiterlijk zit in de
 basis; de huidige look exact nabouwen is los werk; een volledig nieuw ontwerp
 prijzen we op aanvraag.
@@ -142,6 +150,7 @@ type alias Model =
     { productenInvoer : String
     , talenInvoer : String
     , bron : BronPlatform
+    , doel : DoelPlatform
     , thema : ThemaKeuze
     , klantaccounts : Bool
     , orderhistorie : Bool
@@ -161,6 +170,7 @@ initieelModel =
     { productenInvoer = "1000"
     , talenInvoer = "1"
     , bron = BronMijnwebwinkel
+    , doel = DoelShopify
     , thema = ThemaStandaard
     , klantaccounts = False
     , orderhistorie = False
@@ -188,6 +198,7 @@ type Msg
     = ProductenGewijzigd String
     | TalenGewijzigd String
     | BronGewijzigd String
+    | DoelGewijzigd String
     | ThemaGewijzigd String
     | KlantaccountsGewijzigd Bool
     | OrderhistorieGewijzigd Bool
@@ -214,6 +225,18 @@ leesBron waarde =
 
     else
         BronMijnwebwinkel
+
+
+leesDoel : String -> DoelPlatform
+leesDoel waarde =
+    if waarde == "woocommerce" then
+        DoelWoocommerce
+
+    else if waarde == "anders" then
+        DoelAnders
+
+    else
+        DoelShopify
 
 
 leesThema : String -> ThemaKeuze
@@ -244,6 +267,32 @@ bronNaarWaarde bron =
 
         BronAnders ->
             "anders"
+
+
+doelNaarWaarde : DoelPlatform -> String
+doelNaarWaarde doel =
+    case doel of
+        DoelShopify ->
+            "shopify"
+
+        DoelWoocommerce ->
+            "woocommerce"
+
+        DoelAnders ->
+            "anders"
+
+
+doelOmschrijving : DoelPlatform -> String
+doelOmschrijving doel =
+    case doel of
+        DoelShopify ->
+            "Shopify"
+
+        DoelWoocommerce ->
+            "WooCommerce"
+
+        DoelAnders ->
+            "Een ander platform / weet ik nog niet"
 
 
 {-| Inverse van leesThema: de keuzewaarde die bij een themakeuze hoort. -}
@@ -304,6 +353,9 @@ update msg model =
 
         BronGewijzigd waarde ->
             ( { model | bron = leesBron waarde }, Cmd.none )
+
+        DoelGewijzigd waarde ->
+            ( { model | doel = leesDoel waarde }, Cmd.none )
 
         ThemaGewijzigd waarde ->
             ( { model | thema = leesThema waarde }, Cmd.none )
@@ -516,6 +568,18 @@ bronVeld bron =
         ]
 
 
+doelVeld : DoelPlatform -> Html Msg
+doelVeld doel =
+    label [ Attr.class "calc-field" ]
+        [ span [ Attr.class "calc-label" ] [ text "Waar wilt u naartoe?" ]
+        , select [ onInput DoelGewijzigd ]
+            [ keuzeOptie (doelNaarWaarde doel) "shopify" (doelOmschrijving DoelShopify)
+            , keuzeOptie (doelNaarWaarde doel) "woocommerce" (doelOmschrijving DoelWoocommerce)
+            , keuzeOptie (doelNaarWaarde doel) "anders" (doelOmschrijving DoelAnders)
+            ]
+        ]
+
+
 themaVeld : ThemaKeuze -> Html Msg
 themaVeld thema =
     label [ Attr.class "calc-field" ]
@@ -703,6 +767,7 @@ view model =
             , getalVeld "Hoeveel producten heeft uw webshop ongeveer?" model.productenInvoer "t/m 1.000 zit in de basisprijs" ProductenGewijzigd
             , getalVeld "In hoeveel talen staat uw webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
             , bronVeld model.bron
+            , doelVeld model.doel
             , themaVeld model.thema
             , div [ Attr.class "calc-check-group" ]
                 [ span [ Attr.class "calc-label" ] [ text "Wat wilt u meenemen naar de nieuwe shop?" ]
@@ -772,6 +837,7 @@ offerteBody model =
          , "Aantal producten: " ++ String.fromInt (aantalProducten model)
          , "Aantal talen: " ++ String.fromInt (aantalTalen model)
          , "Huidig platform: " ++ bronOmschrijving model.bron
+         , "Gewenst platform: " ++ doelOmschrijving model.doel
          , "Thema: " ++ themaOmschrijving model.thema
          , ""
          , "Prijsindicatie (excl. BTW):"

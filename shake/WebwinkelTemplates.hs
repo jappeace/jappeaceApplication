@@ -34,6 +34,7 @@ import PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , percentEncodeQuery
   , migratieBasisprijsEuro
   , meetLink
   , whatsappFloatingButton
@@ -55,9 +56,33 @@ import PageChrome
 webwinkelOgImage :: Text
 webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
 
--- | The "ask for a quote" mailto used by every call-to-action button.
+-- | The "ask for a quote" mailto used by every call-to-action button. The body
+-- is a gentle fill-in template: a blank mail box is intimidating, and these
+-- prompts tell the merchant which details make for a good quote (mirroring the
+-- calculator's questions) without forcing them through the calculator first.
 offerteMailto :: H.AttributeValue
-offerteMailto = toValue ("mailto:" <> companyEmail <> "?subject=Migratie%20offerte")
+offerteMailto =
+  toValue
+    ( "mailto:" <> companyEmail
+        <> "?subject=Migratie%20offerte&body="
+        <> percentEncodeQuery offerteBodyTemplate
+    )
+
+-- | Fill-in template for a quote request from a plain CTA button (not the
+-- calculator). Kept in sync by hand with the calculator's questions.
+offerteBodyTemplate :: Text
+offerteBodyTemplate =
+  "Hallo,\n\n"
+    <> "Ik wil graag een offerte voor het verhuizen van mijn webshop. "
+    <> "Om u een goede prijs te kunnen geven, alvast wat info (vul in wat u weet):\n\n"
+    <> "- Huidig platform (bijv. MijnWebwinkel, CCV Shop): \n"
+    <> "- Gewenst platform (Shopify of WooCommerce): \n"
+    <> "- Aantal producten (ongeveer): \n"
+    <> "- Aantal talen: \n"
+    <> "- Meenemen (klantaccounts, bestelgeschiedenis, nieuwsbrief, voorraad, reviews): \n"
+    <> "- Domeinnaam of e-mail nog bij MijnWebwinkel?: \n"
+    <> "- Bijzonderheden (kassa/point-of-sale, zakelijke klanten, verzendkoppeling): \n\n"
+    <> "Met vriendelijke groet,"
 
 -- | Mailto for merchants whose migration is already running or done and who
 -- want follow-up work (mass edits, theme changes, integrations). The subject
