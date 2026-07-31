@@ -1,15 +1,16 @@
 #+TITLE: Webshop migreren: stappenplan, kosten en valkuilen
-#+DATE: 2026-07-31
+#+DATE: 2026-07-10
 #+CATEGORY: migratie
 #+TAGS: migratie, stappenplan, shopify
 
-Uw webshop migreren naar een ander platform: het klinkt als een berg
-werk, en zonder plan is het dat ook. Toch is een migratie goed
-beheersbaar als u hem in de juiste volgorde aanpakt. Dit is het
-stappenplan dat wij zelf gebruiken bij elke verhuizing, of die nu
-van MijnWebwinkel, CCV Shop of Lightspeed komt en naar Shopify,
-WooCommerce of een ander platform gaat, plus de valkuilen die we in
-de praktijk het vaakst zien.
+Uw webshop migreren naar een ander platform: laten we er eerlijk
+over zijn, het ís een berg werk. Maar het is goed beheersbaar werk
+als u het in de juiste volgorde aanpakt en vooraf weet welke
+stappen technisch lastig worden. Dit is het stappenplan dat wij
+zelf gebruiken bij elke verhuizing, of die nu van MijnWebwinkel,
+CCV Shop of Lightspeed komt en naar Shopify, WooCommerce of een
+ander platform gaat, plus de valkuilen die we in de praktijk het
+vaakst zien.
 
 * Stap 1: kies uw nieuwe platform
 
@@ -25,8 +26,9 @@ niet: wij zijn geen verlengstuk van één platform.
 
 Maak een lijst voordat u iets aanraakt. Denk aan producten met
 varianten en afbeeldingen, categorieën, teksten en
-informatiepagina's, vertalingen, klantgegevens, kortingscodes,
-spaarpunten, en niet te vergeten: al uw URLs. Alles wat niet op de
+informatiepagina's, vertalingen, klantgegevens, uw
+nieuwsbrieflijst, kortingscodes, spaarpunten, de mailadressen op
+uw domein, en niet te vergeten: al uw URLs. Alles wat niet op de
 lijst staat, gaat verloren zonder dat iemand het merkt, tot een
 klant erover mailt.
 
@@ -47,7 +49,29 @@ catalogus oogt slordiger dan een ongemoeide. Onze eigen migraties
 zijn volledig geautomatiseerd, inclusief varianten, afbeeldingen en
 vertalingen, en het programma valideert zijn eigen werk.
 
-* Stap 5: regel de 301-redirects
+* Stap 5: richt uw thema in
+
+Uw producten staan er nu, maar de winkel ziet er nog niet uit als
+úw winkel. Logo, kleuren, banners, de indeling van de voorpagina:
+alles wat in de oude shop "gewoon zo was" moet u nu opnieuw kiezen
+en instellen. Onderschat deze stap niet; hier gaat voor de meeste
+eigenaren de meeste tijd in zitten, en het is ook de stap waar u
+het vaakst hulp bij nodig heeft.
+
+* Stap 6: installeer uw apps en koppelingen
+
+Betaalmethoden, verzendkoppelingen, reviews, de boekhouding: wat
+op het oude platform ingebouwd zat, komt op het nieuwe vaak uit
+losse apps of plugins. Elke koppeling moet apart worden ingesteld
+én getest, het liefst met een echte proefbestelling.
+
+* Stap 7: zet uw klantbestanden en nieuwsbrieven over
+
+Klantaccounts, de nieuwsbrieflijst en waar mogelijk de
+bestelhistorie verhuizen mee, zodat vaste klanten niet opnieuw
+hoeven te beginnen en u uw mailinglijst niet kwijtraakt.
+
+* Stap 8: regel de 301-redirects
 
 Dit is de stap die het vaakst wordt overgeslagen en het meeste
 kost. Elke oude URL moet permanent doorsturen naar de juiste nieuwe
@@ -56,7 +80,16 @@ pagina, anders raakt u
 Google-posities kwijt die u jaren heeft opgebouwd]]. Eén redirect
 per URL, voor álle URLs, actief vanaf dag één.
 
-* Stap 6: controleer, ga live, en houd de eerste weken in de gaten
+* Stap 9: verhuis uw domein en uw e-mail
+
+Staat uw domeinnaam geregistreerd bij uw oude webshopplatform, zet
+hem dan over naar een eigen registrar, zodat u hem zelf in handen
+heeft en niet afhankelijk blijft van het platform dat u net
+verlaat. Vergeet daarbij de mailboxen op dat domein niet: wie
+alleen het domein omzet, staat de volgende ochtend zonder e-mail.
+Voor veel eigenaren is dit technisch de spannendste stap.
+
+* Stap 10: controleer, ga live, en houd de eerste weken in de gaten
 
 Loop de testshop na met uw inventarislijst uit stap 2, controleer
 een steekproef van redirects, en zet dan pas het domein om. Houd na
@@ -76,10 +109,14 @@ de eerste bestellingen binnenkomen.
 * Zelf doen of uitbesteden?
 
 Heeft u enkele tientallen producten, één taal en weinig opgebouwde
-Google-posities, dan kunt u een migratie prima zelf doen; reken op
-een paar avonden werk en gebruik het stappenplan hierboven. Bij
+Google-posities, dan kunt u een migratie zelf doen, maar reken
+eerder in weekenden dan in avonden: tien stappen is geen middagje
+werk. De stappen waar de meeste eigenaren op vastlopen zijn het
+thema (stap 5), de koppelingen (stap 6), de klantbestanden (stap
+7) en de domein- en mailverhuizing (stap 9); dat zijn precies de
+stappen waar een fout ook meteen zichtbaar is voor uw klanten. Bij
 honderden of duizenden producten, meerdere talen of een shop die
-goed vindbaar is, wordt het handwerk het probleem: dan is
+goed vindbaar is, komt daar het handwerk-probleem bij: dan is
 automatiseren geen luxe maar de enige manier om het foutloos te
 doen. Dat is precies wat wij leveren, met een vaste prijs vanaf
 1.999 euro (zie [[https://webwinkelverhuis.nl/prijzen.html][onze

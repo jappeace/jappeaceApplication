@@ -1,5 +1,5 @@
 #+TITLE: MijnWebwinkel vs Shopify: een eerlijke vergelijking voor Nederlandse webshops
-#+DATE: 2026-07-31
+#+DATE: 2026-07-18
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, shopify, vergelijking
 
@@ -37,9 +37,10 @@ er eerlijk bij, want een migratie kost geld en aandacht.
 
 Het probleem zit in de toekomst, niet in het heden. Sinds de
 overname door Visma in 2021 is de ontwikkeling feitelijk gestopt,
-zijn de prijzen verhoogd, en is het platform twee keer van naam en
-eigenaar gewisseld (Acendy, daarna Norvato). Wat er precies is
-gebeurd leest u in
+zijn de prijzen verhoogd, en rolt het platform van reorganisatie
+naar reorganisatie: kortstondig omgedoopt tot Acendy (snel weer
+teruggedraaid) en begin 2026 ondergebracht in het nieuwe vehikel
+Norvato. Wat er precies is gebeurd leest u in
 [[https://webwinkelverhuis.nl/blog/alternatief-voor-acendy-zo-zit-het-met-mijnwebwinkel-mystore-en-norvato.html][ons
 artikel over Acendy, Mystore en Norvato]] en op de pagina
 [[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][waarom wordt

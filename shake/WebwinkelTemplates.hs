@@ -127,6 +127,7 @@ webwinkelBaseWith ogType includeFeed meta content =
         Nothing -> mempty
       H.link ! A.rel "stylesheet" ! A.href "/style.css"
       H.link ! A.rel "stylesheet" ! A.href "/blog.css"
+      H.link ! A.rel "icon" ! A.type_ "image/svg+xml" ! A.href "/favicon.svg"
       H.link ! A.rel "icon" ! A.href "/favicon.ico"
       if includeFeed
         then H.link ! A.href "/blog/atom"

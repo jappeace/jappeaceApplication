@@ -84,8 +84,10 @@ bestemmingen:
 2. WooCommerce past bij wie een eigen WordPress-omgeving wil, met
    volledige controle over de shop en de kosten van hosting en
    onderhoud erbij.
-3. Andere platformen kunnen ook: u kiest, wij zijn geen verlengstuk
-   van één platform.
+3. Andere platformen zijn net zo goed prima. CCV Shop bijvoorbeeld
+   is ook een Nederlands pakket met iDEAL en Nederlandse support,
+   en er zijn er meer. Waar het om gaat is dat het platform bij uw
+   winkel past, niet dat het een bepaalde naam draagt.
 
 Waar u ook heen gaat, let bij de overstap op drie dingen: krijgt u
 uw data mee (producten, teksten, klanten), blijven uw oude URLs
