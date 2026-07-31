@@ -377,6 +377,12 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vaste prijzen, vooraf afgesproken. U betaalt pas na een succesvolle migratie. Hieronder ziet u precies waar u aan toe bent." :: Text)
 
     H.section ! A.class_ "engagement" $ do
+      H.h2 "Bereken uw richtprijs"
+      H.p "Beantwoord een paar vragen over uw shop en u ziet meteen een indicatie. Dit is geen offerte: alleen een offerte legt uw prijs vast."
+      H.div ! A.id "prijs-calculator-mount" $ mempty
+      H.noscript $ H.p "De rekenhulp heeft JavaScript nodig. Hieronder staat de volledige prijslijst zodat u ook zonder JavaScript alles ziet."
+
+    H.section ! A.class_ "engagement" $ do
       H.h2 "De migratie"
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
@@ -393,14 +399,36 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
 
     H.section ! A.class_ "engagement" $ do
-      H.h2 "Extra diensten"
+      H.h2 "Modules en extra diensten"
+      H.p "Losse onderdelen die u naar keuze bijschakelt. U betaalt alleen voor wat u meeneemt."
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
-          H.td "Domeinverhuizing"
+          H.td $ H.preEscapedToHtml ("Huidige uitstraling 1-op-1 overzetten (uw shop ziet er precies zo uit als nu)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;749" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Klantaccounts meenemen (uw klanten houden hun inlog)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td "Bestelgeschiedenis meenemen"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td "Nieuwsbrief-aanmeldingen meenemen"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td "Voorraadaantallen live overzetten"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Domeinverhuizing (uw domeinnaam staat nog bij MijnWebwinkel)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
         H.tr $ do
           H.td $ H.preEscapedToHtml ("E-mail-setup (mailboxen, SPF/DKIM, doorstuurregels)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Toeslag ander bronsysteem (CCV Shop of Lightspeed)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td "Volledig nieuw ontwerp"
+          H.td ! A.class_ "price-cell" $ "op aanvraag"
         H.tr $ do
           H.td "Catalogus-brede teksttransformaties"
           H.td ! A.class_ "price-cell" $ "op aanvraag"
@@ -409,6 +437,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.h2 "Altijd inbegrepen"
       H.ul $ do
         H.li $ H.preEscapedToHtml ("Producten, afbeeldingen, categorie&euml;n, klantdata en voorraad." :: Text)
+        H.li "Een verzorgd standaard Shopify-thema, ingericht met uw logo en kleuren."
         H.li "SEO-redirects (301) voor elke oude URL, zodat uw links en opgebouwde SEO meeverhuizen."
         H.li "Een testshop naast uw draaiende winkel; DNS-overzet met zo min mogelijk downtime."
         H.li "Betaling pas na een succesvolle migratie."
@@ -419,16 +448,18 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.li $ H.preEscapedToHtml ("Modeltreinwinkel, 2.400 producten, 3 talen: &euro;1.999 + 1.400 &times; &euro;0,25 + 2 &times; 2.400 &times; &euro;0,25 + 2 &times; &euro;250 = &euro;4.049." :: Text)
         H.li $ H.preEscapedToHtml ("Winkel met 3.000 producten, 1 taal: &euro;1.999 + 2.000 &times; &euro;0,25 = &euro;2.499." :: Text)
         H.li $ H.preEscapedToHtml ("Kleine shop, t/m 1.000 producten, 1 taal: &euro;1.999." :: Text)
-
-    H.section ! A.class_ "results" $ do
-      H.h2 "Geldt deze prijs voor mij?"
-      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt uw prijs vast. Wilt u tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat uw prijs zwart-op-wit."
-      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.p ! A.class_ "engagement-note" $ "Losse modules (thema, klantaccounts, domeinverhuizing en dergelijke) komen hier naar keuze bovenop. Gebruik de rekenhulp bovenaan voor uw eigen situatie."
 
     H.section ! A.class_ "final-cta" $ do
-      H.h2 "Liever eerst even sparren?"
-      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.h2 "Geldt deze prijs voor mij?"
+      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt uw prijs vast. Wilt u tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat uw prijs zwart-op-wit."
+      H.div ! A.class_ "cta-row" $ do
+        H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+        H.a ! A.href meetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
+
+    H.script ! A.src "/prijs-calculator.js" $ mempty
+    H.script $ H.preEscapedToHtml
+      ("Elm.PrijsCalculator.init({node: document.getElementById('prijs-calculator-mount')});" :: Text)
   where
     prijzenMeta :: PageMeta
     prijzenMeta = PageMeta

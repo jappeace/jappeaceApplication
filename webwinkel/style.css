@@ -394,3 +394,144 @@ footer small {
   white-space: nowrap;
   font-weight: 600;
 }
+
+/* Prijs-calculator (Elm) op /prijzen. Twee kolommen op desktop (invoer |
+   uitkomst), gestapeld op mobiel. Kleuren volgen de rest van de site:
+   navy koppen, oranje het totaal, lichte kaderlijnen. */
+.prijs-calculator {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+@media (max-width: 720px) {
+  .prijs-calculator {
+    grid-template-columns: 1fr;
+  }
+}
+.calc-inputs {
+  border: 1px solid #dbe5ef;
+  border-radius: 6px;
+  padding: 1.2rem 1.4rem;
+  margin: 0;
+}
+.calc-inputs legend {
+  font-weight: 700;
+  color: #0c2f47;
+  padding: 0 0.4rem;
+}
+.calc-field {
+  display: block;
+  margin: 0.9rem 0;
+}
+.calc-label {
+  display: block;
+  font-weight: 600;
+  color: #0c2f47;
+  margin-bottom: 0.3rem;
+}
+.calc-hint {
+  display: block;
+  font-size: 0.85em;
+  color: #50606f;
+  margin-top: 0.15rem;
+}
+.calc-field input[type="number"],
+.calc-field select {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #c3d2e2;
+  border-radius: 4px;
+  font-size: 1em;
+  background: #fff;
+  color: #0c2f47;
+}
+.calc-check-group {
+  margin: 1rem 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid #eef2f7;
+}
+.calc-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0.6rem 0;
+  cursor: pointer;
+}
+.calc-check input[type="checkbox"] {
+  margin-top: 0.25rem;
+  flex: 0 0 auto;
+}
+.calc-check-label {
+  display: block;
+  font-weight: 600;
+  color: #0c2f47;
+}
+.calc-result {
+  border: 1px solid #dbe5ef;
+  border-radius: 6px;
+  padding: 1.2rem 1.4rem;
+  background: #f7fafc;
+}
+.calc-result h3 {
+  margin-top: 0;
+  color: #0c2f47;
+}
+.calc-lines {
+  list-style: none;
+  margin: 0.8rem 0;
+  padding: 0;
+}
+.calc-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.calc-line-label {
+  color: #33414f;
+}
+.calc-line-price {
+  font-weight: 600;
+  white-space: nowrap;
+  color: #0c2f47;
+}
+.calc-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 2px solid #dbe5ef;
+  font-size: 1.15em;
+}
+.calc-total strong {
+  font-size: 1.25em;
+  color: #e8590c;
+}
+.calc-note {
+  margin-top: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  background: #fff4e6;
+  border-left: 3px solid #e8590c;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: #50606f;
+}
+.calc-lockin {
+  margin-top: 0.9rem;
+  font-size: 0.85em;
+  color: #50606f;
+}
+
+/* Twee acties naast elkaar (primair oranje + secundair navy), gecentreerd.
+   Vervangt twee losse oranje knoppen die niet uitgelijnd stonden. */
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}

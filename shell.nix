@@ -12,6 +12,9 @@ pkgs.mkShell {
     shake-blog
     hostdir
     pkgs.glibcLocales
+    pkgs.elmPackages.elm # shake compiles the /prijzen calculator via `elm make`
+    pkgs.elmPackages.elm-test # run the calculator's pricing tests: (cd elm && elm-test)
+    pkgs.nodejs # elm-test runs the compiled tests on node
   ];
   LANG = "en_US.UTF-8";
   LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
