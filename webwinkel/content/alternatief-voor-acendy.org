@@ -1,0 +1,145 @@
+#+TITLE: Alternatief voor Acendy? Zo zit het met MijnWebwinkel, Mystore en Norvato
+#+DATE: 2026-07-31
+#+CATEGORY: migratie
+#+TAGS: acendy, mijnwebwinkel, migratie
+
+Zoekt u een alternatief voor Acendy? Acendy is de naam waaronder
+MijnWebwinkel eind 2025 kort verderging na een samenvoeging met het
+Noorse Mystore. Die naamswijziging werd snel teruggedraaid, maar de
+onrust eromheen is begrijpelijk: het platform is de afgelopen jaren
+meerdere keren van eigenaar en naam gewisseld, terwijl de ontwikkeling
+stilstaat. In dit artikel zetten we op een rij wat er precies is
+gebeurd, wat het voor uw webshop betekent, en welke alternatieven u
+heeft.
+
+* Wat is er gebeurd: van MijnWebwinkel naar Acendy naar Norvato
+
+De korte versie, met bronnen:
+
+1. In november 2021 werd MijnWebwinkel
+   [[https://www.visma.com/news/visma-strengthens-its-position-in-the-benelux-e-commerce-market-with-the-acquisition-of-mijnwebwinkel][overgenomen
+   door Visma]], een Noors softwareconglomeraat in handen van het
+   Britse private-equityfonds Hg Capital. De oprichter vertrok.
+2. In november 2025 kondigde Visma aan dat MijnWebwinkel en het
+   Noorse Mystore
+   [[https://www.emerce.nl/wire/mijnwebwinkel-mystore-lanceren-acendy-nieuw-tijdperk-ecommerce][samen
+   verdergaan als "Acendy"]]. Kort daarna werd die naamswijziging
+   weer teruggedraaid: de aankondiging is inmiddels van het
+   Mijnwebwinkel-blog verwijderd, acendy.com is niet meer
+   bereikbaar, en mijnwebwinkel.nl werft weer gewoon nieuwe klanten
+   onder de eigen naam (stand juli 2026).
+3. In februari 2026 stootte Visma
+   [[https://www.privateequitywire.co.uk/hg-spins-out-e500m-of-visma-assets-as-ipo-plans-stall/][voor
+   500 miljoen euro aan bedrijven af]], waaronder Acendy/MijnWebwinkel,
+   in een nieuw vehikel genaamd Norvato. Visma bereidt een beursgang
+   voor en houdt alleen kernproducten aan.
+
+Drie namen in drie maanden dus: MijnWebwinkel, Acendy, en nu een
+plek in de Norvato-portefeuille. Voor u als winkelier is de naam
+het minst belangrijke deel. Belangrijker is wat er ondertussen met
+het product gebeurt.
+
+* Wat dit voor uw webshop betekent
+
+Sinds de overname in 2021 is de ontwikkeling van het platform
+feitelijk gestopt, terwijl de prijzen stegen: het goedkoopste plan
+van 20 euro per maand is beperkt tot 25 producten, serieuze shops
+betalen 40 tot 70 euro per maand. De gevolgen zijn zichtbaar in de
+cijfers van [[https://storeleads.app/reports/mijnwebwinkel][StoreLeads]]
+(mei 2026): het aantal shops op het platform daalde sinds de piek in
+2022 met 35 procent, van zo'n 7.000 naar zo'n 4.500. In de laatste 90
+dagen vertrokken er 40 shops en kwamen er 4 bij.
+
+Hoe die verwaarlozing er in de praktijk uitziet, merkte een klant
+van ons met een fysieke winkel: de Mijnwebwinkel Kassa App is begin
+2026 stilletjes uit de App Store verdwenen. De laatste versie stamt
+uit februari 2025 en de App Store-pagina geeft inmiddels "niet
+gevonden" (gecontroleerd juli 2026), terwijl de kassa-add-on gewoon
+wordt doorverkocht. Geïnstalleerde exemplaren blijven werken, maar
+een nieuwe of gereset iPad kan de app niet meer installeren: gaat
+uw iPad stuk, dan staat u van de ene op de andere dag zonder kassa.
+
+Waarom dat zo loopt, en waarom dit geen incompetentie maar een
+bewuste keuze van de eigenaren is, leggen we uit op onze pagina
+[[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][waarom wordt
+MijnWebwinkel niet meer doorontwikkeld]].
+
+* Welke alternatieven heeft u?
+
+Eerlijk is eerlijk: u hoeft niet per se weg. Uw shop blijft
+vooralsnog gewoon draaien, en als uw winkel klein is en u tevreden
+bent, is afwachten een legitieme keuze. U loopt wel het risico dat
+u op een later moment op andermans tijdlijn moet verhuizen, in
+plaats van op de uwe.
+
+Kiest u er wél voor om te vertrekken, dan zijn dit de gangbare
+bestemmingen:
+
+1. Shopify is het meest gekozen alternatief: van de vertrekkende
+   MijnWebwinkel-shops kiest 55 procent hiervoor (StoreLeads, mei
+   2026). Groot app-aanbod, actieve doorontwikkeling, en iDEAL werkt
+   gewoon. Hoe de twee platformen zich verhouden leest u in onze
+   [[https://webwinkelverhuis.nl/blog/mijnwebwinkel-vs-shopify-een-eerlijke-vergelijking-voor-nederlandse-webshops.html][eerlijke
+   vergelijking van MijnWebwinkel en Shopify]].
+2. WooCommerce past bij wie een eigen WordPress-omgeving wil, met
+   volledige controle over de shop en de kosten van hosting en
+   onderhoud erbij.
+3. Andere platformen zijn net zo goed prima. CCV Shop bijvoorbeeld
+   is ook een Nederlands pakket met iDEAL en Nederlandse support,
+   en er zijn er meer. Waar het om gaat is dat het platform bij uw
+   winkel past, niet dat het een bepaalde naam draagt.
+
+Waar u ook heen gaat, let bij de overstap op drie dingen: krijgt u
+uw data mee (producten, teksten, klanten), blijven uw oude URLs
+werken via 301-redirects, en kan uw huidige shop blijven
+doorverkopen terwijl de nieuwe wordt opgebouwd. Vooral dat tweede
+punt wordt vaak vergeten, en dat kost
+[[https://webwinkelverhuis.nl/blog/waarom-de-meeste-mijnwebwinkel-migraties-hun-google-posities-verliezen.html][Google-posities
+die u jaren heeft opgebouwd]].
+
+* Overstappen zonder gedoe
+
+Wij verhuizen webshops van MijnWebwinkel naar het platform van uw
+keuze: producten, vertalingen, afbeeldingen, klanten en de volledige
+categoriestructuur, inclusief automatisch gegenereerde 301-redirects
+voor elke oude URL. Vaste prijs, betaling na een geslaagde migratie.
+Lees hoe [[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][onze
+migratieservice]] werkt, of
+[[https://meet.jappiesoftware.com][plan een vrijblijvend gesprek]]:
+we kijken samen naar uw shop en geven een eerlijke inschatting, ook
+als die inschatting "blijf voorlopig zitten" is.
+
+* Veelgestelde vragen
+
+*Is Acendy hetzelfde als MijnWebwinkel?*
+
+In de praktijk wel. Acendy was de naam waaronder MijnWebwinkel en
+het Noorse Mystore eind 2025 zouden samengaan; die naamswijziging
+werd kort daarna teruggedraaid. Het onderliggende platform en uw
+shop zijn dezelfde gebleven.
+
+*Moet ik verplicht overstappen?*
+
+Nee, er is geen aangekondigde einddatum en uw shop blijft gewoon
+draaien. Wel is de ontwikkeling sinds 2021 feitelijk gestopt en
+wisselt het platform regelmatig van eigenaar, waardoor u het risico
+loopt later op andermans voorwaarden te moeten verhuizen.
+
+*Wat is het meest gekozen alternatief voor Acendy/MijnWebwinkel?*
+
+Volgens StoreLeads (mei 2026) kiest 55 procent van de vertrekkende
+MijnWebwinkel-shops voor Shopify. WooCommerce en andere platformen
+kunnen ook; u kiest het platform, wij regelen de techniek.
+
+*Kan ik mijn producten en klanten meenemen?*
+
+Ja. Producten, teksten, afbeeldingen, vertalingen, klanten en de
+categoriestructuur worden bij onze migratie automatisch overgezet,
+en elke oude URL krijgt een 301-redirect zodat uw Google-posities
+meeverhuizen.
+
+#+BEGIN_EXPORT html
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Acendy hetzelfde als MijnWebwinkel?","acceptedAnswer":{"@type":"Answer","text":"In de praktijk wel. Acendy was de naam waaronder MijnWebwinkel en het Noorse Mystore eind 2025 zouden samengaan; die naamswijziging werd kort daarna teruggedraaid. Het onderliggende platform en uw shop zijn dezelfde gebleven."}},{"@type":"Question","name":"Moet ik verplicht overstappen?","acceptedAnswer":{"@type":"Answer","text":"Nee, er is geen aangekondigde einddatum en uw shop blijft gewoon draaien. Wel is de ontwikkeling sinds 2021 feitelijk gestopt en wisselt het platform regelmatig van eigenaar, waardoor u het risico loopt later op andermans voorwaarden te moeten verhuizen."}},{"@type":"Question","name":"Wat is het meest gekozen alternatief voor Acendy/MijnWebwinkel?","acceptedAnswer":{"@type":"Answer","text":"Volgens StoreLeads (mei 2026) kiest 55 procent van de vertrekkende MijnWebwinkel-shops voor Shopify. WooCommerce en andere platformen kunnen ook; u kiest het platform, wij regelen de techniek."}},{"@type":"Question","name":"Kan ik mijn producten en klanten meenemen?","acceptedAnswer":{"@type":"Answer","text":"Ja. Producten, teksten, afbeeldingen, vertalingen, klanten en de categoriestructuur worden bij onze migratie automatisch overgezet, en elke oude URL krijgt een 301-redirect zodat uw Google-posities meeverhuizen."}}]}
+</script>
+#+END_EXPORT

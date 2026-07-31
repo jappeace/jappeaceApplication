@@ -127,6 +127,7 @@ webwinkelBaseWith ogType includeFeed meta content =
         Nothing -> mempty
       H.link ! A.rel "stylesheet" ! A.href "/style.css"
       H.link ! A.rel "stylesheet" ! A.href "/blog.css"
+      H.link ! A.rel "icon" ! A.type_ "image/svg+xml" ! A.href "/favicon.svg"
       H.link ! A.rel "icon" ! A.href "/favicon.ico"
       if includeFeed
         then H.link ! A.href "/blog/atom"
@@ -685,6 +686,8 @@ mijnwebwinkelFaq =
     , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw doelplatform beide ondersteunen. Ook de vertaalde URL's verhuizen mee." )
   , ( "Kan ik ook naar een ander platform dan Shopify migreren?"
     , "Ja. Shopify is het meest gekozen doelplatform, maar we kunnen ook migreren naar WooCommerce of andere platformen." )
+  , ( "Kun je een website importeren naar Shopify?"
+    , "Ja. Producten, teksten, afbeeldingen, klanten en de categoriestructuur van uw bestaande website worden automatisch naar Shopify overgezet, inclusief 301-redirects van uw oude URLs zodat uw Google-posities meeverhuizen." )
   , ( "Worden spaarpunten ook overgezet?"
     , "Ja. Spaarpuntensaldi van uw klanten worden meegenomen naar het loyaliteitsprogramma van uw nieuwe platform." )
   , ( "Hoe werken de SEO-redirects precies?"

@@ -1,0 +1,166 @@
+#+TITLE: Webshop migreren: stappenplan, kosten en valkuilen
+#+DATE: 2026-07-10
+#+CATEGORY: migratie
+#+TAGS: migratie, stappenplan, shopify
+
+Uw webshop migreren naar een ander platform: laten we er eerlijk
+over zijn, het ís een berg werk. Maar het is goed beheersbaar werk
+als u het in de juiste volgorde aanpakt en vooraf weet welke
+stappen technisch lastig worden. Dit is het stappenplan dat wij
+zelf gebruiken bij elke verhuizing, of die nu van MijnWebwinkel,
+CCV Shop of Lightspeed komt en naar Shopify, WooCommerce of een
+ander platform gaat, plus de valkuilen die we in de praktijk het
+vaakst zien.
+
+* Stap 1: kies uw nieuwe platform
+
+Kies uw platform op de toekomst van uw shop, niet op de laagste
+maandprijs van vandaag. Kijk naar wat het platform kan als u
+groeit (meer talen, meer kanalen, koppelingen), wat het per maand
+kost op het niveau dat ú nodig heeft, en hoe makkelijk u uw data er
+later weer uit krijgt. Shopify is in de praktijk de meest gekozen
+bestemming en daar hebben wij de meeste ervaring mee, maar het hoeft
+niet: wij zijn geen verlengstuk van één platform.
+
+* Stap 2: inventariseer wat er mee moet
+
+Maak een lijst voordat u iets aanraakt. Denk aan producten met
+varianten en afbeeldingen, categorieën, teksten en
+informatiepagina's, vertalingen, klantgegevens, uw
+nieuwsbrieflijst, kortingscodes, spaarpunten, de mailadressen op
+uw domein, en niet te vergeten: al uw URLs. Alles wat niet op de
+lijst staat, gaat verloren zonder dat iemand het merkt, tot een
+klant erover mailt.
+
+* Stap 3: bouw de nieuwe shop naast de oude
+
+Zet de nieuwe shop op terwijl de oude gewoon doorverkoopt. Er is
+geen moment waarop uw winkel dicht hoeft: de overzetting gebeurt op
+de achtergrond, u controleert het resultaat in een testshop, en pas
+bij de livegang wijst u uw domein om. Uw klanten merken van het
+hele traject niets.
+
+* Stap 4: zet de data over
+
+Bij een handvol producten kan dit met de hand of met een
+CSV-export. Daarboven wilt u het geautomatiseerd doen, want
+handwerk op schaal betekent kopieerfouten, en een half overgezette
+catalogus oogt slordiger dan een ongemoeide. Onze eigen migraties
+zijn volledig geautomatiseerd, inclusief varianten, afbeeldingen en
+vertalingen, en het programma valideert zijn eigen werk.
+
+* Stap 5: richt uw thema in
+
+Uw producten staan er nu, maar de winkel ziet er nog niet uit als
+úw winkel. Logo, kleuren, banners, de indeling van de voorpagina:
+alles wat in de oude shop "gewoon zo was" moet u nu opnieuw kiezen
+en instellen. Onderschat deze stap niet; hier gaat voor de meeste
+eigenaren de meeste tijd in zitten, en het is ook de stap waar u
+het vaakst hulp bij nodig heeft.
+
+* Stap 6: installeer uw apps en koppelingen
+
+Betaalmethoden, verzendkoppelingen, reviews, de boekhouding: wat
+op het oude platform ingebouwd zat, komt op het nieuwe vaak uit
+losse apps of plugins. Elke koppeling moet apart worden ingesteld
+én getest, het liefst met een echte proefbestelling.
+
+* Stap 7: zet uw klantbestanden en nieuwsbrieven over
+
+Klantaccounts, de nieuwsbrieflijst en waar mogelijk de
+bestelhistorie verhuizen mee, zodat vaste klanten niet opnieuw
+hoeven te beginnen en u uw mailinglijst niet kwijtraakt.
+
+* Stap 8: regel de 301-redirects
+
+Dit is de stap die het vaakst wordt overgeslagen en het meeste
+kost. Elke oude URL moet permanent doorsturen naar de juiste nieuwe
+pagina, anders raakt u
+[[https://webwinkelverhuis.nl/blog/waarom-de-meeste-mijnwebwinkel-migraties-hun-google-posities-verliezen.html][de
+Google-posities kwijt die u jaren heeft opgebouwd]]. Eén redirect
+per URL, voor álle URLs, actief vanaf dag één.
+
+* Stap 9: verhuis uw domein en uw e-mail
+
+Staat uw domeinnaam geregistreerd bij uw oude webshopplatform, zet
+hem dan over naar een eigen registrar, zodat u hem zelf in handen
+heeft en niet afhankelijk blijft van het platform dat u net
+verlaat. Vergeet daarbij de mailboxen op dat domein niet: wie
+alleen het domein omzet, staat de volgende ochtend zonder e-mail.
+Voor veel eigenaren is dit technisch de spannendste stap.
+
+* Stap 10: controleer, ga live, en houd de eerste weken in de gaten
+
+Loop de testshop na met uw inventarislijst uit stap 2, controleer
+een steekproef van redirects, en zet dan pas het domein om. Houd na
+de livegang Google Search Console in de gaten: tijdelijke
+schommelingen zijn normaal, structureel wegzakkende pagina's wijzen
+op een gemiste redirect.
+
+* De valkuilen die we het vaakst zien
+
+De klassiekers, in volgorde van schade: redirects die half of niet
+zijn gedaan; vertalingen die achterblijven zodat de Duitse winkel
+oude teksten toont; spaarpunten en klantaccounts die vergeten
+worden zodat vaste klanten opnieuw moeten beginnen; en e-mail of
+betaalmethoden die pas na de livegang geregeld worden, precies als
+de eerste bestellingen binnenkomen.
+
+* Zelf doen of uitbesteden?
+
+Heeft u enkele tientallen producten, één taal en weinig opgebouwde
+Google-posities, dan kunt u een migratie zelf doen, maar reken
+eerder in weekenden dan in avonden: tien stappen is geen middagje
+werk. De stappen waar de meeste eigenaren op vastlopen zijn het
+thema (stap 5), de koppelingen (stap 6), de klantbestanden (stap
+7) en de domein- en mailverhuizing (stap 9); dat zijn precies de
+stappen waar een fout ook meteen zichtbaar is voor uw klanten. Bij
+honderden of duizenden producten, meerdere talen of een shop die
+goed vindbaar is, komt daar het handwerk-probleem bij: dan is
+automatiseren geen luxe maar de enige manier om het foutloos te
+doen. Dat is precies wat wij leveren, met een vaste prijs vanaf
+1.999 euro (zie [[https://webwinkelverhuis.nl/prijzen.html][onze
+prijzenpagina]]) en betaling na een geslaagde migratie. Reken van
+start tot livegang op ongeveer een maand.
+
+Per platform leest u de details op onze migratiepagina's voor
+[[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][MijnWebwinkel]],
+[[https://webwinkelverhuis.nl/migrate-ccvshop.html][CCV Shop]] en
+[[https://webwinkelverhuis.nl/migrate-lightspeed.html][Lightspeed]].
+Liever direct overleggen?
+[[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
+dan kijken we samen naar uw shop.
+
+* Veelgestelde vragen
+
+*Kun je een website importeren naar Shopify?*
+
+Ja. Producten, teksten, afbeeldingen, klanten en de
+categoriestructuur van uw bestaande webshop kunnen naar Shopify
+worden overgezet. Bij een klein assortiment kan dat met een
+CSV-export; bij grotere of meertalige shops doen wij dit volledig
+geautomatiseerd, inclusief 301-redirects van uw oude URLs.
+
+*Hoe lang duurt een webshop-migratie?*
+
+Het technische overzetten duurt maar enkele uren, maar reken van
+start tot livegang op ongeveer een maand: er komt ook een thema,
+betaalmethoden en rustig wennen aan de nieuwe shop bij kijken.
+
+*Wat kost een webshop-migratie?*
+
+Doet u het zelf, dan kost het vooral tijd. Laat u het door ons
+doen, dan geldt een vaste prijs vanaf 1.999 euro, afhankelijk van
+het aantal producten en talen, met betaling na een geslaagde
+migratie.
+
+*Kan mijn shop blijven doorverkopen tijdens de migratie?*
+
+Ja. De nieuwe shop wordt naast de oude opgebouwd en uw winkel hoeft
+geen moment dicht; pas bij de livegang wijst u uw domein om.
+
+#+BEGIN_EXPORT html
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Kun je een website importeren naar Shopify?","acceptedAnswer":{"@type":"Answer","text":"Ja. Producten, teksten, afbeeldingen, klanten en de categoriestructuur van uw bestaande webshop kunnen naar Shopify worden overgezet. Bij een klein assortiment kan dat met een CSV-export; bij grotere of meertalige shops doen wij dit volledig geautomatiseerd, inclusief 301-redirects van uw oude URLs."}},{"@type":"Question","name":"Hoe lang duurt een webshop-migratie?","acceptedAnswer":{"@type":"Answer","text":"Het technische overzetten duurt maar enkele uren, maar reken van start tot livegang op ongeveer een maand: er komt ook een thema, betaalmethoden en rustig wennen aan de nieuwe shop bij kijken."}},{"@type":"Question","name":"Wat kost een webshop-migratie?","acceptedAnswer":{"@type":"Answer","text":"Doet u het zelf, dan kost het vooral tijd. Laat u het door ons doen, dan geldt een vaste prijs vanaf 1.999 euro, afhankelijk van het aantal producten en talen, met betaling na een geslaagde migratie."}},{"@type":"Question","name":"Kan mijn shop blijven doorverkopen tijdens de migratie?","acceptedAnswer":{"@type":"Answer","text":"Ja. De nieuwe shop wordt naast de oude opgebouwd en uw winkel hoeft geen moment dicht; pas bij de livegang wijst u uw domein om."}}]}
+</script>
+#+END_EXPORT

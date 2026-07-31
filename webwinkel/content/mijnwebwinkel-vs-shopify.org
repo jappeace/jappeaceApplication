@@ -1,0 +1,141 @@
+#+TITLE: MijnWebwinkel vs Shopify: een eerlijke vergelijking voor Nederlandse webshops
+#+DATE: 2026-07-18
+#+CATEGORY: migratie
+#+TAGS: mijnwebwinkel, shopify, vergelijking
+
+Twijfelt u tussen MijnWebwinkel en Shopify, of overweegt u de
+overstap? Wij migreren webshops voor de kost en zien beide platformen
+dus dagelijks van binnen. Dit is onze eerlijke vergelijking: waar
+MijnWebwinkel nog steeds prima voldoet, waar Shopify wint, en wat de
+overstap in de praktijk betekent.
+
+* De vergelijking in het kort
+
+| | MijnWebwinkel | Shopify |
+|---|---|---|
+| Abonnement | 20 euro/mnd (max 25 producten), serieuze shops 40 tot 70 euro/mnd | Basic 21 euro/mnd bij jaarbetaling, Grow 59 euro/mnd |
+| Doorontwikkeling | Feitelijk gestopt sinds de overname in 2021 | Doorlopend, meerdere grote releases per jaar |
+| Apps en koppelingen | Beperkt, vast aanbod | Duizenden apps van externe ontwikkelaars |
+| iDEAL en lokale betaalmethoden | Ja | Ja |
+| Eigenaarschap platform | Visma/Hg Capital, sinds 2026 ondergebracht in Norvato | Beursgenoteerd, e-commerce is het kernproduct |
+| Instapdrempel | Zeer laag, alles in het Nederlands | Laag, Nederlandstalig, iets meer keuzes te maken |
+
+De abonnementsprijzen van Shopify komen van de eigen
+[[https://www.shopify.com/nl/prijzen][prijzenpagina van Shopify]]
+(juli 2026, tarief bij jaarbetaling; per maand betalen is duurder).
+Bij beide platformen betaalt u daarnaast per bestelling
+transactiekosten aan de betaalprovider.
+
+* Waar MijnWebwinkel goed in was, en deels nog is
+
+MijnWebwinkel is niet voor niets groot geworden: u zet er zonder
+technische kennis in een middag een nette Nederlandse webshop mee
+neer, alles in het Nederlands, inclusief iDEAL. Heeft u een klein
+assortiment, weinig groeiambitie en een shop die gewoon doet wat hij
+moet doen, dan is er geen acute reden om te vertrekken. Dat zeggen we
+er eerlijk bij, want een migratie kost geld en aandacht.
+
+Het probleem zit in de toekomst, niet in het heden. Sinds de
+overname door Visma in 2021 is de ontwikkeling feitelijk gestopt,
+zijn de prijzen verhoogd, en rolt het platform van reorganisatie
+naar reorganisatie: kortstondig omgedoopt tot Acendy (snel weer
+teruggedraaid) en begin 2026 ondergebracht in het nieuwe vehikel
+Norvato. Wat er precies is gebeurd leest u in
+[[https://webwinkelverhuis.nl/blog/alternatief-voor-acendy-zo-zit-het-met-mijnwebwinkel-mystore-en-norvato.html][ons
+artikel over Acendy, Mystore en Norvato]] en op de pagina
+[[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][waarom wordt
+MijnWebwinkel niet meer doorontwikkeld]]. Het resultaat is in elk
+geval meetbaar: volgens
+[[https://storeleads.app/reports/mijnwebwinkel][StoreLeads]] (mei
+2026) daalde het aantal MijnWebwinkel-shops sinds 2022 met 35
+procent, en van de vertrekkers kiest 55 procent voor Shopify.
+
+* Waar Shopify wint
+
+Shopify is het grootste webshopplatform ter wereld en e-commerce is
+er het kernproduct, niet een bijvangst in een portefeuille. Dat
+merkt u vooral op drie punten.
+
+Het platform wordt actief doorontwikkeld. Functionaliteit die er nu
+niet is, komt er vaak alsnog; bij een bevroren platform is wat u
+ziet wat u houdt.
+
+Het app-aanbod is enorm. Reviews, spaarpunten, verzendkoppelingen,
+boekhoudkoppelingen: voor vrijwel elke wens bestaat een app, vaak
+meerdere. Bij MijnWebwinkel bent u beperkt tot wat het platform
+zelf aanbiedt.
+
+Uw shop groeit mee. Meer talen, meer verkoopkanalen, B2B, een
+fysiek verkooppunt erbij: het kan zonder platformwissel. De
+grootste valkuil van een beginnersplatform is dat u er pas achter
+komt dat u eruit gegroeid bent als de verhuizing het duurst is.
+
+Heeft u ook een fysieke winkel, dan telt de kassa mee. De
+Mijnwebwinkel Kassa App is begin 2026 uit de App Store verdwenen
+(de pagina geeft "niet gevonden", gecontroleerd juli 2026): wie
+zijn iPad reset of vervangt, kan de app niet opnieuw installeren.
+Shopify POS wordt daarentegen actief doorontwikkeld en ondersteunt
+in Nederland geïntegreerd pinnen en sinds eind 2025 iDEAL via
+QR-code.
+
+Eerlijkheidshalve: Shopify is geen automatisch feest. Per maand
+betalen is duurder dan de jaartarieven hierboven, sommige apps
+kosten extra, en u moet bij de inrichting meer keuzes maken dan bij
+MijnWebwinkel. Wie alleen de allergoedkoopste optie zoekt en onder
+de 25 producten blijft, is bij het 20-europlan van MijnWebwinkel
+vandaag goedkoper uit.
+
+* Wat de overstap in de praktijk betekent
+
+De overstap zelf is ons vak, dus daar kunnen we concreet over zijn.
+Bij onze migratie worden producten, teksten, afbeeldingen,
+vertalingen, klanten en de categoriestructuur automatisch overgezet,
+en krijgt elke oude URL een 301-redirect zodat
+[[https://webwinkelverhuis.nl/blog/waarom-de-meeste-mijnwebwinkel-migraties-hun-google-posities-verliezen.html][uw
+Google-posities meeverhuizen]]. Uw huidige shop blijft gewoon
+doorverkopen terwijl de nieuwe wordt opgebouwd; reken op ongeveer
+een maand van start tot livegang. De prijzen zijn vast en staan op
+[[https://webwinkelverhuis.nl/prijzen.html][onze prijzenpagina]];
+u betaalt na een geslaagde migratie.
+
+En moet het per se Shopify zijn? Nee. Shopify is het meest gekozen
+doelplatform en daar hebben wij de meeste ervaring mee, maar we
+migreren ook naar WooCommerce of een ander platform. U kiest, wij
+regelen de techniek. Benieuwd wat dat voor uw shop betekent?
+[[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
+dan kijken we samen naar uw winkel en krijgt u een eerlijke
+inschatting, ook als die "blijven zitten" is.
+
+* Veelgestelde vragen
+
+*Is Shopify duurder dan MijnWebwinkel?*
+
+Vaak niet. Shopify Basic kost 21 euro per maand bij jaarbetaling,
+terwijl serieuze shops bij MijnWebwinkel 40 tot 70 euro per maand
+betalen; alleen het 20-europlan met maximaal 25 producten is
+goedkoper. Per maand betalen bij Shopify is wel duurder, en apps
+kunnen extra kosten.
+
+*Werkt iDEAL op Shopify?*
+
+Ja. iDEAL en andere Nederlandse betaalmethoden werken gewoon op
+Shopify; per bestelling betaalt u transactiekosten aan de
+betaalprovider, net als bij MijnWebwinkel.
+
+*Kan ik mijn producten en klanten meenemen naar Shopify?*
+
+Ja. Producten, teksten, afbeeldingen, vertalingen, klanten en de
+categoriestructuur worden bij onze migratie automatisch overgezet.
+
+*Verlies ik mijn Google-posities bij de overstap?*
+
+Niet als elke oude URL een 301-redirect krijgt, en dat regelen wij
+automatisch voor alle URLs. Blijvend verlies ontstaat door
+ontbrekende redirects; tijdelijke schommelingen na een grote
+wijziging kunnen altijd bij Google.
+
+#+BEGIN_EXPORT html
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Shopify duurder dan MijnWebwinkel?","acceptedAnswer":{"@type":"Answer","text":"Vaak niet. Shopify Basic kost 21 euro per maand bij jaarbetaling, terwijl serieuze shops bij MijnWebwinkel 40 tot 70 euro per maand betalen; alleen het 20-europlan met maximaal 25 producten is goedkoper. Per maand betalen bij Shopify is wel duurder, en apps kunnen extra kosten."}},{"@type":"Question","name":"Werkt iDEAL op Shopify?","acceptedAnswer":{"@type":"Answer","text":"Ja. iDEAL en andere Nederlandse betaalmethoden werken gewoon op Shopify; per bestelling betaalt u transactiekosten aan de betaalprovider, net als bij MijnWebwinkel."}},{"@type":"Question","name":"Kan ik mijn producten en klanten meenemen naar Shopify?","acceptedAnswer":{"@type":"Answer","text":"Ja. Producten, teksten, afbeeldingen, vertalingen, klanten en de categoriestructuur worden bij onze migratie automatisch overgezet."}},{"@type":"Question","name":"Verlies ik mijn Google-posities bij de overstap?","acceptedAnswer":{"@type":"Answer","text":"Niet als elke oude URL een 301-redirect krijgt, en dat regelen wij automatisch voor alle URLs. Blijvend verlies ontstaat door ontbrekende redirects; tijdelijke schommelingen na een grote wijziging kunnen altijd bij Google."}}]}
+</script>
+#+END_EXPORT
