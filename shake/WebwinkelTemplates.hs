@@ -34,6 +34,7 @@ import PageChrome
   , ogLocale
   , resolveOgImage
   , companyEmail
+  , percentEncodeQuery
   , migratieBasisprijsEuro
   , meetLink
   , whatsappFloatingButton
@@ -55,9 +56,33 @@ import PageChrome
 webwinkelOgImage :: Text
 webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
 
--- | The "ask for a quote" mailto used by every call-to-action button.
+-- | The "ask for a quote" mailto used by every call-to-action button. The body
+-- is a gentle fill-in template: a blank mail box is intimidating, and these
+-- prompts tell the merchant which details make for a good quote (mirroring the
+-- calculator's questions) without forcing them through the calculator first.
 offerteMailto :: H.AttributeValue
-offerteMailto = toValue ("mailto:" <> companyEmail <> "?subject=Migratie%20offerte")
+offerteMailto =
+  toValue
+    ( "mailto:" <> companyEmail
+        <> "?subject=Migratie%20offerte&body="
+        <> percentEncodeQuery offerteBodyTemplate
+    )
+
+-- | Fill-in template for a quote request from a plain CTA button (not the
+-- calculator). Kept in sync by hand with the calculator's questions.
+offerteBodyTemplate :: Text
+offerteBodyTemplate =
+  "Hallo,\n\n"
+    <> "Ik wil graag een offerte voor het verhuizen van mijn webshop. "
+    <> "Om u een goede prijs te kunnen geven, alvast wat info (vul in wat u weet):\n\n"
+    <> "- Huidig platform (bijv. MijnWebwinkel, CCV Shop): \n"
+    <> "- Gewenst platform (Shopify of WooCommerce): \n"
+    <> "- Aantal producten (ongeveer): \n"
+    <> "- Aantal talen: \n"
+    <> "- Meenemen (klantaccounts, bestelgeschiedenis, nieuwsbrief, voorraad, reviews): \n"
+    <> "- Domeinnaam of e-mail nog bij MijnWebwinkel?: \n"
+    <> "- Bijzonderheden (kassa/point-of-sale, zakelijke klanten, verzendkoppeling): \n\n"
+    <> "Met vriendelijke groet,"
 
 -- | Mailto for merchants whose migration is already running or done and who
 -- want follow-up work (mass edits, theme changes, integrations). The subject
@@ -377,6 +402,17 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vaste prijzen, vooraf afgesproken. U betaalt pas na een succesvolle migratie. Hieronder ziet u precies waar u aan toe bent." :: Text)
 
     H.section ! A.class_ "engagement" $ do
+      H.h2 "Bereken uw richtprijs"
+      H.p "Beantwoord een paar vragen over uw shop en u ziet meteen een indicatie. Dit is geen offerte: alleen een offerte legt uw prijs vast."
+      H.div ! A.id "prijs-calculator-mount" $ mempty
+      H.noscript $ H.p "De rekenhulp heeft JavaScript nodig. Hieronder staat de volledige prijslijst zodat u ook zonder JavaScript alles ziet."
+      H.div ! A.class_ "calc-footnotes" $ do
+        H.h3 "Over de themakeuze"
+        H.p "Kiest u voor zelf inrichten, dan staat uw shop na de migratie op een standaard Shopify-thema dat u zelf verzorgt of door een ontwerper naar keuze laat doen. Theming hoeft niet via ons; wij doen het ook en zijn er inmiddels aardig goed in."
+        H.p $ H.preEscapedToHtml ("Bij uitstraling overzetten (&euro;749) benaderen we uw huidige uitstraling zo dicht mogelijk; kleine aanpassingen op verzoek zitten erbij." :: Text)
+        H.p "Een volledig nieuw ontwerp is los ontwerpwerk en prijzen we op aanvraag."
+
+    H.section ! A.class_ "engagement" $ do
       H.h2 "De migratie"
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
@@ -393,22 +429,56 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
 
     H.section ! A.class_ "engagement" $ do
-      H.h2 "Extra diensten"
+      H.h2 "Modules en extra diensten"
+      H.p "Losse onderdelen die u naar keuze bijschakelt. U betaalt alleen voor wat u meeneemt."
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
-          H.td "Domeinverhuizing"
+          H.td "Uitstraling overzetten"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;749" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Klantaccounts meenemen (uw klanten houden hun inlog)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td "Bestelgeschiedenis meenemen"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td "Nieuwsbrief-aanmeldingen meenemen"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td "Voorraadaantallen live overzetten"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td "Reviews / beoordelingen overzetten"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Domeinverhuizing (uw domeinnaam staat nog bij MijnWebwinkel)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
         H.tr $ do
           H.td $ H.preEscapedToHtml ("E-mail-setup (mailboxen, SPF/DKIM, doorstuurregels)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
         H.tr $ do
+          H.td $ H.preEscapedToHtml ("Verzendkoppeling (bijv. DHL: pakketten en labels vanuit uw shop)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("B2B-kanaal (aparte prijzen en inlog voor zakelijke klanten)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;750" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Kassa / point-of-sale (Shopify POS in uw fysieke winkel)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;750" :: Text)
+        H.tr $ do
+          H.td "Volledig nieuw ontwerp"
+          H.td ! A.class_ "price-cell" $ "op aanvraag"
+        H.tr $ do
           H.td "Catalogus-brede teksttransformaties"
           H.td ! A.class_ "price-cell" $ "op aanvraag"
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat uw shop op een standaard Shopify-thema dat u zelf inricht. De vormgeving hoeft niet via ons: u kunt het zelf doen of een ontwerper naar keuze inhuren. Wilt u het uit handen geven, dan benaderen wij uw huidige uitstraling zo dicht mogelijk (&euro;749) of ontwerpen we iets nieuws (op aanvraag)." :: Text)
+      H.p ! A.class_ "engagement-note" $ "Kassa/point-of-sale zetten we bij u op locatie op. Installatie en reiskosten komen daar los bij, op aanvraag."
 
     H.section ! A.class_ "results" $ do
       H.h2 "Altijd inbegrepen"
       H.ul $ do
         H.li $ H.preEscapedToHtml ("Producten, afbeeldingen, categorie&euml;n, klantdata en voorraad." :: Text)
+        H.li $ H.preEscapedToHtml ("Uw teksten, meta-titels en informatiepagina&apos;s (zoals over-ons en blog) verhuizen mee." :: Text)
         H.li "SEO-redirects (301) voor elke oude URL, zodat uw links en opgebouwde SEO meeverhuizen."
         H.li "Een testshop naast uw draaiende winkel; DNS-overzet met zo min mogelijk downtime."
         H.li "Betaling pas na een succesvolle migratie."
@@ -419,16 +489,18 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.li $ H.preEscapedToHtml ("Modeltreinwinkel, 2.400 producten, 3 talen: &euro;1.999 + 1.400 &times; &euro;0,25 + 2 &times; 2.400 &times; &euro;0,25 + 2 &times; &euro;250 = &euro;4.049." :: Text)
         H.li $ H.preEscapedToHtml ("Winkel met 3.000 producten, 1 taal: &euro;1.999 + 2.000 &times; &euro;0,25 = &euro;2.499." :: Text)
         H.li $ H.preEscapedToHtml ("Kleine shop, t/m 1.000 producten, 1 taal: &euro;1.999." :: Text)
-
-    H.section ! A.class_ "results" $ do
-      H.h2 "Geldt deze prijs voor mij?"
-      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt uw prijs vast. Wilt u tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat uw prijs zwart-op-wit."
-      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.p ! A.class_ "engagement-note" $ "Losse modules (thema, klantaccounts, domeinverhuizing en dergelijke) komen hier naar keuze bovenop. Gebruik de rekenhulp bovenaan voor uw eigen situatie."
 
     H.section ! A.class_ "final-cta" $ do
-      H.h2 "Liever eerst even sparren?"
-      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.h2 "Geldt deze prijs voor mij?"
+      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt uw prijs vast. Wilt u tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat uw prijs zwart-op-wit."
+      H.div ! A.class_ "cta-row" $ do
+        H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+        H.a ! A.href meetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
+
+    H.script ! A.src "/prijs-calculator.js" $ mempty
+    H.script $ H.preEscapedToHtml
+      ("Elm.PrijsCalculator.init({node: document.getElementById('prijs-calculator-mount')});" :: Text)
   where
     prijzenMeta :: PageMeta
     prijzenMeta = PageMeta

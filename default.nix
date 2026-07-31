@@ -5,6 +5,16 @@ let
   shake-blog = import ./shake { inherit sources pkgs; };
   ignore = import ./nix/gitignoreSource.nix { inherit (pkgs) lib; };
   talks = import ./talks {};
+  # Decision: de /prijzen prijs-calculator is een Elm-programma dat de Shake-build
+  # zelf compileert (zie buildPrijsCalculator in Shakefile.hs), zodat dev-serve en
+  # productie dezelfde bundel maken. In de sandbox heeft `elm make` geen netwerk,
+  # dus we vullen ELM_HOME vooraf offline met fetchElmDeps; de pins staan in
+  # elm/elm-srcs.nix + elm/registry.dat (gegenereerd met elm2nix).
+  prepareElmDeps = pkgs.elmPackages.fetchElmDeps {
+    elmPackages = import ./elm/elm-srcs.nix;
+    elmVersion = "0.19.1";
+    registryDat = ./elm/registry.dat;
+  };
   seo-analyzer = pkgs.callPackage ./nix/seo-analyzer.nix {};
 in
 pkgs.stdenv.mkDerivation {
@@ -15,12 +25,23 @@ pkgs.stdenv.mkDerivation {
     pkgs.glibcLocales
     pkgs.optipng
     pkgs.libjpeg
+    pkgs.elmPackages.elm # shake compiles the /prijzen calculator via `elm make`
+    pkgs.elmPackages.elm-test # runs the calculator's pricing tests in CI
+    pkgs.nodejs # elm-test runs the compiled tests on node
     seo-analyzer
     pkgs.libxml2 # xmllint for sitemap validation
   ];
   LANG = "en_US.UTF-8";
   LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
   buildPhase = ''
+    # Prepare ELM_HOME offline so the Shake build's `elm make` (for the /prijzen
+    # calculator) resolves its dependencies without network access.
+    ${prepareElmDeps}
+
+    # Run the calculator's pricing tests before building the site, so a drift
+    # between the Elm rekenlogica and the gepubliceerde prijzen fails CI.
+    ( cd elm && HOME=$TMPDIR elm-test )
+
     shake-blog build
 
     # Copy talks (make writable since nix store files are read-only)

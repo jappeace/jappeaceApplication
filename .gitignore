@@ -16,3 +16,7 @@ _penguin-site/
 _webwinkelverhuis-site/
 .playwright-mcp/
 result-shake
+
+# Elm build cache
+elm-stuff/
+elm/elm-stuff/

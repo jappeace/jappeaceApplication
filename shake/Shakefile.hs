@@ -619,6 +619,21 @@ buildPenguinSites webwinkelUrl = do
   (webwinkelArticles, _webwinkelPages) <- liftIO $ parseAllContent "webwinkel/content" webwinkelFiles
   liftIO $ generateWebwinkelverhuisSite webwinkelSiteConfig webwinkelArticles
   copyWebwinkelStaticAssets
+  buildPrijsCalculator
+
+-- | Compile the Elm price calculator (elm/src/PrijsCalculator.elm) to one JS
+-- bundle inside the webwinkel site. Wired into the Shake build so both the
+-- production build and the local @serve@ emit it. @elm@ must be on PATH: the
+-- dev shell (shell.nix) and the nix build (default.nix, with ELM_HOME prepared
+-- offline via fetchElmDeps) both provide it.
+buildPrijsCalculator :: Action ()
+buildPrijsCalculator = do
+  elmSources <- getDirectoryFiles "" ["elm/src//*.elm"]
+  need ("elm/elm.json" : elmSources)
+  cmd_ (Cwd "elm") ("elm" :: String)
+    ([ "make", "src/PrijsCalculator.elm", "--optimize"
+     , "--output", "../_webwinkelverhuis-site/prijs-calculator.js"
+     ] :: [String])
 
 -- | Generate the jappiesoftware.com site into _penguin-site/
 generatePenguinSite :: WebwinkelverhuisUrl -> SiteConfig -> [Article] -> IO ()
