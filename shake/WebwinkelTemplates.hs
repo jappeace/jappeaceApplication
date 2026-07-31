@@ -33,7 +33,6 @@ import PageChrome
   , customAttribute
   , ogLocale
   , resolveOgImage
-  , companyEmail
   , percentEncodeQuery
   , migratieBasisprijsEuro
   , meetLink
@@ -56,6 +55,13 @@ import PageChrome
 webwinkelOgImage :: Text
 webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
 
+-- | Contact address for the webwinkelverhuis.nl brand. On-brand with the domain
+-- the visitor is on (the jappiesoftware.com penguin site keeps its own
+-- 'companyEmail'); a mismatched contact address on a trust page reads as "who am
+-- I actually emailing?".
+webwinkelEmail :: Text
+webwinkelEmail = "jappie@webwinkelverhuis.nl"
+
 -- | The "ask for a quote" mailto used by every call-to-action button. The body
 -- is a gentle fill-in template: a blank mail box is intimidating, and these
 -- prompts tell the merchant which details make for a good quote (mirroring the
@@ -63,7 +69,7 @@ webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
 offerteMailto :: H.AttributeValue
 offerteMailto =
   toValue
-    ( "mailto:" <> companyEmail
+    ( "mailto:" <> webwinkelEmail
         <> "?subject=Migratie%20offerte&body="
         <> percentEncodeQuery offerteBodyTemplate
     )
@@ -89,7 +95,7 @@ offerteBodyTemplate =
 -- differs from 'offerteMailto' so these mails are recognisable as
 -- existing-client work rather than new leads.
 uitbreidingMailto :: H.AttributeValue
-uitbreidingMailto = toValue ("mailto:" <> companyEmail <> "?subject=Uitbreiding%20webshop")
+uitbreidingMailto = toValue ("mailto:" <> webwinkelEmail <> "?subject=Uitbreiding%20webshop")
 
 -- =============================================================================
 -- Base template
@@ -155,7 +161,7 @@ webwinkelBaseWith ogType includeFeed meta content =
       content
       H.footer $ do
         H.p $ do
-          H.a ! A.href (toValue ("mailto:" <> companyEmail)) ! A.class_ "footer-mail" $ toHtml companyEmail
+          H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) ! A.class_ "footer-mail" $ toHtml webwinkelEmail
           H.preEscapedToHtml (" &middot; " :: Text)
           H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
           H.preEscapedToHtml (" &middot; " :: Text)
