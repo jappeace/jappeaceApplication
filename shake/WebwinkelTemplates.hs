@@ -1015,7 +1015,7 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
           H.strong "November 2025"
           H.preEscapedToHtml (" &mdash; " :: Text)
           H.a ! A.href "https://www.emerce.nl/wire/mijnwebwinkel-mystore-lanceren-acendy-nieuw-tijdperk-ecommerce" $ "MijnWebwinkel wordt samengevoegd met het Noorse Mystore"
-          H.preEscapedToHtml (" tot &ldquo;Acendy&rdquo;. Dit werd kort daarna weer teruggedraaid." :: Text)
+          H.preEscapedToHtml (" tot &ldquo;Acendy&rdquo;, gebouwd op de technologie van Mystore. Nieuwe klanten starten direct op Acendy; bestaande shops worden gefaseerd overgezet." :: Text)
         H.li $ do
           H.strong "Februari 2026"
           H.preEscapedToHtml (" &mdash; " :: Text)
