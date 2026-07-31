@@ -1033,7 +1033,7 @@ offerteKnop model =
 
 offerteMailtoUrl : Model -> String
 offerteMailtoUrl model =
-    "mailto:hallo@jappiesoftware.com?subject="
+    "mailto:jappie@webwinkelverhuis.nl?subject="
         ++ Url.percentEncode "Offerte-aanvraag webshop-migratie"
         ++ "&body="
         ++ Url.percentEncode (offerteBody model)

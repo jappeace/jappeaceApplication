@@ -33,12 +33,11 @@ import PageChrome
   , customAttribute
   , ogLocale
   , resolveOgImage
-  , companyEmail
   , percentEncodeQuery
   , migratieBasisprijsEuro
   , meetLink
   , whatsappFloatingButton
-  , organizationJsonLd
+  , jsonLdString
   , serviceJsonLd
   , faqPageJsonLd
   , formatIsoDate
@@ -56,6 +55,37 @@ import PageChrome
 webwinkelOgImage :: Text
 webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
 
+-- | Organization structured data for the webwinkelverhuis.nl brand. Presents
+-- Webwinkelverhuis as its own entity (own name, url, email, logo) to Google and
+-- rich-result consumers, with Jappie Software B.V. as the accurate legal parent,
+-- instead of inheriting jappiesoftware.com's shared 'organizationJsonLd'.
+webwinkelOrganizationJsonLd :: Html
+webwinkelOrganizationJsonLd =
+  H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml organizationJson
+  where
+    organizationJson :: Text
+    organizationJson = mconcat
+      [ "{\"@context\":\"https://schema.org\""
+      , ",\"@type\":\"Organization\""
+      , ",\"name\":\"Webwinkelverhuis\""
+      , ",\"url\":\"https://webwinkelverhuis.nl/\""
+      , ",\"logo\":\"https://webwinkelverhuis.nl/favicon.svg\""
+      , ",\"image\":" <> jsonLdString webwinkelOgImage
+      , ",\"email\":" <> jsonLdString webwinkelEmail
+      , ",\"telephone\":\"+31644237437\""
+      , ",\"identifier\":\"KVK 95097872\""
+      , ",\"areaServed\":\"NL\""
+      , ",\"parentOrganization\":{\"@type\":\"Organization\",\"name\":\"Jappie Software B.V.\",\"url\":\"https://jappiesoftware.com/\"}"
+      , "}"
+      ]
+
+-- | Contact address for the webwinkelverhuis.nl brand. On-brand with the domain
+-- the visitor is on (the jappiesoftware.com penguin site keeps its own
+-- 'companyEmail'); a mismatched contact address on a trust page reads as "who am
+-- I actually emailing?".
+webwinkelEmail :: Text
+webwinkelEmail = "jappie@webwinkelverhuis.nl"
+
 -- | The "ask for a quote" mailto used by every call-to-action button. The body
 -- is a gentle fill-in template: a blank mail box is intimidating, and these
 -- prompts tell the merchant which details make for a good quote (mirroring the
@@ -63,7 +93,7 @@ webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
 offerteMailto :: H.AttributeValue
 offerteMailto =
   toValue
-    ( "mailto:" <> companyEmail
+    ( "mailto:" <> webwinkelEmail
         <> "?subject=Migratie%20offerte&body="
         <> percentEncodeQuery offerteBodyTemplate
     )
@@ -89,7 +119,7 @@ offerteBodyTemplate =
 -- differs from 'offerteMailto' so these mails are recognisable as
 -- existing-client work rather than new leads.
 uitbreidingMailto :: H.AttributeValue
-uitbreidingMailto = toValue ("mailto:" <> companyEmail <> "?subject=Uitbreiding%20webshop")
+uitbreidingMailto = toValue ("mailto:" <> webwinkelEmail <> "?subject=Uitbreiding%20webshop")
 
 -- =============================================================================
 -- Base template
@@ -138,7 +168,7 @@ webwinkelBaseWith ogType includeFeed meta content =
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-GD4S885G6F" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-GD4S885G6F');" :: Text)
       H.title (toHtml (pageMetaTitle meta))
-      organizationJsonLd
+      webwinkelOrganizationJsonLd
       pageMetaExtraHead meta
     H.body $ do
       H.header $
@@ -155,7 +185,7 @@ webwinkelBaseWith ogType includeFeed meta content =
       content
       H.footer $ do
         H.p $ do
-          H.a ! A.href (toValue ("mailto:" <> companyEmail)) ! A.class_ "footer-mail" $ toHtml companyEmail
+          H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) ! A.class_ "footer-mail" $ toHtml webwinkelEmail
           H.preEscapedToHtml (" &middot; " :: Text)
           H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
           H.preEscapedToHtml (" &middot; " :: Text)
