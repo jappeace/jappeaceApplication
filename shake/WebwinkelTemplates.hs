@@ -163,6 +163,30 @@ webwinkelBaseWith ogType includeFeed meta content =
           "Webwinkelverhuis is een dienst van "
           H.a ! A.href "https://jappiesoftware.com/" $ "Jappie Software B.V."
           H.preEscapedToHtml (" &middot; KVK: 95097872 &middot; Ooievaarstraat 38, 8262 AN Kampen" :: Text)
+      H.script $ H.preEscapedToHtml mailtoTrackScript
+
+-- | Track clicks on the plain "vraag een offerte aan" mailto buttons in Google
+-- Analytics, so we can see the non-calculator acquisition path. The calculator's
+-- own button (.calc-offerte) is skipped; Elm reports that one with richer params.
+mailtoTrackScript :: Text
+mailtoTrackScript =
+  "document.addEventListener('DOMContentLoaded',function(){"
+    <> "document.querySelectorAll('a[href^=\"mailto:\"]').forEach(function(a){"
+    <> "if(a.classList.contains('calc-offerte'))return;"
+    <> "a.addEventListener('click',function(){"
+    <> "if(window.gtag){gtag('event','offerte_mailto_klik',{knop_tekst:(a.textContent||'').trim().slice(0,60)});}"
+    <> "});});});"
+
+-- | Boot the Elm price calculator and forward its analytics port to gtag, so the
+-- calculator's funnel events (engaged, blocked, requested) land in Google
+-- Analytics alongside the page views.
+prijsCalculatorInitScript :: Text
+prijsCalculatorInitScript =
+  "var prijsCalcApp = Elm.PrijsCalculator.init({node: document.getElementById('prijs-calculator-mount')});"
+    <> "if(prijsCalcApp.ports&&prijsCalcApp.ports.analyticsEvent){"
+    <> "prijsCalcApp.ports.analyticsEvent.subscribe(function(e){"
+    <> "if(window.gtag){gtag('event', e.name, e.params||{});}"
+    <> "});}"
 
 -- | Landing / migration page skeleton (Open Graph type "website").
 webwinkelBaseTemplate :: PageMeta -> Html -> Html
@@ -491,8 +515,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.a ! A.href meetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
 
     H.script ! A.src "/prijs-calculator.js" $ mempty
-    H.script $ H.preEscapedToHtml
-      ("Elm.PrijsCalculator.init({node: document.getElementById('prijs-calculator-mount')});" :: Text)
+    H.script $ H.preEscapedToHtml prijsCalculatorInitScript
   where
     prijzenMeta :: PageMeta
     prijzenMeta = PageMeta

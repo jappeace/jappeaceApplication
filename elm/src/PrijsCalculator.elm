@@ -1,4 +1,4 @@
-module PrijsCalculator exposing
+port module PrijsCalculator exposing
     ( BronPlatform(..)
     , Model
     , ThemaKeuze(..)
@@ -30,7 +30,24 @@ import Browser
 import Html exposing (Html, a, div, fieldset, h3, input, label, legend, li, option, p, select, span, strong, text, ul)
 import Html.Attributes as Attr
 import Html.Events exposing (onCheck, onClick, onInput)
+import Json.Encode as Encode
 import Url
+
+
+{-| Stuurt een analytics-event naar JavaScript, waar de pagina het aan Google
+Analytics (gtag) doorgeeft. De waarde is een object {name, params}. -}
+port analyticsEvent : Encode.Value -> Cmd msg
+
+
+{-| Bouw een gtag-event met een naam en losse parameters. -}
+gaEvent : String -> List ( String, Encode.Value ) -> Cmd msg
+gaEvent naam params =
+    analyticsEvent
+        (Encode.object
+            [ ( "name", Encode.string naam )
+            , ( "params", Encode.object params )
+            ]
+        )
 
 
 
@@ -166,6 +183,7 @@ type alias Model =
     , naam : String
     , webshopDomein : String
     , offertePoging : Bool
+    , analyticsEngaged : Bool
     }
 
 
@@ -189,6 +207,7 @@ initieelModel =
     , naam = ""
     , webshopDomein = ""
     , offertePoging = False
+    , analyticsEngaged = False
     }
 
 
@@ -220,6 +239,7 @@ type Msg
     | NaamGewijzigd String
     | WebshopDomeinGewijzigd String
     | OfferteGepoogd
+    | OfferteVerzonden
 
 
 leesBron : String -> BronPlatform
@@ -361,62 +381,87 @@ themaOmschrijving thema =
             "Nieuw ontwerp"
 
 
+{-| Werk het model bij en stuur eenmalig een "calculator_engaged"-event zodra de
+bezoeker voor het eerst iets in de rekenhulp verandert. -}
+markeerEngagement : Model -> ( Model, Cmd Msg )
+markeerEngagement model =
+    if model.analyticsEngaged then
+        ( model, Cmd.none )
+
+    else
+        ( { model | analyticsEngaged = True }, gaEvent "calculator_engaged" [] )
+
+
+{-| Conversie-event met de richtprijs en de gekozen platforms, zodat we in GA
+zien welke aanvragen binnenkomen en voor welk bedrag. -}
+offerteAangevraagdEvent : Model -> Cmd Msg
+offerteAangevraagdEvent model =
+    gaEvent "offerte_aangevraagd"
+        [ ( "waarde_euro", Encode.int (totaalCenten model // 100) )
+        , ( "bron", Encode.string (bronOmschrijving model.bron) )
+        , ( "doel", Encode.string (doelOmschrijving model.doel) )
+        ]
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ProductenGewijzigd waarde ->
-            ( { model | productenInvoer = waarde }, Cmd.none )
+            markeerEngagement { model | productenInvoer = waarde }
 
         TalenGewijzigd waarde ->
-            ( { model | talenInvoer = waarde }, Cmd.none )
+            markeerEngagement { model | talenInvoer = waarde }
 
         BronGewijzigd waarde ->
-            ( { model | bron = leesBron waarde }, Cmd.none )
+            markeerEngagement { model | bron = leesBron waarde }
 
         DoelGewijzigd waarde ->
-            ( { model | doel = leesDoel waarde }, Cmd.none )
+            markeerEngagement { model | doel = leesDoel waarde }
 
         ThemaGewijzigd waarde ->
-            ( { model | thema = leesThema waarde }, Cmd.none )
+            markeerEngagement { model | thema = leesThema waarde }
 
         KlantaccountsGewijzigd aan ->
-            ( { model | klantaccounts = aan }, Cmd.none )
+            markeerEngagement { model | klantaccounts = aan }
 
         OrderhistorieGewijzigd aan ->
-            ( { model | orderhistorie = aan }, Cmd.none )
+            markeerEngagement { model | orderhistorie = aan }
 
         NieuwsbriefGewijzigd aan ->
-            ( { model | nieuwsbrief = aan }, Cmd.none )
+            markeerEngagement { model | nieuwsbrief = aan }
 
         VoorraadGewijzigd aan ->
-            ( { model | voorraad = aan }, Cmd.none )
+            markeerEngagement { model | voorraad = aan }
 
         ReviewsGewijzigd aan ->
-            ( { model | reviews = aan }, Cmd.none )
+            markeerEngagement { model | reviews = aan }
 
         DomeinGewijzigd aan ->
-            ( { model | domeinBijMijnwebwinkel = aan }, Cmd.none )
+            markeerEngagement { model | domeinBijMijnwebwinkel = aan }
 
         EmailGewijzigd aan ->
-            ( { model | emailBijMijnwebwinkel = aan }, Cmd.none )
+            markeerEngagement { model | emailBijMijnwebwinkel = aan }
 
         VerzendkoppelingGewijzigd aan ->
-            ( { model | verzendkoppeling = aan }, Cmd.none )
+            markeerEngagement { model | verzendkoppeling = aan }
 
         B2bKanaalGewijzigd aan ->
-            ( { model | b2bKanaal = aan }, Cmd.none )
+            markeerEngagement { model | b2bKanaal = aan }
 
         PointOfSaleGewijzigd aan ->
-            ( { model | pointOfSale = aan }, Cmd.none )
+            markeerEngagement { model | pointOfSale = aan }
 
         NaamGewijzigd waarde ->
-            ( { model | naam = waarde }, Cmd.none )
+            markeerEngagement { model | naam = waarde }
 
         WebshopDomeinGewijzigd waarde ->
-            ( { model | webshopDomein = waarde }, Cmd.none )
+            markeerEngagement { model | webshopDomein = waarde }
 
         OfferteGepoogd ->
-            ( { model | offertePoging = True }, Cmd.none )
+            ( { model | offertePoging = True }, gaEvent "offerte_geblokkeerd" [] )
+
+        OfferteVerzonden ->
+            ( model, offerteAangevraagdEvent model )
 
 
 
@@ -960,6 +1005,7 @@ offerteKnop model =
         a
             [ Attr.href (offerteMailtoUrl model)
             , Attr.class "cta-button calc-offerte"
+            , onClick OfferteVerzonden
             ]
             [ text "Vraag deze offerte aan" ]
 
