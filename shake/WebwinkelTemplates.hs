@@ -403,12 +403,12 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
 
     H.section ! A.class_ "engagement" $ do
       H.h2 "Bereken uw richtprijs"
-      H.p "Beantwoord een paar vragen over uw shop en u ziet meteen een indicatie. Dit is geen offerte: alleen een offerte legt uw prijs vast."
+      H.p "Beantwoord een paar vragen over uw shop en u ziet meteen een indicatie."
       H.div ! A.id "prijs-calculator-mount" $ mempty
       H.noscript $ H.p "De rekenhulp heeft JavaScript nodig. Hieronder staat de volledige prijslijst zodat u ook zonder JavaScript alles ziet."
       H.div ! A.class_ "calc-footnotes" $ do
         H.h3 "Over de themakeuze"
-        H.p "Kiest u voor zelf inrichten, dan staat uw shop na de migratie op een standaard Shopify-thema dat u zelf verzorgt of door een ontwerper naar keuze laat doen. Theming hoeft niet via ons; wij doen het ook en zijn er inmiddels aardig goed in."
+        H.p "Kiest u voor zelf inrichten, dan staat uw shop na de migratie op een standaard Shopify-thema dat u zelf verzorgt of door een ontwerper naar keuze laat doen. Theming hoeft niet via ons; wij doen het ook en zijn er inmiddels aardig goed in. Probeer het gerust eerst zelf: uw oude shop blijft gewoon draaien naast de nieuwe, dus u loopt geen risico. Komt u er niet uit, dan helpen we u alsnog."
         H.p $ H.preEscapedToHtml ("Bij uitstraling overzetten (&euro;749) benaderen we uw huidige uitstraling zo dicht mogelijk; kleine aanpassingen op verzoek zitten erbij." :: Text)
         H.p "Een volledig nieuw ontwerp is los ontwerpwerk en prijzen we op aanvraag."
 
@@ -482,14 +482,6 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.li "SEO-redirects (301) voor elke oude URL, zodat uw links en opgebouwde SEO meeverhuizen."
         H.li "Een testshop naast uw draaiende winkel; DNS-overzet met zo min mogelijk downtime."
         H.li "Betaling pas na een succesvolle migratie."
-
-    H.section ! A.class_ "engagement" $ do
-      H.h2 "Rekenvoorbeelden"
-      H.ul $ do
-        H.li $ H.preEscapedToHtml ("Modeltreinwinkel, 2.400 producten, 3 talen: &euro;1.999 + 1.400 &times; &euro;0,25 + 2 &times; 2.400 &times; &euro;0,25 + 2 &times; &euro;250 = &euro;4.049." :: Text)
-        H.li $ H.preEscapedToHtml ("Winkel met 3.000 producten, 1 taal: &euro;1.999 + 2.000 &times; &euro;0,25 = &euro;2.499." :: Text)
-        H.li $ H.preEscapedToHtml ("Kleine shop, t/m 1.000 producten, 1 taal: &euro;1.999." :: Text)
-      H.p ! A.class_ "engagement-note" $ "Losse modules (thema, klantaccounts, domeinverhuizing en dergelijke) komen hier naar keuze bovenop. Gebruik de rekenhulp bovenaan voor uw eigen situatie."
 
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Geldt deze prijs voor mij?"
@@ -603,6 +595,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en eventuele bulk-aanpassingen." :: Text)
+          H.p $ H.a ! A.href "/prijzen.html" $ H.preEscapedToHtml ("Bereken uw prijs &rarr;" :: Text)
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
@@ -727,6 +720,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad." :: Text)
+          H.p $ H.a ! A.href "/prijzen.html" $ H.preEscapedToHtml ("Bereken uw prijs &rarr;" :: Text)
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
@@ -869,6 +863,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.h3 "Volledige migratie"
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
           H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad." :: Text)
+          H.p $ H.a ! A.href "/prijzen.html" $ H.preEscapedToHtml ("Bereken uw prijs &rarr;" :: Text)
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
 
