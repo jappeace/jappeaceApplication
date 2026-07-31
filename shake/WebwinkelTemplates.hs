@@ -135,7 +135,7 @@ webwinkelBaseWith ogType includeFeed meta content =
         H.p $ H.small $ do
           "Webwinkelverhuis is een dienst van "
           H.a ! A.href "https://jappiesoftware.com/" $ "Jappie Software B.V."
-          H.preEscapedToHtml (" &middot; KVK: 95097872 &middot; Ooienvaarstraat 38, Kampen" :: Text)
+          H.preEscapedToHtml (" &middot; KVK: 95097872 &middot; Ooievaarstraat 38, 8262 AN Kampen" :: Text)
 
 -- | Landing / migration page skeleton (Open Graph type "website").
 webwinkelBaseTemplate :: PageMeta -> Html -> Html
