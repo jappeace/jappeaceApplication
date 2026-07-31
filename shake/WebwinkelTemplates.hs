@@ -8,6 +8,7 @@
 -- blog markup come from 'PageChrome'.
 module WebwinkelTemplates
   ( webwinkelIndexPage
+  , prijzenPage
   , webwinkelBlogIndexPage
   , webwinkelArticlePage
   , appPage
@@ -122,6 +123,7 @@ webwinkelBaseWith ogType includeFeed meta content =
             H.li $ H.a ! A.href "/migrate-mijnwebwinkel.html" $ "MijnWebwinkel"
             H.li $ H.a ! A.href "/migrate-lightspeed.html" $ "Lightspeed"
             H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
+            H.li $ H.a ! A.href "/prijzen.html" $ "Prijzen"
             H.li $ H.a ! A.href "/blog/" $ "Blog"
             H.li $ H.a ! A.href offerteMailto ! A.class_ "cta-link" $ "Offerte"
       content
@@ -135,7 +137,7 @@ webwinkelBaseWith ogType includeFeed meta content =
         H.p $ H.small $ do
           "Webwinkelverhuis is een dienst van "
           H.a ! A.href "https://jappiesoftware.com/" $ "Jappie Software B.V."
-          H.preEscapedToHtml (" &middot; KVK: 95097872" :: Text)
+          H.preEscapedToHtml (" &middot; KVK: 95097872 &middot; Ooievaarstraat 38, 8262 AN Kampen" :: Text)
 
 -- | Landing / migration page skeleton (Open Graph type "website").
 webwinkelBaseTemplate :: PageMeta -> Html -> Html
@@ -176,7 +178,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           " \8212 De testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Recent werk
     H.section ! A.class_ "results" $ do
@@ -195,7 +197,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na een succesvolle migratie" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
       H.p $ do
@@ -222,7 +224,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
                 ! A.alt "Grafiek met stijgende prijzen"
                 ! A.width "56" ! A.height "56"
           H.h3 "Lightspeed"
-          H.p $ H.preEscapedToHtml ("Beursgenoteerd en steeds duurder voor kleine shops. Wij verhuizen u veilig, met een 301-redirect voor elke oude URL; bij onbegeleide migraties zagen we verhalen van 70% verkeersverlies." :: Text)
+          H.p $ H.preEscapedToHtml ("Beursgenoteerd en steeds duurder voor kleine shops. Ons programma legt elke oude URL vast (allemaal, niet een steekproef) en stuurt die door met een 301-redirect. Bij onbegeleide migraties zagen we verhalen van 70% verkeersverlies; dat is precies wat wij voorkomen." :: Text)
           H.a ! A.href "/migrate-lightspeed.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-beperkt.svg"
@@ -231,6 +233,22 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.h3 "CCV Shop"
           H.p $ H.preEscapedToHtml ("Beperkte features en achterblijvende ontwikkeling. Wij zetten uw producten, talen, klantaccounts en voorraad volledig geautomatiseerd over." :: Text)
           H.a ! A.href "/migrate-ccvshop.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
+
+    -- Pricing: listed openly. Hiding the price reads as evasive to a
+    -- doubtful merchant; a visible "vanaf" and the breakdown radiate
+    -- confidence. The offerte remains the binding guarantee, the
+    -- disclaimer says so plainly so an updated price is never a broken
+    -- promise.
+    H.section ! A.class_ "engagement" ! A.id "prijzen" $ do
+      H.h2 "Prijzen"
+      H.div ! A.class_ "card-grid" $ do
+        H.div ! A.class_ "card" $ do
+          H.h3 "Volledige migratie"
+          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
+          H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects. Grotere catalogi, extra talen en losse diensten (domeinverhuizing, e-mail-setup) hebben een vaste meerprijs." :: Text)
+          H.p $ H.a ! A.href "/prijzen.html" $ H.preEscapedToHtml ("Bekijk de volledige prijzen &rarr;" :: Text)
+          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken, en u betaalt pas na een succesvolle migratie. Getoonde prijzen zijn een indicatie; uw offerte is de echte prijsgarantie." :: Text)
 
     -- Final CTA
     H.section ! A.class_ "final-cta" $ do
@@ -345,6 +363,84 @@ appPage = webwinkelBaseTemplate appMeta $ do
       , pageMetaExtraHead   = H.meta ! A.name "robots" ! A.content "noindex"
       }
 
+-- | The full public price list on its own page. The homepage keeps a
+-- short teaser and links here; this page carries every line so a
+-- doubtful merchant who wants the whole picture finds it openly, no
+-- "bel ons om te horen wat het kost". The lock-in note states plainly
+-- that shown prices are indicative and only an offerte binds them, so
+-- a later price change is never a broken promise.
+prijzenPage :: Html
+prijzenPage = webwinkelBaseTemplate prijzenMeta $
+  H.main $ do
+    H.section ! A.class_ "hero" $ do
+      H.h1 "Prijzen"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vaste prijzen, vooraf afgesproken. U betaalt pas na een succesvolle migratie. Hieronder ziet u precies waar u aan toe bent." :: Text)
+
+    H.section ! A.class_ "engagement" $ do
+      H.h2 "De migratie"
+      H.table ! A.class_ "price-table" $ H.tbody $ do
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Basismigratie &mdash; t/m 1.000 producten, 1 taal" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1.999" :: Text)
+        H.tr $ do
+          H.td "Extra producten, boven de 1.000 (eerste taal)"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Extra taal &mdash; per product over de hele catalogus" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Extra taal &mdash; configuratie, per taal" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+
+    H.section ! A.class_ "engagement" $ do
+      H.h2 "Extra diensten"
+      H.table ! A.class_ "price-table" $ H.tbody $ do
+        H.tr $ do
+          H.td "Domeinverhuizing"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("E-mail-setup (mailboxen, SPF/DKIM, doorstuurregels)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
+        H.tr $ do
+          H.td "Catalogus-brede teksttransformaties"
+          H.td ! A.class_ "price-cell" $ "op aanvraag"
+
+    H.section ! A.class_ "results" $ do
+      H.h2 "Altijd inbegrepen"
+      H.ul $ do
+        H.li $ H.preEscapedToHtml ("Producten, afbeeldingen, categorie&euml;n, klantdata en voorraad." :: Text)
+        H.li "SEO-redirects (301) voor elke oude URL, zodat uw links en opgebouwde SEO meeverhuizen."
+        H.li "Een testshop naast uw draaiende winkel; DNS-overzet met zo min mogelijk downtime."
+        H.li "Betaling pas na een succesvolle migratie."
+
+    H.section ! A.class_ "engagement" $ do
+      H.h2 "Rekenvoorbeelden"
+      H.ul $ do
+        H.li $ H.preEscapedToHtml ("Modeltreinwinkel, 2.400 producten, 3 talen: &euro;1.999 + 1.400 &times; &euro;0,25 + 2 &times; 2.400 &times; &euro;0,25 + 2 &times; &euro;250 = &euro;4.049." :: Text)
+        H.li $ H.preEscapedToHtml ("Winkel met 3.000 producten, 1 taal: &euro;1.999 + 2.000 &times; &euro;0,25 = &euro;2.499." :: Text)
+        H.li $ H.preEscapedToHtml ("Kleine shop, t/m 1.000 producten, 1 taal: &euro;1.999." :: Text)
+
+    H.section ! A.class_ "results" $ do
+      H.h2 "Geldt deze prijs voor mij?"
+      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt uw prijs vast. Wilt u tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat uw prijs zwart-op-wit."
+      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Liever eerst even sparren?"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+  where
+    prijzenMeta :: PageMeta
+    prijzenMeta = PageMeta
+      { pageMetaTitle       = "Prijzen \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Vaste prijzen voor uw webshop-migratie naar Shopify: vanaf \8364\&1.999 inclusief 1.000 producten en 1 taal. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/prijzen.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = mempty
+      }
+
 mijnwebwinkelMigrationPage :: Html
 mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
   whatsappFloatingButton mijnwebwinkelWhatsappLabel mijnwebwinkelWhatsappMessage
@@ -356,7 +452,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
           H.h1 "Ontsnap MijnWebwinkel"
-          H.p ! A.class_ "subtitle" $ "Uw webshop is uw broodwinning, en MijnWebwinkel staat al jaren stil. Verhuizen voelt als een grote stap, maar het hoeft geen sprong in het diepe te zijn: wij zetten uw complete shop geautomatiseerd over, zonder dataverlies en zonder downtime. U betaalt pas na een succesvolle migratie."
+          H.p ! A.class_ "subtitle" $ "Uw webshop is uw broodwinning, en MijnWebwinkel staat al jaren stil. Verhuizen voelt als een grote stap, maar het hoeft geen sprong in het diepe te zijn: wij zetten uw complete shop geautomatiseerd over, zonder dataverlies en met zo min mogelijk downtime. U betaalt pas na een succesvolle migratie."
           H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
         H.img ! A.class_ "hero-image"
               ! A.src "/illustratie-ontsnappen.svg"
@@ -415,7 +511,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           " \8212 De testshop draait naast uw MijnWebwinkel-shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Recent werk: proof before price, so the number lands on trust.
     H.section ! A.class_ "results" $ do
@@ -451,7 +547,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
@@ -488,7 +584,7 @@ mijnwebwinkelFaq =
   , ( "Kan ik mijn domeinnaam behouden?"
     , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk met een uitgebreide testbatterij. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
     , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw doelplatform beide ondersteunen. Ook de vertaalde URL's verhuizen mee." )
   , ( "Kan ik ook naar een ander platform dan Shopify migreren?"
@@ -511,7 +607,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- Hero
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap CCV Shop"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. CCV Shop voelt steeds beperkter, de features blijven achter, en u weet dat er betere opties zijn &mdash; maar hoe krijgt u alles veilig overgezet? Wij verhuizen uw complete shop naar Shopify. Geautomatiseerd, zonder dataverlies, zonder downtime." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. CCV Shop voelt steeds beperkter, de features blijven achter, en u weet dat er betere opties zijn &mdash; maar hoe krijgt u alles veilig overgezet? Wij verhuizen uw complete shop naar Shopify. Geautomatiseerd, zonder dataverlies, met zo min mogelijk downtime." :: Text)
       H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
@@ -549,7 +645,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           " \8212 De testshop draait naast uw CCV Shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Pricing
     H.section ! A.class_ "engagement" ! A.id "pricing" $ do
@@ -575,7 +671,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
     -- FAQ
@@ -634,7 +730,7 @@ ccvshopFaq =
   , ( "Kan ik mijn domeinnaam behouden?"
     , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk met een uitgebreide testbatterij. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
     , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en Shopify beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
@@ -691,7 +787,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           " \8212 De testshop draait naast uw Lightspeed-shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd, zonder downtime."
+          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Pricing
     H.section ! A.class_ "engagement" ! A.id "pricing" $ do
@@ -709,7 +805,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $ do
-          H.p $ H.preEscapedToHtml ("U bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding gaan bij de overstap vaak oude URLs kapot; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat elke oude URL blijft doorverwijzen en uw opgebouwde SEO meeverhuist." :: Text)
+          H.p $ H.preEscapedToHtml ("U bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding gaan bij de overstap vaak oude URLs kapot; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat elke oude URL blijft doorverwijzen &mdash; ons programma legt ze allemaal vast, niet een steekproef &mdash; en uw opgebouwde SEO meeverhuist." :: Text)
           H.p $ do
             H.a ! A.href "/waarom-lightspeed.html" $ "Waarom verlaten steeds meer webshops Lightspeed?"
             H.preEscapedToHtml (" &rarr;" :: Text)
@@ -720,7 +816,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk met een uitgebreide testbatterij" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
     -- FAQ
@@ -779,7 +875,7 @@ lightspeedFaq =
   , ( "Kan ik mijn domeinnaam behouden?"
     , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk met een uitgebreide testbatterij. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Verlies ik mijn Google-posities?"
     , "Elke oude URL krijgt automatisch een 301-redirect, zodat al uw links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Werkt het ook voor meertalige webshops?"
