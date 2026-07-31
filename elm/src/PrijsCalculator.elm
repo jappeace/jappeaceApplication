@@ -942,7 +942,7 @@ contactVelden model =
 lockInNoot : Html Msg
 lockInNoot =
     p [ Attr.class "calc-lockin" ]
-        [ text "Dit is een richtprijs, geen offerte. Alleen een offerte legt uw prijs vast. Wilt u tegen deze prijs verhuizen? Vraag nu een offerte aan." ]
+        [ text "Dit is een richtprijs. Wilt u tegen deze prijs verhuizen? Vraag nu een offerte aan." ]
 
 
 formulierGeldig : Model -> Bool
