@@ -199,6 +199,38 @@ leesThema waarde =
         ThemaStandaard
 
 
+{-| Inverse van leesBron: de keuzewaarde die bij een bronplatform hoort, zodat
+de juiste optie in de dropdown geselecteerd staat. -}
+bronNaarWaarde : BronPlatform -> String
+bronNaarWaarde bron =
+    case bron of
+        BronMijnwebwinkel ->
+            "mijnwebwinkel"
+
+        BronCcvShop ->
+            "ccv"
+
+        BronLightspeed ->
+            "lightspeed"
+
+        BronAnders ->
+            "anders"
+
+
+{-| Inverse van leesThema: de keuzewaarde die bij een themakeuze hoort. -}
+themaNaarWaarde : ThemaKeuze -> String
+themaNaarWaarde thema =
+    case thema of
+        ThemaStandaard ->
+            "standaard"
+
+        ThemaOverzetten ->
+            "overzetten"
+
+        ThemaNieuw ->
+            "nieuw"
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -412,52 +444,25 @@ keuzeOptie huidig waarde omschrijving =
 
 bronVeld : BronPlatform -> Html Msg
 bronVeld bron =
-    let
-        huidig =
-            case bron of
-                BronMijnwebwinkel ->
-                    "mijnwebwinkel"
-
-                BronCcvShop ->
-                    "ccv"
-
-                BronLightspeed ->
-                    "lightspeed"
-
-                BronAnders ->
-                    "anders"
-    in
     label [ Attr.class "calc-field" ]
         [ span [ Attr.class "calc-label" ] [ text "Waar draait uw webshop nu?" ]
         , select [ onInput BronGewijzigd ]
-            [ keuzeOptie huidig "mijnwebwinkel" "MijnWebwinkel"
-            , keuzeOptie huidig "ccv" "CCV Shop"
-            , keuzeOptie huidig "lightspeed" "Lightspeed"
-            , keuzeOptie huidig "anders" "Een ander systeem / weet ik niet"
+            [ keuzeOptie (bronNaarWaarde bron) "mijnwebwinkel" "MijnWebwinkel"
+            , keuzeOptie (bronNaarWaarde bron) "ccv" "CCV Shop"
+            , keuzeOptie (bronNaarWaarde bron) "lightspeed" "Lightspeed"
+            , keuzeOptie (bronNaarWaarde bron) "anders" "Een ander systeem / weet ik niet"
             ]
         ]
 
 
 themaVeld : ThemaKeuze -> Html Msg
 themaVeld thema =
-    let
-        huidig =
-            case thema of
-                ThemaStandaard ->
-                    "standaard"
-
-                ThemaOverzetten ->
-                    "overzetten"
-
-                ThemaNieuw ->
-                    "nieuw"
-    in
     label [ Attr.class "calc-field" ]
         [ span [ Attr.class "calc-label" ] [ text "Hoe moet uw nieuwe shop eruitzien?" ]
         , select [ onInput ThemaGewijzigd ]
-            [ keuzeOptie huidig "standaard" "Een net, verzorgd standaard-uiterlijk (zit in de basis)"
-            , keuzeOptie huidig "overzetten" "Precies zoals mijn huidige shop"
-            , keuzeOptie huidig "nieuw" "Een volledig nieuw ontwerp"
+            [ keuzeOptie (themaNaarWaarde thema) "standaard" "Standaard Shopify-thema, dat ik zelf inricht"
+            , keuzeOptie (themaNaarWaarde thema) "overzetten" "Mijn huidige uitstraling, door ons 1-op-1 overgezet"
+            , keuzeOptie (themaNaarWaarde thema) "nieuw" "Een volledig nieuw ontwerp door ons"
             ]
         ]
 
@@ -554,41 +559,51 @@ uitsplitsing model =
             ++ optioneleRegel model.emailBijMijnwebwinkel "E-mail-setup" emailSetupCenten
 
 
+{-| Toelichting bij de themakeuze. Het standaard-thema kost bij ons niets omdat
+u het zelf (of via een ander) inricht; een nieuw ontwerp is los ontwerpwerk op
+aanvraag. Bij 1-op-1 overzetten is geen extra uitleg nodig. -}
+themaNoot : ThemaKeuze -> List (Html Msg)
+themaNoot thema =
+    case thema of
+        ThemaStandaard ->
+            [ p [ Attr.class "calc-note" ]
+                [ text "Na de migratie staat uw shop op een standaard Shopify-thema dat u zelf inricht. Theming hoeft niet via ons: u kunt het zelf doen of een ontwerper naar keuze inhuren. Wij doen het ook, en zijn er inmiddels aardig goed in." ]
+            ]
+
+        ThemaNieuw ->
+            [ p [ Attr.class "calc-note" ]
+                [ text "Een volledig nieuw ontwerp is los ontwerpwerk. Dat prijzen we op aanvraag, dus het staat nog niet in het totaal." ]
+            ]
+
+        ThemaOverzetten ->
+            []
+
+
+{-| Waarschuwing bij een onbekend bronplatform: de prijs hangt af van hoe de
+data eruit komt, dus het getoonde totaal is dan een ondergrens. -}
+bronNoot : BronPlatform -> List (Html Msg)
+bronNoot bron =
+    case bron of
+        BronAnders ->
+            [ p [ Attr.class "calc-note" ]
+                [ text "Bij een ander bronplatform hangt de prijs af van hoe uw data eruit komt. Dat bekijken we samen; het totaal hieronder is dan een ondergrens." ]
+            ]
+
+        BronMijnwebwinkel ->
+            []
+
+        BronCcvShop ->
+            []
+
+        BronLightspeed ->
+            []
+
+
 {-| Losse waarschuwingen voor keuzes die we niet kant-en-klaar kunnen prijzen:
 een nieuw ontwerp en een onbekend bronplatform gaan altijd op aanvraag. -}
 opAanvraagNoten : Model -> List (Html Msg)
 opAanvraagNoten model =
-    let
-        themaNoot =
-            case model.thema of
-                ThemaNieuw ->
-                    [ p [ Attr.class "calc-note" ]
-                        [ text "Een volledig nieuw ontwerp is los ontwerpwerk. Dat prijzen we op aanvraag, dus het staat nog niet in het totaal." ]
-                    ]
-
-                ThemaStandaard ->
-                    []
-
-                ThemaOverzetten ->
-                    []
-
-        bronNoot =
-            case model.bron of
-                BronAnders ->
-                    [ p [ Attr.class "calc-note" ]
-                        [ text "Bij een ander bronplatform hangt de prijs af van hoe uw data eruit komt. Dat bekijken we samen; het totaal hieronder is dan een ondergrens." ]
-                    ]
-
-                BronMijnwebwinkel ->
-                    []
-
-                BronCcvShop ->
-                    []
-
-                BronLightspeed ->
-                    []
-    in
-    themaNoot ++ bronNoot
+    themaNoot model.thema ++ bronNoot model.bron
 
 
 

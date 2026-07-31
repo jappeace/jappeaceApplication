@@ -432,12 +432,12 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.tr $ do
           H.td "Catalogus-brede teksttransformaties"
           H.td ! A.class_ "price-cell" $ "op aanvraag"
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat uw shop op een standaard Shopify-thema dat u zelf inricht. De vormgeving hoeft niet via ons: u kunt het zelf doen of een ontwerper naar keuze inhuren. Wilt u het uit handen geven, dan zetten wij uw huidige uitstraling 1-op-1 over (&euro;749) of ontwerpen we iets nieuws (op aanvraag)." :: Text)
 
     H.section ! A.class_ "results" $ do
       H.h2 "Altijd inbegrepen"
       H.ul $ do
         H.li $ H.preEscapedToHtml ("Producten, afbeeldingen, categorie&euml;n, klantdata en voorraad." :: Text)
-        H.li "Een verzorgd standaard Shopify-thema, ingericht met uw logo en kleuren."
         H.li "SEO-redirects (301) voor elke oude URL, zodat uw links en opgebouwde SEO meeverhuizen."
         H.li "Een testshop naast uw draaiende winkel; DNS-overzet met zo min mogelijk downtime."
         H.li "Betaling pas na een succesvolle migratie."
