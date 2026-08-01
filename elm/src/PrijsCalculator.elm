@@ -1,5 +1,6 @@
 port module PrijsCalculator exposing
     ( BronPlatform(..)
+    , DoelPlatform(..)
     , Model
     , Msg(..)
     , ThemaKeuze(..)
@@ -158,11 +159,14 @@ type BronPlatform
 
 
 {-| Waar migreren we naartoe? Beïnvloedt de prijs niet, maar is nuttig voor de
-offerte. Shopify is onze standaard; WooCommerce doen we ook. -}
+offerte. Shopify is onze standaard; WooCommerce doen we ook. "Weet ik nog niet"
+is een volwaardige keuze: welk platform past hangt af van de situatie van de
+shop, en dat adviseren we in het gratis gesprek. -}
 type DoelPlatform
     = DoelShopify
     | DoelWoocommerce
     | DoelAnders
+    | DoelWeetNiet
 
 
 {-| Hoe moet de nieuwe shop eruitzien? Een net standaard-uiterlijk zit in de
@@ -279,6 +283,9 @@ leesDoel waarde =
     else if waarde == "anders" then
         DoelAnders
 
+    else if waarde == "weetniet" then
+        DoelWeetNiet
+
     else
         DoelShopify
 
@@ -328,6 +335,9 @@ doelNaarWaarde doel =
         DoelAnders ->
             "anders"
 
+        DoelWeetNiet ->
+            "weetniet"
+
 
 doelOmschrijving : DoelPlatform -> String
 doelOmschrijving doel =
@@ -339,7 +349,10 @@ doelOmschrijving doel =
             "WooCommerce"
 
         DoelAnders ->
-            "Een ander platform / weet ik nog niet"
+            "Een ander platform"
+
+        DoelWeetNiet ->
+            "Weet ik nog niet / ik wil advies"
 
 
 {-| Inverse van leesThema: de keuzewaarde die bij een themakeuze hoort. -}
@@ -741,6 +754,7 @@ doelVeld doel =
             [ keuzeOptie (doelNaarWaarde doel) "shopify" (doelOmschrijving DoelShopify)
             , keuzeOptie (doelNaarWaarde doel) "woocommerce" (doelOmschrijving DoelWoocommerce)
             , keuzeOptie (doelNaarWaarde doel) "anders" (doelOmschrijving DoelAnders)
+            , keuzeOptie (doelNaarWaarde doel) "weetniet" (doelOmschrijving DoelWeetNiet)
             ]
         ]
 
@@ -903,11 +917,33 @@ bronNoot bron =
             []
 
 
-{-| Losse waarschuwingen voor keuzes die we niet kant-en-klaar kunnen prijzen:
-een nieuw ontwerp en een onbekend bronplatform gaan altijd op aanvraag. -}
+{-| Geruststelling bij "weet ik nog niet": geen platformkeuze is geen blokkade,
+we adviseren in het gratis gesprek op basis van de situatie van de shop. De
+richtprijs rekent dan met Shopify, onze standaard, als uitgangspunt. -}
+doelNoot : DoelPlatform -> List (Html Msg)
+doelNoot doel =
+    case doel of
+        DoelWeetNiet ->
+            [ p [ Attr.class "calc-note" ]
+                [ text "Nog geen platform op het oog? Prima: in het gratis gesprek adviseren we een platform op basis van uw situatie. De richtprijs rekent met Shopify als uitgangspunt." ]
+            ]
+
+        DoelShopify ->
+            []
+
+        DoelWoocommerce ->
+            []
+
+        DoelAnders ->
+            []
+
+
+{-| Losse waarschuwingen en geruststellingen bij keuzes die uitleg vragen: een
+nieuw ontwerp en een onbekend bronplatform gaan op aanvraag, en een nog
+onbekend doelplatform krijgt de advies-toezegging. -}
 opAanvraagNoten : Model -> List (Html Msg)
 opAanvraagNoten model =
-    themaNoot model.thema ++ bronNoot model.bron ++ pointOfSaleNoot model.pointOfSale
+    themaNoot model.thema ++ bronNoot model.bron ++ doelNoot model.doel ++ pointOfSaleNoot model.pointOfSale
 
 
 {-| Bij point-of-sale komt de installatie op locatie: die en de reiskosten

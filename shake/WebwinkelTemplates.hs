@@ -263,7 +263,12 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
         H.div $ do
           H.h1 "Verhuis uw webshop. Zonder dataverlies, zonder SEO-verlies."
           H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw complete webshop geautomatiseerd naar Shopify of een ander platform &mdash; producten, vertalingen, afbeeldingen, klantdata en SEO-redirects. U betaalt pas na een succesvolle migratie." :: Text)
-          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+          -- Decision: the landing-page CTAs point at the price calculator
+          -- instead of an offerte-mailto. The calculator gives the visitor an
+          -- immediate, tangible result (Gemini-feedback: CTAs should offer
+          -- direct value) and its own offerte button follows once they have a
+          -- price on screen.
+          H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
         H.img ! A.class_ "hero-image"
               ! A.src "/illustratie-verhuizen.svg"
               ! A.alt "Illustratie van dozen die van een oude webshop naar een nieuwe verhuizen"
@@ -342,8 +347,13 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
           H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects. Grotere catalogi, extra talen en losse diensten (domeinverhuizing, e-mail-setup) hebben een vaste meerprijs." :: Text)
           H.p $ H.a ! A.href "/prijzen.html" $ H.preEscapedToHtml ("Bekijk de volledige prijzen &rarr;" :: Text)
-          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+          H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken, en u betaalt pas na een succesvolle migratie. Getoonde prijzen zijn een indicatie; uw offerte is de echte prijsgarantie." :: Text)
+
+    -- FAQ
+    H.section ! A.class_ "about" $ do
+      H.h2 "Veelgestelde vragen"
+      H.dl $ mapM_ renderFaqItem homeFaq
 
     -- Final CTA
     H.section ! A.class_ "final-cta" $ do
@@ -359,8 +369,28 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/"
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
-      , pageMetaExtraHead   = mempty
+      , pageMetaExtraHead   = faqPageJsonLd homeFaq
       }
+
+-- | The homepage FAQ: the questions that most often keep a visitor from
+-- reaching out, answered before they leave. The same pairs feed the visible
+-- list and 'faqPageJsonLd'. The platform-choice answer deliberately offers
+-- advice instead of a platform list: which platform fits depends on the
+-- shop's situation, and "weet ik nog niet" is a fine starting point (also
+-- selectable in the price calculator).
+homeFaq :: [(Text, Text)]
+homeFaq =
+  [ ( "Kan mijn webshop verhuisd worden?"
+    , "Vrijwel altijd. Producten, teksten, afbeeldingen, klanten en de categoriestructuur zetten we geautomatiseerd over vanaf MijnWebwinkel, CCV Shop, Lightspeed en andere platformen, inclusief 301-redirects van al uw oude URLs zodat uw Google-posities meeverhuizen." )
+  , ( "Naar welk platform kan ik het beste verhuizen?"
+    , "Dat hangt af van uw situatie: uw assortiment, uw koppelingen en hoeveel u zelf wilt kunnen aanpassen. Shopify is het meest gekozen doelplatform en WooCommerce doen we ook. Weet u het nog niet? In een gratis gesprek adviseren we een platform op basis van uw situatie, en in de rekenhulp kunt u die keuze gewoon openlaten." )
+  , ( "Hoe lang duurt een migratie?"
+    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+  , ( "Wat kost een webshop-migratie?"
+    , "Een vaste prijs vanaf " <> migratieBasisprijsEuro <> " euro, afhankelijk van het aantal producten en talen, en u betaalt pas na een geslaagde migratie. Met de rekenhulp op de prijzenpagina berekent u in een minuut uw richtprijs." )
+  , ( "Kan mijn shop blijven doorverkopen tijdens de migratie?"
+    , "Ja. De nieuwe shop bouwen we naast uw huidige webshop op, die gewoon doordraait en verkoopt. Pas bij de livegang wijst u uw domein om." )
+  ]
 
 -- =============================================================================
 -- MijnWebwinkel migration landing page
@@ -487,7 +517,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.h1 "Prijzen"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vaste prijzen, vooraf afgesproken. U betaalt pas na een succesvolle migratie. Hieronder ziet u precies waar u aan toe bent." :: Text)
 
-    H.section ! A.class_ "engagement" $ do
+    H.section ! A.class_ "engagement" ! A.id "rekenhulp" $ do
       H.h2 "Bereken uw richtprijs"
       H.p "Beantwoord een paar vragen over uw shop en u ziet meteen een indicatie."
       H.div ! A.id "prijs-calculator-mount" $ mempty

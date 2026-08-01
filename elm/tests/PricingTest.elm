@@ -11,10 +11,13 @@ import Expect
 import PrijsCalculator
     exposing
         ( BronPlatform(..)
+        , DoelPlatform(..)
         , Model
+        , Msg(..)
         , ThemaKeuze(..)
         , initieelModel
         , totaalCenten
+        , update
         )
 import Test exposing (Test, describe, test)
 
@@ -106,5 +109,16 @@ suite =
                             , nieuwsbrief = True
                             , voorraad = True
                         }
+                    )
+        , test "doelkeuze 'weetniet' in de dropdown wordt DoelWeetNiet" <|
+            \_ ->
+                Expect.equal DoelWeetNiet
+                    (Tuple.first (update (DoelGewijzigd "weetniet") initieelModel)).doel
+        , test "doelplatform beinvloedt de prijs niet, ook 'weet ik nog niet' niet" <|
+            \_ ->
+                Expect.equal (List.repeat 4 199900)
+                    (List.map
+                        (\doel -> totaalCenten { initieelModel | doel = doel })
+                        [ DoelShopify, DoelWoocommerce, DoelAnders, DoelWeetNiet ]
                     )
         ]
