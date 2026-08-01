@@ -37,6 +37,7 @@ import WebwinkelTemplates
   , lightspeedMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
+  , relativizeWebwinkelContentImages
   )
 
 -- | A recognisable fake origin: it can only appear in the output when the
@@ -110,6 +111,20 @@ noTrackingParamsCase (pageName, page) = testCase pageName $ do
   assertBool "a link carries share-URL tracking parameters (utm_* or rcm=)"
     (not ("utm_" `T.isInfixOf` rendered) && not ("rcm=" `T.isInfixOf` rendered))
 
+-- | Content images referenced by absolute production URL must come out
+-- root-relative so they load on the local serve preview too, while hrefs
+-- (canonical link tags, cross-links) must keep their absolute URL.
+relativizesImageSourcesOnly :: TestTree
+relativizesImageSourcesOnly = testCase "relativizeWebwinkelContentImages" $ do
+  let rendered = TL.pack
+        "<link href=\"https://webwinkelverhuis.nl/blog/x.html\" rel=\"canonical\">\
+        \<img src=\"https://webwinkelverhuis.nl/panzer-shop-shopify-na.png\">"
+      rewritten = relativizeWebwinkelContentImages rendered
+  assertBool "image src is not root-relative"
+    (TL.pack "src=\"/panzer-shop-shopify-na.png\"" `TL.isInfixOf` rewritten)
+  assertBool "canonical href lost its absolute URL"
+    (TL.pack "href=\"https://webwinkelverhuis.nl/blog/x.html\"" `TL.isInfixOf` rewritten)
+
 main :: IO ()
 main = defaultMain $
   testGroup "shake-blog templates"
@@ -119,4 +134,6 @@ main = defaultMain $
         (map usesMeetLinkCase meetLinkPages)
     , testGroup "no page publishes share-URL tracking parameters"
         (map noTrackingParamsCase allStaticPages)
+    , testGroup "webwinkel content images load on the serve preview"
+        [relativizesImageSourcesOnly]
     ]

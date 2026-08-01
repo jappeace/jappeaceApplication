@@ -17,9 +17,11 @@ module WebwinkelTemplates
   , lightspeedMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
+  , relativizeWebwinkelContentImages
   ) where
 
 import Data.Text (Text)
+import qualified Data.Text.Lazy as TL
 import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -54,6 +56,19 @@ import PageChrome
 -- | Site-default social-share image, hosted on this domain.
 webwinkelOgImage :: Text
 webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
+
+-- | Rewrite absolute webwinkelverhuis.nl image sources in a rendered page to
+-- root-relative ones, so images load on the local `shake-blog serve` preview
+-- as well as in production.
+--
+-- Decision: org content must reference images by absolute production URL,
+-- because pandoc's org reader turns a root-relative @[[/x.png]]@ link into a
+-- broken @file:///x.png@; this pass restores same-origin loading afterwards.
+-- Only @src=@ attributes are rewritten: @href=@ is left alone so canonical
+-- link tags and social-share URLs stay absolute for SEO.
+relativizeWebwinkelContentImages :: TL.Text -> TL.Text
+relativizeWebwinkelContentImages =
+  TL.replace "src=\"https://webwinkelverhuis.nl/" "src=\"/"
 
 -- | Organization structured data for the webwinkelverhuis.nl brand. Presents
 -- Webwinkelverhuis as its own entity (own name, url, email, logo) to Google and
