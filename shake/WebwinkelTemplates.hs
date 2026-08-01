@@ -433,8 +433,7 @@ scanStappen =
   , ScanStap "Foto's en teksten" "alles mee"
   , ScanStap "Klantaccounts" "iedereen mee"
   , ScanStap "Spaarpunten" "saldo klopt"
-  , ScanStap "Oude links" "niets breekt"
-  , ScanStap "Vindbaar in Google" "blijft zo"
+  , ScanStap "Linkvertaling voor Google" "werkt door"
   , ScanStap "Alles nalopen" "niets vergeten"
   ]
 
@@ -442,9 +441,9 @@ scanStappen =
 -- of the migration program at work, as progress bars that fill one after
 -- another and land on a plain-language result. Pure CSS (per-row keyframes in
 -- style.css selected via @nth-child@, all sharing one timeline so the cycle
--- ends with every bar draining together before refilling one by one), honest
--- about being an illustration via the caption, and hidden from screen readers
--- because the steps text next to it carries the same information.
+-- ends with every bar draining together before refilling one by one), and
+-- hidden from screen readers because the steps text next to it carries the
+-- same information.
 --
 -- Decision: an animated illustration instead of a recording of the real tool.
 -- The migration program is a CLI that only ever runs on our own machine, so a
@@ -458,7 +457,6 @@ scanDemo =
       H.div ! A.class_ "scan-demo-kop" $ "Uw webshop verhuist"
       H.ul ! A.class_ "scan-demo-lijst" $
         mapM_ scanDemoItem scanStappen
-    H.p ! A.class_ "scan-demo-noot" $ "Illustratie: zo pakt ons programma uw shop in."
 
 -- | One animated row of the scan panel; the row's position in the list picks
 -- its keyframes via @nth-child@ in style.css, which staggers the fills.
