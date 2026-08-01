@@ -94,11 +94,24 @@ in [[https://webwinkelverhuis.nl/blog/duizenden-shopify-producten-in-bulk-aanpas
 * De overstap zelf, eerlijk verteld
 
 De technische cutover, domeinen omzetten en e-mail verhuizen, is
-het spannendste stuk van elke migratie. Ook hier ging niet alles in
-één keer vlekkeloos, en dat vertellen we liever eerlijk. Bij de
-verhuizing van het .nl-domein zette de oude registrar een paar uur
-een parkeerpagina neer, en op het .net-domein ontstond bij de
-cutover een redirect-loop die na zeventien minuten was opgelost.
+het spannendste stuk van elke migratie. We zochten elke stap vooraf
+grondig uit, maar een domeinverhuizing kent haar verrassingen pas
+op het moment zelf: wat de oude registrar precies doet, zie je pas
+als de overdracht echt loopt. En gaat het dan mis, dan is de winkel
+plat, voor iedereen. Precies daarom wilt u dit laten doen door
+iemand die het vaker heeft gedaan.
+
+Ook hier ging niet alles in één keer vlekkeloos, en dat vertellen
+we liever eerlijk. Bij de verhuizing van het .nl-domein zette de
+oude registrar een paar uur een parkeerpagina neer, en op het
+.net-domein ontstond bij de cutover een redirect-loop die na
+zeventien minuten was opgelost.
+
+Eén fout kwam echt bij ons vandaan: bij het overzetten van de
+klantaccounts werden alle klanten automatisch ingeschreven op de
+nieuwsbrief, en dat was niet de bedoeling. Daar hebben we Kevin
+ruiterlijk onze excuses voor aangeboden. Ook dat hoort bij een
+eerlijk verhaal.
 
 Het punt is niet dat zulke momenten nooit voorkomen; elke migratie
 heeft er een paar. Het punt is wie er bovenop zit als het gebeurt.
@@ -108,19 +121,30 @@ anderhalve week tussenuit, zonder laptop, terwijl de migratie
 gewoon doorliep.
 
 Op 20 juni gingen de domeinen om en op 22 juni was de winkel
-officieel live op Shopify. Zelfde uitstraling, want het bestaande
-thema bleef behouden, maar dan op een platform dat doorontwikkeld
-wordt.
+officieel live op Shopify. Op het moment van de overstap zag Kevin
+bovendien meteen nieuwe klanten binnenkomen. De uitstraling bleef
+vertrouwd: het Shopify-thema dat een ander bureau jaren eerder voor
+zo'n 4.000 euro had gebouwd, bleef gewoon in gebruik. Dat bureau
+heeft Kevin inmiddels niet meer nodig, want de meeste aanpassingen
+doet hij nu zelf. Alleen bij de lastigere klusjes, zoals het
+wisselen tussen productvarianten, sprongen wij bij.
 
 #+CAPTION: De nieuwe winkel op Shopify: vertrouwde uitstraling voor de klanten, met spaarprogramma en reviews gewoon op hun plek.
 [[https://webwinkelverhuis.nl/panzer-shop-shopify-na.png]]
 
-* Wat dit voor uw winkel betekent
+* Waar Kevin nu staat
 
-Elke oude link van Panzer-ShopNL werkt nog. De spaarpunten van de
-klanten staan in de nieuwe winkel. En het programma dat dit deed is
-sindsdien alleen maar vaker gebruikt: elke nieuwe migratie voegt
-randgevallen toe die we daarna automatisch goed doen.
+Elke oude link van Panzer-ShopNL werkt nog en de spaarpunten van de
+klanten staan in de nieuwe winkel. De winkel is sneller, de support
+is beter dan hij op MijnWebwinkel gewend was, en hij heeft toegang
+tot duizenden apps die er eerst niet waren. Vooral: de meeste
+aanpassingen doet hij nu zelf, zonder op iemand te hoeven wachten.
+De nieuwe winkel zette hij bovendien slim in als
+marketingmoment richting zijn community.
+
+En het programma dat dit deed is sindsdien alleen maar vaker
+gebruikt: elke nieuwe migratie voegt randgevallen toe die we daarna
+automatisch goed doen.
 
 Staat uw winkel ook al jaren "bijna" op het punt te verhuizen?
 [[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
