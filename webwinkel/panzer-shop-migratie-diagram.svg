@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Flow diagram for the Panzer-ShopNL case study: what the migration
+     program moved from MijnWebwinkel via the testshop to Shopify. Same
+     navy/orange palette and stroke style as illustratie-verhuizen.svg. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-label="Diagram: het migratieprogramma leest MijnWebwinkel uit, bouwt een testshop op Shopify en na de DNS-overzet is de winkel verhuisd" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <!-- soft backdrop -->
+  <rect x="0" y="0" width="860" height="400" fill="#ffffff"/>
+
+  <!-- stage 1: MijnWebwinkel, faded like the old shop in the hero -->
+  <g opacity="0.75">
+    <rect x="20" y="60" width="240" height="230" rx="8" fill="#eaf1f8" stroke="#0c2f47" stroke-width="3"/>
+    <path d="M12 60 l10 -26 h236 l10 26 z" fill="#dbe5ef" stroke="#0c2f47" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+  <text x="140" y="52" text-anchor="middle" font-size="17" font-weight="bold" fill="#0c2f47">MijnWebwinkel</text>
+  <g font-size="15" fill="#33414f">
+    <text x="44" y="105">2.400+ producten</text>
+    <text x="44" y="135">3 talen (DE/EN/NL)</text>
+    <text x="44" y="165">categorie&#235;n</text>
+    <text x="44" y="195">klanten + spaarpunten</text>
+    <text x="44" y="225">orderhistorie</text>
+    <text x="44" y="255">nieuwsbrief</text>
+  </g>
+  <text x="140" y="320" text-anchor="middle" font-size="14" fill="#41505f" font-style="italic">draait gewoon door</text>
+  <text x="140" y="340" text-anchor="middle" font-size="14" fill="#41505f" font-style="italic">tijdens de hele migratie</text>
+
+  <!-- arrow 1: the scan -->
+  <path d="M268 175 C 290 150, 310 150, 330 172" fill="none" stroke="#e8590c" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 14"/>
+  <path d="M324 152 l10 22 l-24 -4 z" fill="#e8590c"/>
+  <text x="300" y="132" text-anchor="middle" font-size="14" font-weight="bold" fill="#c44d06">scan</text>
+
+  <!-- stage 2: testshop on Shopify -->
+  <rect x="340" y="60" width="250" height="230" rx="8" fill="#ffffff" stroke="#0c2f47" stroke-width="3"/>
+  <path d="M332 60 l10 -26 h246 l10 26 z" fill="#10456b" stroke="#0c2f47" stroke-width="3" stroke-linejoin="round"/>
+  <text x="465" y="52" text-anchor="middle" font-size="17" font-weight="bold" fill="#ffffff">Testshop op Shopify</text>
+  <g font-size="15" fill="#33414f">
+    <text x="364" y="105">alles overgezet,</text>
+    <text x="364" y="128">zelfvaliderend</text>
+    <text x="364" y="165">vertaalde URL-slugs</text>
+    <text x="364" y="195">~7.200 301-redirects</text>
+    <text x="364" y="225">bestaand thema</text>
+    <text x="364" y="255">wachtwoord-beveiligd</text>
+  </g>
+  <text x="465" y="320" text-anchor="middle" font-size="14" fill="#41505f" font-style="italic">u kijkt rustig mee</text>
+  <text x="465" y="340" text-anchor="middle" font-size="14" fill="#41505f" font-style="italic">naast uw huidige winkel</text>
+
+  <!-- arrow 2: DNS cutover -->
+  <path d="M598 175 C 620 150, 640 150, 660 172" fill="none" stroke="#e8590c" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 14"/>
+  <path d="M654 152 l10 22 l-24 -4 z" fill="#e8590c"/>
+  <text x="616" y="212" text-anchor="middle" font-size="14" font-weight="bold" fill="#c44d06">DNS-overzet</text>
+
+  <!-- stage 3: live shop -->
+  <rect x="670" y="60" width="170" height="230" rx="8" fill="#ffffff" stroke="#0c2f47" stroke-width="3"/>
+  <path d="M662 60 l10 -26 h166 l10 26 z" fill="#e8590c" stroke="#0c2f47" stroke-width="3" stroke-linejoin="round"/>
+  <text x="755" y="52" text-anchor="middle" font-size="17" font-weight="bold" fill="#ffffff">Live</text>
+  <g font-size="15" fill="#33414f">
+    <text x="692" y="105">3 domeinen</text>
+    <text x="692" y="135">3 talen</text>
+    <text x="692" y="165">oude links werken</text>
+    <text x="692" y="195">Google-posities</text>
+    <text x="692" y="218">behouden</text>
+  </g>
+  <text x="755" y="320" text-anchor="middle" font-size="14" fill="#41505f" font-style="italic">downtime:</text>
+  <text x="755" y="340" text-anchor="middle" font-size="14" fill="#41505f" font-style="italic">minuten, geen dagen</text>
+</svg>
