@@ -1,0 +1,155 @@
+#+TITLE: Klantverhaal: Panzer-ShopNL van MijnWebwinkel naar Shopify in drie talen
+#+DATE: 2026-08-01
+#+CATEGORY: migratie
+#+TAGS: mijnwebwinkel, shopify, klantverhaal
+
+Panzer-ShopNL verkoopt militaire schaalmodellen en modelspoor:
+zo'n 2.400 producten, in drie talen (Duits, Engels en Nederlands),
+op drie domeinen. In juni 2026 verhuisde de winkel van MijnWebwinkel
+naar Shopify. Alle producten, vertalingen, klantaccounts,
+spaarpunten en zo'n 7.200 oude URLs gingen mee. Dit is het verhaal
+van die migratie, inclusief de hobbels, want die waren er ook.
+
+* Hoe het begon: een vraag in de groepsapp
+
+Kevin, de eigenaar van Panzer-ShopNL, is een sportmaatje van
+Jappie. Op een dag vroeg hij in de groepsapp of iemand toevallig
+een webshop kon verhuizen. Jappie werkt al jaren aan webtechniek en
+grote datamigraties, dus die reactie was snel gegeven.
+
+Wat begon als een klusje onder sportmaatjes groeide uit tot een
+volledige migratie in fases, en uiteindelijk tot
+webwinkelverhuis.nl zelf. Het programma dat voor Panzer-ShopNL is
+geschreven draait nu voor nieuwe klanten, en het wordt met elke
+migratie beter: iedere winkel legt weer randgevallen bloot die we
+daarna voorgoed afvangen.
+
+* Drie jaar een lege Shopify-winkel
+
+Kevin wilde al langer weg bij MijnWebwinkel. Sterker nog: er stond
+al zo'n drie jaar een Shopify-winkel klaar. Gemigreerd werd er
+nooit, en de reden is herkenbaar voor iedereen met een grotere
+shop: 2.400 producten keer drie talen met de hand overzetten is
+maanden werk, naast een winkel die gewoon doordraait.
+
+Precies daar strandde het steeds. Niet op de wil, maar op de
+omvang.
+
+#+CAPTION: De oude winkel op MijnWebwinkel, vlak voor de verhuizing.
+[[https://webwinkelverhuis.nl/panzer-shop-mijnwebwinkel-voor.png]]
+
+* Wat er allemaal mee moest
+
+De catalogus was nog maar het begin. Uiteindelijk verhuisde dit
+allemaal:
+
+- 2.400+ producten met titel, beschrijving, prijs en SEO-velden, in
+  drie talen
+- alle productafbeeldingen
+- de volledige categorieboom als Shopify-collections, inclusief
+  producten die in meerdere categorieën tegelijk zitten
+- klantaccounts met adressen en spaarpunt-saldi
+- de nieuwsbrief-inschrijvingen
+- de orderhistorie, die er op Kevins verzoek later alsnog bij kwam
+
+Op Kevins verzoek ging het in fases: eerst de producten, rustig
+testen in een afgeschermde testshop, dan pas de klantdata, en pas
+daarna de echte overstap. De oude winkel bleef intussen gewoon
+verkopen.
+
+#+CAPTION: Zo werkt de migratie: het programma leest de oude winkel uit, bouwt een testshop op Shopify, en pas als alles klopt volgt de DNS-overzet.
+[[https://webwinkelverhuis.nl/panzer-shop-migratie-diagram.svg]]
+
+* SEO was een harde eis, en die erfenis krijgt nu iedereen
+
+Vanaf het allereerste gesprek was Kevin er duidelijk over: de
+Google-posities mochten niet wegzakken. Zijn winkel wordt gevonden
+op duizenden product-pagina's in drie talen, en dat verkeer is
+omzet.
+
+Daarom genereerde het programma voor alle ~7.200 oude URLs een
+301-redirect naar de juiste nieuwe pagina. En de nieuwe URLs werden
+geen productnummers, maar beschrijvende slugs met de producttitel
+erin, per taal vertaald. Waarom dat zoveel uitmaakt leest u in
+[[https://webwinkelverhuis.nl/blog/waarom-de-meeste-mijnwebwinkel-migraties-hun-google-posities-verliezen.html][ons stuk over Google-posities bij migraties]].
+
+Die eis van Kevin is in het programma blijven zitten. Elke migratie
+die we sindsdien doen krijgt automatisch dezelfde behandeling:
+volledige redirect-dekking en vertaalde, beschrijvende URLs. Wat
+voor hem maatwerk was, is nu de standaard.
+
+* Grote schoonmaak in één keer
+
+Een maand na de livegang kwam er nog een vraag die typerend is voor
+zo'n grote catalogus. In de oude winkel zaten jaren aan kleine
+slordigheden: automatische vertalingen die "Spoorbreedte" schreven
+waar "Spoor" hoorde, "Beeldjes" waar de modelbouwwereld "figuren"
+zegt, en oude varianten van de winkelnaam door de teksten heen.
+
+Met de hand corrigeer je dat niet over 2.400 producten in drie
+talen. Via de Shopify-API wel: één doorloop over de hele catalogus,
+en alle teksten waren in één keer consistent. Hoe dat werkt staat
+in [[https://webwinkelverhuis.nl/blog/duizenden-shopify-producten-in-bulk-aanpassen-zonder-brokken.html][ons stuk over bulk-aanpassingen in Shopify]].
+
+* De overstap zelf, eerlijk verteld
+
+De technische cutover, domeinen omzetten en e-mail verhuizen, is
+het spannendste stuk van elke migratie. We zochten elke stap vooraf
+grondig uit, maar een domeinverhuizing kent haar verrassingen pas
+op het moment zelf: wat de oude registrar precies doet, zie je pas
+als de overdracht echt loopt. En gaat het dan mis, dan is de winkel
+plat, voor iedereen. Precies daarom wilt u dit laten doen door
+iemand die het vaker heeft gedaan.
+
+Ook hier ging niet alles in één keer vlekkeloos, en dat vertellen
+we liever eerlijk. Bij de verhuizing van het .nl-domein zette de
+oude registrar een paar uur een parkeerpagina neer, en op het
+.net-domein ontstond bij de cutover een redirect-loop die na
+zeventien minuten was opgelost.
+
+Eén fout kwam echt bij ons vandaan: bij het overzetten van de
+klantaccounts werden alle klanten automatisch ingeschreven op de
+nieuwsbrief, inclusief een flinke berg slapende accounts van jaren
+terug. Dat was niet de bedoeling en daar hebben we Kevin ruiterlijk
+onze excuses voor aangeboden. Geheel los daarvan, en het staat er
+vast volledig buiten, zag Kevin op het moment van de overstap
+ineens opvallend veel nieuwe klanten binnenkomen. Dat zal aan zijn
+eigen keurige lanceercampagne op social media hebben gelegen.
+
+Het punt is niet dat zulke momenten nooit voorkomen; elke migratie
+heeft er een paar. Het punt is wie er bovenop zit als het gebeurt.
+De spanning zat bij ons, de winkel bleef verkopen, en Kevin hoefde
+er niets voor te doen. Die zat er middenin het traject zelfs
+anderhalve week tussenuit, zonder laptop, terwijl de migratie
+gewoon doorliep.
+
+Op 20 juni gingen de domeinen om en op 22 juni was de winkel
+officieel live op Shopify. De uitstraling bleef vertrouwd: het
+Shopify-thema dat een ander bureau jaren eerder voor enkele
+duizenden euro's had gebouwd, bleef gewoon in gebruik. Dat bureau
+heeft Kevin inmiddels niet meer nodig, want de meeste aanpassingen
+doet hij nu zelf. Alleen bij de lastigere klusjes, zoals het
+wisselen tussen productvarianten, sprongen wij bij.
+
+#+CAPTION: De nieuwe winkel op Shopify: vertrouwde uitstraling voor de klanten, met spaarprogramma en reviews gewoon op hun plek.
+[[https://webwinkelverhuis.nl/panzer-shop-shopify-na.png]]
+
+* Waar Kevin nu staat
+
+Elke oude link van Panzer-ShopNL werkt nog en de spaarpunten van de
+klanten staan in de nieuwe winkel. De winkel is sneller, de support
+is beter dan hij op MijnWebwinkel gewend was, en hij heeft toegang
+tot duizenden apps die er eerst niet waren. Vooral: de meeste
+aanpassingen doet hij nu zelf, zonder op iemand te hoeven wachten.
+De nieuwe winkel zette hij bovendien slim in als
+marketingmoment richting zijn community.
+
+En het programma dat dit deed is sindsdien alleen maar vaker
+gebruikt: elke nieuwe migratie voegt randgevallen toe die we daarna
+automatisch goed doen.
+
+Staat uw winkel ook al jaren "bijna" op het punt te verhuizen?
+[[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
+of bekijk eerst
+[[https://webwinkelverhuis.nl/prijzen.html][wat een migratie kost]].
+U betaalt pas na een geslaagde migratie.

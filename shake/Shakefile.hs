@@ -52,6 +52,7 @@ import WebwinkelTemplates
   , lightspeedMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
+  , relativizeWebwinkelContentImages
   )
 import Slug (toSlug)
 import Templates
@@ -518,15 +519,17 @@ writeHtmlFile path html = do
   Dir.createDirectoryIfMissing True (takeDirectory path)
   TLIO.writeFile path (renderHtml html)
 
--- | Write a webwinkelverhuis.nl page, refusing to emit one that links a raw
--- calendar.app.google URL. Scheduling links must use the
+-- | Write a webwinkelverhuis.nl page, first rewriting absolute content-image
+-- sources to root-relative ones ('relativizeWebwinkelContentImages') so they
+-- load on the local serve preview, and refusing to emit a page that links a
+-- raw calendar.app.google URL. Scheduling links must use the
 -- https://meet.jappiesoftware.com redirect ('meetLink' in
 -- 'WebwinkelTemplates'): a raw link in blog content once routed visitors to
 -- the wrong calendar, and the template test suite cannot see rendered
 -- content. Crashing the build here beats publishing the bad link silently.
 writeWebwinkelHtmlFile :: FilePath -> Html -> IO ()
 writeWebwinkelHtmlFile path html = do
-  let rendered = renderHtml html
+  let rendered = relativizeWebwinkelContentImages (renderHtml html)
   if TL.pack "calendar.app.google" `TL.isInfixOf` rendered
     then error (path <> " links a raw calendar.app.google URL; use https://meet.jappiesoftware.com instead")
     else do

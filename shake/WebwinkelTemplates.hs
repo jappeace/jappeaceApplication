@@ -17,9 +17,11 @@ module WebwinkelTemplates
   , lightspeedMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
+  , relativizeWebwinkelContentImages
   ) where
 
 import Data.Text (Text)
+import qualified Data.Text.Lazy as TL
 import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -54,6 +56,19 @@ import PageChrome
 -- | Site-default social-share image, hosted on this domain.
 webwinkelOgImage :: Text
 webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
+
+-- | Rewrite absolute webwinkelverhuis.nl image sources in a rendered page to
+-- root-relative ones, so images load on the local `shake-blog serve` preview
+-- as well as in production.
+--
+-- Decision: org content must reference images by absolute production URL,
+-- because pandoc's org reader turns a root-relative @[[/x.png]]@ link into a
+-- broken @file:///x.png@; this pass restores same-origin loading afterwards.
+-- Only @src=@ attributes are rewritten: @href=@ is left alone so canonical
+-- link tags and social-share URLs stay absolute for SEO.
+relativizeWebwinkelContentImages :: TL.Text -> TL.Text
+relativizeWebwinkelContentImages =
+  TL.replace "src=\"https://webwinkelverhuis.nl/" "src=\"/"
 
 -- | Organization structured data for the webwinkelverhuis.nl brand. Presents
 -- Webwinkelverhuis as its own entity (own name, url, email, logo) to Google and
@@ -268,15 +283,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.strong "DNS-overzet"
           " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
-    -- Recent werk
-    H.section ! A.class_ "results" $ do
-      H.h2 "Recent werk"
-      H.div ! A.class_ "testimonials" $ do
-        H.blockquote $
-          H.p $ do
-            H.strong "Panzer-ShopNL"
-            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat elke oude link bleef werken en de opgebouwde SEO meeverhuisde. " :: Text)
-            H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
+    recentWerkSection
 
     -- Why us
     H.section ! A.class_ "results" $ do
@@ -377,6 +384,22 @@ mijnwebwinkelWhatsappMessage = "Hallo, ik heb een vraag over de migratie van mij
 -- and lists the follow-up services we offer after the migration (mass edits,
 -- theme work, integrations). Marked noindex: it is a utility page, not part of
 -- the marketing funnel.
+-- | The shared "Recent werk" proof section: the Panzer-ShopNL migration,
+-- linking to both the case-study blog post and the live shop. Shown on the
+-- index page and the MijnWebwinkel migration page.
+recentWerkSection :: Html
+recentWerkSection =
+  H.section ! A.class_ "results" $ do
+    H.h2 "Recent werk"
+    H.div ! A.class_ "testimonials" $ do
+      H.blockquote $
+        H.p $ do
+          H.strong "Panzer-ShopNL"
+          H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat elke oude link bleef werken en de opgebouwde SEO meeverhuisde. " :: Text)
+          H.a ! A.href "/blog/klantverhaal-panzer-shopnl-van-mijnwebwinkel-naar-shopify-in-drie-talen.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
+          H.preEscapedToHtml (" &middot; " :: Text)
+          H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
+
 appPage :: Html
 appPage = webwinkelBaseTemplate appMeta $ do
   H.main $ do
@@ -640,14 +663,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Recent werk: proof before price, so the number lands on trust.
-    H.section ! A.class_ "results" $ do
-      H.h2 "Recent werk"
-      H.div ! A.class_ "testimonials" $ do
-        H.blockquote $
-          H.p $ do
-            H.strong "Panzer-ShopNL"
-            H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat elke oude link bleef werken en de opgebouwde SEO meeverhuisde. " :: Text)
-            H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
+    recentWerkSection
 
     -- Pricing
     H.section ! A.class_ "engagement" ! A.id "pricing" $ do
