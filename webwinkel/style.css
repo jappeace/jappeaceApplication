@@ -212,6 +212,236 @@ h2 {
 .audit li {
   margin-bottom: 0.4em;
 }
+.audit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 2em;
+  align-items: center;
+}
+@media (max-width: 700px) {
+  .audit-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animated scan panel: bars fill one after another and land on a
+   plain-language result. All rows share ONE 12s infinite timeline; the
+   per-row stagger is encoded in the keyframe percentages (scan-vullen-N /
+   scan-klaar-N, selected via nth-child) rather than animation-delay,
+   because a delay shifts a row's phase on every loop. This way the cycle
+   ends with all bars draining together, then refilling one by one. */
+.scan-demo {
+  background: #fff;
+  border: 1px solid #d5e0eb;
+  border-radius: 8px;
+  padding: 1.25em;
+}
+.scan-demo-kop {
+  font-weight: 600;
+  color: #0c2f47;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.scan-demo-kop::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e8590c;
+  animation: scan-puls 1.6s ease-in-out infinite;
+}
+.scan-demo-lijst {
+  list-style: none;
+  margin: 1.2em 0 0;
+  padding: 0;
+}
+.scan-item {
+  margin-bottom: 1em;
+}
+.scan-item-rij {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.25em;
+  font-size: 0.8em;
+  color: #33414f;
+}
+.scan-resultaat {
+  color: #10456b;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  animation: scan-klaar-0 12s linear infinite;
+}
+.scan-balk {
+  height: 8px;
+  background: #eaf1f8;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.35em;
+}
+.scan-balk-vulling {
+  height: 100%;
+  width: 0;
+  background: #e8590c;
+  border-radius: 4px;
+  animation: scan-vullen-0 12s linear infinite;
+}
+.scan-item:nth-child(1) .scan-balk-vulling {
+  animation-name: scan-vullen-0;
+}
+.scan-item:nth-child(1) .scan-resultaat {
+  animation-name: scan-klaar-0;
+}
+@keyframes scan-vullen-0 {
+  0% { width: 0; }
+  0% { width: 0; }
+  10% { width: 100%; }
+  95% { width: 100%; }
+  98% { width: 0; }
+  100% { width: 0; }
+}
+@keyframes scan-klaar-0 {
+  0% { opacity: 0; }
+  9% { opacity: 0; }
+  11% { opacity: 1; }
+  94% { opacity: 1; }
+  97% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.scan-item:nth-child(2) .scan-balk-vulling {
+  animation-name: scan-vullen-1;
+}
+.scan-item:nth-child(2) .scan-resultaat {
+  animation-name: scan-klaar-1;
+}
+@keyframes scan-vullen-1 {
+  0% { width: 0; }
+  11% { width: 0; }
+  21% { width: 100%; }
+  95% { width: 100%; }
+  98% { width: 0; }
+  100% { width: 0; }
+}
+@keyframes scan-klaar-1 {
+  0% { opacity: 0; }
+  20% { opacity: 0; }
+  22% { opacity: 1; }
+  94% { opacity: 1; }
+  97% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.scan-item:nth-child(3) .scan-balk-vulling {
+  animation-name: scan-vullen-2;
+}
+.scan-item:nth-child(3) .scan-resultaat {
+  animation-name: scan-klaar-2;
+}
+@keyframes scan-vullen-2 {
+  0% { width: 0; }
+  22% { width: 0; }
+  32% { width: 100%; }
+  95% { width: 100%; }
+  98% { width: 0; }
+  100% { width: 0; }
+}
+@keyframes scan-klaar-2 {
+  0% { opacity: 0; }
+  31% { opacity: 0; }
+  33% { opacity: 1; }
+  94% { opacity: 1; }
+  97% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.scan-item:nth-child(4) .scan-balk-vulling {
+  animation-name: scan-vullen-3;
+}
+.scan-item:nth-child(4) .scan-resultaat {
+  animation-name: scan-klaar-3;
+}
+@keyframes scan-vullen-3 {
+  0% { width: 0; }
+  33% { width: 0; }
+  43% { width: 100%; }
+  95% { width: 100%; }
+  98% { width: 0; }
+  100% { width: 0; }
+}
+@keyframes scan-klaar-3 {
+  0% { opacity: 0; }
+  42% { opacity: 0; }
+  44% { opacity: 1; }
+  94% { opacity: 1; }
+  97% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.scan-item:nth-child(5) .scan-balk-vulling {
+  animation-name: scan-vullen-4;
+}
+.scan-item:nth-child(5) .scan-resultaat {
+  animation-name: scan-klaar-4;
+}
+@keyframes scan-vullen-4 {
+  0% { width: 0; }
+  44% { width: 0; }
+  54% { width: 100%; }
+  95% { width: 100%; }
+  98% { width: 0; }
+  100% { width: 0; }
+}
+@keyframes scan-klaar-4 {
+  0% { opacity: 0; }
+  53% { opacity: 0; }
+  55% { opacity: 1; }
+  94% { opacity: 1; }
+  97% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.scan-item:nth-child(6) .scan-balk-vulling {
+  animation-name: scan-vullen-5;
+}
+.scan-item:nth-child(6) .scan-resultaat {
+  animation-name: scan-klaar-5;
+}
+@keyframes scan-vullen-5 {
+  0% { width: 0; }
+  55% { width: 0; }
+  65% { width: 100%; }
+  95% { width: 100%; }
+  98% { width: 0; }
+  100% { width: 0; }
+}
+@keyframes scan-klaar-5 {
+  0% { opacity: 0; }
+  64% { opacity: 0; }
+  66% { opacity: 1; }
+  94% { opacity: 1; }
+  97% { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes scan-puls {
+  0% { opacity: 1; }
+  50% { opacity: 0.35; }
+  100% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scan-balk-vulling {
+    animation: none;
+    width: 100%;
+  }
+  .scan-resultaat {
+    animation: none;
+    opacity: 1;
+  }
+  .scan-demo-kop::before {
+    animation: none;
+  }
+}
 
 /* Results section lists */
 .results ul {

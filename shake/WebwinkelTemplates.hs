@@ -277,16 +277,18 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
     -- How it works
     H.section ! A.class_ "audit" $ do
       H.h2 "Hoe het werkt"
-      H.ol $ do
-        H.li $ do
-          H.strong "Scan"
-          " \8212 Ons programma leest uw huidige webshop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
-        H.li $ do
-          H.strong "Wennen"
-          " \8212 De testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
-        H.li $ do
-          H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+      H.div ! A.class_ "audit-grid" $ do
+        H.ol $ do
+          H.li $ do
+            H.strong "Scan"
+            " \8212 Ons programma leest uw huidige webshop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+          H.li $ do
+            H.strong "Wennen"
+            " \8212 De testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
+          H.li $ do
+            H.strong "DNS-overzet"
+            " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+        scanDemo
 
     recentWerkSection
 
@@ -414,6 +416,59 @@ mijnwebwinkelWhatsappMessage = "Hallo, ik heb een vraag over de migratie van mij
 -- and lists the follow-up services we offer after the migration (mass edits,
 -- theme work, integrations). Marked noindex: it is a utility page, not part of
 -- the marketing funnel.
+-- | One line of the animated scan panel: what fills the bar, and what the
+-- visitor "krijgt" when the check lands.
+data ScanStap = ScanStap
+  { scanStapLabel :: Text
+  , scanStapResultaat :: Text
+  }
+
+-- | The steps the scan panel animates through, in the vocabulary of a
+-- non-technical shop owner: what would THEY worry about in a move? Products,
+-- photos, customers, loyalty points, and whether Google still finds them.
+-- Deliberately no "redirects", "slugs" or other jargon.
+scanStappen :: [ScanStap]
+scanStappen =
+  [ ScanStap "Producten" "2.400 ingepakt"
+  , ScanStap "Foto's en teksten" "alles mee"
+  , ScanStap "Klantaccounts" "iedereen mee"
+  , ScanStap "Spaarpunten" "saldo klopt"
+  , ScanStap "Linkvertaling voor Google" "werkt door"
+  , ScanStap "Alles nalopen" "niets vergeten"
+  ]
+
+-- | The animated "scan panel" next to the how-it-works steps: a stylised view
+-- of the migration program at work, as progress bars that fill one after
+-- another and land on a plain-language result. Pure CSS (per-row keyframes in
+-- style.css selected via @nth-child@, all sharing one timeline so the cycle
+-- ends with every bar draining together before refilling one by one), and
+-- hidden from screen readers because the steps text next to it carries the
+-- same information.
+--
+-- Decision: an animated illustration instead of a recording of the real tool.
+-- The migration program is a CLI that only ever runs on our own machine, so a
+-- capture would show the customer nothing recognisable; this panel shows the
+-- same work in the customer's own vocabulary (Gemini-feedback: show, don't
+-- tell).
+scanDemo :: Html
+scanDemo =
+  H.div ! A.class_ "scan-demo" $ do
+    H.div ! customAttribute "aria-hidden" "true" $ do
+      H.div ! A.class_ "scan-demo-kop" $ "Uw webshop verhuist"
+      H.ul ! A.class_ "scan-demo-lijst" $
+        mapM_ scanDemoItem scanStappen
+
+-- | One animated row of the scan panel; the row's position in the list picks
+-- its keyframes via @nth-child@ in style.css, which staggers the fills.
+scanDemoItem :: ScanStap -> Html
+scanDemoItem stap =
+  H.li ! A.class_ "scan-item" $ do
+    H.div ! A.class_ "scan-item-rij" $ do
+      H.span $ toHtml (scanStapLabel stap)
+      H.span ! A.class_ "scan-resultaat" $ toHtml (scanStapResultaat stap <> " \10003")
+    H.div ! A.class_ "scan-balk" $
+      H.div ! A.class_ "scan-balk-vulling" $ mempty
+
 -- | The shared "Recent werk" proof section: the Panzer-ShopNL migration,
 -- linking to both the case-study blog post and the live shop. Shown on the
 -- index page and the MijnWebwinkel migration page.
