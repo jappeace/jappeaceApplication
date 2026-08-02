@@ -858,7 +858,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Voorraad & prijzen"
-          H.p "Voorraadinformatie en staffelprijzen worden meegenomen. Per-variant prijzen en voorraadbeheer werken direct in Shopify."
+          H.p "Voorraadinformatie en staffelprijzen worden meegenomen. Per-variant prijzen en voorraadbeheer werken direct in uw nieuwe shop."
 
     -- How it works
     H.section ! A.class_ "audit" $ do
@@ -918,7 +918,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar uw nieuwe shop. Inclusief prijsverschillen per maat of kleur."
         H.li ! A.class_ "card" $ do
           H.h3 "Vertalingen & URL-slugs"
-          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via de offici&euml;le Shopify API. Inclusief vertaalde URL-slugs." :: Text)
+          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via de offici&euml;le API van uw doelplatform. Inclusief vertaalde URL-slugs." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Klantdata & accounts"
           H.p "Klantaccounts en bestelgeschiedenis worden overgezet zodat uw klanten direct verder kunnen op de nieuwe shop."
@@ -1011,7 +1011,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Voorraad & prijzen"
-          H.p "Voorraadbeheer, staffelprijzen en per-variant pricing worden correct overgezet. Uw voorraadniveaus kloppen direct in Shopify."
+          H.p "Voorraadbeheer, staffelprijzen en per-variant pricing worden correct overgezet. Uw voorraadniveaus kloppen direct in uw nieuwe shop."
 
     -- How it works
     H.section ! A.class_ "audit" $ do
@@ -1069,7 +1069,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar uw nieuwe shop. Inclusief prijsverschillen per maat of kleur."
         H.li ! A.class_ "card" $ do
           H.h3 "Vertalingen & URL-slugs"
-          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via de offici&euml;le Shopify API. Inclusief vertaalde URL-slugs." :: Text)
+          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via de offici&euml;le API van uw doelplatform. Inclusief vertaalde URL-slugs." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Klantdata & accounts"
           H.p "Klantaccounts en bestelgeschiedenis worden overgezet zodat uw klanten direct verder kunnen op de nieuwe shop."
@@ -1087,14 +1087,14 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
       { pageMetaTitle       = "Ontsnap Lightspeed \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd lightspeedFaq <> serviceJsonLd
           "Lightspeed naar Shopify migratie"
-          "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, vertalingen, afbeeldingen, voorraad en SEO-redirects."
+          "Geautomatiseerde migratie van Lightspeed naar Shopify, WooCommerce of een ander platform: producten, vertalingen, afbeeldingen, voorraad en SEO-redirects."
           "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       }
 
