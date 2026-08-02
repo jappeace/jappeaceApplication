@@ -978,6 +978,12 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
         H.blockquote $ do
           H.p $ H.preEscapedToHtml ("&bdquo;7 jaar een CCV shop gehad, de webshop is zwaar verouderd, zowel in thema&apos;s als functionaliteiten, er wordt bijna niks geupdate. Mijn omzet en conversie is door het dak gegaan sinds ik Shopify gebruik.&rdquo;" :: Text)
           H.p $ H.strong "CCV Shop-gebruiker op Trustpilot, mei 2025"
+      -- Decision: het groeiverhaal leidt hier, niet verval-retoriek. Uit
+      -- de leave-reden-scan (jappiesoft research, 2 aug 2026): de
+      -- grootste groep CCV-vertrekkers groeit uit het platform (top-
+      -- bestemming is een custom cart, 13 van 28), dus de pagina spreekt
+      -- ambitie aan in plaats van angst.
+      H.p $ H.preEscapedToHtml ("De meeste winkeliers verlaten CCV Shop niet omdat het kapot is, maar omdat ze eruit groeien: maatwerk of functies die er niet in zitten. Shopify en WooCommerce groeien w&eacute;l met u mee, van extra verkoopkanalen en talen tot B2B-maatwerk en duizenden apps. En het lastigste deel van uitgroeien, alles heelhuids overzetten, is precies ons vak." :: Text)
       H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (": u betaalt pas na succesvolle migratie" :: Text)
