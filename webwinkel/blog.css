@@ -80,13 +80,13 @@
 /* Article page */
 .blog-article article {
   background: #ffffffd9;
-  padding: 1em 2em;
+  padding: 2em 3em;
   border: 1px solid #dbe5ef;
   border-radius: 6px;
 }
 
 .blog-article {
-  max-width: 48rem;
+  max-width: 56rem;
   margin: 0 auto;
   padding: 2rem 1.5rem;
 }
@@ -111,6 +111,28 @@
 
 .entry-content p {
   margin-bottom: 1rem;
+}
+
+/* The global reset in style.css strips ul/ol padding, which pushes the
+   outside-positioned bullet markers out of the article box. Restore it. */
+.entry-content ul,
+.entry-content ol {
+  padding-left: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.entry-content li {
+  margin-bottom: 0.4rem;
+}
+
+.entry-content figure {
+  margin: 1.5rem 0;
+}
+
+.entry-content figcaption {
+  color: #6a7886;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
 }
 
 .entry-content a {
@@ -163,4 +185,14 @@
 
 .article-footer a:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .blog-article {
+    padding: 1rem 0.75rem;
+  }
+
+  .blog-article article {
+    padding: 1.25em 1.25em;
+  }
 }
