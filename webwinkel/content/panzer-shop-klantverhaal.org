@@ -63,7 +63,7 @@ verkopen.
 #+CAPTION: Zo werkt de migratie: het programma leest de oude winkel uit, bouwt een testshop op Shopify, en pas als alles klopt volgt de DNS-overzet.
 [[https://webwinkelverhuis.nl/panzer-shop-migratie-diagram.svg]]
 
-* SEO was een harde eis, en die erfenis krijgt nu iedereen
+* SEO was een harde eis
 
 Vanaf het allereerste gesprek was Kevin er duidelijk over: de
 Google-posities mochten niet wegzakken. Zijn winkel wordt gevonden
