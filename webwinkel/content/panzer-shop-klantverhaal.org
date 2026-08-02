@@ -10,18 +10,18 @@ naar Shopify. Alle producten, vertalingen, klantaccounts,
 spaarpunten en zo'n 7.200 oude URLs gingen mee. Dit is het verhaal
 van die migratie, inclusief de hobbels, want die waren er ook.
 
-* Hoe het begon: een vraag in de groepsapp
+* Een vraag in de groepsapp
 
 Kevin, de eigenaar van Panzer-ShopNL, is een sportmaatje van
 Jappie. Op een dag vroeg hij in de groepsapp of iemand toevallig
-een webshop kon verhuizen. Jappie werkt al jaren aan webtechniek en
+een webshop kon verhuizen. [[https://jappiesoftware.com/][Jappie]] werkt al jaren aan webtechniek en
 grote datamigraties, dus die reactie was snel gegeven.
 
 Wat begon als een klusje onder sportmaatjes groeide uit tot een
 volledige migratie in fases, en uiteindelijk tot
-webwinkelverhuis.nl zelf. Het programma dat voor Panzer-ShopNL is
+[[https://webwinkelverhuis.nl/][webwinkelverhuis.nl]] zelf. Het programma dat voor [[https://panzer-shop.nl/][Panzer-ShopNL]] is
 geschreven draait nu voor nieuwe klanten, en het wordt met elke
-migratie beter: iedere winkel legt weer randgevallen bloot die we
+migratie beter: Iedere winkel legt weer randgevallen bloot die we
 daarna voorgoed afvangen.
 
 * Drie jaar een lege Shopify-winkel
@@ -30,7 +30,8 @@ Kevin wilde al langer weg bij MijnWebwinkel. Sterker nog: er stond
 al zo'n drie jaar een Shopify-winkel klaar. Gemigreerd werd er
 nooit, en de reden is herkenbaar voor iedereen met een grotere
 shop: 2.400 producten keer drie talen met de hand overzetten is
-maanden werk, naast een winkel die gewoon doordraait.
+maanden werk als je dit met de hand doet.
+Daarnaast hoort de winkel gewoon door te draaien.
 
 Precies daar strandde het steeds. Niet op de wil, maar op de
 omvang.
@@ -52,9 +53,11 @@ allemaal:
 - de nieuwsbrief-inschrijvingen
 - de orderhistorie, die er op Kevins verzoek later alsnog bij kwam
 
-Op Kevins verzoek ging het in fases: eerst de producten, rustig
-testen in een afgeschermde testshop, dan pas de klantdata, en pas
-daarna de echte overstap. De oude winkel bleef intussen gewoon
+Het process gebeurde in fasess. Eerst de producten, rustig
+testen in een afgeschermde testshop.
+Vlak voor de overgang de klantdata om het verschil klein te houden.
+Tot slot de echte overstap. 
+Terwijl de migratie bezig was bleef de oude winkel bleef intussen gewoon
 verkopen.
 
 #+CAPTION: Zo werkt de migratie: het programma leest de oude winkel uit, bouwt een testshop op Shopify, en pas als alles klopt volgt de DNS-overzet.
@@ -68,8 +71,12 @@ op duizenden product-pagina's in drie talen, en dat verkeer is
 omzet.
 
 Daarom genereerde het programma voor alle ~7.200 oude URLs een
-301-redirect naar de juiste nieuwe pagina. En de nieuwe URLs werden
-geen productnummers, maar beschrijvende slugs met de producttitel
+301-redirect naar de juiste nieuwe pagina.
+Deze zijn gevonden door zorvuldige inspectie van het mijn web winkel systeem.
+We hebben bijvoorbeeld het mysterie van de artikel codes opgelost
+in de URLs.
+De nieuwe URLs werden geen productnummers,
+maar beschrijvende slugs met de producttitel
 erin, per taal vertaald. Waarom dat zoveel uitmaakt leest u in
 [[https://webwinkelverhuis.nl/blog/waarom-de-meeste-mijnwebwinkel-migraties-hun-google-posities-verliezen.html][ons stuk over Google-posities bij migraties]].
 
@@ -91,7 +98,7 @@ talen. Via de Shopify-API wel: één doorloop over de hele catalogus,
 en alle teksten waren in één keer consistent. Hoe dat werkt staat
 in [[https://webwinkelverhuis.nl/blog/duizenden-shopify-producten-in-bulk-aanpassen-zonder-brokken.html][ons stuk over bulk-aanpassingen in Shopify]].
 
-* De overstap zelf, eerlijk verteld
+* De overstap zelf
 
 De technische cutover, domeinen omzetten en e-mail verhuizen, is
 het spannendste stuk van elke migratie. We zochten elke stap vooraf
@@ -101,13 +108,15 @@ als de overdracht echt loopt. En gaat het dan mis, dan is de winkel
 plat, voor iedereen. Precies daarom wilt u dit laten doen door
 iemand die het vaker heeft gedaan.
 
-Ook hier ging niet alles in één keer vlekkeloos, en dat vertellen
-we liever eerlijk. Bij de verhuizing van het .nl-domein zette de
+Ook hier ging niet alles in één keer vlekkeloos.
+Bij de verhuizing van het .nl-domein zette de
 oude registrar een paar uur een parkeerpagina neer, en op het
 .net-domein ontstond bij de cutover een redirect-loop die na
 zeventien minuten was opgelost.
+Dit zijn stressvolle tijden voor ons, maar we zitten er boven op!
 
-Eén fout kwam echt bij ons vandaan: bij het overzetten van de
+Eén echte fout kwam echt bij ons vandaan:
+Bij het overzetten van de
 klantaccounts werden alle klanten automatisch ingeschreven op de
 nieuwsbrief, inclusief een flinke berg slapende accounts van jaren
 terug. Dat was niet de bedoeling en daar hebben we Kevin ruiterlijk
