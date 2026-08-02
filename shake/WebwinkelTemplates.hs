@@ -391,7 +391,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
                 ! A.alt "Hangslot: beperkte mogelijkheden"
                 ! A.width "56" ! A.height "56"
           H.h3 "CCV Shop"
-          H.p $ H.preEscapedToHtml ("Beperkte features en achterblijvende ontwikkeling. Wij zetten uw producten, talen, klantaccounts en voorraad volledig geautomatiseerd over." :: Text)
+          H.p $ H.preEscapedToHtml ("Steeds duurder, terwijl het winkelbestand krimpt en het zwaartepunt na de Fiserv-overname bij betalen en kassa ligt. Wij zetten uw producten, talen, klantaccounts en voorraad volledig geautomatiseerd over." :: Text)
           H.a ! A.href "/migrate-ccvshop.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
 
     -- Pricing: listed openly. Hiding the price reads as evasive to a
@@ -912,13 +912,19 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- Hero
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap CCV Shop"
-      -- Decision: hero benoemt CCV-specifieke pijn (prijsstijgingen,
-      -- stilstand, Fiserv-overname) in plaats van de generieke
-      -- MWW-tekst. Bronnen en citaten staan in
+      -- Decision: hero benoemt CCV-specifieke pijn (prijsstijging,
+      -- krimpend winkelbestand, Fiserv-zwaartepunt) in plaats van de
+      -- generieke MWW-tekst. Bronnen in
       -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
-      -- De Fiserv-twijfel is bewust als vraag geformuleerd: er is geen
-      -- EOL-aankondiging, dus hard stellen mag niet.
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("CCV Shop werd sinds 2023 bijna 20% duurder, terwijl thema&apos;s en functies al jaren stilstaan. En sinds de Amerikaanse betaalreus Fiserv CCV overnam, is het de vraag hoeveel prioriteit de webshopsoftware nog krijgt. Wij verhuizen uw complete shop geautomatiseerd naar Shopify, WooCommerce of een ander platform van uw keuze: zonder dataverlies, met zo min mogelijk downtime." :: Text)
+      -- "Thema's en functies staan al jaren stil" stond hier tot 2 aug
+      -- 2026 en is verwijderd: directe metingen weerspreken het (eigen
+      -- nieuwspagina meldt samengestelde producten en thema-updates in
+      -- apr 2026 en een bol.com-koppeling in mrt 2026; de API-SDK kreeg
+      -- in 2026 maandelijkse releases). Een CCV-winkelier die die
+      -- functies gebruikt, prikt daar meteen doorheen. Wat blijft is
+      -- wat we kunnen aantonen; de Fiserv-passage blijft bewust een
+      -- constatering over zwaartepunt, geen EOL-voorspelling.
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("CCV Shop werd sinds 2023 bijna 20% duurder, en het aantal winkels op het platform daalde sinds de piek in 2022 met ruim een kwart. Er wordt nog aan gewerkt, maar sinds de Amerikaanse betaalreus Fiserv CCV overnam ligt het zwaartepunt bij betalen en kassa: uw webshop is daar &eacute;&eacute;n product naast. Wij verhuizen uw complete shop geautomatiseerd naar Shopify, WooCommerce of een ander platform van uw keuze: zonder dataverlies, met zo min mogelijk downtime." :: Text)
       H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
