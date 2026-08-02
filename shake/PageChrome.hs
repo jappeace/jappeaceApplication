@@ -205,9 +205,9 @@ organizationJsonLd =
       , "}"
       ]
 
--- | Service structured data for a migration landing page. Makes the priced
--- service offering itself eligible for rich results, complementing the FAQ
--- markup already present on these pages.
+-- | Service structured data for a migration landing page: describes the
+-- priced service offering to crawlers, complementing the FAQ markup already
+-- present on these pages.
 serviceJsonLd :: Text -> Text -> Text -> Html
 serviceJsonLd serviceName serviceDescription pageUrl =
   H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml serviceJson
@@ -237,7 +237,9 @@ serviceJsonLd serviceName serviceDescription pageUrl =
 -- the only options were writing URLs out as dode tekst or keeping a second,
 -- drifting HTML copy of every list. The same markup now feeds both the
 -- visible list and the JSON-LD; Google's FAQ rich-result documentation
--- explicitly allows anchors and simple markup in answer text.
+-- allowed anchors and simple markup in answer text before Google removed
+-- that documentation in June 2026, and schema.org places no such
+-- restriction, so markup in the JSON-LD answer text stays valid.
 
 -- | A FAQ question: plain text, shared verbatim by the visible @<dt>@ and
 -- the JSON-LD @name@ field. 'IsString' so FAQ lists read as plain literals.
@@ -265,9 +267,14 @@ renderFaqItem (FaqQuestion question, FaqAnswer answer) = do
   H.dt (toHtml question)
   H.dd answer
 
--- | FAQ structured data (JSON-LD) built from question/answer pairs. Makes a
--- page eligible for Google's FAQ rich snippets. Replaces the per-page copies
--- that previously duplicated this builder on every migration landing page.
+-- | FAQ structured data (JSON-LD) built from question/answer pairs. Google
+-- stopped showing FAQ rich results in May 2026 and removed the feature's
+-- documentation in June 2026 (see the changelog on
+-- developers.google.com/search/docs/appearance/structured-data/faqpage), so
+-- this no longer buys a rich snippet there; FAQPage remains valid schema.org
+-- that other search engines and AI crawlers still read. Replaces the
+-- per-page copies that previously duplicated this builder on every migration
+-- landing page.
 faqPageJsonLd :: [(FaqQuestion, FaqAnswer)] -> Html
 faqPageJsonLd entries =
   H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml $ T.concat
