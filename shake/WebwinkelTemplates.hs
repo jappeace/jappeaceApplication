@@ -9,6 +9,7 @@
 module WebwinkelTemplates
   ( webwinkelIndexPage
   , prijzenPage
+  , scanPage
   , webwinkelBlogIndexPage
   , webwinkelArticlePage
   , appPage
@@ -327,6 +328,10 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           -- direct value) and its own offerte button follows once they have a
           -- price on screen.
           H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
+          -- Naast de prijsvraag de twijfelvraag: "is mijn shop eigenlijk
+          -- slecht af?". De gratis scan (/scan.html) beantwoordt die met een
+          -- meting in plaats van een verkooppraatje.
+          H.a ! A.href "/scan.html" ! A.class_ "cta-button-secondary" $ "Beoordeel mijn webshop"
         H.img ! A.class_ "hero-image"
               ! A.src "/illustratie-verhuizen.svg"
               ! A.alt "Illustratie van dozen die van een oude webshop naar een nieuwe verhuizen"
@@ -721,6 +726,51 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       , pageMetaDescription = "Vaste prijzen voor uw webshop-migratie naar Shopify: vanaf \8364\&1.999 inclusief 1.000 producten en 1 taal. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/prijzen.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = mempty
+      }
+
+-- =============================================================================
+-- Webshop-scanner page (scan.html)
+-- =============================================================================
+
+-- | Boot the Elm webshop scanner and forward its analytics port to gtag,
+-- mirroring 'prijsCalculatorInitScript'. The scanner's funnel events
+-- (scanner_started, scanner_klaar, scanner_mislukt, gesprek_knop_klik) land in
+-- Google Analytics alongside the page views. The port is named
+-- scannerAnalyticsEvent because Elm port names are global per program and the
+-- calculator already claims analyticsEvent.
+scannerFormInitScript :: Text
+scannerFormInitScript =
+  "var scannerApp = Elm.ScannerForm.init({node: document.getElementById('webshop-scanner-mount')});"
+    <> "if(scannerApp.ports&&scannerApp.ports.scannerAnalyticsEvent){"
+    <> "scannerApp.ports.scannerAnalyticsEvent.subscribe(function(e){"
+    <> "if(window.gtag){gtag('event', e.name, e.params||{});}"
+    <> "});}"
+
+-- | The "beoordeel mijn webshop" page: an Elm app (elm/src/ScannerForm.elm)
+-- that posts the visitor's shop URL to /api/scan, polls the scan status and
+-- renders the Dutch report with scores, kernmetingen and verbeterpunten. The
+-- scan backend serves the API on the same origin.
+scanPage :: Html
+scanPage = webwinkelBaseTemplate scanMeta $
+  H.main $ do
+    H.section ! A.class_ "hero" $ do
+      H.h1 "Beoordeel mijn webshop"
+      H.p ! A.class_ "subtitle" $ "Vul het adres van uw webshop in. Wij meten hem door en u ziet binnen enkele minuten waar u staat: snelheid, vindbaarheid en de punten die beter kunnen."
+    H.section ! A.class_ "engagement" $ do
+      H.div ! A.id "webshop-scanner-mount" $ mempty
+      H.noscript $ H.p "De beoordeling heeft JavaScript nodig. Liever direct contact? Plan een gratis gesprek via meet.jappiesoftware.com."
+    H.script ! A.src "/scanner-form.js" $ mempty
+    H.script $ H.preEscapedToHtml scannerFormInitScript
+  where
+    scanMeta :: PageMeta
+    scanMeta = PageMeta
+      { pageMetaTitle       = "Beoordeel mijn webshop \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Gratis beoordeling van uw webshop: wij meten snelheid en vindbaarheid met Lighthouse en laten zien welke verbeterpunten oplosbaar zijn en welke vastliggen in uw platform."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/scan.html"
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = mempty
