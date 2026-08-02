@@ -254,6 +254,17 @@ webwinkelBlogBaseTemplate = webwinkelBaseWith "article" True
 -- Landing page (index.html)
 -- =============================================================================
 
+prijzen :: Html
+prijzen = H.section ! A.class_ "engagement" ! A.id "prijzen" $ do
+      H.h2 "Prijzen"
+      H.div ! A.class_ "card-grid" $ do
+        H.div ! A.class_ "card" $ do
+          H.h3 $ "Volledige migratie" <> H.preEscapedToHtml (" vanaf &euro;" <> migratieBasisprijsEuro)
+          H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects. Grotere catalogi, extra talen en losse diensten (domeinverhuizing, e-mail-setup) hebben een vaste meerprijs." :: Text)
+          H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
+
+
+
 webwinkelIndexPage :: Html
 webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
   H.main $ do
@@ -341,15 +352,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
     -- confidence. The offerte remains the binding guarantee, the
     -- disclaimer says so plainly so an updated price is never a broken
     -- promise.
-    H.section ! A.class_ "engagement" ! A.id "prijzen" $ do
-      H.h2 "Prijzen"
-      H.div ! A.class_ "card-grid" $ do
-        H.div ! A.class_ "card" $ do
-          H.h3 $ "Volledige migratie" <> H.preEscapedToHtml (" vanaf &euro;" <> migratieBasisprijsEuro)
-          H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects. Grotere catalogi, extra talen en losse diensten (domeinverhuizing, e-mail-setup) hebben een vaste meerprijs." :: Text)
-          H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
-
-    -- FAQ
+    prijzen
     H.section ! A.class_ "about" $ do
       H.h2 "Veelgestelde vragen"
       H.dl $ mapM_ renderFaqItem homeFaq
@@ -748,16 +751,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
     recentWerkSection
 
     -- Pricing
-    H.section ! A.class_ "engagement" ! A.id "pricing" $ do
-      H.h2 "Prijzen"
-      H.div ! A.class_ "card-grid" $ do
-        H.div ! A.class_ "card" $ do
-          H.h3 "Volledige migratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
-          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en eventuele bulk-aanpassingen." :: Text)
-          H.p $ H.a ! A.href "/prijzen.html" $ H.preEscapedToHtml ("Bereken uw prijs &rarr;" :: Text)
-          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
-      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
+    prijzen
 
     -- Why us
     H.section ! A.class_ "results" $ do
@@ -875,16 +869,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Pricing
-    H.section ! A.class_ "engagement" ! A.id "pricing" $ do
-      H.h2 "Prijzen"
-      H.div ! A.class_ "card-grid" $ do
-        H.div ! A.class_ "card" $ do
-          H.h3 "Volledige migratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
-          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad." :: Text)
-          H.p $ H.a ! A.href "/prijzen.html" $ H.preEscapedToHtml ("Bereken uw prijs &rarr;" :: Text)
-          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
-      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
+    prijzen
 
     -- Why us
     H.section ! A.class_ "results" $ do
@@ -1018,16 +1003,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Pricing
-    H.section ! A.class_ "engagement" ! A.id "pricing" $ do
-      H.h2 "Prijzen"
-      H.div ! A.class_ "card-grid" $ do
-        H.div ! A.class_ "card" $ do
-          H.h3 "Volledige migratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
-          H.p $ H.preEscapedToHtml ("Producten, afbeeldingen, vertalingen, categorie&euml;n, klantdata, SEO-redirects en voorraad." :: Text)
-          H.p $ H.a ! A.href "/prijzen.html" $ H.preEscapedToHtml ("Bereken uw prijs &rarr;" :: Text)
-          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
-      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken. Geen verrassingen. Betaling na succesvolle migratie." :: Text)
+    prijzen
 
     -- Why us
     H.section ! A.class_ "results" $ do
