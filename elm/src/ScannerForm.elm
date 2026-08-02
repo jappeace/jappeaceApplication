@@ -5,12 +5,14 @@ port module ScannerForm exposing
     , Msg(..)
     , Oplosbaarheid(..)
     , Rapport
+    , RapportStand
     , ScanId(..)
     , ScanStatus(..)
     , Score
     , UitklapStand(..)
     , Verbeterpunt
     , WachtStand(..)
+    , ingeklapteRapportStand
     , initieelModel
     , leesStartRespons
     , leesStatusRespons
@@ -21,6 +23,7 @@ port module ScannerForm exposing
     , scanStatusDecoder
     , topVerbeterpunten
     , update
+    , view
     )
 
 {-| "Beoordeel mijn webshop" op webwinkelverhuis.nl.
@@ -28,10 +31,10 @@ port module ScannerForm exposing
 De bezoeker vult het adres van zijn webshop in; de server draait een scan
 (1 tot 2 minuten) en dit programma peilt elke drie seconden de status tot het
 rapport klaar is. Het rapport toont het herkende platform, de scores, de
-kernmetingen en de verbeterpunten, met bij elk punt of het oplosbaar is of
-vastligt in het huidige platform. Punten die vastliggen voeden het
-migratie-aanbod; oplosbare punten het losse-klussen-aanbod. Beide verwijzen
-naar een gratis gesprek.
+kernmetingen (standaard ingeklapt) en de verbeterpunten, met bij elk punt of
+het oplosbaar is of vastligt in het huidige platform. Ligt er iets vast, dan
+volgt alleen het migratie-aanbod met een knop naar de prijs-rekenhulp; ligt
+er niets vast, dan alleen het losse-klussen-aanbod met een gesprek-knop.
 
 API-contract (zelfde origin):
 
@@ -59,9 +62,10 @@ import Url
 -- prijscalculator (PrijsCalculator.elm): JS geeft de events door aan gtag en
 -- raakt de Elm-state niet aan. Events: scanner_started bij het aanvragen,
 -- scanner_klaar zodra een rapport op het scherm staat, scanner_mislukt bij
--- elke mislukking, en gesprek_knop_klik voor de gesprek-knoppen in het
--- rapport (de statische ctaTrackScript van de pagina hangt zijn listeners aan
--- DOMContentLoaded en ziet door Elm gerenderde links niet).
+-- elke mislukking, gesprek_knop_klik voor de gesprek-knop en
+-- scanner_naar_calculator voor de rekenhulp-knop in het rapport (de statische
+-- ctaTrackScript van de pagina hangt zijn listeners aan DOMContentLoaded en
+-- ziet door Elm gerenderde links niet).
 
 
 {-| Stuurt een analytics-event naar JavaScript, waar de pagina het aan Google
@@ -248,7 +252,7 @@ type Fase
     = Invoeren (Maybe String)
     | Aanvragen
     | Wachten ScanId WachtStand
-    | Geslaagd Rapport UitklapStand
+    | Geslaagd Rapport RapportStand
     | Mislukt String
 
 
@@ -259,10 +263,26 @@ type WachtStand
     | Bezig
 
 
-{-| Of de punten na de top 5 zichtbaar zijn. -}
+{-| Of een inklapbaar rapportdeel open- of dichtgeklapt staat. -}
 type UitklapStand
     = Ingeklapt
     | Uitgeklapt
+
+
+{-| De uitklapstand van de twee inklapbare rapportdelen: de kernmetingen en
+de verbeterpunten na de top 5. Beide beginnen ingeklapt, zodat het rapport
+opent met de scores en de top 5. -}
+type alias RapportStand =
+    { puntenUitklap : UitklapStand
+    , kernmetingenUitklap : UitklapStand
+    }
+
+
+ingeklapteRapportStand : RapportStand
+ingeklapteRapportStand =
+    { puntenUitklap = Ingeklapt
+    , kernmetingenUitklap = Ingeklapt
+    }
 
 
 type alias Model =
@@ -467,8 +487,10 @@ type Msg
     | PeilMoment
     | StatusOntvangen (Result String ScanStatus)
     | UitklapGewisseld
+    | KernmetingenGewisseld
     | OpnieuwGeprobeerd
     | GesprekGeklikt
+    | CalculatorGeklikt
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -500,13 +522,21 @@ update msg model =
             verwerkStatus resultaat model
 
         UitklapGewisseld ->
-            ( { model | fase = wisselUitklap model.fase }, Cmd.none )
+            ( { model | fase = metRapportStand wisselPuntenUitklap model.fase }, Cmd.none )
+
+        -- Bewust zonder analytics-event: de kernmetingen-knop is bladeren
+        -- binnen het rapport, geen funnel-stap.
+        KernmetingenGewisseld ->
+            ( { model | fase = metRapportStand wisselKernmetingenUitklap model.fase }, Cmd.none )
 
         OpnieuwGeprobeerd ->
             ( { model | fase = Invoeren Nothing }, Cmd.none )
 
         GesprekGeklikt ->
             ( model, gaEvent "gesprek_knop_klik" [] )
+
+        CalculatorGeklikt ->
+            ( model, gaEvent "scanner_naar_calculator" [] )
 
 
 {-| Peil alleen wanneer we nog op de scan wachten; in elke andere fase is het
@@ -547,7 +577,7 @@ verwerkStatus resultaat model =
                     ( { model | fase = Mislukt scanMisluktMelding }, gaEvent "scanner_mislukt" [] )
 
                 Ok (StatusKlaar rapport) ->
-                    ( { model | fase = Geslaagd rapport Ingeklapt }
+                    ( { model | fase = Geslaagd rapport ingeklapteRapportStand }
                     , gaEvent "scanner_klaar" [ ( "platform", Encode.string rapport.platform ) ]
                     )
 
@@ -567,14 +597,13 @@ verwerkStatus resultaat model =
             ( model, Cmd.none )
 
 
-wisselUitklap : Fase -> Fase
-wisselUitklap fase =
+{-| Pas de uitklapstand van het rapport aan; buiten de rapportfase is er
+niets uit te klappen en verandert er niets. -}
+metRapportStand : (RapportStand -> RapportStand) -> Fase -> Fase
+metRapportStand pasAan fase =
     case fase of
-        Geslaagd rapport Ingeklapt ->
-            Geslaagd rapport Uitgeklapt
-
-        Geslaagd rapport Uitgeklapt ->
-            Geslaagd rapport Ingeklapt
+        Geslaagd rapport stand ->
+            Geslaagd rapport (pasAan stand)
 
         Invoeren mFout ->
             Invoeren mFout
@@ -587,6 +616,26 @@ wisselUitklap fase =
 
         Mislukt melding ->
             Mislukt melding
+
+
+wisselStand : UitklapStand -> UitklapStand
+wisselStand stand =
+    case stand of
+        Ingeklapt ->
+            Uitgeklapt
+
+        Uitgeklapt ->
+            Ingeklapt
+
+
+wisselPuntenUitklap : RapportStand -> RapportStand
+wisselPuntenUitklap stand =
+    { stand | puntenUitklap = wisselStand stand.puntenUitklap }
+
+
+wisselKernmetingenUitklap : RapportStand -> RapportStand
+wisselKernmetingenUitklap stand =
+    { stand | kernmetingenUitklap = wisselStand stand.kernmetingenUitklap }
 
 
 
@@ -615,6 +664,13 @@ meetUrl =
     "https://meet.jappiesoftware.com"
 
 
+{-| De prijs-rekenhulp op de eigen prijzenpagina, dezelfde bestemming als de
+rekenhulp-knoppen elders op de site (zie WebwinkelTemplates.hs). -}
+rekenhulpUrl : String
+rekenhulpUrl =
+    "/prijzen.html#rekenhulp"
+
+
 view : Model -> Html Msg
 view model =
     div [ Attr.class "webshop-scanner" ] (faseWeergave model)
@@ -632,8 +688,8 @@ faseWeergave model =
         Wachten _ stand ->
             laadWeergave (wachtTekst stand)
 
-        Geslaagd rapport uitklap ->
-            rapportWeergave rapport uitklap
+        Geslaagd rapport stand ->
+            rapportWeergave rapport stand
 
         Mislukt melding ->
             misluktWeergave melding
@@ -718,20 +774,36 @@ misluktWeergave melding =
 -- RAPPORTWEERGAVE
 
 
-rapportWeergave : Rapport -> UitklapStand -> List (Html Msg)
-rapportWeergave rapport uitklap =
+rapportWeergave : Rapport -> RapportStand -> List (Html Msg)
+rapportWeergave rapport stand =
     [ h3 [ Attr.class "scanner-rapport-kop" ] [ text ("Rapport voor " ++ rapport.url) ]
     , p [ Attr.class "scanner-platform" ] [ text (platformRegel rapport) ]
     , div [ Attr.class "scanner-scores" ] (List.map scoreWeergave rapport.scores)
-    , h3 [] [ text "Kernmetingen" ]
-    , dl [ Attr.class "scanner-kernmetingen" ] (List.concatMap kernmetingWeergave rapport.kernmetingen)
-    , h3 [] [ text "Verbeterpunten" ]
     ]
+        ++ kernmetingenDeel rapport stand.kernmetingenUitklap
+        ++ [ h3 [] [ text "Verbeterpunten" ] ]
         ++ List.map (puntWeergave rapport.platform) (topVerbeterpunten rapport.verbeterpunten)
-        ++ uitklapDeel rapport uitklap
-        ++ migratieBlok rapport
-        ++ oplosBlok rapport
+        ++ uitklapDeel rapport stand.puntenUitklap
+        ++ upsellBlok rapport
         ++ [ metaRegel rapport ]
+
+
+{-| De kernmetingen, standaard ingeklapt: de meeste bezoekers hebben genoeg
+aan de scores en de verbeterpunten, en de ruwe metingen blijven een klik weg.
+De labels komen van de server en tonen we onvertaald. -}
+kernmetingenDeel : Rapport -> UitklapStand -> List (Html Msg)
+kernmetingenDeel rapport uitklap =
+    case uitklap of
+        Ingeklapt ->
+            [ h3 [] [ text "Kernmetingen" ]
+            , uitklapKnop KernmetingenGewisseld "Toon de kernmetingen"
+            ]
+
+        Uitgeklapt ->
+            [ h3 [] [ text "Kernmetingen" ]
+            , dl [ Attr.class "scanner-kernmetingen" ] (List.concatMap kernmetingWeergave rapport.kernmetingen)
+            , uitklapKnop KernmetingenGewisseld "Verberg de kernmetingen"
+            ]
 
 
 platformRegel : Rapport -> String
@@ -829,16 +901,16 @@ uitklapDeel rapport uitklap =
     else
         case uitklap of
             Ingeklapt ->
-                [ uitklapKnop ("Toon alle " ++ String.fromInt (List.length rapport.verbeterpunten) ++ " punten") ]
+                [ uitklapKnop UitklapGewisseld ("Toon alle " ++ String.fromInt (List.length rapport.verbeterpunten) ++ " punten") ]
 
             Uitgeklapt ->
                 List.map (puntWeergave rapport.platform) (restVerbeterpunten rapport.verbeterpunten)
-                    ++ [ uitklapKnop "Verberg de extra punten" ]
+                    ++ [ uitklapKnop UitklapGewisseld "Verberg de extra punten" ]
 
 
-uitklapKnop : String -> Html Msg
-uitklapKnop tekst =
-    button [ Attr.class "cta-button-secondary scanner-uitklap", onClick UitklapGewisseld ] [ text tekst ]
+uitklapKnop : Msg -> String -> Html Msg
+uitklapKnop bericht tekst =
+    button [ Attr.class "cta-button-secondary scanner-uitklap", onClick bericht ] [ text tekst ]
 
 
 
@@ -849,6 +921,12 @@ uitklapKnop tekst =
 -- verbeterpuntenlijst zelf (telling van oplosbaar/vast), niet uit het losse
 -- vastOpPlatform-veld van de server, zodat badges en blokken nooit kunnen
 -- afwijken van wat er op het scherm staat.
+
+-- Decision: precies een upsell-blok, nooit twee (twee keer een aanbod onder
+-- een rapport leest als leuren). Ligt er iets vast in het platform, dan is
+-- verhuizen het antwoord en gaat de knop naar de prijs-rekenhulp: de
+-- bezoeker wil op dat moment een prijs, geen agenda. Ligt er niets vast, dan
+-- is het aanbod de losse klussen en blijft de gesprek-knop.
 
 
 aantalVast : Rapport -> Int
@@ -861,50 +939,53 @@ heeftOplosbarePunten rapport =
     List.any (\punt -> punt.oplosbaar == Oplosbaar) rapport.verbeterpunten
 
 
-{-| Migratie-aanbod: alleen wanneer er punten zijn die in het huidige
-platform vastliggen. -}
-migratieBlok : Rapport -> List (Html Msg)
-migratieBlok rapport =
-    if aantalVast rapport == 0 then
-        []
+{-| Het ene upsell-blok onder het rapport: migratie zodra er punten
+vastliggen, anders losse klussen. -}
+upsellBlok : Rapport -> List (Html Msg)
+upsellBlok rapport =
+    if aantalVast rapport > 0 then
+        migratieBlok rapport
 
     else
-        [ div [ Attr.class "scanner-upsell scanner-upsell-migratie" ]
-            [ h3 [] [ text "Vast aan uw platform" ]
-            , p [] [ text (vastZin (aantalVast rapport) rapport.platform) ]
-            , gesprekKnop "cta-button"
-            ]
+        oplosBlok rapport
+
+
+{-| Migratie-aanbod met een knop naar de prijs-rekenhulp op /prijzen. -}
+migratieBlok : Rapport -> List (Html Msg)
+migratieBlok rapport =
+    [ div [ Attr.class "scanner-upsell scanner-upsell-migratie" ]
+        [ h3 [] [ text "Vast aan uw platform" ]
+        , p [] [ text (vastZin (aantalVast rapport) rapport.platform) ]
+        , a [ Attr.href rekenhulpUrl, Attr.class "cta-button", onClick CalculatorGeklikt ]
+            [ text "Bereken uw verhuisprijs" ]
         ]
+    ]
 
 
 vastZin : Int -> String -> String
 vastZin aantal platformNaam =
     if aantal == 1 then
-        "1 punt ligt vast in " ++ platformNaam ++ " en is alleen op te lossen door te verhuizen. Dat is ons vak."
+        "1 punt ligt vast in " ++ platformNaam ++ ". Verhuizen lost het op."
 
     else
-        String.fromInt aantal ++ " punten liggen vast in " ++ platformNaam ++ " en zijn alleen op te lossen door te verhuizen. Dat is ons vak."
+        String.fromInt aantal ++ " punten liggen vast in " ++ platformNaam ++ ". Verhuizen lost ze op."
 
 
-{-| Losse-klussen-aanbod voor de punten die wel op het huidige platform
-oplosbaar zijn. -}
+{-| Losse-klussen-aanbod voor de punten die op het huidige platform
+oplosbaar zijn; alleen getoond als er niets vastligt. -}
 oplosBlok : Rapport -> List (Html Msg)
 oplosBlok rapport =
     if heeftOplosbarePunten rapport then
         [ div [ Attr.class "scanner-upsell" ]
             [ h3 [] [ text "Liever laten doen?" ]
             , p [] [ text "De oplosbare punten pakken wij voor u op, tegen een vaste prijs." ]
-            , gesprekKnop "cta-button-secondary"
+            , a [ Attr.href meetUrl, Attr.class "cta-button", onClick GesprekGeklikt ]
+                [ text "Plan een gesprek" ]
             ]
         ]
 
     else
         []
-
-
-gesprekKnop : String -> Html Msg
-gesprekKnop knopKlasse =
-    a [ Attr.href meetUrl, Attr.class knopKlasse, onClick GesprekGeklikt ] [ text "Plan een gesprek" ]
 
 
 metaRegel : Rapport -> Html Msg
