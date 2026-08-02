@@ -967,12 +967,14 @@ ccvshopFaq =
   -- Decision: POS-antwoord is bewust eerlijk over de beperking en
   -- maakt er een bestemmingskeuze van: bij WooCommerce blijft de
   -- CCV-terminal via Nederlandse kassasoftware gekoppeld, bij
-  -- Shopify moet hij vervangen omdat Shopify POS alleen eigen
-  -- terminals via Shopify Payments integreert (help.shopify.com,
-  -- gecheckt 2 aug 2026). Bron-onderzoek in
+  -- Shopify kan hij alleen als losse (niet-geïntegreerde) pin
+  -- blijven, want geïntegreerd ondersteunt Shopify POS uitsluitend
+  -- eigen terminals via Shopify Payments (help.shopify.com, gecheckt
+  -- 2 aug 2026). "Moet vervangen" zeggen we dus niet: dat geldt
+  -- alleen voor wie een geïntegreerde kassa wil. Bron-onderzoek in
   -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
   , ( "Ik heb ook een fysieke winkel met een CCV-pinterminal. Kan die mee?"
-    , "Dat hangt af van uw bestemming. Kiest u WooCommerce, dan kan uw CCV-terminal gewoon blijven: Nederlandse kassasoftware koppelt de terminal en synchroniseert de voorraad met uw webshop, en uw pincontract loopt door. Kiest u Shopify, dan moet de terminal vervangen worden, want Shopify POS werkt alleen met eigen terminals via Shopify Payments. Die vervanging is eenmalig en bescheiden (Shopify-terminals kosten \8364" <> "59 tot \8364" <> "249) en daarna bent u ook voor het pinnen van CCV af. Wij hebben ervaring met het inrichten van kassa's en pinterminals en nemen dit gewoon in het migratietraject mee." )
+    , "Dat hangt af van uw bestemming. Kiest u WooCommerce, dan kan uw CCV-terminal gewoon gekoppeld blijven: Nederlandse kassasoftware verbindt de terminal en synchroniseert de voorraad met uw webshop, en uw pincontract loopt door. Kiest u Shopify, dan koppelt de terminal niet meer met de kassa; hij kan wel als losse pin blijven werken, maar dan typt u elk bedrag over. Wilt u winkel en webshop weer als \233\233n geheel, dan vervangt u hem door een Shopify-terminal. Die overstap is eenmalig en bescheiden (\8364" <> "59 tot \8364" <> "249) en daarna bent u ook voor het pinnen van CCV af. Wij hebben ervaring met het inrichten van kassa's en pinterminals en nemen dit gewoon in het migratietraject mee." )
   ]
 
 -- =============================================================================
