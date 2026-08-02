@@ -322,17 +322,15 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
         H.div $ do
           H.h1 "Webshop verhuizen zonder data en SEO verlies."
           H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw complete webshop geautomatiseerd naar Shopify of een ander platform. U betaalt pas na een succesvolle migratie." :: Text)
-          -- Decision: the landing-page CTAs point at the price calculator
-          -- instead of an offerte-mailto. The calculator gives the visitor an
-          -- immediate, tangible result (Gemini-feedback: CTAs should offer
-          -- direct value) and its own offerte button follows once they have a
-          -- price on screen.
-          H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
-          -- Naast de prijsvraag de twijfelvraag: "is mijn shop eigenlijk
-          -- slecht af?". De gratis scan (/scan.html) beantwoordt die met een
-          -- meting in plaats van een verkooppraatje.
-          -- TODO put live once we know it works well
-          -- H.a ! A.href "/scan.html" ! A.class_ "cta-button-secondary" $ "Beoordeel mijn webshop"
+          -- Decision: one hero button, and it points at the gratis scan
+          -- (/scan.html) instead of the price calculator: the scan gives the
+          -- visitor an immediate, personal result and feeds the migration
+          -- offer from measured facts. The calculator stays reachable via
+          -- the Prijzen nav item, the prijzen-section card below and the
+          -- scanner's own rekenhulp-knop. Like the previous hero CTA this is
+          -- an internal link: GA4's automatic pageview of /scan.html is the
+          -- click signal, no extra event (see ctaTrackScript).
+          H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
         H.img ! A.class_ "hero-image"
               ! A.src "/illustratie-verhuizen.svg"
               ! A.alt "Illustratie van dozen die van een oude webshop naar een nieuwe verhuizen"

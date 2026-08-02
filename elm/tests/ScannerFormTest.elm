@@ -9,11 +9,13 @@ fases die ze aansturen wel.
 
 import Dict
 import Expect
+import Html.Attributes as Attr
 import Http
 import Json.Decode as Decode
 import ScannerForm
     exposing
         ( Fase(..)
+        , Model
         , Msg(..)
         , Oplosbaarheid(..)
         , Rapport
@@ -22,6 +24,7 @@ import ScannerForm
         , UitklapStand(..)
         , Verbeterpunt
         , WachtStand(..)
+        , ingeklapteRapportStand
         , initieelModel
         , leesStartRespons
         , leesStatusRespons
@@ -31,8 +34,11 @@ import ScannerForm
         , scanStatusDecoder
         , topVerbeterpunten
         , update
+        , view
         )
 import Test exposing (Test, describe, test)
+import Test.Html.Query as Query
+import Test.Html.Selector as Selector
 
 
 {-| Fixture die het API-contract volgt, inclusief een score zonder waarde
@@ -236,15 +242,18 @@ updateTests =
                             { initieelModel | fase = Wachten (ScanId "abc123") Bezig }
                         )
                     ).fase
-        , test "een klaar-status rendert het rapport ingeklapt" <|
+        , test "een klaar-status rendert het rapport volledig ingeklapt" <|
             \_ ->
-                Expect.equal (Geslaagd verwachtRapport Ingeklapt) faseNaKlaar
-        , test "uitklappen wisselt naar Uitgeklapt" <|
+                Expect.equal (Geslaagd verwachtRapport ingeklapteRapportStand) faseNaKlaar
+        , test "punten uitklappen laat de kernmetingen ingeklapt" <|
             \_ ->
-                Expect.equal (Geslaagd verwachtRapport Uitgeklapt)
+                Expect.equal
+                    (Geslaagd verwachtRapport
+                        { puntenUitklap = Uitgeklapt, kernmetingenUitklap = Ingeklapt }
+                    )
                     (Tuple.first
                         (update UitklapGewisseld
-                            { initieelModel | fase = Geslaagd verwachtRapport Ingeklapt }
+                            { initieelModel | fase = Geslaagd verwachtRapport ingeklapteRapportStand }
                         )
                     ).fase
         , test "een mislukt-status eindigt in de misluktfase" <|
@@ -285,6 +294,78 @@ isMislukt fase =
             False
 
 
+{-| Model in de rapportfase, opgebouwd via de echte update-flow: een
+klaar-status die binnenkomt terwijl we op de scan wachten. -}
+modelMetRapport : Rapport -> Model
+modelMetRapport rapport =
+    Tuple.first
+        (update (StatusOntvangen (Ok (StatusKlaar rapport)))
+            { initieelModel | fase = Wachten (ScanId "abc123") Bezig }
+        )
+
+
+{-| Rapport zonder vastzittende punten: alleen de oplosbare punten uit de
+fixture blijven over. -}
+oplosbaarRapport : Rapport
+oplosbaarRapport =
+    { verwachtRapport
+        | verbeterpunten =
+            List.filter (\p -> p.oplosbaar == Oplosbaar) verwachtRapport.verbeterpunten
+        , vastOpPlatform = 0
+    }
+
+
+rekenhulpLink : Selector.Selector
+rekenhulpLink =
+    Selector.attribute (Attr.href "/prijzen.html#rekenhulp")
+
+
+gesprekLink : Selector.Selector
+gesprekLink =
+    Selector.attribute (Attr.href "https://meet.jappiesoftware.com")
+
+
+viewTests : Test
+viewTests =
+    describe "rapportweergave via view"
+        [ test "kernmetingen zijn standaard ingeklapt" <|
+            \_ ->
+                view (modelMetRapport verwachtRapport)
+                    |> Query.fromHtml
+                    |> Query.hasNot [ Selector.text "Largest Contentful Paint" ]
+        , test "ingeklapte kernmetingen tonen een toon-knop" <|
+            \_ ->
+                view (modelMetRapport verwachtRapport)
+                    |> Query.fromHtml
+                    |> Query.has [ Selector.text "Toon de kernmetingen" ]
+        , test "na de toon-knop staan de kernmetingen op het scherm" <|
+            \_ ->
+                view (Tuple.first (update KernmetingenGewisseld (modelMetRapport verwachtRapport)))
+                    |> Query.fromHtml
+                    |> Query.has [ Selector.text "Largest Contentful Paint", Selector.text "8,4 s" ]
+        , test "met een vast punt linkt de upsell naar de rekenhulp" <|
+            \_ ->
+                view (modelMetRapport verwachtRapport)
+                    |> Query.fromHtml
+                    |> Query.has [ rekenhulpLink, Selector.text "Bereken uw verhuisprijs" ]
+        , test "met een vast punt is er geen gesprek-knop" <|
+            \_ ->
+                view (modelMetRapport verwachtRapport)
+                    |> Query.fromHtml
+                    |> Query.hasNot [ gesprekLink ]
+        , test "zonder vaste punten staat de gesprek-knop er" <|
+            \_ ->
+                view (modelMetRapport oplosbaarRapport)
+                    |> Query.fromHtml
+                    |> Query.has [ gesprekLink, Selector.text "Plan een gesprek" ]
+        , test "zonder vaste punten is er geen rekenhulp-upsell" <|
+            \_ ->
+                view (modelMetRapport oplosbaarRapport)
+                    |> Query.fromHtml
+                    |> Query.hasNot [ rekenhulpLink ]
+        ]
+
+
 suite : Test
 suite =
     describe "ScannerForm"
@@ -293,4 +374,5 @@ suite =
         , urlTests
         , topVijfTests
         , updateTests
+        , viewTests
         ]
