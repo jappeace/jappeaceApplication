@@ -828,7 +828,13 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- Hero
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap CCV Shop"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Uw webshop is uw broodwinning. CCV Shop voelt steeds beperkter, de features blijven achter, en u weet dat er betere opties zijn &mdash; maar hoe krijgt u alles veilig overgezet? Wij verhuizen uw complete shop naar Shopify. Geautomatiseerd, zonder dataverlies, met zo min mogelijk downtime." :: Text)
+      -- Decision: hero benoemt CCV-specifieke pijn (prijsstijgingen,
+      -- stilstand, Fiserv-overname) in plaats van de generieke
+      -- MWW-tekst. Bronnen en citaten staan in
+      -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
+      -- De Fiserv-twijfel is bewust als vraag geformuleerd: er is geen
+      -- EOL-aankondiging, dus hard stellen mag niet.
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("CCV Shop werd sinds 2023 bijna 20% duurder, terwijl thema&apos;s en functies al jaren stilstaan. En sinds de Amerikaanse betaalreus Fiserv CCV overnam, is het de vraag hoeveel prioriteit de webshopsoftware nog krijgt. Wij verhuizen uw complete shop geautomatiseerd naar Shopify: zonder dataverlies, met zo min mogelijk downtime." :: Text)
       H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
@@ -875,8 +881,13 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     H.section ! A.class_ "results" $ do
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
-        H.blockquote $
-          H.p $ H.preEscapedToHtml ("U voelt het al langer: CCV Shop houdt u tegen. Beperkte features, achterblijvende ontwikkeling, en het gevoel dat uw shop kwetsbaar is op een platform dat niet meegroeit. Elke dag dat u wacht is een dag dat uw concurrent op Shopify u inhaalt. Wij hebben al meerdere webshops succesvol gemigreerd &mdash; inclusief shops met duizenden producten en meerdere talen." :: Text)
+        -- Decision: echte klachtcitaat van een CCV-gebruiker
+        -- (Trustpilot, gedocumenteerd in
+        -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org)
+        -- in plaats van een verzonnen peptalk in een testimonial-blok.
+        H.blockquote $ do
+          H.p $ H.preEscapedToHtml ("&bdquo;7 jaar een CCV shop gehad, de webshop is zwaar verouderd, zowel in thema&apos;s als functionaliteiten, er wordt bijna niks geupdate. Mijn omzet en conversie is door het dak gegaan sinds ik Shopify gebruik.&rdquo;" :: Text)
+          H.p $ H.strong "CCV Shop-gebruiker op Trustpilot, mei 2025"
       H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform &mdash; Shopify, WooCommerce, of iets anders &mdash; wij regelen de techniek." :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
@@ -914,6 +925,9 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
         H.li ! A.class_ "card" $ do
           H.h3 "Testshop"
           H.p "U krijgt een volledige testshop naast uw huidige shop om alvast te wennen. Pas na uw akkoord gaan we live; eventuele correcties zijn inbegrepen."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Fysieke winkel & kassa"
+          H.p "Verkoopt u ook in een fysieke winkel? Bij WooCommerce als bestemming kan uw huidige CCV-pinterminal via een kassakoppeling blijven; bij Shopify richten we Shopify POS voor u in zodat winkel en webshop weer dezelfde voorraad delen."
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
@@ -950,6 +964,15 @@ ccvshopFaq =
     , "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
   , ( "Hoe werken de SEO-redirects precies?"
     , "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings en backlinks blijven behouden." )
+  -- Decision: POS-antwoord is bewust eerlijk over de beperking en
+  -- maakt er een bestemmingskeuze van: bij WooCommerce blijft de
+  -- CCV-terminal via Nederlandse kassasoftware gekoppeld, bij
+  -- Shopify moet hij vervangen omdat Shopify POS alleen eigen
+  -- terminals via Shopify Payments integreert (help.shopify.com,
+  -- gecheckt 2 aug 2026). Bron-onderzoek in
+  -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
+  , ( "Ik heb ook een fysieke winkel met een CCV-pinterminal. Kan die mee?"
+    , "Dat hangt af van uw bestemming. Kiest u WooCommerce, dan kan uw CCV-terminal gewoon blijven: Nederlandse kassasoftware koppelt de terminal en synchroniseert de voorraad met uw webshop, en uw pincontract loopt door. Kiest u Shopify, dan moet de terminal vervangen worden, want Shopify POS werkt alleen met eigen terminals via Shopify Payments. Die vervanging is eenmalig en bescheiden (Shopify-terminals kosten \8364" <> "59 tot \8364" <> "249) en daarna bent u ook voor het pinnen van CCV af. Wij hebben ervaring met het inrichten van kassa's en pinterminals en nemen dit gewoon in het migratietraject mee." )
   ]
 
 -- =============================================================================
