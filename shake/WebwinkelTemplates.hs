@@ -260,7 +260,7 @@ prijzen = H.section ! A.class_ "engagement" ! A.id "prijzen" $ do
       H.div ! A.class_ "card-grid" $ do
         H.div ! A.class_ "card" $ do
           H.h3 $ "Volledige migratie" <> H.preEscapedToHtml (" vanaf &euro;" <> migratieBasisprijsEuro)
-          H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects. Grotere catalogi, extra talen en losse diensten (domeinverhuizing, e-mail-setup) hebben een vaste meerprijs." :: Text)
+          H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects. Grotere catalogi, extra talen en losse diensten (e-mail-setup, en domeinverhuizing als uw domein nog bij uw huidige platform staat) hebben een vaste meerprijs." :: Text)
           H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
 
 
@@ -758,7 +758,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $ do
-          H.p "U weet het al: MijnWebwinkel gaat nergens meer heen. Geen nieuwe features, geen community, trage support. Gelukkig hoeft u daar niet op te wachten: verhuizen is inmiddels een gebaande weg."
+          H.p "U weet het al: MijnWebwinkel gaat nergens meer heen. Geen nieuwe features, geen community, trage support. Trage laadtijden schaden uw SEO, en dat is op MijnWebwinkel niet te verbeteren. Gelukkig hoeft u daar niet op te wachten: verhuizen is inmiddels een gebaande weg."
           H.p $ do
             H.a ! A.href "/waarom-mijnwebwinkel.html" $ "Waarom wordt MijnWebwinkel niet meer doorontwikkeld?"
             H.preEscapedToHtml (" &rarr;" :: Text)
