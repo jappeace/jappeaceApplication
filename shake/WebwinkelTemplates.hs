@@ -331,7 +331,8 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           -- Naast de prijsvraag de twijfelvraag: "is mijn shop eigenlijk
           -- slecht af?". De gratis scan (/scan.html) beantwoordt die met een
           -- meting in plaats van een verkooppraatje.
-          H.a ! A.href "/scan.html" ! A.class_ "cta-button-secondary" $ "Beoordeel mijn webshop"
+          -- TODO put live once we know it works well
+          -- H.a ! A.href "/scan.html" ! A.class_ "cta-button-secondary" $ "Beoordeel mijn webshop"
         H.img ! A.class_ "hero-image"
               ! A.src "/illustratie-verhuizen.svg"
               ! A.alt "Illustratie van dozen die van een oude webshop naar een nieuwe verhuizen"
