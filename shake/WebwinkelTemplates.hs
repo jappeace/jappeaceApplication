@@ -41,6 +41,11 @@ import PageChrome
   , whatsappFloatingButton
   , jsonLdString
   , serviceJsonLd
+  , FaqQuestion
+  , FaqAnswer
+  , faqAnswerText
+  , faqAnswerHtml
+  , renderFaqItem
   , faqPageJsonLd
   , formatIsoDate
   , formatHumanDate
@@ -422,18 +427,21 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
 -- advice instead of a platform list: which platform fits depends on the
 -- shop's situation, and "weet ik nog niet" is a fine starting point (also
 -- selectable in the price calculator).
-homeFaq :: [(Text, Text)]
+homeFaq :: [(FaqQuestion, FaqAnswer)]
 homeFaq =
   [ ( "Kan mijn webshop verhuisd worden?"
-    , "Vrijwel altijd. Producten, teksten, afbeeldingen, klanten en de categoriestructuur zetten we geautomatiseerd over vanaf MijnWebwinkel, CCV Shop, Lightspeed en andere platformen, inclusief 301-redirects van al uw oude URLs zodat uw Google-posities meeverhuizen." )
+    , faqAnswerText "Vrijwel altijd. Producten, teksten, afbeeldingen, klanten en de categoriestructuur zetten we geautomatiseerd over vanaf MijnWebwinkel, CCV Shop, Lightspeed en andere platformen, inclusief 301-redirects van al uw oude URLs zodat uw Google-posities meeverhuizen." )
   , ( "Naar welk platform kan ik het beste verhuizen?"
-    , "Dat hangt af van uw situatie: uw assortiment, uw koppelingen en hoeveel u zelf wilt kunnen aanpassen. Shopify is het meest gekozen doelplatform omdat het makkelijk is. WooCommerce kan een goede optie zijn omdat het flexibel is. Weet u het nog niet? In een gratis gesprek adviseren we een platform op basis van uw situatie, en in de rekenhulp kunt u die keuze gewoon openlaten." )
+    , faqAnswerText "Dat hangt af van uw situatie: uw assortiment, uw koppelingen en hoeveel u zelf wilt kunnen aanpassen. Shopify is het meest gekozen doelplatform omdat het makkelijk is. WooCommerce kan een goede optie zijn omdat het flexibel is. Weet u het nog niet? In een gratis gesprek adviseren we een platform op basis van uw situatie, en in de rekenhulp kunt u die keuze gewoon openlaten." )
   , ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+    , faqAnswerText "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Wat kost een webshop-migratie?"
-    , "Een vaste prijs vanaf " <> migratieBasisprijsEuro <> " euro, afhankelijk van het aantal producten en talen, en u betaalt pas na een geslaagde migratie. Met de rekenhulp op de prijzenpagina berekent u in een minuut uw richtprijs." )
+    , faqAnswerHtml $ do
+        toHtml ("Een vaste prijs vanaf " <> migratieBasisprijsEuro <> " euro, afhankelijk van het aantal producten en talen, en u betaalt pas na een geslaagde migratie. Met ")
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp op de prijzenpagina"
+        " berekent u in een minuut uw richtprijs." )
   , ( "Kan mijn shop blijven doorverkopen tijdens de migratie?"
-    , "Ja. De nieuwe shop bouwen we naast uw huidige webshop op, die gewoon doordraait en verkoopt. Pas bij de livegang zetten we uw domein om naar waar u heen wilt. Tegen die tijd heeft u vertrouwen in het nieuwe systeem en is alles getest." )
+    , faqAnswerText "Ja. De nieuwe shop bouwen we naast uw huidige webshop op, die gewoon doordraait en verkoopt. Pas bij de livegang zetten we uw domein om naar waar u heen wilt. Tegen die tijd heeft u vertrouwen in het nieuwe systeem en is alles getest." )
   ]
 
 -- =============================================================================
@@ -846,40 +854,52 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
 -- | The MijnWebwinkel-page FAQ. The extra livelihood questions (bestellingen
 -- tijdens de verhuizing, e-mail, wat kost Shopify zelf, verhuizen mijn
 -- pagina's en reviews) come from a merchant-persona read-through (aug 2026):
--- ze bleken de grootste stille bezwaren op de pagina. Antwoorden zijn platte
--- tekst (geen HTML): 'renderFaqItem' escapet en 'faqPageJsonLd' voert ze als
--- JSON af, dus links schrijven we voluit als domeinnaam.
-mijnwebwinkelFaq :: [(Text, Text)]
+-- ze bleken de grootste stille bezwaren op de pagina. Antwoorden die de
+-- lezer ergens heen sturen (rekenhulp, Shopify-prijzen) dragen echte links
+-- via 'faqAnswerHtml'.
+mijnwebwinkelFaq :: [(FaqQuestion, FaqAnswer)]
 mijnwebwinkelFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, betaalmethoden, eventuele koppelingen, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+    , faqAnswerText "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, betaalmethoden, eventuele koppelingen, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Wat gebeurt er met bestellingen tijdens de verhuizing?"
-    , "Uw MijnWebwinkel-shop blijft gewoon open en verkoopt door terwijl wij de nieuwe shop opbouwen. Vlak voor de livegang zetten we de laatste stand over, zodat ook recente bestellingen en actuele voorraadaantallen meekomen. Bestelgeschiedenis en voorraad kiest u als optie in de rekenhulp op de prijzenpagina." )
+    , faqAnswerHtml $ do
+        "Uw MijnWebwinkel-shop blijft gewoon open en verkoopt door terwijl wij de nieuwe shop opbouwen. Vlak voor de livegang zetten we de laatste stand over, zodat ook recente bestellingen en actuele voorraadaantallen meekomen. Bestelgeschiedenis en voorraad kiest u als optie in "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        "." )
   , ( "Kan ik mijn domeinnaam behouden?"
-    , "Ja, uw webadres blijft gewoon van u. Bij de livegang wijzen we uw domeinnaam op de nieuwe shop, en alle oude links worden automatisch doorgestuurd." )
+    , faqAnswerText "Ja, uw webadres blijft gewoon van u. Bij de livegang wijzen we uw domeinnaam op de nieuwe shop, en alle oude links worden automatisch doorgestuurd." )
   , ( "Wat gebeurt er met mijn e-mailadres?"
-    , "Uw e-mailadres blijft gewoon werken. Loopt uw e-mail nu via MijnWebwinkel, dan zetten we uw mailboxen en doorstuurregels over als losse dienst (e-mail-setup in de rekenhulp), zodat u geen bericht mist." )
+    , faqAnswerHtml $ do
+        "Uw e-mailadres blijft gewoon werken. Loopt uw e-mail nu via MijnWebwinkel, dan zetten we uw mailboxen en doorstuurregels over als losse dienst (e-mail-setup in "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        "), zodat u geen bericht mist." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma telt na afloop alles na. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd en het programma telt na afloop alles na. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
-    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw nieuwe platform beide ondersteunen. Ook de vertaalde webadressen verhuizen mee." )
+    , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw nieuwe platform beide ondersteunen. Ook de vertaalde webadressen verhuizen mee." )
   , ( "Kan ik ook naar een ander platform dan Shopify migreren?"
-    , "Ja. Shopify wordt het meest gekozen, maar we kunnen ook migreren naar WooCommerce of andere platformen." )
+    , faqAnswerText "Ja. Shopify wordt het meest gekozen, maar we kunnen ook migreren naar WooCommerce of andere platformen." )
   , ( "Wat kost Shopify zelf per maand?"
-    , "Het Basic-abonnement van Shopify kost \8364" <> shopifyBasicJaarlijksEuroPerMaand
-        <> " per maand bij jaarlijkse betaling, of \8364" <> shopifyBasicMaandelijksEuroPerMaand
-        <> " per maand als u per maand betaalt (prijspeil " <> shopifyPrijspeil
-        <> "). Voor de meeste shops die van MijnWebwinkel komen is Basic voldoende. De actuele prijzen vindt u op shopify.com/nl/prijzen." )
+    , faqAnswerHtml $ do
+        toHtml ("Het Basic-abonnement van Shopify kost \8364" <> shopifyBasicJaarlijksEuroPerMaand
+          <> " per maand bij jaarlijkse betaling, of \8364" <> shopifyBasicMaandelijksEuroPerMaand
+          <> " per maand als u per maand betaalt (prijspeil " <> shopifyPrijspeil
+          <> "). Voor de meeste shops die van MijnWebwinkel komen is Basic voldoende. De actuele prijzen vindt u op ")
+        H.a ! A.href shopifyPrijzenUrl $ "shopify.com/nl/prijzen"
+        "." )
   , ( "Kunnen jullie een website importeren naar Shopify?"
-    , "Ja. Producten, teksten, afbeeldingen, klanten en de categoriestructuur van uw bestaande website worden automatisch naar Shopify overgezet, inclusief automatische doorverwijzingen (301-redirects) van al uw oude links, zodat uw Google-posities meeverhuizen." )
+    , faqAnswerText "Ja. Producten, teksten, afbeeldingen, klanten en de categoriestructuur van uw bestaande website worden automatisch naar Shopify overgezet, inclusief automatische doorverwijzingen (301-redirects) van al uw oude links, zodat uw Google-posities meeverhuizen." )
   , ( "Worden spaarpunten ook overgezet?"
-    , "Ja. Spaarpuntensaldi van uw klanten worden meegenomen naar het loyaliteitsprogramma van uw nieuwe platform." )
+    , faqAnswerText "Ja. Spaarpuntensaldi van uw klanten worden meegenomen naar het loyaliteitsprogramma van uw nieuwe platform." )
   , ( "Verhuizen mijn pagina's, reviews en kortingscodes ook?"
-    , "Ja. Informatiepagina's zoals over-ons en verzendinformatie en uw blog verhuizen standaard mee. Reviews neemt u als optie mee in de rekenhulp, en ook kortingscodes en cadeaubonnen zetten we voor u over. Alles wat in uw shop zit, kan mee." )
+    , faqAnswerHtml $ do
+        "Ja. Informatiepagina's zoals over-ons en verzendinformatie en uw blog verhuizen standaard mee. Reviews neemt u als optie mee in "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        ", en ook kortingscodes en cadeaubonnen zetten we voor u over. Alles wat in uw shop zit, kan mee." )
   , ( "Hoe werken de SEO-redirects precies?"
-    , "MijnWebwinkel bouwt zijn links op uit interne artikelnummers. We hebben uitgezocht hoe dat precies werkt, waardoor we voor elke oude link automatisch de juiste doorverwijzing (301-redirect) kunnen aanmaken, ook voor links met nummers erin." )
+    , faqAnswerText "MijnWebwinkel bouwt zijn links op uit interne artikelnummers. We hebben uitgezocht hoe dat precies werkt, waardoor we voor elke oude link automatisch de juiste doorverwijzing (301-redirect) kunnen aanmaken, ook voor links met nummers erin." )
   , ( "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
-    , "Ja. We kunnen grootschalige wijzigingen doorvoeren, bijvoorbeeld prijzen aanpassen, beschrijvingen opschonen, of beschrijvingen voor Google toevoegen aan al uw afbeeldingen (alt-teksten)." )
+    , faqAnswerText "Ja. We kunnen grootschalige wijzigingen doorvoeren, bijvoorbeeld prijzen aanpassen, beschrijvingen opschonen, of beschrijvingen voor Google toevoegen aan al uw afbeeldingen (alt-teksten)." )
   ]
 
 -- =============================================================================
@@ -1014,20 +1034,20 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       }
 
-ccvshopFaq :: [(Text, Text)]
+ccvshopFaq :: [(FaqQuestion, FaqAnswer)]
 ccvshopFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+    , faqAnswerText "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
-    , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
+    , faqAnswerText "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
-    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en uw doelplatform beide ondersteunen." )
+    , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en uw doelplatform beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
-    , "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
+    , faqAnswerText "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
   , ( "Hoe werken de SEO-redirects precies?"
-    , "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe adres. Uw Google-rankings en backlinks blijven behouden." )
+    , faqAnswerText "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe adres. Uw Google-rankings en backlinks blijven behouden." )
   -- Decision: POS-antwoord is bewust eerlijk over de beperking en
   -- maakt er een bestemmingskeuze van: bij WooCommerce blijft de
   -- CCV-terminal via Nederlandse kassasoftware gekoppeld, bij
@@ -1038,7 +1058,7 @@ ccvshopFaq =
   -- alleen voor wie een geïntegreerde kassa wil. Bron-onderzoek in
   -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
   , ( "Ik heb ook een fysieke winkel met een CCV-pinterminal. Kan die mee?"
-    , "Dat hangt af van uw bestemming. Kiest u WooCommerce, dan kan uw CCV-terminal gewoon gekoppeld blijven: Nederlandse kassasoftware verbindt de terminal en synchroniseert de voorraad met uw webshop, en uw pincontract loopt door. Kiest u Shopify, dan koppelt de terminal niet meer met de kassa; hij kan wel als losse pin blijven werken, maar dan typt u elk bedrag over. Wilt u winkel en webshop weer als \233\233n geheel, dan vervangt u hem door een Shopify-terminal. Die overstap is eenmalig en bescheiden (\8364" <> "59 tot \8364" <> "249) en daarna bent u ook voor het pinnen van CCV af. Wij hebben ervaring met het inrichten van kassa's en pinterminals en nemen dit gewoon in het migratietraject mee." )
+    , faqAnswerText $ "Dat hangt af van uw bestemming. Kiest u WooCommerce, dan kan uw CCV-terminal gewoon gekoppeld blijven: Nederlandse kassasoftware verbindt de terminal en synchroniseert de voorraad met uw webshop, en uw pincontract loopt door. Kiest u Shopify, dan koppelt de terminal niet meer met de kassa; hij kan wel als losse pin blijven werken, maar dan typt u elk bedrag over. Wilt u winkel en webshop weer als \233\233n geheel, dan vervangt u hem door een Shopify-terminal. Die overstap is eenmalig en bescheiden (\8364" <> "59 tot \8364" <> "249) en daarna bent u ook voor het pinnen van CCV af. Wij hebben ervaring met het inrichten van kassa's en pinterminals en nemen dit gewoon in het migratietraject mee." )
   ]
 
 -- =============================================================================
@@ -1162,20 +1182,20 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       }
 
-lightspeedFaq :: [(Text, Text)]
+lightspeedFaq :: [(FaqQuestion, FaqAnswer)]
 lightspeedFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+    , faqAnswerText "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
-    , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
+    , faqAnswerText "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Verlies ik mijn Google-posities?"
-    , "Elke oude URL krijgt automatisch een 301-redirect, zodat al uw links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
+    , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al uw links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Werkt het ook voor meertalige webshops?"
-    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die Lightspeed en Shopify beide ondersteunen." )
+    , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die Lightspeed en Shopify beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
-    , "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
+    , faqAnswerText "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
   ]
 
 -- =============================================================================
@@ -1429,28 +1449,17 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       , pageMetaExtraHead   = faqPageJsonLd lightspeedWaaromFaq
       }
 
-lightspeedWaaromFaq :: [(Text, Text)]
+lightspeedWaaromFaq :: [(FaqQuestion, FaqAnswer)]
 lightspeedWaaromFaq =
   [ ( "Waarom wordt Lightspeed steeds duurder?"
-    , "Lightspeed is beursgenoteerd (NYSE/TSX: LSPD) en moet elk kwartaal groei laten zien aan aandeelhouders. Omdat de markt verzadigd is, verhoogt het management de prijs per klant in plaats van meer klanten te werven." )
+    , faqAnswerText "Lightspeed is beursgenoteerd (NYSE/TSX: LSPD) en moet elk kwartaal groei laten zien aan aandeelhouders. Omdat de markt verzadigd is, verhoogt het management de prijs per klant in plaats van meer klanten te werven." )
   , ( "Wat is er met Lightspeed eCom C-Series?"
-    , "De C-Series wordt afgebouwd. De opvolger is E-Series, gebaseerd op het opgekochte Ecwid. De E-Series migratie is alleen beschikbaar in Noord-Amerika; Nederlandse shops zitten vast op het oude platform." )
+    , faqAnswerText "De C-Series wordt afgebouwd. De opvolger is E-Series, gebaseerd op het opgekochte Ecwid. De E-Series migratie is alleen beschikbaar in Noord-Amerika; Nederlandse shops zitten vast op het oude platform." )
   , ( "Hoeveel webshops verlaten Lightspeed?"
-    , "In de afgelopen 90 dagen vertrokken 160 webshops terwijl er slechts 16 bijkwamen. Sinds Q3 2023 is het totaal gedaald van 23.700 naar 18.500 shops, een daling van 22%." )
+    , faqAnswerText "In de afgelopen 90 dagen vertrokken 160 webshops terwijl er slechts 16 bijkwamen. Sinds Q3 2023 is het totaal gedaald van 23.700 naar 18.500 shops, een daling van 22%." )
   , ( "Waar gaan vertrekkende Lightspeed-shops naartoe?"
-    , "59% van de vertrekkende Lightspeed-shops kiest Shopify als bestemming." )
+    , faqAnswerText "59% van de vertrekkende Lightspeed-shops kiest Shopify als bestemming." )
   ]
-
--- =============================================================================
--- FAQ rendering (visible accordion-free definition list)
--- =============================================================================
-
--- | Render a single question/answer pair as a @<dt>/<dd>@ pair. The same pairs
--- feed 'faqPageJsonLd' so the visible FAQ and the structured data never drift.
-renderFaqItem :: (Text, Text) -> Html
-renderFaqItem (question, answer) = do
-  H.dt (toHtml question)
-  H.dd (toHtml answer)
 
 -- =============================================================================
 -- Blog index page (paginated listing)
