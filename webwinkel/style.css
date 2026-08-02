@@ -829,3 +829,180 @@ footer small {
 .calc-offerte {
   cursor: pointer;
 }
+
+/* =========================================================================
+   Webshop-scanner (/scan.html): invoer, laadscherm en rapport.
+   Zelfde componenttaal als de prijs-calculator; de calc-field/calc-fout
+   klassen worden hergebruikt voor het invoerveld. */
+.webshop-scanner {
+  background: #fff;
+  border: 1px solid #dbe5ef;
+  border-radius: 6px;
+  padding: 2em;
+}
+.scanner-form .cta-button {
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  margin-top: 0.75rem;
+}
+.scanner-form .calc-hint {
+  display: block;
+  margin-top: 0.6rem;
+}
+
+/* Laadscherm met spinner; de statusregel meldt wachtrijpositie of meting. */
+.scanner-laden {
+  text-align: center;
+  padding: 2em 0;
+}
+.scanner-spinner {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 1rem;
+  border: 4px solid #dbe5ef;
+  border-top-color: #10456b;
+  border-radius: 50%;
+  animation: scanner-draai 1s linear infinite;
+}
+@keyframes scanner-draai {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scanner-spinner { animation: none; }
+}
+.scanner-status {
+  font-weight: 600;
+  color: #0c2f47;
+}
+
+.scanner-mislukt {
+  text-align: center;
+  padding: 1.5em 0;
+}
+.scanner-mislukt .cta-button-secondary {
+  cursor: pointer;
+  margin-top: 0.75rem;
+}
+
+/* Rapport: scorebollen in Lighthouse-kleuren, kernmetingen, puntkaarten. */
+.scanner-rapport-kop {
+  overflow-wrap: anywhere;
+}
+.scanner-platform {
+  color: #41505f;
+  margin-bottom: 1rem;
+}
+.scanner-scores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 1rem 0 2rem;
+}
+.scanner-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 90px;
+}
+.scanner-score-getal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 4px solid;
+  font-weight: 700;
+  font-size: 1.2em;
+}
+.scanner-score-label {
+  margin-top: 0.4rem;
+  font-size: 0.85em;
+  text-align: center;
+}
+.scanner-score-goed .scanner-score-getal { border-color: #2f9e44; color: #2f9e44; }
+.scanner-score-matig .scanner-score-getal { border-color: #e8590c; color: #c44d06; }
+.scanner-score-slecht .scanner-score-getal { border-color: #e03131; color: #e03131; }
+.scanner-score-onbekend .scanner-score-getal { border-color: #b9c8d8; color: #41505f; }
+
+.scanner-kernmetingen {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.3rem 1.5rem;
+  margin: 1rem 0 2rem;
+}
+.scanner-kernmetingen dt {
+  color: #41505f;
+}
+.scanner-kernmetingen dd {
+  margin: 0;
+  font-weight: 600;
+  color: #0c2f47;
+  text-align: right;
+}
+
+.scanner-punt {
+  border: 1px solid #dbe5ef;
+  border-radius: 6px;
+  padding: 1em 1.25em;
+  margin: 0.8em 0;
+}
+.scanner-punt-kop {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.scanner-punt-categorie {
+  color: #41505f;
+}
+.scanner-punt-meetwaarde {
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 0.85em;
+  color: #0c2f47;
+  margin: 0.3rem 0;
+}
+.scanner-punt-waarom {
+  margin: 0.3rem 0 0;
+}
+.scanner-badge {
+  border-radius: 999px;
+  padding: 0.1em 0.75em;
+  font-size: 0.8em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.scanner-badge-oplosbaar {
+  background: #e6f4ea;
+  color: #1e7a34;
+}
+.scanner-badge-vast {
+  background: #fdecec;
+  color: #c22626;
+}
+.scanner-uitklap {
+  cursor: pointer;
+  font-size: 1em;
+  margin: 0.75rem 0;
+}
+
+/* Upsell-blokken onder het rapport. */
+.scanner-upsell {
+  background: #eaf1f8;
+  border-radius: 6px;
+  padding: 1.25em 1.5em;
+  margin-top: 1.5rem;
+}
+.scanner-upsell h3 {
+  margin-bottom: 0.4rem;
+}
+.scanner-upsell .cta-button,
+.scanner-upsell .cta-button-secondary {
+  margin-top: 0.75rem;
+}
+.scanner-meta {
+  margin-top: 1.5rem;
+  color: #41505f;
+}

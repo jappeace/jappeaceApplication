@@ -36,6 +36,7 @@ import PenguinTemplates
   )
 import WebwinkelTemplates
   ( webwinkelIndexPage
+  , scanPage
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
@@ -98,10 +99,13 @@ usesMeetLinkCase (pageName, page) = testCase pageName $ do
 -- | Every statically renderable page of both brand sites: the index pages
 -- plus everything already in 'meetLinkPages' (which contains the wordpress
 -- and webwinkel service pages).
+-- scanPage is listed here but not in 'meetLinkPages': its plan-een-gesprek
+-- buttons live inside the Elm scanner app, not in the static HTML.
 allStaticPages :: [(String, Html)]
 allStaticPages =
   [ ("penguinIndexPage", penguinIndexPage (WebwinkelverhuisUrl testOrigin))
   , ("penguinIndexPageNl", penguinIndexPageNl (WebwinkelverhuisUrl testOrigin))
+  , ("scanPage", scanPage)
   ] <> meetLinkPages
 
 -- | No page may publish share-URL tracking parameters. URLs copied from a
