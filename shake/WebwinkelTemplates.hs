@@ -715,7 +715,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
                 ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
-          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
+          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu. Ook uw informatiepagina&apos;s (contact, voorwaarden, verzendinformatie) verhuizen mee." :: Text)
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-thema.svg"
                 ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
@@ -834,7 +834,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
       -- De Fiserv-twijfel is bewust als vraag geformuleerd: er is geen
       -- EOL-aankondiging, dus hard stellen mag niet.
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("CCV Shop werd sinds 2023 bijna 20% duurder, terwijl thema&apos;s en functies al jaren stilstaan. En sinds de Amerikaanse betaalreus Fiserv CCV overnam, is het de vraag hoeveel prioriteit de webshopsoftware nog krijgt. Wij verhuizen uw complete shop geautomatiseerd naar Shopify: zonder dataverlies, met zo min mogelijk downtime." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("CCV Shop werd sinds 2023 bijna 20% duurder, terwijl thema&apos;s en functies al jaren stilstaan. En sinds de Amerikaanse betaalreus Fiserv CCV overnam, is het de vraag hoeveel prioriteit de webshopsoftware nog krijgt. Wij verhuizen uw complete shop geautomatiseerd naar Shopify, WooCommerce of een ander platform van uw keuze: zonder dataverlies, met zo min mogelijk downtime." :: Text)
       H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
@@ -843,7 +843,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.h3 "Producten & varianten"
-          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar Shopify-formaat."
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van uw doelplatform."
         H.li ! A.class_ "card" $ do
           H.h3 "Meerdere talen"
           H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
@@ -855,7 +855,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw backlinks blijven werken en uw opgebouwde SEO verhuist mee."
         H.li ! A.class_ "card" $ do
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
-          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Shopify Collections met vertaalde titels en het navigatiemenu." :: Text)
+          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Voorraad & prijzen"
           H.p "Voorraadinformatie en staffelprijzen worden meegenomen. Per-variant prijzen en voorraadbeheer werken direct in Shopify."
@@ -894,7 +894,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
         H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (" &mdash; u kiest de bestemming, wij migreren naar elk platform" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
-        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
+        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
         H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
@@ -909,13 +909,13 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.h3 "SEO-redirects"
-          H.p "Volledige 301-redirect mapping van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings, backlinks en organisch verkeer blijven behouden."
+          H.p "Volledige 301-redirect mapping van elke oude URL naar het nieuwe adres. Uw Google-rankings, backlinks en organisch verkeer blijven behouden."
         H.li ! A.class_ "card" $ do
           H.h3 "Bulk-aanpassingen"
           H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen &mdash; alles in &eacute;&eacute;n keer." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Voorraad & staffelprijzen"
-          H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar Shopify. Inclusief prijsverschillen per maat of kleur."
+          H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar uw nieuwe shop. Inclusief prijsverschillen per maat of kleur."
         H.li ! A.class_ "card" $ do
           H.h3 "Vertalingen & URL-slugs"
           H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via de offici&euml;le Shopify API. Inclusief vertaalde URL-slugs." :: Text)
@@ -939,14 +939,14 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
       { pageMetaTitle       = "Ontsnap CCV Shop \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd ccvshopFaq <> serviceJsonLd
           "CCV Shop naar Shopify migratie"
-          "Geautomatiseerde migratie van CCV Shop naar Shopify: producten, vertalingen, afbeeldingen, voorraad, klantdata en SEO-redirects."
+          "Geautomatiseerde migratie van CCV Shop naar Shopify, WooCommerce of een ander platform: producten, vertalingen, afbeeldingen, voorraad, klantdata en SEO-redirects."
           "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       }
 
@@ -959,11 +959,11 @@ ccvshopFaq =
   , ( "Wat als er iets niet klopt na de migratie?"
     , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
-    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en Shopify beide ondersteunen." )
+    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en uw doelplatform beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
     , "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
   , ( "Hoe werken de SEO-redirects precies?"
-    , "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings en backlinks blijven behouden." )
+    , "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe adres. Uw Google-rankings en backlinks blijven behouden." )
   -- Decision: POS-antwoord is bewust eerlijk over de beperking en
   -- maakt er een bestemmingskeuze van: bij WooCommerce blijft de
   -- CCV-terminal via Nederlandse kassasoftware gekoppeld, bij
@@ -996,7 +996,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.h3 "Producten & varianten"
-          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar Shopify-formaat."
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van uw doelplatform."
         H.li ! A.class_ "card" $ do
           H.h3 "Meerdere talen"
           H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
@@ -1008,7 +1008,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw backlinks blijven werken en uw opgebouwde SEO verhuist mee; bij onbegeleide migraties zagen we verhalen van 70% verkeersverlies."
         H.li ! A.class_ "card" $ do
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n & navigatie" :: Text)
-          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Shopify Collections met vertaalde titels en het navigatiemenu." :: Text)
+          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Voorraad & prijzen"
           H.p "Voorraadbeheer, staffelprijzen en per-variant pricing worden correct overgezet. Uw voorraadniveaus kloppen direct in Shopify."
@@ -1045,7 +1045,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
         H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (" &mdash; u kiest de bestemming, wij migreren naar elk platform" :: Text)
         H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le Shopify APIs" :: Text)
+        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
         H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
 
@@ -1060,13 +1060,13 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.h3 "SEO-redirects"
-          H.p "Volledige 301-redirect mapping van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings, backlinks en organisch verkeer blijven behouden."
+          H.p "Volledige 301-redirect mapping van elke oude URL naar het nieuwe adres. Uw Google-rankings, backlinks en organisch verkeer blijven behouden."
         H.li ! A.class_ "card" $ do
           H.h3 "Bulk-aanpassingen"
           H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen &mdash; alles in &eacute;&eacute;n keer." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Voorraad & staffelprijzen"
-          H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar Shopify. Inclusief prijsverschillen per maat of kleur."
+          H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar uw nieuwe shop. Inclusief prijsverschillen per maat of kleur."
         H.li ! A.class_ "card" $ do
           H.h3 "Vertalingen & URL-slugs"
           H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via de offici&euml;le Shopify API. Inclusief vertaalde URL-slugs." :: Text)
