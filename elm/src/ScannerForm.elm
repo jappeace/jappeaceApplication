@@ -791,11 +791,18 @@ rapportWeergave rapport stand =
         ++ upsellBlok rapport
 
 
+-- Decision: een niet-herkend platform krijgt geen rapport (geen scores,
+-- verbeterpunten of aanbod), alleen "Platform niet herkend." en de
+-- zoekbox opnieuw. Gekozen door Jappie (2 aug 2026) boven het alternatief
+-- (het volledige Lighthouse-rapport tonen met "platform: niet herkend"
+-- erboven, zoals het eerst deed): wij fixeren op de ondersteunde
+-- webshopplatformen en willen geen generiek Lighthouse-loket zijn, en
+-- zonder herkend platform kunnen we oplosbaar-versus-vast toch niet
+-- duiden, dus het rapport zou leuren zonder advies te dragen.
+
+
 {-| Vervangt het volledige rapport wanneer de scanner het platform niet
-herkent. Besluit Jappie (2 aug 2026): wij fixeren op de ondersteunde
-webshopplatformen en zijn bewust geen generiek Lighthouse-loket, dus een
-niet-herkend platform krijgt geen scores, verbeterpunten of aanbod te
-zien: alleen de melding en een nieuwe zoekbox. Het formulier is hetzelfde
+herkent: alleen de melding en een nieuwe zoekbox. Het formulier is hetzelfde
 als op de startfase ('invoerWeergave'), met het gescande adres nog
 ingevuld zodat een tikfout snel hersteld is; 'ScanAangevraagd' werkt
 vanuit elke fase, dus opnieuw scannen werkt hiervandaan direct. -}
