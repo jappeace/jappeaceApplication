@@ -261,8 +261,8 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Verhuis uw webshop. Zonder dataverlies, zonder SEO-verlies."
-          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw complete webshop geautomatiseerd naar Shopify of een ander platform &mdash; producten, vertalingen, afbeeldingen, klantdata en SEO-redirects. U betaalt pas na een succesvolle migratie." :: Text)
+          H.h1 "Webshop verhuizen zonder data en SEO verlies."
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw complete webshop geautomatiseerd naar Shopify of een ander platform. U betaalt pas na een succesvolle migratie." :: Text)
           -- Decision: the landing-page CTAs point at the price calculator
           -- instead of an offerte-mailto. The calculator gives the visitor an
           -- immediate, tangible result (Gemini-feedback: CTAs should offer
@@ -287,7 +287,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
             " \8212 De testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
           H.li $ do
             H.strong "DNS-overzet"
-            " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+            " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd."
         scanDemo
 
     recentWerkSection
@@ -295,7 +295,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
     -- Why us
     H.section ! A.class_ "results" $ do
       H.h2 "Waarom via ons?"
-      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform &mdash; Shopify, WooCommerce, of iets anders &mdash; wij regelen de techniek." :: Text)
+      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform: Shopify, WooCommerce, of vraag ons advies voor uw situatie. Wij regelen de techniek." :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na een succesvolle migratie" :: Text)
         H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
@@ -345,12 +345,9 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       H.h2 "Prijzen"
       H.div ! A.class_ "card-grid" $ do
         H.div ! A.class_ "card" $ do
-          H.h3 "Volledige migratie"
-          H.p ! A.class_ "price" $ H.preEscapedToHtml ("Vanaf &euro;" <> migratieBasisprijsEuro)
+          H.h3 $ "Volledige migratie" <> H.preEscapedToHtml (" vanaf &euro;" <> migratieBasisprijsEuro)
           H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects. Grotere catalogi, extra talen en losse diensten (domeinverhuizing, e-mail-setup) hebben een vaste meerprijs." :: Text)
-          H.p $ H.a ! A.href "/prijzen.html" $ H.preEscapedToHtml ("Bekijk de volledige prijzen &rarr;" :: Text)
           H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
-      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Vaste prijs, vooraf afgesproken, en u betaalt pas na een succesvolle migratie. Getoonde prijzen zijn een indicatie; uw offerte is de echte prijsgarantie." :: Text)
 
     -- FAQ
     H.section ! A.class_ "about" $ do
@@ -385,13 +382,13 @@ homeFaq =
   [ ( "Kan mijn webshop verhuisd worden?"
     , "Vrijwel altijd. Producten, teksten, afbeeldingen, klanten en de categoriestructuur zetten we geautomatiseerd over vanaf MijnWebwinkel, CCV Shop, Lightspeed en andere platformen, inclusief 301-redirects van al uw oude URLs zodat uw Google-posities meeverhuizen." )
   , ( "Naar welk platform kan ik het beste verhuizen?"
-    , "Dat hangt af van uw situatie: uw assortiment, uw koppelingen en hoeveel u zelf wilt kunnen aanpassen. Shopify is het meest gekozen doelplatform en WooCommerce doen we ook. Weet u het nog niet? In een gratis gesprek adviseren we een platform op basis van uw situatie, en in de rekenhulp kunt u die keuze gewoon openlaten." )
+    , "Dat hangt af van uw situatie: uw assortiment, uw koppelingen en hoeveel u zelf wilt kunnen aanpassen. Shopify is het meest gekozen doelplatform omdat het makkelijk is. WooCommerce kan een goede optie zijn omdate het flexibel is. Weet u het nog niet? In een gratis gesprek adviseren we een platform op basis van uw situatie, en in de rekenhulp kunt u die keuze gewoon openlaten." )
   , ( "Hoe lang duurt een migratie?"
     , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Wat kost een webshop-migratie?"
     , "Een vaste prijs vanaf " <> migratieBasisprijsEuro <> " euro, afhankelijk van het aantal producten en talen, en u betaalt pas na een geslaagde migratie. Met de rekenhulp op de prijzenpagina berekent u in een minuut uw richtprijs." )
   , ( "Kan mijn shop blijven doorverkopen tijdens de migratie?"
-    , "Ja. De nieuwe shop bouwen we naast uw huidige webshop op, die gewoon doordraait en verkoopt. Pas bij de livegang wijst u uw domein om." )
+    , "Ja. De nieuwe shop bouwen we naast uw huidige webshop op, die gewoon doordraait en verkoopt. Pas bij de livegang zetten we uw domein om naar waar u heenwilt. Tegen die tijd heeft u vetrouwen in het nieuwe systeem en is alles gestest." )
   ]
 
 -- =============================================================================
@@ -480,7 +477,7 @@ recentWerkSection =
       H.blockquote $
         H.p $ do
           H.strong "Panzer-ShopNL"
-          H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en automatisch gegenereerde 301-redirects, zodat elke oude link bleef werken en de opgebouwde SEO meeverhuisde. " :: Text)
+          H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en link behoud, zodat de SEO meeverhuisde. " :: Text)
           H.a ! A.href "/blog/klantverhaal-panzer-shopnl-van-mijnwebwinkel-naar-shopify-in-drie-talen.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
           H.preEscapedToHtml (" &middot; " :: Text)
           H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
