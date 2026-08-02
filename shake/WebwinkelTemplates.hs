@@ -925,6 +925,9 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
         H.li ! A.class_ "card" $ do
           H.h3 "Testshop"
           H.p "U krijgt een volledige testshop naast uw huidige shop om alvast te wennen. Pas na uw akkoord gaan we live; eventuele correcties zijn inbegrepen."
+        H.li ! A.class_ "card" $ do
+          H.h3 "Fysieke winkel & kassa"
+          H.p "Verkoopt u ook in een fysieke winkel? We richten Shopify POS voor u in zodat winkel en webshop weer dezelfde voorraad delen, en we hebben ervaring met het aansluiten van pinterminals op de kassa."
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
@@ -961,6 +964,13 @@ ccvshopFaq =
     , "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
   , ( "Hoe werken de SEO-redirects precies?"
     , "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe Shopify-adres. Uw Google-rankings en backlinks blijven behouden." )
+  -- Decision: POS-antwoord is bewust eerlijk over de beperking:
+  -- Shopify POS integreert alleen Shopify-eigen terminals via Shopify
+  -- Payments (help.shopify.com, gecheckt 2 aug 2026), een
+  -- CCV-terminal koppelt dus niet. Bron-onderzoek in
+  -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
+  , ( "Ik heb ook een fysieke winkel met een CCV-pinterminal. Kan die mee?"
+    , "Uw CCV-terminal koppelt niet met de kassa van Shopify: Shopify POS werkt alleen met eigen terminals via Shopify Payments. Er zijn twee routes: uw huidige terminal blijft als losse pin naast de kassa doorwerken, of u stapt over op Shopify POS-hardware zodat winkel en webshop weer automatisch dezelfde voorraad delen. We hebben ervaring met het inrichten van kassa's en pinterminals bij winkels en nemen dit gewoon in het migratietraject mee." )
   ]
 
 -- =============================================================================
