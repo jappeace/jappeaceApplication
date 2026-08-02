@@ -924,7 +924,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       -- functies gebruikt, prikt daar meteen doorheen. Wat blijft is
       -- wat we kunnen aantonen; de Fiserv-passage blijft bewust een
       -- constatering over zwaartepunt, geen EOL-voorspelling.
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("CCV Shop werd sinds 2023 bijna 20% duurder, en het aantal winkels op het platform daalde sinds de piek in 2022 met ruim een kwart. Er wordt nog aan gewerkt, maar sinds de Amerikaanse betaalreus Fiserv CCV overnam ligt het zwaartepunt bij betalen en kassa: uw webshop is daar &eacute;&eacute;n product naast. Wij verhuizen uw complete shop geautomatiseerd naar Shopify, WooCommerce of een ander platform van uw keuze: zonder dataverlies, met zo min mogelijk downtime." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Sinds de Amerikaanse betaalreus Fiserv CCV overnam ligt het zwaartepunt bij betalen en kassa: uw webshop is een tweede rang product. Wij verhuizen uw complete shop geautomatiseerd naar Shopify, WooCommerce of een ander platform van uw keuze: zonder dataverlies, met zo min mogelijk downtime." :: Text)
       H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
