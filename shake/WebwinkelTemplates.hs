@@ -41,6 +41,11 @@ import PageChrome
   , whatsappFloatingButton
   , jsonLdString
   , serviceJsonLd
+  , FaqQuestion
+  , FaqAnswer
+  , faqAnswerText
+  , faqAnswerHtml
+  , renderFaqItem
   , faqPageJsonLd
   , formatIsoDate
   , formatHumanDate
@@ -254,6 +259,47 @@ webwinkelBlogBaseTemplate = webwinkelBaseWith "article" True
 -- Landing page (index.html)
 -- =============================================================================
 
+-- Decision: het Shopify Basic-maandbedrag staat met prijspeildatum naast onze
+-- eigen prijzen (merchant-persona read-through, aug 2026): "wat ga ik daarna
+-- per maand betalen" was het grootste onbeantwoorde bezwaar op de pagina.
+-- Alternatief was alleen naar shopify.com linken zonder bedrag, maar een
+-- bezoeker die moet doorklikken om de maandprijs te vinden leest dat als
+-- verstopte kosten. De datum maakt een latere prijswijziging bij Shopify
+-- geen gebroken belofte.
+
+-- | Shopify Basic per maand bij jaarlijkse betaling, in euro's.
+shopifyBasicJaarlijksEuroPerMaand :: Text
+shopifyBasicJaarlijksEuroPerMaand = "21"
+
+-- | Shopify Basic per maand bij maandelijkse betaling, in euro's.
+shopifyBasicMaandelijksEuroPerMaand :: Text
+shopifyBasicMaandelijksEuroPerMaand = "28"
+
+-- | Peildatum van de getoonde Shopify-prijzen; bijwerken wanneer de bedragen
+-- opnieuw gecontroleerd worden.
+shopifyPrijspeil :: Text
+shopifyPrijspeil = "augustus 2026"
+
+-- | Shopify's eigen prijzenpagina, waar de getoonde bedragen vandaan komen.
+shopifyPrijzenUrl :: H.AttributeValue
+shopifyPrijzenUrl = "https://www.shopify.com/nl/prijzen"
+
+-- | Note under the price sections: what the merchant pays Shopify itself per
+-- month after the migration, datestamped and linked to Shopify's own pricing
+-- page. Shown wherever 'prijzen' appears and on 'prijzenPage'.
+shopifyKostenNote :: Html
+shopifyKostenNote =
+  H.p ! A.class_ "engagement-note" $ do
+    H.preEscapedToHtml
+      ( "Naast onze eenmalige migratieprijs betaalt u het abonnement van uw nieuwe platform. Shopify Basic kost bijvoorbeeld &euro;"
+          <> shopifyBasicJaarlijksEuroPerMaand
+          <> " per maand bij jaarlijkse betaling en &euro;"
+          <> shopifyBasicMaandelijksEuroPerMaand
+          <> " per maand bij maandelijkse betaling (prijspeil " <> shopifyPrijspeil <> ", zie "
+      )
+    H.a ! A.href shopifyPrijzenUrl $ "de actuele Shopify-prijzen"
+    ")."
+
 prijzen :: Html
 prijzen = H.section ! A.class_ "engagement" ! A.id "prijzen" $ do
       H.h2 "Prijzen"
@@ -262,6 +308,7 @@ prijzen = H.section ! A.class_ "engagement" ! A.id "prijzen" $ do
           H.h3 $ "Volledige migratie" <> H.preEscapedToHtml (" vanaf &euro;" <> migratieBasisprijsEuro)
           H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects. Grotere catalogi, extra talen en losse diensten (e-mail-setup, en domeinverhuizing als uw domein nog bij uw huidige platform staat) hebben een vaste meerprijs." :: Text)
           H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
+      shopifyKostenNote
 
 
 
@@ -292,13 +339,13 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
         H.ol $ do
           H.li $ do
             H.strong "Scan"
-            " \8212 Ons programma leest uw huidige webshop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+            ": ons programma leest uw huidige webshop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
           H.li $ do
             H.strong "Wennen"
-            " \8212 De testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
+            ": de testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
           H.li $ do
             H.strong "DNS-overzet"
-            " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd."
+            ": bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd."
         scanDemo
 
     recentWerkSection
@@ -308,11 +355,11 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       H.h2 "Waarom via ons?"
       H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform: Shopify, WooCommerce, of vraag ons advies voor uw situatie. Wij regelen de techniek." :: Text)
       H.ul $ do
-        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na een succesvolle migratie" :: Text)
-        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
-        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
+        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (": u betaalt pas na een succesvolle migratie" :: Text)
+        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (": geen handmatig overtypen, geen kopieerfouten" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (": het programma valideert zijn eigen werk" :: Text)
+        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (": elke oude link krijgt een 301-redirect en blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
+        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (": geen uurtarief, u weet vooraf wat het kost" :: Text)
       H.p $ do
         "Meer weten over waarom shops vertrekken? Lees onze "
         H.a ! A.href "/blog/" $ "blog"
@@ -330,7 +377,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
                 ! A.alt "Sneeuwvlok: het platform is bevroren"
                 ! A.width "56" ! A.height "56"
           H.h3 "MijnWebwinkel"
-          H.p $ H.preEscapedToHtml ("Bevroren platform, verdubbelde prijzen, gesloten community. Wij zetten alles over &mdash; inclusief de automatisch gegenereerde 301-redirects voor uw artikel-URLs." :: Text)
+          H.p $ H.preEscapedToHtml ("Bevroren platform, verdubbelde prijzen, gesloten community. Wij zetten alles over, inclusief de automatisch gegenereerde 301-redirects voor uw artikel-URLs." :: Text)
           H.a ! A.href "/migrate-mijnwebwinkel.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-prijsstijging.svg"
@@ -380,18 +427,21 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
 -- advice instead of a platform list: which platform fits depends on the
 -- shop's situation, and "weet ik nog niet" is a fine starting point (also
 -- selectable in the price calculator).
-homeFaq :: [(Text, Text)]
+homeFaq :: [(FaqQuestion, FaqAnswer)]
 homeFaq =
   [ ( "Kan mijn webshop verhuisd worden?"
-    , "Vrijwel altijd. Producten, teksten, afbeeldingen, klanten en de categoriestructuur zetten we geautomatiseerd over vanaf MijnWebwinkel, CCV Shop, Lightspeed en andere platformen, inclusief 301-redirects van al uw oude URLs zodat uw Google-posities meeverhuizen." )
+    , faqAnswerText "Vrijwel altijd. Producten, teksten, afbeeldingen, klanten en de categoriestructuur zetten we geautomatiseerd over vanaf MijnWebwinkel, CCV Shop, Lightspeed en andere platformen, inclusief 301-redirects van al uw oude URLs zodat uw Google-posities meeverhuizen." )
   , ( "Naar welk platform kan ik het beste verhuizen?"
-    , "Dat hangt af van uw situatie: uw assortiment, uw koppelingen en hoeveel u zelf wilt kunnen aanpassen. Shopify is het meest gekozen doelplatform omdat het makkelijk is. WooCommerce kan een goede optie zijn omdate het flexibel is. Weet u het nog niet? In een gratis gesprek adviseren we een platform op basis van uw situatie, en in de rekenhulp kunt u die keuze gewoon openlaten." )
+    , faqAnswerText "Dat hangt af van uw situatie: uw assortiment, uw koppelingen en hoeveel u zelf wilt kunnen aanpassen. Shopify is het meest gekozen doelplatform omdat het makkelijk is. WooCommerce kan een goede optie zijn omdat het flexibel is. Weet u het nog niet? In een gratis gesprek adviseren we een platform op basis van uw situatie, en in de rekenhulp kunt u die keuze gewoon openlaten." )
   , ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+    , faqAnswerText "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Wat kost een webshop-migratie?"
-    , "Een vaste prijs vanaf " <> migratieBasisprijsEuro <> " euro, afhankelijk van het aantal producten en talen, en u betaalt pas na een geslaagde migratie. Met de rekenhulp op de prijzenpagina berekent u in een minuut uw richtprijs." )
+    , faqAnswerHtml $ do
+        toHtml ("Een vaste prijs vanaf " <> migratieBasisprijsEuro <> " euro, afhankelijk van het aantal producten en talen, en u betaalt pas na een geslaagde migratie. Met ")
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp op de prijzenpagina"
+        " berekent u in een minuut uw richtprijs." )
   , ( "Kan mijn shop blijven doorverkopen tijdens de migratie?"
-    , "Ja. De nieuwe shop bouwen we naast uw huidige webshop op, die gewoon doordraait en verkoopt. Pas bij de livegang zetten we uw domein om naar waar u heenwilt. Tegen die tijd heeft u vetrouwen in het nieuwe systeem en is alles gestest." )
+    , faqAnswerText "Ja. De nieuwe shop bouwen we naast uw huidige webshop op, die gewoon doordraait en verkoopt. Pas bij de livegang zetten we uw domein om naar waar u heen wilt. Tegen die tijd heeft u vertrouwen in het nieuwe systeem en is alles getest." )
   ]
 
 -- =============================================================================
@@ -587,17 +637,18 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.h2 "De migratie"
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
-          H.td $ H.preEscapedToHtml ("Basismigratie &mdash; t/m 1.000 producten, 1 taal" :: Text)
+          H.td "Basismigratie: t/m 1.000 producten, 1 taal"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1.999" :: Text)
         H.tr $ do
           H.td "Extra producten, boven de 1.000 (eerste taal)"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
         H.tr $ do
-          H.td $ H.preEscapedToHtml ("Extra taal &mdash; per product over de hele catalogus" :: Text)
+          H.td "Extra taal: per product over de hele catalogus"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
         H.tr $ do
-          H.td $ H.preEscapedToHtml ("Extra taal &mdash; configuratie, per taal" :: Text)
+          H.td "Extra taal: configuratie, per taal"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+      shopifyKostenNote
 
     H.section ! A.class_ "engagement" $ do
       H.h2 "Modules en extra diensten"
@@ -698,24 +749,28 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
     -- instead of a second near-duplicate card grid.
     H.section ! A.class_ "for-who" ! A.id "what" $ do
       H.h2 "Wat we migreren"
-      -- SEO-redirects lead the grid: keeping Google rankings is the
-      -- service's biggest selling point.
+      -- The Google card leads the grid: keeping Google rankings is the
+      -- service's biggest selling point. Copy is deliberately jargon-arm
+      -- (les: merchant-persona read-through, aug 2026): benefit first, the
+      -- technical term at most in parentheses. "301-redirect" stays once as
+      -- searchable keyword; SKU's, Collections en URL-slugs zijn vertaald
+      -- naar winkelierswoorden.
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
                 ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
-          H.h3 "SEO-redirects"
-          H.p "301-redirects van elke oude URL naar de nieuwe, volledig automatisch gegenereerd. Uw backlinks blijven werken en uw opgebouwde SEO verhuist mee."
+          H.h3 "Uw plek in Google"
+          H.p "Elke oude link naar uw shop blijft werken en stuurt bezoekers automatisch naar de juiste nieuwe pagina (301-redirects). Uw opgebouwde positie in Google verhuist mee."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
                 ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
           H.h3 "Producten & varianten"
-          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van uw doelplatform."
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, artikelnummers en varianten. Automatisch overgezet naar uw nieuwe platform."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
                 ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
-          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu. Ook uw informatiepagina&apos;s (contact, voorwaarden, verzendinformatie) verhuizen mee." :: Text)
+          H.p $ H.preEscapedToHtml ("Uw volledige categorie-indeling en het navigatiemenu verhuizen mee, inclusief vertaalde titels. Ook uw informatiepagina&apos;s (contact, voorwaarden, verzendinformatie) gaan mee." :: Text)
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-thema.svg"
                 ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
@@ -725,13 +780,13 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
                 ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
           H.h3 "Meerdere talen"
-          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
+          H.p "Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien, ook op de vertaalde webadressen van uw pagina's."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
                 ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
           H.h3 "Klanten & spaarpunten"
           H.p "Klantaccounts, bestelgeschiedenis en spaarpuntensaldi verhuizen mee. Uw klanten kunnen direct inloggen, met hun spaarpunten in het loyaliteitsprogramma van uw nieuwe platform."
-      H.p ! A.class_ "engagement-note" $ "Ook mogelijk als aparte dienst: grootschalige bulk-aanpassingen aan uw productdata tijdens de migratie, zoals alt-teksten voor alle afbeeldingen, prijsaanpassingen of het opschonen van beschrijvingen. Handig, maar lang niet altijd nodig."
+      H.p ! A.class_ "engagement-note" $ "Ook de rest van uw shop verhuist mee: informatiepagina's zoals over-ons en verzendinformatie, uw blog, reviews, kortingscodes en cadeaubonnen. Als aparte dienst doen we ook grootschalige aanpassingen aan uw productdata tijdens de migratie, zoals prijsaanpassingen, het opschonen van beschrijvingen of beschrijvingen voor Google bij al uw afbeeldingen (alt-teksten)."
 
     -- How it works
     H.section ! A.class_ "audit" $ do
@@ -739,13 +794,13 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
       H.ol $ do
         H.li $ do
           H.strong "Scan"
-          " \8212 Ons programma leest uw MijnWebwinkel-shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+          ": ons programma leest uw MijnWebwinkel-shop volledig uit en bouwt er een testshop mee op, met producten, vertalingen, categorie\235n en doorverwijzingen."
         H.li $ do
           H.strong "Wennen"
-          " \8212 De testshop draait naast uw MijnWebwinkel-shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
+          ": de testshop draait naast uw MijnWebwinkel-shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
-          H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+          H.strong "Livegang"
+          ": bent u er klaar voor? Dan wijzen we uw domeinnaam op de nieuwe shop en bent u verhuisd. Uw shop is hooguit 5 tot 30 minuten beperkt bereikbaar, terwijl het beveiligingscertificaat (het slotje in de browser) opnieuw wordt aangemaakt."
 
     -- Recent werk: proof before price, so the number lands on trust.
     recentWerkSection
@@ -762,14 +817,14 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           H.p $ do
             H.a ! A.href "/waarom-mijnwebwinkel.html" $ "Waarom wordt MijnWebwinkel niet meer doorontwikkeld?"
             H.preEscapedToHtml (" &rarr;" :: Text)
-      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform &mdash; Shopify, WooCommerce, of iets anders &mdash; wij regelen de techniek." :: Text)
+      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
       H.ul $ do
-        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
-        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
-        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
-        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
+        H.li $ H.strong "Geen risico" >> ": u betaalt pas na succesvolle migratie"
+        H.li $ H.strong "Geautomatiseerd" >> ": geen handmatig overtypen, geen kopieerfouten"
+        H.li $ H.strong "Gecontroleerd" >> ": het programma telt na afloop alles na, van elk product tot elke klant"
+        H.li $ H.strong "SEO-behoud" >> ": elke oude link blijft werken en uw opgebouwde positie in Google verhuist mee"
+        H.li $ H.strong "Meertalig" >> ": vertalingen correct gekoppeld via de offici\235le koppelingen van uw nieuwe platform"
+        H.li $ H.strong "Vaste prijs" >> ": geen uurtarief, u weet vooraf wat het kost"
 
     -- FAQ
     H.section ! A.class_ "about" $ do
@@ -796,26 +851,55 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
       }
 
-mijnwebwinkelFaq :: [(Text, Text)]
+-- | The MijnWebwinkel-page FAQ. The extra livelihood questions (bestellingen
+-- tijdens de verhuizing, e-mail, wat kost Shopify zelf, verhuizen mijn
+-- pagina's en reviews) come from a merchant-persona read-through (aug 2026):
+-- ze bleken de grootste stille bezwaren op de pagina. Antwoorden die de
+-- lezer ergens heen sturen (rekenhulp, Shopify-prijzen) dragen echte links
+-- via 'faqAnswerHtml'.
+mijnwebwinkelFaq :: [(FaqQuestion, FaqAnswer)]
 mijnwebwinkelFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+    , faqAnswerText "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, betaalmethoden, eventuele koppelingen, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+  , ( "Wat gebeurt er met bestellingen tijdens de verhuizing?"
+    , faqAnswerHtml $ do
+        "Uw MijnWebwinkel-shop blijft gewoon open en verkoopt door terwijl wij de nieuwe shop opbouwen. Vlak voor de livegang zetten we de laatste stand over, zodat ook recente bestellingen en actuele voorraadaantallen meekomen. Bestelgeschiedenis en voorraad kiest u als optie in "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        "." )
   , ( "Kan ik mijn domeinnaam behouden?"
-    , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
+    , faqAnswerText "Ja, uw webadres blijft gewoon van u. Bij de livegang wijzen we uw domeinnaam op de nieuwe shop, en alle oude links worden automatisch doorgestuurd." )
+  , ( "Wat gebeurt er met mijn e-mailadres?"
+    , faqAnswerHtml $ do
+        "Uw e-mailadres blijft gewoon werken. Loopt uw e-mail nu via MijnWebwinkel, dan zetten we uw mailboxen en doorstuurregels over als losse dienst (e-mail-setup in "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        "), zodat u geen bericht mist." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd en het programma telt na afloop alles na. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
-    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw doelplatform beide ondersteunen. Ook de vertaalde URL's verhuizen mee." )
+    , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en uw nieuwe platform beide ondersteunen. Ook de vertaalde webadressen verhuizen mee." )
   , ( "Kan ik ook naar een ander platform dan Shopify migreren?"
-    , "Ja. Shopify is het meest gekozen doelplatform, maar we kunnen ook migreren naar WooCommerce of andere platformen." )
-  , ( "Kun je een website importeren naar Shopify?"
-    , "Ja. Producten, teksten, afbeeldingen, klanten en de categoriestructuur van uw bestaande website worden automatisch naar Shopify overgezet, inclusief 301-redirects van uw oude URLs zodat uw Google-posities meeverhuizen." )
+    , faqAnswerText "Ja. Shopify wordt het meest gekozen, maar we kunnen ook migreren naar WooCommerce of andere platformen." )
+  , ( "Wat kost Shopify zelf per maand?"
+    , faqAnswerHtml $ do
+        toHtml ("Het Basic-abonnement van Shopify kost \8364" <> shopifyBasicJaarlijksEuroPerMaand
+          <> " per maand bij jaarlijkse betaling, of \8364" <> shopifyBasicMaandelijksEuroPerMaand
+          <> " per maand als u per maand betaalt (prijspeil " <> shopifyPrijspeil
+          <> "). Voor de meeste shops die van MijnWebwinkel komen is Basic voldoende. De actuele prijzen vindt u op ")
+        H.a ! A.href shopifyPrijzenUrl $ "shopify.com/nl/prijzen"
+        "." )
+  , ( "Kunnen jullie een website importeren naar Shopify?"
+    , faqAnswerText "Ja. Producten, teksten, afbeeldingen, klanten en de categoriestructuur van uw bestaande website worden automatisch naar Shopify overgezet, inclusief automatische doorverwijzingen (301-redirects) van al uw oude links, zodat uw Google-posities meeverhuizen." )
   , ( "Worden spaarpunten ook overgezet?"
-    , "Ja. Spaarpuntensaldi van uw klanten worden meegenomen naar het loyaliteitsprogramma van uw nieuwe platform." )
+    , faqAnswerText "Ja. Spaarpuntensaldi van uw klanten worden meegenomen naar het loyaliteitsprogramma van uw nieuwe platform." )
+  , ( "Verhuizen mijn pagina's, reviews en kortingscodes ook?"
+    , faqAnswerHtml $ do
+        "Ja. Informatiepagina's zoals over-ons en verzendinformatie en uw blog verhuizen standaard mee. Reviews neemt u als optie mee in "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        ", en ook kortingscodes en cadeaubonnen zetten we voor u over. Alles wat in uw shop zit, kan mee." )
   , ( "Hoe werken de SEO-redirects precies?"
-    , "We hebben de onderliggende logica achterhaald waarmee MijnWebwinkel artikel-ID's in URLs genereert. Daardoor kunnen we alle redirects volledig automatisch aanmaken, ook voor URLs met numerieke product-ID's." )
+    , faqAnswerText "MijnWebwinkel bouwt zijn links op uit interne artikelnummers. We hebben uitgezocht hoe dat precies werkt, waardoor we voor elke oude link automatisch de juiste doorverwijzing (301-redirect) kunnen aanmaken, ook voor links met nummers erin." )
   , ( "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
-    , "Ja. We kunnen grootschalige wijzigingen doorvoeren, bijvoorbeeld alt-teksten genereren voor alle afbeeldingen, prijzen aanpassen of beschrijvingen opschonen." )
+    , faqAnswerText "Ja. We kunnen grootschalige wijzigingen doorvoeren, bijvoorbeeld prijzen aanpassen, beschrijvingen opschonen, of beschrijvingen voor Google toevoegen aan al uw afbeeldingen (alt-teksten)." )
   ]
 
 -- =============================================================================
@@ -846,7 +930,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van uw doelplatform."
         H.li ! A.class_ "card" $ do
           H.h3 "Meerdere talen"
-          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
+          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien, ook de URL-slugs." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Klantaccounts"
           H.p "Klantgegevens en bestelgeschiedenis worden overgezet zodat uw klanten direct kunnen inloggen op de nieuwe shop."
@@ -866,13 +950,13 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       H.ol $ do
         H.li $ do
           H.strong "Scan"
-          " \8212 Ons programma leest uw CCV Shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+          ": ons programma leest uw CCV Shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
         H.li $ do
           H.strong "Wennen"
-          " \8212 De testshop draait naast uw CCV Shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
+          ": de testshop draait naast uw CCV Shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+          ": bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Pricing
     prijzen
@@ -888,15 +972,15 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
         H.blockquote $ do
           H.p $ H.preEscapedToHtml ("&bdquo;7 jaar een CCV shop gehad, de webshop is zwaar verouderd, zowel in thema&apos;s als functionaliteiten, er wordt bijna niks geupdate. Mijn omzet en conversie is door het dak gegaan sinds ik Shopify gebruik.&rdquo;" :: Text)
           H.p $ H.strong "CCV Shop-gebruiker op Trustpilot, mei 2025"
-      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform &mdash; Shopify, WooCommerce, of iets anders &mdash; wij regelen de techniek." :: Text)
+      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
       H.ul $ do
-        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
-        H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (" &mdash; u kiest de bestemming, wij migreren naar elk platform" :: Text)
-        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
-        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk" :: Text)
-        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
+        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (": u betaalt pas na succesvolle migratie" :: Text)
+        H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (": u kiest de bestemming, wij migreren naar elk platform" :: Text)
+        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (": geen handmatig overtypen, geen kopieerfouten" :: Text)
+        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (": elke oude link krijgt een 301-redirect en blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
+        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (": vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (": het programma valideert zijn eigen werk" :: Text)
+        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (": geen uurtarief, u weet vooraf wat het kost" :: Text)
 
     -- FAQ
     H.section ! A.class_ "about" $ do
@@ -912,7 +996,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.p "Volledige 301-redirect mapping van elke oude URL naar het nieuwe adres. Uw Google-rankings, backlinks en organisch verkeer blijven behouden."
         H.li ! A.class_ "card" $ do
           H.h3 "Bulk-aanpassingen"
-          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen &mdash; alles in &eacute;&eacute;n keer." :: Text)
+          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen, alles in &eacute;&eacute;n keer." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Voorraad & staffelprijzen"
           H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar uw nieuwe shop. Inclusief prijsverschillen per maat of kleur."
@@ -950,20 +1034,20 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       }
 
-ccvshopFaq :: [(Text, Text)]
+ccvshopFaq :: [(FaqQuestion, FaqAnswer)]
 ccvshopFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+    , faqAnswerText "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
-    , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
+    , faqAnswerText "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
-    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en uw doelplatform beide ondersteunen." )
+    , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en uw doelplatform beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
-    , "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
+    , faqAnswerText "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
   , ( "Hoe werken de SEO-redirects precies?"
-    , "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe adres. Uw Google-rankings en backlinks blijven behouden." )
+    , faqAnswerText "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe adres. Uw Google-rankings en backlinks blijven behouden." )
   -- Decision: POS-antwoord is bewust eerlijk over de beperking en
   -- maakt er een bestemmingskeuze van: bij WooCommerce blijft de
   -- CCV-terminal via Nederlandse kassasoftware gekoppeld, bij
@@ -974,7 +1058,7 @@ ccvshopFaq =
   -- alleen voor wie een geïntegreerde kassa wil. Bron-onderzoek in
   -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
   , ( "Ik heb ook een fysieke winkel met een CCV-pinterminal. Kan die mee?"
-    , "Dat hangt af van uw bestemming. Kiest u WooCommerce, dan kan uw CCV-terminal gewoon gekoppeld blijven: Nederlandse kassasoftware verbindt de terminal en synchroniseert de voorraad met uw webshop, en uw pincontract loopt door. Kiest u Shopify, dan koppelt de terminal niet meer met de kassa; hij kan wel als losse pin blijven werken, maar dan typt u elk bedrag over. Wilt u winkel en webshop weer als \233\233n geheel, dan vervangt u hem door een Shopify-terminal. Die overstap is eenmalig en bescheiden (\8364" <> "59 tot \8364" <> "249) en daarna bent u ook voor het pinnen van CCV af. Wij hebben ervaring met het inrichten van kassa's en pinterminals en nemen dit gewoon in het migratietraject mee." )
+    , faqAnswerText $ "Dat hangt af van uw bestemming. Kiest u WooCommerce, dan kan uw CCV-terminal gewoon gekoppeld blijven: Nederlandse kassasoftware verbindt de terminal en synchroniseert de voorraad met uw webshop, en uw pincontract loopt door. Kiest u Shopify, dan koppelt de terminal niet meer met de kassa; hij kan wel als losse pin blijven werken, maar dan typt u elk bedrag over. Wilt u winkel en webshop weer als \233\233n geheel, dan vervangt u hem door een Shopify-terminal. Die overstap is eenmalig en bescheiden (\8364" <> "59 tot \8364" <> "249) en daarna bent u ook voor het pinnen van CCV af. Wij hebben ervaring met het inrichten van kassa's en pinterminals en nemen dit gewoon in het migratietraject mee." )
   ]
 
 -- =============================================================================
@@ -987,7 +1071,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     -- Hero
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap Lightspeed"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt u richting hun nieuwe platform of de deur uit. Ondertussen draait uw webshop op verouderde software die steeds minder krijgt. Wij verhuizen uw complete shop naar Shopify &mdash; geautomatiseerd, zonder dataverlies, zonder SEO-verlies." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt u richting hun nieuwe platform of de deur uit. Ondertussen draait uw webshop op verouderde software die steeds minder krijgt. Wij verhuizen uw complete shop naar Shopify: geautomatiseerd, zonder dataverlies, zonder SEO-verlies." :: Text)
       H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
 
     -- What we migrate
@@ -999,7 +1083,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van uw doelplatform."
         H.li ! A.class_ "card" $ do
           H.h3 "Meerdere talen"
-          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien &mdash; ook de URL-slugs." :: Text)
+          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien, ook de URL-slugs." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Klantaccounts & bestellingen"
           H.p "Klantgegevens, bestelgeschiedenis en accountdata worden overgezet zodat uw klanten direct kunnen inloggen op de nieuwe shop."
@@ -1019,13 +1103,13 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.ol $ do
         H.li $ do
           H.strong "Scan"
-          " \8212 Ons programma leest uw Lightspeed-shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+          ": ons programma leest uw Lightspeed-shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
         H.li $ do
           H.strong "Wennen"
-          " \8212 De testshop draait naast uw Lightspeed-shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
+          ": de testshop draait naast uw Lightspeed-shop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
         H.li $ do
           H.strong "DNS-overzet"
-          " \8212 Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+          ": bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
 
     -- Pricing
     prijzen
@@ -1035,19 +1119,19 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
         H.blockquote $ do
-          H.p $ H.preEscapedToHtml ("U bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding gaan bij de overstap vaak oude URLs kapot; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat elke oude URL blijft doorverwijzen &mdash; ons programma legt ze allemaal vast, niet een steekproef &mdash; en uw opgebouwde SEO meeverhuist." :: Text)
+          H.p $ H.preEscapedToHtml ("U bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding gaan bij de overstap vaak oude URLs kapot; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat elke oude URL blijft doorverwijzen (ons programma legt ze allemaal vast, niet een steekproef) en uw opgebouwde SEO meeverhuist." :: Text)
           H.p $ do
             H.a ! A.href "/waarom-lightspeed.html" $ "Waarom verlaten steeds meer webshops Lightspeed?"
             H.preEscapedToHtml (" &rarr;" :: Text)
-      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform &mdash; Shopify, WooCommerce, of iets anders &mdash; wij regelen de techniek." :: Text)
+      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
       H.ul $ do
-        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (" &mdash; u betaalt pas na succesvolle migratie" :: Text)
-        H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (" &mdash; u kiest de bestemming, wij migreren naar elk platform" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (" &mdash; 301-redirects: elke oude link blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
-        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (" &mdash; geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (" &mdash; vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (" &mdash; het programma valideert zijn eigen werk" :: Text)
-        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (" &mdash; geen uurtarief, u weet vooraf wat het kost" :: Text)
+        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (": u betaalt pas na succesvolle migratie" :: Text)
+        H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (": u kiest de bestemming, wij migreren naar elk platform" :: Text)
+        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (": elke oude link krijgt een 301-redirect en blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
+        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (": geen handmatig overtypen, geen kopieerfouten" :: Text)
+        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (": vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
+        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (": het programma valideert zijn eigen werk" :: Text)
+        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (": geen uurtarief, u weet vooraf wat het kost" :: Text)
 
     -- FAQ
     H.section ! A.class_ "about" $ do
@@ -1063,7 +1147,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.p "Volledige 301-redirect mapping van elke oude URL naar het nieuwe adres. Uw Google-rankings, backlinks en organisch verkeer blijven behouden."
         H.li ! A.class_ "card" $ do
           H.h3 "Bulk-aanpassingen"
-          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen &mdash; alles in &eacute;&eacute;n keer." :: Text)
+          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen, alles in &eacute;&eacute;n keer." :: Text)
         H.li ! A.class_ "card" $ do
           H.h3 "Voorraad & staffelprijzen"
           H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar uw nieuwe shop. Inclusief prijsverschillen per maat of kleur."
@@ -1098,20 +1182,20 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       }
 
-lightspeedFaq :: [(Text, Text)]
+lightspeedFaq :: [(FaqQuestion, FaqAnswer)]
 lightspeedFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+    , faqAnswerText "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
-    , "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
+    , faqAnswerText "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd en het programma valideert zijn eigen werk. Inmiddels hebben we dit ook meermaals gedaan. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Verlies ik mijn Google-posities?"
-    , "Elke oude URL krijgt automatisch een 301-redirect, zodat al uw links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
+    , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al uw links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Werkt het ook voor meertalige webshops?"
-    , "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die Lightspeed en Shopify beide ondersteunen." )
+    , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die Lightspeed en Shopify beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
-    , "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
+    , faqAnswerText "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
   ]
 
 -- =============================================================================
@@ -1124,7 +1208,7 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
     -- Hero
     H.section ! A.class_ "hero" $ do
       H.h1 "Waarom wordt MijnWebwinkel niet meer doorontwikkeld?"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Het korte antwoord: MijnWebwinkel is in 2021 verkocht aan een Noors softwareconglomeraat. Sindsdien is de code bevroren en zijn de prijzen verdubbeld. Dit is geen complottheorie &mdash; het is gewoon de financi&euml;le logica van private equity." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Het korte antwoord: MijnWebwinkel is in 2021 verkocht aan een Noors softwareconglomeraat. Sindsdien is de code bevroren en zijn de prijzen verdubbeld. Dit is geen complottheorie, het is gewoon de financi&euml;le logica van private equity." :: Text)
 
     -- Timeline
     H.section ! A.class_ "for-who" $ do
@@ -1132,23 +1216,23 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
       H.ol $ do
         H.li $ do
           H.strong "2005"
-          H.preEscapedToHtml (" &mdash; Alex Pansier richt MijnWebwinkel op in Oss. Het platform groeit organisch naar bijna 7.000 webshops." :: Text)
+          H.preEscapedToHtml (": Alex Pansier richt MijnWebwinkel op in Oss. Het platform groeit organisch naar bijna 7.000 webshops." :: Text)
         H.li $ do
           H.strong "November 2021"
-          H.preEscapedToHtml (" &mdash; " :: Text)
+          H.preEscapedToHtml (": " :: Text)
           H.a ! A.href "https://www.visma.com/news/visma-strengthens-its-position-in-the-benelux-e-commerce-market-with-the-acquisition-of-mijnwebwinkel" $ "Visma neemt MijnWebwinkel over"
           ". De oprichter vertrekt. Visma is een Noors softwareconglomeraat (15.000 medewerkers, 170+ bedrijven) in handen van het Britse private-equityfonds Hg Capital."
         H.li $ do
           H.strong "2022\8211\&2025"
-          H.preEscapedToHtml (" &mdash; De &euro;20-tier wordt beperkt tot 25 producten. Serieuze shops betalen nu &euro;40\8211\&70/maand. Ontwikkeling stopt. Het aantal webshops daalt van ~7.000 naar ~4.500." :: Text)
+          H.preEscapedToHtml (": de &euro;20-tier wordt beperkt tot 25 producten. Serieuze shops betalen nu &euro;40\8211\&70/maand. Ontwikkeling stopt. Het aantal webshops daalt van ~7.000 naar ~4.500." :: Text)
         H.li $ do
           H.strong "November 2025"
-          H.preEscapedToHtml (" &mdash; " :: Text)
+          H.preEscapedToHtml (": " :: Text)
           H.a ! A.href "https://www.emerce.nl/wire/mijnwebwinkel-mystore-lanceren-acendy-nieuw-tijdperk-ecommerce" $ "MijnWebwinkel wordt samengevoegd met het Noorse Mystore"
           H.preEscapedToHtml (" tot &ldquo;Acendy&rdquo;. Dit werd kort daarna weer teruggedraaid." :: Text)
         H.li $ do
           H.strong "Februari 2026"
-          H.preEscapedToHtml (" &mdash; " :: Text)
+          H.preEscapedToHtml (": " :: Text)
           H.a ! A.href "https://www.privateequitywire.co.uk/hg-spins-out-e500m-of-visma-assets-as-ipo-plans-stall/" $ H.preEscapedToHtml ("Visma stoot &euro;500 miljoen aan bedrijven af" :: Text)
           " (waaronder Acendy/MijnWebwinkel) in een nieuw vehikel genaamd Norvato. Reden: Visma bereidt een beursgang voor en wil alleen kernproducten behouden."
 
@@ -1159,19 +1243,19 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
       H.ol $ do
         H.li $ do
           H.strong "Koop goedkoop"
-          " \8212 een winstgevend SaaS-platform met duizenden betalende klanten"
+          ": een winstgevend SaaS-platform met duizenden betalende klanten"
         H.li $ do
           H.strong "Verhoog prijzen"
-          H.preEscapedToHtml (" &mdash; beperk het goedkope plan tot 25 producten, duw serieuze shops naar &euro;40\8211\&70/maand" :: Text)
+          H.preEscapedToHtml (": beperk het goedkope plan tot 25 producten, duw serieuze shops naar &euro;40\8211\&70/maand" :: Text)
         H.li $ do
           H.strong "Verlaag kosten"
-          " \8212 stop alle ontwikkeling, minimaliseer support"
+          ": stop alle ontwikkeling, minimaliseer support"
         H.li $ do
           H.strong "Melk de marge"
-          H.preEscapedToHtml (" &mdash; 4.500 shops &times; &euro;40/maand = &euro;2,1 miljoen per jaar aan inkomsten met minimale kosten" :: Text)
+          H.preEscapedToHtml (": 4.500 shops &times; &euro;40/maand = &euro;2,1 miljoen per jaar aan inkomsten met minimale kosten" :: Text)
         H.li $ do
           H.strong "Voeg samen of verkoop"
-          " \8212 als de melkkoe opdroogt, fuseer met een ander product of stoot af"
+          ": als de melkkoe opdroogt, fuseer met een ander product of stoot af"
 
     -- The numbers
     H.section ! A.class_ "for-who" $ do
@@ -1213,10 +1297,10 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
     -- CTA
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te vertrekken?"
-      H.p $ H.preEscapedToHtml ("MijnWebwinkel wordt niet meer beter. Het platform is verkocht, de code is bevroren, en de opvolger kost het dubbele. U kunt wachten tot u <em>gedwongen</em> wordt te migreren naar Acendy &mdash; of u kunt nu zelf kiezen waar u naartoe gaat." :: Text)
+      H.p $ H.preEscapedToHtml ("MijnWebwinkel wordt niet meer beter. Het platform is verkocht, de code is bevroren, en de opvolger kost het dubbele. U kunt wachten tot u <em>gedwongen</em> wordt te migreren naar Acendy, of u kunt nu zelf kiezen waar u naartoe gaat." :: Text)
       H.p $ do
         H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Bekijk onze migratieservice"
-        H.preEscapedToHtml (" &mdash; volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
+        H.preEscapedToHtml (": volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
       H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     waaromMeta :: PageMeta
@@ -1245,17 +1329,17 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
     -- The stock market logic
     H.section ! A.class_ "audit" $ do
       H.h2 "De beurslogica"
-      H.p $ H.preEscapedToHtml ("Lightspeed Commerce (NYSE/TSX: LSPD) ging in 2019 naar de beurs in Toronto en in 2020 naar New York. Sindsdien is het bedrijf niet meer van de oprichter &mdash; het is van de aandeelhouders. En aandeelhouders willen &eacute;&eacute;n ding: groei." :: Text)
+      H.p $ H.preEscapedToHtml ("Lightspeed Commerce (NYSE/TSX: LSPD) ging in 2019 naar de beurs in Toronto en in 2020 naar New York. Sindsdien is het bedrijf niet meer van de oprichter, maar van de aandeelhouders. En aandeelhouders willen &eacute;&eacute;n ding: groei." :: Text)
       H.p "Groei kan op twee manieren:"
       H.ol $ do
         H.li $ do
           H.strong "Meer klanten"
-          " \8212 maar de markt is verzadigd en Lightspeed verliest netto klanten"
+          ": maar de markt is verzadigd en Lightspeed verliest netto klanten"
         H.li $ do
           H.strong "Meer omzet per klant"
-          H.preEscapedToHtml (" &mdash; en d&aacute;t is precies wat er gebeurt" :: Text)
-      H.p $ H.preEscapedToHtml ("Het gevolg: de goedkoopste plannen worden duurder, features worden weggehaald uit lagere tiers, en het hele platform wordt opgeschoven richting grotere winkeliers die meer betalen. <strong>U als kleine webshop bent niet de doelgroep &mdash; u bent de ballast.</strong>" :: Text)
-      H.p $ H.preEscapedToHtml ("Wij vinden dat fundamenteel verkeerd. Kleine webshops groeien &mdash; dat is het hele punt. De webshop van vandaag met 200 producten is de webshop van volgend jaar met 2.000 producten. Maar als Lightspeed niet in die groei gelooft, hoeft u daar niet op te wachten. Wij helpen u graag naar een platform dat w&eacute;l in u investeert." :: Text)
+          H.preEscapedToHtml (": en d&aacute;t is precies wat er gebeurt" :: Text)
+      H.p $ H.preEscapedToHtml ("Het gevolg: de goedkoopste plannen worden duurder, features worden weggehaald uit lagere tiers, en het hele platform wordt opgeschoven richting grotere winkeliers die meer betalen. <strong>U als kleine webshop bent niet de doelgroep, u bent de ballast.</strong>" :: Text)
+      H.p $ H.preEscapedToHtml ("Wij vinden dat fundamenteel verkeerd. Kleine webshops groeien; dat is het hele punt. De webshop van vandaag met 200 producten is de webshop van volgend jaar met 2.000 producten. Maar als Lightspeed niet in die groei gelooft, hoeft u daar niet op te wachten. Wij helpen u graag naar een platform dat w&eacute;l in u investeert." :: Text)
 
     -- Timeline
     H.section ! A.class_ "for-who" $ do
@@ -1263,21 +1347,21 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       H.ol $ do
         H.li $ do
           H.strong "2019"
-          H.preEscapedToHtml (" &mdash; Lightspeed gaat naar de beurs in Toronto. Haalt $240 miljoen op. Het bedrijf moet nu elk kwartaal groeicijfers laten zien." :: Text)
+          H.preEscapedToHtml (": Lightspeed gaat naar de beurs in Toronto. Haalt $240 miljoen op. Het bedrijf moet nu elk kwartaal groeicijfers laten zien." :: Text)
         H.li $ do
           H.strong "2020"
-          H.preEscapedToHtml (" &mdash; Tweede beursnotering in New York. Nog eens $376 miljoen opgehaald. Begint agressief bedrijven op te kopen: ShopKeep, Vend, Ecwid, NuORDER. Dit lijkt op een leveraged-buyout-strategie: groei door overnames in plaats van door het eigen product te verbeteren. Het probleem is dat Lightspeed hun eigen platform niet kon laten groeien &mdash; en nu alle toekomstige groei opoffert voor kortetermijnwinst." :: Text)
+          H.preEscapedToHtml (": tweede beursnotering in New York. Nog eens $376 miljoen opgehaald. Begint agressief bedrijven op te kopen: ShopKeep, Vend, Ecwid, NuORDER. Dit lijkt op een leveraged-buyout-strategie: groei door overnames in plaats van door het eigen product te verbeteren. Het probleem is dat Lightspeed hun eigen platform niet kon laten groeien, en nu alle toekomstige groei opoffert voor kortetermijnwinst." :: Text)
         H.li $ do
           H.strong "2021"
-          H.preEscapedToHtml (" &mdash; Aandeel piekt rond $125. Kort daarna publiceert " :: Text)
+          H.preEscapedToHtml (": aandeel piekt rond $125. Kort daarna publiceert " :: Text)
           H.a ! A.href "https://www.sprucepointcap.com/lightspeed-commerce-inc" $ "Spruce Point Capital"
           H.preEscapedToHtml (" een vernietigend rapport dat de groeicijfers in twijfel trekt. Het aandeel keldert." :: Text)
         H.li $ do
           H.strong "2022\8211\&2024"
-          H.preEscapedToHtml (" &mdash; Prijzen worden verhoogd. Het goedkoopste plan (Essential) kost nu &euro;68/maand voor slechts 250 productvarianten. Het oude eCom-platform (C-Series) wordt afgebouwd richting E-Series (Ecwid)." :: Text)
+          H.preEscapedToHtml (": prijzen worden verhoogd. Het goedkoopste plan (Essential) kost nu &euro;68/maand voor slechts 250 productvarianten. Het oude eCom-platform (C-Series) wordt afgebouwd richting E-Series (Ecwid)." :: Text)
         H.li $ do
           H.strong "2025\8211\&2026"
-          H.preEscapedToHtml (" &mdash; Het aantal actieve Lightspeed-webshops daalt van 23.700 naar 18.500. Een verlies van 22% in drie jaar." :: Text)
+          H.preEscapedToHtml (": het aantal actieve Lightspeed-webshops daalt van 23.700 naar 18.500. Een verlies van 22% in drie jaar." :: Text)
 
     -- The numbers
     H.section ! A.class_ "for-who" $ do
@@ -1310,23 +1394,23 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       H.ol $ do
         H.li $ do
           H.strong "Consolideer platforms"
-          H.preEscapedToHtml (" &mdash; het oude eCom (C-Series) wordt afgebouwd. De opvolger is E-Series, gebaseerd op het opgekochte Ecwid. Uw huidige shop is legacy." :: Text)
+          H.preEscapedToHtml (": het oude eCom (C-Series) wordt afgebouwd. De opvolger is E-Series, gebaseerd op het opgekochte Ecwid. Uw huidige shop is legacy." :: Text)
         H.li $ do
           H.strong "Verschuif naar enterprise"
-          H.preEscapedToHtml (" &mdash; het Professional-plan kost &euro;259/maand, Enterprise is op offerte. Lightspeed wil minder klanten die meer betalen." :: Text)
+          H.preEscapedToHtml (": het Professional-plan kost &euro;259/maand, Enterprise is op offerte. Lightspeed wil minder klanten die meer betalen." :: Text)
         H.li $ do
           H.strong "Verhoog de opbrengst per klant"
-          H.preEscapedToHtml (" &mdash; via hogere abonnementen, betaalverwerking (Lightspeed Payments), en kapitaalverstrekking (Lightspeed Capital). Elk kwartaal moet dit cijfer omhoog." :: Text)
+          H.preEscapedToHtml (": via hogere abonnementen, betaalverwerking (Lightspeed Payments), en kapitaalverstrekking (Lightspeed Capital). Elk kwartaal moet dit cijfer omhoog." :: Text)
         H.li $ do
           H.strong "Laat kleine shops vanzelf vertrekken"
-          H.preEscapedToHtml (" &mdash; door de prijs hoog genoeg te maken dat het voor kleine shops niet meer rendabel is. Dat is geen vergissing &mdash; dat is de strategie." :: Text)
+          H.preEscapedToHtml (": door de prijs hoog genoeg te maken dat het voor kleine shops niet meer rendabel is. Dat is geen vergissing, dat is de strategie." :: Text)
       H.p $ H.preEscapedToHtml ("De aandelenkoers is gedaald van $125 naar rond de $20. Het management staat onder druk om winstgevender te worden. Dat betekent: <strong>hogere prijzen, minder support, en focus op grote klanten</strong>. Kleine webshops passen niet in dat plaatje." :: Text)
 
     -- Nederland specifiek
     H.section ! A.class_ "for-who" $ do
       H.h2 "Nederland als melkkoe"
-      H.p $ H.preEscapedToHtml ("27% van alle Lightspeed-webshops zit in Nederland &mdash; bijna 5.000 shops. Nederland is veruit de grootste markt, groter dan de VS en Canada samen. Toch wordt het platform bestuurd vanuit Montreal, met Amerikaanse prioriteiten." :: Text)
-      H.p $ H.preEscapedToHtml ("De E-Series migratie is <strong>alleen beschikbaar in Noord-Amerika</strong>. Nederlandse shops zitten vast op de C-Series &mdash; een platform dat niet meer wordt doorontwikkeld, met prijzen die wel doorstijgen." :: Text)
+      H.p $ H.preEscapedToHtml ("27% van alle Lightspeed-webshops zit in Nederland: bijna 5.000 shops. Nederland is veruit de grootste markt, groter dan de VS en Canada samen. Toch wordt het platform bestuurd vanuit Montreal, met Amerikaanse prioriteiten." :: Text)
+      H.p $ H.preEscapedToHtml ("De E-Series migratie is <strong>alleen beschikbaar in Noord-Amerika</strong>. Nederlandse shops zitten vast op de C-Series, een platform dat niet meer wordt doorontwikkeld, met prijzen die wel doorstijgen." :: Text)
 
     -- Sources
     H.section ! A.class_ "about" $ do
@@ -1348,10 +1432,10 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
     -- CTA
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar om te vertrekken?"
-      H.p $ H.preEscapedToHtml ("Lightspeed wordt elk kwartaal duurder en elk kwartaal minder gericht op u. U kunt wachten tot de volgende prijsverhoging &mdash; of u kunt nu zelf kiezen waar u naartoe gaat." :: Text)
+      H.p $ H.preEscapedToHtml ("Lightspeed wordt elk kwartaal duurder en elk kwartaal minder gericht op u. U kunt wachten tot de volgende prijsverhoging, of u kunt nu zelf kiezen waar u naartoe gaat." :: Text)
       H.p $ do
         H.a ! A.href "/migrate-lightspeed.html" $ "Bekijk onze migratieservice"
-        H.preEscapedToHtml (" &mdash; volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
+        H.preEscapedToHtml (": volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
       H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
   where
     waaromLsMeta :: PageMeta
@@ -1365,28 +1449,17 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       , pageMetaExtraHead   = faqPageJsonLd lightspeedWaaromFaq
       }
 
-lightspeedWaaromFaq :: [(Text, Text)]
+lightspeedWaaromFaq :: [(FaqQuestion, FaqAnswer)]
 lightspeedWaaromFaq =
   [ ( "Waarom wordt Lightspeed steeds duurder?"
-    , "Lightspeed is beursgenoteerd (NYSE/TSX: LSPD) en moet elk kwartaal groei laten zien aan aandeelhouders. Omdat de markt verzadigd is, verhoogt het management de prijs per klant in plaats van meer klanten te werven." )
+    , faqAnswerText "Lightspeed is beursgenoteerd (NYSE/TSX: LSPD) en moet elk kwartaal groei laten zien aan aandeelhouders. Omdat de markt verzadigd is, verhoogt het management de prijs per klant in plaats van meer klanten te werven." )
   , ( "Wat is er met Lightspeed eCom C-Series?"
-    , "De C-Series wordt afgebouwd. De opvolger is E-Series, gebaseerd op het opgekochte Ecwid. De E-Series migratie is alleen beschikbaar in Noord-Amerika \8212 Nederlandse shops zitten vast op het oude platform." )
+    , faqAnswerText "De C-Series wordt afgebouwd. De opvolger is E-Series, gebaseerd op het opgekochte Ecwid. De E-Series migratie is alleen beschikbaar in Noord-Amerika; Nederlandse shops zitten vast op het oude platform." )
   , ( "Hoeveel webshops verlaten Lightspeed?"
-    , "In de afgelopen 90 dagen vertrokken 160 webshops terwijl er slechts 16 bijkwamen. Sinds Q3 2023 is het totaal gedaald van 23.700 naar 18.500 shops \8212 een daling van 22%." )
+    , faqAnswerText "In de afgelopen 90 dagen vertrokken 160 webshops terwijl er slechts 16 bijkwamen. Sinds Q3 2023 is het totaal gedaald van 23.700 naar 18.500 shops, een daling van 22%." )
   , ( "Waar gaan vertrekkende Lightspeed-shops naartoe?"
-    , "59% van de vertrekkende Lightspeed-shops kiest Shopify als bestemming." )
+    , faqAnswerText "59% van de vertrekkende Lightspeed-shops kiest Shopify als bestemming." )
   ]
-
--- =============================================================================
--- FAQ rendering (visible accordion-free definition list)
--- =============================================================================
-
--- | Render a single question/answer pair as a @<dt>/<dd>@ pair. The same pairs
--- feed 'faqPageJsonLd' so the visible FAQ and the structured data never drift.
-renderFaqItem :: (Text, Text) -> Html
-renderFaqItem (question, answer) = do
-  H.dt (toHtml question)
-  H.dd (toHtml answer)
 
 -- =============================================================================
 -- Blog index page (paginated listing)

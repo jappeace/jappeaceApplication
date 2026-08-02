@@ -21,6 +21,11 @@ module PageChrome
   , whatsappFloatingButton
   , organizationJsonLd
   , serviceJsonLd
+  , FaqQuestion
+  , FaqAnswer
+  , faqAnswerText
+  , faqAnswerHtml
+  , renderFaqItem
   , faqPageJsonLd
   , jsonLdString
   , formatIsoDate
@@ -32,11 +37,14 @@ module PageChrome
   ) where
 
 import Data.Maybe (fromMaybe)
+import Data.String (IsString(..))
 import Data.Text (Text)
 import qualified Data.Text as T
+import qualified Data.Text.Lazy as TL
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import Data.Time (UTCTime, formatTime, defaultTimeLocale)
 import Network.HTTP.Types.URI (urlEncode)
+import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -197,9 +205,9 @@ organizationJsonLd =
       , "}"
       ]
 
--- | Service structured data for a migration landing page. Makes the priced
--- service offering itself eligible for rich results, complementing the FAQ
--- markup already present on these pages.
+-- | Service structured data for a migration landing page: describes the
+-- priced service offering to crawlers, complementing the FAQ markup already
+-- present on these pages.
 serviceJsonLd :: Text -> Text -> Text -> Html
 serviceJsonLd serviceName serviceDescription pageUrl =
   H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml serviceJson
@@ -223,10 +231,51 @@ serviceJsonLd serviceName serviceDescription pageUrl =
       , "}"
       ]
 
--- | FAQ structured data (JSON-LD) built from question/answer pairs. Makes a
--- page eligible for Google's FAQ rich snippets. Replaces the per-page copies
--- that previously duplicated this builder on every migration landing page.
-faqPageJsonLd :: [(Text, Text)] -> Html
+-- Decision: FAQ entries are @(FaqQuestion, FaqAnswer)@ with 'FaqAnswer'
+-- wrapping real 'Html' instead of the earlier @(Text, Text)@. Some answers
+-- need a link (Shopify's prijzenpagina, de rekenhulp), and with plain Text
+-- the only options were writing URLs out as dode tekst or keeping a second,
+-- drifting HTML copy of every list. The same markup now feeds both the
+-- visible list and the JSON-LD; Google's FAQ rich-result documentation
+-- allowed anchors and simple markup in answer text before Google removed
+-- that documentation in June 2026, and schema.org places no such
+-- restriction, so markup in the JSON-LD answer text stays valid.
+
+-- | A FAQ question: plain text, shared verbatim by the visible @<dt>@ and
+-- the JSON-LD @name@ field. 'IsString' so FAQ lists read as plain literals.
+newtype FaqQuestion = FaqQuestion Text
+
+instance IsString FaqQuestion where
+  fromString = FaqQuestion . T.pack
+
+-- | A FAQ answer: real 'Html', so an answer can carry links. Build with
+-- 'faqAnswerText' or 'faqAnswerHtml'.
+newtype FaqAnswer = FaqAnswer Html
+
+-- | Lift a plain-text answer into 'FaqAnswer'.
+faqAnswerText :: Text -> FaqAnswer
+faqAnswerText = FaqAnswer . toHtml
+
+-- | Lift a markup answer (links and the like) into 'FaqAnswer'.
+faqAnswerHtml :: Html -> FaqAnswer
+faqAnswerHtml = FaqAnswer
+
+-- | Render a single FAQ pair as a @<dt>/<dd>@ pair. The same pairs feed
+-- 'faqPageJsonLd' so the visible FAQ and the structured data never drift.
+renderFaqItem :: (FaqQuestion, FaqAnswer) -> Html
+renderFaqItem (FaqQuestion question, FaqAnswer answer) = do
+  H.dt (toHtml question)
+  H.dd answer
+
+-- | FAQ structured data (JSON-LD) built from question/answer pairs. Google
+-- stopped showing FAQ rich results in May 2026 and removed the feature's
+-- documentation in June 2026 (see the changelog on
+-- developers.google.com/search/docs/appearance/structured-data/faqpage), so
+-- this no longer buys a rich snippet there; FAQPage remains valid schema.org
+-- that other search engines and AI crawlers still read. Replaces the
+-- per-page copies that previously duplicated this builder on every migration
+-- landing page.
+faqPageJsonLd :: [(FaqQuestion, FaqAnswer)] -> Html
 faqPageJsonLd entries =
   H.script ! A.type_ "application/ld+json" $ H.preEscapedToHtml $ T.concat
     [ "{\"@context\":\"https://schema.org\""
@@ -236,13 +285,15 @@ faqPageJsonLd entries =
     , "]}"
     ]
 
--- | One @Question@/@Answer@ node of a 'faqPageJsonLd' document.
-faqEntryJson :: (Text, Text) -> Text
-faqEntryJson (question, answer) = T.concat
+-- | One @Question@/@Answer@ node of a 'faqPageJsonLd' document. The answer's
+-- markup is rendered into the JSON string; 'jsonLdString' escapes @<@ so the
+-- markup can never terminate the surrounding @<script>@ element.
+faqEntryJson :: (FaqQuestion, FaqAnswer) -> Text
+faqEntryJson (FaqQuestion question, FaqAnswer answer) = T.concat
   [ "{\"@type\":\"Question\""
   , ",\"name\":" <> jsonLdString question
   , ",\"acceptedAnswer\":{\"@type\":\"Answer\""
-  , ",\"text\":" <> jsonLdString answer
+  , ",\"text\":" <> jsonLdString (TL.toStrict (renderHtml answer))
   , "}}"
   ]
 
@@ -257,6 +308,7 @@ escapeJsonLdChar '\\' = "\\\\"
 escapeJsonLdChar '\n' = "\\n"
 escapeJsonLdChar '\r' = "\\r"
 escapeJsonLdChar '\t' = "\\t"
+escapeJsonLdChar '<'  = "\\u003c"
 escapeJsonLdChar c    = T.singleton c
 
 -- =============================================================================

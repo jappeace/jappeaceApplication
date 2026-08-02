@@ -22,7 +22,11 @@ import Test.Tasty (TestTree, defaultMain, testGroup)
 import Test.Tasty.HUnit (assertBool, testCase)
 import Text.Blaze.Html (Html)
 import Text.Blaze.Html.Renderer.Text (renderHtml)
+import Text.Blaze.Html5 ((!))
+import qualified Text.Blaze.Html5 as H
+import qualified Text.Blaze.Html5.Attributes as A
 
+import PageChrome (faqAnswerHtml, faqPageJsonLd, renderFaqItem)
 import PenguinTemplates
   ( WebwinkelverhuisUrl(..)
   , penguinIndexPage
@@ -125,6 +129,27 @@ relativizesImageSourcesOnly = testCase "relativizeWebwinkelContentImages" $ do
   assertBool "canonical href lost its absolute URL"
     (TL.pack "href=\"https://webwinkelverhuis.nl/blog/x.html\"" `TL.isInfixOf` rewritten)
 
+-- | FAQ answers are 'Html' so they can carry links; one entry must feed both
+-- surfaces: the visible @<dd>@ keeps a working anchor, and the JSON-LD script
+-- carries the same link with its markup escaped, so an answer's @<@ can never
+-- terminate the surrounding @<script>@ element.
+faqAnswersCarryLinks :: TestTree
+faqAnswersCarryLinks = testCase "linked answer reaches dd and JSON-LD" $ do
+  let entry =
+        ( "Testvraag?"
+        , faqAnswerHtml $ do
+            "zie "
+            H.a ! A.href "https://example.com/prijzen" $ "de prijzen"
+        )
+      renderedItem = TL.toStrict (renderHtml (renderFaqItem entry))
+      renderedJsonLd = TL.toStrict (renderHtml (faqPageJsonLd [entry]))
+  assertBool "visible dd lost the answer's anchor"
+    ("<a href=\"https://example.com/prijzen\">" `T.isInfixOf` renderedItem)
+  assertBool "JSON-LD lost the answer's link"
+    ("https://example.com/prijzen" `T.isInfixOf` renderedJsonLd)
+  assertBool "JSON-LD carries a raw <a; '<' must be escaped inside the script element"
+    (not ("<a " `T.isInfixOf` snd (T.breakOn "ld+json" renderedJsonLd)))
+
 main :: IO ()
 main = defaultMain $
   testGroup "shake-blog templates"
@@ -136,4 +161,6 @@ main = defaultMain $
         (map noTrackingParamsCase allStaticPages)
     , testGroup "webwinkel content images load on the serve preview"
         [relativizesImageSourcesOnly]
+    , testGroup "FAQ answers carry markup into both surfaces"
+        [faqAnswersCarryLinks]
     ]
