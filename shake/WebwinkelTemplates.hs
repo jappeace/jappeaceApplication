@@ -19,15 +19,19 @@ module WebwinkelTemplates
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
   , relativizeWebwinkelContentImages
+  , webwinkelverhuisSitemap
+  , webwinkelverhuisStaticPages
   ) where
 
 import Data.Text (Text)
+import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
+import Data.Time (Day, UTCTime(..), defaultTimeLocale, formatTime, fromGregorian)
 import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
-import Types (SiteConfig(..), Article(..), PaginationInfo(..))
+import Types (SiteConfig(..), Article(..), PaginationInfo(..), articleLastmod)
 import PageChrome
   ( PageMeta(..)
   , defaultPageMeta
@@ -1587,3 +1591,72 @@ webwinkelArticlePage _config article =
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just ("https://webwinkelverhuis.nl/blog/" <> articleUrl article)
       }
+
+-- | Generate sitemap.xml for webwinkelverhuis.nl. Every entry carries a
+-- lastmod: Google's recrawl prioritisation reads it, and without one on
+-- the static pages a copy rewrite stays invisible until the next
+-- organic crawl (the index stood at 4 of 15 pages on 2026-08-03 while
+-- the whole site had just been rewritten).
+webwinkelverhuisSitemap :: [Article] -> Text
+webwinkelverhuisSitemap articles = T.unlines $
+  [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+  , "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+  ]
+  ++ map webwinkelStaticSitemapEntry webwinkelverhuisStaticPages
+  ++ [webwinkelBlogIndexSitemapEntry articles]
+  ++ map webwinkelArticleSitemapEntry articles
+  ++ ["</urlset>"]
+
+-- | The static pages with the day their copy last changed. Bump the day
+-- when editing a page's copy; the blog index and articles get their
+-- dates from the article metadata automatically. Current dates: the
+-- site-wide rewrite of 2/3 aug 2026 (scanner-pagina, CCV/MWW-copy,
+-- migratie-heroes, tagline).
+--
+-- Decision: hand-maintained lastmod days for the static pages,
+-- reversing the earlier "we don't fabricate dates" stance (which
+-- emitted the static entries dateless). Deriving dates from git at
+-- build time is not possible (nix builds from a gitignoreSource copy
+-- without .git), and dateless entries provably starved recrawl: on
+-- 2026-08-03 Google had indexed 4 of 15 pages with the newest crawl
+-- weeks old while the whole site had just been rewritten. The dates
+-- here are real copy-change days from git history, kept honest by the
+-- bump-on-edit rule above.
+webwinkelverhuisStaticPages :: [(Text, Day)]
+webwinkelverhuisStaticPages =
+  [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 3)
+  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 8 3)
+  , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 3)
+  , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 8 3)
+  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 8 3)
+  , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 8 3)
+  , ("https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html", fromGregorian 2026 8 2)
+  , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 2)
+  ]
+
+webwinkelStaticSitemapEntry :: (Text, Day) -> Text
+webwinkelStaticSitemapEntry (url, changedOn) =
+  webwinkelSitemapLine url (UTCTime changedOn 0)
+
+-- | The blog index changes whenever an article is added or edited, so
+-- it advertises the newest article lastmod. An empty article list means
+-- a broken site build; crash loudly rather than emit a dateless entry.
+webwinkelBlogIndexSitemapEntry :: [Article] -> Text
+webwinkelBlogIndexSitemapEntry articles =
+  case articles of
+    [] -> error "webwinkelverhuis sitemap: blog index entry needs at least one article"
+    _oneOrMore ->
+      webwinkelSitemapLine "https://webwinkelverhuis.nl/blog/"
+        (maximum (map articleLastmod articles))
+
+webwinkelArticleSitemapEntry :: Article -> Text
+webwinkelArticleSitemapEntry article =
+  webwinkelSitemapLine
+    ("https://webwinkelverhuis.nl/blog/" <> articleUrl article)
+    (articleLastmod article)
+
+webwinkelSitemapLine :: Text -> UTCTime -> Text
+webwinkelSitemapLine url modified =
+  "  <url><loc>" <> url <> "</loc><lastmod>"
+    <> T.pack (formatTime defaultTimeLocale "%Y-%m-%d" modified)
+    <> "</lastmod></url>"

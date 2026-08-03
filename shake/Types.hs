@@ -2,6 +2,7 @@
 module Types
   ( SiteConfig(..)
   , Article(..)
+  , articleLastmod
   , Page(..)
   , NavLink(..)
   , PaginationInfo(..)
@@ -15,6 +16,7 @@ module Types
   , webwinkelSiteConfig
   ) where
 
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Time (UTCTime)
 import Text.Blaze.Html (Html)
@@ -122,6 +124,11 @@ data Article = Article
   , articleFootnotesHtml :: Maybe Html  -- ^ Extracted footnotes section
   , articleUrl         :: Text
   }
+
+-- | The date an article last changed: the modified date when set,
+-- otherwise the publication date. Sitemaps and feeds advertise this.
+articleLastmod :: Article -> UTCTime
+articleLastmod article = fromMaybe (articleDate article) (articleModified article)
 
 data Page = Page
   { pageTitle    :: Text
