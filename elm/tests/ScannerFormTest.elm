@@ -363,6 +363,48 @@ viewTests =
                 view (modelMetRapport oplosbaarRapport)
                     |> Query.fromHtml
                     |> Query.hasNot [ rekenhulpLink ]
+        , test "de Lighthouse-attributieregel staat niet meer onder het rapport" <|
+            \_ ->
+                view (modelMetRapport verwachtRapport)
+                    |> Query.fromHtml
+                    |> Query.hasNot [ Selector.text "Lighthouse" ]
+        ]
+
+
+{-| Rapport waarvan de scanner het platform niet herkende. -}
+nietHerkendRapport : Rapport
+nietHerkendRapport =
+    { verwachtRapport | platformHerkend = False, platform = "onbekend" }
+
+
+nietHerkendTests : Test
+nietHerkendTests =
+    describe "platform niet herkend: geen rapport, wel een nieuwe zoekbox"
+        [ test "de melding staat op het scherm" <|
+            \_ ->
+                view (modelMetRapport nietHerkendRapport)
+                    |> Query.fromHtml
+                    |> Query.has [ Selector.text "Platform niet herkend." ]
+        , test "scores en verbeterpunten blijven verborgen" <|
+            \_ ->
+                view (modelMetRapport nietHerkendRapport)
+                    |> Query.fromHtml
+                    |> Query.hasNot [ Selector.text "Verbeterpunten" ]
+        , test "geen upsell naar rekenhulp of gesprek" <|
+            \_ ->
+                view (modelMetRapport nietHerkendRapport)
+                    |> Query.fromHtml
+                    |> Query.hasNot [ rekenhulpLink ]
+        , test "de zoekbox staat klaar voor een volgende poging" <|
+            \_ ->
+                view (modelMetRapport nietHerkendRapport)
+                    |> Query.fromHtml
+                    |> Query.has [ Selector.tag "input", Selector.text "Beoordeel mijn webshop" ]
+        , test "een herkend platform toont geen niet-herkend-melding" <|
+            \_ ->
+                view (modelMetRapport verwachtRapport)
+                    |> Query.fromHtml
+                    |> Query.hasNot [ Selector.text "Platform niet herkend." ]
         ]
 
 
@@ -375,4 +417,5 @@ suite =
         , topVijfTests
         , updateTests
         , viewTests
+        , nietHerkendTests
         ]

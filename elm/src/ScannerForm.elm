@@ -689,7 +689,11 @@ faseWeergave model =
             laadWeergave (wachtTekst stand)
 
         Geslaagd rapport stand ->
-            rapportWeergave rapport stand
+            if rapport.platformHerkend then
+                rapportWeergave rapport stand
+
+            else
+                nietHerkendWeergave rapport model.invoer
 
         Mislukt melding ->
             misluktWeergave melding
@@ -785,7 +789,31 @@ rapportWeergave rapport stand =
         ++ List.map (puntWeergave rapport.platform) (topVerbeterpunten rapport.verbeterpunten)
         ++ uitklapDeel rapport stand.puntenUitklap
         ++ upsellBlok rapport
-        ++ [ metaRegel rapport ]
+
+
+-- Decision: een niet-herkend platform krijgt geen rapport (geen scores,
+-- verbeterpunten of aanbod), alleen "Platform niet herkend." en de
+-- zoekbox opnieuw. Gekozen door Jappie (2 aug 2026) boven het alternatief
+-- (het volledige Lighthouse-rapport tonen met "platform: niet herkend"
+-- erboven, zoals het eerst deed): wij fixeren op de ondersteunde
+-- webshopplatformen en willen geen generiek Lighthouse-loket zijn, en
+-- zonder herkend platform kunnen we oplosbaar-versus-vast toch niet
+-- duiden, dus het rapport zou leuren zonder advies te dragen.
+
+
+{-| Vervangt het volledige rapport wanneer de scanner het platform niet
+herkent: alleen de melding en een nieuwe zoekbox. Het formulier is hetzelfde
+als op de startfase ('invoerWeergave'), met het gescande adres nog
+ingevuld zodat een tikfout snel hersteld is; 'ScanAangevraagd' werkt
+vanuit elke fase, dus opnieuw scannen werkt hiervandaan direct. -}
+nietHerkendWeergave : Rapport -> String -> List (Html Msg)
+nietHerkendWeergave rapport invoer =
+    [ h3 [ Attr.class "scanner-rapport-kop" ] [ text ("Rapport voor " ++ rapport.url) ]
+    , p [ Attr.class "scanner-platform" ] [ strong [] [ text "Platform niet herkend." ] ]
+    , p []
+        [ text "Wij beoordelen webshops op MijnWebwinkel, CCV Shop, Lightspeed en WooCommerce. Draait uw shop ergens anders, dan kunnen wij er weinig zinnigs over zeggen. Controleer het adres of probeer een andere shop:" ]
+    ]
+        ++ invoerWeergave invoer Nothing
 
 
 {-| De kernmetingen, standaard ingeklapt: de meeste bezoekers hebben genoeg
@@ -986,33 +1014,6 @@ oplosBlok rapport =
 
     else
         []
-
-
-metaRegel : Rapport -> Html Msg
-metaRegel rapport =
-    p [ Attr.class "scanner-meta" ]
-        [ small []
-            [ text
-                ("Gemeten op "
-                    ++ String.left 10 rapport.gemeten
-                    ++ " met Lighthouse "
-                    ++ rapport.lighthouseVersie
-                    ++ ", "
-                    ++ metingenTekst rapport.metingen
-                    ++ "."
-                )
-            ]
-        ]
-
-
-metingenTekst : Int -> String
-metingenTekst aantal =
-    if aantal == 1 then
-        "1 meting"
-
-    else
-        String.fromInt aantal ++ " metingen"
-
 
 
 -- MAIN
