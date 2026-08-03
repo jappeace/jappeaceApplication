@@ -139,6 +139,10 @@ decoderTests =
                     (Decode.decodeString scanStatusDecoder
                         ("""{"status":"klaar","rapport":""" ++ rapportJson ++ "}")
                     )
+        , test "status tijdelijk-geweigerd decodeert naar de eigen uitkomst" <|
+            \_ ->
+                Expect.equal (Ok StatusTijdelijkGeweigerd)
+                    (Decode.decodeString scanStatusDecoder """{"status":"tijdelijk-geweigerd"}""")
         , test "een onbekende status faalt in plaats van stil door te gaan" <|
             \_ ->
                 Expect.err
@@ -270,6 +274,14 @@ updateTests =
                             )
                         ).fase
                     )
+        , test "tijdelijk-geweigerd eindigt in de misluktfase met de wacht-melding" <|
+            \_ ->
+                Expect.equal (Mislukt "Deze shop beperkt tijdelijk onze metingen (te veel verzoeken kort na elkaar). Probeer het over een uur opnieuw.")
+                    (Tuple.first
+                        (update (StatusOntvangen (Ok StatusTijdelijkGeweigerd))
+                            { initieelModel | fase = Wachten (ScanId "abc123") Bezig }
+                        )
+                    ).fase
         , test "opnieuw proberen keert terug naar de invoer" <|
             \_ ->
                 Expect.equal (Invoeren Nothing)

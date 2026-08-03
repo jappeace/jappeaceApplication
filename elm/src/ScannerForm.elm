@@ -228,6 +228,7 @@ type ScanStatus
     = StatusWachtrij Int
     | StatusBezig
     | StatusMislukt
+    | StatusTijdelijkGeweigerd
     | StatusKlaar Rapport
 
 
@@ -247,6 +248,9 @@ statusInhoudDecoder status =
 
     else if status == "mislukt" then
         Decode.succeed StatusMislukt
+
+    else if status == "tijdelijk-geweigerd" then
+        Decode.succeed StatusTijdelijkGeweigerd
 
     else if status == "klaar" then
         Decode.map StatusKlaar (Decode.field "rapport" rapportDecoder)
@@ -590,6 +594,14 @@ verwerkStatus resultaat model =
                 Ok StatusMislukt ->
                     ( { model | fase = Mislukt scanMisluktMelding }, gaEvent "scanner_mislukt" [] )
 
+                Ok StatusTijdelijkGeweigerd ->
+                    -- De shop zelf weigerde de meting met een 429 (zie
+                    -- megavid #145); eerlijk melden en later terugkomen
+                    -- werkt beter dan een generiek "mislukt".
+                    ( { model | fase = Mislukt tijdelijkGeweigerdMelding }
+                    , gaEvent "scanner_geweigerd" []
+                    )
+
                 Ok (StatusKlaar rapport) ->
                     ( { model | fase = Geslaagd rapport ingeklapteRapportStand }
                     , gaEvent "scanner_klaar" [ ( "platform", Encode.string rapport.platform ) ]
@@ -777,6 +789,12 @@ wachtTekst stand =
 
         Bezig ->
             "We meten uw webshop."
+
+
+{-| Melding wanneer de gescande shop onze meting tijdelijk weigert. -}
+tijdelijkGeweigerdMelding : String
+tijdelijkGeweigerdMelding =
+    "Deze shop beperkt tijdelijk onze metingen (te veel verzoeken kort na elkaar). Probeer het over een uur opnieuw."
 
 
 misluktWeergave : String -> List (Html Msg)
