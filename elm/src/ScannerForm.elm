@@ -937,7 +937,7 @@ puntWeergave platformNaam punt =
         ]
 
 
-{-| De gratis zelf-doen-tip, alleen aanwezig wanneer de server zeker is
+{-| De zelf-doen-tip, alleen aanwezig wanneer de server zeker is
 van een suggestie (besluit Jappie, 3 aug 2026: het waarom leggen we
 altijd uit, een suggestie alleen als hij zeker klopt). -}
 zelfDoenWeergave : Maybe String -> Html Msg
@@ -945,7 +945,7 @@ zelfDoenWeergave mTip =
     case mTip of
         Just tip ->
             p [ Attr.class "scanner-punt-tip" ]
-                [ strong [] [ text "Gratis tip: " ], text tip ]
+                [ strong [] [ text "Tip: " ], text tip ]
 
         Nothing ->
             text ""

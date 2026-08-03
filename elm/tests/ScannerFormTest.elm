@@ -372,11 +372,16 @@ viewTests =
                 view (modelMetRapport verwachtRapport)
                     |> Query.fromHtml
                     |> Query.hasNot [ Selector.text "Lighthouse" ]
-        , test "een zelf-doen-tip rendert als gratis tip onder het punt" <|
+        , test "een zelf-doen-tip rendert als tip onder het punt" <|
             \_ ->
                 view (modelMetRapport verwachtRapport)
                     |> Query.fromHtml
-                    |> Query.has [ Selector.text "Gratis tip: ", Selector.text "Schrijf per pagina een metabeschrijving." ]
+                    |> Query.has [ Selector.text "Tip: ", Selector.text "Schrijf per pagina een metabeschrijving." ]
+        , test "de tip noemt zichzelf niet gratis (geen transactietaal in de vertrouwensfase)" <|
+            \_ ->
+                view (modelMetRapport verwachtRapport)
+                    |> Query.fromHtml
+                    |> Query.hasNot [ Selector.text "Gratis tip" ]
         , test "zonder zelfDoen-veld in de JSON decodeert het punt als tiploos" <|
             \_ ->
                 case
