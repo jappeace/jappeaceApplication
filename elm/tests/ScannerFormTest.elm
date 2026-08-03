@@ -34,6 +34,7 @@ import ScannerForm
         , scanStatusDecoder
         , topVerbeterpunten
         , update
+        , verbeterpuntDecoder
         , view
         )
 import Test exposing (Test, describe, test)
@@ -51,8 +52,8 @@ rapportJson =
      "scores":[{"label":"Prestaties","score":54},{"label":"PWA","score":null}],
      "kernmetingen":[{"label":"Largest Contentful Paint","waarde":"8,4 s"}],
      "verbeterpunten":[
-       {"categorie":"Prestaties","titel":"Trage serverreactie","meetwaarde":"Hoofddocument duurde 1.860 ms","waarom":"een trage eerste serverreactie remt alles","oplosbaar":false},
-       {"categorie":"SEO","titel":"Meta description ontbreekt","meetwaarde":null,"waarom":"zoekmachines tonen dan willekeurige tekst","oplosbaar":true}
+       {"categorie":"Prestaties","titel":"Trage serverreactie","meetwaarde":"Hoofddocument duurde 1.860 ms","waarom":"een trage eerste serverreactie remt alles","zelfDoen":null,"oplosbaar":false},
+       {"categorie":"SEO","titel":"Meta description ontbreekt","meetwaarde":null,"waarom":"zoekmachines tonen dan willekeurige tekst","zelfDoen":"Schrijf per pagina een metabeschrijving.","oplosbaar":true}
      ],
      "vastOpPlatform":1}
     """
@@ -76,12 +77,14 @@ verwachtRapport =
           , titel = "Trage serverreactie"
           , meetwaarde = Just "Hoofddocument duurde 1.860 ms"
           , waarom = "een trage eerste serverreactie remt alles"
+          , zelfDoen = Nothing
           , oplosbaar = VastOpPlatform
           }
         , { categorie = "SEO"
           , titel = "Meta description ontbreekt"
           , meetwaarde = Nothing
           , waarom = "zoekmachines tonen dan willekeurige tekst"
+          , zelfDoen = Just "Schrijf per pagina een metabeschrijving."
           , oplosbaar = Oplosbaar
           }
         ]
@@ -96,6 +99,7 @@ punt nummer =
     , titel = "Punt " ++ String.fromInt nummer
     , meetwaarde = Nothing
     , waarom = "omdat"
+    , zelfDoen = Nothing
     , oplosbaar = Oplosbaar
     }
 
@@ -368,6 +372,23 @@ viewTests =
                 view (modelMetRapport verwachtRapport)
                     |> Query.fromHtml
                     |> Query.hasNot [ Selector.text "Lighthouse" ]
+        , test "een zelf-doen-tip rendert als gratis tip onder het punt" <|
+            \_ ->
+                view (modelMetRapport verwachtRapport)
+                    |> Query.fromHtml
+                    |> Query.has [ Selector.text "Gratis tip: ", Selector.text "Schrijf per pagina een metabeschrijving." ]
+        , test "zonder zelfDoen-veld in de JSON decodeert het punt als tiploos" <|
+            \_ ->
+                case
+                    Decode.decodeString
+                        verbeterpuntDecoder
+                        """{"categorie":"SEO","titel":"x","meetwaarde":null,"waarom":"y","oplosbaar":true}"""
+                of
+                    Ok gedecodeerd ->
+                        Expect.equal Nothing gedecodeerd.zelfDoen
+
+                    Err _ ->
+                        Expect.fail "punt zonder zelfDoen-veld hoort te decoderen"
         ]
 
 
@@ -400,6 +421,11 @@ nietHerkendTests =
                 view (modelMetRapport nietHerkendRapport)
                     |> Query.fromHtml
                     |> Query.has [ Selector.tag "input", Selector.text "Beoordeel mijn webshop" ]
+        , test "de niet-herkend-pagina biedt een platform-verzoek-mailto" <|
+            \_ ->
+                view (modelMetRapport nietHerkendRapport)
+                    |> Query.fromHtml
+                    |> Query.has [ Selector.tag "a", Selector.text "Mail ons welk platform u gebruikt" ]
         , test "een herkend platform toont geen niet-herkend-melding" <|
             \_ ->
                 view (modelMetRapport verwachtRapport)
