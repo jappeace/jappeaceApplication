@@ -18,6 +18,7 @@ module WebwinkelTemplates
   , lightspeedMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
+  , shopifyMiljardPage
   , relativizeWebwinkelContentImages
   , webwinkelverhuisSitemap
   , webwinkelverhuisStaticPages
@@ -875,6 +876,9 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
           H.p $ do
             H.a ! A.href "/waarom-mijnwebwinkel.html" $ "Waarom wordt MijnWebwinkel niet meer doorontwikkeld?"
             H.preEscapedToHtml (" &rarr;" :: Text)
+          H.p $ do
+            H.a ! A.href "/shopify-miljard.html" $ "Het miljard van Shopify: waarom geen Nederlands platform kan bijbenen"
+            H.preEscapedToHtml (" &rarr;" :: Text)
       H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> ": u betaalt pas na succesvolle migratie"
@@ -1049,6 +1053,9 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       -- bestemming is een custom cart, 13 van 28), dus de pagina spreekt
       -- ambitie aan in plaats van angst.
       H.p $ H.preEscapedToHtml ("De meeste winkeliers verlaten CCV Shop niet omdat het kapot is, maar omdat ze eruit groeien: maatwerk of functies die er niet in zitten. Shopify en WooCommerce groeien w&eacute;l met u mee, van extra verkoopkanalen en talen tot B2B-maatwerk en duizenden apps. En het lastigste deel van uitgroeien, alles heelhuids overzetten, is precies ons vak." :: Text)
+      H.p $ do
+        H.a ! A.href "/shopify-miljard.html" $ "Het miljard van Shopify: waarom geen Nederlands platform kan bijbenen"
+        H.preEscapedToHtml (" &rarr;" :: Text)
       H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
       H.ul $ do
         H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (": u betaalt pas na succesvolle migratie" :: Text)
@@ -1546,6 +1553,139 @@ lightspeedWaaromFaq =
   ]
 
 -- =============================================================================
+-- Shopify R&D article page: het miljard dat het verschil maakt
+-- =============================================================================
+
+-- Decision: de cijfers en claims op deze pagina komen uit
+-- jappiesoft/research/ccv-woocommerce-market-onderzoek.org, sectie
+-- "Shopify R&D per jaar" (3 aug 2026): de R&D-reeks is per jaar
+-- gecheckt via de SEC XBRL-API. De per-werkdag-vergelijking staat er
+-- hard in; de themateam-vergelijking alleen gehedged, want Shopify
+-- publiceert geen teamgroottes. Toon volgt de aanzet-notitie: geen
+-- verwijt aan de NL-platformen, het is een budgetverschil, geen
+-- karakterverschil.
+shopifyMiljardPage :: Html
+shopifyMiljardPage = webwinkelBaseTemplate miljardMeta $
+  H.main $ do
+    -- Hero
+    H.section ! A.class_ "hero" $ do
+      H.h1 "Het miljard van Shopify"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Shopify gaf in 2025 ruim anderhalf miljard dollar uit aan productontwikkeling. Nederlandse webshopplatformen zijn niet lui of onkundig; ze spelen een spel waarin de tegenstander per werkdag meer uitgeeft dan zij in een jaar kunnen. Dit is wat dat geld oplevert, jaar voor jaar." :: Text)
+
+    -- Timeline
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "Wat Shopify per jaar uitgeeft, en wat u daarvan terugziet"
+      H.p $ H.preEscapedToHtml ("De bedragen komen rechtstreeks uit de jaarrekeningen die Shopify bij de Amerikaanse beurswaakhond SEC deponeert." :: Text)
+      H.ol $ do
+        H.li $ do
+          H.strong "2019"
+          H.preEscapedToHtml (": $355 miljoen. De basislijn van v&oacute;&oacute;r corona, toen al een veelvoud van wat de hele Nederlandse platformsector uitgaf." :: Text)
+        H.li $ do
+          H.strong "2020"
+          H.preEscapedToHtml (": $552 miljoen. De coronagolf: de Shop-app, een volledig vernieuwd kassasysteem en de uitbouw van Shop Pay." :: Text)
+        H.li $ do
+          H.strong "2021"
+          H.preEscapedToHtml (": $854 miljoen. Het jaar van het winkelfundament: " :: Text)
+          H.a ! A.href "https://www.shopify.com/partners/blog/shopify-unite-announcements-2021" $ "Online Store 2.0"
+          H.preEscapedToHtml (" met secties op elke pagina, en " :: Text)
+          H.a ! A.href "https://www.shopify.com/blog/dawn-shopify-theme" $ "Dawn"
+          H.preEscapedToHtml (" als gratis referentiethema, zo&apos;n 35% sneller dan zijn voorganger. Dit ene jaar is de reden dat een standaard Shopify-thema er moderner uitziet dan wat Nederlandse platformen leveren." :: Text)
+        H.li $ do
+          H.strong "2022"
+          H.preEscapedToHtml (": $1.503 miljoen. De expansiepiek: de grootste overname ooit (" :: Text)
+          H.a ! A.href "https://techcrunch.com/2022/05/05/shopify-acquires-shipping-logistics-startup-deliverr-for-2-1b/" $ "logistiekbedrijf Deliverr, $2,1 miljard"
+          H.preEscapedToHtml ("), headless bouwen met Hydrogen, een opengebroken checkout en B2B-verkoop." :: Text)
+        H.li $ do
+          H.strong "2023"
+          H.preEscapedToHtml (": $1.730 miljoen, het hoogste bedrag ooit. En toch het jaar van de koerswending: " :: Text)
+          H.a ! A.href "https://www.shopify.com/news/shopify-completes-sale-of-shopify-logistics-to-flexport" $ "de logistiek ging de deur uit"
+          H.preEscapedToHtml (", alle aandacht terug naar de webshop zelf. " :: Text)
+          H.a ! A.href "https://www.shopify.com/editions/summer2023" $ "Editions Summer &apos;23"
+          H.preEscapedToHtml (" introduceerde de AI-lijn: Shopify Magic en assistent Sidekick." :: Text)
+        H.li $ do
+          H.strong "2024"
+          H.preEscapedToHtml (": $1.367 miljoen. Op papier een dip (nasleep van de reorganisatie), in de praktijk niet: de cadans van ruim honderd nieuwe functies per half jaar liep gewoon door." :: Text)
+        H.li $ do
+          H.strong "2025"
+          H.preEscapedToHtml (": $1.536 miljoen, weer stijgend. En opnieuw een complete themageneratie: " :: Text)
+          H.a ! A.href "https://www.shopify.com/news/summer-25-edition-design" $ "Horizon"
+          H.preEscapedToHtml (", tien gratis thema&apos;s op een nieuw fundament met een AI-blokgenerator. Dawn, in 2021 nog het modernste gratis thema ter wereld, is daarmee alweer de vorige generatie. Het loopt alsnog jaren voor op de Nederlandse standaardthema&apos;s." :: Text)
+
+    -- The numbers
+    H.section ! A.class_ "for-who" $ do
+      H.h2 "De cijfers"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.h3 "$6 miljoen"
+          H.p $ H.preEscapedToHtml ("Per werkdag. Dat is wat Shopify in 2025 dagelijks aan productontwikkeling uitgaf: meer per dag dan een Nederlands nicheplatform redelijkerwijs per jaar kan besteden." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "2 generaties"
+          H.p $ H.preEscapedToHtml ("Complete themageneraties in vier jaar: Dawn (2021) en Horizon (2025). De standaardthema&apos;s van MijnWebwinkel en CCV Shop stammen van daarv&oacute;&oacute;r, en staan stil." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "100+"
+          H.p $ H.preEscapedToHtml ("Nieuwe functies per half jaar, elk half jaar opnieuw, gebundeld in de Editions-releases." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.h3 "$7,9 miljard"
+          H.p $ H.preEscapedToHtml ("Opgeteld aan productontwikkeling sinds 2019. E&eacute;n platform, zeven jaar." :: Text)
+
+    -- What this means for Dutch platforms
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Waarom Nederlandse platformen dit niet kunnen bijbenen"
+      H.p $ H.preEscapedToHtml ("Dit is geen verwijt aan MijnWebwinkel of CCV Shop. Achter die platformen zitten kleine teams; CCV Shop B.V. telt in zijn geheel enkele tientallen medewerkers, en het themateam dat bij Shopify aan Dawn en Horizon bouwt is vermoedelijk in zijn eentje al groter. Wie een paar miljoen per jaar kan uitgeven, kan geen wedstrijd winnen van iemand die per werkdag zes miljoen uitgeeft. Het is geen kwestie van niet willen; meedoen is simpelweg geen optie." :: Text)
+      H.p $ H.preEscapedToHtml ("Het gevolg ziet u in uw eigen shop: thema&apos;s die al jaren dezelfde zijn, functies die maar niet komen, en een kloof die elk half jaar met ruim honderd functies groeit. Waarom dat bij MijnWebwinkel zo gelopen is leest u in " :: Text)
+      H.a ! A.href "/waarom-mijnwebwinkel.html" $ "ons artikel over MijnWebwinkel"
+      "."
+
+    -- What this means for your shop
+    H.section ! A.class_ "results" $ do
+      H.h2 "Wat betekent dit voor uw shop?"
+      H.p $ H.preEscapedToHtml ("Dat de overstap meestal groter voelt dan hij is: draait uw shop op een standaardthema van MijnWebwinkel of CCV Shop, dan is alleen al het standaardthema van uw nieuwe platform doorgaans een zichtbare opknapbeurt. U lift vanaf dag &eacute;&eacute;n mee op dat miljard per jaar, en elke Editions-release daarna is er ook voor uw shop." :: Text)
+      H.p $ do
+        H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Migratie vanaf MijnWebwinkel"
+        H.preEscapedToHtml (" of " :: Text)
+        H.a ! A.href "/migrate-ccvshop.html" $ "migratie vanaf CCV Shop"
+        H.preEscapedToHtml (": volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
+
+    -- Sources
+    H.section ! A.class_ "about" $ do
+      H.h2 "Bronnen"
+      H.ul $ do
+        H.li $ do
+          H.a ! A.href "https://data.sec.gov/api/xbrl/companyconcept/CIK0001594805/us-gaap/ResearchAndDevelopmentExpense.json" $ "SEC XBRL: Shopify Research and Development Expense per jaar"
+          " (jaarrekeningen 2019-2025)"
+        H.li $ do
+          H.a ! A.href "https://www.shopify.com/partners/blog/shopify-unite-announcements-2021" $ "Shopify Unite 2021: Online Store 2.0"
+          " (juni 2021)"
+        H.li $ do
+          H.a ! A.href "https://techcrunch.com/2022/05/05/shopify-acquires-shipping-logistics-startup-deliverr-for-2-1b/" $ "TechCrunch: Shopify koopt Deliverr voor $2,1 miljard"
+          " (mei 2022)"
+        H.li $ do
+          H.a ! A.href "https://www.shopify.com/news/shopify-completes-sale-of-shopify-logistics-to-flexport" $ "Shopify: verkoop logistiek aan Flexport afgerond"
+          " (2023)"
+        H.li $ do
+          H.a ! A.href "https://www.shopify.com/editions/summer2023" $ "Shopify Editions Summer '23: Magic en Sidekick"
+        H.li $ do
+          H.a ! A.href "https://www.shopify.com/news/summer-25-edition-design" $ "Shopify Summer Editions '25: Horizon"
+          " (mei 2025)"
+
+    -- CTA
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Meeliften in plaats van bijbenen?"
+      H.p $ H.preEscapedToHtml ("Uw platform gaat dit gat niet meer dichten. U kunt wachten tot het verschil nog groter is, of overstappen naar het platform waar dat miljard per jaar heengaat." :: Text)
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gratis gesprek"
+  where
+    miljardMeta :: PageMeta
+    miljardMeta = PageMeta
+      { pageMetaTitle       = "Het miljard van Shopify \8212 waarom Nederlandse platformen niet kunnen bijbenen \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Shopify gaf in 2025 ruim $1,5 miljard uit aan productontwikkeling, meer per werkdag dan een Nederlands webshopplatform per jaar kan besteden. De cijfers per jaar, uit de SEC-jaarrekeningen, en wat dat voor uw shop betekent."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/shopify-miljard.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = mempty
+      }
+
+-- =============================================================================
 -- Blog index page (paginated listing)
 -- =============================================================================
 
@@ -1642,6 +1782,7 @@ webwinkelverhuisStaticPages =
   , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 8 3)
   , ("https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html", fromGregorian 2026 8 2)
   , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 2)
+  , ("https://webwinkelverhuis.nl/shopify-miljard.html", fromGregorian 2026 8 3)
   ]
 
 webwinkelStaticSitemapEntry :: (Text, Day) -> Text
