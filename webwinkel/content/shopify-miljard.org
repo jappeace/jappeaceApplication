@@ -1,0 +1,106 @@
+#+TITLE: Het miljard van Shopify: waarom geen Nederlands platform kan bijbenen
+#+DATE: 2026-08-03
+#+CATEGORY: shopify
+#+TAGS: shopify, ccv, mijnwebwinkel, achtergrond
+
+Shopify gaf in 2025 ruim anderhalf miljard dollar uit aan
+productontwikkeling. Nederlandse webshopplatformen zijn niet lui of
+onkundig; ze spelen een spel waarin de tegenstander per werkdag meer
+uitgeeft dan zij in een jaar kunnen. Dit is wat dat geld oplevert,
+jaar voor jaar, en wat het betekent voor uw shop.
+
+* Wat Shopify per jaar uitgeeft
+
+De bedragen komen rechtstreeks uit de jaarrekeningen die Shopify bij
+de Amerikaanse beurswaakhond SEC deponeert (bronnen onderaan).
+
+| jaar | uitgave aan productontwikkeling |
+|------+---------------------------------|
+| 2019 | $355 miljoen                    |
+| 2020 | $552 miljoen                    |
+| 2021 | $854 miljoen                    |
+| 2022 | $1.503 miljoen                  |
+| 2023 | $1.730 miljoen                  |
+| 2024 | $1.367 miljoen                  |
+| 2025 | $1.536 miljoen                  |
+
+Opgeteld: $7,9 miljard in zeven jaar. Eén platform.
+
+* Waar dat geld heenging, en wat u ervan terugziet
+
+In 2020 verwerkte het platform de coronagolf: de Shop-app, een
+volledig vernieuwd kassasysteem en de uitbouw van Shop Pay.
+
+2021 was het jaar van het winkelfundament:
+[[https://www.shopify.com/partners/blog/shopify-unite-announcements-2021][Online Store 2.0]]
+met secties op elke pagina, en
+[[https://www.shopify.com/blog/dawn-shopify-theme][Dawn]] als gratis
+referentiethema, zo'n 35% sneller dan zijn voorganger. Dit ene jaar
+is de reden dat een standaard Shopify-thema er moderner uitziet dan
+wat Nederlandse platformen leveren.
+
+2022 was de expansiepiek: de grootste overname ooit
+([[https://techcrunch.com/2022/05/05/shopify-acquires-shipping-logistics-startup-deliverr-for-2-1b/][logistiekbedrijf Deliverr, $2,1 miljard]]),
+headless bouwen met Hydrogen, een opengebroken checkout en
+B2B-verkoop.
+
+2023 bracht het hoogste bedrag ooit, en toch de koerswending:
+[[https://www.shopify.com/news/shopify-completes-sale-of-shopify-logistics-to-flexport][de logistiek ging de deur uit]],
+alle aandacht terug naar de webshop zelf.
+[[https://www.shopify.com/editions/summer2023][Editions Summer '23]]
+introduceerde de AI-lijn: Shopify Magic en assistent Sidekick.
+
+2024 lijkt op papier een dip (de nasleep van een reorganisatie),
+maar de cadans van ruim honderd nieuwe functies per half jaar liep
+gewoon door.
+
+En in 2025 steeg het budget weer, met opnieuw een complete
+themageneratie als zichtbaarste resultaat:
+[[https://www.shopify.com/news/summer-25-edition-design][Horizon]],
+tien gratis thema's op een nieuw fundament met een AI-blokgenerator.
+Dawn, in 2021 nog het modernste gratis thema ter wereld, is daarmee
+alweer de vorige generatie. Het loopt alsnog jaren voor op de
+Nederlandse standaardthema's.
+
+* De rekensom die alles zegt
+
+Deel $1.536 miljoen door ongeveer 250 werkdagen en u komt op ruim
+$6 miljoen per werkdag. Dat is meer per dag dan een Nederlands
+nicheplatform redelijkerwijs per jaar aan ontwikkeling kan besteden.
+
+Dit is geen verwijt aan MijnWebwinkel of CCV Shop. Achter die
+platformen zitten kleine teams; CCV Shop B.V. telt in zijn geheel
+enkele tientallen medewerkers, en het themateam dat bij Shopify aan
+Dawn en Horizon bouwt is vermoedelijk in zijn eentje al groter. Wie
+een paar miljoen per jaar kan uitgeven, kan geen wedstrijd winnen van
+iemand die per werkdag zes miljoen uitgeeft. Het is geen kwestie van
+niet willen; meedoen is simpelweg geen optie.
+
+Het gevolg ziet u in uw eigen shop: thema's die al jaren dezelfde
+zijn, functies die maar niet komen, en een kloof die elk half jaar
+met ruim honderd functies groeit. Waarom dat bij MijnWebwinkel zo
+gelopen is leest u in
+[[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][ons artikel over MijnWebwinkel]].
+
+* Wat betekent dit voor uw shop?
+
+Dat de overstap meestal groter voelt dan hij is: draait uw shop op
+een standaardthema van MijnWebwinkel of CCV Shop, dan is alleen al
+het standaardthema van uw nieuwe platform doorgaans een zichtbare
+opknapbeurt. U lift vanaf dag één mee op dat miljard per jaar, en
+elke Editions-release daarna is er ook voor uw shop.
+
+Overweegt u de overstap? Bekijk onze
+[[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][migratie vanaf MijnWebwinkel]]
+of
+[[https://webwinkelverhuis.nl/migrate-ccvshop.html][migratie vanaf CCV Shop]]:
+volledig geautomatiseerd, vaste prijs, betaling na succes.
+
+* Bronnen
+
+- [[https://data.sec.gov/api/xbrl/companyconcept/CIK0001594805/us-gaap/ResearchAndDevelopmentExpense.json][SEC XBRL: Shopify Research and Development Expense per jaar]] (jaarrekeningen 2019-2025)
+- [[https://www.shopify.com/partners/blog/shopify-unite-announcements-2021][Shopify Unite 2021: Online Store 2.0]] (juni 2021)
+- [[https://techcrunch.com/2022/05/05/shopify-acquires-shipping-logistics-startup-deliverr-for-2-1b/][TechCrunch: Shopify koopt Deliverr voor $2,1 miljard]] (mei 2022)
+- [[https://www.shopify.com/news/shopify-completes-sale-of-shopify-logistics-to-flexport][Shopify: verkoop logistiek aan Flexport afgerond]] (2023)
+- [[https://www.shopify.com/editions/summer2023][Shopify Editions Summer '23: Magic en Sidekick]]
+- [[https://www.shopify.com/news/summer-25-edition-design][Shopify Summer Editions '25: Horizon]] (mei 2025)
