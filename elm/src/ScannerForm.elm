@@ -811,7 +811,7 @@ nietHerkendWeergave rapport invoer =
     [ h3 [ Attr.class "scanner-rapport-kop" ] [ text ("Rapport voor " ++ rapport.url) ]
     , p [ Attr.class "scanner-platform" ] [ strong [] [ text "Platform niet herkend." ] ]
     , p []
-        [ text "Wij beoordelen webshops op MijnWebwinkel, CCV Shop, Lightspeed en WooCommerce. Draait uw shop ergens anders, dan kunnen wij er weinig zinnigs over zeggen. Controleer het adres of probeer een andere shop:" ]
+        [ text "Wij beoordelen webshops op MijnWebwinkel, CCV Shop, Lightspeed, WooCommerce en Shopify. Draait uw shop ergens anders, dan kunnen wij er weinig zinnigs over zeggen. Controleer het adres of probeer een andere shop:" ]
     ]
         ++ invoerWeergave invoer Nothing
 
