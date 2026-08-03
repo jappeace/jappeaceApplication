@@ -54,6 +54,7 @@ import WebwinkelTemplates
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
   , relativizeWebwinkelContentImages
+  , webwinkelverhuisSitemap
   )
 import Slug (toSlug)
 import Templates
@@ -68,6 +69,7 @@ import Templates
   )
 import Types
   ( Article(..)
+  , articleLastmod
   , Page(..)
   , NavLink(..)
   , PaginationInfo(..)
@@ -754,7 +756,7 @@ generateWebwinkelverhuisSite config articles = do
   -- Atom feed
   T.writeFile "_webwinkelverhuis-site/blog/atom" (generateAtomFeed config sortedArticles)
 
-  T.writeFile "_webwinkelverhuis-site/sitemap.xml" (generateWebwinkelverhuisSitemap sortedArticles)
+  T.writeFile "_webwinkelverhuis-site/sitemap.xml" (webwinkelverhuisSitemap sortedArticles)
   T.writeFile "_webwinkelverhuis-site/robots.txt" webwinkelverhuisRobotsTxt
 
 -- | File name for penguin paginated blog index
@@ -840,11 +842,6 @@ sitemapUrlDated loc modified =
 formatSitemapDate :: UTCTime -> Text
 formatSitemapDate = T.pack . formatTime defaultTimeLocale "%Y-%m-%d"
 
--- | Most recent known modification date for an article: the explicit modified
--- date when present, otherwise the original publication date.
-articleLastmod :: Article -> UTCTime
-articleLastmod article = fromMaybe (articleDate article) (articleModified article)
-
 -- | robots.txt for the penguin site, with sitemap reference.
 penguinRobotsTxt :: Text
 penguinRobotsTxt = T.unlines
@@ -853,25 +850,6 @@ penguinRobotsTxt = T.unlines
   , ""
   , "Sitemap: https://jappiesoftware.com/sitemap.xml"
   ]
-
--- | Sitemap for the webwinkelverhuis.nl site. Hand-written pages get a loc only
--- (we don't fabricate dates), while blog articles carry a real lastmod.
-generateWebwinkelverhuisSitemap :: [Article] -> Text
-generateWebwinkelverhuisSitemap articles = T.unlines $
-  [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-  , "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
-  , sitemapUrl "https://webwinkelverhuis.nl/"
-  , sitemapUrl "https://webwinkelverhuis.nl/prijzen.html"
-  , sitemapUrl "https://webwinkelverhuis.nl/scan.html"
-  , sitemapUrl "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
-  , sitemapUrl "https://webwinkelverhuis.nl/migrate-ccvshop.html"
-  , sitemapUrl "https://webwinkelverhuis.nl/migrate-lightspeed.html"
-  , sitemapUrl "https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html"
-  , sitemapUrl "https://webwinkelverhuis.nl/waarom-lightspeed.html"
-  , sitemapUrl "https://webwinkelverhuis.nl/blog/"
-  ]
-  ++ map (\art -> sitemapUrlDated ("https://webwinkelverhuis.nl/blog/" <> articleUrl art) (articleLastmod art)) articles
-  ++ ["</urlset>"]
 
 -- | robots.txt for the webwinkelverhuis.nl site.
 webwinkelverhuisRobotsTxt :: Text

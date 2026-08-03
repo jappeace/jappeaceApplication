@@ -18,6 +18,7 @@ module Main (main) where
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
+import Data.Time (UTCTime(..), fromGregorian)
 import Test.Tasty (TestTree, defaultMain, testGroup)
 import Test.Tasty.HUnit (assertBool, testCase)
 import Text.Blaze.Html (Html)
@@ -27,6 +28,7 @@ import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
 import PageChrome (faqAnswerHtml, faqPageJsonLd, renderFaqItem)
+import Types (Article(..))
 import PenguinTemplates
   ( WebwinkelverhuisUrl(..)
   , penguinIndexPage
@@ -43,6 +45,8 @@ import WebwinkelTemplates
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
   , relativizeWebwinkelContentImages
+  , webwinkelverhuisSitemap
+  , webwinkelverhuisStaticPages
   )
 
 -- | A recognisable fake origin: it can only appear in the output when the
@@ -167,4 +171,62 @@ main = defaultMain $
         [relativizesImageSourcesOnly]
     , testGroup "FAQ answers carry markup into both surfaces"
         [faqAnswersCarryLinks]
+    , testGroup "webwinkelverhuis sitemap advertises lastmod"
+        [ everyStaticPageEntryIsDated
+        , blogIndexAdvertisesNewestArticleLastmod
+        , articleWithoutModifiedFallsBackToPublicationDate
+        ]
     ]
+
+-- | An article carrying only the fields the sitemap reads; the rest is
+-- inert filler.
+sitemapTestArticle :: Text -> UTCTime -> Maybe UTCTime -> Article
+sitemapTestArticle url published modified = Article
+  { articleTitle       = "test"
+  , articleSlug        = url
+  , articleCategory    = "test"
+  , articleDate        = published
+  , articleModified    = modified
+  , articleTags        = []
+  , articleContent     = mempty
+  , articleContentText = ""
+  , articleSummary     = Nothing
+  , articleSummaryText = Nothing
+  , articleFootnotesHtml = Nothing
+  , articleUrl         = url
+  }
+
+-- | The sitemap rendered from two articles: an old post that was
+-- recently edited (modified 2026-08-01) and a newer post never edited.
+sitemapUnderTest :: Text
+sitemapUnderTest = webwinkelverhuisSitemap
+  [ sitemapTestArticle "oud-maar-bijgewerkt.html"
+      (UTCTime (fromGregorian 2026 6 14) 0)
+      (Just (UTCTime (fromGregorian 2026 8 1) 0))
+  , sitemapTestArticle "nieuw-nooit-bijgewerkt.html"
+      (UTCTime (fromGregorian 2026 7 10) 0)
+      Nothing
+  ]
+
+everyStaticPageEntryIsDated :: TestTree
+everyStaticPageEntryIsDated = testCase "every static page entry carries a lastmod" $
+  mapM_
+    (\(url, _day) -> assertBool (T.unpack url <> " entry has no lastmod")
+      (("<loc>" <> url <> "</loc><lastmod>") `T.isInfixOf` sitemapUnderTest))
+    webwinkelverhuisStaticPages
+
+-- | The blog index date must be the newest lastmod over all articles,
+-- which here comes from a *modified* override on the oldest post: this
+-- fails both when the index ignores modified dates and when it picks
+-- the newest publication date instead of the maximum lastmod.
+blogIndexAdvertisesNewestArticleLastmod :: TestTree
+blogIndexAdvertisesNewestArticleLastmod = testCase "blog index carries the newest article lastmod" $
+  assertBool "blog/ entry does not advertise 2026-08-01"
+    ("<loc>https://webwinkelverhuis.nl/blog/</loc><lastmod>2026-08-01</lastmod>"
+      `T.isInfixOf` sitemapUnderTest)
+
+articleWithoutModifiedFallsBackToPublicationDate :: TestTree
+articleWithoutModifiedFallsBackToPublicationDate = testCase "article without modified uses its publication date" $
+  assertBool "never-edited article does not carry its publication date"
+    ("<loc>https://webwinkelverhuis.nl/blog/nieuw-nooit-bijgewerkt.html</loc><lastmod>2026-07-10</lastmod>"
+      `T.isInfixOf` sitemapUnderTest)
