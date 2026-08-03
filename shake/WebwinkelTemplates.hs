@@ -787,7 +787,12 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
         H.div $ do
           H.h1 "Ontsnap MijnWebwinkel"
           H.p ! A.class_ "subtitle" $ "Uw webshop is uw broodwinning, en MijnWebwinkel staat al jaren stil. Verhuizen voelt als een grote stap, maar het hoeft geen sprong in het diepe te zijn: wij zetten uw complete shop geautomatiseerd over, zonder dataverlies en met zo min mogelijk downtime. U betaalt pas na een succesvolle migratie."
-          H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+          -- Decision: de hero-CTA wijst naar de scanner, niet naar de
+          -- offerte (Jappie, 3 aug 2026): niemand vraagt een offerte aan
+          -- direct na één alinea, maar de webshop-beoordeling is een
+          -- geloofwaardige eerste stap. De offerte-route blijft verderop
+          -- (rekenhulp in de prijssectie, gesprek in de final-cta).
+          H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
         H.img ! A.class_ "hero-image"
               ! A.src "/illustratie-ontsnappen.svg"
               ! A.alt "Illustratie van dozen die een bevroren webshop verlaten richting een zonnige nieuwe winkel"
@@ -974,7 +979,9 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       -- wat we kunnen aantonen; de Fiserv-passage blijft bewust een
       -- constatering over zwaartepunt, geen EOL-voorspelling.
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Sinds de Amerikaanse betaalreus Fiserv CCV overnam ligt het zwaartepunt bij betalen en kassa: uw webshop is een tweede rang product. Wij verhuizen uw complete shop geautomatiseerd naar Shopify, WooCommerce of een ander platform van uw keuze: zonder dataverlies, met zo min mogelijk downtime." :: Text)
-      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
+      -- stap in plaats van de offerte.
+      H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
 
     -- What we migrate
     H.section ! A.class_ "for-who" ! A.id "what" $ do
@@ -1133,7 +1140,9 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     H.section ! A.class_ "hero" $ do
       H.h1 "Ontsnap Lightspeed"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt u richting hun nieuwe platform of de deur uit. Ondertussen draait uw webshop op verouderde software die steeds minder krijgt. Wij verhuizen uw complete shop naar Shopify: geautomatiseerd, zonder dataverlies, zonder SEO-verlies." :: Text)
-      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
+      -- stap in plaats van de offerte.
+      H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
 
     -- What we migrate
     H.section ! A.class_ "for-who" ! A.id "what" $ do
