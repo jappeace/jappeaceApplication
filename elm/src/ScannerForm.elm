@@ -19,6 +19,7 @@ port module ScannerForm exposing
     , main
     , normaliseerUrl
     , rapportDecoder
+    , verbeterpuntDecoder
     , restVerbeterpunten
     , scanStatusDecoder
     , topVerbeterpunten
@@ -117,6 +118,7 @@ type alias Verbeterpunt =
     , titel : String
     , meetwaarde : Maybe String
     , waarom : String
+    , zelfDoen : Maybe String
     , oplosbaar : Oplosbaarheid
     }
 
@@ -177,12 +179,24 @@ oplosbaarheidDecoder =
 
 verbeterpuntDecoder : Decode.Decoder Verbeterpunt
 verbeterpuntDecoder =
-    Decode.map5 Verbeterpunt
+    Decode.map6 Verbeterpunt
         (Decode.field "categorie" Decode.string)
         (Decode.field "titel" Decode.string)
         (Decode.field "meetwaarde" (Decode.nullable Decode.string))
         (Decode.field "waarom" Decode.string)
+        zelfDoenDecoder
         (Decode.field "oplosbaar" oplosbaarheidDecoder)
+
+
+{-| Het optionele gratis-tip-veld. Tolerant voor zowel null als een
+ontbrekend veld, zodat de frontend ook tegen een oudere backend zonder
+zelfDoen blijft werken (uitrolvolgorde maakt dan niet uit). -}
+zelfDoenDecoder : Decode.Decoder (Maybe String)
+zelfDoenDecoder =
+    Decode.oneOf
+        [ Decode.field "zelfDoen" (Decode.nullable Decode.string)
+        , Decode.succeed Nothing
+        ]
 
 
 rapportDecoder : Decode.Decoder Rapport
@@ -814,6 +828,27 @@ nietHerkendWeergave rapport invoer =
         [ text "Wij beoordelen webshops op MijnWebwinkel, CCV Shop, Lightspeed, WooCommerce en Shopify. Draait uw shop ergens anders, dan kunnen wij er weinig zinnigs over zeggen. Controleer het adres of probeer een andere shop:" ]
     ]
         ++ invoerWeergave invoer Nothing
+        ++ [ p [ Attr.class "scanner-platform-verzoek" ]
+                [ text "Draait uw shop op een platform dat wij nog niet kennen? "
+                , a [ Attr.href (platformVerzoekMailto rapport.url) ]
+                    [ text "Mail ons welk platform u gebruikt" ]
+                , text "; bij genoeg vraag voegen we het toe."
+                ]
+           ]
+
+
+{-| Mailto voor een platform-ondersteuningsverzoek, met het gescande
+adres voor-ingevuld zodat wij meteen kunnen fingerprinten wat er draait. -}
+platformVerzoekMailto : String -> String
+platformVerzoekMailto gescandeUrl =
+    "mailto:jappie@webwinkelverhuis.nl?subject="
+        ++ Url.percentEncode "Scanner: mijn platform wordt niet herkend"
+        ++ "&body="
+        ++ Url.percentEncode
+            ("Hallo,\n\nIk scande "
+                ++ gescandeUrl
+                ++ " maar het platform werd niet herkend.\nMijn shop draait op: \n\nGroet,"
+            )
 
 
 {-| De kernmetingen, standaard ingeklapt: de meeste bezoekers hebben genoeg
@@ -898,7 +933,22 @@ puntWeergave platformNaam punt =
         , small [ Attr.class "scanner-punt-categorie" ] [ text punt.categorie ]
         , meetwaardeWeergave punt.meetwaarde
         , p [ Attr.class "scanner-punt-waarom" ] [ text punt.waarom ]
+        , zelfDoenWeergave punt.zelfDoen
         ]
+
+
+{-| De zelf-doen-tip, alleen aanwezig wanneer de server zeker is
+van een suggestie (besluit Jappie, 3 aug 2026: het waarom leggen we
+altijd uit, een suggestie alleen als hij zeker klopt). -}
+zelfDoenWeergave : Maybe String -> Html Msg
+zelfDoenWeergave mTip =
+    case mTip of
+        Just tip ->
+            p [ Attr.class "scanner-punt-tip" ]
+                [ strong [] [ text "Tip: " ], text tip ]
+
+        Nothing ->
+            text ""
 
 
 meetwaardeWeergave : Maybe String -> Html Msg
