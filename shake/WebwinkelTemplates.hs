@@ -919,6 +919,11 @@ mijnwebwinkelFaq :: [(FaqQuestion, FaqAnswer)]
 mijnwebwinkelFaq =
   [ ( "Hoe lang duurt een migratie?"
     , faqAnswerText "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, betaalmethoden, eventuele koppelingen, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+  , ( "Wordt mijn shop er ook mooier van?"
+    , faqAnswerHtml $ do
+        "Meestal wel. De standaardthema's van MijnWebwinkel zijn al jaren niet doorontwikkeld, terwijl Shopify en WooCommerce hun standaardthema's actief bijhouden. Draait uw shop op zo'n standaardthema, dan oogt alleen al de overstap vaak als een opknapbeurt. Wilt u uw vertrouwde uitstraling houden, kies dan uitstraling overzetten in "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        ": wij bouwen die na op het moderne thema-fundament van uw nieuwe platform, en ook dat verbetert de uitstraling van uw shop vrijwel altijd zichtbaar." )
   , ( "Wat gebeurt er met bestellingen tijdens de verhuizing?"
     , faqAnswerHtml $ do
         "Uw MijnWebwinkel-shop blijft gewoon open en verkoopt door terwijl wij de nieuwe shop opbouwen. Vlak voor de livegang zetten we de laatste stand over, zodat ook recente bestellingen en actuele voorraadaantallen meekomen. Bestelgeschiedenis en voorraad kiest u als optie in "
@@ -1110,6 +1115,11 @@ ccvshopFaq :: [(FaqQuestion, FaqAnswer)]
 ccvshopFaq =
   [ ( "Hoe lang duurt een migratie?"
     , faqAnswerText "Het technische overzetten van uw producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan uw nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+  , ( "Wordt mijn shop er ook mooier van?"
+    , faqAnswerHtml $ do
+        "Meestal wel. De thema's van CCV Shop staan al jaren stil, terwijl Shopify en WooCommerce hun standaardthema's actief bijhouden. Draait uw shop op een ouder standaardthema, dan oogt alleen al de overstap vaak als een opknapbeurt. Wilt u uw vertrouwde uitstraling houden, kies dan uitstraling overzetten in "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        ": wij bouwen die na op het moderne thema-fundament van uw nieuwe platform, en ook dat verbetert de uitstraling van uw shop vrijwel altijd zichtbaar." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijst u uw domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
