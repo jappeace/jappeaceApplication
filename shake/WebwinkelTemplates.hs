@@ -1688,7 +1688,7 @@ overOnsPage = webwinkelBaseTemplate overOnsMeta $
   H.main $ do
     H.section ! A.class_ "hero" $ do
       H.h1 "Over ons"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Webwinkelverhuis is een dienst van Jappie Software, een klein softwarebedrijf uit Kampen. Twee man, korte lijnen: u spreekt direct met degene die uw migratie ook echt uitvoert." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Webwinkelverhuis is een dienst van Jappie Software, een klein softwarebedrijf uit Kampen. Met z&rsquo;n twee&euml;n, korte lijnen: u spreekt direct met degene die uw migratie ook echt uitvoert." :: Text)
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Het verhaal"
@@ -1698,6 +1698,7 @@ overOnsPage = webwinkelBaseTemplate overOnsMeta $
         H.preEscapedToHtml ("Webwinkelverhuis ontstond uit de eerste migratie die we deden: " :: Text)
         H.a ! A.href "/blog/klantverhaal-panzer-shopnl-van-mijnwebwinkel-naar-shopify-in-drie-talen.html" $ "panzer-shop.nl"
         H.preEscapedToHtml (", 2.400 producten in drie talen. In plaats van alles met de hand over te tikken bouwden we er gereedschap voor dat elke link, elk product en elke vertaling controleerbaar overzet. Dat gereedschap is sindsdien met elke verhuizing beter geworden, en het is de reden dat we durven af te rekenen n&aacute; een geslaagde migratie." :: Text)
+      H.p $ H.preEscapedToHtml ("En na de verhuizing draait uw winkel op standaard Shopify: elke ontwikkelaar kan ermee verder, u bent nooit van ons afhankelijk." :: Text)
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Meer dan webshops"
