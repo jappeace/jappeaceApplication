@@ -1,5 +1,5 @@
 #+TITLE: Het miljard van Shopify: waarom geen Nederlands platform kan bijbenen
-#+DATE: 2026-08-03
+#+DATE: 2026-08-04
 #+CATEGORY: shopify
 #+TAGS: shopify, ccv, mijnwebwinkel, achtergrond
 
@@ -67,6 +67,16 @@ Nederlandse standaardthema's.
 Deel $1.536 miljoen door ongeveer 250 werkdagen en u komt op ruim
 $6 miljoen per werkdag. Dat is meer per dag dan een Nederlands
 nicheplatform redelijkerwijs per jaar aan ontwikkeling kan besteden.
+
+Gaat al dat geld naar uw soort webshop? Nee, natuurlijk niet:
+Shopify bouwt ook voor miljardenmerken, fysieke kassa's en markten
+waar u nooit komt. Maar stel dat maar een tiende landt bij wat een
+Nederlandse mkb-shop dagelijks gebruikt: thema's, checkout,
+productbeheer. Dan is dat nog altijd zo'n $150 miljoen per jaar,
+elk jaar opnieuw. Meer dan een platform als CCV Shop of
+MijnWebwinkel er in één jaar tegenover kan zetten, en vermoedelijk
+meer dan wat ze opgeteld over hun hele bestaan hebben kunnen
+uitgeven.
 
 Dit is geen verwijt aan MijnWebwinkel of CCV Shop. Achter die
 platformen zitten kleine teams; CCV Shop B.V. telt in zijn geheel
