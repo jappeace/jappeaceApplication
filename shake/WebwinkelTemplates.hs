@@ -1688,7 +1688,7 @@ overOnsPage = webwinkelBaseTemplate overOnsMeta $
   H.main $ do
     H.section ! A.class_ "hero" $ do
       H.h1 "Over ons"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Webwinkelverhuis is een dienst van Jappie Software, een klein softwarebedrijf uit Kampen. Twee man, korte lijnen: u spreekt direct met degene die uw migratie ook echt uitvoert." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Webwinkelverhuis is een dienst van Jappie Software, een klein softwarebedrijf uit Kampen. Met z&rsquo;n twee&euml;n, korte lijnen: u spreekt direct met degene die uw migratie ook echt uitvoert." :: Text)
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Het verhaal"
