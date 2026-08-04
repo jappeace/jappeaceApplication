@@ -44,6 +44,8 @@ import WebwinkelTemplates
   , lightspeedMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
+  , overOnsPage
+  , contactPage
   , relativizeWebwinkelContentImages
   , webwinkelverhuisSitemap
   , webwinkelverhuisStaticPages
@@ -85,6 +87,8 @@ meetLinkPages =
   , ("lightspeedMigrationPage", lightspeedMigrationPage)
   , ("mijnwebwinkelWaaromPage", mijnwebwinkelWaaromPage)
   , ("lightspeedWaaromPage", lightspeedWaaromPage)
+  , ("overOnsPage", overOnsPage)
+  , ("contactPage", contactPage)
   , ("penguinWordpressPage", penguinWordpressPage (WebwinkelverhuisUrl testOrigin))
   , ("penguinWordpressPageNl", penguinWordpressPageNl (WebwinkelverhuisUrl testOrigin))
   ]

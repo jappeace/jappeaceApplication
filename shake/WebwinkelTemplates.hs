@@ -18,6 +18,8 @@ module WebwinkelTemplates
   , lightspeedMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
+  , overOnsPage
+  , contactPage
   , relativizeWebwinkelContentImages
   , webwinkelverhuisSitemap
   , webwinkelverhuisStaticPages
@@ -206,6 +208,8 @@ webwinkelBaseWith ogType includeFeed meta content =
             H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
             H.li $ H.a ! A.href "/prijzen.html" $ "Prijzen"
             H.li $ H.a ! A.href "/blog/" $ "Blog"
+            H.li $ H.a ! A.href "/over-ons.html" $ "Over ons"
+            H.li $ H.a ! A.href "/contact.html" $ "Contact"
             H.li $ H.a ! A.href offerteMailto ! A.class_ "cta-link" $ "Offerte"
       content
       H.footer $ do
@@ -1638,6 +1642,8 @@ webwinkelverhuisStaticPages =
   , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 8 3)
   , ("https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html", fromGregorian 2026 8 2)
   , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 2)
+  , ("https://webwinkelverhuis.nl/over-ons.html", fromGregorian 2026 8 4)
+  , ("https://webwinkelverhuis.nl/contact.html", fromGregorian 2026 8 4)
   ]
 
 webwinkelStaticSitemapEntry :: (Text, Day) -> Text
@@ -1666,3 +1672,99 @@ webwinkelSitemapLine url modified =
   "  <url><loc>" <> url <> "</loc><lastmod>"
     <> T.pack (formatTime defaultTimeLocale "%Y-%m-%d" modified)
     <> "</lastmod></url>"
+
+-- =============================================================================
+-- Over ons (over-ons.html)
+-- =============================================================================
+
+-- | The over-ons page: the origin story behind the service, requested via
+-- klantfeedback (review Jappies vader, aug 2026): "vertel over jezelf,
+-- van kind af aan geinteresseerd in computers, opleiding en ervaring in
+-- binnen- en buitenland". Facts sourced from the blog archive (Windesheim
+-- and the MSc AI at Utrecht in tool-survey/starting-at-daisee, the
+-- Australia year in back-to-netherlands) so the story stays verifiable.
+overOnsPage :: Html
+overOnsPage = webwinkelBaseTemplate overOnsMeta $
+  H.main $ do
+    H.section ! A.class_ "hero" $ do
+      H.h1 "Over ons"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Webwinkelverhuis is een dienst van Jappie Software, een klein softwarebedrijf uit Kampen. Twee man, korte lijnen: u spreekt direct met degene die uw migratie ook echt uitvoert." :: Text)
+
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Het verhaal"
+      H.p $ H.preEscapedToHtml ("Ik ben Jappie Klooster en ik zit van kinds af aan achter de computer. Wat begon met spelen en dingen slopen werd al snel programmeren, en dat ben ik nooit meer gestopt." :: Text)
+      H.p $ H.preEscapedToHtml ("Na mijn hbo software engineering aan Windesheim in Zwolle deed ik een master kunstmatige intelligentie aan de Universiteit Utrecht. Daarna werkte ik als software engineer in binnen- en buitenland, onder meer een jaar in Sydney, Australi&euml;. Terug in Nederland bouwde ik jarenlang software voor bedrijven van startup tot enterprise, en inmiddels doe ik dat vanuit mijn eigen bedrijf." :: Text)
+      H.p $ do
+        H.preEscapedToHtml ("Webwinkelverhuis ontstond uit de eerste migratie die we deden: " :: Text)
+        H.a ! A.href "/blog/klantverhaal-panzer-shopnl-van-mijnwebwinkel-naar-shopify-in-drie-talen.html" $ "panzer-shop.nl"
+        H.preEscapedToHtml (", 2.400 producten in drie talen. In plaats van alles met de hand over te tikken bouwden we er gereedschap voor dat elke link, elk product en elke vertaling controleerbaar overzet. Dat gereedschap is sindsdien met elke verhuizing beter geworden, en het is de reden dat we durven af te rekenen n&aacute; een geslaagde migratie." :: Text)
+
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Meer dan webshops"
+      H.p $ do
+        H.preEscapedToHtml ("Naast webshopmigraties bouwen we websites en maatwerksoftware onder de vlag van " :: Text)
+        H.a ! A.href "https://jappiesoftware.com/" $ "jappiesoftware.com"
+        H.preEscapedToHtml (". Dezelfde mensen, hetzelfde principe: degelijk werk, geen gedoe." :: Text)
+
+    H.section ! A.class_ "cta-section" $ do
+      H.h2 "Kennismaken?"
+      H.p "Een gesprek kost niets en u weet meteen met wie u te maken heeft."
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+  where
+    overOnsMeta :: PageMeta
+    overOnsMeta = PageMeta
+      { pageMetaTitle       = "Over ons \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Webwinkelverhuis is een dienst van Jappie Software, een klein softwarebedrijf uit Kampen. Het verhaal achter de dienst: van hobbyprogrammeur tot webshopmigraties met eigen gereedschap."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/over-ons.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = mempty
+      }
+
+-- =============================================================================
+-- Contact (contact.html)
+-- =============================================================================
+
+-- | The contact page: same klantfeedback-ronde as 'overOnsPage'. The
+-- contactgegevens stood only in the footer; a menu tab makes them
+-- findable. Details mirror the footer and bedrijfsgegevens (KvK 95097872).
+contactPage :: Html
+contactPage = webwinkelBaseTemplate contactMeta $
+  H.main $ do
+    H.section ! A.class_ "hero" $ do
+      H.h1 "Contact"
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Geen helpdesk, geen wachtrij: u krijgt antwoord van degene die uw migratie ook uitvoert." :: Text)
+
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Zo bereikt u ons"
+      H.ul $ do
+        H.li $ do
+          H.strong "E-mail: "
+          H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) $ toHtml webwinkelEmail
+        H.li $ do
+          H.strong "Telefoon of WhatsApp: "
+          H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
+        H.li $ do
+          H.strong "Liever meteen inplannen: "
+          H.a ! A.href meetLink $ "plan een gratis gesprek"
+
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Bedrijfsgegevens"
+      H.p $ H.preEscapedToHtml ("Webwinkelverhuis is een dienst van Jappie Software B.V.<br>Ooievaarstraat 38, 8262 AN Kampen<br>KvK: 95097872 &middot; BTW: NL867000569B01" :: Text)
+
+    H.section ! A.class_ "cta-section" $ do
+      H.h2 "Benieuwd wat uw webshop zou kosten?"
+      H.p "Vraag vrijblijvend een offerte aan; u betaalt pas na een geslaagde migratie."
+      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+  where
+    contactMeta :: PageMeta
+    contactMeta = PageMeta
+      { pageMetaTitle       = "Contact \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Neem contact op met Webwinkelverhuis: e-mail, telefoon, WhatsApp of plan direct een gratis gesprek. U spreekt met degene die uw migratie uitvoert."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/contact.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = mempty
+      }

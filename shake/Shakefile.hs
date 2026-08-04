@@ -53,6 +53,8 @@ import WebwinkelTemplates
   , lightspeedMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
+  , overOnsPage
+  , contactPage
   , relativizeWebwinkelContentImages
   , webwinkelverhuisSitemap
   )
@@ -728,6 +730,8 @@ generateWebwinkelverhuisSite config articles = do
   writeWebwinkelHtmlFile "_webwinkelverhuis-site/migrate-lightspeed.html" lightspeedMigrationPage
   writeWebwinkelHtmlFile "_webwinkelverhuis-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
   writeWebwinkelHtmlFile "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
+  writeWebwinkelHtmlFile "_webwinkelverhuis-site/over-ons.html" overOnsPage
+  writeWebwinkelHtmlFile "_webwinkelverhuis-site/contact.html" contactPage
 
   -- Individual blog article pages
   mapM_ (\art ->
