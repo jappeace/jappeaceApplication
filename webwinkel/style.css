@@ -459,7 +459,7 @@ footer small a:hover { color: var(--wit); }
 .calc-field input:focus, .calc-field select:focus {
   outline: 2px solid var(--navy); outline-offset: 1px; border-color: var(--navy);
 }
-/* Markup: aanvinkVeld in elm/src/PrijsCalculator.elm — een label.calc-check
+/* Markup: aanvinkVeld in elm/src/PrijsCalculator.elm: een label.calc-check
    met daarin de checkbox en een span.calc-check-text die de spans
    .calc-check-label en .calc-hint onder elkaar zet. */
 .calc-check-group { display: grid; gap: 0.55rem; }
