@@ -228,14 +228,20 @@ webwinkelBaseWith ogType includeFeed meta content =
             H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Offerte"
       content
       H.footer $ do
-        H.p $ do
-          H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) ! A.class_ "footer-mail" $ toHtml webwinkelEmail
-          H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
-          H.a ! A.href "/blog/" $ "Blog"
-        H.p $ H.small $ do
-          "Webwinkelverhuis is een dienst van "
-          H.a ! A.href "https://jappiesoftware.com/" $ "Jappie Software B.V."
-          H.preEscapedToHtml (" &middot; KVK: 95097872 &middot; Ooievaarstraat 38, 8262 AN Kampen" :: Text)
+        H.div ! A.class_ "voet-boven" $ do
+          H.p ! A.class_ "voet-merk" $ do
+            "Webwinkel"
+            H.span "verhuis"
+            ".nl"
+          H.ul $ do
+            H.li $ H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) ! A.class_ "footer-mail" $ toHtml webwinkelEmail
+            H.li $ H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
+            H.li $ H.a ! A.href "/blog/" $ "Blog"
+        H.div ! A.class_ "voet-onder" $
+          H.p $ H.small $ do
+            "Webwinkelverhuis is een dienst van "
+            H.a ! A.href "https://jappiesoftware.com/" $ "Jappie Software B.V."
+            H.preEscapedToHtml (" &middot; KVK: 95097872 &middot; Ooievaarstraat 38, 8262 AN Kampen" :: Text)
       H.script $ H.preEscapedToHtml menuToggleScript
       H.script $ H.preEscapedToHtml ctaTrackScript
 
@@ -508,19 +514,26 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       H.h2 "Veelgestelde vragen"
       H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible homeFaq
 
-    -- Final CTA: gesprek plannen naast de contactfoto.
-    H.section ! A.class_ "final-cta" ! A.id "contact" $ do
-      H.h2 "Klaar om te verhuizen?"
-      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
-      H.div ! A.class_ "cta-row" $ do
-        H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
-        H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Offerte per e-mail"
-      H.p ! A.class_ "contact-direct" $ do
-        "Liever direct? Mail "
-        H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) $ toHtml webwinkelEmail
-        " of bel "
-        H.a ! A.href "tel:+31644237437" $ H.preEscapedToHtml ("+31&nbsp;6&nbsp;4423&nbsp;7437" :: Text)
-        "."
+    -- Afsluiting zoals in het joepa-ontwerp: gesprek plannen naast de
+    -- contactfoto, in een lichte sectie.
+    H.section ! A.id "contact" $
+      H.div ! A.class_ "contact" $ do
+        H.div $ do
+          H.h2 "Klaar om te verhuizen?"
+          H.p ! A.class_ "contact-intro" $ "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
+          H.div ! A.class_ "contact-acties" $ do
+            H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+            H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Offerte per e-mail"
+          H.p ! A.class_ "contact-direct" $ do
+            "Liever direct? Mail "
+            H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) $ toHtml webwinkelEmail
+            " of bel "
+            H.a ! A.href "tel:+31644237437" $ H.preEscapedToHtml ("+31&nbsp;6&nbsp;4423&nbsp;7437" :: Text)
+            "."
+        H.div ! A.class_ "contact-beeld" $
+          H.img ! A.src "/assets/beeld/contact-gesprek.jpg"
+                ! A.alt "Webshop-eigenaar in gesprek aan de keukentafel, met pakketdozen op de achtergrond"
+                ! A.width "1376" ! A.height "768" ! customAttribute "loading" "lazy"
   where
     indexMeta :: PageMeta
     indexMeta = PageMeta
