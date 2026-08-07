@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Hero illustration for the MijnWebwinkel migration page: boxes escaping a
      frozen (snowflake) old shop toward a bright new one with the sun out.
-     Remix of illustratie-verhuizen.svg in the same navy/orange palette. -->
+     Remix of illustratie-verhuizen.svg in the same navy/groen palette. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img">
   <!-- soft backdrop -->
   <circle cx="200" cy="150" r="130" fill="#eaf1f8"/>
