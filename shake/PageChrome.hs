@@ -261,8 +261,10 @@ faqAnswerText = FaqAnswer . toHtml
 faqAnswerHtml :: Html -> FaqAnswer
 faqAnswerHtml = FaqAnswer
 
--- | Render a single FAQ pair as a @<dt>/<dd>@ pair. The same pairs feed
--- 'faqPageJsonLd' so the visible FAQ and the structured data never drift.
+-- | Render a single FAQ pair as a @<dt>/<dd>@ pair, the penguin theme's
+-- (jappiesoftware.com) FAQ shape; webwinkelverhuis.nl uses
+-- 'renderFaqItemCollapsible' instead. The same pairs feed 'faqPageJsonLd'
+-- so the visible FAQ and the structured data never drift.
 renderFaqItem :: (FaqQuestion, FaqAnswer) -> Html
 renderFaqItem (FaqQuestion question, FaqAnswer answer) = do
   H.dt (toHtml question)
