@@ -1,198 +1,117 @@
-/* Blog styles for webwinkelverhuis.nl (blue/orange theme). */
+/* Blog styles for webwinkelverhuis.nl, in de joepa-huisstijl (zie style.css
+   voor het palet en de fonts). */
 
-.blog-listing {
-  max-width: 48rem;
+.blog-listing, .blog-article {
+  max-width: var(--maat-smal);
   margin: 0 auto;
-  padding: 1em 2em;
-  background: #ffffffd9;
-  border: 1px solid #dbe5ef;
-  border-radius: 6px;
+  padding: clamp(2.5rem, 5vw, 4rem) 1.25rem;
 }
 
-.blog-listing h1 {
-  margin-bottom: 2rem;
-  color: #0c2f47;
+.blog-listing h1, .blog-article h1 {
+  margin-bottom: 1.6rem;
 }
 
 .post-summary {
-  margin-bottom: 2.5rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #e2e9f1;
+  padding-block: 1.8rem;
+  border-bottom: 1px solid var(--lijn);
 }
+.post-summary:first-of-type { border-top: 1px solid var(--lijn); }
 
 .post-summary h2 {
+  font-size: 1.35rem;
   margin-bottom: 0.25rem;
 }
-
-.post-summary h2 a {
-  color: #0c2f47;
-  text-decoration: none;
-}
-
-.post-summary h2 a:hover {
-  color: #e8590c;
-}
+.post-summary h2 a { color: var(--navy-diep); text-decoration: none; }
+.post-summary h2 a:hover { color: var(--groen-tekst); }
 
 .post-meta {
-  color: #6a7886;
-  font-size: 0.9rem;
+  color: var(--grijs);
+  font-size: 0.92rem;
   margin-bottom: 0.75rem;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
 }
 
-.post-meta .tag {
-  background: #eaf1f8;
-  padding: 0.1em 0.5em;
-  border-radius: 3px;
-  font-size: 0.85em;
-  margin-left: 0.25em;
+.tag {
+  background: var(--groen-licht);
+  color: var(--groen-tekst);
+  font-size: 0.82rem; font-weight: 650;
+  padding: 0.1rem 0.7rem;
+  border-radius: 999px;
 }
+.tag + .tag { margin-left: 0.15rem; }
 
-.summary {
-  color: #41505f;
-}
-.summary h1,
-.summary h2,
-.summary h3 {
-  font-size: 1.1em;
-  color: #50606f;
-  margin-top: 0.5em;
-  margin-bottom: 0.3em;
-}
+.summary { color: var(--grijs); }
+.summary a { color: var(--navy); }
+/* Samenvattingen zijn afgekapte artikel-HTML: een meegekomen tussenkop mag
+   niet als losse banner renderen. */
+.summary h2, .summary h3 { font-size: 1rem; margin-top: 0.6rem; }
 
-/* Pagination */
 .pagination {
-  display: flex;
-  justify-content: space-between;
+  display: flex; justify-content: space-between;
   margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e2e9f1;
 }
+.pagination a { font-weight: 650; text-decoration: none; }
+.pagination a:hover { color: var(--groen-tekst); }
+.pagination .next { margin-left: auto; }
 
-.pagination a {
-  color: #10456b;
-  text-decoration: none;
-}
+/* ---------- artikelpagina ---------- */
 
-.pagination a:hover {
-  text-decoration: underline;
-}
+.blog-article header { margin-bottom: 2rem; }
 
-/* Article page */
-.blog-article article {
-  background: #ffffffd9;
-  padding: 2em 3em;
-  border: 1px solid #dbe5ef;
-  border-radius: 6px;
-}
-
-.blog-article {
-  max-width: 56rem;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
-
-.blog-article h1 {
-  margin-bottom: 0.25rem;
-  color: #0c2f47;
-}
-
-.entry-content {
-  line-height: 1.7;
-  margin-top: 1.5rem;
-}
-
-.entry-content h2,
-.entry-content h3,
-.entry-content h4 {
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
-  color: #0c2f47;
-}
-
-.entry-content p {
-  margin-bottom: 1rem;
-}
-
-/* The global reset in style.css strips ul/ol padding, which pushes the
-   outside-positioned bullet markers out of the article box. Restore it. */
-.entry-content ul,
-.entry-content ol {
-  padding-left: 1.75rem;
-  margin-bottom: 1rem;
-}
-
-.entry-content li {
-  margin-bottom: 0.4rem;
-}
-
-.entry-content figure {
-  margin: 1.5rem 0;
-}
-
-.entry-content figcaption {
-  color: #6a7886;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-}
-
-.entry-content a {
-  color: #10456b;
-}
-
-.entry-content pre {
-  background: #f0f4f8;
-  padding: 1rem;
-  border-radius: 4px;
-  overflow-x: auto;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-}
-
-.entry-content code {
-  font-family: 'Fira Code', 'JetBrains Mono', monospace;
-  font-size: 0.9em;
-}
-
-.entry-content p code,
-.entry-content li code {
-  background: #f0f4f8;
-  padding: 0.15em 0.4em;
-  border-radius: 3px;
-}
-
-.entry-content blockquote {
-  border-left: 3px solid #e8590c;
-  margin-left: 0;
-  padding-left: 1rem;
-  color: #50606f;
-}
-
+.entry-content { color: var(--inkt); }
+.entry-content p { margin-bottom: 1.1rem; }
+.entry-content h2 { margin-block: 2.2rem 0.9rem; font-size: 1.55rem; }
+.entry-content h3 { margin-block: 1.8rem 0.7rem; }
+.entry-content ul, .entry-content ol { margin: 0 0 1.1rem 1.4rem; }
+.entry-content li { margin-bottom: 0.35rem; }
 .entry-content img {
-  max-width: 100%;
-  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--lijn);
+  margin-block: 1.4rem;
+  box-shadow: 0 6px 18px rgba(11, 46, 80, 0.07);
 }
+.entry-content figure { margin-block: 1.4rem; }
+.entry-content figcaption { color: var(--grijs); font-size: 0.92rem; margin-top: 0.5rem; }
+.entry-content blockquote {
+  border-left: 3px solid var(--groen);
+  background: var(--fond);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1rem 1.3rem;
+  margin-bottom: 1.1rem;
+}
+.entry-content pre {
+  background: var(--fond);
+  border: 1px solid var(--lijn);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  overflow-x: auto;
+  font-size: 0.92rem;
+  margin-bottom: 1.1rem;
+}
+.entry-content code { font-size: 0.95em; }
+.entry-content table {
+  border-collapse: collapse;
+  margin-bottom: 1.1rem;
+  width: 100%;
+}
+.entry-content th, .entry-content td {
+  border: 1px solid var(--lijn);
+  padding: 0.5rem 0.8rem;
+  text-align: left;
+}
+.entry-content th {
+  font-family: var(--kop);
+  color: var(--navy-diep);
+  background: var(--fond);
+}
+
+.footnotes { color: var(--grijs); font-size: 0.95rem; margin-top: 2rem; }
+.footnotes hr { border: 0; border-top: 1px solid var(--lijn); margin-bottom: 1rem; }
 
 .article-footer {
-  margin-top: 3rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e2e9f1;
+  margin-top: 2.5rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--lijn);
 }
-
-.article-footer a {
-  color: #10456b;
-  text-decoration: none;
-}
-
-.article-footer a:hover {
-  text-decoration: underline;
-}
-
-@media (max-width: 700px) {
-  .blog-article {
-    padding: 1rem 0.75rem;
-  }
-
-  .blog-article article {
-    padding: 1.25em 1.25em;
-  }
-}
+.article-footer a { font-weight: 650; text-decoration: none; }
+.article-footer a:hover { color: var(--groen-tekst); }

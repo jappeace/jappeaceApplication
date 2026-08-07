@@ -52,7 +52,7 @@ import PageChrome
   , FaqAnswer
   , faqAnswerText
   , faqAnswerHtml
-  , renderFaqItem
+  , renderFaqItemCollapsible
   , faqPageJsonLd
   , formatIsoDate
   , formatHumanDate
@@ -65,9 +65,10 @@ import PageChrome
 -- Theme constants
 -- =============================================================================
 
--- | Site-default social-share image, hosted on this domain.
+-- | Site-default social-share image, hosted on this domain. 1200x630,
+-- aangeleverd bij het joepa-ontwerp.
 webwinkelOgImage :: Text
-webwinkelOgImage = "https://webwinkelverhuis.nl/og-default.png"
+webwinkelOgImage = "https://webwinkelverhuis.nl/assets/beeld/og.jpg"
 
 -- | Rewrite absolute webwinkelverhuis.nl image sources in a rendered page to
 -- root-relative ones, so images load on the local `shake-blog serve` preview
@@ -96,7 +97,7 @@ webwinkelOrganizationJsonLd =
       , ",\"@type\":\"Organization\""
       , ",\"name\":\"Webwinkelverhuis\""
       , ",\"url\":\"https://webwinkelverhuis.nl/\""
-      , ",\"logo\":\"https://webwinkelverhuis.nl/favicon.svg\""
+      , ",\"logo\":\"https://webwinkelverhuis.nl/assets/beeld/logo-breed.png\""
       , ",\"image\":" <> jsonLdString webwinkelOgImage
       , ",\"email\":" <> jsonLdString webwinkelEmail
       , ",\"telephone\":\"+31644237437\""
@@ -182,10 +183,16 @@ webwinkelBaseWith ogType includeFeed meta content =
       case pageMetaCanonical meta of
         Just canonicalUrl -> H.link ! A.rel "canonical" ! A.href (toValue canonicalUrl)
         Nothing -> mempty
+      H.link ! A.rel "preload" ! A.href "/assets/fonts/bricolage-grotesque-var.woff2"
+             ! customAttribute "as" "font" ! A.type_ "font/woff2"
+             ! customAttribute "crossorigin" ""
+      H.link ! A.rel "preload" ! A.href "/assets/fonts/figtree-var.woff2"
+             ! customAttribute "as" "font" ! A.type_ "font/woff2"
+             ! customAttribute "crossorigin" ""
       H.link ! A.rel "stylesheet" ! A.href "/style.css"
       H.link ! A.rel "stylesheet" ! A.href "/blog.css"
-      H.link ! A.rel "icon" ! A.type_ "image/svg+xml" ! A.href "/favicon.svg"
-      H.link ! A.rel "icon" ! A.href "/favicon.ico"
+      H.link ! A.rel "icon" ! A.type_ "image/png" ! A.sizes "32x32" ! A.href "/assets/beeld/favicon-32.png"
+      H.link ! A.rel "icon" ! A.type_ "image/png" ! A.sizes "64x64" ! A.href "/assets/beeld/favicon-64.png"
       if includeFeed
         then H.link ! A.href "/blog/atom"
                     ! A.type_ "application/atom+xml"
@@ -201,29 +208,70 @@ webwinkelBaseWith ogType includeFeed meta content =
       H.header $
         H.nav ! A.class_ "top-nav" $ do
           H.span ! A.class_ "logo" $
-            H.a ! A.href "/" $ "Webwinkelverhuis"
-          H.ul $ do
-            H.li $ H.a ! A.href "/migrate-mijnwebwinkel.html" $ "MijnWebwinkel"
-            H.li $ H.a ! A.href "/migrate-lightspeed.html" $ "Lightspeed"
-            H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
-            H.li $ H.a ! A.href "/prijzen.html" $ "Prijzen"
-            H.li $ H.a ! A.href "/blog/" $ "Blog"
-            H.li $ H.a ! A.href "/over-ons.html" $ "Over ons"
-            H.li $ H.a ! A.href "/contact.html" $ "Contact"
-            H.li $ H.a ! A.href offerteMailto ! A.class_ "cta-link" $ "Offerte"
+            H.a ! A.href "/" ! customAttribute "aria-label" "Webwinkelverhuis, home" $
+              H.img ! A.src "/assets/beeld/logo-breed.png" ! A.alt "Webwinkelverhuis"
+                    ! A.width "1292" ! A.height "150"
+          H.button ! A.class_ "menu-knop" ! A.type_ "button"
+                   ! customAttribute "aria-expanded" "false"
+                   ! customAttribute "aria-controls" "hoofdnav"
+                   ! customAttribute "aria-label" "Menu" $
+            H.preEscapedToHtml menuKnopSvg
+          H.div ! A.class_ "hoofdnav" ! A.id "hoofdnav" $ do
+            H.ul $ do
+              H.li $ H.a ! A.href "/migrate-mijnwebwinkel.html" $ "MijnWebwinkel"
+              H.li $ H.a ! A.href "/migrate-lightspeed.html" $ "Lightspeed"
+              H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
+              H.li $ H.a ! A.href "/prijzen.html" $ "Prijzen"
+              H.li $ H.a ! A.href "/blog/" $ "Blog"
+              H.li $ H.a ! A.href "/over-ons.html" $ "Over ons"
+              H.li $ H.a ! A.href "/contact.html" $ "Contact"
+            H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Offerte"
       content
       H.footer $ do
         H.p $ do
           H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) ! A.class_ "footer-mail" $ toHtml webwinkelEmail
-          H.preEscapedToHtml (" &middot; " :: Text)
           H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
-          H.preEscapedToHtml (" &middot; " :: Text)
           H.a ! A.href "/blog/" $ "Blog"
         H.p $ H.small $ do
           "Webwinkelverhuis is een dienst van "
           H.a ! A.href "https://jappiesoftware.com/" $ "Jappie Software B.V."
           H.preEscapedToHtml (" &middot; KVK: 95097872 &middot; Ooievaarstraat 38, 8262 AN Kampen" :: Text)
+      H.script $ H.preEscapedToHtml menuToggleScript
       H.script $ H.preEscapedToHtml ctaTrackScript
+
+-- | Hamburger-icoon van de mobiele menuknop: twee lijnen, kleur volgt
+-- @currentColor@.
+menuKnopSvg :: Text
+menuKnopSvg =
+  "<svg width=\"26\" height=\"26\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" aria-hidden=\"true\">"
+    <> "<line x1=\"3.5\" y1=\"7\" x2=\"20.5\" y2=\"7\"/>"
+    <> "<line x1=\"3.5\" y1=\"17\" x2=\"20.5\" y2=\"17\"/></svg>"
+
+-- | Vinkje-icoon, gebruikt in de hero-chip, hero-noot, inpaklijst en
+-- prijs-kaart-garantie. Kleur volgt @currentColor@ van de omliggende regel.
+vinkjeSvg :: Text
+vinkjeSvg =
+  "<svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 12.5 9.5 18 20 6.5\"/></svg>"
+
+-- | Pijl-icoon tussen de haltes van de van-naar-route in de recent-werk-sectie.
+routePijlSvg :: Text
+routePijlSvg =
+  "<svg width=\"26\" height=\"16\" viewBox=\"0 0 26 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M2 8h20\"/><path d=\"m17 3 5 5-5 5\"/></svg>"
+
+-- | Open/dicht-gedrag van het mobiele menu: knop toggelt de open-klasse,
+-- een linkkeuze of Escape sluit het menu weer.
+menuToggleScript :: Text
+menuToggleScript =
+  "(function(){"
+    <> "var knop=document.querySelector('.menu-knop');"
+    <> "var nav=document.getElementById('hoofdnav');"
+    <> "if(!knop||!nav)return;"
+    <> "function zet(open){nav.classList.toggle('open',open);knop.setAttribute('aria-expanded',String(open));}"
+    <> "knop.addEventListener('click',function(){zet(!nav.classList.contains('open'));});"
+    <> "nav.addEventListener('click',function(e){if(e.target.closest('a'))zet(false);});"
+    <> "document.addEventListener('keydown',function(e){"
+    <> "if(e.key==='Escape'&&nav.classList.contains('open')){zet(false);knop.focus();}"
+    <> "});})();"
 
 -- | Track clicks on the call-to-action buttons in Google Analytics, so we see
 -- the dropoff per acquisition path: the plain "vraag een offerte aan" mailto
@@ -309,56 +357,90 @@ shopifyKostenNote =
     H.a ! A.href shopifyPrijzenUrl $ "de actuele Shopify-prijzen"
     ")."
 
+-- | De gedeelde prijzen-sectie: de prijs-kaart uit het joepa-ontwerp, met de
+-- rekenhulp-knop als vervolgstap en de betaal-na-succes-garantie eronder.
 prijzen :: Html
-prijzen = H.section ! A.class_ "engagement" ! A.id "prijzen" $ do
-      H.h2 "Prijzen"
-      H.div ! A.class_ "card-grid" $ do
-        H.div ! A.class_ "card" $ do
-          H.h3 $ "Volledige migratie" <> H.preEscapedToHtml (" vanaf &euro;" <> migratieBasisprijsEuro)
-          H.p $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects. Grotere catalogi, extra talen en losse diensten (e-mail-setup, en domeinverhuizing als uw domein nog bij uw huidige platform staat) hebben een vaste meerprijs." :: Text)
-          H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
-      shopifyKostenNote
+prijzen = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
+  H.div ! A.class_ "prijs-kaart" $ do
+    H.p ! A.class_ "wat" $ "Volledige migratie"
+    H.p ! A.class_ "prijs" $ do
+      H.preEscapedToHtml ("vanaf &euro;" <> migratieBasisprijsEuro <> " ")
+      H.small "eenmalig"
+    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects." :: Text)
+    H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Grotere catalogi, extra talen en losse diensten (e-mail-setup, en domeinverhuizing als uw domein nog bij uw huidige platform staat) hebben een vaste meerprijs." :: Text)
+    H.hr
+    H.p ! A.class_ "abonnement" $ do
+      H.preEscapedToHtml
+        ( "Naast onze eenmalige migratieprijs betaalt u het abonnement van uw nieuwe platform. Shopify Basic kost bijvoorbeeld &euro;"
+            <> shopifyBasicJaarlijksEuroPerMaand
+            <> " per maand bij jaarlijkse betaling en &euro;"
+            <> shopifyBasicMaandelijksEuroPerMaand
+            <> " per maand bij maandelijkse betaling (prijspeil " <> shopifyPrijspeil <> ", zie "
+        )
+      H.a ! A.href shopifyPrijzenUrl $ "de actuele Shopify-prijzen"
+      ")."
+    H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct uw prijs"
+    H.p ! A.class_ "garantie" $ do
+      H.preEscapedToHtml vinkjeSvg
+      " U betaalt pas na een succesvolle migratie"
 
 
 
 webwinkelIndexPage :: Html
 webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
   H.main $ do
-    -- Hero
+    -- Hero: foto met merkverloop-echo, garantie-chip en de Panzer-Shop-noot
+    -- op de foto als direct bewijs.
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Webshop verhuizen zonder data en SEO verlies."
-          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw complete webshop geautomatiseerd naar Shopify of een ander platform. U betaalt pas na een succesvolle migratie." :: Text)
-          -- Decision: one hero button, and it points at the gratis scan
-          -- (/scan.html) instead of the price calculator: the scan gives the
-          -- visitor an immediate, personal result and feeds the migration
-          -- offer from measured facts. The calculator stays reachable via
-          -- the Prijzen nav item, the prijzen-section card below and the
-          -- scanner's own rekenhulp-knop. Like the previous hero CTA this is
-          -- an internal link: GA4's automatic pageview of /scan.html is the
-          -- click signal, no extra event (see ctaTrackScript).
-          H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
-        H.img ! A.class_ "hero-image"
-              ! A.src "/illustratie-verhuizen.svg"
-              ! A.alt "Illustratie van dozen die van een oude webshop naar een nieuwe verhuizen"
-              ! A.width "400" ! A.height "300"
+          H.p ! A.class_ "hero-chip" $ do
+            H.preEscapedToHtml vinkjeSvg
+            " U betaalt pas na een succesvolle migratie"
+          H.h1 $ H.preEscapedToHtml ("Webshop verhuizen zonder data- en SEO&#8209;verlies." :: Text)
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vastgelopen op MijnWebwinkel, CCV Shop of Lightspeed? Wij verhuizen uw webshop geautomatiseerd naar Shopify of een ander platform." :: Text)
+          -- Decision: hero-CTA blijft de gratis scan (/scan.html): de scan
+          -- geeft de bezoeker direct een persoonlijk resultaat en voedt het
+          -- migratie-aanbod met gemeten feiten. De rekenhulp blijft
+          -- bereikbaar via de tweede knop en het Prijzen-menu. Interne
+          -- links: GA4's automatische pageview is het kliksignaal, geen
+          -- extra event (zie ctaTrackScript).
+          H.div ! A.class_ "hero-knoppen" $ do
+            H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
+            H.a ! A.href "/prijzen.html" ! A.class_ "cta-button-secondary" $ "Bekijk de prijzen"
+        H.div ! A.class_ "hero-beeld" $ do
+          H.img ! A.src "/assets/beeld/hero-inpakken.jpg"
+                ! A.alt "Webshop-eigenaar plakt verhuisdozen dicht naast een geopende laptop"
+                ! A.width "1600" ! A.height "1600"
+                ! customAttribute "fetchpriority" "high"
+          H.p ! A.class_ "hero-noot" $ do
+            H.preEscapedToHtml vinkjeSvg
+            H.preEscapedToHtml (" 2.400 producten verhuisd voor Panzer&#8209;Shop" :: Text)
 
-    -- How it works
-    H.section ! A.class_ "audit" $ do
-      H.h2 "Hoe het werkt"
-      H.div ! A.class_ "audit-grid" $ do
-        H.ol $ do
-          H.li $ do
-            H.strong "Scan"
-            ": ons programma leest uw huidige webshop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
-          H.li $ do
-            H.strong "Wennen"
-            ": de testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
-          H.li $ do
-            H.strong "DNS-overzet"
-            ": bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd."
-        scanDemo
+    -- Navy checklist-band: wat er allemaal meeverhuist, in winkelierswoorden.
+    H.section ! A.class_ "band" $ do
+      H.h2 "Uw webshop verhuist"
+      H.ul ! A.class_ "inpaklijst" $ mapM_ inpaklijstItem scanStappen
+
+    -- How it works, met de testshop-foto ernaast.
+    H.section ! A.id "hoe-het-werkt" $
+      H.div ! A.class_ "proces" $ do
+        H.div $ do
+          H.h2 "Hoe het werkt"
+          H.ol $ do
+            H.li $ do
+              H.h3 "Scan"
+              H.p ! A.class_ "stap-tekst" $ "Ons programma leest uw huidige webshop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+            H.li $ do
+              H.h3 "Wennen"
+              H.p ! A.class_ "stap-tekst" $ "De testshop draait naast uw huidige webshop, die gewoon doordraait. U raakt op uw gemak bekend met uw nieuwe shop."
+            H.li $ do
+              H.h3 "DNS-overzet"
+              H.p ! A.class_ "stap-tekst" $ "Bent u er klaar voor? Dan wijzen we uw domein op de nieuwe shop en bent u verhuisd."
+        H.div ! A.class_ "proces-beeld" $
+          H.img ! A.src "/assets/beeld/proces-testshop.jpg"
+                ! A.alt "Twee laptops naast elkaar: de testshop draait naast de huidige webshop"
+                ! A.width "1376" ! A.height "768" ! customAttribute "loading" "lazy"
 
     recentWerkSection
 
@@ -366,12 +448,22 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
     H.section ! A.class_ "results" $ do
       H.h2 "Waarom via ons?"
       H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. U kiest het platform: Shopify, WooCommerce, of vraag ons advies voor uw situatie. Wij regelen de techniek." :: Text)
-      H.ul $ do
-        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (": u betaalt pas na een succesvolle migratie" :: Text)
-        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (": geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (": het programma valideert zijn eigen werk" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (": elke oude link krijgt een 301-redirect en blijft werken, uw opgebouwde SEO verhuist mee" :: Text)
-        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (": geen uurtarief, u weet vooraf wat het kost" :: Text)
+      H.dl ! A.class_ "waarom-rijen" $ do
+        H.div $ do
+          H.dt "Geen risico"
+          H.dd "U betaalt pas na een succesvolle migratie."
+        H.div $ do
+          H.dt "Geautomatiseerd"
+          H.dd "Geen handmatig overtypen, geen kopieerfouten."
+        H.div $ do
+          H.dt "Zelfvaliderend"
+          H.dd "Het programma valideert zijn eigen werk."
+        H.div $ do
+          H.dt "SEO-behoud"
+          H.dd "Elke oude link krijgt een 301-redirect en blijft werken; uw opgebouwde SEO verhuist mee."
+        H.div $ do
+          H.dt "Vaste prijs"
+          H.dd "Geen uurtarief, u weet vooraf wat het kost."
       H.p $ do
         "Meer weten over waarom shops vertrekken? Lees onze "
         H.a ! A.href "/blog/" $ "blog"
@@ -379,7 +471,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
 
     -- Platform cards: the routing step, at the bottom so the visitor first
     -- reads the promise, the process and the proof before picking a platform.
-    -- Secondary buttons: the orange primary is reserved for the offerte and
+    -- Secondary buttons: the green primary is reserved for the offerte and
     -- plan-een-gesprek actions.
     H.section ! A.class_ "for-who" ! A.id "platforms" $ do
       H.h2 "Vanaf welk platform verhuist u?"
@@ -412,15 +504,23 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
     -- disclaimer says so plainly so an updated price is never a broken
     -- promise.
     prijzen
-    H.section ! A.class_ "about" $ do
+    H.section ! A.class_ "about" ! A.id "vragen" $ do
       H.h2 "Veelgestelde vragen"
-      H.dl $ mapM_ renderFaqItem homeFaq
+      H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible homeFaq
 
-    -- Final CTA
-    H.section ! A.class_ "final-cta" $ do
+    -- Final CTA: gesprek plannen naast de contactfoto.
+    H.section ! A.class_ "final-cta" ! A.id "contact" $ do
       H.h2 "Klaar om te verhuizen?"
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen uw webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.div ! A.class_ "cta-row" $ do
+        H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+        H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Offerte per e-mail"
+      H.p ! A.class_ "contact-direct" $ do
+        "Liever direct? Mail "
+        H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) $ toHtml webwinkelEmail
+        " of bel "
+        H.a ! A.href "tel:+31644237437" $ H.preEscapedToHtml ("+31&nbsp;6&nbsp;4423&nbsp;7437" :: Text)
+        "."
   where
     indexMeta :: PageMeta
     indexMeta = PageMeta
@@ -499,53 +599,47 @@ scanStappen =
   , ScanStap "Alles nalopen" "niets vergeten"
   ]
 
--- | The animated "scan panel" next to the how-it-works steps: a stylised view
--- of the migration program at work, as progress bars that fill one after
--- another and land on a plain-language result. Pure CSS (per-row keyframes in
--- style.css selected via @nth-child@, all sharing one timeline so the cycle
--- ends with every bar draining together before refilling one by one), and
--- hidden from screen readers because the steps text next to it carries the
--- same information.
+-- | One row of the navy checklist-band on the landing page: what moves, and
+-- the plain-language result with a checkmark.
 --
--- Decision: an animated illustration instead of a recording of the real tool.
--- The migration program is a CLI that only ever runs on our own machine, so a
--- capture would show the customer nothing recognisable; this panel shows the
--- same work in the customer's own vocabulary (Gemini-feedback: show, don't
--- tell).
-scanDemo :: Html
-scanDemo =
-  H.div ! A.class_ "scan-demo" $ do
-    H.div ! customAttribute "aria-hidden" "true" $ do
-      H.div ! A.class_ "scan-demo-kop" $ "Uw webshop verhuist"
-      H.ul ! A.class_ "scan-demo-lijst" $
-        mapM_ scanDemoItem scanStappen
-
--- | One animated row of the scan panel; the row's position in the list picks
--- its keyframes via @nth-child@ in style.css, which staggers the fills.
-scanDemoItem :: ScanStap -> Html
-scanDemoItem stap =
-  H.li ! A.class_ "scan-item" $ do
-    H.div ! A.class_ "scan-item-rij" $ do
-      H.span $ toHtml (scanStapLabel stap)
-      H.span ! A.class_ "scan-resultaat" $ toHtml (scanStapResultaat stap <> " \10003")
-    H.div ! A.class_ "scan-balk" $
-      H.div ! A.class_ "scan-balk-vulling" $ mempty
+-- Decision: the joepa-ontwerp replaced the earlier animated scan panel with
+-- this static checklist band. Same content, same winkelierswoorden
+-- (Gemini-feedback: show, don't tell), maar rustiger.
+inpaklijstItem :: ScanStap -> Html
+inpaklijstItem stap = H.li $ do
+  H.span ! A.class_ "wat" $ toHtml (scanStapLabel stap)
+  H.span ! A.class_ "status" $ do
+    toHtml (scanStapResultaat stap <> " ")
+    H.preEscapedToHtml vinkjeSvg
 
 -- | The shared "Recent werk" proof section: the Panzer-ShopNL migration,
 -- linking to both the case-study blog post and the live shop. Shown on the
 -- index page and the MijnWebwinkel migration page.
 recentWerkSection :: Html
 recentWerkSection =
-  H.section ! A.class_ "results" $ do
+  H.section ! A.class_ "case-sectie" $ do
     H.h2 "Recent werk"
-    H.div ! A.class_ "testimonials" $ do
-      H.blockquote $
-        H.p $ do
-          H.strong "Panzer-ShopNL"
-          H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en link behoud, zodat de SEO meeverhuisde. " :: Text)
-          H.a ! A.href "/blog/klantverhaal-panzer-shopnl-van-mijnwebwinkel-naar-shopify-in-drie-talen.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
-          H.preEscapedToHtml (" &middot; " :: Text)
-          H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
+    H.p ! A.class_ "route" ! customAttribute "aria-label" "Verhuisd van MijnWebwinkel naar Shopify" $ do
+      H.span ! A.class_ "halte" $ "MijnWebwinkel"
+      H.preEscapedToHtml routePijlSvg
+      H.span ! A.class_ "halte" $ "Shopify"
+    H.div ! A.class_ "case-cijfers" $ do
+      H.div $ do
+        H.div ! A.class_ "cijfer" $ "2.400+"
+        H.div ! A.class_ "label" $ "producten"
+      H.div $ do
+        H.div ! A.class_ "cijfer" $ "3"
+        H.div ! A.class_ "label" $ "talen"
+      H.div $ do
+        H.div ! A.class_ "cijfer" $ "3"
+        H.div ! A.class_ "label" $ "domeinen"
+    H.div ! A.class_ "case-tekst" $
+      H.p $ do
+        H.strong "Panzer-ShopNL"
+        H.preEscapedToHtml (": een modeltreinwinkel met 2.400+ producten over drie domeinen en drie talen, verhuisd van MijnWebwinkel naar Shopify. Inclusief vertalingen, de volledige categorieboom en link behoud, zodat de SEO meeverhuisde." :: Text)
+    H.div ! A.class_ "case-links" $ do
+      H.a ! A.href "/blog/klantverhaal-panzer-shopnl-van-mijnwebwinkel-naar-shopify-in-drie-talen.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
+      H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
 
 appPage :: Html
 appPage = webwinkelBaseTemplate appMeta $ do
@@ -894,7 +988,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
     -- FAQ
     H.section ! A.class_ "about" $ do
       H.h2 "Veelgestelde vragen"
-      H.dl $ mapM_ renderFaqItem mijnwebwinkelFaq
+      H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible mijnwebwinkelFaq
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
@@ -1067,7 +1161,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- FAQ
     H.section ! A.class_ "about" $ do
       H.h2 "Veelgestelde vragen"
-      H.dl $ mapM_ renderFaqItem ccvshopFaq
+      H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible ccvshopFaq
 
     -- Technical details
     H.section ! A.class_ "for-who" $ do
@@ -1220,7 +1314,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     -- FAQ
     H.section ! A.class_ "about" $ do
       H.h2 "Veelgestelde vragen"
-      H.dl $ mapM_ renderFaqItem lightspeedFaq
+      H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible lightspeedFaq
 
     -- Technical details
     H.section ! A.class_ "for-who" $ do
