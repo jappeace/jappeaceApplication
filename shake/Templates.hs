@@ -81,9 +81,14 @@ defaultBlogMeta = BlogPageMeta
 -- krijgen "noindex, follow". Search Console (8 aug 2026) toont 99 pagina's
 -- "crawled - currently not indexed" op jappie.me: Google crawlt deze dunne
 -- lijstpagina's en besluit zelf ze niet op te nemen. Dat besluit expliciet
--- maken houdt het crawlbudget bij de artikelen en maakt het rapport schoon.
--- "follow" behoudt de interne linkwaarde. De index-, archief- en
--- artikelpagina's blijven gewoon indexeerbaar.
+-- maken houdt het crawlbudget bij de artikelen en maakt het rapport schoon;
+-- "follow" behoudt de interne linkwaarde. Overwogen alternatieven: niets
+-- doen (Googles impliciete oordeel werkt, maar het rapport blijft vervuild
+-- en de crawls gaan door), ze uit de sitemap laten (dat zijn ze al, en het
+-- weerhield de crawler nergens van) en ze canonicaliseren naar de index
+-- (semantisch onjuist: de inhoud verschilt, dus Google negeert zo'n
+-- canonical waarschijnlijk toch). De index-, archief- en artikelpagina's
+-- blijven gewoon indexeerbaar.
 noindexVolgLinks :: Maybe Text
 noindexVolgLinks = Just "noindex, follow"
 
