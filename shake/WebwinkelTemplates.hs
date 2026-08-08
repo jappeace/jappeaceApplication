@@ -205,31 +205,7 @@ webwinkelBaseWith ogType includeFeed meta content =
       webwinkelOrganizationJsonLd
       pageMetaExtraHead meta
     H.body $ do
-      H.header $
-        H.nav ! A.class_ "top-nav" $ do
-          H.span ! A.class_ "logo" $
-            H.a ! A.href "/" ! customAttribute "aria-label" "Webwinkelverhuis, home" $
-              H.img ! A.src "/assets/beeld/logo-breed.png" ! A.alt "Webwinkelverhuis"
-                    ! A.width "1292" ! A.height "150"
-          H.button ! A.class_ "menu-knop" ! A.type_ "button"
-                   ! customAttribute "aria-expanded" "false"
-                   ! customAttribute "aria-controls" "hoofdnav"
-                   ! customAttribute "aria-label" "Menu" $
-            H.preEscapedToHtml menuKnopSvg
-          H.div ! A.class_ "hoofdnav" ! A.id "hoofdnav" $ do
-            H.ul $ do
-              H.li $ H.a ! A.href "/migrate-mijnwebwinkel.html" $ "MijnWebwinkel"
-              H.li $ H.a ! A.href "/migrate-lightspeed.html" $ "Lightspeed"
-              H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
-              H.li $ H.a ! A.href "/prijzen.html" $ "Prijzen"
-              H.li $ H.a ! A.href "/blog/" $ "Blog"
-              H.li $ H.a ! A.href "/over-ons.html" $ "Over ons"
-              H.li $ H.a ! A.href "/contact.html" $ "Contact"
-            -- Decision: de Offerte-knop in de navigatie is bewust de omlijnde
-            -- secundaire stijl (review Jappie, 8 aug 2026): hij staat op elke
-            -- pagina en mag niet blijvend aandacht trekken; de groene primaire
-            -- knop is voor de call-to-actions in de content.
-            H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Offerte"
+      H.header webwinkelTopNav
       content
       whatsappFloatingButton webwinkelWhatsappLabel webwinkelWhatsappMessage
       H.footer $ do
@@ -249,6 +225,36 @@ webwinkelBaseWith ogType includeFeed meta content =
             H.preEscapedToHtml (" &middot; KVK: 95097872 &middot; Ooievaarstraat 38, 8262 AN Kampen" :: Text)
       H.script $ H.preEscapedToHtml menuToggleScript
       H.script $ H.preEscapedToHtml ctaTrackScript
+
+-- | Het ene menu van webwinkelverhuis.nl. Elke pagina rendert zijn header
+-- via deze definitie (uit 'webwinkelBaseWith'); er bestaan geen
+-- per-pagina-menu's, dus een menuwijziging hier is overal doorgevoerd.
+webwinkelTopNav :: Html
+webwinkelTopNav =
+  H.nav ! A.class_ "top-nav" $ do
+    H.span ! A.class_ "logo" $
+      H.a ! A.href "/" ! customAttribute "aria-label" "Webwinkelverhuis, home" $
+        H.img ! A.src "/assets/beeld/logo-breed.png" ! A.alt "Webwinkelverhuis"
+              ! A.width "1292" ! A.height "150"
+    H.button ! A.class_ "menu-knop" ! A.type_ "button"
+             ! customAttribute "aria-expanded" "false"
+             ! customAttribute "aria-controls" "hoofdnav"
+             ! customAttribute "aria-label" "Menu" $
+      H.preEscapedToHtml menuKnopSvg
+    H.div ! A.class_ "hoofdnav" ! A.id "hoofdnav" $ do
+      H.ul $ do
+        H.li $ H.a ! A.href "/migrate-mijnwebwinkel.html" $ "MijnWebwinkel"
+        H.li $ H.a ! A.href "/migrate-lightspeed.html" $ "Lightspeed"
+        H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
+        H.li $ H.a ! A.href "/prijzen.html" $ "Prijzen"
+        H.li $ H.a ! A.href "/blog/" $ "Blog"
+        H.li $ H.a ! A.href "/over-ons.html" $ "Over ons"
+        H.li $ H.a ! A.href "/contact.html" $ "Contact"
+      -- Decision: de Offerte-knop in de navigatie is bewust de omlijnde
+      -- secundaire stijl (review Jappie, 8 aug 2026): hij staat op elke
+      -- pagina en mag niet blijvend aandacht trekken; de groene primaire
+      -- knop is voor de call-to-actions in de content.
+      H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Offerte"
 
 -- | Hamburger-icoon van de mobiele menuknop: twee lijnen, kleur volgt
 -- @currentColor@.
@@ -875,10 +881,11 @@ scannerFormInitScript =
 scanPage :: Html
 scanPage = webwinkelBaseTemplate scanMeta $
   H.main $ do
-    H.section ! A.class_ "hero" $ do
+    -- Eén gecentreerd blok (review Jappie, 8 aug 2026): kop, uitleg en het
+    -- scannerformulier samen in de hero-sectie, die de hele pagina vult.
+    H.section ! A.class_ "hero scan-blok" $ do
       H.h1 "Beoordeel mijn webshop"
       H.p ! A.class_ "subtitle" $ "Vul het adres van uw webshop in. Wij meten hem door en u ziet binnen enkele minuten waar u staat: snelheid, vindbaarheid en de punten die beter kunnen."
-    H.section ! A.class_ "engagement" $ do
       H.div ! A.id "webshop-scanner-mount" $ mempty
       H.noscript $ H.p "De beoordeling heeft JavaScript nodig. Liever direct contact? Plan een gratis gesprek via meet.jappiesoftware.com."
     H.script ! A.src "/scanner-form.js" $ mempty
@@ -1809,13 +1816,19 @@ overOnsPage = webwinkelBaseTemplate overOnsMeta $
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Het verhaal"
-      H.p $ H.preEscapedToHtml ("Ik ben Jappie Klooster en ik zit van kinds af aan achter de computer. Wat begon met spelen en dingen slopen werd al snel programmeren, en dat ben ik nooit meer gestopt." :: Text)
-      H.p $ H.preEscapedToHtml ("Na mijn hbo software engineering aan Windesheim in Zwolle deed ik een master kunstmatige intelligentie aan de Universiteit Utrecht. Daarna werkte ik als software engineer in binnen- en buitenland, onder meer een jaar in Sydney, Australi&euml;. Terug in Nederland bouwde ik jarenlang software voor bedrijven van startup tot enterprise, en inmiddels doe ik dat vanuit mijn eigen bedrijf." :: Text)
-      H.p $ do
-        H.preEscapedToHtml ("Webwinkelverhuis ontstond uit de eerste migratie die we deden: " :: Text)
-        H.a ! A.href "/blog/klantverhaal-panzer-shopnl-van-mijnwebwinkel-naar-shopify-in-drie-talen.html" $ "panzer-shop.nl"
-        H.preEscapedToHtml (", 2.400 producten in drie talen. In plaats van alles met de hand over te tikken bouwden we er gereedschap voor dat elke link, elk product en elke vertaling controleerbaar overzet. Dat gereedschap is sindsdien met elke verhuizing beter geworden, en het is de reden dat we durven af te rekenen n&aacute; een geslaagde migratie." :: Text)
-      H.p $ H.preEscapedToHtml ("En na de verhuizing draait uw winkel op een standaard platform: Elke ontwikkelaar kan ermee verder, u bent nooit van ons afhankelijk." :: Text)
+      H.div ! A.class_ "audit-grid" $ do
+        H.div $ do
+          H.p $ H.preEscapedToHtml ("Ik ben Jappie Klooster en ik zit van kinds af aan achter de computer. Wat begon met spelen en dingen uit elkaar halen werd al snel programmeren, en dat ben ik nooit meer gestopt." :: Text)
+          H.p $ H.preEscapedToHtml ("Na mijn hbo software engineering aan Windesheim in Zwolle deed ik een master kunstmatige intelligentie aan de Universiteit Utrecht. Daarna werkte ik als software engineer in binnen- en buitenland, onder meer een jaar in Sydney, Australi&euml;. Terug in Nederland bouwde ik jarenlang software voor bedrijven van startup tot enterprise, en inmiddels doe ik dat vanuit mijn eigen bedrijf." :: Text)
+          H.p $ do
+            H.preEscapedToHtml ("Webwinkelverhuis ontstond uit de eerste migratie die we deden: " :: Text)
+            H.a ! A.href "/blog/klantverhaal-panzer-shopnl-van-mijnwebwinkel-naar-shopify-in-drie-talen.html" $ "panzer-shop.nl"
+            H.preEscapedToHtml (", 2.400 producten in drie talen. In plaats van alles met de hand over te tikken bouwden we er gereedschap voor dat elke link, elk product en elke vertaling controleerbaar overzet. Dat gereedschap is sindsdien met elke verhuizing beter geworden, en het is de reden dat we durven af te rekenen n&aacute; een geslaagde migratie." :: Text)
+          H.p $ H.preEscapedToHtml ("En na de verhuizing draait uw winkel op een standaard platform: Elke ontwikkelaar kan ermee verder, u bent nooit van ons afhankelijk." :: Text)
+        H.div ! A.class_ "portret-beeld" $
+          H.img ! A.src "/assets/beeld/jappie-fit.jpg"
+                ! A.alt "Jappie Klooster, lachend met duim omhoog"
+                ! A.width "1100" ! A.height "1467" ! customAttribute "loading" "lazy"
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Meer dan webshops"

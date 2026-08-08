@@ -132,6 +132,26 @@ body > header {
 .hoofdnav a:not(.cta-button):hover { color: var(--groen-tekst); }
 .hoofdnav .cta-button, .hoofdnav .cta-button-secondary { padding: 0.55rem 1.2rem; font-size: 0.95rem; }
 
+/* De Offerte-knop promoveert zichzelf: na 3 minuten leestijd morft hij in
+   2 minuten van de rustige omlijnde stijl naar de groene primaire knop,
+   zodat de call-to-action pas gaat trekken als de bezoeker zich ingelezen
+   heeft. forwards houdt de groene eindstand vast; met
+   prefers-reduced-motion blijft hij gewoon secundair. De klik wordt al
+   gemeten via ctaTrackScript (offerte_mailto_klik op elke mailto-knop). */
+.hoofdnav .cta-button-secondary {
+  animation: offerte-promotie 120s linear 180s 1 forwards;
+}
+@keyframes offerte-promotie {
+  to { background: var(--groen); color: var(--navy-diep); border-color: var(--groen); }
+}
+/* !important: de animation-fill wint anders van de hover-regel. Groene
+   hover past bij beide stadia van de knop. */
+.hoofdnav .cta-button-secondary:hover {
+  background: var(--groen-vlak) !important;
+  color: var(--wit) !important;
+  border-color: var(--groen-vlak) !important;
+}
+
 .menu-knop {
   display: none; background: none; border: 0; cursor: pointer;
   padding: 0.55rem; border-radius: 8px; color: var(--navy-diep);
@@ -226,113 +246,161 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
 }
 .inpaklijst .status svg { color: var(--vink); flex: none; }
 
-/* ---------- band-animatie: de inpaklijst vinkt zichzelf af ----------
-   Eigen ontwerp voor de nieuwe band (de oude voortgangsbalkjes pasten hier
-   niet meer): op een gedeelde 16s-tijdlijn verschijnt per regel het
-   resultaat (fade + kleine schuif naar links) terwijl het vinkje zichzelf
-   tekent via stroke-dashoffset. Alles blijft staan tot ~93%, dooft kort en
-   begint opnieuw. De basisstijlen hierboven zijn volledig zichtbaar, dus
-   met prefers-reduced-motion (animation: none) staat de lijst er gewoon
-   statisch en compleet. Naast de kop pulseert een groen "live"-stipje.
-   Regel N start op (4 + 11*(N-1))% van de tijdlijn: 11% afstand geeft de
-   zes regels een gelijkmatige cascade die ruim voor de 93%-hold klaar is. */
+/* ---------- band-animatie: de tabel vult zich regel voor regel ----------
+   Choreografie (review Jappie, 8 aug 2026): de tabel begint helemaal leeg.
+   Elke regel verschijnt uitgelicht in het midden van de band, daar faden
+   het vinkje en het resultaatwoord in, en daarna schuift de regel naar zijn
+   eigen plek in de tabel en blijft staan. Zo vult de tabel zich regel voor
+   regel; na een rustpauze dooft alles en begint de cyclus opnieuw.
 
-.band h2 { display: flex; align-items: center; gap: 0.6rem; }
-.band h2::after {
-  content: ""; width: 0.6rem; height: 0.6rem; border-radius: 50%;
-  background: var(--vink);
-  animation: band-puls 1.6s ease-in-out infinite;
+   Techniek: de gedeelde 18s-tijdlijn geeft regel N het venster
+   (2 + 13*(N-1))% .. +11%. De podiumpositie (het midden van de band) staat
+   per regel in --podium-x/--podium-y: horizontaal een halve kolom plus een
+   halve grid-gap, verticaal het aantal rijen naar het midden. De keyframes
+   lezen die variabelen, zodat zes regels dezelfde choreografie delen. Op
+   mobiel (1 kolom) is het podium de eigen plek en licht de regel daar op.
+   Basisstijlen zijn volledig zichtbaar: met prefers-reduced-motion
+   (animation: none) staat de tabel er statisch en compleet. */
+
+.inpaklijst li {
+  --podium-y: 0%;
+  border-radius: 10px;
 }
-@keyframes band-puls {
-  0%, 100% { opacity: 0.35; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1); }
-}
+.inpaklijst li:nth-child(odd)  { --podium-x: calc(50% + clamp(1rem, 2.5vw, 2rem)); }
+.inpaklijst li:nth-child(even) { --podium-x: calc(-50% - clamp(1rem, 2.5vw, 2rem)); }
+.inpaklijst li:nth-child(-n+2) { --podium-y: 105%; }
+.inpaklijst li:nth-child(n+5)  { --podium-y: -105%; }
 
 .inpaklijst .status svg path { stroke-dasharray: 24; stroke-dashoffset: 0; }
-.inpaklijst li:nth-child(1) .status { animation: band-status-1 16s ease-in-out infinite; }
-.inpaklijst li:nth-child(2) .status { animation: band-status-2 16s ease-in-out infinite; }
-.inpaklijst li:nth-child(3) .status { animation: band-status-3 16s ease-in-out infinite; }
-.inpaklijst li:nth-child(4) .status { animation: band-status-4 16s ease-in-out infinite; }
-.inpaklijst li:nth-child(5) .status { animation: band-status-5 16s ease-in-out infinite; }
-.inpaklijst li:nth-child(6) .status { animation: band-status-6 16s ease-in-out infinite; }
-.inpaklijst li:nth-child(1) .status svg path { animation: band-vink-1 16s linear infinite; }
-.inpaklijst li:nth-child(2) .status svg path { animation: band-vink-2 16s linear infinite; }
-.inpaklijst li:nth-child(3) .status svg path { animation: band-vink-3 16s linear infinite; }
-.inpaklijst li:nth-child(4) .status svg path { animation: band-vink-4 16s linear infinite; }
-.inpaklijst li:nth-child(5) .status svg path { animation: band-vink-5 16s linear infinite; }
-.inpaklijst li:nth-child(6) .status svg path { animation: band-vink-6 16s linear infinite; }
+.inpaklijst li:nth-child(1) { animation: inpak-rij-1 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(2) { animation: inpak-rij-2 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(3) { animation: inpak-rij-3 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(4) { animation: inpak-rij-4 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(5) { animation: inpak-rij-5 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(6) { animation: inpak-rij-6 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(1) .status { animation: inpak-status-1 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(2) .status { animation: inpak-status-2 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(3) .status { animation: inpak-status-3 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(4) .status { animation: inpak-status-4 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(5) .status { animation: inpak-status-5 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(6) .status { animation: inpak-status-6 18s ease-in-out infinite; }
+.inpaklijst li:nth-child(1) .status svg path { animation: inpak-vink-1 18s linear infinite; }
+.inpaklijst li:nth-child(2) .status svg path { animation: inpak-vink-2 18s linear infinite; }
+.inpaklijst li:nth-child(3) .status svg path { animation: inpak-vink-3 18s linear infinite; }
+.inpaklijst li:nth-child(4) .status svg path { animation: inpak-vink-4 18s linear infinite; }
+.inpaklijst li:nth-child(5) .status svg path { animation: inpak-vink-5 18s linear infinite; }
+.inpaklijst li:nth-child(6) .status svg path { animation: inpak-vink-6 18s linear infinite; }
 
-@keyframes band-status-1 {
-  0%, 4% { opacity: 0; transform: translateX(0.6rem); }
-  7% { opacity: 1; transform: none; }
-  93% { opacity: 1; transform: none; }
-  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+/* Per regel: onzichtbaar tot het eigen venster, opkomen op het podium
+   (uitgelicht met een zachte witte gloed, de border even weg), even
+   vasthouden terwijl vinkje en woord verschijnen, dan naar de eigen plek
+   schuiven. Vanaf ~93% dooft de hele tabel voor de herstart. */
+@keyframes inpak-rij-1 {
+  0%, 2% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  4% { opacity: 1; }
+  9% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  13%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  97%, 100% { opacity: 0; transform: none; }
 }
-@keyframes band-vink-1 {
+@keyframes inpak-status-1 {
+  0%, 5% { opacity: 0; }
+  8%, 93% { opacity: 1; }
+  97%, 100% { opacity: 0; }
+}
+@keyframes inpak-vink-1 {
   0%, 5% { stroke-dashoffset: 24; }
-  8% { stroke-dashoffset: 0; }
-  93% { stroke-dashoffset: 0; }
+  8%, 93% { stroke-dashoffset: 0; }
   97%, 100% { stroke-dashoffset: 24; }
 }
-@keyframes band-status-2 {
-  0%, 15% { opacity: 0; transform: translateX(0.6rem); }
-  18% { opacity: 1; transform: none; }
-  93% { opacity: 1; transform: none; }
-  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+@keyframes inpak-rij-2 {
+  0%, 15% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  17% { opacity: 1; }
+  22% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  26%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  97%, 100% { opacity: 0; transform: none; }
 }
-@keyframes band-vink-2 {
-  0%, 16% { stroke-dashoffset: 24; }
-  19% { stroke-dashoffset: 0; }
-  93% { stroke-dashoffset: 0; }
+@keyframes inpak-status-2 {
+  0%, 18% { opacity: 0; }
+  21%, 93% { opacity: 1; }
+  97%, 100% { opacity: 0; }
+}
+@keyframes inpak-vink-2 {
+  0%, 18% { stroke-dashoffset: 24; }
+  21%, 93% { stroke-dashoffset: 0; }
   97%, 100% { stroke-dashoffset: 24; }
 }
-@keyframes band-status-3 {
-  0%, 26% { opacity: 0; transform: translateX(0.6rem); }
-  29% { opacity: 1; transform: none; }
-  93% { opacity: 1; transform: none; }
-  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+@keyframes inpak-rij-3 {
+  0%, 28% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  30% { opacity: 1; }
+  35% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  39%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  97%, 100% { opacity: 0; transform: none; }
 }
-@keyframes band-vink-3 {
-  0%, 27% { stroke-dashoffset: 24; }
-  30% { stroke-dashoffset: 0; }
-  93% { stroke-dashoffset: 0; }
+@keyframes inpak-status-3 {
+  0%, 31% { opacity: 0; }
+  34%, 93% { opacity: 1; }
+  97%, 100% { opacity: 0; }
+}
+@keyframes inpak-vink-3 {
+  0%, 31% { stroke-dashoffset: 24; }
+  34%, 93% { stroke-dashoffset: 0; }
   97%, 100% { stroke-dashoffset: 24; }
 }
-@keyframes band-status-4 {
-  0%, 37% { opacity: 0; transform: translateX(0.6rem); }
-  40% { opacity: 1; transform: none; }
-  93% { opacity: 1; transform: none; }
-  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+@keyframes inpak-rij-4 {
+  0%, 41% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  43% { opacity: 1; }
+  48% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  52%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  97%, 100% { opacity: 0; transform: none; }
 }
-@keyframes band-vink-4 {
-  0%, 38% { stroke-dashoffset: 24; }
-  41% { stroke-dashoffset: 0; }
-  93% { stroke-dashoffset: 0; }
+@keyframes inpak-status-4 {
+  0%, 44% { opacity: 0; }
+  47%, 93% { opacity: 1; }
+  97%, 100% { opacity: 0; }
+}
+@keyframes inpak-vink-4 {
+  0%, 44% { stroke-dashoffset: 24; }
+  47%, 93% { stroke-dashoffset: 0; }
   97%, 100% { stroke-dashoffset: 24; }
 }
-@keyframes band-status-5 {
-  0%, 48% { opacity: 0; transform: translateX(0.6rem); }
-  51% { opacity: 1; transform: none; }
-  93% { opacity: 1; transform: none; }
-  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+@keyframes inpak-rij-5 {
+  0%, 54% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  56% { opacity: 1; }
+  61% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  65%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  97%, 100% { opacity: 0; transform: none; }
 }
-@keyframes band-vink-5 {
-  0%, 49% { stroke-dashoffset: 24; }
-  52% { stroke-dashoffset: 0; }
-  93% { stroke-dashoffset: 0; }
+@keyframes inpak-status-5 {
+  0%, 57% { opacity: 0; }
+  60%, 93% { opacity: 1; }
+  97%, 100% { opacity: 0; }
+}
+@keyframes inpak-vink-5 {
+  0%, 57% { stroke-dashoffset: 24; }
+  60%, 93% { stroke-dashoffset: 0; }
   97%, 100% { stroke-dashoffset: 24; }
 }
-@keyframes band-status-6 {
-  0%, 59% { opacity: 0; transform: translateX(0.6rem); }
-  62% { opacity: 1; transform: none; }
-  93% { opacity: 1; transform: none; }
-  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+@keyframes inpak-rij-6 {
+  0%, 67% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  69% { opacity: 1; }
+  74% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  78%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  97%, 100% { opacity: 0; transform: none; }
 }
-@keyframes band-vink-6 {
-  0%, 60% { stroke-dashoffset: 24; }
-  63% { stroke-dashoffset: 0; }
-  93% { stroke-dashoffset: 0; }
+@keyframes inpak-status-6 {
+  0%, 70% { opacity: 0; }
+  73%, 93% { opacity: 1; }
+  97%, 100% { opacity: 0; }
+}
+@keyframes inpak-vink-6 {
+  0%, 70% { stroke-dashoffset: 24; }
+  73%, 93% { stroke-dashoffset: 0; }
   97%, 100% { stroke-dashoffset: 24; }
+}
+
+/* Op mobiel staat alles in 1 kolom: de regel licht op zijn eigen plek op. */
+@media (max-width: 700px) {
+  .inpaklijst li { --podium-x: 0%; --podium-y: 0%; }
 }
 
 /* ---------- hoe het werkt / genummerde stappen ---------- */
@@ -343,6 +411,12 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
 }
 .proces-beeld img {
   width: 100%; aspect-ratio: 3 / 2; object-fit: cover;
+  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.13);
+}
+/* Staande portretfoto naast een tekstkolom (over-ons). */
+.portret-beeld img {
+  width: min(100%, 22rem); aspect-ratio: 4 / 5; object-fit: cover;
+  margin-inline: auto;
   border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.13);
 }
 
@@ -619,13 +693,25 @@ footer small a:hover { color: var(--wit); }
   font-family: var(--kop); font-weight: 750; font-size: 1.25rem; color: var(--navy-diep);
 }
 .calc-lockin { color: var(--grijs); font-size: 0.92rem; margin-top: 0.9rem; }
-.calc-contact { margin-top: 1.2rem; display: flex; flex-wrap: wrap; gap: 0.8rem; }
+.calc-contact { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1.2rem 1.5rem; }
+.calc-offerte { margin-top: 1.5rem; }
+.calc-vrijblijvend { color: var(--grijs); font-size: 0.92rem; margin-top: 0.8rem; }
 .calc-footnotes { max-width: var(--maat-smal); margin-top: 1.6rem; }
 .calc-footnotes h3 { margin-bottom: 0.4rem; }
 .calc-footnotes p { color: var(--grijs); font-size: 0.97rem; }
 .calc-footnotes p + p { margin-top: 0.7rem; }
 
 /* ---------- webshop-scanner (Elm) ---------- */
+
+/* De scanpagina is een gecentreerd blok: kop, uitleg en formulier samen
+   in de hero-sectie, die via flex de hele hoogte tussen header en footer
+   vult. De formulierkaart zelf blijft links uitgelijnd leesbaar. */
+main { display: flex; flex-direction: column; }
+.scan-blok { flex: 1; text-align: center; border-bottom: 0; }
+.scan-blok .subtitle { margin-inline: auto; }
+.scan-blok .webshop-scanner {
+  margin: 2.2rem auto 0; text-align: left; max-width: 34rem;
+}
 
 .webshop-scanner { max-width: var(--maat-smal); }
 .scanner-form {
