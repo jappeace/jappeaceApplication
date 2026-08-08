@@ -704,6 +704,7 @@ footer small a:hover { color: var(--wit); }
 main { display: flex; flex-direction: column; }
 .scan-blok { flex: 1; text-align: center; border-bottom: 0; }
 .scan-blok .subtitle { margin-inline: auto; }
+.scan-blok .hero-knoppen { justify-content: center; }
 .scan-blok .webshop-scanner {
   margin: 2.2rem auto 0; text-align: left; max-width: 34rem;
 }
