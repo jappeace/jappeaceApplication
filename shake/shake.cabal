@@ -9,6 +9,7 @@ build-type:         Simple
 executable shake-blog
   main-is:          Shakefile.hs
   other-modules:
+    AssetHash
     Feed
     Metadata
     PageChrome
@@ -32,6 +33,7 @@ executable shake-blog
     , filepath >=1.4 && <1.6
     , http-types >=0.12 && <0.13
     , pandoc >=3.0 && <3.8
+    , SHA >=1.6 && <1.7
     , shake >=0.19 && <0.20
     , text >=1.2 && <2.2
     , time >=1.9 && <1.15
@@ -43,6 +45,7 @@ test-suite unit
   type:             exitcode-stdio-1.0
   main-is:          Test.hs
   other-modules:
+    AssetHash
     PageChrome
     PenguinTemplates
     Types
@@ -56,6 +59,7 @@ test-suite unit
     , blaze-markup >=0.8 && <0.9
     , bytestring >=0.10 && <0.13
     , http-types >=0.12 && <0.13
+    , SHA >=1.6 && <1.7
     , tasty >=1.4 && <1.6
     , tasty-hunit >=0.10 && <0.11
     , text >=1.2 && <2.2

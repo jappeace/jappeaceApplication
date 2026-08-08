@@ -21,8 +21,8 @@ intern in hele centen gerekend zodat er geen afrondingsfouten op de komma
 ontstaan; pas bij het tonen zetten we centen om naar euro's.
 
 De vragen zijn met opzet in gewone taal gesteld, voor een webshop-eigenaar
-zonder technische kennis: geen "registrar" of "MX-records", maar "uw domeinnaam"
-en "uw e-mailadressen".
+zonder technische kennis: geen "registrar" of "MX-records", maar "je domeinnaam"
+en "je e-mailadressen".
 
 Deze indicatie is bewust geen offerte: alleen een offerte legt de prijs vast.
 Dat staat ook onder de uitkomst, zodat de bezoeker weet dat dit een richtprijs
@@ -735,7 +735,7 @@ keuzeOptie huidig waarde omschrijving =
 bronVeld : BronPlatform -> Html Msg
 bronVeld bron =
     label [ Attr.class "calc-field" ]
-        [ span [ Attr.class "calc-label" ] [ text "Waar draait uw webshop nu?" ]
+        [ span [ Attr.class "calc-label" ] [ text "Waar draait je webshop nu?" ]
         , select [ onInput BronGewijzigd ]
             [ keuzeOptie (bronNaarWaarde bron) "mijnwebwinkel" (bronOmschrijving BronMijnwebwinkel)
             , keuzeOptie (bronNaarWaarde bron) "ccv" (bronOmschrijving BronCcvShop)
@@ -749,7 +749,7 @@ bronVeld bron =
 doelVeld : DoelPlatform -> Html Msg
 doelVeld doel =
     label [ Attr.class "calc-field" ]
-        [ span [ Attr.class "calc-label" ] [ text "Waar wilt u naartoe?" ]
+        [ span [ Attr.class "calc-label" ] [ text "Waar wil je naartoe?" ]
         , select [ onInput DoelGewijzigd ]
             [ keuzeOptie (doelNaarWaarde doel) "shopify" (doelOmschrijving DoelShopify)
             , keuzeOptie (doelNaarWaarde doel) "woocommerce" (doelOmschrijving DoelWoocommerce)
@@ -762,7 +762,7 @@ doelVeld doel =
 themaVeld : ThemaKeuze -> Html Msg
 themaVeld thema =
     label [ Attr.class "calc-field" ]
-        [ span [ Attr.class "calc-label" ] [ text "Hoe moet uw nieuwe shop eruitzien?" ]
+        [ span [ Attr.class "calc-label" ] [ text "Hoe moet je nieuwe shop eruitzien?" ]
         , select [ onInput ThemaGewijzigd ]
             [ keuzeOptie (themaNaarWaarde thema) "standaard" (themaOmschrijving ThemaStandaard)
             , keuzeOptie (themaNaarWaarde thema) "overzetten" (themaOmschrijving ThemaOverzetten)
@@ -925,7 +925,7 @@ doelNoot doel =
     case doel of
         DoelWeetNiet ->
             [ p [ Attr.class "calc-note" ]
-                [ text "Nog geen platform op het oog? Prima: in het gratis gesprek adviseren we een platform op basis van uw situatie. De richtprijs rekent met Shopify als uitgangspunt." ]
+                [ text "Nog geen platform op het oog? Prima: in het gratis gesprek adviseren we een platform op basis van je situatie. De richtprijs rekent met Shopify als uitgangspunt." ]
             ]
 
         DoelShopify ->
@@ -952,7 +952,7 @@ pointOfSaleNoot : Bool -> List (Html Msg)
 pointOfSaleNoot pointOfSale =
     if pointOfSale then
         [ p [ Attr.class "calc-note" ]
-            [ text "Kassa/point-of-sale zetten we bij u op locatie op. Installatie en reiskosten rekenen we daar los bij, op aanvraag." ]
+            [ text "Kassa/point-of-sale zetten we bij je op locatie op. Installatie en reiskosten rekenen we daar los bij, op aanvraag." ]
         ]
 
     else
@@ -967,30 +967,30 @@ view : Model -> Html Msg
 view model =
     div [ Attr.class "prijs-calculator" ]
         [ fieldset [ Attr.class "calc-inputs" ]
-            [ legend [] [ text "Uw webshop" ]
+            [ legend [] [ text "Je webshop" ]
             , bronVeld model.bron
             , doelVeld model.doel
-            , getalVeld "Hoeveel producten heeft uw webshop ongeveer?" model.productenInvoer "t/m 1.000 zit in de basisprijs" ProductenGewijzigd
-            , getalVeld "In hoeveel talen staat uw webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
+            , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "t/m 1.000 zit in de basisprijs" ProductenGewijzigd
+            , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
             , themaVeld model.thema
             , div [ Attr.class "calc-check-group" ]
-                [ span [ Attr.class "calc-label" ] [ text "Wat wilt u meenemen naar de nieuwe shop?" ]
-                , aanvinkVeld "Klantaccounts" "Uw klanten houden hun eigen inlog" model.klantaccounts KlantaccountsGewijzigd
-                , aanvinkVeld "Bestelgeschiedenis" "Alle eerdere bestellingen van uw klanten" model.orderhistorie OrderhistorieGewijzigd
-                , aanvinkVeld "Nieuwsbrief-aanmeldingen" "De adressenlijst van uw nieuwsbrief" model.nieuwsbrief NieuwsbriefGewijzigd
+                [ span [ Attr.class "calc-label" ] [ text "Wat wil je meenemen naar de nieuwe shop?" ]
+                , aanvinkVeld "Klantaccounts" "Je klanten houden hun eigen inlog" model.klantaccounts KlantaccountsGewijzigd
+                , aanvinkVeld "Bestelgeschiedenis" "Alle eerdere bestellingen van je klanten" model.orderhistorie OrderhistorieGewijzigd
+                , aanvinkVeld "Nieuwsbrief-aanmeldingen" "De adressenlijst van je nieuwsbrief" model.nieuwsbrief NieuwsbriefGewijzigd
                 , aanvinkVeld "Voorraadaantallen" "De actuele voorraad per product" model.voorraad VoorraadGewijzigd
-                , aanvinkVeld "Reviews / beoordelingen" "Uw opgebouwde productbeoordelingen" model.reviews ReviewsGewijzigd
+                , aanvinkVeld "Reviews / beoordelingen" "Je opgebouwde productbeoordelingen" model.reviews ReviewsGewijzigd
                 ]
             , div [ Attr.class "calc-check-group" ] <|
                 [ span [ Attr.class "calc-label" ] [ text "Extra diensten en koppelingen" ] ]
                     ++ domeinEmailVelden model
-                    ++ [ aanvinkVeld "Verzendkoppeling (bijv. DHL)" "Pakketten en labels rechtstreeks vanuit uw shop" model.verzendkoppeling VerzendkoppelingGewijzigd
+                    ++ [ aanvinkVeld "Verzendkoppeling (bijv. DHL)" "Pakketten en labels rechtstreeks vanuit je shop" model.verzendkoppeling VerzendkoppelingGewijzigd
                        , aanvinkVeld "B2B-kanaal (zakelijke klanten)" "Aparte prijzen en inlog voor zakelijke klanten" model.b2bKanaal B2bKanaalGewijzigd
                        , aanvinkVeld "Kassa / point-of-sale voor mijn fysieke winkel" "Verkopen in de winkel \u{00E9}n online met \u{00E9}\u{00E9}n systeem (Shopify POS)" model.pointOfSale PointOfSaleGewijzigd
                        ]
             ]
         , div [ Attr.class "calc-result" ] <|
-            [ h3 [] [ text "Uw richtprijs" ]
+            [ h3 [] [ text "Je richtprijs" ]
             , uitsplitsing model
             , p [ Attr.class "calc-total" ]
                 [ span [] [ text "Totaal (excl. BTW)" ]
@@ -1010,12 +1010,12 @@ domeinEmailVelden model =
     if bundeltDomeinEnEmail model.bron then
         [ aanvinkVeld
             ("Mijn domeinnaam staat nog bij " ++ bronOmschrijving model.bron)
-            "Het internetadres van uw shop (bijv. uwshop.nl). Weet u het niet zeker? Dan zoeken we het samen uit."
+            "Het internetadres van je shop (bijv. uwshop.nl). Weet je het niet zeker? Dan zoeken we het samen uit."
             model.domeinBijMijnwebwinkel
             DomeinGewijzigd
         , aanvinkVeld
             ("Mijn e-mailadressen horen bij " ++ bronOmschrijving model.bron)
-            "Bijvoorbeeld info@uwshop.nl die u via dat platform gebruikt"
+            "Bijvoorbeeld info@uwshop.nl die je via dat platform gebruikt"
             model.emailBijMijnwebwinkel
             EmailGewijzigd
         ]
@@ -1029,15 +1029,15 @@ webshop-domein. Beide moeten ingevuld zijn voordat de offerte-knop verstuurt. -}
 contactVelden : Model -> Html Msg
 contactVelden model =
     div [ Attr.class "calc-contact" ]
-        [ verplichtVeld model.offertePoging "Uw naam" "Voor- en achternaam" model.naam NaamGewijzigd
-        , verplichtVeld model.offertePoging "Uw webshop (domeinnaam)" "bijv. uwshop.nl" model.webshopDomein WebshopDomeinGewijzigd
+        [ verplichtVeld model.offertePoging "Je naam" "Voor- en achternaam" model.naam NaamGewijzigd
+        , verplichtVeld model.offertePoging "Je webshop (domeinnaam)" "bijv. uwshop.nl" model.webshopDomein WebshopDomeinGewijzigd
         ]
 
 
 lockInNoot : Html Msg
 lockInNoot =
     p [ Attr.class "calc-lockin" ]
-        [ text "Dit is een richtprijs. Wilt u tegen deze prijs verhuizen? Vraag nu een offerte aan." ]
+        [ text "Dit is een richtprijs. Wil je tegen deze prijs verhuizen? Vraag nu een offerte aan." ]
 
 
 {-| Geruststelling onder de offerte-knop: de aanvraag verplicht tot niets, de
@@ -1045,7 +1045,7 @@ bezoeker vraagt alleen een bevestiging van de getoonde prijs. -}
 vrijblijvendNoot : Html Msg
 vrijblijvendNoot =
     p [ Attr.class "calc-vrijblijvend" ]
-        [ text "Vrijblijvend: met deze aanvraag zit u nergens aan vast. U vraagt alleen een bevestiging van deze prijs, en beslist daarna rustig zelf." ]
+        [ text "Vrijblijvend: met deze aanvraag zit je nergens aan vast. Je vraagt alleen een bevestiging van deze prijs, en beslist daarna rustig zelf." ]
 
 
 formulierGeldig : Model -> Bool
@@ -1107,7 +1107,7 @@ offerteBody model =
             ++ [ "Totaal: " ++ formatteerEuro (totaalCenten model) ]
             ++ pointOfSaleReiskostenRegel model
             ++ [ ""
-               , "Kunt u mij hiervoor een offerte sturen?"
+               , "Kun je mij hiervoor een offerte sturen?"
                ]
         )
 

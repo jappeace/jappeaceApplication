@@ -1,5 +1,6 @@
 #+TITLE: Klantverhaal: Panzer-ShopNL van MijnWebwinkel naar Shopify in drie talen
 #+DATE: 2026-08-01
+#+MODIFIED: 2026-08-08
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, shopify, klantverhaal
 
@@ -77,7 +78,7 @@ We hebben bijvoorbeeld het mysterie van de artikel codes opgelost
 in de URLs.
 De nieuwe URLs werden geen productnummers,
 maar beschrijvende slugs met de producttitel
-erin, per taal vertaald. Waarom dat zoveel uitmaakt leest u in
+erin, per taal vertaald. Waarom dat zoveel uitmaakt lees je in
 [[https://webwinkelverhuis.nl/blog/waarom-de-meeste-mijnwebwinkel-migraties-hun-google-posities-verliezen.html][ons stuk over Google-posities bij migraties]].
 
 Die eis van Kevin is in het programma blijven zitten. Elke migratie
@@ -105,7 +106,7 @@ het spannendste stuk van elke migratie. We zochten elke stap vooraf
 grondig uit, maar een domeinverhuizing kent haar verrassingen pas
 op het moment zelf: wat de oude registrar precies doet, zie je pas
 als de overdracht echt loopt. En gaat het dan mis, dan is de winkel
-plat, voor iedereen. Precies daarom wilt u dit laten doen door
+plat, voor iedereen. Precies daarom wil je dit laten doen door
 iemand die het vaker heeft gedaan.
 
 Ook hier ging niet alles in één keer vlekkeloos.
@@ -157,8 +158,8 @@ En het programma dat dit deed is sindsdien alleen maar vaker
 gebruikt: elke nieuwe migratie voegt randgevallen toe die we daarna
 automatisch goed doen.
 
-Staat uw winkel ook al jaren "bijna" op het punt te verhuizen?
+Staat je winkel ook al jaren "bijna" op het punt te verhuizen?
 [[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
 of bekijk eerst
 [[https://webwinkelverhuis.nl/prijzen.html][wat een migratie kost]].
-U betaalt pas na een geslaagde migratie.
+Je betaalt pas na een geslaagde migratie.
