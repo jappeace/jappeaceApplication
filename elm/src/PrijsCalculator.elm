@@ -978,7 +978,7 @@ view model =
             [ legend [] [ text "Je webshop" ]
             , bronVeld model.bron
             , doelVeld model.doel
-            , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "t/m 1.000 zit in de basisprijs" ProductenGewijzigd
+            , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "1.000 zit in de basisprijs, geteld over alle talen samen" ProductenGewijzigd
             , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
             , themaVeld model.thema
             , div [ Attr.class "calc-check-group" ]
