@@ -142,6 +142,11 @@ pointOfSaleCenten =
     75000
 
 
+cursusCenten : Int
+cursusCenten =
+    30000
+
+
 
 -- MODEL
 
@@ -196,6 +201,7 @@ type alias Model =
     , verzendkoppeling : Bool
     , b2bKanaal : Bool
     , pointOfSale : Bool
+    , cursus : Bool
     , naam : String
     , webshopDomein : String
     , offertePoging : Bool
@@ -220,6 +226,7 @@ initieelModel =
     , verzendkoppeling = False
     , b2bKanaal = False
     , pointOfSale = False
+    , cursus = False
     , naam = ""
     , webshopDomein = ""
     , offertePoging = False
@@ -252,6 +259,7 @@ type Msg
     | VerzendkoppelingGewijzigd Bool
     | B2bKanaalGewijzigd Bool
     | PointOfSaleGewijzigd Bool
+    | CursusGewijzigd Bool
     | NaamGewijzigd String
     | WebshopDomeinGewijzigd String
     | OfferteGepoogd
@@ -464,6 +472,9 @@ update msg model =
         ReviewsGewijzigd aan ->
             markeerEngagement { model | reviews = aan }
 
+        CursusGewijzigd aan ->
+            markeerEngagement { model | cursus = aan }
+
         DomeinGewijzigd aan ->
             markeerEngagement { model | domeinBijMijnwebwinkel = aan }
 
@@ -635,6 +646,7 @@ totaalCenten model =
         + indienAan model.verzendkoppeling verzendkoppelingCenten
         + indienAan model.b2bKanaal b2bKanaalCenten
         + indienAan model.pointOfSale pointOfSaleCenten
+        + indienAan model.cursus cursusCenten
 
 
 
@@ -871,6 +883,7 @@ prijsRegels model =
         ++ optioneleRegel model.verzendkoppeling "Verzendkoppeling (bijv. DHL)" verzendkoppelingCenten
         ++ optioneleRegel model.b2bKanaal "B2B-kanaal (zakelijke prijzen)" b2bKanaalCenten
         ++ optioneleRegel model.pointOfSale "Kassa / point-of-sale" pointOfSaleCenten
+        ++ optioneleRegel model.cursus "Cursus Shopify (2 uur, 1-op-1)" cursusCenten
 
 
 regelNaarHtml : PrijsRegel -> Html Msg
@@ -995,6 +1008,7 @@ view model =
                     ++ [ aanvinkVeld "Verzendkoppeling (bijv. DHL)" "Pakketten en labels rechtstreeks vanuit je shop" model.verzendkoppeling VerzendkoppelingGewijzigd
                        , aanvinkVeld "B2B-kanaal (zakelijke klanten)" "Aparte prijzen en inlog voor zakelijke klanten" model.b2bKanaal B2bKanaalGewijzigd
                        , aanvinkVeld "Kassa / point-of-sale voor mijn fysieke winkel" "Verkopen in de winkel \u{00E9}n online met \u{00E9}\u{00E9}n systeem (Shopify POS)" model.pointOfSale PointOfSaleGewijzigd
+                       , aanvinkVeld "Cursus Shopify (2 uur, 1-op-1)" "Samen door je nieuwe shop, zodat je hem daarna zelf beheert" model.cursus CursusGewijzigd
                        ]
             ]
         , div [ Attr.class "calc-result" ] <|

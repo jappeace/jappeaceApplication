@@ -924,6 +924,9 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td $ H.preEscapedToHtml ("Kassa / point-of-sale (Shopify POS in je fysieke winkel)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;750" :: Text)
         H.tr $ do
+          H.td $ H.preEscapedToHtml ("Cursus Shopify (2 uur, 1-op-1, samen door je nieuwe shop)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;300" :: Text)
+        H.tr $ do
           H.td "Volledig nieuw ontwerp"
           H.td ! A.class_ "price-cell" $ "op aanvraag"
         H.tr $ do

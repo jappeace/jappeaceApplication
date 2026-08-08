@@ -107,6 +107,10 @@ suite =
             \_ ->
                 Expect.equal 274900
                     (totaalCenten { initieelModel | pointOfSale = True })
+        , test "cursus Shopify voegt 300 toe" <|
+            \_ ->
+                Expect.equal 229900
+                    (totaalCenten { initieelModel | cursus = True })
         , test "alle overzet-modules samen tellen 4 x 250 op" <|
             \_ ->
                 Expect.equal 299900
