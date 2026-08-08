@@ -265,6 +265,9 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
 .inpaklijst li {
   --podium-y: 0%;
   border-radius: 10px;
+  /* Binnenmarge zodat de tekst ademruimte houdt van de celrand,
+     ook wanneer de regel op het podium een eigen vlak krijgt. */
+  padding-inline: 0.9rem;
 }
 .inpaklijst li:nth-child(odd)  { --podium-x: calc(50% + clamp(1rem, 2.5vw, 2rem)); }
 .inpaklijst li:nth-child(even) { --podium-x: calc(-50% - clamp(1rem, 2.5vw, 2rem)); }
@@ -291,15 +294,17 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
 .inpaklijst li:nth-child(5) .status svg path { animation: inpak-vink-5 18s linear infinite; }
 .inpaklijst li:nth-child(6) .status svg path { animation: inpak-vink-6 18s linear infinite; }
 
-/* Per regel: onzichtbaar tot het eigen venster, opkomen op het podium
-   (uitgelicht met een zachte witte gloed, de border even weg), even
-   vasthouden terwijl vinkje en woord verschijnen, dan naar de eigen plek
-   schuiven. Vanaf ~93% dooft de hele tabel voor de herstart. */
+/* Per regel: onzichtbaar tot het eigen venster, opkomen op het podium,
+   even vasthouden terwijl vinkje en woord verschijnen, dan naar de eigen
+   plek schuiven. Het podiumvlak is dekkend (#23425f: navy-diep met ~12%
+   wit) met een zweefschaduw: de laatste regels zweven over al gedockte
+   tekst heen en moeten die afdekken om leesbaar te blijven. Vanaf ~93%
+   dooft de hele tabel voor de herstart. */
 @keyframes inpak-rij-1 {
-  0%, 2% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  0%, 2% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   4% { opacity: 1; }
-  9% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
-  13%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  9% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
+  13%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
   97%, 100% { opacity: 0; transform: none; }
 }
 @keyframes inpak-status-1 {
@@ -313,10 +318,10 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
   97%, 100% { stroke-dashoffset: 24; }
 }
 @keyframes inpak-rij-2 {
-  0%, 15% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  0%, 15% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   17% { opacity: 1; }
-  22% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
-  26%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  22% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
+  26%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
   97%, 100% { opacity: 0; transform: none; }
 }
 @keyframes inpak-status-2 {
@@ -330,10 +335,10 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
   97%, 100% { stroke-dashoffset: 24; }
 }
 @keyframes inpak-rij-3 {
-  0%, 28% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  0%, 28% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   30% { opacity: 1; }
-  35% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
-  39%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  35% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
+  39%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
   97%, 100% { opacity: 0; transform: none; }
 }
 @keyframes inpak-status-3 {
@@ -347,10 +352,10 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
   97%, 100% { stroke-dashoffset: 24; }
 }
 @keyframes inpak-rij-4 {
-  0%, 41% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  0%, 41% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   43% { opacity: 1; }
-  48% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
-  52%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  48% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
+  52%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
   97%, 100% { opacity: 0; transform: none; }
 }
 @keyframes inpak-status-4 {
@@ -364,10 +369,10 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
   97%, 100% { stroke-dashoffset: 24; }
 }
 @keyframes inpak-rij-5 {
-  0%, 54% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  0%, 54% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   56% { opacity: 1; }
-  61% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
-  65%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  61% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
+  65%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
   97%, 100% { opacity: 0; transform: none; }
 }
 @keyframes inpak-status-5 {
@@ -381,10 +386,10 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
   97%, 100% { stroke-dashoffset: 24; }
 }
 @keyframes inpak-rij-6 {
-  0%, 67% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
+  0%, 67% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   69% { opacity: 1; }
-  74% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: rgba(255, 255, 255, 0.10); border-color: transparent; }
-  78%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); }
+  74% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
+  78%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
   97%, 100% { opacity: 0; transform: none; }
 }
 @keyframes inpak-status-6 {

@@ -1824,6 +1824,7 @@ overOnsPage = webwinkelBaseTemplate overOnsMeta $
             H.preEscapedToHtml ("Webwinkelverhuis ontstond uit de eerste migratie die we deden: " :: Text)
             H.a ! A.href "/blog/klantverhaal-panzer-shopnl-van-mijnwebwinkel-naar-shopify-in-drie-talen.html" $ "panzer-shop.nl"
             H.preEscapedToHtml (", 2.400 producten in drie talen. In plaats van alles met de hand over te tikken bouwden we er gereedschap voor dat elke link, elk product en elke vertaling controleerbaar overzet. Dat gereedschap is sindsdien met elke verhuizing beter geworden, en het is de reden dat we durven af te rekenen n&aacute; een geslaagde migratie." :: Text)
+          H.p $ H.preEscapedToHtml ("Ik doe dit niet alleen. Leana kwam bij het bedrijf om een opdracht voor de Haskell Foundation uit te voeren en is een expert in build-systemen; het migratievak leert ze er in de praktijk bij." :: Text)
           H.p $ H.preEscapedToHtml ("En na de verhuizing draait uw winkel op een standaard platform: Elke ontwikkelaar kan ermee verder, u bent nooit van ons afhankelijk." :: Text)
         H.div ! A.class_ "portret-beeld" $
           H.img ! A.src "/assets/beeld/jappie-fit.jpg"
