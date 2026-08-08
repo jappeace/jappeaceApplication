@@ -225,8 +225,13 @@ webwinkelBaseWith ogType includeFeed meta content =
               H.li $ H.a ! A.href "/blog/" $ "Blog"
               H.li $ H.a ! A.href "/over-ons.html" $ "Over ons"
               H.li $ H.a ! A.href "/contact.html" $ "Contact"
-            H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Offerte"
+            -- Decision: de Offerte-knop in de navigatie is bewust de omlijnde
+            -- secundaire stijl (review Jappie, 8 aug 2026): hij staat op elke
+            -- pagina en mag niet blijvend aandacht trekken; de groene primaire
+            -- knop is voor de call-to-actions in de content.
+            H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Offerte"
       content
+      whatsappFloatingButton webwinkelWhatsappLabel webwinkelWhatsappMessage
       H.footer $ do
         H.div ! A.class_ "voet-boven" $ do
           H.p ! A.class_ "voet-merk" $ do
@@ -573,15 +578,15 @@ homeFaq =
 -- MijnWebwinkel migration landing page
 -- =============================================================================
 
--- | Screen-reader label for the WhatsApp button on the MijnWebwinkel migration
--- page. Dutch, matching the page's audience.
-mijnwebwinkelWhatsappLabel :: Text
-mijnwebwinkelWhatsappLabel = "Open een WhatsApp-gesprek met ons"
+-- | Screen-reader label for the floating WhatsApp button, shown on every
+-- webwinkelverhuis.nl page via the base template.
+webwinkelWhatsappLabel :: Text
+webwinkelWhatsappLabel = "Open een WhatsApp-gesprek met ons"
 
--- | Pre-filled message for the WhatsApp button on the MijnWebwinkel migration
--- page. Dutch, matching the page's audience.
-mijnwebwinkelWhatsappMessage :: Text
-mijnwebwinkelWhatsappMessage = "Hallo, ik heb een vraag over de migratie van mijn MijnWebwinkel-shop."
+-- | Pre-filled message for the floating WhatsApp button. Platform-neutraal,
+-- want de knop staat op elke pagina.
+webwinkelWhatsappMessage :: Text
+webwinkelWhatsappMessage = "Hallo, ik heb een vraag over het verhuizen van mijn webshop."
 
 -- | The migration app's landing page (webwinkelverhuis.nl/app.html). This is
 -- the App URL of the custom Shopify app we install in a client's store to run
@@ -891,8 +896,7 @@ scanPage = webwinkelBaseTemplate scanMeta $
       }
 
 mijnwebwinkelMigrationPage :: Html
-mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $ do
-  whatsappFloatingButton mijnwebwinkelWhatsappLabel mijnwebwinkelWhatsappMessage
+mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
   H.main $ do
     -- Hero: friendly reassurance rather than pressure, with the escape
     -- illustration. The visitor already knows the platform is stuck; this
@@ -1082,45 +1086,63 @@ ccvshopMigrationPage :: Html
 ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
   H.main $ do
     -- Hero
-    H.section ! A.class_ "hero" $ do
-      H.h1 "Ontsnap CCV Shop"
-      -- Decision: hero benoemt CCV-specifieke pijn (prijsstijging,
-      -- krimpend winkelbestand, Fiserv-zwaartepunt) in plaats van de
-      -- generieke MWW-tekst. Bronnen in
-      -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
-      -- "Thema's en functies staan al jaren stil" stond hier tot 2 aug
-      -- 2026 en is verwijderd: directe metingen weerspreken het (eigen
-      -- nieuwspagina meldt samengestelde producten en thema-updates in
-      -- apr 2026 en een bol.com-koppeling in mrt 2026; de API-SDK kreeg
-      -- in 2026 maandelijkse releases). Een CCV-winkelier die die
-      -- functies gebruikt, prikt daar meteen doorheen. Wat blijft is
-      -- wat we kunnen aantonen; de Fiserv-passage blijft bewust een
-      -- constatering over zwaartepunt, geen EOL-voorspelling.
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Sinds de Amerikaanse betaalreus Fiserv CCV overnam ligt het zwaartepunt bij betalen en kassa: uw webshop is een tweede rang product. Wij verhuizen uw complete shop geautomatiseerd naar Shopify, WooCommerce of een ander platform van uw keuze: zonder dataverlies, met zo min mogelijk downtime." :: Text)
-      -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
-      -- stap in plaats van de offerte.
-      H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
+    H.section ! A.class_ "hero" $
+      H.div ! A.class_ "hero-grid" $ do
+        H.div $ do
+          H.h1 "Ontsnap CCV Shop"
+          -- Decision: hero benoemt CCV-specifieke pijn (prijsstijging,
+          -- krimpend winkelbestand, Fiserv-zwaartepunt) in plaats van de
+          -- generieke MWW-tekst. Bronnen in
+          -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
+          -- "Thema's en functies staan al jaren stil" stond hier tot 2 aug
+          -- 2026 en is verwijderd: directe metingen weerspreken het (eigen
+          -- nieuwspagina meldt samengestelde producten en thema-updates in
+          -- apr 2026 en een bol.com-koppeling in mrt 2026; de API-SDK kreeg
+          -- in 2026 maandelijkse releases). Een CCV-winkelier die die
+          -- functies gebruikt, prikt daar meteen doorheen. Wat blijft is
+          -- wat we kunnen aantonen; de Fiserv-passage blijft bewust een
+          -- constatering over zwaartepunt, geen EOL-voorspelling.
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Sinds de Amerikaanse betaalreus Fiserv CCV overnam ligt het zwaartepunt bij betalen en kassa: uw webshop is een tweede rang product. Wij verhuizen uw complete shop geautomatiseerd naar Shopify, WooCommerce of een ander platform van uw keuze: zonder dataverlies, met zo min mogelijk downtime." :: Text)
+          -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
+          -- stap in plaats van de offerte.
+          H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
+        H.img ! A.class_ "hero-image"
+              ! A.src "/illustratie-ontsnappen.svg"
+              ! A.alt "Illustratie van dozen die een bevroren webshop verlaten richting een zonnige nieuwe winkel"
+              ! A.width "400" ! A.height "300"
 
     -- What we migrate
     H.section ! A.class_ "for-who" ! A.id "what" $ do
       H.h2 "Wat we migreren"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
+                ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
           H.h3 "Producten & varianten"
           H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van uw doelplatform."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
+                ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
           H.h3 "Meerdere talen"
           H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien, ook de URL-slugs." :: Text)
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
+                ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
           H.h3 "Klantaccounts"
           H.p "Klantgegevens en bestelgeschiedenis worden overgezet zodat uw klanten direct kunnen inloggen op de nieuwe shop."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
           H.h3 "SEO-redirects"
           H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw backlinks blijven werken en uw opgebouwde SEO verhuist mee."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
           H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
+                ! A.alt "Stapel dozen" ! A.width "56" ! A.height "56"
           H.h3 "Voorraad & prijzen"
           H.p "Voorraadinformatie en staffelprijzen worden meegenomen. Per-variant prijzen en voorraadbeheer werken direct in uw nieuwe shop."
 
@@ -1171,36 +1193,12 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
         H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (": het programma valideert zijn eigen werk" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (": geen uurtarief, u weet vooraf wat het kost" :: Text)
 
-    -- FAQ
+    -- FAQ. Decision: de aparte "Technische details"-kaartensectie is hierin
+    -- opgegaan (review Jappie, 8 aug 2026): hij oogde dubbelop met "Wat we
+    -- migreren"; de unieke inhoud leeft nu als platform-specifieke vragen.
     H.section ! A.class_ "about" $ do
       H.h2 "Veelgestelde vragen"
       H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible ccvshopFaq
-
-    -- Technical details
-    H.section ! A.class_ "for-who" $ do
-      H.h2 "Technische details"
-      H.ul ! A.class_ "card-grid" $ do
-        H.li ! A.class_ "card" $ do
-          H.h3 "SEO-redirects"
-          H.p "Volledige 301-redirect mapping van elke oude URL naar het nieuwe adres. Uw Google-rankings, backlinks en organisch verkeer blijven behouden."
-        H.li ! A.class_ "card" $ do
-          H.h3 "Bulk-aanpassingen"
-          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen, alles in &eacute;&eacute;n keer." :: Text)
-        H.li ! A.class_ "card" $ do
-          H.h3 "Voorraad & staffelprijzen"
-          H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar uw nieuwe shop. Inclusief prijsverschillen per maat of kleur."
-        H.li ! A.class_ "card" $ do
-          H.h3 "Vertalingen & URL-slugs"
-          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via de offici&euml;le API van uw doelplatform. Inclusief vertaalde URL-slugs." :: Text)
-        H.li ! A.class_ "card" $ do
-          H.h3 "Klantdata & accounts"
-          H.p "Klantaccounts en bestelgeschiedenis worden overgezet zodat uw klanten direct verder kunnen op de nieuwe shop."
-        H.li ! A.class_ "card" $ do
-          H.h3 "Testshop"
-          H.p "U krijgt een volledige testshop naast uw huidige shop om alvast te wennen. Pas na uw akkoord gaan we live; eventuele correcties zijn inbegrepen."
-        H.li ! A.class_ "card" $ do
-          H.h3 "Fysieke winkel & kassa"
-          H.p "Verkoopt u ook in een fysieke winkel? Bij WooCommerce als bestemming kan uw huidige CCV-pinterminal via een kassakoppeling blijven; bij Shopify richten we Shopify POS voor u in zodat winkel en webshop weer dezelfde voorraad delen."
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
@@ -1237,6 +1235,14 @@ ccvshopFaq =
     , faqAnswerText "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
   , ( "Hoe werken de SEO-redirects precies?"
     , faqAnswerText "We genereren automatisch 301-redirects van elke oude URL naar het nieuwe adres. Uw Google-rankings en backlinks blijven behouden." )
+  , ( "Worden voorraad en staffelprijzen correct overgezet?"
+    , faqAnswerText "Ja. Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar uw nieuwe shop, inclusief prijsverschillen per maat of kleur." )
+  , ( "Verhuizen vertaalde URL-slugs ook mee?"
+    , faqAnswerText "Ja. Meertalige content wordt correct gekoppeld via de offici\235le API van uw doelplatform, inclusief de vertaalde URL-slugs van uw pagina's." )
+  , ( "Krijg ik een testshop om te wennen?"
+    , faqAnswerText "Ja. U krijgt een volledige testshop naast uw huidige shop om alvast te wennen. Pas na uw akkoord gaan we live; eventuele correcties zijn inbegrepen." )
+  , ( "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
+    , faqAnswerText "Ja. We kunnen grootschalige wijzigingen doorvoeren tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen, alles in \233\233n keer." )
   -- Decision: POS-antwoord is bewust eerlijk over de beperking en
   -- maakt er een bestemmingskeuze van: bij WooCommerce blijft de
   -- CCV-terminal via Nederlandse kassasoftware gekoppeld, bij
@@ -1258,33 +1264,51 @@ lightspeedMigrationPage :: Html
 lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
   H.main $ do
     -- Hero
-    H.section ! A.class_ "hero" $ do
-      H.h1 "Ontsnap Lightspeed"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt u richting hun nieuwe platform of de deur uit. Ondertussen draait uw webshop op verouderde software die steeds minder krijgt. Wij verhuizen uw complete shop naar Shopify: geautomatiseerd, zonder dataverlies, zonder SEO-verlies." :: Text)
-      -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
-      -- stap in plaats van de offerte.
-      H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
+    H.section ! A.class_ "hero" $
+      H.div ! A.class_ "hero-grid" $ do
+        H.div $ do
+          H.h1 "Ontsnap Lightspeed"
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt u richting hun nieuwe platform of de deur uit. Ondertussen draait uw webshop op verouderde software die steeds minder krijgt. Wij verhuizen uw complete shop naar Shopify: geautomatiseerd, zonder dataverlies, zonder SEO-verlies." :: Text)
+          -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
+          -- stap in plaats van de offerte.
+          H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
+        H.img ! A.class_ "hero-image"
+              ! A.src "/illustratie-ontsnappen.svg"
+              ! A.alt "Illustratie van dozen die een bevroren webshop verlaten richting een zonnige nieuwe winkel"
+              ! A.width "400" ! A.height "300"
 
     -- What we migrate
     H.section ! A.class_ "for-who" ! A.id "what" $ do
       H.h2 "Wat we migreren"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
+                ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
           H.h3 "Producten & varianten"
           H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van uw doelplatform."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
+                ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
           H.h3 "Meerdere talen"
           H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Uw klanten blijven uw shop in hun eigen taal zien, ook de URL-slugs." :: Text)
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
+                ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
           H.h3 "Klantaccounts & bestellingen"
           H.p "Klantgegevens, bestelgeschiedenis en accountdata worden overgezet zodat uw klanten direct kunnen inloggen op de nieuwe shop."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
           H.h3 "SEO-redirects"
           H.p "301-redirects van elke oude URL naar de nieuwe URL. Uw backlinks blijven werken en uw opgebouwde SEO verhuist mee; bij onbegeleide migraties zagen we verhalen van 70% verkeersverlies."
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
           H.h3 $ H.preEscapedToHtml ("Categorie&euml;n & navigatie" :: Text)
           H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
+                ! A.alt "Stapel dozen" ! A.width "56" ! A.height "56"
           H.h3 "Voorraad & prijzen"
           H.p "Voorraadbeheer, staffelprijzen en per-variant pricing worden correct overgezet. Uw voorraadniveaus kloppen direct in uw nieuwe shop."
 
@@ -1324,33 +1348,11 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
         H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (": het programma valideert zijn eigen werk" :: Text)
         H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (": geen uurtarief, u weet vooraf wat het kost" :: Text)
 
-    -- FAQ
+    -- FAQ. Decision: de aparte "Technische details"-kaartensectie is hierin
+    -- opgegaan (review Jappie, 8 aug 2026), net als op de CCV-pagina.
     H.section ! A.class_ "about" $ do
       H.h2 "Veelgestelde vragen"
       H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible lightspeedFaq
-
-    -- Technical details
-    H.section ! A.class_ "for-who" $ do
-      H.h2 "Technische details"
-      H.ul ! A.class_ "card-grid" $ do
-        H.li ! A.class_ "card" $ do
-          H.h3 "SEO-redirects"
-          H.p "Volledige 301-redirect mapping van elke oude URL naar het nieuwe adres. Uw Google-rankings, backlinks en organisch verkeer blijven behouden."
-        H.li ! A.class_ "card" $ do
-          H.h3 "Bulk-aanpassingen"
-          H.p $ H.preEscapedToHtml ("Grootschalige wijzigingen aan uw productdata tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen, alles in &eacute;&eacute;n keer." :: Text)
-        H.li ! A.class_ "card" $ do
-          H.h3 "Voorraad & staffelprijzen"
-          H.p "Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar uw nieuwe shop. Inclusief prijsverschillen per maat of kleur."
-        H.li ! A.class_ "card" $ do
-          H.h3 "Vertalingen & URL-slugs"
-          H.p $ H.preEscapedToHtml ("Meertalige content wordt correct gekoppeld via de offici&euml;le API van uw doelplatform. Inclusief vertaalde URL-slugs." :: Text)
-        H.li ! A.class_ "card" $ do
-          H.h3 "Klantdata & accounts"
-          H.p "Klantaccounts en bestelgeschiedenis worden overgezet zodat uw klanten direct verder kunnen op de nieuwe shop."
-        H.li ! A.class_ "card" $ do
-          H.h3 "Testshop"
-          H.p "U krijgt een volledige testshop naast uw huidige shop om alvast te wennen. Pas na uw akkoord gaan we live; eventuele correcties zijn inbegrepen."
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
@@ -1387,6 +1389,14 @@ lightspeedFaq =
     , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die Lightspeed en Shopify beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
     , faqAnswerText "Ja. Klantgegevens en bestelgeschiedenis worden meegenomen zodat uw klanten direct verder kunnen." )
+  , ( "Worden voorraad en staffelprijzen correct overgezet?"
+    , faqAnswerText "Ja. Per-variant voorraadbeheer en staffelprijzen worden correct overgezet naar uw nieuwe shop, inclusief prijsverschillen per maat of kleur." )
+  , ( "Verhuizen vertaalde URL-slugs ook mee?"
+    , faqAnswerText "Ja. Meertalige content wordt correct gekoppeld via de offici\235le API van uw doelplatform, inclusief de vertaalde URL-slugs van uw pagina's." )
+  , ( "Krijg ik een testshop om te wennen?"
+    , faqAnswerText "Ja. U krijgt een volledige testshop naast uw huidige shop om alvast te wennen. Pas na uw akkoord gaan we live; eventuele correcties zijn inbegrepen." )
+  , ( "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
+    , faqAnswerText "Ja. We kunnen grootschalige wijzigingen doorvoeren tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen, alles in \233\233n keer." )
   ]
 
 -- =============================================================================

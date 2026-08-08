@@ -58,7 +58,12 @@ body {
   color: var(--inkt);
   background: var(--wit);
   -webkit-font-smoothing: antialiased;
+  /* Korte pagina's (zoals /scan.html): main rekt op zodat de footer
+     altijd onderaan het venster staat. */
+  min-height: 100vh;
+  display: flex; flex-direction: column;
 }
+main { flex: 1 0 auto; }
 
 /* height:auto: anders wint het height-attribuut van de aspect-ratio zodra
    CSS alleen de breedte zet */
@@ -125,7 +130,7 @@ body > header {
   color: var(--inkt); text-decoration: none; font-weight: 500; font-size: 0.99rem;
 }
 .hoofdnav a:not(.cta-button):hover { color: var(--groen-tekst); }
-.hoofdnav .cta-button { padding: 0.55rem 1.2rem; font-size: 0.95rem; }
+.hoofdnav .cta-button, .hoofdnav .cta-button-secondary { padding: 0.55rem 1.2rem; font-size: 0.95rem; }
 
 .menu-knop {
   display: none; background: none; border: 0; cursor: pointer;
@@ -220,6 +225,113 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
   display: inline-flex; align-items: center; gap: 0.45rem; text-align: right;
 }
 .inpaklijst .status svg { color: var(--vink); flex: none; }
+
+/* ---------- band-animatie: de inpaklijst vinkt zichzelf af ----------
+   Eigen ontwerp voor de nieuwe band (de oude voortgangsbalkjes pasten hier
+   niet meer): op een gedeelde 16s-tijdlijn verschijnt per regel het
+   resultaat (fade + kleine schuif naar links) terwijl het vinkje zichzelf
+   tekent via stroke-dashoffset. Alles blijft staan tot ~93%, dooft kort en
+   begint opnieuw. De basisstijlen hierboven zijn volledig zichtbaar, dus
+   met prefers-reduced-motion (animation: none) staat de lijst er gewoon
+   statisch en compleet. Naast de kop pulseert een groen "live"-stipje. */
+
+.band h2 { display: flex; align-items: center; gap: 0.6rem; }
+.band h2::after {
+  content: ""; width: 0.6rem; height: 0.6rem; border-radius: 50%;
+  background: var(--vink);
+  animation: band-puls 1.6s ease-in-out infinite;
+}
+@keyframes band-puls {
+  0%, 100% { opacity: 0.35; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.inpaklijst .status svg path { stroke-dasharray: 24; stroke-dashoffset: 0; }
+.inpaklijst li:nth-child(1) .status { animation: band-status-1 16s ease-in-out infinite; }
+.inpaklijst li:nth-child(2) .status { animation: band-status-2 16s ease-in-out infinite; }
+.inpaklijst li:nth-child(3) .status { animation: band-status-3 16s ease-in-out infinite; }
+.inpaklijst li:nth-child(4) .status { animation: band-status-4 16s ease-in-out infinite; }
+.inpaklijst li:nth-child(5) .status { animation: band-status-5 16s ease-in-out infinite; }
+.inpaklijst li:nth-child(6) .status { animation: band-status-6 16s ease-in-out infinite; }
+.inpaklijst li:nth-child(1) .status svg path { animation: band-vink-1 16s linear infinite; }
+.inpaklijst li:nth-child(2) .status svg path { animation: band-vink-2 16s linear infinite; }
+.inpaklijst li:nth-child(3) .status svg path { animation: band-vink-3 16s linear infinite; }
+.inpaklijst li:nth-child(4) .status svg path { animation: band-vink-4 16s linear infinite; }
+.inpaklijst li:nth-child(5) .status svg path { animation: band-vink-5 16s linear infinite; }
+.inpaklijst li:nth-child(6) .status svg path { animation: band-vink-6 16s linear infinite; }
+
+@keyframes band-status-1 {
+  0%, 4% { opacity: 0; transform: translateX(0.6rem); }
+  7% { opacity: 1; transform: none; }
+  93% { opacity: 1; transform: none; }
+  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+}
+@keyframes band-vink-1 {
+  0%, 5% { stroke-dashoffset: 24; }
+  8% { stroke-dashoffset: 0; }
+  93% { stroke-dashoffset: 0; }
+  97%, 100% { stroke-dashoffset: 24; }
+}
+@keyframes band-status-2 {
+  0%, 15% { opacity: 0; transform: translateX(0.6rem); }
+  18% { opacity: 1; transform: none; }
+  93% { opacity: 1; transform: none; }
+  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+}
+@keyframes band-vink-2 {
+  0%, 16% { stroke-dashoffset: 24; }
+  19% { stroke-dashoffset: 0; }
+  93% { stroke-dashoffset: 0; }
+  97%, 100% { stroke-dashoffset: 24; }
+}
+@keyframes band-status-3 {
+  0%, 26% { opacity: 0; transform: translateX(0.6rem); }
+  29% { opacity: 1; transform: none; }
+  93% { opacity: 1; transform: none; }
+  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+}
+@keyframes band-vink-3 {
+  0%, 27% { stroke-dashoffset: 24; }
+  30% { stroke-dashoffset: 0; }
+  93% { stroke-dashoffset: 0; }
+  97%, 100% { stroke-dashoffset: 24; }
+}
+@keyframes band-status-4 {
+  0%, 37% { opacity: 0; transform: translateX(0.6rem); }
+  40% { opacity: 1; transform: none; }
+  93% { opacity: 1; transform: none; }
+  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+}
+@keyframes band-vink-4 {
+  0%, 38% { stroke-dashoffset: 24; }
+  41% { stroke-dashoffset: 0; }
+  93% { stroke-dashoffset: 0; }
+  97%, 100% { stroke-dashoffset: 24; }
+}
+@keyframes band-status-5 {
+  0%, 48% { opacity: 0; transform: translateX(0.6rem); }
+  51% { opacity: 1; transform: none; }
+  93% { opacity: 1; transform: none; }
+  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+}
+@keyframes band-vink-5 {
+  0%, 49% { stroke-dashoffset: 24; }
+  52% { stroke-dashoffset: 0; }
+  93% { stroke-dashoffset: 0; }
+  97%, 100% { stroke-dashoffset: 24; }
+}
+@keyframes band-status-6 {
+  0%, 59% { opacity: 0; transform: translateX(0.6rem); }
+  62% { opacity: 1; transform: none; }
+  93% { opacity: 1; transform: none; }
+  97%, 100% { opacity: 0; transform: translateX(0.6rem); }
+}
+@keyframes band-vink-6 {
+  0%, 60% { stroke-dashoffset: 24; }
+  63% { stroke-dashoffset: 0; }
+  93% { stroke-dashoffset: 0; }
+  97%, 100% { stroke-dashoffset: 24; }
+}
 
 /* ---------- hoe het werkt / genummerde stappen ---------- */
 
@@ -332,12 +444,16 @@ main > section ul li strong { font-family: var(--kop); color: var(--navy-diep); 
   border-top: 3px solid var(--groen);
   border-radius: var(--radius); padding: 1.4rem 1.5rem;
   box-shadow: 0 6px 18px rgba(11, 46, 80, 0.05);
+  /* Kolom-flex: de knop onderaan krijgt margin-top auto, zodat de knoppen
+     van naast elkaar staande kaarten op dezelfde hoogte uitlijnen. */
+  display: flex; flex-direction: column; align-items: flex-start;
 }
 .card h3 { margin-bottom: 0.45rem; }
 .card p { color: var(--grijs); font-size: 0.99rem; }
 .card p + p { margin-top: 0.6rem; }
 .card-icon { width: 3.5rem; height: 3.5rem; margin-bottom: 0.9rem; }
-.card .cta-button-secondary { margin-top: 1rem; font-size: 0.95rem; padding: 0.55rem 1.2rem; }
+.card .cta-button-secondary { margin-top: auto; font-size: 0.95rem; padding: 0.55rem 1.2rem; }
+.card p:last-of-type { margin-bottom: 1rem; }
 
 .engagement-note { color: var(--grijs); font-size: 0.95rem; max-width: var(--maat-smal); margin-top: 1.2rem; }
 
@@ -400,16 +516,21 @@ main > section ul li strong { font-family: var(--kop); color: var(--navy-diep); 
 .faq details[open] summary::after { transform: rotate(-135deg); }
 .faq .faq-antwoord { color: var(--grijs); padding-bottom: 1.2rem; max-width: 42rem; }
 
-/* ---------- afsluitende cta (navy band) ---------- */
+/* ---------- afsluitende cta ----------
+   Licht, met dezelfde merkverloop-tinten als de hero. Bewust niet navy:
+   dezelfde kleur als de footer las als "onderdeel van de footer"
+   (review Jappie, 8 aug 2026). Alles gecentreerd. */
 
-.final-cta, .cta-section { background: var(--navy-diep); text-align: center; }
-.final-cta h2, .cta-section h2 { color: var(--wit); }
-.final-cta p, .cta-section p { color: var(--band-tekst); max-width: var(--maat-smal); }
-.final-cta a:not(.cta-button):not(.cta-button-secondary),
-.cta-section a:not(.cta-button):not(.cta-button-secondary) { color: var(--wit); }
+.final-cta, .cta-section {
+  background:
+    radial-gradient(38rem 24rem at 18% 100%, rgba(108, 180, 76, 0.10), transparent 65%),
+    radial-gradient(34rem 22rem at 88% 0%, rgba(27, 127, 180, 0.10), transparent 65%),
+    var(--fond);
+  border-top: 1px solid var(--lijn);
+  text-align: center;
+}
+.final-cta p, .cta-section p { max-width: var(--maat-smal); margin-inline: auto; }
 .final-cta > .cta-button, .cta-section > .cta-button { margin-top: 1.4rem; }
-.final-cta .cta-button-secondary { border-color: var(--wit); color: var(--wit); }
-.final-cta .cta-button-secondary:hover { background: var(--wit); color: var(--navy-diep); }
 
 /* ---------- contact-sectie (landing) ---------- */
 
@@ -450,17 +571,25 @@ footer small a:hover { color: var(--wit); }
 .prijs-calculator {
   max-width: var(--maat-smal);
   background: var(--wit); border: 1px solid var(--lijn);
-  border-radius: var(--radius); padding: clamp(1.4rem, 3vw, 2.2rem);
-  box-shadow: 0 6px 18px rgba(11, 46, 80, 0.05);
+  border-top: 4px solid var(--groen);
+  border-radius: var(--radius); padding: clamp(1.6rem, 4vw, 2.6rem);
+  box-shadow: 0 10px 30px rgba(11, 46, 80, 0.08);
 }
-.calc-inputs { display: grid; gap: 1.2rem; }
-.calc-field { display: flex; flex-direction: column; gap: 0.35rem; }
+/* Browsers tekenen standaard een groove-rand om fieldsets; hier is de
+   kaart zelf het kader en is de legend een sectiekop. */
+.prijs-calculator fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.prijs-calculator legend {
+  font-family: var(--kop); font-weight: 700; font-size: 1.3rem;
+  color: var(--navy-diep); padding: 0; margin-bottom: 1.3rem;
+}
+.calc-inputs { display: grid; gap: 1.5rem; }
+.calc-field { display: flex; flex-direction: column; gap: 0.4rem; }
 .calc-label { font-weight: 650; font-family: var(--kop); color: var(--navy-diep); }
 .calc-hint { color: var(--grijs); font-size: 0.92rem; }
 .calc-field input, .calc-field select {
-  font-family: var(--tekst); font-size: 1rem; color: var(--inkt);
-  padding: 0.6rem 0.85rem; border: 1px solid var(--lijn); border-radius: 8px;
-  background: var(--wit); max-width: 22rem;
+  font-family: var(--tekst); font-size: 1.02rem; color: var(--inkt);
+  padding: 0.7rem 1rem; border: 1px solid var(--lijn); border-radius: 10px;
+  background: var(--wit); width: 100%; max-width: 24rem;
 }
 .calc-field input:focus, .calc-field select:focus {
   outline: 2px solid var(--navy); outline-offset: 1px; border-color: var(--navy);
@@ -468,15 +597,16 @@ footer small a:hover { color: var(--wit); }
 /* Markup: aanvinkVeld in elm/src/PrijsCalculator.elm: een label.calc-check
    met daarin de checkbox en een span.calc-check-text die de spans
    .calc-check-label en .calc-hint onder elkaar zet. */
-.calc-check-group { display: grid; gap: 0.55rem; }
-.calc-check { display: flex; align-items: baseline; gap: 0.6rem; cursor: pointer; }
-.calc-check input { accent-color: var(--groen-vlak); }
+.calc-check-group { display: grid; gap: 0.7rem; }
+.calc-check { display: flex; align-items: baseline; gap: 0.7rem; cursor: pointer; }
+.calc-check input { accent-color: var(--groen-vlak); width: 1.05rem; height: 1.05rem; flex: none; }
 .calc-check-text { display: flex; flex-direction: column; }
 .calc-check-label { color: var(--inkt); font-weight: 600; }
 .calc-check .calc-hint { font-size: 0.88rem; }
 .calc-fout, .calc-veld-fout { color: #a4262c; font-size: 0.95rem; }
 .calc-note { color: var(--grijs); font-size: 0.92rem; }
-.calc-result { margin-top: 1.6rem; border-top: 1px solid var(--lijn); padding-top: 1.2rem; }
+.calc-result { margin-top: 2rem; border-top: 1px solid var(--lijn); padding-top: 1.4rem; }
+.calc-result h3 { margin-bottom: 0.8rem; }
 .calc-lines { display: grid; gap: 0.35rem; list-style: none; }
 .calc-line { display: flex; justify-content: space-between; gap: 1rem; }
 .calc-line-label { color: var(--grijs); }
@@ -574,6 +704,25 @@ footer small a:hover { color: var(--wit); }
   background: #25d366; color: var(--wit);
   box-shadow: 0 6px 18px rgba(11, 46, 80, 0.25);
   transition: transform 0.15s ease, background-color 0.15s ease;
+  /* Rustige entree: de eerste minuut onzichtbaar (en niet klikbaar via
+     visibility), dan een minuut lang infaden; op de 5-minuten-markering
+     eenmalig een klein schudje als reminder. Met prefers-reduced-motion
+     (animation: none) staat de knop er direct, de basisstijl is zichtbaar. */
+  animation:
+    whatsapp-verschijn 120s linear 1,
+    whatsapp-schud 0.8s ease-in-out 300s 1;
+}
+@keyframes whatsapp-verschijn {
+  0%, 50% { opacity: 0; visibility: hidden; }
+  50.1% { opacity: 0; visibility: visible; }
+  100% { opacity: 1; visibility: visible; }
+}
+@keyframes whatsapp-schud {
+  0%, 100% { transform: none; }
+  20% { transform: translateX(-4px) rotate(-4deg); }
+  40% { transform: translateX(4px) rotate(4deg); }
+  60% { transform: translateX(-3px) rotate(-2deg); }
+  80% { transform: translateX(2px) rotate(1deg); }
 }
 .whatsapp-bolletje:hover { background: #1eb457; color: var(--wit); transform: translateY(-2px); }
 .whatsapp-bolletje svg { width: 1.9rem; height: 1.9rem; }
