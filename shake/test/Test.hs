@@ -28,7 +28,8 @@ import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
 import PageChrome (faqAnswerHtml, faqPageJsonLd, renderFaqItem)
-import Types (Article(..))
+import Templates (renderTagPage, renderIndexPage)
+import Types (Article(..), PaginationInfo(..), defaultSiteConfig)
 import PenguinTemplates
   ( WebwinkelverhuisUrl(..)
   , penguinIndexPage
@@ -180,7 +181,26 @@ main = defaultMain $
         , blogIndexAdvertisesNewestArticleLastmod
         , articleWithoutModifiedFallsBackToPublicationDate
         ]
+    , testGroup "taxonomiepagina's zijn noindex"
+        [ taxonomieKrijgtNoindexIndexNiet
+        ]
     ]
+
+-- | De dunne taxonomiepagina's (tags/categorieen) dragen "noindex, follow";
+-- de indexpagina moet gewoon indexeerbaar blijven. Dit faalt zowel wanneer
+-- de directive van de tagpagina verdwijnt als wanneer hij per ongeluk op
+-- alle pagina's belandt.
+taxonomieKrijgtNoindexIndexNiet :: TestTree
+taxonomieKrijgtNoindexIndexNiet = testCase "tagpagina noindex, indexpagina niet" $ do
+  let tagPagina = TL.toStrict (renderHtml
+        (renderTagPage defaultSiteConfig [] Nothing "haskell" []))
+      indexPagina = TL.toStrict (renderHtml
+        (renderIndexPage defaultSiteConfig [] Nothing []
+          (PaginationInfo 1 1 Nothing Nothing)))
+  assertBool "tagpagina mist de noindex, follow-directive"
+    ("<meta name=\"robots\" content=\"noindex, follow\">" `T.isInfixOf` tagPagina)
+  assertBool "indexpagina kreeg onbedoeld een robots-directive"
+    (not ("name=\"robots\"" `T.isInfixOf` indexPagina))
 
 -- | An article carrying only the fields the sitemap reads; the rest is
 -- inert filler.

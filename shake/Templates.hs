@@ -66,6 +66,7 @@ formatArchiveDate = formatDate "%b %d"
 data BlogPageMeta = BlogPageMeta
   { blogMetaDescription :: Text
   , blogMetaCanonical   :: Maybe Text -- ^ Full canonical URL
+  , blogMetaRobots      :: Maybe Text -- ^ Robots directive ("noindex, follow")
   }
 
 -- | Default English page metadata with generic blog description.
@@ -73,7 +74,18 @@ defaultBlogMeta :: BlogPageMeta
 defaultBlogMeta = BlogPageMeta
   { blogMetaDescription = "Technical blog by Jappie Klooster. Haskell, Nix, functional programming, and software engineering."
   , blogMetaCanonical   = Nothing
+  , blogMetaRobots      = Nothing
   }
+
+-- Decision: de taxonomiepagina's (tags, categorieen en hun lijstpagina's)
+-- krijgen "noindex, follow". Search Console (8 aug 2026) toont 99 pagina's
+-- "crawled - currently not indexed" op jappie.me: Google crawlt deze dunne
+-- lijstpagina's en besluit zelf ze niet op te nemen. Dat besluit expliciet
+-- maken houdt het crawlbudget bij de artikelen en maakt het rapport schoon.
+-- "follow" behoudt de interne linkwaarde. De index-, archief- en
+-- artikelpagina's blijven gewoon indexeerbaar.
+noindexVolgLinks :: Maybe Text
+noindexVolgLinks = Just "noindex, follow"
 
 -- | Map language code to OG locale format
 ogLocale :: Text -> Text
@@ -113,6 +125,10 @@ baseTemplate config isArticle mSwitchUrl pageMeta title content =
     -- Canonical URL
     case blogMetaCanonical pageMeta of
       Just canonicalUrl -> H.link ! A.rel "canonical" ! A.href (toValue canonicalUrl)
+      Nothing -> mempty
+    -- Robots directive (alleen op taxonomiepagina's gezet)
+    case blogMetaRobots pageMeta of
+      Just directive -> H.meta ! A.name "robots" ! A.content (toValue directive)
       Nothing -> mempty
     -- Atom feed
     H.link ! A.href (toValue (feedDomain config <> "/" <> langPrefix lang <> feedAtom config))
@@ -510,6 +526,7 @@ renderTagsListPage config pages mSwitchUrl tags =
       tagsPageMeta = defaultBlogMeta
         { blogMetaDescription = "All tags on the blog of Jappie Klooster."
         , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> "tags.html")
+        , blogMetaRobots      = noindexVolgLinks
         }
   in siteTemplate config pages False mSwitchUrl tagsPageMeta (tTags trans <> " / " <> siteName config) $
     H.section ! A.class_ "tags" $ do
@@ -530,6 +547,7 @@ renderTagPage config pages mSwitchUrl tag articles =
       tagPageMeta = defaultBlogMeta
         { blogMetaDescription = "Posts tagged '" <> tag <> "' on the blog of Jappie Klooster."
         , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> "tag/" <> tagSlug tag <> ".html")
+        , blogMetaRobots      = noindexVolgLinks
         }
   in siteTemplate config pages False mSwitchUrl tagPageMeta ("\128278 " <> tag <> " / " <> siteName config) $ do
     H.h1 $ toHtml (tTagged trans <> tag)
@@ -546,6 +564,7 @@ renderCategoriesListPage config pages mSwitchUrl categories =
       categoriesPageMeta = defaultBlogMeta
         { blogMetaDescription = "All categories on the blog of Jappie Klooster."
         , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> "categories.html")
+        , blogMetaRobots      = noindexVolgLinks
         }
   in siteTemplate config pages False mSwitchUrl categoriesPageMeta (tCategories trans <> " / " <> siteName config) $
     H.section ! A.class_ "categories" $ do
@@ -566,6 +585,7 @@ renderCategoryPage config pages mSwitchUrl cat articles =
   let categoryPageMeta = defaultBlogMeta
         { blogMetaDescription = "Posts in category '" <> cat <> "' on the blog of Jappie Klooster."
         , blogMetaCanonical   = Just (siteUrl config <> "/" <> langPrefix (siteLang config) <> "category/" <> cat <> ".html")
+        , blogMetaRobots      = noindexVolgLinks
         }
   in siteTemplate config pages False mSwitchUrl categoryPageMeta (cat <> " / " <> siteName config) $ do
     H.h1 ! A.id "category-title" $ do
