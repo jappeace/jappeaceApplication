@@ -13,9 +13,10 @@ port module PrijsCalculator exposing
 {-| Interactieve prijsindicatie voor een webshop-migratie op webwinkelverhuis.nl.
 
 De prijslogica is een 1-op-1 kopie van de standaard prijslijst (jappiesoft
-strategy/standaard-prijslijst.org) en de tabel op /prijzen: basismigratie t/m
-1.000 producten en 1 taal, daarboven een staffel per product en per extra taal,
-plus de losse modules (thema, klantaccounts, orderhistorie, nieuwsbrief,
+strategy/standaard-prijslijst.org) en de tabel op /prijzen: basismigratie met
+1.000 inbegrepen productvertalingen (producten maal talen tellen samen tegen
+die ruimte), daarboven €0,25 per productvertaling, plus €250 configuratie per
+extra taal, de losse modules (thema, klantaccounts, orderhistorie, nieuwsbrief,
 voorraad) en de diensten domeinverhuizing en e-mail-setup. Alle bedragen worden
 intern in hele centen gerekend zodat er geen afrondingsfouten op de komma
 ontstaan; pas bij het tonen zetten we centen om naar euro's.
@@ -523,24 +524,36 @@ aantalTalen model =
     Basics.max 1 (leesGetal model.talenInvoer)
 
 
-extraProducten : Model -> Int
-extraProducten model =
-    Basics.max 0 (aantalProducten model - inbegrepenProducten)
-
-
 extraTalen : Model -> Int
 extraTalen model =
     aantalTalen model - 1
 
 
-extraProductenCenten : Model -> Int
-extraProductenCenten model =
-    extraProducten model * perProductCenten
+-- Decision: productvertalingen tellen samen tegen de 1.000 inbegrepen
+-- producten van de basismigratie (besluit Jappie 2026-08-08, n.a.v. de
+-- bybjor-offerte). Elk product telt per taal één keer mee: 160 producten
+-- in 3 talen zijn 480 productvertalingen en passen dus in de basisruimte,
+-- terwijl het oude model elke extra taal over de hele catalogus liet
+-- betalen zonder die ruimte. Voor catalogi vanaf 1.000 producten is de
+-- uitkomst wiskundig gelijk aan het oude model; kleinere catalogi met
+-- meerdere talen worden er goedkoper van. Alternatief was de oude
+-- twee-staffels-opzet houden; afgewezen omdat die kleine meertalige
+-- shops liet betalen voor ruimte die ze al gekocht hadden.
 
 
-extraTaalProductenCenten : Model -> Int
-extraTaalProductenCenten model =
-    extraTalen model * aantalProducten model * perProductCenten
+productVertalingen : Model -> Int
+productVertalingen model =
+    aantalProducten model * aantalTalen model
+
+
+extraProductVertalingen : Model -> Int
+extraProductVertalingen model =
+    Basics.max 0 (productVertalingen model - inbegrepenProducten)
+
+
+extraProductVertalingenCenten : Model -> Int
+extraProductVertalingenCenten model =
+    extraProductVertalingen model * perProductCenten
 
 
 extraTaalConfiguratieCenten : Model -> Int
@@ -609,8 +622,7 @@ indienAan aan centen =
 totaalCenten : Model -> Int
 totaalCenten model =
     basisMigratieCenten
-        + extraProductenCenten model
-        + extraTaalProductenCenten model
+        + extraProductVertalingenCenten model
         + extraTaalConfiguratieCenten model
         + themaCenten model
         + indienAan model.klantaccounts klantaccountsCenten
@@ -839,15 +851,11 @@ de uitsplitsing op het scherm als de vooringevulde offerte-mail, zodat die twee
 nooit uit elkaar lopen. -}
 prijsRegels : Model -> List PrijsRegel
 prijsRegels model =
-    [ PrijsRegel "Basismigratie (t/m 1.000 producten, 1 taal)" basisMigratieCenten ]
+    [ PrijsRegel "Basismigratie (1.000 producten inbegrepen, over alle talen samen)" basisMigratieCenten ]
         ++ optioneleRegel
-            (extraProducten model > 0)
-            (aantalLabel (extraProducten model) "extra product \u{00D7} \u{20AC}0,25" "extra producten \u{00D7} \u{20AC}0,25")
-            (extraProductenCenten model)
-        ++ optioneleRegel
-            (extraTalen model > 0)
-            (aantalLabel (extraTalen model) "extra taal: vertaalwerk per product" "extra talen: vertaalwerk per product")
-            (extraTaalProductenCenten model)
+            (extraProductVertalingen model > 0)
+            (aantalLabel (extraProductVertalingen model) "product boven de 1.000 inbegrepen (over alle talen) \u{00D7} \u{20AC}0,25" "producten boven de 1.000 inbegrepen (over alle talen) \u{00D7} \u{20AC}0,25")
+            (extraProductVertalingenCenten model)
         ++ optioneleRegel
             (extraTalen model > 0)
             (aantalLabel (extraTalen model) "extra taal: configuratie \u{00D7} \u{20AC}250" "extra talen: configuratie \u{00D7} \u{20AC}250")

@@ -44,6 +44,14 @@ suite =
             \_ ->
                 Expect.equal 404900
                     (totaalCenten (metProducten 2400 3 initieelModel))
+        , test "160 producten, 3 talen: vertalingen passen in de basisruimte, alleen 2 x 250 configuratie = 2.499 (bybjor-regel)" <|
+            \_ ->
+                Expect.equal 249900
+                    (totaalCenten (metProducten 160 3 initieelModel))
+        , test "700 producten, 2 talen: alleen de 400 vertalingen boven de 1.000 tellen = 2.349" <|
+            \_ ->
+                Expect.equal 234900
+                    (totaalCenten (metProducten 700 2 initieelModel))
         , test "Panzer + thema overzetten + domeinverhuizing = 5.048" <|
             \_ ->
                 let

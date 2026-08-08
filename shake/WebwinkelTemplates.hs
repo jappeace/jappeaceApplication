@@ -876,13 +876,10 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.h2 "De migratie"
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
-          H.td "Basismigratie: t/m 1.000 producten, 1 taal"
+          H.td "Basismigratie: 1.000 producten inbegrepen, geteld over alle talen samen"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1.999" :: Text)
         H.tr $ do
-          H.td "Extra producten, boven de 1.000 (eerste taal)"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
-        H.tr $ do
-          H.td "Extra taal: per product over de hele catalogus"
+          H.td "Extra producten boven die 1.000 (elk product telt per taal \233\233n keer mee)"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
         H.tr $ do
           H.td "Extra taal: configuratie, per taal"
@@ -957,7 +954,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
     prijzenMeta :: PageMeta
     prijzenMeta = PageMeta
       { pageMetaTitle       = "Prijzen \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Vaste prijzen voor je webshop-migratie naar Shopify: vanaf \8364\&1.999 inclusief 1.000 producten en 1 taal. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
+      , pageMetaDescription = "Vaste prijzen voor je webshop-migratie naar Shopify: vanaf \8364\&1.999 inclusief 1.000 producten, geteld over alle talen samen. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/prijzen.html"
       , pageMetaOgImage     = Nothing
