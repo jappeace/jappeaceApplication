@@ -188,7 +188,7 @@ Getting a timeline for a release at the very least would be beneficial.
 Therefore, with my anger tempered and a sense of progress, I deem this a successful blog post 💪.
 Please share your thoughts in the comments.
 
-Note that this post has a [follow up]({filename}/followup-releasing.md).
+Note that this post has a [follow up](/follow-up-release-rodeo.html).
 
 
 [^could-be-anyone]: Could be anyone really, since I do work freelance :)

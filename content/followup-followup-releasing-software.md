@@ -12,17 +12,17 @@ img[src="/images/2023/follow-up.png"]{
 
 ![Reflective](/images/2023/follow-up.png)
 
-This is a follow-up on the [follow up]({filename}/followup-releasing.md) of [release rodeo]({filename}/releasing-software.md).
+This is a follow-up on the [follow up](/follow-up-release-rodeo.html) of [release rodeo](/the-release-rodeo.html).
 Okay, I should stop doing these,
 however, I thought the situation was a bit too ironic not to record.
 On my final week working for that company [^unrelated-reasons],
 the product manager involved found my original blog post!
 
 A colleague and I were discussing some performance degradation,
-and I brought up the [event sourcing]({filename}/undeadlock-event-source.md) post, 
+and I brought up the [event sourcing](/the-peculiar-event-sourced-deadlock.html) post, 
 because this company also used event sourcing and it was maybe related.
 However the PM apparently followed that link, 
-thought it interesting, looked around more, and found the [release rodeo]({filename}/releasing-software.md) post!
+thought it interesting, looked around more, and found the [release rodeo](/the-release-rodeo.html) post!
 
 He got rather upset.
 His issue was that I didn't approach him directly.
@@ -55,7 +55,7 @@ Please leave a like, subscribe and share your job-rants in the comments below.
    however I had some tax issues forcing me to quit.
 
 [^seriously-why-reading]: I guess the days of nobody reading these are really over...
-                          Back in 2017 nobody [read]({filename}why-blog-2023.md) these!
+                          Back in 2017 nobody [read](/why-do-i-still-write-this-blog.html) these!
 
 [^ayden]: At some point the company had hired another manager whose only skill was office politics.
           Which caused me a lot of grief.

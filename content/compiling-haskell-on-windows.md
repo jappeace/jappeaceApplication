@@ -137,7 +137,7 @@ If not, please leave a comment below, or [contact me](mailto:hi@jappie.me).
 
 # Update: Cabal edit
 The cabal section used to contain below text, however since I've
-forked [mysql-pure]({filename}/mysql-pure.md). this is no longer necessary.
+forked [mysql-pure](/announcing-mysql-pure-fork.html). this is no longer necessary.
 
 You need to instruct Cabal to use the correct MySQL packages `project.cabal`:
 ```cabal

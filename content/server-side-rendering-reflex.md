@@ -5,7 +5,7 @@ OPTIONS: toc:nil
 Tags: haskell, programming, tools, servant, tutorial
 subreddit: haskell programming reflexfrp
 
-[Reflex]({filename}/fullstack-haskell-reflex-servant.md)
+[Reflex](/fullstack-haskell-reflex-and-servant.html)
 is a single page app framework written in Haskell compiled to JavaScript.
 A major concern with reflex is the slow loading times,
 this can be mediated however by doing server side rendering[^brag].

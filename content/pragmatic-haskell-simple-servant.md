@@ -5,9 +5,9 @@ OPTIONS: toc:nil
 Tags: haskell, programming, tools, servant, stack, tutorial, pragmatic-haskell
 subreddit: haskell programming
 
-1. [Pragmatic Haskell: Simple servant web server]({filename}/pragmatic-haskell-simple-servant.md)
-1. [Pragmatic Haskell II: IO Webservant]({filename}/pragmatic-haskell-message-servant.md)
-1. [Pragmatic Haskell III: Beam Postgres DB]({filename}/pragmatic-haskell-database.md)
+1. [Pragmatic Haskell: Simple servant web server](/pragmatic-haskell-simple-servant-web-server.html)
+1. [Pragmatic Haskell II: IO Webservant](/pragmatic-haskell-ii-io-webservant.html)
+1. [Pragmatic Haskell III: Beam Postgres DB](/pragmatic-haskell-iii-beam-postgres-db.html)
 
 There are many [guides available](https://github.com/bitemyapp/learnhaskell)
 for learning Haskell.

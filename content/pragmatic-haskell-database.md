@@ -17,14 +17,14 @@ This post will get you going with a serious web application while
 only sticking to the concepts that are encountered.
 This is a Haskell safari with as end goal a working webapp with database.
 
-1. [Pragmatic Haskell: Simple servant web server]({filename}/pragmatic-haskell-simple-servant.md)
-1. [Pragmatic Haskell II: IO Webservant]({filename}/pragmatic-haskell-message-servant.md)
-1. [Pragmatic Haskell III: Beam Postgres DB]({filename}/pragmatic-haskell-database.md)
+1. [Pragmatic Haskell: Simple servant web server](/pragmatic-haskell-simple-servant-web-server.html)
+1. [Pragmatic Haskell II: IO Webservant](/pragmatic-haskell-ii-io-webservant.html)
+1. [Pragmatic Haskell III: Beam Postgres DB](/pragmatic-haskell-iii-beam-postgres-db.html)
 
 ![fancy db image](/images/2018/haskell-beam-postgres.svg)
 
 Web applications need to store data.
-In the [previous blog post]({filename}/pragmatic-haskell-message-servant.md)
+In the [previous blog post](/pragmatic-haskell-ii-io-webservant.html)
 we did this in a file for simplicity.
 Now we will use something more appropriate: A relational database.
 The beam library is used for this because it is closest to the "ORM" way of
@@ -161,7 +161,7 @@ By default Haskell only allows one.
 
 ### DeriveGeneric
 `DeriveGeneric` was discussed in a
-[previous blog post]({filename}/pragmatic-haskell-simple-servant.md).
+[previous blog post](/pragmatic-haskell-simple-servant-web-server.html).
 In short: `Generic` allows for introspection of data structures using the
 fact any data structure can be modeled in a regular (generic) pattern.
 
@@ -336,7 +336,7 @@ All structural information is already provided at type level.
 # Using structure
 Now we have a database structure defined we can use it
 in `Lib.hs`.
-We have already seen most of this source file in the previous [blog post]({filename}/pragmatic-haskell-message-servant.md),
+We have already seen most of this source file in the previous [blog post](/pragmatic-haskell-ii-io-webservant.html),
 the new version can be seen in [the sources](#dbhs).
 
 The functionality is still the same except now we're using a database as

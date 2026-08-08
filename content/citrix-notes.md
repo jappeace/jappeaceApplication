@@ -76,7 +76,7 @@ xe sr-create name-label=<Storage ID> shared=false device-config:device=<Path of 
 ```
 
 Actually I attempted to partition it, but I think the command already does that.
-If not see my other post where [gdisk]({filename}/nixos-encrypted-btrfs.md) is explained.
+If not see my other post where [gdisk](/nixos-on-encrypted-btrfs.html) is explained.
 
 # Use the windows client
 I couldn't get the citrix Linux client to work on nixos.
@@ -108,4 +108,4 @@ progress than "generic error".
 Citrix XenServer does not appear to accept VirtualBox VMDKs.
 I got VHD to work locally, but for some reason
 it didn't work at the client.
-If you want a NixOS VHD checkout [this post]({filename}/nixos-notes.md)
+If you want a NixOS VHD checkout [this post](/nixos-notes.html)

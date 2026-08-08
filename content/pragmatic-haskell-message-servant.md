@@ -6,9 +6,9 @@ OPTIONS: toc:nil
 Tags: haskell, programming, tools, servant, IO, pragmatic-haskell
 subreddit: haskell programming
 
-1. [Pragmatic Haskell: Simple servant web server]({filename}/pragmatic-haskell-simple-servant.md)
-1. [Pragmatic Haskell II: IO Webservant]({filename}/pragmatic-haskell-message-servant.md)
-1. [Pragmatic Haskell III: Beam Postgres DB]({filename}/pragmatic-haskell-database.md)
+1. [Pragmatic Haskell: Simple servant web server](/pragmatic-haskell-simple-servant-web-server.html)
+1. [Pragmatic Haskell II: IO Webservant](/pragmatic-haskell-ii-io-webservant.html)
+1. [Pragmatic Haskell III: Beam Postgres DB](/pragmatic-haskell-iii-beam-postgres-db.html)
 
 Most Haskell language guides will leave IO
 [until](http://www.seas.upenn.edu/%7Ecis194/spring13/lectures/08-IO.html)
@@ -19,7 +19,7 @@ Our focus is different: We build first, then learn trough [delight](https://medi
 
 ![Fancy intro image](/images/2018/io-webserver.svg)
 
-The [previous blog]({filename}/pragmatic-haskell-simple-servant.md)
+The [previous blog](/pragmatic-haskell-simple-servant-web-server.html)
 post explained how to get going with a simple minimalist servant
 web server.
 In this blog post the simple web server will get an extra REST endpoint that can

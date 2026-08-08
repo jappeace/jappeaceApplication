@@ -6,7 +6,7 @@ OPTIONS: toc:nil
 Tags: nix, nixos, ext4, tools, linux, devops
 
 A few years ago I wrote a post on installing
-NixOS [on encrypted btrfs]({filename}/nixos-encrypted-btrfs.md).
+NixOS [on encrypted btrfs](/nixos-on-encrypted-btrfs.html).
 I recently went trough that guide to install
 NixOS once more.
 It is good, but it has some issues:
@@ -359,7 +359,7 @@ With that finished the installation is complete.
 Aside from getting the keypass database up and running,
 it's important to add your newly generated public key to
 the services you manage.
-For example this website is hosted on the [nixos multi monolith]({filename}/hetzner-nix-monolith.md).
+For example this website is hosted on the [nixos multi monolith](/the-nix-mutli-monolith-machine-nmmm.html).
 It be prudent to add the ssh key via a machine that already 
 has access to it.
 Syncthing can also be used for this.

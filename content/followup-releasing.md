@@ -4,7 +4,7 @@ CATEGORY: reflection
 Tags: work, release, anger
 OPTIONS: toc:nil
 
-This is a follow-up on the [release rodeo]({filename}/releasing-software.md).
+This is a follow-up on the [release rodeo](/the-release-rodeo.html).
 
 After I wrote that blog post, the CTO found it quickly by coincidence.
 He was quite okay with everything I had written.
@@ -44,7 +44,7 @@ it's productive to think about why you're angry and devise a plan of action.
 In this case, I indeed solved a rather annoying but important issue by taking a relatively simple action.
 Anyone could've done this.
 
-Note that this post has a [follow up]({filename}/followup-followup-releasing-software.md).
+Note that this post has a [follow up](/follow-up-on-the-follow-up.html).
 
 [^psyche]: From this, we can also derive the reason for my bluntness when angry. For a mind that is harsh on itself by default, being nice requires extra effort.
 [^rfc]: Request for change, eg an invitation to discuss a change in process or system.

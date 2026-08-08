@@ -5,7 +5,7 @@ OPTIONS: toc:nil
 Tags: haskell, programming, tools, reflex, frp, servant-auth, servant
 subreddit: haskell programming reflexfrp
 
-In the previous [blog post]({filename}/fullstack-haskell-reflex-servant.md)
+In the previous [blog post](/fullstack-haskell-reflex-and-servant.html)
 we saw interaction with servant in reflex.
 Although that covers the basics,
 there are several more hurdles to overcome to get comfortable with Reflex.
@@ -82,7 +82,7 @@ type AuthAPI =
 						  :> Post '[JSON] [Message]
 ```
 The `AuthAPI` is similar to the `ServiceAPI`
-from the [previous blog post]({filename}/fullstack-haskell-reflex-servant.md),
+from the [previous blog post](/fullstack-haskell-reflex-and-servant.html),
 which only contained the `users` and `message` endpoints.
 Now we've extended it with a `getme` endpoint.
 The `getme` endpoint is a hack to do auto login with cookies.
@@ -268,7 +268,7 @@ loginForm = do
 ```
 
 The `userInput` has remained the same as in the
-[previous blog post]({filename}/fullstack-haskell-reflex-servant.md).
+[previous blog post](/fullstack-haskell-reflex-and-servant.html).
 After the `userInput` form we create a button,
 which gives us a resulting `buttonEvt` event.
 This event only fires if the button is pressed.
@@ -482,7 +482,7 @@ PM me your cool projects.
 With the release of reflex `0.5` we now have updated docs!
 
 + [Source code](https://github.com/jappeace/awesome-project-name/tree/auth)
-+ [Previous blog]({filename}/fullstack-haskell-reflex-servant.md)
++ [Previous blog](/fullstack-haskell-reflex-and-servant.html)
 + [Reflex](https://hackage.haskell.org/package/reflex)
 + [Reflex dom](https://hackage.haskell.org/package/reflex-dom-core-0.4)
 + [Servant reflex](http://hackage.haskell.org/package/servant-reflex-0.3.4)

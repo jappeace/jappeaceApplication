@@ -24,7 +24,7 @@ Furthermore, I believe that this technique will make using newtypes more attract
 
 # Newtype
 Consider the following common code in
-a [fullstack haskell webapp]({filename}/fullstack-haskell-reflex-servant.md):
+a [fullstack haskell webapp](/fullstack-haskell-reflex-and-servant.html):
 
 ```haskell
 data Login = Login
