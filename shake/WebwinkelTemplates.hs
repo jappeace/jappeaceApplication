@@ -1011,7 +1011,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
     hoeHetWerktSectie
       [ HoeHetWerktStap "Scan" "Ons programma leest je MijnWebwinkel-shop volledig uit en bouwt er een testshop mee op, met producten, vertalingen, categorie\235n en doorverwijzingen."
       , HoeHetWerktStap "Wennen" "De testshop draait naast je MijnWebwinkel-shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
-      , HoeHetWerktStap "Livegang" "Ben je er klaar voor? Dan wijzen we je domeinnaam op de nieuwe shop en ben je verhuisd. Je shop is hooguit 5 tot 30 minuten beperkt bereikbaar, terwijl het beveiligingscertificaat (het slotje in de browser) opnieuw wordt aangemaakt."
+      , HoeHetWerktStap "Livegang" "Ben je er klaar voor? Dan wijzen we je domeinnaam op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk."
       ]
 
     -- Recent werk: proof before price, so the number lands on trust.
@@ -1193,7 +1193,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     hoeHetWerktSectie
       [ HoeHetWerktStap "Scan" "Ons programma leest je CCV Shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
       , HoeHetWerktStap "Wennen" "De testshop draait naast je CCV Shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
-      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk."
       ]
 
     -- Pricing
@@ -1353,7 +1353,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     hoeHetWerktSectie
       [ HoeHetWerktStap "Scan" "Ons programma leest je Lightspeed-shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
       , HoeHetWerktStap "Wennen" "De testshop draait naast je Lightspeed-shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
-      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk."
       ]
 
     -- Pricing
