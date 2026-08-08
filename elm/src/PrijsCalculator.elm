@@ -998,7 +998,7 @@ view model =
                 ]
             ]
                 ++ opAanvraagNoten model
-                ++ [ lockInNoot, contactVelden model, offerteKnop model ]
+                ++ [ lockInNoot, contactVelden model, offerteKnop model, vrijblijvendNoot ]
         ]
 
 
@@ -1038,6 +1038,14 @@ lockInNoot : Html Msg
 lockInNoot =
     p [ Attr.class "calc-lockin" ]
         [ text "Dit is een richtprijs. Wilt u tegen deze prijs verhuizen? Vraag nu een offerte aan." ]
+
+
+{-| Geruststelling onder de offerte-knop: de aanvraag verplicht tot niets, de
+bezoeker vraagt alleen een bevestiging van de getoonde prijs. -}
+vrijblijvendNoot : Html Msg
+vrijblijvendNoot =
+    p [ Attr.class "calc-vrijblijvend" ]
+        [ text "Vrijblijvend: met deze aanvraag zit u nergens aan vast. U vraagt alleen een bevestiging van deze prijs, en beslist daarna rustig zelf." ]
 
 
 formulierGeldig : Model -> Bool

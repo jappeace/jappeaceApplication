@@ -26,6 +26,7 @@ module PageChrome
   , faqAnswerText
   , faqAnswerHtml
   , renderFaqItem
+  , renderFaqItemCollapsible
   , faqPageJsonLd
   , jsonLdString
   , formatIsoDate
@@ -260,12 +261,24 @@ faqAnswerText = FaqAnswer . toHtml
 faqAnswerHtml :: Html -> FaqAnswer
 faqAnswerHtml = FaqAnswer
 
--- | Render a single FAQ pair as a @<dt>/<dd>@ pair. The same pairs feed
--- 'faqPageJsonLd' so the visible FAQ and the structured data never drift.
+-- | Render a single FAQ pair as a @<dt>/<dd>@ pair, the penguin theme's
+-- (jappiesoftware.com) FAQ shape; webwinkelverhuis.nl uses
+-- 'renderFaqItemCollapsible' instead. The same pairs feed 'faqPageJsonLd'
+-- so the visible FAQ and the structured data never drift.
 renderFaqItem :: (FaqQuestion, FaqAnswer) -> Html
 renderFaqItem (FaqQuestion question, FaqAnswer answer) = do
   H.dt (toHtml question)
   H.dd answer
+
+-- | Render a single FAQ pair as a collapsible @<details>/<summary>@ block, the
+-- webwinkelverhuis.nl theme's FAQ shape (design door joepa). Long FAQ lists
+-- (13 vragen op de MijnWebwinkel-pagina) blijven zo scanbaar. The same pairs
+-- still feed 'faqPageJsonLd'.
+renderFaqItemCollapsible :: (FaqQuestion, FaqAnswer) -> Html
+renderFaqItemCollapsible (FaqQuestion question, FaqAnswer answer) =
+  H.details $ do
+    H.summary (toHtml question)
+    H.div ! A.class_ "faq-antwoord" $ answer
 
 -- | FAQ structured data (JSON-LD) built from question/answer pairs. Google
 -- stopped showing FAQ rich results in May 2026 and removed the feature's
