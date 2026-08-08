@@ -233,7 +233,9 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
    tekent via stroke-dashoffset. Alles blijft staan tot ~93%, dooft kort en
    begint opnieuw. De basisstijlen hierboven zijn volledig zichtbaar, dus
    met prefers-reduced-motion (animation: none) staat de lijst er gewoon
-   statisch en compleet. Naast de kop pulseert een groen "live"-stipje. */
+   statisch en compleet. Naast de kop pulseert een groen "live"-stipje.
+   Regel N start op (4 + 11*(N-1))% van de tijdlijn: 11% afstand geeft de
+   zes regels een gelijkmatige cascade die ruim voor de 93%-hold klaar is. */
 
 .band h2 { display: flex; align-items: center; gap: 0.6rem; }
 .band h2::after {
@@ -713,6 +715,9 @@ footer small a:hover { color: var(--wit); }
     whatsapp-schud 0.8s ease-in-out 300s 1;
 }
 @keyframes whatsapp-verschijn {
+  /* visibility animeert discreet: het 50.1%-tussenpunt zet de knop
+     zichtbaar (en klikbaar) precies waar de opacity-fade begint, zodat
+     hij de eerste minuut echt weg is in plaats van onzichtbaar klikbaar. */
   0%, 50% { opacity: 0; visibility: hidden; }
   50.1% { opacity: 0; visibility: visible; }
   100% { opacity: 1; visibility: visible; }
