@@ -429,7 +429,7 @@ prijzen = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
     H.p ! A.class_ "prijs" $ do
       H.preEscapedToHtml ("vanaf &euro;" <> migratieBasisprijsEuro <> " ")
       H.small "eenmalig"
-    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("Inclusief 1.000 producten en &eacute;&eacute;n taal: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects." :: Text)
+    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("Inclusief 1.000 producten, geteld over alle talen samen: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects." :: Text)
     H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Grotere catalogi, extra talen en losse diensten (e-mail-setup, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
     H.hr
     H.p ! A.class_ "abonnement" $ do
