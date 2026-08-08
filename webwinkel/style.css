@@ -251,7 +251,9 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
    Elke regel verschijnt uitgelicht in het midden van de band, daar faden
    het vinkje en het resultaatwoord in, en daarna schuift de regel naar zijn
    eigen plek in de tabel en blijft staan. Zo vult de tabel zich regel voor
-   regel; na een rustpauze dooft alles en begint de cyclus opnieuw.
+   regel, en daarna rust hij: de animatie speelt precies een keer, gestart
+   zodra de band in beeld scrolt (bandSpeelScript zet dan de klasse "speel";
+   zonder JavaScript blijft de tabel gewoon statisch compleet).
 
    Techniek: de gedeelde 18s-tijdlijn geeft regel N het venster
    (2 + 13*(N-1))% .. +11%. De podiumpositie (het midden van de band) staat
@@ -275,133 +277,116 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
 .inpaklijst li:nth-child(n+5)  { --podium-y: -105%; }
 
 .inpaklijst .status svg path { stroke-dasharray: 24; stroke-dashoffset: 0; }
-.inpaklijst li:nth-child(1) { animation: inpak-rij-1 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(2) { animation: inpak-rij-2 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(3) { animation: inpak-rij-3 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(4) { animation: inpak-rij-4 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(5) { animation: inpak-rij-5 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(6) { animation: inpak-rij-6 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(1) .status { animation: inpak-status-1 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(2) .status { animation: inpak-status-2 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(3) .status { animation: inpak-status-3 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(4) .status { animation: inpak-status-4 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(5) .status { animation: inpak-status-5 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(6) .status { animation: inpak-status-6 18s ease-in-out infinite; }
-.inpaklijst li:nth-child(1) .status svg path { animation: inpak-vink-1 18s linear infinite; }
-.inpaklijst li:nth-child(2) .status svg path { animation: inpak-vink-2 18s linear infinite; }
-.inpaklijst li:nth-child(3) .status svg path { animation: inpak-vink-3 18s linear infinite; }
-.inpaklijst li:nth-child(4) .status svg path { animation: inpak-vink-4 18s linear infinite; }
-.inpaklijst li:nth-child(5) .status svg path { animation: inpak-vink-5 18s linear infinite; }
-.inpaklijst li:nth-child(6) .status svg path { animation: inpak-vink-6 18s linear infinite; }
+.band.speel .inpaklijst li:nth-child(1) { animation: inpak-rij-1 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(2) { animation: inpak-rij-2 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(3) { animation: inpak-rij-3 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(4) { animation: inpak-rij-4 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(5) { animation: inpak-rij-5 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(6) { animation: inpak-rij-6 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(1) .status { animation: inpak-status-1 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(2) .status { animation: inpak-status-2 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(3) .status { animation: inpak-status-3 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(4) .status { animation: inpak-status-4 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(5) .status { animation: inpak-status-5 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(6) .status { animation: inpak-status-6 18s ease-in-out 1 forwards; }
+.band.speel .inpaklijst li:nth-child(1) .status svg path { animation: inpak-vink-1 18s linear 1 forwards; }
+.band.speel .inpaklijst li:nth-child(2) .status svg path { animation: inpak-vink-2 18s linear 1 forwards; }
+.band.speel .inpaklijst li:nth-child(3) .status svg path { animation: inpak-vink-3 18s linear 1 forwards; }
+.band.speel .inpaklijst li:nth-child(4) .status svg path { animation: inpak-vink-4 18s linear 1 forwards; }
+.band.speel .inpaklijst li:nth-child(5) .status svg path { animation: inpak-vink-5 18s linear 1 forwards; }
+.band.speel .inpaklijst li:nth-child(6) .status svg path { animation: inpak-vink-6 18s linear 1 forwards; }
 
 /* Per regel: onzichtbaar tot het eigen venster, opkomen op het podium,
    even vasthouden terwijl vinkje en woord verschijnen, dan naar de eigen
    plek schuiven. Het podiumvlak is dekkend (#23425f: navy-diep met ~10%
    wit, de dekkende evenknie van de eerdere rgba-overlay met alpha 0.10)
    met een zweefschaduw: de laatste regels zweven over al gedockte tekst
-   heen en moeten die afdekken om leesbaar te blijven. Vanaf ~93% dooft
-   de hele tabel voor de herstart. */
+   heen en moeten die afdekken om leesbaar te blijven. De laatste frame is
+   gelijk aan de basisstijl (gedockt en zichtbaar), dus na de ene run staat
+   de tabel er rustig bij. */
 @keyframes inpak-rij-1 {
   0%, 2% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   4% { opacity: 1; }
   9% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
-  13%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
-  97%, 100% { opacity: 0; transform: none; }
+  13%, 100% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
 }
 @keyframes inpak-status-1 {
   0%, 5% { opacity: 0; }
-  8%, 93% { opacity: 1; }
-  97%, 100% { opacity: 0; }
+  8%, 100% { opacity: 1; }
 }
 @keyframes inpak-vink-1 {
   0%, 5% { stroke-dashoffset: 24; }
-  8%, 93% { stroke-dashoffset: 0; }
-  97%, 100% { stroke-dashoffset: 24; }
+  8%, 100% { stroke-dashoffset: 0; }
 }
 @keyframes inpak-rij-2 {
   0%, 15% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   17% { opacity: 1; }
   22% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
-  26%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
-  97%, 100% { opacity: 0; transform: none; }
+  26%, 100% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
 }
 @keyframes inpak-status-2 {
   0%, 18% { opacity: 0; }
-  21%, 93% { opacity: 1; }
-  97%, 100% { opacity: 0; }
+  21%, 100% { opacity: 1; }
 }
 @keyframes inpak-vink-2 {
   0%, 18% { stroke-dashoffset: 24; }
-  21%, 93% { stroke-dashoffset: 0; }
-  97%, 100% { stroke-dashoffset: 24; }
+  21%, 100% { stroke-dashoffset: 0; }
 }
 @keyframes inpak-rij-3 {
   0%, 28% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   30% { opacity: 1; }
   35% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
-  39%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
-  97%, 100% { opacity: 0; transform: none; }
+  39%, 100% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
 }
 @keyframes inpak-status-3 {
   0%, 31% { opacity: 0; }
-  34%, 93% { opacity: 1; }
-  97%, 100% { opacity: 0; }
+  34%, 100% { opacity: 1; }
 }
 @keyframes inpak-vink-3 {
   0%, 31% { stroke-dashoffset: 24; }
-  34%, 93% { stroke-dashoffset: 0; }
-  97%, 100% { stroke-dashoffset: 24; }
+  34%, 100% { stroke-dashoffset: 0; }
 }
 @keyframes inpak-rij-4 {
   0%, 41% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   43% { opacity: 1; }
   48% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
-  52%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
-  97%, 100% { opacity: 0; transform: none; }
+  52%, 100% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
 }
 @keyframes inpak-status-4 {
   0%, 44% { opacity: 0; }
-  47%, 93% { opacity: 1; }
-  97%, 100% { opacity: 0; }
+  47%, 100% { opacity: 1; }
 }
 @keyframes inpak-vink-4 {
   0%, 44% { stroke-dashoffset: 24; }
-  47%, 93% { stroke-dashoffset: 0; }
-  97%, 100% { stroke-dashoffset: 24; }
+  47%, 100% { stroke-dashoffset: 0; }
 }
 @keyframes inpak-rij-5 {
   0%, 54% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   56% { opacity: 1; }
   61% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
-  65%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
-  97%, 100% { opacity: 0; transform: none; }
+  65%, 100% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
 }
 @keyframes inpak-status-5 {
   0%, 57% { opacity: 0; }
-  60%, 93% { opacity: 1; }
-  97%, 100% { opacity: 0; }
+  60%, 100% { opacity: 1; }
 }
 @keyframes inpak-vink-5 {
   0%, 57% { stroke-dashoffset: 24; }
-  60%, 93% { stroke-dashoffset: 0; }
-  97%, 100% { stroke-dashoffset: 24; }
+  60%, 100% { stroke-dashoffset: 0; }
 }
 @keyframes inpak-rij-6 {
   0%, 67% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   69% { opacity: 1; }
   74% { opacity: 1; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
-  78%, 93% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
-  97%, 100% { opacity: 0; transform: none; }
+  78%, 100% { opacity: 1; transform: none; background: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
 }
 @keyframes inpak-status-6 {
   0%, 70% { opacity: 0; }
-  73%, 93% { opacity: 1; }
-  97%, 100% { opacity: 0; }
+  73%, 100% { opacity: 1; }
 }
 @keyframes inpak-vink-6 {
   0%, 70% { stroke-dashoffset: 24; }
-  73%, 93% { stroke-dashoffset: 0; }
-  97%, 100% { stroke-dashoffset: 24; }
+  73%, 100% { stroke-dashoffset: 0; }
 }
 
 /* Op mobiel staat alles in 1 kolom: de regel licht op zijn eigen plek op. */
