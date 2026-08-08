@@ -430,7 +430,7 @@ prijzen = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
       H.preEscapedToHtml ("vanaf &euro;" <> migratieBasisprijsEuro <> " ")
       H.small "eenmalig"
     H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("Inclusief 1.000 producten: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects." :: Text)
-    H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Grotere catalogi, extra talen en losse diensten (e-mail-setup, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
+    H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Grotere catalogi, extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
     H.hr
     H.p ! A.class_ "abonnement" $ do
       H.preEscapedToHtml
@@ -1218,6 +1218,11 @@ mijnwebwinkelFaq =
     , faqAnswerText "MijnWebwinkel bouwt zijn links op uit interne artikelnummers. We hebben uitgezocht hoe dat precies werkt, waardoor we voor elke oude link automatisch de juiste doorverwijzing (301-redirect) kunnen aanmaken, ook voor links met nummers erin." )
   , ( "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
     , faqAnswerText "Ja. We kunnen grootschalige wijzigingen doorvoeren, bijvoorbeeld prijzen aanpassen, beschrijvingen opschonen, of beschrijvingen voor Google toevoegen aan al je afbeeldingen (alt-teksten)." )
+  , ( "Kan ik de nieuwe shop straks zelf beheren?"
+    , faqAnswerHtml $ do
+        "Ja, daar is Shopify juist op gebouwd: producten toevoegen, prijzen wijzigen en een banner plaatsen doe je zonder technische kennis. Wil je een vliegende start, dan is er een cursus Shopify van twee uur, \233\233n-op-\233\233n door je eigen nieuwe shop (zie "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        ")." )
   ]
 
 -- =============================================================================
@@ -1392,6 +1397,11 @@ ccvshopFaq =
   -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org.
   , ( "Ik heb ook een fysieke winkel met een CCV-pinterminal. Kan die mee?"
     , faqAnswerText $ "Dat hangt af van je bestemming. Kies je WooCommerce, dan kan je CCV-terminal gewoon gekoppeld blijven: Nederlandse kassasoftware verbindt de terminal en synchroniseert de voorraad met je webshop, en je pincontract loopt door. Kies je Shopify, dan koppelt de terminal niet meer met de kassa; hij kan wel als losse pin blijven werken, maar dan typ je elk bedrag over. Wil je winkel en webshop weer als \233\233n geheel, dan vervang je hem door een Shopify-terminal. Die overstap is eenmalig en bescheiden (\8364" <> "59 tot \8364" <> "249) en daarna ben je ook voor het pinnen van CCV af. Wij hebben ervaring met het inrichten van kassa's en pinterminals en nemen dit gewoon in het migratietraject mee." )
+  , ( "Kan ik de nieuwe shop straks zelf beheren?"
+    , faqAnswerHtml $ do
+        "Ja, daar is Shopify juist op gebouwd: producten toevoegen, prijzen wijzigen en een banner plaatsen doe je zonder technische kennis. Wil je een vliegende start, dan is er een cursus Shopify van twee uur, \233\233n-op-\233\233n door je eigen nieuwe shop (zie "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        ")." )
   ]
 
 -- =============================================================================
@@ -1530,6 +1540,11 @@ lightspeedFaq =
     , faqAnswerText "Ja. Je krijgt een volledige testshop naast je huidige shop om alvast te wennen. Pas na je akkoord gaan we live; eventuele correcties zijn inbegrepen." )
   , ( "Kunnen jullie mijn productdata aanpassen tijdens de migratie?"
     , faqAnswerText "Ja. We kunnen grootschalige wijzigingen doorvoeren tijdens de migratie: alt-teksten genereren, prijzen aanpassen, beschrijvingen opschonen, alles in \233\233n keer." )
+  , ( "Kan ik de nieuwe shop straks zelf beheren?"
+    , faqAnswerHtml $ do
+        "Ja, daar is Shopify juist op gebouwd: producten toevoegen, prijzen wijzigen en een banner plaatsen doe je zonder technische kennis. Wil je een vliegende start, dan is er een cursus Shopify van twee uur, \233\233n-op-\233\233n door je eigen nieuwe shop (zie "
+        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        ")." )
   ]
 
 -- =============================================================================
