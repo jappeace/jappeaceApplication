@@ -327,7 +327,7 @@ init _ =
 
 legeInvoerMelding : String
 legeInvoerMelding =
-    "Vul het adres van uw webshop in."
+    "Vul het adres van je webshop in."
 
 
 ongeldigeInvoerMelding : String
@@ -384,7 +384,7 @@ valideerUrl kandidaat =
 
 netwerkMelding : String
 netwerkMelding =
-    "We konden de server niet bereiken. Controleer uw verbinding en probeer het opnieuw."
+    "We konden de server niet bereiken. Controleer je verbinding en probeer het opnieuw."
 
 
 serverMelding : String
@@ -729,7 +729,7 @@ invoerWeergave : String -> Maybe String -> List (Html Msg)
 invoerWeergave invoer mFout =
     [ form [ Attr.class "scanner-form", onSubmit ScanAangevraagd ]
         [ label [ Attr.class "calc-field" ]
-            [ span [ Attr.class "calc-label" ] [ text "Het adres van uw webshop" ]
+            [ span [ Attr.class "calc-label" ] [ text "Het adres van je webshop" ]
             , input
                 ([ Attr.type_ "text"
                  , Attr.value invoer
@@ -782,13 +782,13 @@ wachtTekst stand =
     case stand of
         InWachtrij positie ->
             if positie == 1 then
-                "U bent als eerste aan de beurt."
+                "Je bent als eerste aan de beurt."
 
             else
-                "U staat op plek " ++ String.fromInt positie ++ " in de wachtrij."
+                "Je staat op plek " ++ String.fromInt positie ++ " in de wachtrij."
 
         Bezig ->
-            "We meten uw webshop."
+            "We meten je webshop."
 
 
 {-| Melding wanneer de gescande shop onze meting tijdelijk weigert. -}
@@ -843,13 +843,13 @@ nietHerkendWeergave rapport invoer =
     [ h3 [ Attr.class "scanner-rapport-kop" ] [ text ("Rapport voor " ++ rapport.url) ]
     , p [ Attr.class "scanner-platform" ] [ strong [] [ text "Platform niet herkend." ] ]
     , p []
-        [ text "Wij beoordelen webshops op MijnWebwinkel, CCV Shop, Lightspeed, WooCommerce en Shopify. Draait uw shop ergens anders, dan kunnen wij er weinig zinnigs over zeggen. Controleer het adres of probeer een andere shop:" ]
+        [ text "Wij beoordelen webshops op MijnWebwinkel, CCV Shop, Lightspeed, WooCommerce en Shopify. Draait je shop ergens anders, dan kunnen wij er weinig zinnigs over zeggen. Controleer het adres of probeer een andere shop:" ]
     ]
         ++ invoerWeergave invoer Nothing
         ++ [ p [ Attr.class "scanner-platform-verzoek" ]
-                [ text "Draait uw shop op een platform dat wij nog niet kennen? "
+                [ text "Draait je shop op een platform dat wij nog niet kennen? "
                 , a [ Attr.href (platformVerzoekMailto rapport.url) ]
-                    [ text "Mail ons welk platform u gebruikt" ]
+                    [ text "Mail ons welk platform je gebruikt" ]
                 , text "; bij genoeg vraag voegen we het toe."
                 ]
            ]
@@ -1050,10 +1050,10 @@ upsellBlok rapport =
 migratieBlok : Rapport -> List (Html Msg)
 migratieBlok rapport =
     [ div [ Attr.class "scanner-upsell scanner-upsell-migratie" ]
-        [ h3 [] [ text "Vast aan uw platform" ]
+        [ h3 [] [ text "Vast aan je platform" ]
         , p [] [ text (vastZin (aantalVast rapport) rapport.platform) ]
         , a [ Attr.href rekenhulpUrl, Attr.class "cta-button", onClick CalculatorGeklikt ]
-            [ text "Bereken uw verhuisprijs" ]
+            [ text "Bereken je verhuisprijs" ]
         ]
     ]
 
@@ -1074,7 +1074,7 @@ oplosBlok rapport =
     if heeftOplosbarePunten rapport then
         [ div [ Attr.class "scanner-upsell" ]
             [ h3 [] [ text "Liever laten doen?" ]
-            , p [] [ text "De oplosbare punten pakken wij voor u op, tegen een vaste prijs." ]
+            , p [] [ text "De oplosbare punten pakken wij voor je op, tegen een vaste prijs." ]
             , a [ Attr.href meetUrl, Attr.class "cta-button", onClick GesprekGeklikt ]
                 [ text "Plan een gesprek" ]
             ]

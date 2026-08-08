@@ -240,7 +240,7 @@ updateTests =
                     (Tuple.first (update ScanAangevraagd { initieelModel | invoer = "uwshop.nl" })).fase
         , test "ongeldige invoer blijft in de invoerfase met een melding" <|
             \_ ->
-                Expect.equal (Invoeren (Just "Vul het adres van uw webshop in."))
+                Expect.equal (Invoeren (Just "Vul het adres van je webshop in."))
                     (Tuple.first (update ScanAangevraagd initieelModel)).fase
         , test "een wachtrij-status toont de positie" <|
             \_ ->
@@ -363,7 +363,7 @@ viewTests =
             \_ ->
                 view (modelMetRapport verwachtRapport)
                     |> Query.fromHtml
-                    |> Query.has [ rekenhulpLink, Selector.text "Bereken uw verhuisprijs" ]
+                    |> Query.has [ rekenhulpLink, Selector.text "Bereken je verhuisprijs" ]
         , test "met een vast punt is er geen gesprek-knop" <|
             \_ ->
                 view (modelMetRapport verwachtRapport)
@@ -442,7 +442,7 @@ nietHerkendTests =
             \_ ->
                 view (modelMetRapport nietHerkendRapport)
                     |> Query.fromHtml
-                    |> Query.has [ Selector.tag "a", Selector.text "Mail ons welk platform u gebruikt" ]
+                    |> Query.has [ Selector.tag "a", Selector.text "Mail ons welk platform je gebruikt" ]
         , test "een herkend platform toont geen niet-herkend-melding" <|
             \_ ->
                 view (modelMetRapport verwachtRapport)

@@ -38,6 +38,7 @@ import Text.Pandoc
 import Text.Pandoc.Highlighting (pygments)
 import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
+import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
 import PenguinTemplates (WebwinkelverhuisUrl(..), penguinIndexPage, penguinIndexPageNl, penguinWordpressPage, penguinWordpressPageNl, penguinBlogIndexPage, penguinArticlePage)
@@ -524,17 +525,48 @@ writeHtmlFile path html = do
   Dir.createDirectoryIfMissing True (takeDirectory path)
   TLIO.writeFile path (renderHtml html)
 
--- | Write a webwinkelverhuis.nl page, first rewriting absolute content-image
--- sources to root-relative ones ('relativizeWebwinkelContentImages') so they
--- load on the local serve preview, and refusing to emit a page that links a
--- raw calendar.app.google URL. Scheduling links must use the
+-- Decision: cache-busting via een inhoudshash in de bestandsnaam, berekend
+-- in de Shake-build (sha256 over het bestand, zoals nix met outputs doet).
+-- Alternatief was een ?v=-queryparameter, maar sommige proxies en caches
+-- negeren querystrings; een unieke bestandsnaam is waterdicht. De ongehashte
+-- originelen blijven staan zodat een bezoeker met een oude gecachte
+-- HTML-pagina zijn assets nog kan laden. De pure naamgeving en
+-- herschrijving staan in 'AssetHash', zodat de testsuite ze dekt.
+maakGehashteWebwinkelAssets :: IO GehashteAssets
+maakGehashteWebwinkelAssets = do
+  styleCss <- maakGehashteKopie "style" "css"
+  blogCss <- maakGehashteKopie "blog" "css"
+  prijsCalculatorJs <- maakGehashteKopie "prijs-calculator" "js"
+  scannerFormJs <- maakGehashteKopie "scanner-form" "js"
+  return GehashteAssets
+    { gehashteStyleCss = styleCss
+    , gehashteBlogCss = blogCss
+    , gehashtePrijsCalculatorJs = prijsCalculatorJs
+    , gehashteScannerFormJs = scannerFormJs
+    }
+
+-- | Kopieer een asset uit _webwinkelverhuis-site naar zijn gehashte naam
+-- ('gehashteAssetNaam', "style-ab12cd34ef.css") en geef die naam terug.
+maakGehashteKopie :: String -> String -> IO Text
+maakGehashteKopie basisnaam extensie = do
+  inhoud <- BS.readFile ("_webwinkelverhuis-site" </> basisnaam <.> extensie)
+  let naam = gehashteAssetNaam basisnaam extensie inhoud
+  BS.writeFile ("_webwinkelverhuis-site" </> naam) inhoud
+  return (T.pack naam)
+
+-- | Write a webwinkelverhuis.nl page: rewrite absolute content-image sources
+-- to root-relative ones ('relativizeWebwinkelContentImages') so they load on
+-- the local serve preview, rewrite asset references to their content-hashed
+-- names ('herschrijfAssetVerwijzingen'), and refuse to emit a page that links
+-- a raw calendar.app.google URL. Scheduling links must use the
 -- https://meet.jappiesoftware.com redirect ('meetLink' in
 -- 'WebwinkelTemplates'): a raw link in blog content once routed visitors to
 -- the wrong calendar, and the template test suite cannot see rendered
 -- content. Crashing the build here beats publishing the bad link silently.
-writeWebwinkelHtmlFile :: FilePath -> Html -> IO ()
-writeWebwinkelHtmlFile path html = do
-  let rendered = relativizeWebwinkelContentImages (renderHtml html)
+writeWebwinkelHtmlFile :: GehashteAssets -> FilePath -> Html -> IO ()
+writeWebwinkelHtmlFile gehashteAssets path html = do
+  let rendered = herschrijfAssetVerwijzingen gehashteAssets
+        (relativizeWebwinkelContentImages (renderHtml html))
   if TL.pack "calendar.app.google" `TL.isInfixOf` rendered
     then error (path <> " links a raw calendar.app.google URL; use https://meet.jappiesoftware.com instead")
     else do
@@ -625,10 +657,14 @@ buildPenguinSites webwinkelUrl = do
   let webwinkelFiles = map (\f -> (f, "md")) webwinkelMds
                     ++ map (\f -> (f, "org")) webwinkelOrgs
   (webwinkelArticles, _webwinkelPages) <- liftIO $ parseAllContent "webwinkel/content" webwinkelFiles
-  liftIO $ generateWebwinkelverhuisSite webwinkelSiteConfig webwinkelArticles
+  -- Assets eerst: de pagina's verwijzen naar content-gehashte bestandsnamen,
+  -- dus de stylesheets en Elm-bundels moeten bestaan voordat we hashen en
+  -- de pagina's schrijven.
   copyWebwinkelStaticAssets
   buildPrijsCalculator
   buildScannerForm
+  gehashteAssets <- liftIO maakGehashteWebwinkelAssets
+  liftIO $ generateWebwinkelverhuisSite webwinkelSiteConfig webwinkelArticles gehashteAssets
 
 -- | Compile one Elm app from elm/src to a JS bundle inside the webwinkel
 -- site. Wired into the Shake build so both the production build and the local
@@ -709,33 +745,33 @@ generatePenguinSite webwinkelUrl config articles = do
 -- "waarom" pages carry their canonical URLs on this domain; jappiesoftware.com
 -- 302-redirects the old migration URLs here (in the megavid nginx config). The
 -- bare domain now serves a real landing page rather than redirecting away.
-generateWebwinkelverhuisSite :: SiteConfig -> [Article] -> IO ()
-generateWebwinkelverhuisSite config articles = do
+generateWebwinkelverhuisSite :: SiteConfig -> [Article] -> GehashteAssets -> IO ()
+generateWebwinkelverhuisSite config articles gehashteAssets = do
   let sortedArticles = sortBy (\a b -> compare (Down (articleDate a)) (Down (articleDate b))) articles
 
   Dir.createDirectoryIfMissing True "_webwinkelverhuis-site"
   Dir.createDirectoryIfMissing True "_webwinkelverhuis-site/blog"
 
   -- Landing page
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/index.html" webwinkelIndexPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/index.html" webwinkelIndexPage
 
   -- Shopify migration app's App URL landing page
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/app.html" appPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/app.html" appPage
 
   -- Migration and explainer pages
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/prijzen.html" prijzenPage
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/scan.html" scanPage
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/migrate-lightspeed.html" lightspeedMigrationPage
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/over-ons.html" overOnsPage
-  writeWebwinkelHtmlFile "_webwinkelverhuis-site/contact.html" contactPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/prijzen.html" prijzenPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/scan.html" scanPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-lightspeed.html" lightspeedMigrationPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/over-ons.html" overOnsPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/contact.html" contactPage
 
   -- Individual blog article pages
   mapM_ (\art ->
-    writeWebwinkelHtmlFile ("_webwinkelverhuis-site/blog" </> T.unpack (articleUrl art))
+    writeWebwinkelHtmlFile gehashteAssets ("_webwinkelverhuis-site/blog" </> T.unpack (articleUrl art))
       (webwinkelArticlePage config art))
     sortedArticles
 
@@ -753,7 +789,7 @@ generateWebwinkelverhuisSite config articles = do
               then Just ("/blog/" <> penguinIndexFileName (pageNum + 1))
               else Nothing
           }
-    in writeWebwinkelHtmlFile ("_webwinkelverhuis-site/blog" </> T.unpack (penguinIndexFileName pageNum))
+    in writeWebwinkelHtmlFile gehashteAssets ("_webwinkelverhuis-site/blog" </> T.unpack (penguinIndexFileName pageNum))
          (webwinkelBlogIndexPage config arts pagination)
     ) (zip [1..] articlePages)
 

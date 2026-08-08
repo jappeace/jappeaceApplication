@@ -1,5 +1,6 @@
 #+TITLE: Het miljard van Shopify: waarom geen Nederlands platform kan bijbenen
 #+DATE: 2026-08-04
+#+MODIFIED: 2026-08-08
 #+CATEGORY: shopify
 #+TAGS: shopify, ccv, mijnwebwinkel, achtergrond
 
@@ -7,7 +8,7 @@ Shopify gaf in 2025 ruim anderhalf miljard dollar uit aan
 productontwikkeling. Nederlandse webshopplatformen zijn niet lui of
 onkundig; ze spelen een spel waarin de tegenstander per werkdag meer
 uitgeeft dan zij in een jaar kunnen. Dit is wat dat geld oplevert,
-jaar voor jaar, en wat het betekent voor uw shop.
+jaar voor jaar, en wat het betekent voor je shop.
 
 * Wat Shopify per jaar uitgeeft
 
@@ -26,7 +27,7 @@ de Amerikaanse beurswaakhond SEC deponeert (bronnen onderaan).
 
 Opgeteld: $7,9 miljard in zeven jaar. Eén platform.
 
-* Waar dat geld heenging, en wat u ervan terugziet
+* Waar dat geld heenging, en wat je ervan terugziet
 
 In 2020 verwerkte het platform de coronagolf: de Shop-app, een
 volledig vernieuwd kassasysteem en de uitbouw van Shop Pay.
@@ -64,13 +65,13 @@ Nederlandse standaardthema's.
 
 * De rekensom die alles zegt
 
-Deel $1.536 miljoen door ongeveer 250 werkdagen en u komt op ruim
+Deel $1.536 miljoen door ongeveer 250 werkdagen en je komt op ruim
 $6 miljoen per werkdag. Dat is meer per dag dan een Nederlands
 nicheplatform redelijkerwijs per jaar aan ontwikkeling kan besteden.
 
-Gaat al dat geld naar uw soort webshop? Nee, natuurlijk niet:
+Gaat al dat geld naar je soort webshop? Nee, natuurlijk niet:
 Shopify bouwt ook voor miljardenmerken, fysieke kassa's en markten
-waar u nooit komt. Maar stel dat maar een tiende landt bij wat een
+waar je nooit komt. Maar stel dat maar een tiende landt bij wat een
 Nederlandse mkb-shop dagelijks gebruikt: thema's, checkout,
 productbeheer. Dan is dat nog altijd zo'n $150 miljoen per jaar,
 elk jaar opnieuw. Meer dan een platform als CCV Shop of
@@ -86,21 +87,21 @@ een paar miljoen per jaar kan uitgeven, kan geen wedstrijd winnen van
 iemand die per werkdag zes miljoen uitgeeft. Het is geen kwestie van
 niet willen; meedoen is simpelweg geen optie.
 
-Het gevolg ziet u in uw eigen shop: thema's die al jaren dezelfde
+Het gevolg zie je in je eigen shop: thema's die al jaren dezelfde
 zijn, functies die maar niet komen, en een kloof die elk half jaar
 met ruim honderd functies groeit. Waarom dat bij MijnWebwinkel zo
-gelopen is leest u in
+gelopen is lees je in
 [[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][ons artikel over MijnWebwinkel]].
 
-* Wat betekent dit voor uw shop?
+* Wat betekent dit voor je shop?
 
-Dat de overstap meestal groter voelt dan hij is: draait uw shop op
+Dat de overstap meestal groter voelt dan hij is: draait je shop op
 een standaardthema van MijnWebwinkel of CCV Shop, dan is alleen al
-het standaardthema van uw nieuwe platform doorgaans een zichtbare
-opknapbeurt. U lift vanaf dag één mee op dat miljard per jaar, en
-elke Editions-release daarna is er ook voor uw shop.
+het standaardthema van je nieuwe platform doorgaans een zichtbare
+opknapbeurt. Je lift vanaf dag één mee op dat miljard per jaar, en
+elke Editions-release daarna is er ook voor je shop.
 
-Overweegt u de overstap? Bekijk onze
+Overweeg je de overstap? Bekijk onze
 [[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][migratie vanaf MijnWebwinkel]]
 of
 [[https://webwinkelverhuis.nl/migrate-ccvshop.html][migratie vanaf CCV Shop]]:
