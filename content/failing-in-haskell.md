@@ -228,7 +228,7 @@ Don't try to catch errors,
 use exceptions if you need to catch.
 
 ## MTL
-I recently blogged about [mtl]({filename}/mtl.md),
+I recently blogged about [mtl](/a-brief-intro-to-mtl.html),
 so I'll briefly cover how to modify this code into mtl style as well:
 
 ```haskell
@@ -254,7 +254,7 @@ main = do
 it works with any transformer stack based on `IO`.
 This works because we pretend the `ExceptT` exists at the call site,
 which makes it come true.
-This is explained thoroughly in the previous [blog post]({filename}/mtl.md).
+This is explained thoroughly in the previous [blog post](/a-brief-intro-to-mtl.html).
 
 # Anti patterns
 Now I'll cover several anti patterns I've seen and

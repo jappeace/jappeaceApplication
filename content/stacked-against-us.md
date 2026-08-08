@@ -95,7 +95,7 @@ Trying to achieve perfect code essentially.
 What was special is that they were still obsessed
 over this, despite how buggy and slow development was.
 
-[^mtl-issues]: There still to this day is an entire [MTL]({filename}/mtl.md) based framework to stub out 
+[^mtl-issues]: There still to this day is an entire [MTL](/a-brief-intro-to-mtl.html) based framework to stub out 
                logic and run tests in memory.
                ONE of my first suggestions was to delete that and instead just use higher order functions to stub things out, 
                but some high up chiefs decided against that because they liked seeing the possible effects in the type signature.
@@ -448,7 +448,7 @@ times already by that point.
 Everytime the algorithm engineer and the PM would have a new
 tactic to "crack" this yard.
 He went again around May, and failed.
-But as we know now there were serious [fundamental issues]({filename}/firmware-sins.md)
+But as we know now there were serious [fundamental issues](/firmware-lemons.html)
 with the firmware.
 So I don't think [trilateration](https://en.wikipedia.org/wiki/Trilateration)[^trilateration] could've worked in any case 
 without firmware upgrades.
@@ -681,7 +681,7 @@ on another part of the yard,
 we worked around this by doing those manual forced updates with proximity.
 Actually they were happy to take sensors into the yard.
 Around September I started working on the firmware,
-described [elsewhere]({filename}/firmware-sins.md) so I won't go into it.
+described [elsewhere](/firmware-lemons.html) so I won't go into it.
 This made proximity significantly better, 
 and temporarily killed the other algorithms, 
 due to an excess of data causing it to run out of memory.

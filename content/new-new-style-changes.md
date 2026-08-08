@@ -23,7 +23,7 @@ For reference:
 ![old](/images/2018/old-theme-reference.jpg)
 As the reader see the old style was rather dark themed.
 It used the linux kernel compilation program as a reference, as discussed
-[in another post]({filename}/website-launch.md).
+[in another post](/website-launch.html).
 
 ### new
 ![new](/images/2018/new-theme-reference.jpg)

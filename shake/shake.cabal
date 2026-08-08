@@ -48,6 +48,7 @@ test-suite unit
     AssetHash
     PageChrome
     PenguinTemplates
+    Templates
     Types
     WebwinkelTemplates
   hs-source-dirs:   test .

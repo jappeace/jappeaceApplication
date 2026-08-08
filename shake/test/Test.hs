@@ -31,7 +31,8 @@ import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzi
 import Data.Char (isHexDigit)
 import qualified Data.ByteString.Char8 as BSC
 import PageChrome (faqAnswerHtml, faqPageJsonLd, renderFaqItem)
-import Types (Article(..))
+import Templates (renderTagPage, renderIndexPage)
+import Types (Article(..), PaginationInfo(..), defaultSiteConfig)
 import PenguinTemplates
   ( WebwinkelverhuisUrl(..)
   , penguinIndexPage
@@ -187,7 +188,26 @@ main = defaultMain $
         [ assetVerwijzingenWordenHerschreven
         , gehashteNaamVolgtInhoud
         ]
+    , testGroup "taxonomiepagina's zijn noindex"
+        [ taxonomieKrijgtNoindexIndexNiet
+        ]
     ]
+
+-- | De dunne taxonomiepagina's (tags/categorieen) dragen "noindex, follow";
+-- de indexpagina moet gewoon indexeerbaar blijven. Dit faalt zowel wanneer
+-- de directive van de tagpagina verdwijnt als wanneer hij per ongeluk op
+-- alle pagina's belandt.
+taxonomieKrijgtNoindexIndexNiet :: TestTree
+taxonomieKrijgtNoindexIndexNiet = testCase "tagpagina noindex, indexpagina niet" $ do
+  let tagPagina = TL.toStrict (renderHtml
+        (renderTagPage defaultSiteConfig [] Nothing "haskell" []))
+      indexPagina = TL.toStrict (renderHtml
+        (renderIndexPage defaultSiteConfig [] Nothing []
+          (PaginationInfo 1 1 Nothing Nothing)))
+  assertBool "tagpagina mist de noindex, follow-directive"
+    ("<meta name=\"robots\" content=\"noindex, follow\">" `T.isInfixOf` tagPagina)
+  assertBool "indexpagina kreeg onbedoeld een robots-directive"
+    (not ("name=\"robots\"" `T.isInfixOf` indexPagina))
 
 -- | Een herkenbare vaste set gehashte namen voor de herschrijftest.
 testGehashteAssets :: GehashteAssets
