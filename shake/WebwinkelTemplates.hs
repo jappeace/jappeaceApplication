@@ -200,6 +200,28 @@ webwinkelBaseWith ogType includeFeed meta content =
                     ! A.rel "alternate"
                     ! A.title "Webwinkelverhuis blog"
         else mempty
+      -- Decision: Google Analytics 4 zonder cookiebanner (Jappie, 8 aug
+      -- 2026). Gekozen: de kaalst mogelijke gtag-config (alleen een
+      -- measurement-id; geen user_id, geen Google Signals, geen
+      -- advertentiekoppelingen) en geen toestemmingsbanner. Overwogen
+      -- alternatieven: een consentbanner (afgewezen: de banner-gekte doet
+      -- meer kwaad voor de bezoeker dan deze meting), cookieloze analytics
+      -- zoals GoatCounter of Plausible (afgewezen: extra infra), of
+      -- helemaal geen analytics (afgewezen: de funnel-metingen sturen de
+      -- outreach). Waarom dit mag: art. 11.7a lid 3b Telecommunicatiewet
+      -- zondert analytics uit van het toestemmingsvereiste "mits dit geen
+      -- of geringe gevolgen heeft voor de persoonlijke levenssfeer"; de
+      -- memorie van toelichting (Kamerstukken II 33902, nr. 3) rekent ook
+      -- third-party-analytics daaronder zolang er niet geprofileerd wordt
+      -- en een verwerkersovereenkomst het eigen gebruik door de derde
+      -- inperkt. De AP heeft geen formeel GA4-standpunt en handhaaft in de
+      -- praktijk op misleidende banners en tracking-vóór-toestemming, niet
+      -- op kale analytics. Randvoorwaarden die dit overeind houden: in de
+      -- GA4-beheerconsole Google Signals en ads-personalisatie uit, geen
+      -- Google Ads-koppeling, bewaartermijn op het minimum en de
+      -- verwerkersvoorwaarden van Google geaccepteerd. Wordt de config
+      -- hieronder ooit rijker dan een kaal 'config'-aanroep, dan vervalt
+      -- de grond onder deze keuze en moet hij opnieuw gemaakt worden.
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-GD4S885G6F" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-GD4S885G6F');" :: Text)
       H.title (toHtml (pageMetaTitle meta))
