@@ -5,8 +5,6 @@ module Main where
 import Control.Concurrent (forkIO)
 import Control.Exception (IOException, catch, finally)
 import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy as LBS
-import Data.Digest.Pure.SHA (sha256, showDigest)
 import Data.List (sortBy, nub)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe)
@@ -40,6 +38,7 @@ import Text.Pandoc
 import Text.Pandoc.Highlighting (pygments)
 import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
+import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
 import PenguinTemplates (WebwinkelverhuisUrl(..), penguinIndexPage, penguinIndexPageNl, penguinWordpressPage, penguinWordpressPageNl, penguinBlogIndexPage, penguinArticlePage)
@@ -526,22 +525,13 @@ writeHtmlFile path html = do
   Dir.createDirectoryIfMissing True (takeDirectory path)
   TLIO.writeFile path (renderHtml html)
 
--- | De cache-bestendige namen van de stylesheets en Elm-bundels van
--- webwinkelverhuis.nl: de inhoudshash zit in de bestandsnaam, zodat een
--- browser na een deploy nooit een oude versie uit zijn cache haalt.
-data GehashteAssets = GehashteAssets
-  { gehashteStyleCss :: Text
-  , gehashteBlogCss :: Text
-  , gehashtePrijsCalculatorJs :: Text
-  , gehashteScannerFormJs :: Text
-  }
-
 -- Decision: cache-busting via een inhoudshash in de bestandsnaam, berekend
 -- in de Shake-build (sha256 over het bestand, zoals nix met outputs doet).
 -- Alternatief was een ?v=-queryparameter, maar sommige proxies en caches
 -- negeren querystrings; een unieke bestandsnaam is waterdicht. De ongehashte
 -- originelen blijven staan zodat een bezoeker met een oude gecachte
--- HTML-pagina zijn assets nog kan laden.
+-- HTML-pagina zijn assets nog kan laden. De pure naamgeving en
+-- herschrijving staan in 'AssetHash', zodat de testsuite ze dekt.
 maakGehashteWebwinkelAssets :: IO GehashteAssets
 maakGehashteWebwinkelAssets = do
   styleCss <- maakGehashteKopie "style" "css"
@@ -556,27 +546,13 @@ maakGehashteWebwinkelAssets = do
     }
 
 -- | Kopieer een asset uit _webwinkelverhuis-site naar zijn gehashte naam
--- ("style-ab12cd34ef.css") en geef die naam terug.
+-- ('gehashteAssetNaam', "style-ab12cd34ef.css") en geef die naam terug.
 maakGehashteKopie :: String -> String -> IO Text
 maakGehashteKopie basisnaam extensie = do
   inhoud <- BS.readFile ("_webwinkelverhuis-site" </> basisnaam <.> extensie)
-  let hash = take 10 (showDigest (sha256 (LBS.fromStrict inhoud)))
-      naam = basisnaam <> "-" <> hash <.> extensie
+  let naam = gehashteAssetNaam basisnaam extensie inhoud
   BS.writeFile ("_webwinkelverhuis-site" </> naam) inhoud
   return (T.pack naam)
-
--- | Herschrijf de logische assetnamen in een gerenderde pagina naar hun
--- gehashte tegenhangers uit 'GehashteAssets'.
-herschrijfAssetVerwijzingen :: GehashteAssets -> TL.Text -> TL.Text
-herschrijfAssetVerwijzingen gehashte =
-    vervangAsset "/style.css" (gehashteStyleCss gehashte)
-  . vervangAsset "/blog.css" (gehashteBlogCss gehashte)
-  . vervangAsset "/prijs-calculator.js" (gehashtePrijsCalculatorJs gehashte)
-  . vervangAsset "/scanner-form.js" (gehashteScannerFormJs gehashte)
-
-vervangAsset :: Text -> Text -> TL.Text -> TL.Text
-vervangAsset logischeNaam gehashteNaam =
-  TL.replace (TL.fromStrict logischeNaam) (TL.fromStrict ("/" <> gehashteNaam))
 
 -- | Write a webwinkelverhuis.nl page: rewrite absolute content-image sources
 -- to root-relative ones ('relativizeWebwinkelContentImages') so they load on

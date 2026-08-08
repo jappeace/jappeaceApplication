@@ -27,6 +27,9 @@ import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
+import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
+import Data.Char (isHexDigit)
+import qualified Data.ByteString.Char8 as BSC
 import PageChrome (faqAnswerHtml, faqPageJsonLd, renderFaqItem)
 import Types (Article(..))
 import PenguinTemplates
@@ -180,7 +183,59 @@ main = defaultMain $
         , blogIndexAdvertisesNewestArticleLastmod
         , articleWithoutModifiedFallsBackToPublicationDate
         ]
+    , testGroup "asset cache-busting"
+        [ assetVerwijzingenWordenHerschreven
+        , gehashteNaamVolgtInhoud
+        ]
     ]
+
+-- | Een herkenbare vaste set gehashte namen voor de herschrijftest.
+testGehashteAssets :: GehashteAssets
+testGehashteAssets = GehashteAssets
+  { gehashteStyleCss = "style-aaaaaaaaaa.css"
+  , gehashteBlogCss = "blog-bbbbbbbbbb.css"
+  , gehashtePrijsCalculatorJs = "prijs-calculator-cccccccccc.js"
+  , gehashteScannerFormJs = "scanner-form-dddddddddd.js"
+  }
+
+-- | Elke logische assetverwijzing in een pagina moet naar zijn gehashte
+-- naam herschreven worden; andere paden moeten met rust gelaten worden.
+assetVerwijzingenWordenHerschreven :: TestTree
+assetVerwijzingenWordenHerschreven = testCase "logische namen worden gehashte namen" $ do
+  let pagina = TL.pack
+        "<link href=\"/style.css\"><link href=\"/blog.css\">\
+        \<script src=\"/prijs-calculator.js\"></script>\
+        \<script src=\"/scanner-form.js\"></script>\
+        \<img src=\"/assets/beeld/logo-breed.png\">"
+      herschreven = herschrijfAssetVerwijzingen testGehashteAssets pagina
+  assertBool "style.css is niet herschreven"
+    (TL.pack "href=\"/style-aaaaaaaaaa.css\"" `TL.isInfixOf` herschreven)
+  assertBool "blog.css is niet herschreven"
+    (TL.pack "href=\"/blog-bbbbbbbbbb.css\"" `TL.isInfixOf` herschreven)
+  assertBool "prijs-calculator.js is niet herschreven"
+    (TL.pack "src=\"/prijs-calculator-cccccccccc.js\"" `TL.isInfixOf` herschreven)
+  assertBool "scanner-form.js is niet herschreven"
+    (TL.pack "src=\"/scanner-form-dddddddddd.js\"" `TL.isInfixOf` herschreven)
+  assertBool "een niet-gehasht pad is aangeraakt"
+    (TL.pack "src=\"/assets/beeld/logo-breed.png\"" `TL.isInfixOf` herschreven)
+  assertBool "er verwijst nog een pagina naar de ongehashte stylesheet"
+    (not (TL.pack "\"/style.css\"" `TL.isInfixOf` herschreven))
+
+-- | De gehashte naam is deterministisch voor dezelfde inhoud, verandert met
+-- de inhoud mee, en volgt het patroon basisnaam-<10 hex>.extensie.
+gehashteNaamVolgtInhoud :: TestTree
+gehashteNaamVolgtInhoud = testCase "gehashte naam volgt de inhoud" $ do
+  let naamA = gehashteAssetNaam "style" "css" (BSC.pack "body { color: red }")
+      naamA' = gehashteAssetNaam "style" "css" (BSC.pack "body { color: red }")
+      naamB = gehashteAssetNaam "style" "css" (BSC.pack "body { color: blue }")
+      hashDeel = take 10 (drop (length ("style-" :: String)) naamA)
+  assertBool "zelfde inhoud geeft niet dezelfde naam" (naamA == naamA')
+  assertBool "andere inhoud geeft niet een andere naam" (naamA /= naamB)
+  assertBool ("naam volgt het patroon niet: " <> naamA)
+    (take 6 naamA == "style-"
+      && length naamA == length ("style-" :: String) + 10 + length (".css" :: String)
+      && all isHexDigit hashDeel
+      && drop (length naamA - 4) naamA == ".css")
 
 -- | An article carrying only the fields the sitemap reads; the rest is
 -- inert filler.
