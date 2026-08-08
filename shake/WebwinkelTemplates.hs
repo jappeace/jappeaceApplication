@@ -681,13 +681,28 @@ data WaaromPunt = WaaromPunt
   , waaromPuntTekst :: Text
   }
 
+-- | Het beeld naast de gedeelde waarom-sectie: pad, alt-tekst en de
+-- werkelijke afmetingen van het bestand.
+data WaaromBeeld = WaaromBeeld
+  { waaromBeeldPad :: Text
+  , waaromBeeldAlt :: Text
+  , waaromBeeldBreedte :: Text
+  , waaromBeeldHoogte :: Text
+  }
+
 -- | De gedeelde "Waarom via ons?"-sectie van de migratiepagina's (review
 -- Jappie, 8 aug 2026): links de pagina-specifieke inleiding (testimonial of
 -- cijfers), de vaste specialisten-alinea en de redenen als definitierijen;
--- rechts het portret, zodat de lege ruimte naast de leestekst een gezicht
--- krijgt. De landingspagina houdt zijn eigen paginabrede variant.
-waaromViaOnsSectie :: Html -> [WaaromPunt] -> Html
-waaromViaOnsSectie inleiding punten =
+-- rechts een stockfoto zodat de lege ruimte naast de leestekst gevuld is.
+-- Decision: per pagina een eigen stockfoto (review Jappie: niet overal
+-- dezelfde), gekozen uit Pexels (licentie: vrij commercieel te gebruiken,
+-- geen naamsvermelding nodig) in dezelfde warme interieurstijl als de
+-- joepa-foto's. Niet het eigen portret (dat bleef op over-ons, waar
+-- bezoekers juist in de mensen geinteresseerd zijn) en niet het
+-- migratiediagram (onleesbaar op kolombreedte, bronlabel klopt alleen voor
+-- MWW). De landingspagina houdt zijn eigen paginabrede variant.
+waaromViaOnsSectie :: WaaromBeeld -> Html -> [WaaromPunt] -> Html
+waaromViaOnsSectie beeld inleiding punten =
   H.section ! A.class_ "results" $ do
     H.h2 "Waarom via ons?"
     H.div ! A.class_ "audit-grid" $ do
@@ -696,9 +711,11 @@ waaromViaOnsSectie inleiding punten =
         H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. Je kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
         H.dl ! A.class_ "waarom-rijen" $ mapM_ waaromPuntRij punten
       H.div ! A.class_ "portret-beeld" $
-        H.img ! A.src "/assets/beeld/jappie-fit.jpg"
-              ! A.alt "Jappie Klooster, lachend met duim omhoog"
-              ! A.width "1100" ! A.height "1467" ! customAttribute "loading" "lazy"
+        H.img ! A.src (toValue (waaromBeeldPad beeld))
+              ! A.alt (toValue (waaromBeeldAlt beeld))
+              ! A.width (toValue (waaromBeeldBreedte beeld))
+              ! A.height (toValue (waaromBeeldHoogte beeld))
+              ! customAttribute "loading" "lazy"
 
 waaromPuntRij :: WaaromPunt -> Html
 waaromPuntRij punt = H.div $ do
@@ -1053,6 +1070,9 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
     -- prijs, en de fond-witte sectieachtergronden wisselen zo netjes af in
     -- plaats van twee grijze secties op elkaar.
     waaromViaOnsSectie
+      (WaaromBeeld "/assets/beeld/contact-gesprek.jpg"
+        "Webshop-eigenaar in gesprek aan de keukentafel, met pakketdozen op de achtergrond"
+        "1376" "768")
       (H.div ! A.class_ "testimonials" $
         H.blockquote $ do
           H.p "Je weet het al: MijnWebwinkel gaat nergens meer heen. Geen nieuwe features, geen community, trage support. Trage laadtijden schaden je SEO, en dat is op MijnWebwinkel niet te verbeteren. Gelukkig hoef je daar niet op te wachten: verhuizen is inmiddels een gebaande weg."
@@ -1230,6 +1250,9 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
 
     -- Why us
     waaromViaOnsSectie
+      (WaaromBeeld "/assets/beeld/stock-eigenaar-dozen.jpg"
+        "Webshop-eigenaar met een stapel dozen in een lichte werkkamer"
+        "1200" "1800")
       (do
         H.div ! A.class_ "testimonials" $
           -- Decision: echte klachtcitaat van een CCV-gebruiker
@@ -1389,6 +1412,9 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
 
     -- Why us
     waaromViaOnsSectie
+      (WaaromBeeld "/assets/beeld/stock-productfoto-raam.jpg"
+        "Webshop-eigenaar fotografeert bij het raam een pakket voor haar webshop"
+        "1200" "1800")
       (H.div ! A.class_ "testimonials" $
         H.blockquote $ do
           H.p $ H.preEscapedToHtml ("Je bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding gaan bij de overstap vaak oude URLs kapot; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat elke oude URL blijft doorverwijzen (ons programma legt ze allemaal vast, niet een steekproef) en je opgebouwde SEO meeverhuist." :: Text)
