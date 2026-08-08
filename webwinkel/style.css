@@ -126,10 +126,10 @@ body > header {
 
 .hoofdnav { display: flex; align-items: center; gap: 1.4rem; }
 .hoofdnav ul { display: flex; gap: 1.3rem; list-style: none; }
-.hoofdnav a:not(.cta-button) {
+.hoofdnav a:not(.cta-button):not(.cta-button-secondary) {
   color: var(--inkt); text-decoration: none; font-weight: 500; font-size: 0.99rem;
 }
-.hoofdnav a:not(.cta-button):hover { color: var(--groen-tekst); }
+.hoofdnav a:not(.cta-button):not(.cta-button-secondary):hover { color: var(--groen-tekst); }
 .hoofdnav .cta-button, .hoofdnav .cta-button-secondary { padding: 0.55rem 1.2rem; font-size: 0.95rem; }
 
 /* De Offerte-knop promoveert zichzelf: na 3 minuten leestijd morft hij in
