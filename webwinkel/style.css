@@ -296,10 +296,11 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
 
 /* Per regel: onzichtbaar tot het eigen venster, opkomen op het podium,
    even vasthouden terwijl vinkje en woord verschijnen, dan naar de eigen
-   plek schuiven. Het podiumvlak is dekkend (#23425f: navy-diep met ~12%
-   wit) met een zweefschaduw: de laatste regels zweven over al gedockte
-   tekst heen en moeten die afdekken om leesbaar te blijven. Vanaf ~93%
-   dooft de hele tabel voor de herstart. */
+   plek schuiven. Het podiumvlak is dekkend (#23425f: navy-diep met ~10%
+   wit, de dekkende evenknie van de eerdere rgba-overlay met alpha 0.10)
+   met een zweefschaduw: de laatste regels zweven over al gedockte tekst
+   heen en moeten die afdekken om leesbaar te blijven. Vanaf ~93% dooft
+   de hele tabel voor de herstart. */
 @keyframes inpak-rij-1 {
   0%, 2% { opacity: 0; transform: translate(var(--podium-x), var(--podium-y)) scale(1.06); background: #23425f; border-color: transparent; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35); }
   4% { opacity: 1; }
