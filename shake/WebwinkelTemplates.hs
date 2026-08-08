@@ -463,24 +463,11 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
       H.ul ! A.class_ "inpaklijst" $ mapM_ inpaklijstItem scanStappen
 
     -- How it works, met de testshop-foto ernaast.
-    H.section ! A.id "hoe-het-werkt" $
-      H.div ! A.class_ "proces" $ do
-        H.div $ do
-          H.h2 "Hoe het werkt"
-          H.ol $ do
-            H.li $ do
-              H.h3 "Scan"
-              H.p ! A.class_ "stap-tekst" $ "Ons programma leest je huidige webshop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
-            H.li $ do
-              H.h3 "Wennen"
-              H.p ! A.class_ "stap-tekst" $ "De testshop draait naast je huidige webshop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
-            H.li $ do
-              H.h3 "DNS-overzet"
-              H.p ! A.class_ "stap-tekst" $ "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd."
-        H.div ! A.class_ "proces-beeld" $
-          H.img ! A.src "/assets/beeld/proces-testshop.jpg"
-                ! A.alt "Twee laptops naast elkaar: de testshop draait naast de huidige webshop"
-                ! A.width "1376" ! A.height "768" ! customAttribute "loading" "lazy"
+    hoeHetWerktSectie
+      [ HoeHetWerktStap "Scan" "Ons programma leest je huidige webshop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+      , HoeHetWerktStap "Wennen" "De testshop draait naast je huidige webshop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
+      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd."
+      ]
 
     recentWerkSection
 
@@ -658,6 +645,34 @@ inpaklijstItem stap = H.li $ do
   H.span ! A.class_ "status" $ do
     toHtml (scanStapResultaat stap <> " ")
     H.preEscapedToHtml vinkjeSvg
+
+-- | Een stap in de gedeelde "Hoe het werkt"-sectie: een korte titel met
+-- daaronder de toelichting.
+data HoeHetWerktStap = HoeHetWerktStap
+  { hoeHetWerktStapTitel :: Text
+  , hoeHetWerktStapTekst :: Text
+  }
+
+-- | De "Hoe het werkt"-sectie van de landingspagina, herbruikt op de
+-- migratiepagina's (review Jappie, 8 aug 2026): genummerde stappen links,
+-- de testshop-foto rechts. De stapteksten verschillen per pagina (de
+-- migratiepagina's noemen hun platform), de vorm is overal gelijk.
+hoeHetWerktSectie :: [HoeHetWerktStap] -> Html
+hoeHetWerktSectie stappen =
+  H.section ! A.id "hoe-het-werkt" $
+    H.div ! A.class_ "proces" $ do
+      H.div $ do
+        H.h2 "Hoe het werkt"
+        H.ol $ mapM_ hoeHetWerktStapItem stappen
+      H.div ! A.class_ "proces-beeld" $
+        H.img ! A.src "/assets/beeld/proces-testshop.jpg"
+              ! A.alt "Twee laptops naast elkaar: de testshop draait naast de huidige webshop"
+              ! A.width "1376" ! A.height "768" ! customAttribute "loading" "lazy"
+
+hoeHetWerktStapItem :: HoeHetWerktStap -> Html
+hoeHetWerktStapItem stap = H.li $ do
+  H.h3 (toHtml (hoeHetWerktStapTitel stap))
+  H.p ! A.class_ "stap-tekst" $ toHtml (hoeHetWerktStapTekst stap)
 
 -- | The shared "Recent werk" proof section: the Panzer-ShopNL migration,
 -- linking to both the case-study blog post and the live shop. Shown on the
@@ -991,27 +1006,21 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
           H.p "Klantaccounts, bestelgeschiedenis en spaarpuntensaldi verhuizen mee. Je klanten kunnen direct inloggen, met hun spaarpunten in het loyaliteitsprogramma van je nieuwe platform."
       H.p ! A.class_ "engagement-note" $ "Ook de rest van je shop verhuist mee: informatiepagina's zoals over-ons en verzendinformatie, je blog, reviews, kortingscodes en cadeaubonnen. Als aparte dienst doen we ook grootschalige aanpassingen aan je productdata tijdens de migratie, zoals prijsaanpassingen, het opschonen van beschrijvingen of beschrijvingen voor Google bij al je afbeeldingen (alt-teksten)."
 
-    -- How it works
-    H.section ! A.class_ "audit" $ do
-      H.h2 "Hoe het werkt"
-      H.ol $ do
-        H.li $ do
-          H.strong "Scan"
-          ": ons programma leest je MijnWebwinkel-shop volledig uit en bouwt er een testshop mee op, met producten, vertalingen, categorie\235n en doorverwijzingen."
-        H.li $ do
-          H.strong "Wennen"
-          ": de testshop draait naast je MijnWebwinkel-shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
-        H.li $ do
-          H.strong "Livegang"
-          ": ben je er klaar voor? Dan wijzen we je domeinnaam op de nieuwe shop en ben je verhuisd. Je shop is hooguit 5 tot 30 minuten beperkt bereikbaar, terwijl het beveiligingscertificaat (het slotje in de browser) opnieuw wordt aangemaakt."
+    -- How it works: de gedeelde sectie van de landingspagina, met
+    -- MijnWebwinkel-specifieke stapteksten.
+    hoeHetWerktSectie
+      [ HoeHetWerktStap "Scan" "Ons programma leest je MijnWebwinkel-shop volledig uit en bouwt er een testshop mee op, met producten, vertalingen, categorie\235n en doorverwijzingen."
+      , HoeHetWerktStap "Wennen" "De testshop draait naast je MijnWebwinkel-shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
+      , HoeHetWerktStap "Livegang" "Ben je er klaar voor? Dan wijzen we je domeinnaam op de nieuwe shop en ben je verhuisd. Je shop is hooguit 5 tot 30 minuten beperkt bereikbaar, terwijl het beveiligingscertificaat (het slotje in de browser) opnieuw wordt aangemaakt."
+      ]
 
     -- Recent werk: proof before price, so the number lands on trust.
     recentWerkSection
 
-    -- Pricing
-    prijzen
-
-    -- Why us
+    -- Why us. Decision: het waarom-blok staat tussen recent werk en de
+    -- prijzen (review Jappie, 8 aug 2026): bewijs, dan vertrouwen, dan de
+    -- prijs, en de fond-witte sectieachtergronden wisselen zo netjes af in
+    -- plaats van twee grijze secties op elkaar.
     H.section ! A.class_ "results" $ do
       H.h2 "Waarom via ons?"
       H.div ! A.class_ "testimonials" $ do
@@ -1031,6 +1040,9 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
         H.li $ H.strong "SEO-behoud" >> ": elke oude link blijft werken en je opgebouwde positie in Google verhuist mee"
         H.li $ H.strong "Meertalig" >> ": vertalingen correct gekoppeld via de offici\235le koppelingen van je nieuwe platform"
         H.li $ H.strong "Vaste prijs" >> ": geen uurtarief, je weet vooraf wat het kost"
+
+    -- Pricing
+    prijzen
 
     -- FAQ
     H.section ! A.class_ "about" $ do
@@ -1176,19 +1188,13 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.h3 "Voorraad & prijzen"
           H.p "Voorraadinformatie en staffelprijzen worden meegenomen. Per-variant prijzen en voorraadbeheer werken direct in je nieuwe shop."
 
-    -- How it works
-    H.section ! A.class_ "audit" $ do
-      H.h2 "Hoe het werkt"
-      H.ol $ do
-        H.li $ do
-          H.strong "Scan"
-          ": ons programma leest je CCV Shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
-        H.li $ do
-          H.strong "Wennen"
-          ": de testshop draait naast je CCV Shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
-        H.li $ do
-          H.strong "DNS-overzet"
-          ": ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+    -- How it works: de gedeelde sectie van de landingspagina, met
+    -- CCV-specifieke stapteksten.
+    hoeHetWerktSectie
+      [ HoeHetWerktStap "Scan" "Ons programma leest je CCV Shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+      , HoeHetWerktStap "Wennen" "De testshop draait naast je CCV Shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
+      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+      ]
 
     -- Pricing
     prijzen
@@ -1342,19 +1348,13 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.h3 "Voorraad & prijzen"
           H.p "Voorraadbeheer, staffelprijzen en per-variant pricing worden correct overgezet. Je voorraadniveaus kloppen direct in je nieuwe shop."
 
-    -- How it works
-    H.section ! A.class_ "audit" $ do
-      H.h2 "Hoe het werkt"
-      H.ol $ do
-        H.li $ do
-          H.strong "Scan"
-          ": ons programma leest je Lightspeed-shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
-        H.li $ do
-          H.strong "Wennen"
-          ": de testshop draait naast je Lightspeed-shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
-        H.li $ do
-          H.strong "DNS-overzet"
-          ": ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+    -- How it works: de gedeelde sectie van de landingspagina, met
+    -- Lightspeed-specifieke stapteksten.
+    hoeHetWerktSectie
+      [ HoeHetWerktStap "Scan" "Ons programma leest je Lightspeed-shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+      , HoeHetWerktStap "Wennen" "De testshop draait naast je Lightspeed-shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
+      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk; het aanmaken van een nieuw SSL-certificaat kan nog 5 tot 30 minuten duren."
+      ]
 
     -- Pricing
     prijzen
