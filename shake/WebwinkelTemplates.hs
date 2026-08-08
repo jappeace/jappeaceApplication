@@ -674,6 +674,37 @@ hoeHetWerktStapItem stap = H.li $ do
   H.h3 (toHtml (hoeHetWerktStapTitel stap))
   H.p ! A.class_ "stap-tekst" $ toHtml (hoeHetWerktStapTekst stap)
 
+-- | Een reden in de gedeelde "Waarom via ons?"-sectie: een korte titel met
+-- de toelichting, gerenderd als de definitierijen van de landingspagina.
+data WaaromPunt = WaaromPunt
+  { waaromPuntTitel :: Text
+  , waaromPuntTekst :: Text
+  }
+
+-- | De gedeelde "Waarom via ons?"-sectie van de migratiepagina's (review
+-- Jappie, 8 aug 2026): links de pagina-specifieke inleiding (testimonial of
+-- cijfers), de vaste specialisten-alinea en de redenen als definitierijen;
+-- rechts het portret, zodat de lege ruimte naast de leestekst een gezicht
+-- krijgt. De landingspagina houdt zijn eigen paginabrede variant.
+waaromViaOnsSectie :: Html -> [WaaromPunt] -> Html
+waaromViaOnsSectie inleiding punten =
+  H.section ! A.class_ "results" $ do
+    H.h2 "Waarom via ons?"
+    H.div ! A.class_ "audit-grid" $ do
+      H.div $ do
+        inleiding
+        H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. Je kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
+        H.dl ! A.class_ "waarom-rijen" $ mapM_ waaromPuntRij punten
+      H.div ! A.class_ "portret-beeld" $
+        H.img ! A.src "/assets/beeld/jappie-fit.jpg"
+              ! A.alt "Jappie Klooster, lachend met duim omhoog"
+              ! A.width "1100" ! A.height "1467" ! customAttribute "loading" "lazy"
+
+waaromPuntRij :: WaaromPunt -> Html
+waaromPuntRij punt = H.div $ do
+  H.dt (toHtml (waaromPuntTitel punt))
+  H.dd (toHtml (waaromPuntTekst punt))
+
 -- | The shared "Recent werk" proof section: the Panzer-ShopNL migration,
 -- linking to both the case-study blog post and the live shop. Shown on the
 -- index page and the MijnWebwinkel migration page.
@@ -1021,9 +1052,8 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
     -- prijzen (review Jappie, 8 aug 2026): bewijs, dan vertrouwen, dan de
     -- prijs, en de fond-witte sectieachtergronden wisselen zo netjes af in
     -- plaats van twee grijze secties op elkaar.
-    H.section ! A.class_ "results" $ do
-      H.h2 "Waarom via ons?"
-      H.div ! A.class_ "testimonials" $ do
+    waaromViaOnsSectie
+      (H.div ! A.class_ "testimonials" $
         H.blockquote $ do
           H.p "Je weet het al: MijnWebwinkel gaat nergens meer heen. Geen nieuwe features, geen community, trage support. Trage laadtijden schaden je SEO, en dat is op MijnWebwinkel niet te verbeteren. Gelukkig hoef je daar niet op te wachten: verhuizen is inmiddels een gebaande weg."
           H.p $ do
@@ -1031,15 +1061,14 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
             H.preEscapedToHtml (" &rarr;" :: Text)
           H.p $ do
             H.a ! A.href "/blog/het-miljard-van-shopify-waarom-geen-nederlands-platform-kan-bijbenen.html" $ "Het miljard van Shopify: waarom geen Nederlands platform kan bijbenen"
-            H.preEscapedToHtml (" &rarr;" :: Text)
-      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. Je kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
-      H.ul $ do
-        H.li $ H.strong "Geen risico" >> ": je betaalt pas na succesvolle migratie"
-        H.li $ H.strong "Geautomatiseerd" >> ": geen handmatig overtypen, geen kopieerfouten"
-        H.li $ H.strong "Gecontroleerd" >> ": het programma telt na afloop alles na, van elk product tot elke klant"
-        H.li $ H.strong "SEO-behoud" >> ": elke oude link blijft werken en je opgebouwde positie in Google verhuist mee"
-        H.li $ H.strong "Meertalig" >> ": vertalingen correct gekoppeld via de offici\235le koppelingen van je nieuwe platform"
-        H.li $ H.strong "Vaste prijs" >> ": geen uurtarief, je weet vooraf wat het kost"
+            H.preEscapedToHtml (" &rarr;" :: Text))
+      [ WaaromPunt "Geen risico" "Je betaalt pas na een succesvolle migratie."
+      , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
+      , WaaromPunt "Gecontroleerd" "Het programma telt na afloop alles na, van elk product tot elke klant."
+      , WaaromPunt "SEO-behoud" "Elke oude link blijft werken en je opgebouwde positie in Google verhuist mee."
+      , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via de offici\235le koppelingen van je nieuwe platform."
+      , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
+      ]
 
     -- Pricing
     prijzen
@@ -1200,34 +1229,33 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     prijzen
 
     -- Why us
-    H.section ! A.class_ "results" $ do
-      H.h2 "Waarom via ons?"
-      H.div ! A.class_ "testimonials" $ do
-        -- Decision: echte klachtcitaat van een CCV-gebruiker
-        -- (Trustpilot, gedocumenteerd in
-        -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org)
-        -- in plaats van een verzonnen peptalk in een testimonial-blok.
-        H.blockquote $ do
-          H.p $ H.preEscapedToHtml ("&bdquo;7 jaar een CCV shop gehad, de webshop is zwaar verouderd, zowel in thema&apos;s als functionaliteiten, er wordt bijna niks geupdate. Mijn omzet en conversie is door het dak gegaan sinds ik Shopify gebruik.&rdquo;" :: Text)
-          H.p $ H.strong "CCV Shop-gebruiker op Trustpilot, mei 2025"
-      -- Decision: het groeiverhaal leidt hier, niet verval-retoriek. Uit
-      -- de leave-reden-scan (jappiesoft research, 2 aug 2026): de
-      -- grootste groep CCV-vertrekkers groeit uit het platform (top-
-      -- bestemming is een custom cart, 13 van 28), dus de pagina spreekt
-      -- ambitie aan in plaats van angst.
-      H.p $ H.preEscapedToHtml ("De meeste winkeliers verlaten CCV Shop niet omdat het kapot is, maar omdat ze eruit groeien: maatwerk of functies die er niet in zitten. Shopify en WooCommerce groeien w&eacute;l met je mee, van extra verkoopkanalen en talen tot B2B-maatwerk en duizenden apps. En het lastigste deel van uitgroeien, alles heelhuids overzetten, is precies ons vak." :: Text)
-      H.p $ do
-        H.a ! A.href "/blog/het-miljard-van-shopify-waarom-geen-nederlands-platform-kan-bijbenen.html" $ "Het miljard van Shopify: waarom geen Nederlands platform kan bijbenen"
-        H.preEscapedToHtml (" &rarr;" :: Text)
-      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. Je kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
-      H.ul $ do
-        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (": je betaalt pas na succesvolle migratie" :: Text)
-        H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (": je kiest de bestemming, wij migreren naar elk platform" :: Text)
-        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (": geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (": elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee" :: Text)
-        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (": vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (": het programma valideert zijn eigen werk" :: Text)
-        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (": geen uurtarief, je weet vooraf wat het kost" :: Text)
+    waaromViaOnsSectie
+      (do
+        H.div ! A.class_ "testimonials" $
+          -- Decision: echte klachtcitaat van een CCV-gebruiker
+          -- (Trustpilot, gedocumenteerd in
+          -- jappiesoft/research/ccv-woocommerce-market-onderzoek.org)
+          -- in plaats van een verzonnen peptalk in een testimonial-blok.
+          H.blockquote $ do
+            H.p $ H.preEscapedToHtml ("&bdquo;7 jaar een CCV shop gehad, de webshop is zwaar verouderd, zowel in thema&apos;s als functionaliteiten, er wordt bijna niks geupdate. Mijn omzet en conversie is door het dak gegaan sinds ik Shopify gebruik.&rdquo;" :: Text)
+            H.p $ H.strong "CCV Shop-gebruiker op Trustpilot, mei 2025"
+        -- Decision: het groeiverhaal leidt hier, niet verval-retoriek. Uit
+        -- de leave-reden-scan (jappiesoft research, 2 aug 2026): de
+        -- grootste groep CCV-vertrekkers groeit uit het platform (top-
+        -- bestemming is een custom cart, 13 van 28), dus de pagina spreekt
+        -- ambitie aan in plaats van angst.
+        H.p $ H.preEscapedToHtml ("De meeste winkeliers verlaten CCV Shop niet omdat het kapot is, maar omdat ze eruit groeien: maatwerk of functies die er niet in zitten. Shopify en WooCommerce groeien w&eacute;l met je mee, van extra verkoopkanalen en talen tot B2B-maatwerk en duizenden apps. En het lastigste deel van uitgroeien, alles heelhuids overzetten, is precies ons vak." :: Text)
+        H.p $ do
+          H.a ! A.href "/blog/het-miljard-van-shopify-waarom-geen-nederlands-platform-kan-bijbenen.html" $ "Het miljard van Shopify: waarom geen Nederlands platform kan bijbenen"
+          H.preEscapedToHtml (" &rarr;" :: Text))
+      [ WaaromPunt "Geen risico" "Je betaalt pas na een succesvolle migratie."
+      , WaaromPunt "Platformonafhankelijk" "Je kiest de bestemming, wij migreren naar elk platform."
+      , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
+      , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee."
+      , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via offici\235le APIs."
+      , WaaromPunt "Zelfvaliderend" "Het programma valideert zijn eigen werk."
+      , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
+      ]
 
     -- FAQ. Decision: de aparte "Technische details"-kaartensectie is hierin
     -- opgegaan (review Jappie, 8 aug 2026): hij oogde dubbelop met "Wat we
@@ -1360,23 +1388,21 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     prijzen
 
     -- Why us
-    H.section ! A.class_ "results" $ do
-      H.h2 "Waarom via ons?"
-      H.div ! A.class_ "testimonials" $ do
+    waaromViaOnsSectie
+      (H.div ! A.class_ "testimonials" $
         H.blockquote $ do
           H.p $ H.preEscapedToHtml ("Je bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding gaan bij de overstap vaak oude URLs kapot; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat elke oude URL blijft doorverwijzen (ons programma legt ze allemaal vast, niet een steekproef) en je opgebouwde SEO meeverhuist." :: Text)
           H.p $ do
             H.a ! A.href "/waarom-lightspeed.html" $ "Waarom verlaten steeds meer webshops Lightspeed?"
-            H.preEscapedToHtml (" &rarr;" :: Text)
-      H.p $ H.preEscapedToHtml ("Wij zijn migratie-specialisten, geen verlengstuk van &eacute;&eacute;n platform. Je kiest het platform: Shopify, WooCommerce, of iets anders. Wij regelen de techniek." :: Text)
-      H.ul $ do
-        H.li $ H.strong "Geen risico" >> H.preEscapedToHtml (": je betaalt pas na succesvolle migratie" :: Text)
-        H.li $ H.strong "Platformonafhankelijk" >> H.preEscapedToHtml (": je kiest de bestemming, wij migreren naar elk platform" :: Text)
-        H.li $ H.strong "SEO-behoud" >> H.preEscapedToHtml (": elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee" :: Text)
-        H.li $ H.strong "Geautomatiseerd" >> H.preEscapedToHtml (": geen handmatig overtypen, geen kopieerfouten" :: Text)
-        H.li $ H.strong "Meertalig" >> H.preEscapedToHtml (": vertalingen correct gekoppeld via offici&euml;le APIs" :: Text)
-        H.li $ H.strong "Zelfvaliderend" >> H.preEscapedToHtml (": het programma valideert zijn eigen werk" :: Text)
-        H.li $ H.strong "Vaste prijs" >> H.preEscapedToHtml (": geen uurtarief, je weet vooraf wat het kost" :: Text)
+            H.preEscapedToHtml (" &rarr;" :: Text))
+      [ WaaromPunt "Geen risico" "Je betaalt pas na een succesvolle migratie."
+      , WaaromPunt "Platformonafhankelijk" "Je kiest de bestemming, wij migreren naar elk platform."
+      , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee."
+      , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
+      , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via offici\235le APIs."
+      , WaaromPunt "Zelfvaliderend" "Het programma valideert zijn eigen werk."
+      , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
+      ]
 
     -- FAQ. Decision: de aparte "Technische details"-kaartensectie is hierin
     -- opgegaan (review Jappie, 8 aug 2026), net als op de CCV-pagina.
