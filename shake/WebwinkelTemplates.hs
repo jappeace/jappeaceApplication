@@ -10,6 +10,7 @@ module WebwinkelTemplates
   ( webwinkelIndexPage
   , prijzenPage
   , scanPage
+  , vierNulVierPagina
   , webwinkelBlogIndexPage
   , webwinkelArticlePage
   , appPage
@@ -987,6 +988,34 @@ scanPage = webwinkelBaseTemplate scanMeta $
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = mempty
       }
+
+-- =============================================================================
+-- 404-pagina (404.html)
+-- =============================================================================
+
+-- | De foutpagina die nginx via error_page serveert bij elke onbekende URL,
+-- in plaats van de kale standaard-404. noindex: een foutpagina hoort niet in
+-- de zoekindex, maar de links erop mogen gewoon gevolgd worden.
+vierNulVierPagina :: Html
+vierNulVierPagina = webwinkelBaseTemplate vierNulVierMeta $
+  H.main $
+    H.section ! A.class_ "hero scan-blok" $ do
+      H.h1 "Pagina niet gevonden"
+      H.p ! A.class_ "subtitle" $ "Deze pagina bestaat niet (meer). Alles wat wij verhuizen krijgt een doorverwijzing, maar deze link leidde nergens heen."
+      H.div ! A.class_ "hero-knoppen" $ do
+        H.a ! A.href "/" ! A.class_ "cta-button" $ "Naar de homepagina"
+        H.a ! A.href "/contact.html" ! A.class_ "cta-button-secondary" $ "Neem contact op"
+
+vierNulVierMeta :: PageMeta
+vierNulVierMeta = PageMeta
+  { pageMetaTitle       = "Pagina niet gevonden \8212 Webwinkelverhuis"
+  , pageMetaDescription = "Deze pagina bestaat niet op webwinkelverhuis.nl. Ga naar de homepagina of neem contact op."
+  , pageMetaLang        = "nl"
+  , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/404.html"
+  , pageMetaOgImage     = Nothing
+  , pageMetaSwitchUrl   = Nothing
+  , pageMetaExtraHead   = H.meta ! A.name "robots" ! A.content "noindex, follow"
+  }
 
 mijnwebwinkelMigrationPage :: Html
 mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
