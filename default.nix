@@ -87,9 +87,10 @@ pkgs.stdenv.mkDerivation {
     xmllint --noout _penguin-site/sitemap.xml
     xmllint --noout _webwinkelverhuis-site/sitemap.xml
 
-    # Optimize images
-    find _site -name '*.png' -exec optipng -quiet {} \;
-    find _site \( -name '*.jpg' -o -name '*.jpeg' \) -exec jpegtran -copy none -optimize -progressive -outfile {} {} \;
+    # Optimize images for all three sites (this long covered only _site,
+    # shipping the commercial sites' photos unoptimized)
+    find _site _penguin-site _webwinkelverhuis-site -name '*.png' -exec optipng -quiet {} \;
+    find _site _penguin-site _webwinkelverhuis-site \( -name '*.jpg' -o -name '*.jpeg' \) -exec jpegtran -copy none -optimize -progressive -outfile {} {} \;
   '';
   installPhase = ''
     mkdir -p $out/jappieklooster.nl $out/jappiesoftware.com $out/webwinkelverhuis.nl

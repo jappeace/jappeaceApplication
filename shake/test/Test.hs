@@ -43,6 +43,7 @@ import PenguinTemplates
 import WebwinkelTemplates
   ( webwinkelIndexPage
   , scanPage
+  , vierNulVierPagina
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
@@ -190,8 +191,20 @@ main = defaultMain $
         ]
     , testGroup "taxonomiepagina's zijn noindex"
         [ taxonomieKrijgtNoindexIndexNiet
+        , vierNulVierNoindexEnBuitenSitemap
         ]
     ]
+
+-- | De 404-pagina draagt noindex (een foutpagina hoort niet in de index) en
+-- ontbreekt in de sitemap. Dit faalt wanneer iemand de pagina per ongeluk
+-- aan webwinkelverhuisStaticPages toevoegt of de robots-directive schrapt.
+vierNulVierNoindexEnBuitenSitemap :: TestTree
+vierNulVierNoindexEnBuitenSitemap = testCase "404-pagina noindex en buiten sitemap" $ do
+  let pagina = TL.toStrict (renderHtml vierNulVierPagina)
+  assertBool "404-pagina mist de noindex, follow-directive"
+    ("<meta name=\"robots\" content=\"noindex, follow\">" `T.isInfixOf` pagina)
+  assertBool "404-pagina belandde in de sitemap"
+    (not ("404" `T.isInfixOf` sitemapUnderTest))
 
 -- | De dunne taxonomiepagina's (tags/categorieen) dragen "noindex, follow";
 -- de indexpagina moet gewoon indexeerbaar blijven. Dit faalt zowel wanneer

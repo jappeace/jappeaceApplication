@@ -46,6 +46,7 @@ import WebwinkelTemplates
   ( webwinkelIndexPage
   , prijzenPage
   , scanPage
+  , vierNulVierPagina
   , webwinkelBlogIndexPage
   , webwinkelArticlePage
   , appPage
@@ -768,6 +769,10 @@ generateWebwinkelverhuisSite config articles gehashteAssets = do
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/over-ons.html" overOnsPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/contact.html" contactPage
+
+  -- Foutpagina: nginx serveert deze via error_page bij onbekende URL's.
+  -- Bewust niet in webwinkelverhuisStaticPages en dus niet in de sitemap.
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/404.html" vierNulVierPagina
 
   -- Individual blog article pages
   mapM_ (\art ->
