@@ -31,6 +31,11 @@ Lastly, I hate the number five.
 A brief overview of meaningful events and decisions in my life.
 
 <table>
+<tr><th> 2026 </th><td>
+I suppose <a href="https://jappie.me/haskell-vibes.html">we're</a> in the <a href="https://en.wikipedia.org/wiki/Technological_singularity">singularity</a> now.
+I vibed out this <a href="https://webwinkelverhuis.nl/">business of moving webshops</a>.
+Meanwhile <a href="https://confusedcompiler.org/articles/">Leana</a> is cooking up <a href="https://github.com/haskell/cabal-proposals/pull/7">exact print</a>.
+</td></tr>
 <tr><th> 2025 </th><td>
 <a href="https://jappie.me/stacked-against-us.html">Stacked against us.</a>
 I made it to the bronze division nationals finals in crossfit, ended up at 28th position! 
