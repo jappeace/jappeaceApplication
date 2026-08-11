@@ -478,7 +478,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
                 ! customAttribute "fetchpriority" "high"
           H.p ! A.class_ "hero-noot" $ do
             H.preEscapedToHtml vinkjeSvg
-            H.preEscapedToHtml (" 2.400 producten verhuisd voor Panzer&#8209;Shop" :: Text)
+            H.preEscapedToHtml (" 3.500+ producten verhuisd voor o.a. Panzer&#8209;Shop en Kruidje&#8209;Roer&#8209;Me&#8209;Niet" :: Text)
 
     -- Navy checklist-band: wat er allemaal meeverhuist, in winkelierswoorden.
     H.section ! A.class_ "band" $ do
@@ -745,9 +745,10 @@ waaromPuntRij punt = H.div $ do
   H.dt (toHtml (waaromPuntTitel punt))
   H.dd (toHtml (waaromPuntTekst punt))
 
--- | The shared "Recent werk" proof section: the Panzer-ShopNL migration,
--- linking to both the case-study blog post and the live shop. Shown on the
--- index page and the MijnWebwinkel migration page.
+-- | The shared "Recent werk" proof section: the Panzer-ShopNL and
+-- Kruidje Roer Me Niet migrations, each linking to the case-study blog
+-- post and the live shop. Shown on the index page and the MijnWebwinkel
+-- migration page.
 recentWerkSection :: Html
 recentWerkSection =
   H.section ! A.class_ "case-sectie" $ do
@@ -773,6 +774,23 @@ recentWerkSection =
     H.div ! A.class_ "case-links" $ do
       H.a ! A.href "/blog/klantverhaal-panzer-shopnl-van-mijnwebwinkel-naar-shopify-in-drie-talen.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
       H.a ! A.href "https://panzer-shop.nl/" $ H.preEscapedToHtml ("panzer-shop.nl &rarr;" :: Text)
+    H.div ! A.class_ "case-cijfers" $ do
+      H.div $ do
+        H.div ! A.class_ "cijfer" $ "1.100+"
+        H.div ! A.class_ "label" $ "producten"
+      H.div $ do
+        H.div ! A.class_ "cijfer" $ "200"
+        H.div ! A.class_ "label" $ "klantaccounts"
+      H.div $ do
+        H.div ! A.class_ "cijfer" $ "1"
+        H.div ! A.class_ "label" $ "spaarprogramma"
+    H.div ! A.class_ "case-tekst" $
+      H.p $ do
+        H.strong "Kruidje Roer Me Niet"
+        H.preEscapedToHtml (": een reformwinkel uit Amersfoort (sinds 1975), verhuisd van MijnWebwinkel naar Shopify. Het spaarprogramma van de fysieke winkel telt nu ook online mee, en klanten kiezen een DHL-pakketpunt gewoon op het Basic-abonnement." :: Text)
+    H.div ! A.class_ "case-links" $ do
+      H.a ! A.href "/blog/klantverhaal-kruidje-roer-me-niet-van-mijnwebwinkel-naar-shopify-met-spaarpunten-en-al.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
+      H.a ! A.href "https://kruidje-roer-me-niet.nl/" $ H.preEscapedToHtml ("kruidje-roer-me-niet.nl &rarr;" :: Text)
 
 appPage :: Html
 appPage = webwinkelBaseTemplate appMeta $ do

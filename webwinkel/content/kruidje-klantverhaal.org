@@ -1,0 +1,123 @@
+#+TITLE: Klantverhaal: Kruidje Roer Me Niet van MijnWebwinkel naar Shopify met spaarpunten en al
+#+DATE: 2026-08-11
+#+CATEGORY: migratie
+#+TAGS: mijnwebwinkel, shopify, klantverhaal
+
+Kruidje Roer Me Niet is een reformwinkel in Amersfoort, sinds 1975.
+Kruidenthee, homeopathie, supplementen, natuurcosmetica en een eigen
+merk voedingssupplementen, met een trouwe klantenkring die al
+decennia bij de toonbank spaarpunten spaart. In augustus 2026
+verhuisde de webshop van MijnWebwinkel naar Shopify: bijna 1.200
+producten, zo'n 200 klantaccounts, en voor het eerst een
+spaarprogramma dat ook online meetelt. Dit is het verhaal van die
+migratie, inclusief de hobbels, want die waren er ook.
+
+* Een winkel met een webshop erbij
+
+Elizabeth runt haar winkel al tientallen jaren en de webshop draaide
+er op MijnWebwinkel naast. Die deed het, maar meer ook niet: de
+zoekfunctie vond weinig, op een telefoon was het behelpen, en het
+spaarsysteem van de winkel bestond online alleen als een zin op de
+homepage. Wie online bestelde, spaarde niets.
+
+Voor een winkel waarvan de kracht juist de vaste klant is, staat dat
+op gespannen voet met elkaar. De trouwste klanten hadden online het
+minste voordeel.
+
+* Wat er allemaal mee moest
+
+- bijna 1.200 producten met teksten, prijzen en foto's
+- de volledige categorie-indeling, met eigen foto's per categorie
+- zo'n 200 klantaccounts, inclusief nieuwsbrief-toestemming
+- de doorverwijzingen van alle oude productadressen
+- en de grootste wens: het bestaande spaarprogramma van de winkel
+  gekoppeld aan de webshop
+
+Het werk liep in fases naast de gewone verkoop. Eerst de producten
+naar een afgeschermde testshop, dan weken van rustig controleren
+door Elizabeth zelf, vlak voor de overstap de klantaccounts, en pas
+na haar akkoord de domeinomzetting.
+
+* Spaarpunten van toonbank tot webshop
+
+De winkel werkt al jaren met het Piggy-spaarsysteem: voor elke euro
+een punt, in te wisselen voor beloningen. Op MijnWebwinkel was daar
+geen koppeling voor; het bleef bij een tekstje dat naar de fysieke
+winkel verwees.
+
+Op de nieuwe shop is dat programma echt gekoppeld. Een
+webshop-bestelling schrijft nu automatisch punten bij op hetzelfde
+saldo dat de klant in de winkel opbouwt, herkend op e-mailadres. Op
+de dag van de livegang deed Elizabeth zelf een testbestelling en zag
+de punten direct in haar eigen spaar-app verschijnen. Voor haar
+klanten verdween daarmee de reden om niet online te bestellen: de
+punten tellen voortaan overal.
+
+* Een pakketpunt kiezen op een Basic-abonnement
+
+Elizabeth verstuurt via DHL en wilde dat klanten een pakketpunt
+kunnen kiezen. Shopify houdt die keuze in het afrekenscherm
+gereserveerd voor de duurdere abonnementen, en een omweg via een
+duurder plan stond niet in verhouding tot de winkel.
+
+Daarom bouwden we de keuze zelf, op de winkelwagen-pagina: de klant
+zoekt op postcode, kiest uit de dichtstbijzijnde DHL-punten, en de
+keuze reist als notitie met de bestelling mee zodat het label naar
+het juiste punt kan. Geen duurder abonnement nodig.
+
+* De hobbels
+
+Een migratie zonder verrassingen bestaat niet, en van deze twee
+hebben we vooral zelf geleerd.
+
+De grootste: tijdens de import bleek Shopify bij het ophalen van
+productfoto's een deel stilletjes kwijt te raken. Bij de eerste
+controle misten 167 producten hun foto's. We hebben de oorzaak
+uitgezocht, de foto's in golven opnieuw aangeboden en een
+controlestap gebouwd die elk product naloopt. Eindstand: alle
+producten compleet, en die controle draait sindsdien standaard bij
+elke migratie die we doen.
+
+De tweede verrassing kwam van Shopify zelf: iDEAL, waar vrijwel alle
+Nederlandse klanten mee betalen, stelt Shopify voor een nieuwe
+winkel pas na een beoordelingsperiode open. Dat lost geen wachten
+op; dat lost een tweede betaalprovider op. iDEAL loopt voorlopig via
+Mollie naast de rest, en zodra Shopify de winkel heeft beoordeeld
+schuift het over en vervalt de tussenoplossing.
+
+* De overstap zelf
+
+#+CAPTION: De nieuwe winkel op Shopify, met de eigen winkelfoto's als gezicht: dezelfde warme zaak, nu ook online op orde.
+[[https://webwinkelverhuis.nl/kruidje-shopify-na.png]]
+
+Op maandag 10 augustus om 12:00, een tijdstip dat Elizabeth zelf
+koos, ging het domein om. Binnen het uur stond de winkel met een
+geldig certificaat op het eigen adres, en dezelfde middag deed
+Elizabeth een echte bestelling met iDEAL: betaling, bevestigingsmail
+en spaarpunten, alles in één keer goed.
+
+Na de omzetting controleerde ons programma ruim drieduizend
+adressen: elke oude productlink komt op de juiste nieuwe pagina uit.
+Wie de winkel via een oude link of een zoekmachine vindt, komt dus
+gewoon op het juiste product terecht. De enige adressen die
+verdwenen waren producten die Elizabeth zelf bewust had opgeruimd.
+
+En typerend voor hoe soepel het voelde: nog dezelfde dag zegde
+Elizabeth haar oude MijnWebwinkel-abonnement op.
+
+* Waar de winkel nu staat
+
+De webshop draait op het eigen vertrouwde adres, oude links werken,
+en de winkel en de webshop delen voortaan één spaarprogramma. Voor
+Elizabeth verdween er vooral werk: bestellingen komen binnen met
+bevestigingsmail, het DHL-label rolt uit de bestelling, en de
+spaarpunten boeken zichzelf. De vragen die zij ons na de livegang
+stelde gingen niet over storingen maar over de puntjes op de i, en
+dat is precies hoe een overstap hoort te voelen.
+
+Heeft jouw winkel ook een spaarsysteem, een eigen werkwijze of een
+andere reden waarom een standaard-migratie niet past?
+[[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
+of bekijk eerst
+[[https://webwinkelverhuis.nl/prijzen.html][wat een migratie kost]].
+Je betaalt pas na een geslaagde migratie.
