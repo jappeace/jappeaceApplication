@@ -1123,6 +1123,36 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
           H.p "Klantaccounts, bestelgeschiedenis en spaarpuntensaldi verhuizen mee. Je klanten kunnen direct inloggen, met hun spaarpunten in het loyaliteitsprogramma van je nieuwe platform."
       H.p ! A.class_ "engagement-note" $ "Ook de rest van je shop verhuist mee: informatiepagina's zoals over-ons en verzendinformatie, je blog, reviews, kortingscodes en cadeaubonnen. Als aparte dienst doen we ook grootschalige aanpassingen aan je productdata tijdens de migratie, zoals prijsaanpassingen, het opschonen van beschrijvingen of beschrijvingen voor Google bij al je afbeeldingen (alt-teksten)."
 
+    -- En daarna: het blijvende gemak. Decision (Jappie, 12 aug 2026): de
+    -- pagina verkocht alleen het verhuisproces; de eerste afgeronde
+    -- migratieklant benoemt na livegang juist het dagelijkse gemak en
+    -- zelf-kunnen als ervaren waarde, dus de dag-na-de-overstap krijgt
+    -- een eigen sectie (jappeaceApplication issue #143). De zoek-claim
+    -- is onderbouwd met screenshots van een echte MijnWebwinkel-shop
+    -- (10 aug 2026: "wouter" vindt vier producten, "wouter streekhoning"
+    -- geeft "geen artikelen gevonden"; jappiesoft
+    -- projects/kruidje/voor-materiaal). De koppelingen-voorbeelden zijn
+    -- dezelfde die de vs-Shopify-pagina al publiek noemt.
+    H.section ! A.class_ "for-who" ! A.id "daarna" $ do
+      H.h2 "En daarna: elke dag makkelijker"
+      H.p "De verhuizing is eenmalig, het gemak is blijvend. Dit merk je na de overstap elke dag:"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-beperkt.svg"
+                ! A.alt "Vergrootglas met beperking" ! A.width "56" ! A.height "56"
+          H.h3 "Zoeken dat verkoopt"
+          H.p $ H.preEscapedToHtml ("De zoekfunctie op MijnWebwinkel struikelt al over een extra zoekwoord: wie de productnaam bijna letterlijk intikt, kan alsnog &quot;geen artikelen gevonden&quot; te zien krijgen. Moderne platformen begrijpen meerdere woorden en typefouten, zodat klanten vinden wat ze zoeken." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
+                ! A.alt "Stapel taken die vanzelf verwerkt wordt" ! A.width "56" ! A.height "56"
+          H.h3 "Minder handwerk per bestelling"
+          H.p "Verzendlabels maak je vanuit je beheer, spaarpunten schrijven zichzelf bij, en voor reviews, boekhouding of nieuwsbrieven bestaat een koppeling. Wat je nu overtypt, doet straks een app."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-thema.svg"
+                ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
+          H.h3 "Zelf aan de knoppen"
+          H.p "Teksten, foto's, pagina's en blokken pas je zelf aan, wanneer jij wilt, zonder ticket of wachttijd. En je platform ontwikkelt gewoon door, dus het wordt vanzelf beter."
+
     -- How it works: de gedeelde sectie van de landingspagina, met
     -- MijnWebwinkel-specifieke stapteksten.
     hoeHetWerktSectie
