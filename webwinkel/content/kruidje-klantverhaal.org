@@ -15,10 +15,19 @@ migratie, inclusief de hobbels, want die waren er ook.
 * Een winkel met een webshop erbij
 
 Elizabeth runt haar winkel al tientallen jaren en de webshop draaide
-er op MijnWebwinkel naast. Die deed het, maar meer ook niet: de
-zoekfunctie vond weinig, op een telefoon was het behelpen, en het
+er op MijnWebwinkel naast. Die deed het, maar meer ook niet. De
+zoekfunctie struikelde al over een tweede zoekwoord: wie "wouter
+streekhoning" intikte, bijna letterlijk de naam van een product uit
+het schap, kreeg "Geen artikelen gevonden". Categoriepagina's waren
+kale lijstjes merknamen op een verder lege pagina. En het
 spaarsysteem van de winkel bestond online alleen als een zin op de
-homepage. Wie online bestelde, spaarde niets.
+homepage: wie online bestelde, spaarde niets.
+
+#+CAPTION: De oude zoekfunctie, vlak voor de verhuizing: een extra zoekwoord en een bestaand product werd niet meer gevonden.
+[[https://webwinkelverhuis.nl/kruidje-mijnwebwinkel-zoeken-voor.png]]
+
+#+CAPTION: Een categoriepagina op de oude shop: een kale lijst merknamen, zonder producten of foto's.
+[[https://webwinkelverhuis.nl/kruidje-mijnwebwinkel-categorie-voor.png]]
 
 Voor een winkel waarvan de kracht juist de vaste klant is, staat dat
 op gespannen voet met elkaar. De trouwste klanten hadden online het
@@ -108,12 +117,27 @@ Elizabeth haar oude MijnWebwinkel-abonnement op.
 * Waar de winkel nu staat
 
 De webshop draait op het eigen vertrouwde adres, oude links werken,
-en de winkel en de webshop delen voortaan één spaarprogramma. Voor
-Elizabeth verdween er vooral werk: bestellingen komen binnen met
-bevestigingsmail, het DHL-label rolt uit de bestelling, en de
-spaarpunten boeken zichzelf. De vragen die zij ons na de livegang
-stelde gingen niet over storingen maar over de puntjes op de i, en
-dat is precies hoe een overstap hoort te voelen.
+en de winkel en de webshop delen voortaan één spaarprogramma.
+
+Dezelfde zoekopdracht die op de oude shop niets opleverde, vindt nu
+gewoon alle vier de potten streekhoning. Klanten mogen weer typen
+zoals mensen typen, met meer woorden en een typefout erin.
+
+#+CAPTION: Dezelfde zoekopdracht op de nieuwe shop: alle vier de producten gevonden.
+[[https://webwinkelverhuis.nl/kruidje-shopify-zoeken-na.png]]
+
+De categorieën zijn echte pagina's geworden, met eigen foto's en de
+producten er direct onder, in plaats van een kaal lijstje merknamen.
+
+En voor Elizabeth zelf verdween er vooral werk. Bestellingen komen
+binnen met bevestigingsmail, de pakbon en het DHL-label rollen uit
+de bestelling met het gekozen pakketpunt er al op, en de spaarpunten
+boeken zichzelf. Haar samenvatting na de eerste echte
+klantbestelling: "De afhandeling ging heel makkelijk."
+
+De vragen die zij ons na de livegang stelde gingen niet over
+storingen maar over de puntjes op de i, en dat is precies hoe een
+overstap hoort te voelen.
 
 Heeft jouw winkel ook een spaarsysteem, een eigen werkwijze of een
 andere reden waarom een standaard-migratie niet past?
