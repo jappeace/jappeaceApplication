@@ -104,8 +104,9 @@ verkopende winkel wekenlang zonder iDEAL gestaan.
 
 Dat lost geen wachten op; dat lost een tweede betaalprovider op.
 iDEAL loopt voorlopig via Mollie naast de rest. Dat kost tijdelijk
-wel iets: Shopify rekent twee procentpunt extra per bestelling
-wanneer de betaling buiten het eigen betaalsysteem loopt. Zodra
+wel iets: op het Basic-abonnement rekent Shopify twee procentpunt
+extra per bestelling wanneer de betaling buiten het eigen
+betaalsysteem loopt. Zodra
 Shopify de winkel heeft beoordeeld schuift iDEAL over, vervallen
 die procentpunten en vervalt de tussenoplossing.
 
