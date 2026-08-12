@@ -89,10 +89,25 @@ elke migratie die we doen.
 
 De tweede verrassing kwam van Shopify zelf: iDEAL, waar vrijwel alle
 Nederlandse klanten mee betalen, stelt Shopify voor een nieuwe
-winkel pas na een beoordelingsperiode open. Dat lost geen wachten
-op; dat lost een tweede betaalprovider op. iDEAL loopt voorlopig via
-Mollie naast de rest, en zodra Shopify de winkel heeft beoordeeld
-schuift het over en vervalt de tussenoplossing.
+winkel pas open na een beoordelingsperiode. Voor wie een shop vanaf
+nul opbouwt is dat hooguit vervelend: je loopt er ergens in de
+eerste weken tegenaan en wacht het oordeel af terwijl je toch nog
+aan het bouwen bent.
+
+Onze manier van verhuizen maakt het lastiger. De nieuwe shop staat
+tot de livegang achter een wachtwoord, verstopt voor de
+buitenwereld, juist zodat de oude winkel gewoon doorverkoopt tot
+alles klaar is. Maar een verstopte winkel kan Shopify ook niet
+beoordelen, dus die periode kan pas beginnen op het moment dat de
+winkel al om moet. En wachten was geen optie: dan had een draaiende,
+verkopende winkel wekenlang zonder iDEAL gestaan.
+
+Dat lost geen wachten op; dat lost een tweede betaalprovider op.
+iDEAL loopt voorlopig via Mollie naast de rest. Dat kost tijdelijk
+wel iets: Shopify rekent twee procentpunt extra per bestelling
+wanneer de betaling buiten het eigen betaalsysteem loopt. Zodra
+Shopify de winkel heeft beoordeeld schuift iDEAL over, vervallen
+die procentpunten en vervalt de tussenoplossing.
 
 * De overstap zelf
 
