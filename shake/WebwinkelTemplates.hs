@@ -1132,7 +1132,13 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
     -- (10 aug 2026: "wouter" vindt vier producten, "wouter streekhoning"
     -- geeft "geen artikelen gevonden"; jappiesoft
     -- projects/kruidje/voor-materiaal). De koppelingen-voorbeelden zijn
-    -- dezelfde die de vs-Shopify-pagina al publiek noemt.
+    -- dezelfde die de vs-Shopify-pagina al publiek noemt. Correctie uit
+    -- review (Jappie): MWW heeft wel degelijk een eigen
+    -- spaarpuntensysteem, alleen compleet aan MWW gebonden; het
+    -- zelf-bijschrijven was specifiek de externe Piggy/Leat-koppeling
+    -- van de eerste klant. De kaart claimt daarom het eerlijke
+    -- verschil: eigen systemen kunnen aankoppelen versus vastzitten aan
+    -- wat het platform zelf aanbiedt.
     H.section ! A.class_ "for-who" ! A.id "daarna" $ do
       H.h2 "En daarna: elke dag makkelijker"
       H.p "De verhuizing is eenmalig, het gemak is blijvend. Dit merk je na de overstap elke dag:"
@@ -1146,7 +1152,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
           H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
                 ! A.alt "Stapel taken die vanzelf verwerkt wordt" ! A.width "56" ! A.height "56"
           H.h3 "Minder handwerk per bestelling"
-          H.p "Verzendlabels maak je vanuit je beheer, spaarpunten schrijven zichzelf bij, en voor reviews, boekhouding of nieuwsbrieven bestaat een koppeling. Wat je nu overtypt, doet straks een app."
+          H.p "Verzendlabels maak je vanuit je beheer, je eigen spaarsysteem koppel je gewoon aan, en voor reviews, boekhouding of nieuwsbrieven bestaat een app. Op MijnWebwinkel kan alleen wat MijnWebwinkel zelf aanbiedt; wat je nu overtypt, doet straks een koppeling."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-thema.svg"
                 ! A.alt "Verfpalet" ! A.width "56" ! A.height "56"
