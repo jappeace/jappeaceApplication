@@ -103,12 +103,13 @@ winkel al om moet. En wachten was geen optie: dan had een draaiende,
 verkopende winkel wekenlang zonder iDEAL gestaan.
 
 Dat lost geen wachten op; dat lost een tweede betaalprovider op.
-iDEAL loopt voorlopig via Mollie naast de rest. Dat kost tijdelijk
-wel iets: op het Basic-abonnement rekent Shopify twee procentpunt
-extra per bestelling wanneer de betaling buiten het eigen
-betaalsysteem loopt. Zodra
-Shopify de winkel heeft beoordeeld schuift iDEAL over, vervallen
-die procentpunten en vervalt de tussenoplossing.
+iDEAL liep de eerste dagen via Mollie naast de rest. Dat kostte
+tijdelijk wel iets: op het Basic-abonnement rekent Shopify twee
+procentpunt extra per bestelling wanneer de betaling buiten het
+eigen betaalsysteem loopt. Drie dagen na de livegang was Shopify's
+beoordeling er al: Elizabeth zette iDEAL met één klik over naar
+Shopify zelf, de procentpunten vervielen en de tussenoplossing kon
+weg. De winkel heeft geen dag zonder iDEAL gestaan.
 
 * De overstap zelf
 
