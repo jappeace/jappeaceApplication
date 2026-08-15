@@ -34,4 +34,23 @@ suite =
             \_ ->
                 Expect.equal True
                     (Tuple.first (update OfferteGepoogd initieelModel)).offertePoging
+        , test "start is niet als grote catalogus gemeld" <|
+            \_ ->
+                Expect.equal False initieelModel.groteCatalogusGemeld
+        , test "50.000 producten invoeren markeert grote catalogus (event vuurt)" <|
+            \_ ->
+                Expect.equal True
+                    (Tuple.first (update (ProductenGewijzigd "50000") initieelModel)).groteCatalogusGemeld
+        , test "onder de grens blijft de melding uit" <|
+            \_ ->
+                Expect.equal False
+                    (Tuple.first (update (ProductenGewijzigd "500") initieelModel)).groteCatalogusGemeld
+        , test "een al gemeld model meldt niet opnieuw (vlag blijft staan)" <|
+            \_ ->
+                Expect.equal True
+                    (Tuple.first
+                        (update (ProductenGewijzigd "60000")
+                            { initieelModel | groteCatalogusGemeld = True }
+                        )
+                    ).groteCatalogusGemeld
         ]

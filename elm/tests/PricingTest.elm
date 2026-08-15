@@ -1,4 +1,4 @@
-module PricingTest exposing (suite)
+module PricingTest exposing (groteCatalogusSuite, suite)
 
 {-| Test dat de prijsberekening van de calculator gelijk blijft aan de tabel op
 /prijzen (en dus aan standaard-prijslijst.org). Deze test faalt zodra de
@@ -16,6 +16,7 @@ import PrijsCalculator
         , Msg(..)
         , ThemaKeuze(..)
         , initieelModel
+        , isGroteCatalogus
         , totaalCenten
         , update
         )
@@ -28,6 +29,24 @@ metProducten producten talen model =
         | productenInvoer = String.fromInt producten
         , talenInvoer = String.fromInt talen
     }
+
+
+groteCatalogusSuite : Test
+groteCatalogusSuite =
+    describe "PrijsCalculator.isGroteCatalogus (grens 10.000 productvertalingen)"
+        [ test "9.999 producten in 1 taal is nog standaard" <|
+            \_ ->
+                Expect.equal False (isGroteCatalogus (metProducten 9999 1 initieelModel))
+        , test "10.000 producten in 1 taal raakt de grens" <|
+            \_ ->
+                Expect.equal True (isGroteCatalogus (metProducten 10000 1 initieelModel))
+        , test "producten maal talen telt mee: 4.000 producten in 3 talen is groot" <|
+            \_ ->
+                Expect.equal True (isGroteCatalogus (metProducten 4000 3 initieelModel))
+        , test "4.000 producten in 2 talen blijft standaard" <|
+            \_ ->
+                Expect.equal False (isGroteCatalogus (metProducten 4000 2 initieelModel))
+        ]
 
 
 suite : Test
