@@ -5,6 +5,7 @@ port module PrijsCalculator exposing
     , Msg(..)
     , ThemaKeuze(..)
     , initieelModel
+    , isGroteCatalogus
     , main
     , totaalCenten
     , update
@@ -206,6 +207,7 @@ type alias Model =
     , webshopDomein : String
     , offertePoging : Bool
     , analyticsEngaged : Bool
+    , groteCatalogusGemeld : Bool
     }
 
 
@@ -231,6 +233,7 @@ initieelModel =
     , webshopDomein = ""
     , offertePoging = False
     , analyticsEngaged = False
+    , groteCatalogusGemeld = False
     }
 
 
@@ -264,6 +267,7 @@ type Msg
     | WebshopDomeinGewijzigd String
     | OfferteGepoogd
     | OfferteVerzonden
+    | GroteCatalogusContact
 
 
 leesBron : String -> BronPlatform
@@ -443,10 +447,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ProductenGewijzigd waarde ->
-            markeerEngagement { model | productenInvoer = waarde }
+            meldGroteCatalogus (markeerEngagement { model | productenInvoer = waarde })
 
         TalenGewijzigd waarde ->
-            markeerEngagement { model | talenInvoer = waarde }
+            meldGroteCatalogus (markeerEngagement { model | talenInvoer = waarde })
 
         BronGewijzigd waarde ->
             markeerEngagement { model | bron = leesBron waarde }
@@ -502,6 +506,9 @@ update msg model =
         OfferteVerzonden ->
             ( model, offerteAangevraagdEvent model )
 
+        GroteCatalogusContact ->
+            ( model, gaEvent "grote_catalogus_contact" [] )
+
 
 
 -- PRIJSBEREKENING
@@ -555,6 +562,41 @@ extraTalen model =
 productVertalingen : Model -> Int
 productVertalingen model =
     aantalProducten model * aantalTalen model
+
+
+{-| Vanaf dit aantal productvertalingen (producten maal talen) is een winkel
+geen standaardmigratie meer; de rekenhulp toont dan een neem-contact-melding
+in plaats van een richtprijs. Besluit Jappie 15 aug 2026, naar aanleiding van
+een lead met 50.000 producten waarvoor het vlakke tarief op ruim veertienduizend
+euro uitkwam: zo'n bedrag zwijgend tonen jaagt de bezoeker weg zonder gesprek. -}
+groteCatalogusGrens : Int
+groteCatalogusGrens =
+    10000
+
+
+isGroteCatalogus : Model -> Bool
+isGroteCatalogus model =
+    productVertalingen model >= groteCatalogusGrens
+
+
+{-| Vuurt eenmalig het event "calculator_grote_catalogus" zodra de invoer de
+grens passeert, zodat GA4 telt hoe vaak grote catalogi de rekenhulp raken:
+precies het verkeer dat anders stil zou wegklikken. -}
+meldGroteCatalogus : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+meldGroteCatalogus ( model, cmd ) =
+    if isGroteCatalogus model && not model.groteCatalogusGemeld then
+        ( { model | groteCatalogusGemeld = True }
+        , Cmd.batch
+            [ cmd
+            , gaEvent "calculator_grote_catalogus"
+                [ ( "producten", Encode.int (aantalProducten model) )
+                , ( "talen", Encode.int (aantalTalen model) )
+                ]
+            ]
+        )
+
+    else
+        ( model, cmd )
 
 
 extraProductVertalingen : Model -> Int
@@ -1012,16 +1054,65 @@ view model =
                        ]
             ]
         , div [ Attr.class "calc-result" ] <|
-            [ h3 [] [ text "Je richtprijs" ]
-            , uitsplitsing model
-            , p [ Attr.class "calc-total" ]
-                [ span [] [ text "Totaal (excl. BTW)" ]
-                , strong [] [ text (formatteerEuro (totaalCenten model)) ]
+            if isGroteCatalogus model then
+                groteCatalogusPaneel model
+
+            else
+                [ h3 [] [ text "Je richtprijs" ]
+                , uitsplitsing model
+                , p [ Attr.class "calc-total" ]
+                    [ span [] [ text "Totaal (excl. BTW)" ]
+                    , strong [] [ text (formatteerEuro (totaalCenten model)) ]
+                    ]
                 ]
-            ]
-                ++ opAanvraagNoten model
-                ++ [ lockInNoot, contactVelden model, offerteKnop model, vrijblijvendNoot ]
+                    ++ opAanvraagNoten model
+                    ++ [ lockInNoot, contactVelden model, offerteKnop model, vrijblijvendNoot ]
         ]
+
+
+{-| Boven de grens tonen we geen richtprijs: een vlak tarief zegt daar niets
+meer en een kaal totaal van veertienduizend euro jaagt de bezoeker stil weg.
+In plaats daarvan een uitnodiging tot contact, met de ingevulde aantallen al
+in de mail. De grens in de tekst komt uit 'groteCatalogusGrens', zodat tekst
+en gedrag niet uit elkaar kunnen lopen. -}
+groteCatalogusPaneel : Model -> List (Html Msg)
+groteCatalogusPaneel model =
+    [ h3 [] [ text "Je richtprijs" ]
+    , p [ Attr.class "calc-note calc-grote-catalogus" ]
+        [ text
+            ("Vanaf "
+                ++ voegDuizendtallenToe (String.fromInt groteCatalogusGrens)
+                ++ " producten (over alle talen samen) is jouw winkel geen standaardmigratie meer. Zo'n catalogus verdient een eigen doorrekening in plaats van een standaardtarief; neem contact op en we rekenen een passende prijs voor je door."
+            )
+        ]
+    , a
+        [ Attr.href (groteCatalogusMailtoUrl model)
+        , Attr.class "cta-button calc-offerte"
+        , onClick GroteCatalogusContact
+        ]
+        [ text "Neem contact op" ]
+    , vrijblijvendNoot
+    ]
+
+
+{-| Mailto voor de grote-catalogus-route, met de al ingevulde aantallen en
+platforms in de mailtekst zodat het gesprek meteen ergens over gaat. -}
+groteCatalogusMailtoUrl : Model -> String
+groteCatalogusMailtoUrl model =
+    "mailto:jappie@webwinkelverhuis.nl?subject="
+        ++ Url.percentEncode "Migratie grote catalogus"
+        ++ "&body="
+        ++ Url.percentEncode
+            (String.join "\n"
+                [ "Hallo,"
+                , ""
+                , "Mijn webshop heeft ongeveer " ++ String.fromInt (aantalProducten model) ++ " producten in " ++ String.fromInt (aantalTalen model) ++ " taal/talen."
+                , "Huidig platform: " ++ bronOmschrijving model.bron
+                , "Gewenst platform: " ++ doelOmschrijving model.doel
+                , ""
+                , "Ik hoor graag wat een migratie voor mijn winkel zou kosten."
+                ]
+            )
 
 
 {-| De domein- en e-mailvragen tonen we alleen voor bronplatforms die die zaken
