@@ -1470,7 +1470,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
           H.h1 "Ontsnap Lightspeed"
-          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt je richting hun nieuwe platform of de deur uit. Ondertussen draait je webshop op verouderde software die steeds minder krijgt. Wij verhuizen je complete shop naar Shopify: geautomatiseerd, zonder dataverlies, zonder SEO-verlies." :: Text)
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt je richting hun nieuwe platform, maar het offici&euml;le upgradeprogramma slaat Nederland over en verliest onderweg je orderhistorie. Ondertussen draait je webshop op software die alleen nog onderhoud krijgt. Wij verhuizen je complete shop naar Shopify: geautomatiseerd, zonder dataverlies, zonder SEO-verlies, en je betaalt pas na succes." :: Text)
           -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
           -- stap in plaats van de offerte.
           H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
@@ -1496,8 +1496,8 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
                 ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
-          H.h3 "Klantaccounts & bestellingen"
-          H.p "Klantgegevens, bestelgeschiedenis en accountdata worden overgezet zodat je klanten direct kunnen inloggen op de nieuwe shop."
+          H.h3 "Klanten, spaarpunten & reviews"
+          H.p "Klantgegevens en bestelgeschiedenis worden overgezet zodat je klanten direct verder kunnen, en ook spaarpunten-saldo's en beoordelingen verhuizen mee. Geen enkele andere migratiepartij die we kennen biedt dat."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
                 ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
@@ -1532,7 +1532,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
         "1200" "1800")
       (H.div ! A.class_ "testimonials" $
         H.blockquote $ do
-          H.p $ H.preEscapedToHtml ("Je bent niet de enige: 59% van alle Lightspeed-vertrekkers kiest Shopify. Maar zonder begeleiding gaan bij de overstap vaak oude URLs kapot; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat elke oude URL blijft doorverwijzen (ons programma legt ze allemaal vast, niet een steekproef) en je opgebouwde SEO meeverhuist." :: Text)
+          H.p $ H.preEscapedToHtml ("Je bent niet de enige: het aantal Lightspeed-shops in Nederland daalde van 6.904 eind 2023 naar 4.842 in augustus 2026, en 59% van de vertrekkers kiest Shopify. Maar zonder begeleiding gaan bij de overstap vaak oude URLs kapot; wij hebben verhalen gezien van 70% verkeersverlies bij een onbegeleide migratie. Wij zorgen dat elke oude URL blijft doorverwijzen (ons programma legt ze allemaal vast, niet een steekproef) en je opgebouwde SEO meeverhuist." :: Text)
           H.p $ do
             H.a ! A.href "/waarom-lightspeed.html" $ "Waarom verlaten steeds meer webshops Lightspeed?"
             H.preEscapedToHtml (" &rarr;" :: Text))
@@ -1599,6 +1599,12 @@ lightspeedFaq =
         "Ja, daar is Shopify juist op gebouwd: producten toevoegen, prijzen wijzigen en een banner plaatsen doe je zonder technische kennis. Wil je een vliegende start, dan is er een cursus Shopify van twee uur, \233\233n-op-\233\233n door je eigen nieuwe shop (zie "
         H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
         ")." )
+  , ( "Moet ik niet gewoon upgraden naar Lightspeed E-Series?"
+    , faqAnswerText "Dat kan, maar weet waar je aan begint. Het offici\235le upgradeprogramma is alleen beschikbaar voor Noord-Amerikaanse winkels, dus als Nederlandse shop doe je die overstap sowieso op eigen kracht. Zelfs bij het offici\235le pad migreert je orderhistorie niet mee, moeten redirects en apps opnieuw, en gaan alleen twee specifieke thema's mee. E-Series is bovendien een ander product (het overgenomen Ecwid); Europese gebruikers melden er problemen mee rond verplichte e-facturatie. Als je toch opnieuw moet beginnen, kies dan zelf je platform." )
+  , ( "Kunnen mijn klanten met hun oude wachtwoord inloggen?"
+    , faqAnswerText "Nee, en wees op je hoede voor wie iets anders belooft: Shopify accepteert om veiligheidsredenen geen wachtwoorden van andere platformen. Wat wel kan, en wat wij doen: alle accounts verhuizen mee en je klanten zetten bij hun eerste bezoek in \233\233n stap een nieuw wachtwoord via een nette reset-flow. In de praktijk merken klanten daar nauwelijks iets van." )
+  , ( "Verhuizen mijn spaarpunten en beoordelingen mee?"
+    , faqAnswerText "Ja. Spaarpunten-saldo's zetten we per klant over naar een loyaliteitsapp op je nieuwe shop, gekoppeld aan de meeverhuisde klantaccounts, zodat iedereen met hetzelfde saldo aankomt. Beoordelingen importeren we in een reviews-app zodat je sociale bewijs zichtbaar blijft." )
   ]
 
 -- =============================================================================
@@ -1763,16 +1769,22 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
           H.strong "2022\8211\&2024"
           H.preEscapedToHtml (": prijzen worden verhoogd. Het goedkoopste plan (Essential) kost nu &euro;68/maand voor slechts 250 productvarianten. Het oude eCom-platform (C-Series) wordt afgebouwd richting E-Series (Ecwid)." :: Text)
         H.li $ do
-          H.strong "2025\8211\&2026"
-          H.preEscapedToHtml (": het aantal actieve Lightspeed-webshops daalt van 23.700 naar 18.500. Een verlies van 22% in drie jaar." :: Text)
+          H.strong "2024"
+          H.preEscapedToHtml (": twee ontslagrondes (10% in april, nog eens ~200 banen in december) en een \"strategische review\" waarin openlijk een verkoop of beursexit wordt verkend." :: Text)
+        H.li $ do
+          H.strong "2025"
+          H.preEscapedToHtml (": de review eindigt in februari zonder koper: Lightspeed blijft beursgenoteerd en kondigt een aandeleninkoop tot $400 miljoen aan, dezelfde dag als een kwartaalverlies van $266 miljoen. De nieuwe strategie noemt als groeimotoren alleen nog <strong>retail in Noord-Amerika en horeca in Europa</strong>. Europese e-commerce, jouw shop dus, valt daarbuiten." :: Text)
+        H.li $ do
+          H.strong "2026"
+          H.preEscapedToHtml (": boekjaar 2026 sluit op $1,23 miljard omzet met $144 miljoen nettoverlies; het Amerikaanse horecaproduct Upserve wordt met ruim 80% verlies verkocht en verdere afstotingen zijn volgens de CEO een kwestie van tijd. Het aantal actieve Lightspeed-webshops wereldwijd daalde intussen van 23.700 naar onder de 18.500." :: Text)
 
     -- The numbers
     H.section ! A.class_ "for-who" $ do
       H.h2 "De cijfers"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
-          H.h3 $ H.a ! A.href "https://storeleads.app/reports/lightspeed" $ "-22%"
-          H.p "Daling in het aantal Lightspeed-webshops sinds de piek in Q3 2023. Van 23.700 naar 18.500."
+          H.h3 $ H.a ! A.href "https://storeleads.app/reports/lightspeed/NL/top-stores" $ "-30%"
+          H.p "Daling van het aantal Lightspeed-shops in Nederland sinds de piek in Q3 2023: van 6.904 naar 4.842 (augustus 2026)."
         H.li ! A.class_ "card" $ do
           H.h3 "10:1"
           H.p "Verhouding vertrek vs. aankomst in de afgelopen 90 dagen. 160 shops vertrokken, 16 bijgekomen."
@@ -1785,7 +1797,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       H.p ! A.class_ "engagement-note" $ do
         "Bron: "
         H.a ! A.href "https://storeleads.app/reports/lightspeed" $ "StoreLeads.app"
-        " (mei 2026)"
+        " (augustus 2026)"
 
     -- Why this is structural
     H.section ! A.class_ "audit" $ do
@@ -1813,7 +1825,20 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
     H.section ! A.class_ "for-who" $ do
       H.h2 "Nederland als melkkoe"
       H.p $ H.preEscapedToHtml ("27% van alle Lightspeed-webshops zit in Nederland: bijna 5.000 shops. Nederland is veruit de grootste markt, groter dan de VS en Canada samen. Toch wordt het platform bestuurd vanuit Montreal, met Amerikaanse prioriteiten." :: Text)
-      H.p $ H.preEscapedToHtml ("De E-Series migratie is <strong>alleen beschikbaar in Noord-Amerika</strong>. Nederlandse shops zitten vast op de C-Series, een platform dat niet meer wordt doorontwikkeld, met prijzen die wel doorstijgen." :: Text)
+      H.p $ H.preEscapedToHtml ("De E-Series migratie is <strong>alleen beschikbaar in Noord-Amerika</strong>. Nederlandse shops zitten vast op de C-Series, een platform dat alleen nog onderhouds-updates krijgt, met prijzen die wel doorstijgen. En zelfs wie het offici&euml;le upgradepad w&eacute;l zou krijgen, verliest daarbij de orderhistorie; redirects, apps en (op twee na) thema's moeten opnieuw, en negentig dagen na activatie wordt de oude shop uitgezet." :: Text)
+
+    -- Merchant voice
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Wat gebruikers zelf zeggen"
+      H.p $ do
+        H.preEscapedToHtml ("Op " :: Text)
+        H.a ! A.href "https://nl.trustpilot.com/review/www.lightspeedhq.nl" $ "Trustpilot"
+        H.preEscapedToHtml (" staat Lightspeed Nederland in augustus 2026 op een 2,9 van 5. Een greep uit recente reviews:" :: Text)
+      H.ul $ do
+        H.li $ H.preEscapedToHtml ("\"Een prijsverhoging van meer dan 10%, zonder verwittiging of uitleg. Ze zetten je eenvoudig met de rug tegen de muur.\" (augustus 2026)" :: Text)
+        H.li $ H.preEscapedToHtml ("\"Het is een wurgcontract met kleine lettertjes.\" (maart 2026)" :: Text)
+        H.li $ H.preEscapedToHtml ("\"Ik betaal voor een professioneel e-commerceplatform, niet om na een fout van de leverancier zelf projectleider te worden van het herstel\", nadat de supportafdeling tot twee keer toe het webshopthema van deze winkelier had gewist. (juli 2026)" :: Text)
+      H.p $ H.preEscapedToHtml ("Voor de goede orde: de vele vijfsterren-reviews op dezelfde pagina zijn er ook, grotendeels op uitnodiging geschreven tijdens de onboarding. De \233\233nsterren-reviews hierboven zijn spontaan." :: Text)
 
     -- Sources
     H.section ! A.class_ "about" $ do
@@ -1831,6 +1856,15 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
           " (2021)"
         H.li $
           H.a ! A.href "https://ecom-support.lightspeedhq.com/hc/en-us/articles/9034086949531-Lightspeed-eCom-E-Series-upgrade-FAQ" $ "Lightspeed E-Series upgrade FAQ"
+        H.li $ do
+          H.a ! A.href "https://nl.trustpilot.com/review/www.lightspeedhq.nl" $ "Trustpilot: Lightspeed Nederland"
+          " (augustus 2026)"
+        H.li $ do
+          H.a ! A.href "https://www.emerce.nl/nieuws/helft-nieuwe-webwinkels-nederland-draait-shopify" $ "Emerce: helft nieuwe webwinkels Nederland draait Shopify"
+          " (maart 2026)"
+        H.li $ do
+          H.a ! A.href "https://www.prnewswire.com/news-releases/lightspeed-announces-fourth-quarter-and-full-year-2026-financial-results-and-provides-outlook-for-fiscal-2027-302778407.html" $ "Lightspeed jaarcijfers FY2026"
+          " (mei 2026)"
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
