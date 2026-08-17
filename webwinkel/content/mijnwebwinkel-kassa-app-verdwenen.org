@@ -67,16 +67,13 @@ iPad als wat hij nu is: het enige exemplaar van je kassa.
 Ten tweede: reken na wat je betaalt. Voor een winkel met kassa
 betaal je bij Mijnwebwinkel twee dingen: het Pro- of
 Premium-abonnement van 40 tot 70 euro per maand, en daarbovenop de
-kassa-add-on van 39 euro per maand. Samen is dat 79 tot 109 euro
-per maand voor een app die niet meer onderhouden lijkt te worden en
-niet opnieuw te installeren is.
-
-Wil je bij Mijnwebwinkel blijven, dan is er wel een tussenweg: een
-losstaande kassa naast je webshop, zoals een Zettle- of
-SumUp-reader zonder abonnement. Dat werkt en is goedkoop, maar je
-verliest er precies het voordeel mee waarvoor veel winkels de Kassa
-App aanhielden: de voorraadkoppeling met je webshop. Elke verkoop
-aan de balie moet je dan zelf in de webshopvoorraad bijwerken.
+kassa-add-on van 39 euro per maand; samen 79 tot 109 euro per
+maand voor een app die niet meer onderhouden lijkt te worden en
+niet opnieuw te installeren is. Wil je bij Mijnwebwinkel blijven,
+dan is de tussenweg een losstaande kassa zoals een Zettle- of
+SumUp-reader zonder abonnement; goedkoop, maar dan verlies je de
+voorraadkoppeling met je webshop en werk je elke baliverkoop zelf
+in de webshopvoorraad bij.
 
 Ten derde: kijk wat een overstap je zou opleveren. Wie toch al
 overweegt om met de webshop van Mijnwebwinkel weg te gaan, lost met
@@ -90,15 +87,13 @@ Shopify-abonnement; een winkel plus webshop draait daarmee vanaf
 21 euro per maand (Shopify Basic bij jaarbetaling), plus eenmalig
 een kaartlezer van 59 euro. En
 omdat webshop en kassa op dezelfde voorraad draaien, is er geen
-synchronisatielaag die stuk kan.
-
-Kies je voor WooCommerce, dan heeft het platform zelf geen kassa,
-maar is er een volwassen Nederlands aanbod omheen: kassasystemen
-als MplusKASSA en SW-Retail hebben officiële
-WooCommerce-koppelingen met voorraadsynchronisatie, en er zijn
-POS-oplossingen zoals ForgePOS die in de browser draaien. Welke
-pin-terminals en bonprinters daarmee samenwerken verschilt per
-koppeling, dus dat zoeken we per winkel uit.
+synchronisatielaag die stuk kan. Kies je liever WooCommerce, dan
+heeft het platform zelf geen kassa, maar zijn er Nederlandse
+kassasystemen met officiële WooCommerce-koppelingen en
+voorraadsynchronisatie (MplusKASSA, SW-Retail) en browser-POS'en
+zoals ForgePOS; welke pin-terminals en bonprinters daarmee
+samenwerken verschilt per koppeling, dus dat zoeken we per winkel
+uit.
 
 Ook aan een overstap zitten randvoorwaarden.
 Geïntegreerd pinnen op Shopify vereist Shopify Payments, en wie
