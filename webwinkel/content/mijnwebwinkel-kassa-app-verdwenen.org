@@ -69,7 +69,7 @@ een kaartlezer van 59 euro. En
 omdat webshop en kassa op dezelfde voorraad draaien, is er geen
 synchronisatielaag die stuk kan.
 
-Eerlijk is eerlijk: ook aan een overstap zitten randvoorwaarden.
+Ook aan een overstap zitten randvoorwaarden.
 Geïntegreerd pinnen op Shopify vereist Shopify Payments, en wie
 zijn bestaande pinterminal van een andere aanbieder wil houden,
 moet bedragen handmatig overtikken, precies de foutbron die je
