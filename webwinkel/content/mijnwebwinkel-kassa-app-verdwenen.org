@@ -1,0 +1,155 @@
+#+TITLE: De Mijnwebwinkel Kassa App is uit de App Store: wat nu?
+#+DATE: 2026-08-17
+#+CATEGORY: migratie
+#+TAGS: mijnwebwinkel, kassa, pos, shopify
+
+Draait je fysieke winkel op de Mijnwebwinkel Kassa App? Dan is dit
+goed om te weten: de app is begin 2026 stilletjes uit de App Store
+verdwenen, terwijl Mijnwebwinkel de kassa-add-on gewoon blijft
+verkopen voor 39 euro per maand (nagekeken op hun prijzenpagina,
+17 augustus 2026). In dit artikel zetten we op een rij wat er aan de
+hand is, wat het voor je winkel betekent, en welke opties je hebt.
+
+* Wat er is gebeurd
+
+De Mijnwebwinkel Kassa is een iPad- en iPhone-app uit 2017 waarmee
+je in je fysieke winkel afrekent op dezelfde voorraad als je
+webshop. Ergens tussen half januari 2026 en juli 2026 is de app uit
+de App Store gehaald: de productpagina geeft "niet gevonden", een
+zoekopdracht in de Nederlandse en Belgische App Store levert niets
+op, en de ontwikkelaar heeft er geen apps meer staan. De laatste
+versie stamt uit februari 2025. Wij controleerden dit op 18 juli,
+op 31 juli en opnieuw op 17 augustus 2026: nog steeds nergens te
+vinden, ook niet in de Belgische of Amerikaanse App Store.
+
+Belangrijk om te weten: een app die uit de App Store is gehaald
+blijft gewoon werken op de iPad waar hij al op staat. Er valt dus
+niet morgen iets uit.
+
+* Waarom dit toch een probleem is
+
+Het probleem zit in wat er daarna gebeurt. Een app die niet meer in
+de App Store staat, kan niet opnieuw geïnstalleerd worden. Gaat je
+iPad stuk, wordt hij gestolen, of moet hij een keer gereset worden,
+dan sta je van de ene op de andere dag zonder kassa. Er is geen
+aangekondigde opvolger voor Nederland, en Mijnwebwinkel heeft geen
+termijn genoemd waarop de app terugkomt.
+
+Daar komt bij dat de app ook vóór de verdwijning al een moeizame
+geschiedenis had. In het eigen gebruikersforum van Mijnwebwinkel en
+in App Store-reviews zijn onder meer gedocumenteerd:
+
+- Bestellingen die dubbel (of driedubbel) op de bon aanslaan, met
+  klanten die ermee terug de winkel in komen.
+- Jarenlang geen mogelijkheid om deels contant en deels met pin af
+  te rekenen; wie alles maar als pin boekte, kreeg een dagstaat die
+  niet klopte.
+- Een update die de 9%/21%-btw-splitsing stilletjes uit het
+  dagrapport haalde, terwijl producten met 0% btw in het financieel
+  rapport ontbraken.
+- Terugbetalen kon alleen contant, niet terug naar de pinpas.
+- Geen echte kasopmaak: geen beginsaldo, geen kastelling, geen
+  verschillenregistratie, dus elke afwijking eindigt bij de
+  boekhouder.
+- Kleinere ergernissen als een scanner die zijn
+  Bluetooth-verbinding verliest, geen verkoop op gewicht (decimale
+  aantallen) en geen aparte medewerker-accounts.
+
+De App Store-beoordeling stond op 3,1 van 5, en een moderator van
+Mijnwebwinkel schreef zelf: "De Kassa App is dan ook nooit af."
+
+* Wat je nu kunt doen
+
+Ten eerste: reset of vervang je iPad niet zomaar. Zolang de app op
+je huidige apparaat staat, blijft je kassa werken. Behandel die
+iPad als wat hij nu is: het enige exemplaar van je kassa.
+
+Ten tweede: reken na wat je betaalt. Voor een winkel met kassa
+betaal je bij Mijnwebwinkel twee dingen: het Pro- of
+Premium-abonnement van 40 tot 70 euro per maand, en daarbovenop de
+kassa-add-on van 39 euro per maand; samen 79 tot 109 euro per
+maand voor een app die niet meer onderhouden lijkt te worden en
+niet opnieuw te installeren is. Wil je bij Mijnwebwinkel blijven,
+dan is de tussenweg een losstaande kassa zoals een Zettle- of
+SumUp-reader zonder abonnement; goedkoop, maar dan verlies je de
+voorraadkoppeling met je webshop en werk je elke baliverkoop zelf
+in de webshopvoorraad bij.
+
+Ten derde: kijk wat een overstap je zou opleveren. Wie toch al
+overweegt om met de webshop van Mijnwebwinkel weg te gaan, lost met
+één beweging ook het kassa-probleem op. Shopify heeft bijvoorbeeld
+een eigen kassasysteem (Shopify POS) dat in Nederland volwassen is:
+geïntegreerd pinnen met de Nederlandse pinpas, splitbetaling
+(deels contant, deels pin) als standaardfunctie, retour naar de
+pinpas, en een kasopmaak per sessie met telling en
+verschillenregistratie. De instapversie zit gratis bij elk
+Shopify-abonnement; een winkel plus webshop draait daarmee vanaf
+21 euro per maand (Shopify Basic bij jaarbetaling), plus eenmalig
+een kaartlezer van 59 euro. En
+omdat webshop en kassa op dezelfde voorraad draaien, is er geen
+synchronisatielaag die stuk kan. Kies je liever WooCommerce, dan
+heeft het platform zelf geen kassa, maar zijn er Nederlandse
+kassasystemen met officiële WooCommerce-koppelingen en
+voorraadsynchronisatie (MplusKASSA, SW-Retail) en browser-POS'en
+zoals ForgePOS; welke pin-terminals en bonprinters daarmee
+samenwerken verschilt per koppeling, dus dat zoeken we per winkel
+uit.
+
+Ook aan een overstap zitten randvoorwaarden.
+Geïntegreerd pinnen op Shopify vereist Shopify Payments, en wie
+zijn bestaande pinterminal van een andere aanbieder wil houden,
+moet bedragen handmatig overtikken, precies de foutbron die je
+kwijt wilt. Laat je dus goed voorlichten over wat er met jouw
+huidige pin-oplossing, bonprinter en scanner kan.
+
+* Overstappen zonder gedoe
+
+Wij verhuizen webshops van Mijnwebwinkel naar Shopify of
+WooCommerce: producten, klanten, categorieën en de volledige
+inhoud, met automatische 301-redirects zodat je Google-posities
+meeverhuizen. Voor winkels met een kassa nemen we de inrichting van
+Shopify POS mee in het advies, inclusief welke hardware je nodig
+hebt en wat herbruikbaar is. Vaste prijs, betaling na een geslaagde
+migratie. Lees hoe
+[[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][onze
+migratieservice]] werkt, of
+[[https://meet.jappiesoftware.com][plan een vrijblijvend gesprek]].
+
+* Veelgestelde vragen
+
+*Stopt mijn Mijnwebwinkel Kassa App er nu mee?*
+
+Nee. Een app die uit de App Store is gehaald blijft werken op het
+apparaat waar hij al op staat. Het risico zit bij een kapotte,
+gestolen of gereset iPad: dan kan de app niet opnieuw
+geïnstalleerd worden en sta je zonder kassa.
+
+*Kan ik de Kassa App nog op een nieuwe iPad zetten?*
+
+Nee. De app staat sinds begin 2026 niet meer in de Nederlandse en
+Belgische App Store, dus een verse installatie is niet mogelijk.
+Mijnwebwinkel verkoopt de kassa-add-on van 39 euro per maand
+intussen wel gewoon door.
+
+*Wat is het beste alternatief voor de Mijnwebwinkel Kassa App?*
+
+Voor de meeste winkels met een webshop: het kassasysteem van het
+platform waar je naartoe verhuist, zoals Shopify POS. Dat rekent af
+op dezelfde voorraad als je webshop, ondersteunt splitbetaling en
+kasopmaak, en de instapversie zit gratis bij elk
+Shopify-abonnement. Een losse externe kassa naast je webshop
+betekent twee systemen en een synchronisatielaag die stuk kan.
+
+*Kan mijn bestaande pin-apparatuur mee?*
+
+Dat hangt af van wat je nu gebruikt. Geïntegreerd pinnen op Shopify
+loopt via Shopify Payments met eigen kaartlezers (vanaf 59 euro
+eenmalig); bonprinters en scanners zijn per merk en model
+verschillend herbruikbaar. Dit checken we per winkel in het
+migratie-advies.
+
+#+BEGIN_EXPORT html
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Stopt mijn Mijnwebwinkel Kassa App er nu mee?","acceptedAnswer":{"@type":"Answer","text":"Nee. Een app die uit de App Store is gehaald blijft werken op het apparaat waar hij al op staat. Het risico zit bij een kapotte, gestolen of gereset iPad: dan kan de app niet opnieuw geïnstalleerd worden en sta je zonder kassa."}},{"@type":"Question","name":"Kan ik de Kassa App nog op een nieuwe iPad zetten?","acceptedAnswer":{"@type":"Answer","text":"Nee. De app staat sinds begin 2026 niet meer in de Nederlandse en Belgische App Store, dus een verse installatie is niet mogelijk. Mijnwebwinkel verkoopt de kassa-add-on van 39 euro per maand intussen wel gewoon door."}},{"@type":"Question","name":"Wat is het beste alternatief voor de Mijnwebwinkel Kassa App?","acceptedAnswer":{"@type":"Answer","text":"Voor de meeste winkels met een webshop: het kassasysteem van het platform waar je naartoe verhuist, zoals Shopify POS. Dat rekent af op dezelfde voorraad als je webshop, ondersteunt splitbetaling en kasopmaak, en de instapversie zit gratis bij elk Shopify-abonnement."}},{"@type":"Question","name":"Kan mijn bestaande pin-apparatuur mee?","acceptedAnswer":{"@type":"Answer","text":"Dat hangt af van wat je nu gebruikt. Geïntegreerd pinnen op Shopify loopt via Shopify Payments met eigen kaartlezers; bonprinters en scanners zijn per merk en model verschillend herbruikbaar. Dit checken we per winkel in het migratie-advies."}}]}
+</script>
+#+END_EXPORT
