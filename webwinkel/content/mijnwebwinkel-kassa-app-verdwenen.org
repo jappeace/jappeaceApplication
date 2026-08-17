@@ -36,13 +36,27 @@ aangekondigde opvolger voor Nederland, en Mijnwebwinkel heeft geen
 termijn genoemd waarop de app terugkomt.
 
 Daar komt bij dat de app ook vóór de verdwijning al een moeizame
-geschiedenis had. In het eigen gebruikersforum van Mijnwebwinkel
-zijn onder meer gedocumenteerd: bestellingen die dubbel op de bon
-aanslaan, een btw-splitsing die uit het dagrapport verdween, en
-jarenlang geen mogelijkheid om deels contant en deels met pin af te
-rekenen. De App Store-beoordeling stond op 3,1 van 5, en een
-moderator van Mijnwebwinkel schreef zelf: "De Kassa App is dan ook
-nooit af."
+geschiedenis had. In het eigen gebruikersforum van Mijnwebwinkel en
+in App Store-reviews zijn onder meer gedocumenteerd:
+
+- Bestellingen die dubbel (of driedubbel) op de bon aanslaan, met
+  klanten die ermee terug de winkel in komen.
+- Jarenlang geen mogelijkheid om deels contant en deels met pin af
+  te rekenen; wie alles maar als pin boekte, kreeg een dagstaat die
+  niet klopte.
+- Een update die de 9%/21%-btw-splitsing stilletjes uit het
+  dagrapport haalde, terwijl producten met 0% btw in het financieel
+  rapport ontbraken.
+- Terugbetalen kon alleen contant, niet terug naar de pinpas.
+- Geen echte kasopmaak: geen beginsaldo, geen kastelling, geen
+  verschillenregistratie, dus elke afwijking eindigt bij de
+  boekhouder.
+- Kleinere ergernissen als een scanner die zijn
+  Bluetooth-verbinding verliest, geen verkoop op gewicht (decimale
+  aantallen) en geen aparte medewerker-accounts.
+
+De App Store-beoordeling stond op 3,1 van 5, en een moderator van
+Mijnwebwinkel schreef zelf: "De Kassa App is dan ook nooit af."
 
 * Wat je nu kunt doen
 
@@ -50,11 +64,19 @@ Ten eerste: reset of vervang je iPad niet zomaar. Zolang de app op
 je huidige apparaat staat, blijft je kassa werken. Behandel die
 iPad als wat hij nu is: het enige exemplaar van je kassa.
 
-Ten tweede: reken na wat je betaalt. Een winkel met kassa betaalt
-bij Mijnwebwinkel het Pro- of Premium-abonnement (40 tot 70 euro
-per maand) plus 39 euro per maand voor de kassa-add-on, samen 79
-tot 109 euro per maand, voor een app die niet meer onderhouden
-lijkt te worden en niet opnieuw te installeren is.
+Ten tweede: reken na wat je betaalt. Voor een winkel met kassa
+betaal je bij Mijnwebwinkel twee dingen: het Pro- of
+Premium-abonnement van 40 tot 70 euro per maand, en daarbovenop de
+kassa-add-on van 39 euro per maand. Samen is dat 79 tot 109 euro
+per maand voor een app die niet meer onderhouden lijkt te worden en
+niet opnieuw te installeren is.
+
+Wil je bij Mijnwebwinkel blijven, dan is er wel een tussenweg: een
+losstaande kassa naast je webshop, zoals een Zettle- of
+SumUp-reader zonder abonnement. Dat werkt en is goedkoop, maar je
+verliest er precies het voordeel mee waarvoor veel winkels de Kassa
+App aanhielden: de voorraadkoppeling met je webshop. Elke verkoop
+aan de balie moet je dan zelf in de webshopvoorraad bijwerken.
 
 Ten derde: kijk wat een overstap je zou opleveren. Wie toch al
 overweegt om met de webshop van Mijnwebwinkel weg te gaan, lost met
@@ -69,6 +91,14 @@ Shopify-abonnement; een winkel plus webshop draait daarmee vanaf
 een kaartlezer van 59 euro. En
 omdat webshop en kassa op dezelfde voorraad draaien, is er geen
 synchronisatielaag die stuk kan.
+
+Kies je voor WooCommerce, dan heeft het platform zelf geen kassa,
+maar is er een volwassen Nederlands aanbod omheen: kassasystemen
+als MplusKASSA en SW-Retail hebben officiële
+WooCommerce-koppelingen met voorraadsynchronisatie, en er zijn
+POS-oplossingen zoals ForgePOS die in de browser draaien. Welke
+pin-terminals en bonprinters daarmee samenwerken verschilt per
+koppeling, dus dat zoeken we per winkel uit.
 
 Ook aan een overstap zitten randvoorwaarden.
 Geïntegreerd pinnen op Shopify vereist Shopify Payments, en wie
