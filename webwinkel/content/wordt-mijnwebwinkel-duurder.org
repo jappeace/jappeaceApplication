@@ -1,0 +1,124 @@
+#+TITLE: Wordt MijnWebwinkel fors duurder door Acendy? De feiten, augustus 2026
+#+DATE: 2026-08-17
+#+CATEGORY: migratie
+#+TAGS: mijnwebwinkel, acendy, prijzen
+
+Er circuleren stevige verhalen: MijnWebwinkel zou opgaan in Acendy
+en "fors duurder" worden, met genoemde bedragen tot 150 euro per
+maand. Wij verhuizen webshops wég van MijnWebwinkel, dus je zou
+verwachten dat we die verhalen graag doorvertellen. Toch zetten we
+liever op een rij wat er op dit moment feitelijk te controleren
+valt, want een overstap plan je beter op feiten dan op geruchten.
+
+* Wat er vandaag te controleren valt
+
+We hebben het op 17 augustus 2026 nagekeken bij de bron:
+
+1. Op de eigen prijzenpagina van mijnwebwinkel.nl staan de
+   abonnementen op 20, 40 en 70 euro per maand exclusief btw (bij
+   een jaarabonnement), met het spaarprogramma als extra van 19
+   euro per maand en de kassa-add-on van 39 euro per maand. Dat
+   zijn dezelfde bedragen als eerder dit jaar; van een doorgevoerde
+   verhoging naar 150 euro is op de Nederlandse site niets te zien.
+2. De aankondiging van de Acendy-samenvoeging is van het
+   Mijnwebwinkel-blog gehaald; de pagina geeft nu "geen
+   toegangsrechten". De naamswijziging van eind 2025 werd begin
+   2026 teruggedraaid en mijnwebwinkel.nl werft gewoon nieuwe
+   klanten onder de eigen naam.
+3. Wat wél vaststaat: het platform is sinds de overname door Visma
+   in 2021 meerdere keren van eigenaar en naam gewisseld
+   (MijnWebwinkel, kort Acendy, inmiddels ondergebracht in de
+   Norvato-portefeuille), en de ontwikkeling staat feitelijk stil.
+   De hele geschiedenis met bronnen staat in ons artikel over
+   [[https://webwinkelverhuis.nl/blog/alternatief-voor-acendy-zo-zit-het-met-mijnwebwinkel-mystore-en-norvato.html][de
+   Acendy-kwestie]].
+
+Kortom: de bewering "het is nu fors duurder geworden" klopt vandaag
+niet met wat het bedrijf zelf publiceert. De genoemde hoge bedragen
+komen uit de prijsstelling van het Noorse Mystore/Acendy-aanbod,
+niet uit de Nederlandse tarieven.
+
+* Waarom de zorg toch terecht is
+
+Dat de verhoging er vandaag niet is, betekent niet dat de zorg
+onzin is. Drie dingen zijn wél feitelijk:
+
+1. De prijzen zijn de afgelopen jaren al gestegen terwijl het
+   product stilstond: het goedkoopste plan van 20 euro is beperkt
+   tot 25 producten, een serieuze shop zit op 40 tot 70 euro per
+   maand, en functies als het spaarprogramma en de kassa kosten
+   extra.
+2. De onderhoudsstaat is zichtbaar: de
+   [[https://webwinkelverhuis.nl/blog/de-mijnwebwinkel-kassa-app-is-uit-de-app-store-wat-nu.html][Kassa
+   App is uit de App Store verdwenen]] terwijl de add-on gewoon
+   wordt doorverkocht, en het aantal shops op het platform daalde
+   volgens StoreLeads sinds 2022 met zo'n 35 procent.
+3. Een eigenaar die het platform in een verkoop-portefeuille heeft
+   zitten, beslist over jouw tarieven en jouw toekomst. Bij de
+   volgende strategiewijziging verhuis je op andermans tijdlijn in
+   plaats van op de jouwe.
+
+Het echte risico is dus niet de prijs van vandaag, maar de richting
+van het platform. Wie nu rustig een exit voorbereidt, hoeft nooit
+in paniek te vertrekken.
+
+* Wat wij zouden doen
+
+Geen paniek, wel een plan. Concreet:
+
+1. Zet op een rij wat je shop gebruikt: producten, klantaccounts,
+   spaarprogramma, kassa, e-mailadres op je domein. Dat bepaalt wat
+   er bij een overstap mee moet.
+2. Let op je contractdatum. MijnWebwinkel werkt met
+   jaarabonnementen; bij beëindiging stoppen ook de domeinhosting
+   en de mailbox op de einddatum. Wie te laat begint, verliest
+   e-mailgeschiedenis en moet onder tijdsdruk verhuizen.
+3. Lees ons
+   [[https://webwinkelverhuis.nl/blog/webshop-migreren-stappenplan-kosten-en-valkuilen.html][stappenplan
+   voor een webshop-migratie]], ook als je (nog) niet met ons in
+   zee gaat: de valkuilen zijn voor iedereen dezelfde.
+
+Wil je het uitbesteden: wij verhuizen je shop naar Shopify of
+WooCommerce voor een vaste prijs, met automatische 301-redirects
+voor je Google-posities en betaling na een geslaagde migratie.
+[[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
+dan kijken we samen naar je shop; ook als de uitkomst "blijf
+voorlopig zitten" is.
+
+* Veelgestelde vragen
+
+*Is MijnWebwinkel al duurder geworden door Acendy?*
+
+Nee. Op 17 augustus 2026 staan de Nederlandse tarieven op 20, 40 en
+70 euro per maand exclusief btw, dezelfde bedragen als eerder dit
+jaar. De hogere bedragen die circuleren horen bij het Noorse
+Mystore/Acendy-aanbod, niet bij de Nederlandse prijzen.
+
+*Bestaat Acendy nog?*
+
+De naamswijziging van MijnWebwinkel naar Acendy (eind 2025) is
+begin 2026 teruggedraaid; de aankondiging is van het blog gehaald
+en mijnwebwinkel.nl werft weer onder de eigen naam. Het platform is
+inmiddels ondergebracht in de Norvato-portefeuille van
+investeerder Hg.
+
+*Moet ik nu overstappen?*
+
+Niet per se nu, wel voorbereid. Je shop draait gewoon door, maar de
+ontwikkeling staat stil en het platform wisselt regelmatig van
+eigenaar. Wie zijn contractdatum kent en een exit-plan klaar heeft,
+kan op eigen voorwaarden vertrekken in plaats van op die van de
+eigenaar.
+
+*Wat gebeurt er met mijn e-mailadres als ik wegga?*
+
+Een mailbox op je domein bij MijnWebwinkel stopt op de einddatum
+van je abonnement, samen met de domeinhosting. Regel vóór die
+datum een nieuwe mailbox en zet je e-mailgeschiedenis over; daarna
+is die onherroepelijk weg.
+
+#+BEGIN_EXPORT html
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is MijnWebwinkel al duurder geworden door Acendy?","acceptedAnswer":{"@type":"Answer","text":"Nee. Op 17 augustus 2026 staan de Nederlandse tarieven op 20, 40 en 70 euro per maand exclusief btw, dezelfde bedragen als eerder dit jaar. De hogere bedragen die circuleren horen bij het Noorse Mystore/Acendy-aanbod, niet bij de Nederlandse prijzen."}},{"@type":"Question","name":"Bestaat Acendy nog?","acceptedAnswer":{"@type":"Answer","text":"De naamswijziging van MijnWebwinkel naar Acendy (eind 2025) is begin 2026 teruggedraaid; de aankondiging is van het blog gehaald en mijnwebwinkel.nl werft weer onder de eigen naam. Het platform is inmiddels ondergebracht in de Norvato-portefeuille van investeerder Hg."}},{"@type":"Question","name":"Moet ik nu overstappen?","acceptedAnswer":{"@type":"Answer","text":"Niet per se nu, wel voorbereid. Je shop draait gewoon door, maar de ontwikkeling staat stil en het platform wisselt regelmatig van eigenaar. Wie zijn contractdatum kent en een exit-plan klaar heeft, kan op eigen voorwaarden vertrekken."}},{"@type":"Question","name":"Wat gebeurt er met mijn e-mailadres als ik wegga?","acceptedAnswer":{"@type":"Answer","text":"Een mailbox op je domein bij MijnWebwinkel stopt op de einddatum van je abonnement, samen met de domeinhosting. Regel vóór die datum een nieuwe mailbox en zet je e-mailgeschiedenis over; daarna is die onherroepelijk weg."}}]}
+</script>
+#+END_EXPORT
