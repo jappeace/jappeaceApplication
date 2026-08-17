@@ -18,8 +18,9 @@ webshop. Ergens tussen half januari 2026 en juli 2026 is de app uit
 de App Store gehaald: de productpagina geeft "niet gevonden", een
 zoekopdracht in de Nederlandse en Belgische App Store levert niets
 op, en de ontwikkelaar heeft er geen apps meer staan. De laatste
-versie stamt uit februari 2025. Wij controleerden dit op 18 juli en
-opnieuw op 31 juli 2026.
+versie stamt uit februari 2025. Wij controleerden dit op 18 juli,
+op 31 juli en opnieuw op 17 augustus 2026: nog steeds nergens te
+vinden, ook niet in de Belgische of Amerikaanse App Store.
 
 Belangrijk om te weten: een app die uit de App Store is gehaald
 blijft gewoon werken op de iPad waar hij al op staat. Er valt dus
