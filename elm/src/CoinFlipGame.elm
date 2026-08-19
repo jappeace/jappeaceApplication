@@ -856,7 +856,9 @@ viewBustEnding ending model =
 
         BustEndingQuote quote ->
             if model.phase == WentBust then
-                [ Html.div [] [ Html.em [] [ Html.text quote ] ] ]
+                [ Html.div [ Html.Attributes.class "bust-ending" ]
+                    [ Html.em [] [ Html.text quote ] ]
+                ]
 
             else
                 []
@@ -874,31 +876,40 @@ viewUncleSpend offer model =
 
             else
                 [ Html.div []
-                    [ Html.text "You paid uncle $"
-                    , Html.strong []
+                    ([ Html.text "You paid uncle $"
+                     , Html.strong []
                         [ Html.text (formatCents (model.uncleAdviceCount * uncle.priceCents)) ]
-                    , Html.text (" for his advice." ++ uncleVerdict model.phase)
-                    ]
+                     , Html.text " for his advice."
+                     ]
+                        ++ viewUncleVerdict model.phase
+                    )
                 ]
 
 
 {-| The parting word on uncle's advice: snark on a loss, applause for
-winning in spite of it.
+winning in spite of it. Its own element so the test suite can assert the
+gating without pinning the wording.
 -}
-uncleVerdict : GamePhase -> String
-uncleVerdict phase =
+viewUncleVerdict : GamePhase -> List (Html Msg)
+viewUncleVerdict phase =
     case phase of
         Playing ->
-            ""
+            []
 
         WonGame ->
-            " Congratulations on ignoring every word of it."
+            [ Html.span [ Html.Attributes.class "uncle-verdict" ]
+                [ Html.text " Congratulations on ignoring every word of it." ]
+            ]
 
         WentBust ->
-            " It shows."
+            [ Html.span [ Html.Attributes.class "uncle-verdict" ]
+                [ Html.text " It shows." ]
+            ]
 
         RanOutOfTime ->
-            " It shows."
+            [ Html.span [ Html.Attributes.class "uncle-verdict" ]
+                [ Html.text " It shows." ]
+            ]
 
 
 gameOverMessage : Model -> ( String, LogTone )

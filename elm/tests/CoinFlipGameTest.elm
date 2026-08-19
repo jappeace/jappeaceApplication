@@ -30,7 +30,7 @@ import CoinFlipLevel2
 import Expect
 import Test exposing (Test, describe, test)
 import Test.Html.Query as Query
-import Test.Html.Selector exposing (tag, text)
+import Test.Html.Selector exposing (class, tag)
 
 
 apply : LevelConfig -> List Msg -> Model -> Model
@@ -268,7 +268,7 @@ clockSuite =
 
 {-| The end screen renders through the real `view`; these tests assert
 what is gated on the game phase (next-level link, bust quote, uncle
-verdict), not the wording itself.
+verdict) by element, never by wording.
 -}
 gameOverSuite : Test
 gameOverSuite =
@@ -277,8 +277,7 @@ gameOverSuite =
             \_ ->
                 view CoinFlipLevel1.levelConfig { level1Start | phase = WonGame }
                     |> Query.fromHtml
-                    |> Query.find [ tag "a" ]
-                    |> Query.has [ text "<<next level>>" ]
+                    |> Query.has [ tag "a" ]
         , test "level 1 shows no next-level link on a bust" <|
             \_ ->
                 view CoinFlipLevel1.levelConfig { level1Start | phase = WentBust }
@@ -289,33 +288,38 @@ gameOverSuite =
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WonGame }
                     |> Query.fromHtml
                     |> Query.hasNot [ tag "a" ]
-        , test "level 2 shows the family quote only on a bust" <|
+        , test "level 2 shows the bust ending only on a bust" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WentBust }
                     |> Query.fromHtml
-                    |> Query.has [ text "not for trading with" ]
-        , test "the family quote stays hidden on a win" <|
+                    |> Query.has [ class "bust-ending" ]
+        , test "the bust ending stays hidden on a win" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WonGame }
                     |> Query.fromHtml
-                    |> Query.hasNot [ text "not for trading with" ]
-        , test "bought uncle advice draws snark on a bust" <|
+                    |> Query.hasNot [ class "bust-ending" ]
+        , test "level 1 has no bust ending configured" <|
+            \_ ->
+                view CoinFlipLevel1.levelConfig { level1Start | phase = WentBust }
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "bust-ending" ]
+        , test "bought uncle advice draws a verdict on a bust" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig
                     { level2Start | phase = WentBust, uncleAdviceCount = 1 }
                     |> Query.fromHtml
-                    |> Query.has [ text "It shows." ]
-        , test "bought uncle advice draws applause on a win" <|
+                    |> Query.has [ class "uncle-verdict" ]
+        , test "bought uncle advice draws a verdict on a win" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig
                     { level2Start | phase = WonGame, uncleAdviceCount = 1 }
                     |> Query.fromHtml
-                    |> Query.has [ text "Congratulations on ignoring" ]
+                    |> Query.has [ class "uncle-verdict" ]
         , test "without uncle advice there is no verdict at all" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WentBust }
                     |> Query.fromHtml
-                    |> Query.hasNot [ text "uncle" ]
+                    |> Query.hasNot [ class "uncle-verdict" ]
         ]
 
 
