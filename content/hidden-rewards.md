@@ -59,11 +59,16 @@ Try it out:
   #coin-flip-game .shop {
     border-top: 1px dashed #196019;
     padding-top: 0.6em;
+    display: grid;
+    gap: 0.4em;
+    text-align: left;
+  }
+  #coin-flip-game .shop-header { font-weight: bold; }
+  #coin-flip-game .shop-item {
     display: flex;
-    gap: 0.6em;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1em;
+    width: 100%;
   }
   #coin-flip-game input[type="number"] {
     font-family: inherit;
@@ -86,6 +91,7 @@ Try it out:
   #coin-flip-game .win-text { color: #1e7d1e; }
   #coin-flip-game .lose-text { color: #b03030; }
   #coin-flip-game .game-over { font-weight: bold; text-align: center; font-size: 1.1em; margin: 0.5em 0; }
+  #coin-flip-game .game-over a { color: inherit; text-decoration: underline; }
   @media (prefers-color-scheme: dark) {
     #coin-flip-game { background: rgba(0, 0, 0, 0.85); }
     #coin-flip-game .progress-track { background: #134013; }

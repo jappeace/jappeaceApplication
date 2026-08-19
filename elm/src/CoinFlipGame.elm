@@ -8,6 +8,8 @@ module CoinFlipGame exposing
     , LogTone(..)
     , Model
     , Msg(..)
+    , BustEnding(..)
+    , NextLevelLink(..)
     , TrackerOffer(..)
     , TrackerState(..)
     , UncleOffer(..)
@@ -82,11 +84,28 @@ type UncleOffer
     | UncleAdviceForSale { priceCents : Int, firstPhrase : String, morePhrases : List String }
 
 
+{-| Shown in the win text when this level has a sequel to link to.
+-}
+type NextLevelLink
+    = NoNextLevelLink
+    | NextLevelLinkTo { url : String, label : String }
+
+
+{-| An extra parting line under the bust message, for levels that want to
+rub it in.
+-}
+type BustEnding
+    = PlainBustEnding
+    | BustEndingQuote String
+
+
 type alias LevelConfig =
     { title : String
     , bias : CoinBias
     , trackerOffer : TrackerOffer
     , uncleOffer : UncleOffer
+    , nextLevelLink : NextLevelLink
+    , bustEnding : BustEnding
     , introLogLine : String
     }
 
@@ -744,8 +763,22 @@ viewShop config model =
 
         shopItems ->
             [ Html.div [ Html.Attributes.class "shop" ]
-                (Html.text "\u{1F6D2} Shop: " :: shopItems)
+                (Html.div [ Html.Attributes.class "shop-header" ] [ Html.text "\u{1F6D2} Shop" ]
+                    :: shopItems
+                )
             ]
+
+
+{-| One row in the shop: item name left, price right, so the prices line
+up across items (the .shop-item CSS spreads the two spans apart).
+-}
+viewShopItem : Msg -> String -> Int -> Html Msg
+viewShopItem onBuy itemName priceCents =
+    Html.button
+        [ Html.Attributes.class "shop-item", Html.Events.onClick onBuy ]
+        [ Html.span [] [ Html.text itemName ]
+        , Html.span [] [ Html.text ("$" ++ formatCents priceCents) ]
+        ]
 
 
 viewTrackerShopItem : TrackerOffer -> Model -> List (Html Msg)
@@ -761,9 +794,7 @@ viewTrackerShopItem offer model =
             []
 
         ( TrackerForSale priceCents, TrackerNotBought ) ->
-            [ Html.button [ Html.Events.onClick TrackerPurchased ]
-                [ Html.text ("Buy ratio tracker ($" ++ formatCents priceCents ++ ")") ]
-            ]
+            [ viewShopItem TrackerPurchased "Buy ratio tracker" priceCents ]
 
 
 viewUncleShopItem : UncleOffer -> List (Html Msg)
@@ -773,9 +804,7 @@ viewUncleShopItem offer =
             []
 
         UncleAdviceForSale uncle ->
-            [ Html.button [ Html.Events.onClick UncleAdviceRequested ]
-                [ Html.text ("Ask uncle for advice ($" ++ formatCents uncle.priceCents ++ ")") ]
-            ]
+            [ viewShopItem UncleAdviceRequested "Ask uncle for advice" uncle.priceCents ]
 
 
 viewGameOver : LevelConfig -> Model -> Html Msg
@@ -787,8 +816,10 @@ viewGameOver config model =
     Html.div
         [ Html.Attributes.class ("game-over " ++ toneClass tone) ]
         (List.concat
-            [ [ Html.text message
-              , Html.div []
+            [ [ Html.text message ]
+            , viewNextLevelLink config.nextLevelLink model
+            , viewBustEnding config.bustEnding model
+            , [ Html.div []
                     [ Html.text "It took you exactly "
                     , Html.strong [] [ Html.text (String.fromInt model.flipCount) ]
                     , Html.text " presses to get here."
@@ -798,6 +829,36 @@ viewGameOver config model =
             , viewUncleSpend config.uncleOffer model
             ]
         )
+
+
+viewNextLevelLink : NextLevelLink -> Model -> List (Html Msg)
+viewNextLevelLink link model =
+    case link of
+        NoNextLevelLink ->
+            []
+
+        NextLevelLinkTo nextLevel ->
+            if model.phase == WonGame then
+                [ Html.text " "
+                , Html.a [ Html.Attributes.href nextLevel.url ] [ Html.text nextLevel.label ]
+                ]
+
+            else
+                []
+
+
+viewBustEnding : BustEnding -> Model -> List (Html Msg)
+viewBustEnding ending model =
+    case ending of
+        PlainBustEnding ->
+            []
+
+        BustEndingQuote quote ->
+            if model.phase == WentBust then
+                [ Html.div [] [ Html.em [] [ Html.text quote ] ] ]
+
+            else
+                []
 
 
 viewUncleSpend : UncleOffer -> Model -> List (Html Msg)
@@ -815,9 +876,28 @@ viewUncleSpend offer model =
                     [ Html.text "You paid uncle $"
                     , Html.strong []
                         [ Html.text (formatCents (model.uncleAdviceCount * uncle.priceCents)) ]
-                    , Html.text " for his advice."
+                    , Html.text (" for his advice." ++ uncleVerdict model.phase)
                     ]
                 ]
+
+
+{-| The parting word on uncle's advice: snark on a loss, applause for
+winning in spite of it.
+-}
+uncleVerdict : GamePhase -> String
+uncleVerdict phase =
+    case phase of
+        Playing ->
+            ""
+
+        WonGame ->
+            " Congratulations on ignoring every word of it."
+
+        WentBust ->
+            " It shows."
+
+        RanOutOfTime ->
+            " It shows."
 
 
 gameOverMessage : Model -> ( String, LogTone )

@@ -76,6 +76,7 @@ Try it out:
   #coin-flip-game .win-text { color: #1e7d1e; }
   #coin-flip-game .lose-text { color: #b03030; }
   #coin-flip-game .game-over { font-weight: bold; text-align: center; font-size: 1.1em; margin: 0.5em 0; }
+  #coin-flip-game .game-over a { color: inherit; text-decoration: underline; }
   @media (prefers-color-scheme: dark) {
     #coin-flip-game { background: rgba(0, 0, 0, 0.85); }
     #coin-flip-game .progress-track { background: #134013; }

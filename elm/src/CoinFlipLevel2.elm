@@ -8,11 +8,13 @@ advice (cheap, worth less).
 
 import CoinFlipGame
     exposing
-        ( CoinBias(..)
+        ( BustEnding(..)
+        , CoinBias(..)
         , CoinSide(..)
         , LevelConfig
         , Model
         , Msg
+        , NextLevelLink(..)
         , TrackerOffer(..)
         , UncleOffer(..)
         , gameProgram
@@ -37,6 +39,8 @@ levelConfig =
                 , "Back in my day we didn't track ratios, we used our gut."
                 ]
             }
+    , nextLevelLink = NoNextLevelLink
+    , bustEnding = BustEndingQuote "Remember: family is for walking with, not for trading with."
     , introLogLine = "The coin is rigged again, but this time I won't tell you how. The clock starts on your first bet. Good luck!"
     }
 
