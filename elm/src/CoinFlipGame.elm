@@ -25,6 +25,7 @@ module CoinFlipGame exposing
     , targetBalanceCents
     , timeLimitSeconds
     , update
+    , view
     )
 
 {-| Shared engine for the rigged-coin betting games on the blog.
