@@ -319,6 +319,11 @@ shopSuite =
                 in
                 ( advised.balanceCents, advised.uncleAdviceCount, advised.pendingPurchase )
                     |> Expect.equal ( 2000, 1, Considering UncleAdviceItem clickAtOrigin )
+        , test "a swallowed click inside the dialog keeps it open" <|
+            \_ ->
+                apply [ PurchaseConsidered FlipHelperItem clickAtOrigin, DialogClicked ] level3Start
+                    |> .pendingPurchase
+                    |> Expect.equal (Considering FlipHelperItem clickAtOrigin)
         , test "cancelling uncle's advice charges nothing" <|
             \_ ->
                 apply [ PurchaseConsidered UncleAdviceItem clickAtOrigin, PurchaseCancelled ] level3Start

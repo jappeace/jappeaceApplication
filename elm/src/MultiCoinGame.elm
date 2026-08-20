@@ -51,6 +51,7 @@ choice on a single coin.
 -- the duplication to the small view fragments.
 
 import Browser
+import Browser.Events
 import CoinFlipGame
     exposing
         ( ClockState(..)
@@ -251,6 +252,7 @@ type Msg
     | PurchaseConsidered ShopItemKind ClickPoint
     | PurchaseConfirmed
     | PurchaseCancelled
+    | DialogClicked
     | CoinsLanded { stakes : List Int, rolls : List Int }
     | ClockTicked
     | TrackerPurchased
@@ -426,6 +428,11 @@ update config msg model =
 
         PurchaseCancelled ->
             ( { model | pendingPurchase = NoPendingPurchase }, Cmd.none )
+
+        DialogClicked ->
+            -- A click inside the dialog, swallowed (stopPropagation) so
+            -- the document-level dismiss listener never sees it.
+            ( model, Cmd.none )
 
         CoinsLanded landedRound ->
             ( settleRound config landedRound model, Cmd.none )
@@ -904,7 +911,22 @@ subscriptions model =
         [ clockSubscription model
         , autoclickerSubscription model
         , flipHelperSubscription model
+        , dialogDismissSubscription model
         ]
+
+
+{-| While a purchase dialog is open, any document-level click closes it.
+Clicks inside the dialog and on the shop items stop propagation, so
+they never reach this listener: only genuinely-outside clicks dismiss.
+-}
+dialogDismissSubscription : Model -> Sub Msg
+dialogDismissSubscription model =
+    case model.pendingPurchase of
+        NoPendingPurchase ->
+            Sub.none
+
+        Considering _ _ ->
+            Browser.Events.onClick (Decode.succeed PurchaseCancelled)
 
 
 {-| Each hired helper flips once per five seconds, staggered: N helpers
@@ -1224,6 +1246,7 @@ viewPurchaseDialog config model =
                 [ Html.Attributes.class "purchase-dialog"
                 , Html.Attributes.style "left" (pixels (max 8 (clickPoint.x - 71)))
                 , Html.Attributes.style "top" (pixels (max 8 (clickPoint.y - 32)))
+                , Html.Events.stopPropagationOn "click" (Decode.succeed ( DialogClicked, True ))
                 ]
                 [ Html.div [ Html.Attributes.class "dialog-actions" ]
                     [ Html.button
@@ -1357,7 +1380,11 @@ viewShopItem : (ClickPoint -> Msg) -> String -> Int -> Html Msg
 viewShopItem onBuyAt itemName priceCents =
     Html.button
         [ Html.Attributes.class "shop-item"
-        , Html.Events.on "click" (Decode.map onBuyAt clickPointDecoder)
+
+        -- stopPropagation: the click that opens (or switches) the
+        -- dialog must never reach the document-level dismiss listener.
+        , Html.Events.stopPropagationOn "click"
+            (Decode.map (\clickPoint -> ( onBuyAt clickPoint, True )) clickPointDecoder)
         ]
         [ Html.span [] [ Html.text itemName ]
         , Html.span [] [ Html.text ("$" ++ formatCents priceCents) ]
