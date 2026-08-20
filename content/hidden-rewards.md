@@ -4,7 +4,8 @@ Category: reflection
 OPTIONS: toc:nil
 Tags: gambling, stocks
 
-TODO
+This time one of the buttons has an upside, 
+I won't tell which. Good luck!
 
 <div id="coin-flip-game"></div>
 
@@ -102,7 +103,10 @@ TODO
 Elm.CoinFlipLevel2.init({ node: document.getElementById('coin-flip-game') });
 </script>
 
-<!-- TODO: the actual article still has to be written. The game above is
-     level 2 of even-with-an-edge-you-lose.html: the payoffs are hidden
-     (tails wins somewhere between 55% and 65% of flips, drawn at game
-     start), and the shop sells a $15 ratio tracker plus $5 uncle advice. -->
+Games in general become more interesting with hidden information.
+The strategy here is to just bet as little as possible, and only go for [kelly criterion](https://jappie.me/even-with-an-edge-you-lose.html) once you know 
+which button wins.
+I thought this would be a bit tedious to do so I added a feature to keep track of win lose ratios,
+at a relatively steep cost.
+I did this intentionally, but it's basically a win button for those who are "kelly aware" (and too lazy to track by hand).
+To keep it interesting it varies a bit between 55% and 65% (for the winning button).
