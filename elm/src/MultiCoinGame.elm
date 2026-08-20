@@ -2,7 +2,6 @@ module MultiCoinGame exposing
     ( Autoclicker(..)
     , AutoclickerOffer(..)
     , BustCause(..)
-    , ClickPoint
     , CoinConfig
     , CoinTally
     , FlipHelperOffer(..)
@@ -14,7 +13,6 @@ module MultiCoinGame exposing
     , MultiCoinConfig
     , PendingPurchase(..)
     , ProfileAssignment(..)
-    , ShopFold(..)
     , ShopItemKind(..)
     , StakeInput(..)
     , formatPayout
@@ -76,6 +74,7 @@ import Html.Events
 import Html.Keyed
 import Json.Decode as Decode
 import Random
+import ShopDialog exposing (ClickPoint, ShopFold(..))
 import Time
 
 
@@ -135,14 +134,6 @@ type FlipHelperOffer
     | FlipHelpersForSale { basePriceCents : Int, priceIncreasePercent : Int }
 
 
-{-| The shop folds away behind its header and starts collapsed, so the
-game opens on the bets, not the catalogue.
--}
-type ShopFold
-    = ShopCollapsed
-    | ShopExpanded
-
-
 {-| The shop items a purchase dialog explains before any money moves.
 -}
 type ShopItemKind
@@ -151,17 +142,6 @@ type ShopItemKind
     | AutoclickerItem
     | FlipHelperItem
     | UncleAdviceItem
-
-
-{-| Where in the viewport the shop item was clicked. The dialog is
-positioned so its confirm button renders right under this point: the
-pointer cannot be moved by a web page, but the button can be brought to
-the pointer.
--}
-type alias ClickPoint =
-    { x : Float
-    , y : Float
-    }
 
 
 {-| A purchase mid-consideration: clicking a shop item opens a dialog
@@ -1242,40 +1222,20 @@ viewPurchaseDialog config model =
             []
 
         Considering itemKind clickPoint ->
-            [ Html.div
-                [ Html.Attributes.class "purchase-dialog"
-                , Html.Attributes.style "left" (pixels (max 8 (clickPoint.x - 71)))
-                , Html.Attributes.style "top" (pixels (max 8 (clickPoint.y - 32)))
-                , Html.Events.stopPropagationOn "click" (Decode.succeed ( DialogClicked, True ))
-                ]
-                [ Html.div [ Html.Attributes.class "dialog-actions" ]
-                    [ Html.button
-                        [ Html.Events.onClick PurchaseConfirmed
-                        , Html.Attributes.style "width" "120px"
-                        , Html.Attributes.style "height" "42px"
-                        ]
-                        [ Html.text "Confirm" ]
-                    , Html.button [ Html.Events.onClick PurchaseCancelled ] [ Html.text "Cancel" ]
-                    ]
-                , Html.div []
-                    [ Html.strong []
-                        [ Html.text
-                            ("Buy "
-                                ++ itemDisplayName itemKind
-                                ++ " for $"
-                                ++ formatCents (itemPriceCents config model itemKind)
-                                ++ "?"
-                            )
-                        ]
-                    ]
-                , Html.div [] [ Html.text (itemExplanation itemKind) ]
-                ]
+            [ ShopDialog.viewPurchaseDialog
+                { clickPoint = clickPoint
+                , question =
+                    "Buy "
+                        ++ itemDisplayName itemKind
+                        ++ " for $"
+                        ++ formatCents (itemPriceCents config model itemKind)
+                        ++ "?"
+                , explanation = itemExplanation itemKind
+                , onConfirm = PurchaseConfirmed
+                , onCancel = PurchaseCancelled
+                , onInsideClick = DialogClicked
+                }
             ]
-
-
-pixels : Float -> String
-pixels amount =
-    String.fromFloat amount ++ "px"
 
 
 {-| The item's name with its article, ready for "Buy ... for $x?".
@@ -1363,39 +1323,12 @@ itemPriceCents config model itemKind =
 
 viewShopToggle : ShopFold -> Html Msg
 viewShopToggle fold =
-    Html.button
-        [ Html.Attributes.class "shop-toggle", Html.Events.onClick ShopToggled ]
-        [ Html.text
-            (case fold of
-                ShopCollapsed ->
-                    "\u{1F6D2} Shop \u{25B8}"
-
-                ShopExpanded ->
-                    "\u{1F6D2} Shop \u{25BE}"
-            )
-        ]
+    ShopDialog.viewShopToggle ShopToggled fold
 
 
 viewShopItem : (ClickPoint -> Msg) -> String -> Int -> Html Msg
 viewShopItem onBuyAt itemName priceCents =
-    Html.button
-        [ Html.Attributes.class "shop-item"
-
-        -- stopPropagation: the click that opens (or switches) the
-        -- dialog must never reach the document-level dismiss listener.
-        , Html.Events.stopPropagationOn "click"
-            (Decode.map (\clickPoint -> ( onBuyAt clickPoint, True )) clickPointDecoder)
-        ]
-        [ Html.span [] [ Html.text itemName ]
-        , Html.span [] [ Html.text ("$" ++ formatCents priceCents) ]
-        ]
-
-
-clickPointDecoder : Decode.Decoder ClickPoint
-clickPointDecoder =
-    Decode.map2 ClickPoint
-        (Decode.field "clientX" Decode.float)
-        (Decode.field "clientY" Decode.float)
+    ShopDialog.viewShopItem onBuyAt itemName ("$" ++ formatCents priceCents)
 
 
 viewTrackerShopItem : TrackerOffer -> Model -> List (Html Msg)

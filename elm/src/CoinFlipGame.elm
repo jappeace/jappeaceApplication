@@ -11,6 +11,8 @@ module CoinFlipGame exposing
     , Msg(..)
     , BustEnding(..)
     , NextLevelLink(..)
+    , PendingPurchase(..)
+    , ShopItemKind(..)
     , TrackerOffer(..)
     , TrackerState(..)
     , UncleGloat(..)
@@ -51,10 +53,13 @@ rounded floats after every flip to paper over drift.
 -- and the test suite can drive it deterministically.
 
 import Browser
+import Browser.Events
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
+import Json.Decode as Decode
 import Random
+import ShopDialog exposing (ClickPoint, ShopFold(..))
 import Time
 
 
@@ -87,6 +92,23 @@ The phrase list is split head/tail so an empty list cannot be configured.
 type UncleOffer
     = NoUncleAdvice
     | UncleAdviceForSale { priceCents : Int, firstPhrase : String, morePhrases : List String }
+
+
+{-| The shop items the purchase dialog explains before any money moves.
+-}
+type ShopItemKind
+    = TrackerItem
+    | UncleAdviceItem
+
+
+{-| A purchase mid-consideration: clicking a shop item opens a dialog
+explaining it, and only confirming actually buys. Uncle's advice keeps
+the dialog open after confirming (repeat customers welcome); the
+tracker closes it.
+-}
+type PendingPurchase
+    = NoPendingPurchase
+    | Considering ShopItemKind ClickPoint
 
 
 {-| Shown in the win text when this level has a sequel to link to.
@@ -172,6 +194,8 @@ type alias Model =
     , headsLandedCount : Int
     , tailsLandedCount : Int
     , tracker : TrackerState
+    , shopFold : ShopFold
+    , pendingPurchase : PendingPurchase
     , uncleAdviceCount : Int
     , uncleGloat : UncleGloat
     , log : List LogLine
@@ -186,6 +210,11 @@ type Msg
     | CoinLanded { playerChoice : CoinSide, betCents : Int, landed : CoinSide }
     | ClockTicked
     | TrackerPurchased
+    | ShopToggled
+    | PurchaseConsidered ShopItemKind ClickPoint
+    | PurchaseConfirmed
+    | PurchaseCancelled
+    | DialogClicked
     | UncleAdviceRequested
     | UncleAdviceGiven String
 
@@ -232,6 +261,8 @@ initialModel config =
     , headsLandedCount = 0
     , tailsLandedCount = 0
     , tracker = TrackerNotBought
+    , shopFold = ShopCollapsed
+    , pendingPurchase = NoPendingPurchase
     , uncleAdviceCount = 0
     , uncleGloat = UncleHasNotGloated
     , log = [ { tone = NeutralTone, text = config.introLogLine } ]
@@ -284,6 +315,45 @@ update config msg model =
 
         TrackerPurchased ->
             ( purchaseTracker config.trackerOffer model, Cmd.none )
+
+        ShopToggled ->
+            ( { model
+                | shopFold =
+                    case model.shopFold of
+                        ShopCollapsed ->
+                            ShopExpanded
+
+                        ShopExpanded ->
+                            ShopCollapsed
+              }
+            , Cmd.none
+            )
+
+        PurchaseConsidered itemKind clickPoint ->
+            ( { model | pendingPurchase = Considering itemKind clickPoint }, Cmd.none )
+
+        PurchaseConfirmed ->
+            case model.pendingPurchase of
+                NoPendingPurchase ->
+                    ( model, Cmd.none )
+
+                Considering TrackerItem _ ->
+                    ( purchaseTracker config.trackerOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering UncleAdviceItem _ ->
+                    -- Stays open: uncle appreciates repeat customers.
+                    purchaseUncleAdvice config.uncleOffer model
+
+        PurchaseCancelled ->
+            ( { model | pendingPurchase = NoPendingPurchase }, Cmd.none )
+
+        DialogClicked ->
+            -- A click inside the dialog, swallowed (stopPropagation) so
+            -- the document-level dismiss listener never sees it.
+            ( model, Cmd.none )
 
         UncleAdviceRequested ->
             purchaseUncleAdvice config.uncleOffer model
@@ -637,6 +707,25 @@ landedPercent sideCount totalFlips =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
+    Sub.batch [ clockSubscription model, dialogDismissSubscription model ]
+
+
+{-| While a purchase dialog is open, any document-level click closes it.
+Clicks inside the dialog and on the shop items stop propagation, so
+they never reach this listener: only genuinely-outside clicks dismiss.
+-}
+dialogDismissSubscription : Model -> Sub Msg
+dialogDismissSubscription model =
+    case model.pendingPurchase of
+        NoPendingPurchase ->
+            Sub.none
+
+        Considering _ _ ->
+            Browser.Events.onClick (Decode.succeed PurchaseCancelled)
+
+
+clockSubscription : Model -> Sub Msg
+clockSubscription model =
     case model.phase of
         Playing ->
             case model.clock of
@@ -814,22 +903,21 @@ viewShop config model =
 
         shopItems ->
             [ Html.div [ Html.Attributes.class "shop" ]
-                (Html.div [ Html.Attributes.class "shop-header" ] [ Html.text "\u{1F6D2} Shop" ]
-                    :: shopItems
+                (ShopDialog.viewShopToggle ShopToggled model.shopFold
+                    :: (case model.shopFold of
+                            ShopCollapsed ->
+                                []
+
+                            ShopExpanded ->
+                                shopItems ++ viewPurchaseDialog config model
+                       )
                 )
             ]
 
 
-{-| One row in the shop: item name left, price right, so the prices line
-up across items (the .shop-item CSS spreads the two spans apart).
--}
-viewShopItem : Msg -> String -> Int -> Html Msg
-viewShopItem onBuy itemName priceCents =
-    Html.button
-        [ Html.Attributes.class "shop-item", Html.Events.onClick onBuy ]
-        [ Html.span [] [ Html.text itemName ]
-        , Html.span [] [ Html.text ("$" ++ formatCents priceCents) ]
-        ]
+viewShopItem : (ClickPoint -> Msg) -> String -> Int -> Html Msg
+viewShopItem onBuyAt itemName priceCents =
+    ShopDialog.viewShopItem onBuyAt itemName ("$" ++ formatCents priceCents)
 
 
 viewTrackerShopItem : TrackerOffer -> Model -> List (Html Msg)
@@ -845,7 +933,7 @@ viewTrackerShopItem offer model =
             []
 
         ( TrackerForSale priceCents, TrackerNotBought ) ->
-            [ viewShopItem TrackerPurchased "Buy ratio tracker" priceCents ]
+            [ viewShopItem (PurchaseConsidered TrackerItem) "Buy ratio tracker" priceCents ]
 
 
 viewUncleShopItem : UncleOffer -> List (Html Msg)
@@ -855,7 +943,76 @@ viewUncleShopItem offer =
             []
 
         UncleAdviceForSale uncle ->
-            [ viewShopItem UncleAdviceRequested "Ask uncle for advice" uncle.priceCents ]
+            [ viewShopItem (PurchaseConsidered UncleAdviceItem) "Ask uncle for advice" uncle.priceCents ]
+
+
+viewPurchaseDialog : LevelConfig -> Model -> List (Html Msg)
+viewPurchaseDialog config model =
+    case model.pendingPurchase of
+        NoPendingPurchase ->
+            []
+
+        Considering itemKind clickPoint ->
+            [ ShopDialog.viewPurchaseDialog
+                { clickPoint = clickPoint
+                , question =
+                    "Buy "
+                        ++ itemDisplayName itemKind
+                        ++ " for $"
+                        ++ formatCents (itemPriceCents config itemKind)
+                        ++ "?"
+                , explanation = itemExplanation itemKind
+                , onConfirm = PurchaseConfirmed
+                , onCancel = PurchaseCancelled
+                , onInsideClick = DialogClicked
+                }
+            ]
+
+
+{-| The item's name with its article, ready for "Buy ... for $x?".
+-}
+itemDisplayName : ShopItemKind -> String
+itemDisplayName itemKind =
+    case itemKind of
+        TrackerItem ->
+            "the ratio tracker"
+
+        UncleAdviceItem ->
+            "uncle's advice"
+
+
+itemExplanation : ShopItemKind -> String
+itemExplanation itemKind =
+    case itemKind of
+        TrackerItem ->
+            "Counts how often heads and tails won across your flips, so you don't have to tally the log by hand."
+
+        UncleAdviceItem ->
+            "Uncle's advice speaks for itself. He's your uncle, surely he knows best."
+
+
+{-| The price the dialog quotes. Zero for an absent offer, which is
+never read: the dialog only opens from a shop button that an absent
+offer never renders.
+-}
+itemPriceCents : LevelConfig -> ShopItemKind -> Int
+itemPriceCents config itemKind =
+    case itemKind of
+        TrackerItem ->
+            case config.trackerOffer of
+                NoTrackerForSale ->
+                    0
+
+                TrackerForSale priceCents ->
+                    priceCents
+
+        UncleAdviceItem ->
+            case config.uncleOffer of
+                NoUncleAdvice ->
+                    0
+
+                UncleAdviceForSale uncle ->
+                    uncle.priceCents
 
 
 viewGameOver : LevelConfig -> Model -> Html Msg

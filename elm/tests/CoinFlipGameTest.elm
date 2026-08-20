@@ -20,6 +20,8 @@ import CoinFlipGame
         , formatClock
         , initialModel
         , landedPercent
+        , PendingPurchase(..)
+        , ShopItemKind(..)
         , parseBetCents
         , quickBetCents
         , update
@@ -29,6 +31,7 @@ import CoinFlipLevel1
 import CoinFlipLevel2
 import Expect
 import Test exposing (Test, describe, test)
+import ShopDialog
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (class, tag)
 
@@ -176,10 +179,66 @@ hiddenBiasSuite =
         ]
 
 
+clickAtOrigin : ShopDialog.ClickPoint
+clickAtOrigin =
+    { x = 0, y = 0 }
+
+
 shopSuite : Test
 shopSuite =
     describe "CoinFlipGame shop (level 2)"
-        [ test "buying the ratio tracker costs $15.00" <|
+        [ test "the shop starts collapsed with no items visible" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig level2Start
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "shop-item" ]
+        , test "toggling the shop reveals the items" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig [ ShopToggled ] level2Start
+                    |> view CoinFlipLevel2.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "shop-item" ]
+        , test "considering the tracker charges nothing" <|
+            \_ ->
+                let
+                    considering =
+                        apply CoinFlipLevel2.levelConfig
+                            [ PurchaseConsidered TrackerItem clickAtOrigin ]
+                            level2Start
+                in
+                ( considering.balanceCents, considering.tracker )
+                    |> Expect.equal ( 2500, TrackerNotBought )
+        , test "confirming the tracker buys it and closes the dialog" <|
+            \_ ->
+                let
+                    bought =
+                        apply CoinFlipLevel2.levelConfig
+                            [ PurchaseConsidered TrackerItem clickAtOrigin, PurchaseConfirmed ]
+                            level2Start
+                in
+                ( bought.balanceCents, bought.tracker, bought.pendingPurchase )
+                    |> Expect.equal ( 1000, TrackerBought, NoPendingPurchase )
+        , test "confirming uncle keeps the dialog open for repeat customers" <|
+            \_ ->
+                let
+                    advised =
+                        apply CoinFlipLevel2.levelConfig
+                            [ PurchaseConsidered UncleAdviceItem clickAtOrigin
+                            , PurchaseConfirmed
+                            , PurchaseConfirmed
+                            ]
+                            level2Start
+                in
+                ( advised.balanceCents, advised.uncleAdviceCount, advised.pendingPurchase )
+                    |> Expect.equal ( 1500, 2, Considering UncleAdviceItem clickAtOrigin )
+        , test "cancelling a considered purchase keeps the money" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ PurchaseConsidered UncleAdviceItem clickAtOrigin, PurchaseCancelled ]
+                    level2Start
+                    |> .uncleAdviceCount
+                    |> Expect.equal 0
+        , test "buying the ratio tracker costs $15.00" <|
             \_ ->
                 let
                     bought =

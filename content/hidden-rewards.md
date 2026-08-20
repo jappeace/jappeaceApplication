@@ -62,7 +62,18 @@ I won't tell which. Good luck!
     gap: 0.4em;
     text-align: left;
   }
-  #coin-flip-game .shop-header { font-weight: bold; }
+  #coin-flip-game .shop-toggle { width: 100%; text-align: left; font-weight: bold; }
+  #coin-flip-game .purchase-dialog {
+    position: fixed;
+    z-index: 10;
+    width: 20em;
+    border: 1px solid #196019;
+    border-radius: 4px;
+    padding: 0.6em;
+    text-align: left;
+    background: #eafbea;
+  }
+  #coin-flip-game .dialog-actions { display: flex; gap: 0.6em; margin-bottom: 0.5em; }
   #coin-flip-game .shop-item {
     display: flex;
     justify-content: space-between;
@@ -96,6 +107,7 @@ I won't tell which. Good luck!
     #coin-flip-game .progress-track { background: #134013; }
     #coin-flip-game .win-text { color: #7dff7d; }
     #coin-flip-game .lose-text { color: #ff6b6b; }
+    #coin-flip-game .purchase-dialog { background: #062606; }
   }
 </style>
 

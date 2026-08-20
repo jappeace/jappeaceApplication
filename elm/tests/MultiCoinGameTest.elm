@@ -34,6 +34,7 @@ import MultiCoinGame
         , view
         )
 import Random
+import ShopDialog
 import Test exposing (Test, describe, test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (class, text)
@@ -57,7 +58,7 @@ landedRound stakes rolls =
     CoinsLanded { stakes = stakes, rolls = rolls }
 
 
-clickAtOrigin : MultiCoinGame.ClickPoint
+clickAtOrigin : ShopDialog.ClickPoint
 clickAtOrigin =
     { x = 0, y = 0 }
 
