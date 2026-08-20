@@ -1,5 +1,6 @@
 module CoinFlipGame exposing
     ( BiasState(..)
+    , ClockState(..)
     , CoinBias(..)
     , CoinSide(..)
     , GamePhase(..)
@@ -12,6 +13,7 @@ module CoinFlipGame exposing
     , NextLevelLink(..)
     , TrackerOffer(..)
     , TrackerState(..)
+    , UncleGloat(..)
     , UncleOffer(..)
     , formatCents
     , formatClock
@@ -24,6 +26,7 @@ module CoinFlipGame exposing
     , startingBalanceCents
     , targetBalanceCents
     , timeLimitSeconds
+    , toneClass
     , update
     , view
     )
@@ -142,6 +145,15 @@ type LogTone
     | NeutralTone
 
 
+{-| Whether uncle already dropped his "proud of you" line. He gloats
+exactly once, and only after his final piece of advice has landed in
+the log, so the gloat stays the newest line.
+-}
+type UncleGloat
+    = UncleHasNotGloated
+    | UncleHasGloated
+
+
 type alias LogLine =
     { tone : LogTone, text : String }
 
@@ -160,6 +172,7 @@ type alias Model =
     , tailsLandedCount : Int
     , tracker : TrackerState
     , uncleAdviceCount : Int
+    , uncleGloat : UncleGloat
     , log : List LogLine
     }
 
@@ -219,6 +232,7 @@ initialModel config =
     , tailsLandedCount = 0
     , tracker = TrackerNotBought
     , uncleAdviceCount = 0
+    , uncleGloat = UncleHasNotGloated
     , log = [ { tone = NeutralTone, text = config.introLogLine } ]
     }
 
@@ -259,7 +273,7 @@ update config msg model =
             placeBet playerChoice model
 
         CoinLanded flip ->
-            ( settleFlip flip model, Cmd.none )
+            ( settleFlip config.uncleOffer flip model, Cmd.none )
 
         ClockTicked ->
             ( tickClock model, Cmd.none )
@@ -271,7 +285,8 @@ update config msg model =
             purchaseUncleAdvice config.uncleOffer model
 
         UncleAdviceGiven phrase ->
-            ( logLine NeutralTone ("\u{1F9D3} Uncle: \u{201C}" ++ phrase ++ "\u{201D}") model
+            ( gloatIfBusted config.uncleOffer
+                (logLine NeutralTone ("\u{1F9D3} Uncle: \u{201C}" ++ phrase ++ "\u{201D}") model)
             , Cmd.none
             )
 
@@ -328,8 +343,8 @@ coinFlipGenerator bias =
 {-| Apply a landed coin flip: pay out or collect, count it, and check for
 the win/bust end states.
 -}
-settleFlip : { playerChoice : CoinSide, betCents : Int, landed : CoinSide } -> Model -> Model
-settleFlip flip model =
+settleFlip : UncleOffer -> { playerChoice : CoinSide, betCents : Int, landed : CoinSide } -> Model -> Model
+settleFlip uncleOffer flip model =
     if model.phase /= Playing then
         model
 
@@ -369,16 +384,18 @@ settleFlip flip model =
                     , betInput = clampBetInput newBalance model.betInput
                 }
         in
-        checkEndState
-            (logLine
-                (if won then
-                    WinTone
+        gloatIfBusted uncleOffer
+            (checkEndState
+                (logLine
+                    (if won then
+                        WinTone
 
-                 else
-                    LoseTone
+                     else
+                        LoseTone
+                    )
+                    outcomeText
+                    counted
                 )
-                outcomeText
-                counted
             )
 
 
@@ -418,6 +435,28 @@ checkEndState model =
 
     else
         model
+
+
+{-| Once bankrupt, uncle pops into the log, if this level has an uncle
+at all. Called after every event that could have busted the game (a
+settled flip, or uncle's own advice landing when the purchase took the
+last dollars), so his gloat is always the newest log line, exactly
+once.
+-}
+gloatIfBusted : UncleOffer -> Model -> Model
+gloatIfBusted offer model =
+    case offer of
+        NoUncleAdvice ->
+            model
+
+        UncleAdviceForSale _ ->
+            if model.phase == WentBust && model.uncleGloat == UncleHasNotGloated then
+                logLine NeutralTone
+                    "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+                    { model | uncleGloat = UncleHasGloated }
+
+            else
+                model
 
 
 tickClock : Model -> Model
@@ -469,8 +508,9 @@ purchaseTracker offer model =
                     }
 
 
-{-| Pay uncle and draw one of his pre-programmed pearls of wisdom. Like
-the tracker, refused when it would wipe the balance to $0.
+{-| Pay uncle and draw one of his pre-programmed pearls of wisdom.
+Unlike the tracker, uncle happily takes your last dollars: spending
+yourself into bankruptcy on advice is a lesson the game wants to allow.
 -}
 purchaseUncleAdvice : UncleOffer -> Model -> ( Model, Cmd Msg )
 purchaseUncleAdvice offer model =
@@ -482,15 +522,19 @@ purchaseUncleAdvice offer model =
             if model.phase /= Playing then
                 ( model, Cmd.none )
 
-            else if model.balanceCents <= uncle.priceCents then
+            else if model.balanceCents < uncle.priceCents then
                 ( logLine NeutralTone "You cannot afford uncle's advice." model, Cmd.none )
 
             else
-                ( { model
-                    | balanceCents = model.balanceCents - uncle.priceCents
-                    , uncleAdviceCount = model.uncleAdviceCount + 1
-                    , betInput = clampBetInput (model.balanceCents - uncle.priceCents) model.betInput
-                  }
+                -- No gloat here even when this purchase busts the game:
+                -- the bought advice is still in flight, and the gloat
+                -- must land after it (see gloatIfBusted).
+                ( checkEndState
+                    { model
+                        | balanceCents = model.balanceCents - uncle.priceCents
+                        , uncleAdviceCount = model.uncleAdviceCount + 1
+                        , betInput = clampBetInput (model.balanceCents - uncle.priceCents) model.betInput
+                    }
                 , Random.generate UncleAdviceGiven
                     (Random.uniform uncle.firstPhrase uncle.morePhrases)
                 )
@@ -589,20 +633,22 @@ landedPercent sideCount totalFlips =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    case ( model.phase, model.clock ) of
-        ( Playing, ClockRunning ) ->
-            Time.every 1000 (\_ -> ClockTicked)
+    case model.phase of
+        Playing ->
+            case model.clock of
+                ClockRunning ->
+                    Time.every 1000 (\_ -> ClockTicked)
 
-        ( Playing, ClockIdle ) ->
+                ClockIdle ->
+                    Sub.none
+
+        WonGame ->
             Sub.none
 
-        ( WonGame, _ ) ->
+        WentBust ->
             Sub.none
 
-        ( WentBust, _ ) ->
-            Sub.none
-
-        ( RanOutOfTime, _ ) ->
+        RanOutOfTime ->
             Sub.none
 
 

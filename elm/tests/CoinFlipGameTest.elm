@@ -214,13 +214,53 @@ shopSuite =
                 in
                 ( advised.balanceCents, advised.uncleAdviceCount )
                     |> Expect.equal ( 1500, 2 )
-        , test "uncle is refused when it would wipe the balance" <|
+        , test "spending the last dollars on uncle goes bust" <|
+            \_ ->
+                let
+                    busted =
+                        apply CoinFlipLevel2.levelConfig
+                            [ UncleAdviceRequested ]
+                            { level2Start | balanceCents = 500 }
+                in
+                ( busted.balanceCents, busted.phase, busted.uncleAdviceCount )
+                    |> Expect.equal ( 0, WentBust, 1 )
+        , test "uncle is refused below his price" <|
             \_ ->
                 apply CoinFlipLevel2.levelConfig
                     [ UncleAdviceRequested ]
-                    { level2Start | balanceCents = 500 }
+                    { level2Start | balanceCents = 499 }
                     |> .uncleAdviceCount
                     |> Expect.equal 0
+        , test "busting on uncle's advice gloats after the advice lands, once" <|
+            \_ ->
+                let
+                    gloatLine =
+                        "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+
+                    busted =
+                        apply CoinFlipLevel2.levelConfig
+                            [ UncleAdviceRequested, UncleAdviceGiven "Bet big." ]
+                            { level2Start | balanceCents = 500 }
+
+                    gloatCount =
+                        List.length (List.filter (\line -> line.text == gloatLine) busted.log)
+                in
+                ( latestLogText busted, gloatCount )
+                    |> Expect.equal ( gloatLine, 1 )
+        , test "going bust summons a proud uncle in the log" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ landedFlip Heads 1000 Tails ]
+                    { level2Start | balanceCents = 1000 }
+                    |> latestLogText
+                    |> Expect.equal "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+        , test "level 1 has no uncle to gloat on a bust" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ landedFlip Heads 1000 Tails ]
+                    { level1Start | balanceCents = 1000 }
+                    |> latestLogText
+                    |> Expect.notEqual "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
         , test "uncle's advice ends up in the log" <|
             \_ ->
                 apply CoinFlipLevel2.levelConfig
@@ -283,9 +323,14 @@ gameOverSuite =
                 view CoinFlipLevel1.levelConfig { level1Start | phase = WentBust }
                     |> Query.fromHtml
                     |> Query.hasNot [ tag "a" ]
-        , test "level 2 has no next level to link on a win" <|
+        , test "level 2 links the next level on a win" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WonGame }
+                    |> Query.fromHtml
+                    |> Query.has [ tag "a" ]
+        , test "level 2 shows no next-level link on a bust" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig { level2Start | phase = WentBust }
                     |> Query.fromHtml
                     |> Query.hasNot [ tag "a" ]
         , test "level 2 shows the bust ending only on a bust" <|

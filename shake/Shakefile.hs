@@ -141,6 +141,7 @@ shakeRules = do
       copyStaticAssets
       buildCoinFlipLevel1
       buildCoinFlipLevel2
+      buildCoinFlipLevel3
 
       -- Build penguin site
       need ["build-penguin"]
@@ -182,6 +183,7 @@ shakeRules = do
       copyStaticAssets
       buildCoinFlipLevel1
       buildCoinFlipLevel2
+      buildCoinFlipLevel3
 
       -- Build penguin + webwinkel sites, with penguin's webwinkelverhuis.nl
       -- links pointing at the locally served copy instead of the live site.
@@ -624,6 +626,10 @@ buildCoinFlipLevel1 = buildBlogElmApp "src/CoinFlipLevel1.elm" "coin-flip-level1
 -- | Level 2, hidden rewards (hidden-rewards.html).
 buildCoinFlipLevel2 :: Action ()
 buildCoinFlipLevel2 = buildBlogElmApp "src/CoinFlipLevel2.elm" "coin-flip-level2.js"
+
+-- | Level 3, the black swan (black-swan.html).
+buildCoinFlipLevel3 :: Action ()
+buildCoinFlipLevel3 = buildBlogElmApp "src/CoinFlipLevel3.elm" "coin-flip-level3.js"
 
 -- | The /prijzen price calculator.
 buildPrijsCalculator :: Action ()
