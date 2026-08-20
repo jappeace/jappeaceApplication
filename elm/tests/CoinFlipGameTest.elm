@@ -214,11 +214,21 @@ shopSuite =
                 in
                 ( advised.balanceCents, advised.uncleAdviceCount )
                     |> Expect.equal ( 1500, 2 )
-        , test "uncle is refused when it would wipe the balance" <|
+        , test "spending the last dollars on uncle goes bust" <|
+            \_ ->
+                let
+                    busted =
+                        apply CoinFlipLevel2.levelConfig
+                            [ UncleAdviceRequested ]
+                            { level2Start | balanceCents = 500 }
+                in
+                ( busted.balanceCents, busted.phase, busted.uncleAdviceCount )
+                    |> Expect.equal ( 0, WentBust, 1 )
+        , test "uncle is refused below his price" <|
             \_ ->
                 apply CoinFlipLevel2.levelConfig
                     [ UncleAdviceRequested ]
-                    { level2Start | balanceCents = 500 }
+                    { level2Start | balanceCents = 499 }
                     |> .uncleAdviceCount
                     |> Expect.equal 0
         , test "uncle's advice ends up in the log" <|

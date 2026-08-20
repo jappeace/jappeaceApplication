@@ -364,7 +364,9 @@ resolveCoin coin tally stake roll =
                             coin.coinName
                                 ++ " landed heads! You win $"
                                 ++ formatCents (stake + paidOut)
-                                ++ "."
+                                ++ ", of which $"
+                                ++ formatCents stake
+                                ++ " is your stake."
                       }
                     ]
                 }
@@ -499,6 +501,9 @@ purchaseGlasses offer model =
 
 
 {-| Pay uncle and draw one of his pre-programmed pearls of wisdom.
+Unlike the tracker and glasses, uncle happily takes your last dollars:
+spending yourself into bankruptcy on advice is a lesson the game wants
+to allow.
 -}
 purchaseUncleAdvice : UncleOffer -> Model -> ( Model, Cmd Msg )
 purchaseUncleAdvice offer model =
@@ -510,14 +515,15 @@ purchaseUncleAdvice offer model =
             if model.phase /= Playing then
                 ( model, Cmd.none )
 
-            else if model.balanceCents <= uncle.priceCents then
+            else if model.balanceCents < uncle.priceCents then
                 ( logLine NeutralTone "You cannot afford uncle's advice." model, Cmd.none )
 
             else
-                ( { model
-                    | balanceCents = model.balanceCents - uncle.priceCents
-                    , uncleAdviceCount = model.uncleAdviceCount + 1
-                  }
+                ( checkEndState
+                    { model
+                        | balanceCents = model.balanceCents - uncle.priceCents
+                        , uncleAdviceCount = model.uncleAdviceCount + 1
+                    }
                 , Random.generate UncleAdviceGiven
                     (Random.uniform uncle.firstPhrase uncle.morePhrases)
                 )

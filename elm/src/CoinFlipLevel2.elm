@@ -40,7 +40,7 @@ levelConfig =
                 ]
             }
     , nextLevelLink = NextLevelLinkTo { url = "/black-swan.html", label = "<<next level>>" }
-    , bustEnding = BustEndingQuote "Remember: family is for walking with, not for trading with."
+    , bustEnding = BustEndingQuote "Remember: never do business with family."
     , introLogLine = "The coin is rigged again, but this time I won't tell you how. The clock starts on your first bet. Good luck!"
     }
 
