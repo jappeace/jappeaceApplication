@@ -38,6 +38,7 @@ import Text.Pandoc
 import Text.Pandoc.Highlighting (pygments)
 import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
+import ArticleSummary (truncateHtml)
 import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
@@ -421,87 +422,6 @@ splitFootnotes html =
     (before, after)
       | T.null after -> (html, Nothing)
       | otherwise    -> (before, Just after)
-
--- | Truncate rendered HTML to ~N words, closing any unclosed tags.
--- Counts only visible text words, skips inside tags and entities.
-truncateHtml :: Int -> Text -> Text
-truncateHtml maxWords html =
-  let (result, openTags) = go 0 [] (T.unpack html)
-      closingTags = concatMap (\t -> "</" ++ t ++ ">") openTags
-  in T.pack result <> T.pack closingTags
-  where
-    -- Track open tag stack, count words in text nodes
-    go :: Int -> [String] -> String -> (String, [String])
-    go _ tags [] = ([], tags)
-    go wc tags _ | wc >= maxWords = ([], tags)
-    go wc tags ('<':'/':rest) =
-      -- Closing tag: consume until '>', pop from stack
-      let (tagContent, after) = span (/= '>') rest
-          tagName = takeWhile (\c -> c /= ' ' && c /= '>') tagContent
-          closeStr = "</" ++ tagContent ++ ">"
-          tags' = dropFirst tagName tags
-          (remainder, finalTags) = go wc tags' (drop 1 after)
-      in (closeStr ++ remainder, finalTags)
-    go wc tags ('<':rest) =
-      -- Opening tag: consume until '>', push to stack if not void/self-closing
-      let (tagContent, after) = span (/= '>') rest
-          tagName = takeWhile (\c -> c /= ' ' && c /= '>' && c /= '/') tagContent
-          isSelfClosing = not (null tagContent) && last tagContent == '/'
-          isVoid = tagName `elem` voidElements
-          tagStr = "<" ++ tagContent ++ ">"
-      in if tagName == "style"
-         then -- Skip style block content without counting words
-           let (styleBody, afterClose) = skipUntilClose "style" (drop 1 after)
-               (remainder, finalTags) = go wc tags afterClose
-           in (tagStr ++ styleBody ++ remainder, finalTags)
-         else
-           let tags' = if isSelfClosing || isVoid || null tagName
-                       then tags
-                       else tagName : tags
-               (remainder, finalTags) = go wc tags' (drop 1 after)
-           in (tagStr ++ remainder, finalTags)
-    go wc tags ('&':rest) =
-      -- HTML entity: pass through without counting as word
-      let (entity, after) = span (/= ';') rest
-          entityStr = "&" ++ entity ++ ";"
-          (remainder, finalTags) = go wc tags (drop 1 after)
-      in (entityStr ++ remainder, finalTags)
-    go wc tags (c:rest)
-      | c == ' ' || c == '\n' || c == '\t' || c == '\r' =
-          let (remainder, finalTags) = go wc tags rest
-          in (c : remainder, finalTags)
-      | otherwise =
-          -- Start of a word: consume until whitespace or tag
-          let (word, after) = span (\ch -> ch /= ' ' && ch /= '\n' && ch /= '\t' && ch /= '\r' && ch /= '<' && ch /= '&') rest
-              fullWord = c : word
-              wc' = wc + 1
-              (remainder, finalTags) = go wc' tags after
-          in (fullWord ++ remainder, finalTags)
-
-    dropFirst :: String -> [String] -> [String]
-    dropFirst _ [] = []
-    dropFirst x (y:ys)
-      | x == y    = ys
-      | otherwise = y : dropFirst x ys
-
-    voidElements :: [String]
-    voidElements = ["br", "img", "hr", "input", "meta", "link", "area",
-                    "base", "col", "embed", "source", "track", "wbr"]
-
-    -- | Consume everything up to and including a closing tag, returning
-    --   the consumed content (with closing tag) and the remainder.
-    skipUntilClose :: String -> String -> (String, String)
-    skipUntilClose _ [] = ([], [])
-    skipUntilClose name ('<':'/':rest) =
-      let (tagContent, after) = span (/= '>') rest
-          closeName = takeWhile (\c -> c /= ' ' && c /= '>') tagContent
-      in if closeName == name
-         then ("</" ++ tagContent ++ ">", drop 1 after)
-         else let (body, remaining) = skipUntilClose name (drop 1 after)
-              in ("</" ++ tagContent ++ ">" ++ body, remaining)
-    skipUntilClose name (c:rest) =
-      let (body, remaining) = skipUntilClose name rest
-      in (c : body, remaining)
 
 -- =============================================================================
 -- Tag and category maps
