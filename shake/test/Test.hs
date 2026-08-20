@@ -27,7 +27,7 @@ import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
-import ArticleSummary (truncateHtml)
+import ArticleSummary (summarize, truncateHtml)
 import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Data.Char (isHexDigit)
 import qualified Data.ByteString.Char8 as BSC
@@ -198,6 +198,8 @@ main = defaultMain $
         [ summaryDropsScriptBlocks
         , summaryDropsStyleBlocks
         , summaryStillTruncatesAndCloses
+        , authorSummaryOverridesContent
+        , withoutAuthorSummaryContentIsTruncated
         ]
     ]
 
@@ -225,6 +227,20 @@ summaryDropsStyleBlocks = testCase "style blocks are dropped wholesale" $ do
   assertBool "keeps the prose" ("words" `T.isInfixOf` summary)
   assertBool "drops the style tag and its rules" (not ("style" `T.isInfixOf` summary))
   assertBool "drops the css selector" (not ("coin-flip-game" `T.isInfixOf` summary))
+
+-- | A Summary: header replaces the derived summary entirely, so the
+-- words below a game embed (the strategy) can never leak onto the index.
+authorSummaryOverridesContent :: TestTree
+authorSummaryOverridesContent = testCase "an author summary hides the content from the index" $ do
+  let summary = summarize (Just "A teaser without spoilers.")
+        "<p>intro</p><div id=\"coin-flip-game\"></div><p>the winning strategy is tails</p>"
+  assertBool "uses the author text" (summary == "A teaser without spoilers.")
+  assertBool "never leaks the content" (not ("strategy" `T.isInfixOf` summary))
+
+withoutAuthorSummaryContentIsTruncated :: TestTree
+withoutAuthorSummaryContentIsTruncated = testCase "no header falls back to truncated content" $ do
+  let summary = summarize Nothing "<p>just some prose to truncate</p>"
+  assertBool "keeps the prose" ("just some prose" `T.isInfixOf` summary)
 
 -- | The original truncation contract is unchanged: cut at the word limit and
 -- close whatever tags are still open.

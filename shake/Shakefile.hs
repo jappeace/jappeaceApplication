@@ -38,7 +38,7 @@ import Text.Pandoc
 import Text.Pandoc.Highlighting (pygments)
 import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 
-import ArticleSummary (truncateHtml)
+import ArticleSummary (summarize)
 import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
@@ -365,7 +365,8 @@ parseContentFile contentDir (path, ext) = do
           putStrLn $ "Warning: no valid date for " ++ path ++ ", skipping"
           return (Left "no date")
         Just date -> do
-          (htmlContent, contentText, summaryHtml, summaryTextVal, footnotesHtml) <- renderPandocWithSummary ext body
+          (htmlContent, contentText, summaryHtml, summaryTextVal, footnotesHtml) <-
+            renderPandocWithSummary (Map.lookup "summary" meta) ext body
           if isPage
             then return $ Right $ Right Page
               { pageTitle = title
@@ -395,9 +396,11 @@ parseContentFile contentDir (path, ext) = do
     prefixOf pfx str = take (length pfx) str == pfx
 
 -- | Render Pandoc document, returning content HTML (without footnotes),
--- full text, summary HTML (~50 words), and extracted footnotes HTML.
-renderPandocWithSummary :: String -> Text -> IO (Html, Text, Maybe Html, Maybe Text, Maybe Html)
-renderPandocWithSummary ext body = runIOorExplode $ do
+-- full text, summary HTML, and extracted footnotes HTML. The summary is
+-- the author's @Summary:@ header when given (escaped as plain text),
+-- otherwise the first ~50 words of the content ('summarize').
+renderPandocWithSummary :: Maybe Text -> String -> Text -> IO (Html, Text, Maybe Html, Maybe Text, Maybe Html)
+renderPandocWithSummary mAuthorSummary ext body = runIOorExplode $ do
   let ropts = def { readerExtensions = pandocExtensions }
       wopts = def { writerHighlightStyle = Just pygments }
   doc <- case ext of
@@ -408,8 +411,10 @@ renderPandocWithSummary ext body = runIOorExplode $ do
       (contentWithoutFn, mFootnotes) = splitFootnotes fullText
       contentHtml = H.preEscapedToHtml contentWithoutFn
       footnotesHtml = fmap H.preEscapedToHtml mFootnotes
-      summaryText = truncateHtml 50 fullText
-      summaryHtmlVal = H.preEscapedToHtml summaryText
+      summaryText = summarize mAuthorSummary fullText
+      summaryHtmlVal = case mAuthorSummary of
+        Just provided -> H.toHtml provided
+        Nothing -> H.preEscapedToHtml summaryText
   return (contentHtml, fullText, Just summaryHtmlVal, Just summaryText, footnotesHtml)
 
 lazyToStrictText :: TL.Text -> Text

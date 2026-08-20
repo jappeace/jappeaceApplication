@@ -3,6 +3,7 @@ Date: 2026-08-20 22:30
 Category: reflection
 OPTIONS: toc:nil
 Tags: gambling, finance, game
+Summary: Even the best gamblers fail on this level. Only a black swan of a gambler may succeed.
 
 Even the best gamblers fail on this level.
 Only a [black swan](https://en.wikipedia.org/wiki/The_Black_Swan:_The_Impact_of_the_Highly_Improbable) 
