@@ -50,6 +50,7 @@ import CoinFlipGame
         , LogTone(..)
         , TrackerOffer(..)
         , TrackerState(..)
+        , UncleGloat(..)
         , UncleOffer(..)
         , formatCents
         , formatClock
@@ -118,6 +119,7 @@ type alias Model =
     , tracker : TrackerState
     , glasses : GoldenGlasses
     , uncleAdviceCount : Int
+    , uncleGloat : UncleGloat
     , bustCause : BustCause
     , log : List LogLine
     }
@@ -166,6 +168,7 @@ initialModel config =
     , tracker = TrackerNotBought
     , glasses = GlassesNotBought
     , uncleAdviceCount = 0
+    , uncleGloat = UncleHasNotGloated
     , bustCause = NotBusted
     , log = [ { tone = NeutralTone, text = config.introLogLine } ]
     }
@@ -209,7 +212,8 @@ update config msg model =
             purchaseUncleAdvice config.uncleOffer model
 
         UncleAdviceGiven phrase ->
-            ( logLine NeutralTone ("\u{1F9D3} Uncle: \u{201C}" ++ phrase ++ "\u{201D}") model
+            ( gloatIfBusted config.uncleOffer
+                (logLine NeutralTone ("\u{1F9D3} Uncle: \u{201C}" ++ phrase ++ "\u{201D}") model)
             , Cmd.none
             )
 
@@ -414,39 +418,49 @@ settleRound config landedRound model =
             roundLogLines =
                 List.concatMap .logLines outcomes
         in
-        checkEndState config.uncleOffer
-            BustByBetting
-            { model
-                | balanceCents = newBalance
-                , tallies = List.map .tally outcomes
-                , roundCount = model.roundCount + 1
-                , log = List.reverse roundLogLines ++ model.log
-            }
+        gloatIfBusted config.uncleOffer
+            (checkEndState BustByBetting
+                { model
+                    | balanceCents = newBalance
+                    , tallies = List.map .tally outcomes
+                    , roundCount = model.roundCount + 1
+                    , log = List.reverse roundLogLines ++ model.log
+                }
+            )
 
 
-checkEndState : UncleOffer -> BustCause -> Model -> Model
-checkEndState uncleOffer causeIfBusted model =
+checkEndState : BustCause -> Model -> Model
+checkEndState causeIfBusted model =
     if model.balanceCents >= targetBalanceCents then
         { model | phase = WonGame }
 
     else if model.balanceCents <= 0 then
-        uncleGloatsOnBust uncleOffer { model | phase = WentBust, bustCause = causeIfBusted }
+        { model | phase = WentBust, bustCause = causeIfBusted }
 
     else
         model
 
 
-{-| The moment you go bankrupt, uncle pops into the log, if this level
-has an uncle at all.
+{-| Once bankrupt, uncle pops into the log, if this level has an uncle
+at all. Called after every event that could have busted the game (a
+settled round, or uncle's own advice landing when the purchase took the
+last dollars), so his gloat is always the newest log line, exactly
+once.
 -}
-uncleGloatsOnBust : UncleOffer -> Model -> Model
-uncleGloatsOnBust offer model =
+gloatIfBusted : UncleOffer -> Model -> Model
+gloatIfBusted offer model =
     case offer of
         NoUncleAdvice ->
             model
 
         UncleAdviceForSale _ ->
-            logLine NeutralTone "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}" model
+            if model.phase == WentBust && model.uncleGloat == UncleHasNotGloated then
+                logLine NeutralTone
+                    "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+                    { model | uncleGloat = UncleHasGloated }
+
+            else
+                model
 
 
 tickClock : Model -> Model
@@ -546,8 +560,10 @@ purchaseUncleAdvice offer model =
                 ( logLine NeutralTone "You cannot afford uncle's advice." model, Cmd.none )
 
             else
-                ( checkEndState offer
-                    BustByUncleAdvice
+                -- No gloat here even when this purchase busts the game:
+                -- the bought advice is still in flight, and the gloat
+                -- must land after it (see gloatIfBusted).
+                ( checkEndState BustByUncleAdvice
                     { model
                         | balanceCents = model.balanceCents - uncle.priceCents
                         , uncleAdviceCount = model.uncleAdviceCount + 1

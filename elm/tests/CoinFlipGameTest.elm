@@ -231,6 +231,22 @@ shopSuite =
                     { level2Start | balanceCents = 499 }
                     |> .uncleAdviceCount
                     |> Expect.equal 0
+        , test "busting on uncle's advice gloats after the advice lands, once" <|
+            \_ ->
+                let
+                    gloatLine =
+                        "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+
+                    busted =
+                        apply CoinFlipLevel2.levelConfig
+                            [ UncleAdviceRequested, UncleAdviceGiven "Bet big." ]
+                            { level2Start | balanceCents = 500 }
+
+                    gloatCount =
+                        List.length (List.filter (\line -> line.text == gloatLine) busted.log)
+                in
+                ( latestLogText busted, gloatCount )
+                    |> Expect.equal ( gloatLine, 1 )
         , test "going bust summons a proud uncle in the log" <|
             \_ ->
                 apply CoinFlipLevel2.levelConfig

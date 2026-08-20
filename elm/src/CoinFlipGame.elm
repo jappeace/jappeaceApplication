@@ -13,6 +13,7 @@ module CoinFlipGame exposing
     , NextLevelLink(..)
     , TrackerOffer(..)
     , TrackerState(..)
+    , UncleGloat(..)
     , UncleOffer(..)
     , formatCents
     , formatClock
@@ -144,6 +145,15 @@ type LogTone
     | NeutralTone
 
 
+{-| Whether uncle already dropped his "proud of you" line. He gloats
+exactly once, and only after his final piece of advice has landed in
+the log, so the gloat stays the newest line.
+-}
+type UncleGloat
+    = UncleHasNotGloated
+    | UncleHasGloated
+
+
 type alias LogLine =
     { tone : LogTone, text : String }
 
@@ -162,6 +172,7 @@ type alias Model =
     , tailsLandedCount : Int
     , tracker : TrackerState
     , uncleAdviceCount : Int
+    , uncleGloat : UncleGloat
     , log : List LogLine
     }
 
@@ -221,6 +232,7 @@ initialModel config =
     , tailsLandedCount = 0
     , tracker = TrackerNotBought
     , uncleAdviceCount = 0
+    , uncleGloat = UncleHasNotGloated
     , log = [ { tone = NeutralTone, text = config.introLogLine } ]
     }
 
@@ -273,7 +285,8 @@ update config msg model =
             purchaseUncleAdvice config.uncleOffer model
 
         UncleAdviceGiven phrase ->
-            ( logLine NeutralTone ("\u{1F9D3} Uncle: \u{201C}" ++ phrase ++ "\u{201D}") model
+            ( gloatIfBusted config.uncleOffer
+                (logLine NeutralTone ("\u{1F9D3} Uncle: \u{201C}" ++ phrase ++ "\u{201D}") model)
             , Cmd.none
             )
 
@@ -371,16 +384,18 @@ settleFlip uncleOffer flip model =
                     , betInput = clampBetInput newBalance model.betInput
                 }
         in
-        checkEndState uncleOffer
-            (logLine
-                (if won then
-                    WinTone
+        gloatIfBusted uncleOffer
+            (checkEndState
+                (logLine
+                    (if won then
+                        WinTone
 
-                 else
-                    LoseTone
+                     else
+                        LoseTone
+                    )
+                    outcomeText
+                    counted
                 )
-                outcomeText
-                counted
             )
 
 
@@ -410,29 +425,38 @@ clampBetInput balanceCents input =
                 input
 
 
-checkEndState : UncleOffer -> Model -> Model
-checkEndState uncleOffer model =
+checkEndState : Model -> Model
+checkEndState model =
     if model.balanceCents >= targetBalanceCents then
         { model | phase = WonGame }
 
     else if model.balanceCents <= 0 then
-        uncleGloatsOnBust uncleOffer { model | phase = WentBust }
+        { model | phase = WentBust }
 
     else
         model
 
 
-{-| The moment you go bankrupt, uncle pops into the log, if this level
-has an uncle at all.
+{-| Once bankrupt, uncle pops into the log, if this level has an uncle
+at all. Called after every event that could have busted the game (a
+settled flip, or uncle's own advice landing when the purchase took the
+last dollars), so his gloat is always the newest log line, exactly
+once.
 -}
-uncleGloatsOnBust : UncleOffer -> Model -> Model
-uncleGloatsOnBust offer model =
+gloatIfBusted : UncleOffer -> Model -> Model
+gloatIfBusted offer model =
     case offer of
         NoUncleAdvice ->
             model
 
         UncleAdviceForSale _ ->
-            logLine NeutralTone "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}" model
+            if model.phase == WentBust && model.uncleGloat == UncleHasNotGloated then
+                logLine NeutralTone
+                    "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+                    { model | uncleGloat = UncleHasGloated }
+
+            else
+                model
 
 
 tickClock : Model -> Model
@@ -502,7 +526,10 @@ purchaseUncleAdvice offer model =
                 ( logLine NeutralTone "You cannot afford uncle's advice." model, Cmd.none )
 
             else
-                ( checkEndState offer
+                -- No gloat here even when this purchase busts the game:
+                -- the bought advice is still in flight, and the gloat
+                -- must land after it (see gloatIfBusted).
+                ( checkEndState
                     { model
                         | balanceCents = model.balanceCents - uncle.priceCents
                         , uncleAdviceCount = model.uncleAdviceCount + 1
