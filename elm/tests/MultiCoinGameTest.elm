@@ -306,6 +306,19 @@ shopSuite =
                 in
                 ( cancelled.balanceCents, cancelled.tracker, cancelled.pendingPurchase )
                     |> Expect.equal ( 2500, TrackerNotBought, NoPendingPurchase )
+        , test "uncle's advice also goes through the dialog" <|
+            \_ ->
+                let
+                    advised =
+                        apply [ PurchaseConsidered UncleAdviceItem, PurchaseConfirmed ] level3Start
+                in
+                ( advised.balanceCents, advised.uncleAdviceCount, advised.pendingPurchase )
+                    |> Expect.equal ( 2000, 1, NoPendingPurchase )
+        , test "cancelling uncle's advice charges nothing" <|
+            \_ ->
+                apply [ PurchaseConsidered UncleAdviceItem, PurchaseCancelled ] level3Start
+                    |> .uncleAdviceCount
+                    |> Expect.equal 0
         , test "confirming a helper hire goes through the compounding price" <|
             \_ ->
                 apply [ PurchaseConsidered FlipHelperItem, PurchaseConfirmed ] level3Start

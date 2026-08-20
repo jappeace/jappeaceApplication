@@ -141,15 +141,14 @@ type ShopFold
     | ShopExpanded
 
 
-{-| The four equipment items a purchase dialog can explain. Uncle is
-deliberately absent: his advice speaks for itself and stays an impulse
-buy.
+{-| The shop items a purchase dialog explains before any money moves.
 -}
 type ShopItemKind
     = TrackerItem
     | GlassesItem
     | AutoclickerItem
     | FlipHelperItem
+    | UncleAdviceItem
 
 
 {-| A purchase mid-consideration: clicking a shop item opens a dialog
@@ -408,6 +407,10 @@ update config msg model =
                         { model | pendingPurchase = NoPendingPurchase }
                     , Cmd.none
                     )
+
+                Considering UncleAdviceItem ->
+                    purchaseUncleAdvice config.uncleOffer
+                        { model | pendingPurchase = NoPendingPurchase }
 
         PurchaseCancelled ->
             ( { model | pendingPurchase = NoPendingPurchase }, Cmd.none )
@@ -1205,7 +1208,7 @@ viewPurchaseDialog config model =
                 [ Html.div []
                     [ Html.strong []
                         [ Html.text
-                            ("Buy the "
+                            ("Buy "
                                 ++ itemDisplayName itemKind
                                 ++ " for $"
                                 ++ formatCents (itemPriceCents config model itemKind)
@@ -1222,20 +1225,25 @@ viewPurchaseDialog config model =
             ]
 
 
+{-| The item's name with its article, ready for "Buy ... for $x?".
+-}
 itemDisplayName : ShopItemKind -> String
 itemDisplayName itemKind =
     case itemKind of
         TrackerItem ->
-            "ratio tracker"
+            "the ratio tracker"
 
         GlassesItem ->
-            "golden glasses"
+            "the golden glasses"
 
         AutoclickerItem ->
-            "autoclicker"
+            "the autoclicker"
 
         FlipHelperItem ->
-            "flip helper"
+            "a flip helper"
+
+        UncleAdviceItem ->
+            "uncle's advice"
 
 
 itemExplanation : ShopItemKind -> String
@@ -1252,6 +1260,9 @@ itemExplanation itemKind =
 
         FlipHelperItem ->
             "A tireless helper who presses flip for you once every five seconds. Every next hire asks 10% more."
+
+        UncleAdviceItem ->
+            "Uncle's advice speaks for itself. He's your uncle, surely he knows best."
 
 
 {-| The price the dialog quotes. Zero for an absent offer, which is
@@ -1287,6 +1298,14 @@ itemPriceCents config model itemKind =
 
         FlipHelperItem ->
             model.nextHelperPriceCents
+
+        UncleAdviceItem ->
+            case config.uncleOffer of
+                NoUncleAdvice ->
+                    0
+
+                UncleAdviceForSale uncle ->
+                    uncle.priceCents
 
 
 viewShopToggle : ShopFold -> Html Msg
@@ -1381,7 +1400,7 @@ viewUncleShopItem offer =
             []
 
         UncleAdviceForSale uncle ->
-            [ viewShopItem UncleAdviceRequested "Ask uncle for advice" uncle.priceCents ]
+            [ viewShopItem (PurchaseConsidered UncleAdviceItem) "Ask uncle for advice" uncle.priceCents ]
 
 
 viewGameOver : MultiCoinConfig -> Model -> Html Msg
