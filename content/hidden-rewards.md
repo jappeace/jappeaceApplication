@@ -4,10 +4,7 @@ Category: reflection
 OPTIONS: toc:nil
 Tags: gambling, stocks
 
-The coin is rigged again, but this time I won't tell you how.
-The goal is still to reach $999 within 30 minutes, starting from $25.
-If tracking the flips by hand is too much work, the shop sells a solution.
-Try it out:
+TODO
 
 <div id="coin-flip-game"></div>
 
