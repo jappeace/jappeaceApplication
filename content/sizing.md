@@ -2,7 +2,7 @@ Title: Even with an edge, you lose?
 Date: 2026-07-19 22:30
 Category: reflection
 OPTIONS: toc:nil
-Tags: gambling, stocks
+Tags: gambling, finance, game
 
 I rigged the coin such that it lands heads 60% of the time.
 All you have to do is place your bet and start harvesting.

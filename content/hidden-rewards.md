@@ -2,7 +2,7 @@ Title: Hidden rewards
 Date: 2026-08-20 16:46
 Category: reflection
 OPTIONS: toc:nil
-Tags: gambling, stocks
+Tags: gambling, finance, game
 
 [This time](https://jappie.me/even-with-an-edge-you-lose.html) one of the buttons has an upside, 
 I won't tell which. Good luck!
