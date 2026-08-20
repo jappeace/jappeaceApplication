@@ -7,12 +7,14 @@ module MultiCoinGame exposing
     , Model
     , Msg(..)
     , MultiCoinConfig
+    , ProfileAssignment(..)
     , StakeInput(..)
     , formatPayout
     , gameProgram
     , initialModel
     , parseStake
     , payoutCents
+    , shuffledCoinsGenerator
     , update
     , view
     )
@@ -90,9 +92,19 @@ type GoldenGlasses
     | GlassesBought
 
 
+{-| Whether the (win percent, payout) profiles play on the coins as
+written in the config, or get dealt across the coin names at random on
+every game start, so a replay means rediscovering which coin is which.
+-}
+type ProfileAssignment
+    = ProfilesAsWritten
+    | ProfilesShuffledAcrossCoins
+
+
 type alias MultiCoinConfig =
     { title : String
     , coins : List CoinConfig
+    , profileAssignment : ProfileAssignment
     , trackerOffer : TrackerOffer
     , uncleOffer : UncleOffer
     , glassesOffer : GlassesOffer
@@ -110,6 +122,7 @@ type alias CoinTally =
 
 type alias Model =
     { balanceCents : Int
+    , coins : List CoinConfig
     , stakeInputs : List String
     , tallies : List CoinTally
     , phase : GamePhase
@@ -136,7 +149,8 @@ type BustCause
 
 
 type Msg
-    = StakeInputChanged Int String
+    = ProfilesShuffled (List CoinConfig)
+    | StakeInputChanged Int String
     | FlipPressed
     | CoinsLanded { stakes : List Int, rolls : List Int }
     | ClockTicked
@@ -149,16 +163,55 @@ type Msg
 gameProgram : MultiCoinConfig -> Program () Model Msg
 gameProgram config =
     Browser.element
-        { init = \() -> ( initialModel config, Cmd.none )
+        { init = init config
         , update = update config
         , subscriptions = subscriptions
         , view = view config
         }
 
 
+-- Decision: with shuffled profiles the model briefly holds the coins as
+-- written until the ProfilesShuffled draw lands, one runtime tick after
+-- init. No pending state guards this window (unlike level 2's
+-- BiasUndrawn): the as-written assignment is itself a valid hidden
+-- assignment, no human can act within the tick, and gating every coin
+-- access on an assignment state doubled the case analysis for nothing.
+init : MultiCoinConfig -> () -> ( Model, Cmd Msg )
+init config () =
+    ( initialModel config
+    , case config.profileAssignment of
+        ProfilesAsWritten ->
+            Cmd.none
+
+        ProfilesShuffledAcrossCoins ->
+            Random.generate ProfilesShuffled (shuffledCoinsGenerator config.coins)
+    )
+
+
+{-| Deal the (win percent, payout) profiles across the coin names at
+random: the names keep their display order, the profiles land on a
+random coin each.
+-}
+shuffledCoinsGenerator : List CoinConfig -> Random.Generator (List CoinConfig)
+shuffledCoinsGenerator coins =
+    Random.map
+        (\sortKeys ->
+            List.map2
+                (\coin profile ->
+                    { coin | winPercent = profile.winPercent, payoutPercent = profile.payoutPercent }
+                )
+                coins
+                (List.map Tuple.second
+                    (List.sortBy Tuple.first (List.map2 Tuple.pair sortKeys coins))
+                )
+        )
+        (Random.list (List.length coins) (Random.float 0 1))
+
+
 initialModel : MultiCoinConfig -> Model
 initialModel config =
     { balanceCents = startingBalanceCents
+    , coins = config.coins
     , stakeInputs = List.map (\_ -> "0.00") config.coins
     , tallies = List.map (\_ -> { headsCount = 0, flipCount = 0 }) config.coins
     , phase = Playing
@@ -177,6 +230,9 @@ initialModel config =
 update : MultiCoinConfig -> Msg -> Model -> ( Model, Cmd Msg )
 update config msg model =
     case msg of
+        ProfilesShuffled shuffledCoins ->
+            ( { model | coins = shuffledCoins }, Cmd.none )
+
         StakeInputChanged coinIndex newInput ->
             ( { model
                 | stakeInputs =
@@ -259,7 +315,7 @@ pressFlip config model =
         ( model, Cmd.none )
 
     else
-        case validateStakes config.coins model.stakeInputs of
+        case validateStakes model.coins model.stakeInputs of
             UnreadableCoin coinName ->
                 ( logLine NeutralTone ("Cannot read your bet on " ++ coinName ++ ".") model
                 , Cmd.none
@@ -284,7 +340,7 @@ pressFlip config model =
                     ( { model | clock = ClockRunning }
                     , Random.generate
                         (\rolls -> CoinsLanded { stakes = stakes, rolls = rolls })
-                        (Random.list (List.length config.coins) (Random.int 1 100))
+                        (Random.list (List.length model.coins) (Random.int 1 100))
                     )
 
 
@@ -410,7 +466,7 @@ settleRound config landedRound model =
     else
         let
             outcomes =
-                List.map4 resolveCoin config.coins model.tallies landedRound.stakes landedRound.rolls
+                List.map4 resolveCoin model.coins model.tallies landedRound.stakes landedRound.rolls
 
             newBalance =
                 max 0 (model.balanceCents + List.sum (List.map .deltaCents outcomes))
@@ -664,14 +720,14 @@ viewControls config model =
     Html.div [ Html.Attributes.class "controls" ]
         (List.concat
             [ List.indexedMap viewCoinRow
-                (List.map2 Tuple.pair config.coins model.stakeInputs)
+                (List.map2 Tuple.pair model.coins model.stakeInputs)
             , [ Html.button
                     [ Html.Attributes.class "flip-button"
                     , Html.Events.onClick FlipPressed
                     ]
                     [ Html.text "FLIP" ]
               ]
-            , viewGlassesPayouts config model
+            , viewGlassesPayouts model
             , viewTally config model
             , viewShop config model
             ]
@@ -679,10 +735,12 @@ viewControls config model =
 
 
 {-| The payout multipliers the golden glasses reveal, under the flip
-button. Only the payouts: the win percents stay hidden.
+button. Only the payouts: the win percents stay hidden. Read from the
+model's coins, not the config: with shuffled profiles the glasses must
+report the deal actually in play.
 -}
-viewGlassesPayouts : MultiCoinConfig -> Model -> List (Html Msg)
-viewGlassesPayouts config model =
+viewGlassesPayouts : Model -> List (Html Msg)
+viewGlassesPayouts model =
     case model.glasses of
         GlassesNotBought ->
             []
@@ -694,7 +752,7 @@ viewGlassesPayouts config model =
                         ++ String.join " \u{00B7} "
                             (List.map
                                 (\coin -> coin.coinName ++ " " ++ formatPayout coin.payoutPercent)
-                                config.coins
+                                model.coins
                             )
                     )
                 ]
@@ -730,7 +788,7 @@ viewTally config model =
                 [ Html.text
                     ("\u{1F4CA} "
                         ++ String.join " \u{00B7} "
-                            (List.map2 coinTallyText config.coins model.tallies)
+                            (List.map2 coinTallyText model.coins model.tallies)
                     )
                 ]
             ]
@@ -834,7 +892,6 @@ viewGameOver config model =
                     , Html.text " presses to get here."
                     ]
               ]
-            , List.map viewCoinReveal config.coins
             , viewUncleSpend config.uncleOffer model
             ]
         )
@@ -869,22 +926,6 @@ gameOverMessage model =
 
         RanOutOfTime ->
             ( "Time's up! You failed to reach the target.", LoseTone )
-
-
-{-| Only revealed at the end: what each coin actually did.
--}
-viewCoinReveal : CoinConfig -> Html Msg
-viewCoinReveal coin =
-    Html.div [ Html.Attributes.class "bias-reveal" ]
-        [ Html.strong [] [ Html.text coin.coinName ]
-        , Html.text
-            (": heads "
-                ++ String.fromInt coin.winPercent
-                ++ "% of the time, paying "
-                ++ formatPayout coin.payoutPercent
-                ++ " the stake."
-            )
-        ]
 
 
 {-| A payout percent as a multiplier: 3000 -> "30x", 50 -> "0.5x".

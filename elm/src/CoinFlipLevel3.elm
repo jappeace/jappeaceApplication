@@ -2,15 +2,16 @@ module CoinFlipLevel3 exposing (levelConfig, main)
 
 {-| Level 3 of the rigged-coin game: the black swan (black-swan.html).
 
-Three coins, everything hidden. Swan is the black swan: it almost never
-lands heads, but pays out huge, and it is the only coin worth betting.
-Magpie looks like a fair double-or-nothing but robs you slowly; Sparrow
-wins often but pays so little it bleeds you anyway.
+Three birds share three hidden profiles, dealt across the names at
+random on every game start: a black swan (rarely lands heads but pays
+out huge, the only bet worth taking), a double-or-nothing that robs you
+slowly, and a frequent winner that pays so little it bleeds you anyway.
+Which bird got which profile has to be rediscovered every replay.
 
 -}
 
 import CoinFlipGame exposing (TrackerOffer(..), UncleOffer(..))
-import MultiCoinGame exposing (GlassesOffer(..), Model, Msg, MultiCoinConfig, gameProgram)
+import MultiCoinGame exposing (GlassesOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), gameProgram)
 
 
 levelConfig : MultiCoinConfig
@@ -21,6 +22,7 @@ levelConfig =
         , { coinName = "Magpie", winPercent = 45, payoutPercent = 100 }
         , { coinName = "Sparrow", winPercent = 60, payoutPercent = 50 }
         ]
+    , profileAssignment = ProfilesShuffledAcrossCoins
     , trackerOffer = TrackerForSale 1500
     , glassesOffer = GoldenGlassesForSale 2000
     , uncleOffer =

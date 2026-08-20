@@ -66,13 +66,14 @@ type CoinSide
 {-| How the coin is rigged for a level.
 
   - `KnownHeadsPercent`: the bias is fixed and printed on the bet buttons.
-  - `HiddenFavoredPercentRange`: the favored side's win percent is drawn
-    uniformly from the inclusive range at game start, and never shown.
+  - `HiddenRandomBias`: the favored side is drawn fifty-fifty and its win
+    percent uniformly from the inclusive range, both at game start, and
+    neither is ever shown, not even on the end screen.
 
 -}
 type CoinBias
     = KnownHeadsPercent Int
-    | HiddenFavoredPercentRange { favored : CoinSide, minPercent : Int, maxPercent : Int }
+    | HiddenRandomBias { minPercent : Int, maxPercent : Int }
 
 
 type TrackerOffer
@@ -220,7 +221,7 @@ initialModel config =
             KnownHeadsPercent percent ->
                 BiasReady { favored = Heads, favoredPercent = percent }
 
-            HiddenFavoredPercentRange _ ->
+            HiddenRandomBias _ ->
                 BiasUndrawn
     , phase = Playing
     , clock = ClockIdle
@@ -244,10 +245,13 @@ init config () =
         KnownHeadsPercent _ ->
             Cmd.none
 
-        HiddenFavoredPercentRange range ->
-            Random.generate
-                (\percent -> BiasDrawn { favored = range.favored, favoredPercent = percent })
-                (Random.int range.minPercent range.maxPercent)
+        HiddenRandomBias range ->
+            Random.generate BiasDrawn
+                (Random.map2
+                    (\favored percent -> { favored = favored, favoredPercent = percent })
+                    (Random.uniform Heads [ Tails ])
+                    (Random.int range.minPercent range.maxPercent)
+                )
     )
 
 
@@ -767,7 +771,7 @@ betButtonLabel bias side =
                 Tails ->
                     "Bet TAILS (" ++ String.fromInt (100 - headsPercent) ++ "%)"
 
-        HiddenFavoredPercentRange _ ->
+        HiddenRandomBias _ ->
             case side of
                 Heads ->
                     "Bet HEADS"
@@ -975,7 +979,9 @@ gameOverMessage model =
 
 
 {-| Only revealed at the end, so the reader can incriminate themselves
-first. Level 1 calls out tails bets; level 2 also reveals the drawn bias.
+first. Level 1 calls out tails bets against its printed bias; a hidden
+bias is never revealed, not even here: the reader has to earn that
+knowledge through the shop and their own tallying.
 -}
 viewBiasReveal : CoinBias -> Model -> List (Html Msg)
 viewBiasReveal bias model =
@@ -1000,54 +1006,8 @@ viewBiasReveal bias model =
                     ]
                 ]
 
-        HiddenFavoredPercentRange range ->
-            case model.biasState of
-                BiasUndrawn ->
-                    []
-
-                BiasReady actualBias ->
-                    List.concat
-                        [ [ Html.div []
-                                [ Html.text "The coin was rigged for "
-                                , Html.strong [] [ Html.text (String.toLower (sideName actualBias.favored)) ]
-                                , Html.text
-                                    (" this time: it wins "
-                                        ++ String.fromInt actualBias.favoredPercent
-                                        ++ "% of the flips."
-                                    )
-                                ]
-                          ]
-                        , viewLosingSideBets (oppositeSide range.favored) model
-                        ]
-
-
-viewLosingSideBets : CoinSide -> Model -> List (Html Msg)
-viewLosingSideBets losingSide model =
-    let
-        losingBetCount =
-            case losingSide of
-                Heads ->
-                    model.headsBetCount
-
-                Tails ->
-                    model.tailsBetCount
-    in
-    if losingBetCount == 0 then
-        []
-
-    else
-        [ Html.div []
-            [ Html.text ("You bet on " ++ String.toLower (sideName losingSide) ++ " ")
-            , Html.strong [] [ Html.text (String.fromInt losingBetCount) ]
-            , Html.text
-                (if losingBetCount == 1 then
-                    " time."
-
-                 else
-                    " times."
-                )
-            ]
-        ]
+        HiddenRandomBias _ ->
+            []
 
 
 viewLog : Model -> Html Msg
