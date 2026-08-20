@@ -1,5 +1,6 @@
 module MultiCoinGame exposing
-    ( CoinConfig
+    ( BustCause(..)
+    , CoinConfig
     , CoinTally
     , GlassesOffer(..)
     , GoldenGlasses(..)
@@ -117,8 +118,19 @@ type alias Model =
     , tracker : TrackerState
     , glasses : GoldenGlasses
     , uncleAdviceCount : Int
+    , bustCause : BustCause
     , log : List LogLine
     }
+
+
+{-| How the bankruptcy happened. Busting on a coin flip is the game
+working as intended; busting on uncle's consulting fee earns its own
+callout.
+-}
+type BustCause
+    = NotBusted
+    | BustByBetting
+    | BustByUncleAdvice
 
 
 type Msg
@@ -154,6 +166,7 @@ initialModel config =
     , tracker = TrackerNotBought
     , glasses = GlassesNotBought
     , uncleAdviceCount = 0
+    , bustCause = NotBusted
     , log = [ { tone = NeutralTone, text = config.introLogLine } ]
     }
 
@@ -401,7 +414,7 @@ settleRound config landedRound model =
             roundLogLines =
                 List.concatMap .logLines outcomes
         in
-        checkEndState
+        checkEndState BustByBetting
             { model
                 | balanceCents = newBalance
                 , tallies = List.map .tally outcomes
@@ -410,13 +423,13 @@ settleRound config landedRound model =
             }
 
 
-checkEndState : Model -> Model
-checkEndState model =
+checkEndState : BustCause -> Model -> Model
+checkEndState causeIfBusted model =
     if model.balanceCents >= targetBalanceCents then
         { model | phase = WonGame }
 
     else if model.balanceCents <= 0 then
-        { model | phase = WentBust }
+        { model | phase = WentBust, bustCause = causeIfBusted }
 
     else
         model
@@ -519,7 +532,7 @@ purchaseUncleAdvice offer model =
                 ( logLine NeutralTone "You cannot afford uncle's advice." model, Cmd.none )
 
             else
-                ( checkEndState
+                ( checkEndState BustByUncleAdvice
                     { model
                         | balanceCents = model.balanceCents - uncle.priceCents
                         , uncleAdviceCount = model.uncleAdviceCount + 1
@@ -782,8 +795,9 @@ viewGameOver config model =
     Html.div
         [ Html.Attributes.class ("game-over " ++ CoinFlipGame.toneClass tone) ]
         (List.concat
-            [ [ Html.text message
-              , Html.div []
+            [ [ Html.text message ]
+            , viewUncleBustCallout model
+            , [ Html.div []
                     [ Html.text "It took you exactly "
                     , Html.strong [] [ Html.text (String.fromInt model.roundCount) ]
                     , Html.text " presses to get here."
@@ -793,6 +807,21 @@ viewGameOver config model =
             , viewUncleSpend config.uncleOffer model
             ]
         )
+
+
+viewUncleBustCallout : Model -> List (Html Msg)
+viewUncleBustCallout model =
+    case model.bustCause of
+        NotBusted ->
+            []
+
+        BustByBetting ->
+            []
+
+        BustByUncleAdvice ->
+            [ Html.div [ Html.Attributes.class "uncle-bust" ]
+                [ Html.text "You didn't even lose it betting: you spent your last dollars on uncle's advice. That's just sad." ]
+            ]
 
 
 gameOverMessage : Model -> ( String, LogTone )

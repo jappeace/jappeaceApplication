@@ -16,7 +16,8 @@ import CoinFlipLevel3
 import Expect
 import MultiCoinGame
     exposing
-        ( GoldenGlasses(..)
+        ( BustCause(..)
+        , GoldenGlasses(..)
         , Model
         , Msg(..)
         , StakeInput(..)
@@ -206,14 +207,20 @@ shopSuite =
                 in
                 ( advised.balanceCents, advised.uncleAdviceCount )
                     |> Expect.equal ( 1500, 2 )
-        , test "spending the last dollars on uncle goes bust" <|
+        , test "spending the last dollars on uncle goes bust, attributed to uncle" <|
             \_ ->
                 let
                     busted =
                         apply [ UncleAdviceRequested ] { level3Start | balanceCents = 500 }
                 in
-                ( busted.balanceCents, busted.phase, busted.uncleAdviceCount )
-                    |> Expect.equal ( 0, WentBust, 1 )
+                ( busted.balanceCents, busted.phase, busted.bustCause )
+                    |> Expect.equal ( 0, WentBust, BustByUncleAdvice )
+        , test "busting on a flip is attributed to betting" <|
+            \_ ->
+                apply [ landedRound [ 100, 0, 0 ] [ 100, 100, 100 ] ]
+                    { level3Start | balanceCents = 100 }
+                    |> .bustCause
+                    |> Expect.equal BustByBetting
         , test "uncle is refused below his price" <|
             \_ ->
                 apply [ UncleAdviceRequested ] { level3Start | balanceCents = 499 }
@@ -269,6 +276,19 @@ gatingSuite =
                     { level3Start | phase = WentBust, uncleAdviceCount = 1 }
                     |> Query.fromHtml
                     |> Query.has [ class "uncle-verdict" ]
+        , test "busting on uncle's advice draws the sad callout" <|
+            \_ ->
+                apply [ UncleAdviceRequested ] { level3Start | balanceCents = 500 }
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "uncle-bust" ]
+        , test "busting on a flip draws no uncle-bust callout" <|
+            \_ ->
+                apply [ landedRound [ 100, 0, 0 ] [ 100, 100, 100 ] ]
+                    { level3Start | balanceCents = 100 }
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "uncle-bust" ]
         , test "the coin reveal only renders after the game ends" <|
             \_ ->
                 view CoinFlipLevel3.levelConfig level3Start
