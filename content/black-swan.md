@@ -114,7 +114,7 @@ Elm.CoinFlipLevel3.init({ node: document.getElementById('coin-flip-game') });
 Here the way to win is to carefully study the log messages, 
 you may have to place quite a few bets before you can even map the payouts to the birds.
 You can try getting the golden glasses but you wouldn't have enough money for the tracker,
-I think the tracker is more convenient then the log messages.
+I think the tracker is more convenient than the log messages.
 Now you should calculate if it even makes sense to bet on these birds
 once you've got their probabilities and payout factors.
 This is just common sense.
@@ -122,8 +122,10 @@ Why make bets that have negative returns?
 It's like buying a lotto ticket or playing roulette, madness!
 We don't play for [FUN](https://dwarffortresswiki.org/DF2014:Fun&redirect=no), we play to win!
 
-Please note that we adjusted payout factors in this level, 
-so the Kelly criterion changes in accordance with that.
+In previous games every bet paid 1:1, which collapsed 
+the Kelly formula to $2p-1$.
+In this game we adjusted payout factors, 
+so the Kelly fractions change accordingly.
 
 $$f^* = p - \frac{q}{b} = \frac{bp - q}{b}$$
 
@@ -137,12 +139,13 @@ where:
   stake has $b = 30$. One of the birds only pays out 50%, for that one $b = 0.5$.
 
 A negative $f^*$ means the edge is against you and the optimal stake is zero.
-so whichever of those birds is the black swan[^random] gives: $p = 0.05$, $q = 0.95$, $b = 30$:
+So whichever of those birds is the black swan[^random] has: $p = 0.05$, $q = 0.95$, $b = 30$:
 
 $$f^* = 0.05 - \frac{0.95}{30} \approx 0.0183$$
 
 I just used about 1% for smashing, 
-I didn't actually do the maths for the first time,
-but I just saw the low odds and high payout so I decided to do a tiny stake.
+I didn't do the maths on my first run,
+but I saw the low odds and high payout so I decided to do a tiny stake.
+Anyway, if you can't figure all this shit out you can always ask uncle for advice, I'm sure he'll be proud of you.
 
 [^random]: It's random
