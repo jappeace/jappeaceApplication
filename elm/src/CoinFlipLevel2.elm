@@ -40,7 +40,7 @@ levelConfig =
                 ]
             }
     , nextLevelLink = NextLevelLinkTo { url = "/black-swan.html", label = "<<next level>>" }
-    , bustEnding = BustEndingQuote "Remember: never do business with family."
+    , bustEnding = BustEndingQuote "Uncle would be proud. That's not a compliment."
     , introLogLine = "The coin is rigged again, but this time I won't tell you how. The clock starts on your first bet. Good luck!"
     }
 
