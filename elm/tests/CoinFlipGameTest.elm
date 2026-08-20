@@ -231,6 +231,20 @@ shopSuite =
                     { level2Start | balanceCents = 499 }
                     |> .uncleAdviceCount
                     |> Expect.equal 0
+        , test "going bust summons a proud uncle in the log" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ landedFlip Heads 1000 Tails ]
+                    { level2Start | balanceCents = 1000 }
+                    |> latestLogText
+                    |> Expect.equal "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+        , test "level 1 has no uncle to gloat on a bust" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ landedFlip Heads 1000 Tails ]
+                    { level1Start | balanceCents = 1000 }
+                    |> latestLogText
+                    |> Expect.notEqual "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
         , test "uncle's advice ends up in the log" <|
             \_ ->
                 apply CoinFlipLevel2.levelConfig

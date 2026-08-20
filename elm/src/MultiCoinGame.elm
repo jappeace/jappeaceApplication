@@ -414,7 +414,8 @@ settleRound config landedRound model =
             roundLogLines =
                 List.concatMap .logLines outcomes
         in
-        checkEndState BustByBetting
+        checkEndState config.uncleOffer
+            BustByBetting
             { model
                 | balanceCents = newBalance
                 , tallies = List.map .tally outcomes
@@ -423,16 +424,29 @@ settleRound config landedRound model =
             }
 
 
-checkEndState : BustCause -> Model -> Model
-checkEndState causeIfBusted model =
+checkEndState : UncleOffer -> BustCause -> Model -> Model
+checkEndState uncleOffer causeIfBusted model =
     if model.balanceCents >= targetBalanceCents then
         { model | phase = WonGame }
 
     else if model.balanceCents <= 0 then
-        { model | phase = WentBust, bustCause = causeIfBusted }
+        uncleGloatsOnBust uncleOffer { model | phase = WentBust, bustCause = causeIfBusted }
 
     else
         model
+
+
+{-| The moment you go bankrupt, uncle pops into the log, if this level
+has an uncle at all.
+-}
+uncleGloatsOnBust : UncleOffer -> Model -> Model
+uncleGloatsOnBust offer model =
+    case offer of
+        NoUncleAdvice ->
+            model
+
+        UncleAdviceForSale _ ->
+            logLine NeutralTone "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}" model
 
 
 tickClock : Model -> Model
@@ -532,7 +546,8 @@ purchaseUncleAdvice offer model =
                 ( logLine NeutralTone "You cannot afford uncle's advice." model, Cmd.none )
 
             else
-                ( checkEndState BustByUncleAdvice
+                ( checkEndState offer
+                    BustByUncleAdvice
                     { model
                         | balanceCents = model.balanceCents - uncle.priceCents
                         , uncleAdviceCount = model.uncleAdviceCount + 1

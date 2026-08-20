@@ -215,6 +215,12 @@ shopSuite =
                 in
                 ( busted.balanceCents, busted.phase, busted.bustCause )
                     |> Expect.equal ( 0, WentBust, BustByUncleAdvice )
+        , test "going bust summons a proud uncle in the log" <|
+            \_ ->
+                apply [ landedRound [ 100, 0, 0 ] [ 100, 100, 100 ] ]
+                    { level3Start | balanceCents = 100 }
+                    |> latestLogText
+                    |> Expect.equal "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
         , test "busting on a flip is attributed to betting" <|
             \_ ->
                 apply [ landedRound [ 100, 0, 0 ] [ 100, 100, 100 ] ]

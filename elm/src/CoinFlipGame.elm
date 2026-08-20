@@ -261,7 +261,7 @@ update config msg model =
             placeBet playerChoice model
 
         CoinLanded flip ->
-            ( settleFlip flip model, Cmd.none )
+            ( settleFlip config.uncleOffer flip model, Cmd.none )
 
         ClockTicked ->
             ( tickClock model, Cmd.none )
@@ -330,8 +330,8 @@ coinFlipGenerator bias =
 {-| Apply a landed coin flip: pay out or collect, count it, and check for
 the win/bust end states.
 -}
-settleFlip : { playerChoice : CoinSide, betCents : Int, landed : CoinSide } -> Model -> Model
-settleFlip flip model =
+settleFlip : UncleOffer -> { playerChoice : CoinSide, betCents : Int, landed : CoinSide } -> Model -> Model
+settleFlip uncleOffer flip model =
     if model.phase /= Playing then
         model
 
@@ -371,7 +371,7 @@ settleFlip flip model =
                     , betInput = clampBetInput newBalance model.betInput
                 }
         in
-        checkEndState
+        checkEndState uncleOffer
             (logLine
                 (if won then
                     WinTone
@@ -410,16 +410,29 @@ clampBetInput balanceCents input =
                 input
 
 
-checkEndState : Model -> Model
-checkEndState model =
+checkEndState : UncleOffer -> Model -> Model
+checkEndState uncleOffer model =
     if model.balanceCents >= targetBalanceCents then
         { model | phase = WonGame }
 
     else if model.balanceCents <= 0 then
-        { model | phase = WentBust }
+        uncleGloatsOnBust uncleOffer { model | phase = WentBust }
 
     else
         model
+
+
+{-| The moment you go bankrupt, uncle pops into the log, if this level
+has an uncle at all.
+-}
+uncleGloatsOnBust : UncleOffer -> Model -> Model
+uncleGloatsOnBust offer model =
+    case offer of
+        NoUncleAdvice ->
+            model
+
+        UncleAdviceForSale _ ->
+            logLine NeutralTone "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}" model
 
 
 tickClock : Model -> Model
@@ -489,7 +502,7 @@ purchaseUncleAdvice offer model =
                 ( logLine NeutralTone "You cannot afford uncle's advice." model, Cmd.none )
 
             else
-                ( checkEndState
+                ( checkEndState offer
                     { model
                         | balanceCents = model.balanceCents - uncle.priceCents
                         , uncleAdviceCount = model.uncleAdviceCount + 1
