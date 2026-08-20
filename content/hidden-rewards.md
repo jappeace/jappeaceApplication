@@ -1,10 +1,10 @@
 Title: Hidden rewards
-Date: 2026-08-19 22:30
+Date: 2026-08-20 16:46
 Category: reflection
 OPTIONS: toc:nil
 Tags: gambling, stocks
 
-This time one of the buttons has an upside, 
+[This time](https://jappie.me/even-with-an-edge-you-lose.html) one of the buttons has an upside, 
 I won't tell which. Good luck!
 
 <div id="coin-flip-game"></div>
@@ -104,10 +104,10 @@ Elm.CoinFlipLevel2.init({ node: document.getElementById('coin-flip-game') });
 </script>
 
 Games in general become more interesting with hidden information.
-The strategy here is to just bet as little as possible, and only go for [kelly criterion](https://jappie.me/even-with-an-edge-you-lose.html) once you know 
+The strategy here is to just bet as little as possible, and only go for the [Kelly criterion](https://en.wikipedia.org/wiki/Kelly_criterion) once you know 
 which button wins.
-I thought this would be a bit tedious todo so I added a feature to keep track of win lose ratios,
+I thought this would be a bit tedious to do so I added a feature to keep track of win/lose ratios,
 at a relatively steep cost.
-I did this intentionally, but it's basically a win button for those who are "kelly aware" (and to lazy to track by hand).
-To keep it interesting it varies a bit between 55% and 65% (for the winning button).
-
+The steep price is intentional, it's basically a win button for those who are "Kelly aware" (and too lazy to track by hand).
+However, a gambler may see the steep cost and decide the information is not "worth" the $15 in bets he can place.
+Uncle's advice is worth its weight in gold, of course.
