@@ -123,12 +123,26 @@ It's like buying a lotto ticket or playing roulette, madness!
 We don't play for [FUN](https://dwarffortresswiki.org/DF2014:Fun&redirect=no), we play to win!
 
 Please note that we adjusted payout factors in this level, 
-so the kelly criterion changes in accordance with that.
+so the Kelly criterion changes in accordance with that.
 
 $$f^* = p - \frac{q}{b} = \frac{bp - q}{b}$$
 
+where:
+
+* $f^*$ is the fraction of your current balance to stake on each flip,
+* $p$ is the probability that the bet wins,
+* $q = 1 - p$ is the probability that it loses,
+* $b$ is the net odds: the profit per dollar staked on a win.
+  A double-or-nothing bet has $b = 1$; a bet paying out 30 times the
+  stake has $b = 30$. One of the birds only pays out 50%, for that one $b = 0.5$.
+
+A negative $f^*$ means the edge is against you and the optimal stake is zero.
 so whichever of those birds is the black swan[^random] gives: $p = 0.05$, $q = 0.95$, $b = 30$:
 
 $$f^* = 0.05 - \frac{0.95}{30} \approx 0.0183$$
+
+I just used about 1% for smashing, 
+I didn't actually do the maths for the first time,
+but I just saw the low odds and high payout so I decided to do a tiny stake.
 
 [^random]: It's random
