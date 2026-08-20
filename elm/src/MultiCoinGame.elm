@@ -1,7 +1,10 @@
 module MultiCoinGame exposing
-    ( BustCause(..)
+    ( Autoclicker(..)
+    , AutoclickerOffer(..)
+    , BustCause(..)
     , CoinConfig
     , CoinTally
+    , FlipHold(..)
     , GlassesOffer(..)
     , GoldenGlasses(..)
     , Model
@@ -64,6 +67,7 @@ import CoinFlipGame
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
+import Json.Decode as Decode
 import Random
 import Time
 
@@ -92,6 +96,28 @@ type GoldenGlasses
     | GlassesBought
 
 
+{-| The autoclicker spares the player's mouse finger: once bought,
+holding the flip button down fires a flip every 100ms. Price in cents.
+-}
+type AutoclickerOffer
+    = NoAutoclicker
+    | AutoclickerForSale Int
+
+
+type Autoclicker
+    = ClickerNotBought
+    | ClickerBought
+
+
+{-| Whether the flip button is currently held down (mouse or touch).
+Only meaningful with a bought autoclicker: the auto-flip subscription
+runs while held.
+-}
+type FlipHold
+    = FlipReleased
+    | FlipHeld
+
+
 {-| Whether the (win percent, payout) profiles play on the coins as
 written in the config, or get dealt across the coin names at random on
 every game start, so a replay means rediscovering which coin is which.
@@ -108,6 +134,7 @@ type alias MultiCoinConfig =
     , trackerOffer : TrackerOffer
     , uncleOffer : UncleOffer
     , glassesOffer : GlassesOffer
+    , autoclickerOffer : AutoclickerOffer
     , introLogLine : String
     }
 
@@ -131,6 +158,8 @@ type alias Model =
     , roundCount : Int
     , tracker : TrackerState
     , glasses : GoldenGlasses
+    , autoclicker : Autoclicker
+    , flipHold : FlipHold
     , uncleAdviceCount : Int
     , uncleGloat : UncleGloat
     , bustCause : BustCause
@@ -152,10 +181,14 @@ type Msg
     = ProfilesShuffled (List CoinConfig)
     | StakeInputChanged Int String
     | FlipPressed
+    | FlipHoldStarted
+    | FlipHoldEnded
+    | AutoclickerTicked
     | CoinsLanded { stakes : List Int, rolls : List Int }
     | ClockTicked
     | TrackerPurchased
     | GlassesPurchased
+    | AutoclickerPurchased
     | UncleAdviceRequested
     | UncleAdviceGiven String
 
@@ -220,6 +253,8 @@ initialModel config =
     , roundCount = 0
     , tracker = TrackerNotBought
     , glasses = GlassesNotBought
+    , autoclicker = ClickerNotBought
+    , flipHold = FlipReleased
     , uncleAdviceCount = 0
     , uncleGloat = UncleHasNotGloated
     , bustCause = NotBusted
@@ -252,6 +287,15 @@ update config msg model =
         FlipPressed ->
             pressFlip config model
 
+        FlipHoldStarted ->
+            ( { model | flipHold = FlipHeld }, Cmd.none )
+
+        FlipHoldEnded ->
+            ( { model | flipHold = FlipReleased }, Cmd.none )
+
+        AutoclickerTicked ->
+            pressFlip config model
+
         CoinsLanded landedRound ->
             ( settleRound config landedRound model, Cmd.none )
 
@@ -263,6 +307,9 @@ update config msg model =
 
         GlassesPurchased ->
             ( purchaseGlasses config.glassesOffer model, Cmd.none )
+
+        AutoclickerPurchased ->
+            ( purchaseAutoclicker config.autoclickerOffer model, Cmd.none )
 
         UncleAdviceRequested ->
             purchaseUncleAdvice config.uncleOffer model
@@ -597,6 +644,39 @@ purchaseGlasses offer model =
                     }
 
 
+{-| Buy the autoclicker. Same wipe-out guard as the tracker.
+-}
+purchaseAutoclicker : AutoclickerOffer -> Model -> Model
+purchaseAutoclicker offer model =
+    case ( offer, model.autoclicker ) of
+        ( NoAutoclicker, ClickerNotBought ) ->
+            model
+
+        ( NoAutoclicker, ClickerBought ) ->
+            model
+
+        ( AutoclickerForSale _, ClickerBought ) ->
+            model
+
+        ( AutoclickerForSale priceCents, ClickerNotBought ) ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= priceCents then
+                logLine NeutralTone "You cannot afford the autoclicker." model
+
+            else
+                logLine NeutralTone
+                    ("Bought the autoclicker for $"
+                        ++ formatCents priceCents
+                        ++ ". Hold the flip button down to use it."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - priceCents
+                        , autoclicker = ClickerBought
+                    }
+
+
 {-| Pay uncle and draw one of his pre-programmed pearls of wisdom.
 Unlike the tracker and glasses, uncle happily takes your last dollars:
 spending yourself into bankruptcy on advice is a lesson the game wants
@@ -636,6 +716,11 @@ logLine tone text model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
+    Sub.batch [ clockSubscription model, autoclickerSubscription model ]
+
+
+clockSubscription : Model -> Sub Msg
+clockSubscription model =
     case model.phase of
         Playing ->
             case model.clock of
@@ -643,6 +728,36 @@ subscriptions model =
                     Time.every 1000 (\_ -> ClockTicked)
 
                 ClockIdle ->
+                    Sub.none
+
+        WonGame ->
+            Sub.none
+
+        WentBust ->
+            Sub.none
+
+        RanOutOfTime ->
+            Sub.none
+
+
+{-| While a bought autoclicker's flip button is held down, a flip fires
+every 100ms.
+-}
+autoclickerSubscription : Model -> Sub Msg
+autoclickerSubscription model =
+    case model.phase of
+        Playing ->
+            case ( model.autoclicker, model.flipHold ) of
+                ( ClickerBought, FlipHeld ) ->
+                    Time.every 100 (\_ -> AutoclickerTicked)
+
+                ( ClickerBought, FlipReleased ) ->
+                    Sub.none
+
+                ( ClickerNotBought, FlipHeld ) ->
+                    Sub.none
+
+                ( ClickerNotBought, FlipReleased ) ->
                     Sub.none
 
         WonGame ->
@@ -722,9 +837,10 @@ viewControls config model =
             [ List.indexedMap viewCoinRow
                 (List.map2 Tuple.pair model.coins model.stakeInputs)
             , [ Html.button
-                    [ Html.Attributes.class "flip-button"
-                    , Html.Events.onClick FlipPressed
-                    ]
+                    (Html.Attributes.class "flip-button"
+                        :: Html.Events.onClick FlipPressed
+                        :: flipHoldEvents model.autoclicker
+                    )
                     [ Html.text "FLIP" ]
               ]
             , viewGlassesPayouts model
@@ -756,6 +872,27 @@ viewGlassesPayouts model =
                             )
                     )
                 ]
+            ]
+
+
+{-| Hold events for the flip button, mouse and touch. Only attached once
+the autoclicker is bought, so an unbought game never tracks hold state.
+Mouse-leave and touch-cancel count as releasing: dragging off the button
+must not leave the clicker running.
+-}
+flipHoldEvents : Autoclicker -> List (Html.Attribute Msg)
+flipHoldEvents clicker =
+    case clicker of
+        ClickerNotBought ->
+            []
+
+        ClickerBought ->
+            [ Html.Events.onMouseDown FlipHoldStarted
+            , Html.Events.onMouseUp FlipHoldEnded
+            , Html.Events.onMouseLeave FlipHoldEnded
+            , Html.Events.on "touchstart" (Decode.succeed FlipHoldStarted)
+            , Html.Events.on "touchend" (Decode.succeed FlipHoldEnded)
+            , Html.Events.on "touchcancel" (Decode.succeed FlipHoldEnded)
             ]
 
 
@@ -811,6 +948,7 @@ viewShop config model =
     case
         viewTrackerShopItem config.trackerOffer model
             ++ viewGlassesShopItem config.glassesOffer model
+            ++ viewAutoclickerShopItem config.autoclickerOffer model
             ++ viewUncleShopItem config.uncleOffer
     of
         [] ->
@@ -863,6 +1001,22 @@ viewGlassesShopItem offer model =
 
         ( GoldenGlassesForSale priceCents, GlassesNotBought ) ->
             [ viewShopItem GlassesPurchased "Buy golden glasses" priceCents ]
+
+
+viewAutoclickerShopItem : AutoclickerOffer -> Model -> List (Html Msg)
+viewAutoclickerShopItem offer model =
+    case ( offer, model.autoclicker ) of
+        ( NoAutoclicker, ClickerNotBought ) ->
+            []
+
+        ( NoAutoclicker, ClickerBought ) ->
+            []
+
+        ( AutoclickerForSale _, ClickerBought ) ->
+            []
+
+        ( AutoclickerForSale priceCents, ClickerNotBought ) ->
+            [ viewShopItem AutoclickerPurchased "Buy autoclicker" priceCents ]
 
 
 viewUncleShopItem : UncleOffer -> List (Html Msg)

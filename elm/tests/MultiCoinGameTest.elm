@@ -16,7 +16,9 @@ import CoinFlipLevel3
 import Expect
 import MultiCoinGame
     exposing
-        ( BustCause(..)
+        ( Autoclicker(..)
+        , BustCause(..)
+        , FlipHold(..)
         , GoldenGlasses(..)
         , Model
         , Msg(..)
@@ -249,6 +251,35 @@ shopSuite =
                 apply [ UncleAdviceRequested ] { level3Start | balanceCents = 499 }
                     |> .uncleAdviceCount
                     |> Expect.equal 0
+        , test "buying the autoclicker costs $10.00" <|
+            \_ ->
+                let
+                    bought =
+                        apply [ AutoclickerPurchased ] level3Start
+                in
+                ( bought.balanceCents, bought.autoclicker )
+                    |> Expect.equal ( 1500, ClickerBought )
+        , test "the autoclicker cannot be bought twice" <|
+            \_ ->
+                apply [ AutoclickerPurchased, AutoclickerPurchased ] level3Start
+                    |> .balanceCents
+                    |> Expect.equal 1500
+        , test "the autoclicker is refused when it would wipe the balance" <|
+            \_ ->
+                apply [ AutoclickerPurchased ] { level3Start | balanceCents = 1000 }
+                    |> .autoclicker
+                    |> Expect.equal ClickerNotBought
+        , test "holding and releasing the flip button tracks the hold state" <|
+            \_ ->
+                ( apply [ FlipHoldStarted ] level3Start |> .flipHold
+                , apply [ FlipHoldStarted, FlipHoldEnded ] level3Start |> .flipHold
+                )
+                    |> Expect.equal ( FlipHeld, FlipReleased )
+        , test "an autoclicker tick validates stakes exactly like a manual flip" <|
+            \_ ->
+                apply [ AutoclickerTicked ] level3Start
+                    |> latestLogText
+                    |> Expect.equal "Place a bet on at least one coin first."
         , test "buying the golden glasses costs $20.00" <|
             \_ ->
                 let
