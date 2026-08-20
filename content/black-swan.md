@@ -170,4 +170,7 @@ I didn't do the maths on my first run,
 but I saw the low odds and high payout so I decided to do a tiny stake.
 Anyway, if you can't figure all this shit out you can always ask uncle for advice, I'm sure he'll be proud of you.
 
+After play testing for a bit I realized this level can be a ton of clicking,
+so I added the auto clicker and flip helpers preventing endless mouse button bashing.
+
 [^random]: It's random
