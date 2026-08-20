@@ -57,6 +57,11 @@ landedRound stakes rolls =
     CoinsLanded { stakes = stakes, rolls = rolls }
 
 
+clickAtOrigin : MultiCoinGame.ClickPoint
+clickAtOrigin =
+    { x = 0, y = 0 }
+
+
 latestLogText : Model -> String
 latestLogText model =
     case List.head model.log of
@@ -286,15 +291,15 @@ shopSuite =
             \_ ->
                 let
                     considering =
-                        apply [ PurchaseConsidered GlassesItem ] level3Start
+                        apply [ PurchaseConsidered GlassesItem clickAtOrigin ] level3Start
                 in
                 ( considering.balanceCents, considering.glasses, considering.pendingPurchase )
-                    |> Expect.equal ( 2500, GlassesNotBought, Considering GlassesItem )
+                    |> Expect.equal ( 2500, GlassesNotBought, Considering GlassesItem clickAtOrigin )
         , test "confirming the considered purchase buys it and closes the dialog" <|
             \_ ->
                 let
                     bought =
-                        apply [ PurchaseConsidered GlassesItem, PurchaseConfirmed ] level3Start
+                        apply [ PurchaseConsidered GlassesItem clickAtOrigin, PurchaseConfirmed ] level3Start
                 in
                 ( bought.balanceCents, bought.glasses, bought.pendingPurchase )
                     |> Expect.equal ( 500, GlassesBought, NoPendingPurchase )
@@ -302,28 +307,42 @@ shopSuite =
             \_ ->
                 let
                     cancelled =
-                        apply [ PurchaseConsidered TrackerItem, PurchaseCancelled ] level3Start
+                        apply [ PurchaseConsidered TrackerItem clickAtOrigin, PurchaseCancelled ] level3Start
                 in
                 ( cancelled.balanceCents, cancelled.tracker, cancelled.pendingPurchase )
                     |> Expect.equal ( 2500, TrackerNotBought, NoPendingPurchase )
-        , test "uncle's advice also goes through the dialog" <|
+        , test "uncle's advice goes through the dialog, which stays open" <|
             \_ ->
                 let
                     advised =
-                        apply [ PurchaseConsidered UncleAdviceItem, PurchaseConfirmed ] level3Start
+                        apply [ PurchaseConsidered UncleAdviceItem clickAtOrigin, PurchaseConfirmed ] level3Start
                 in
                 ( advised.balanceCents, advised.uncleAdviceCount, advised.pendingPurchase )
-                    |> Expect.equal ( 2000, 1, NoPendingPurchase )
+                    |> Expect.equal ( 2000, 1, Considering UncleAdviceItem clickAtOrigin )
         , test "cancelling uncle's advice charges nothing" <|
             \_ ->
-                apply [ PurchaseConsidered UncleAdviceItem, PurchaseCancelled ] level3Start
+                apply [ PurchaseConsidered UncleAdviceItem clickAtOrigin, PurchaseCancelled ] level3Start
                     |> .uncleAdviceCount
                     |> Expect.equal 0
         , test "confirming a helper hire goes through the compounding price" <|
             \_ ->
-                apply [ PurchaseConsidered FlipHelperItem, PurchaseConfirmed ] level3Start
+                apply [ PurchaseConsidered FlipHelperItem clickAtOrigin, PurchaseConfirmed ] level3Start
                     |> .nextHelperPriceCents
                     |> Expect.equal 110
+        , test "mashing confirm hires a fleet at compounding prices" <|
+            \_ ->
+                let
+                    fleet =
+                        apply
+                            [ PurchaseConsidered FlipHelperItem clickAtOrigin
+                            , PurchaseConfirmed
+                            , PurchaseConfirmed
+                            , PurchaseConfirmed
+                            ]
+                            level3Start
+                in
+                ( fleet.flipHelperCount, fleet.balanceCents, fleet.pendingPurchase )
+                    |> Expect.equal ( 3, 2500 - 100 - 110 - 121, Considering FlipHelperItem clickAtOrigin )
         , test "hiring a flip helper costs the base price and raises the next one by 10%" <|
             \_ ->
                 let

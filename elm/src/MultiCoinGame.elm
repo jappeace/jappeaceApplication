@@ -2,6 +2,7 @@ module MultiCoinGame exposing
     ( Autoclicker(..)
     , AutoclickerOffer(..)
     , BustCause(..)
+    , ClickPoint
     , CoinConfig
     , CoinTally
     , FlipHelperOffer(..)
@@ -151,12 +152,25 @@ type ShopItemKind
     | UncleAdviceItem
 
 
+{-| Where in the viewport the shop item was clicked. The dialog is
+positioned so its confirm button renders right under this point: the
+pointer cannot be moved by a web page, but the button can be brought to
+the pointer.
+-}
+type alias ClickPoint =
+    { x : Float
+    , y : Float
+    }
+
+
 {-| A purchase mid-consideration: clicking a shop item opens a dialog
-explaining it, and only confirming actually buys.
+explaining it, and only confirming actually buys. Repeatable items
+(helpers, uncle) keep the dialog open after confirming, so a fleet can
+be hired by mashing confirm; one-shot equipment closes it.
 -}
 type PendingPurchase
     = NoPendingPurchase
-    | Considering ShopItemKind
+    | Considering ShopItemKind ClickPoint
 
 
 {-| Whether the (win percent, payout) profiles play on the coins as
@@ -234,7 +248,7 @@ type Msg
     | FlipHelperHired
     | FlipHelpersTicked
     | ShopToggled
-    | PurchaseConsidered ShopItemKind
+    | PurchaseConsidered ShopItemKind ClickPoint
     | PurchaseConfirmed
     | PurchaseCancelled
     | CoinsLanded { stakes : List Int, rolls : List Int }
@@ -376,41 +390,39 @@ update config msg model =
             , Cmd.none
             )
 
-        PurchaseConsidered itemKind ->
-            ( { model | pendingPurchase = Considering itemKind }, Cmd.none )
+        PurchaseConsidered itemKind clickPoint ->
+            ( { model | pendingPurchase = Considering itemKind clickPoint }, Cmd.none )
 
         PurchaseConfirmed ->
             case model.pendingPurchase of
                 NoPendingPurchase ->
                     ( model, Cmd.none )
 
-                Considering TrackerItem ->
+                Considering TrackerItem _ ->
                     ( purchaseTracker config.trackerOffer
                         { model | pendingPurchase = NoPendingPurchase }
                     , Cmd.none
                     )
 
-                Considering GlassesItem ->
+                Considering GlassesItem _ ->
                     ( purchaseGlasses config.glassesOffer
                         { model | pendingPurchase = NoPendingPurchase }
                     , Cmd.none
                     )
 
-                Considering AutoclickerItem ->
+                Considering AutoclickerItem _ ->
                     ( purchaseAutoclicker config.autoclickerOffer
                         { model | pendingPurchase = NoPendingPurchase }
                     , Cmd.none
                     )
 
-                Considering FlipHelperItem ->
-                    ( hireFlipHelper config.flipHelperOffer
-                        { model | pendingPurchase = NoPendingPurchase }
-                    , Cmd.none
-                    )
+                Considering FlipHelperItem _ ->
+                    -- Stays open: fleets are hired by mashing confirm.
+                    ( hireFlipHelper config.flipHelperOffer model, Cmd.none )
 
-                Considering UncleAdviceItem ->
-                    purchaseUncleAdvice config.uncleOffer
-                        { model | pendingPurchase = NoPendingPurchase }
+                Considering UncleAdviceItem _ ->
+                    -- Stays open: uncle appreciates repeat customers.
+                    purchaseUncleAdvice config.uncleOffer model
 
         PurchaseCancelled ->
             ( { model | pendingPurchase = NoPendingPurchase }, Cmd.none )
@@ -1195,7 +1207,11 @@ viewShop config model =
 
 
 {-| The confirm/cancel dialog a considered purchase opens, explaining
-what the item actually does before any money moves.
+what the item actually does before any money moves. The dialog is
+fixed-positioned so the confirm button (a known 120x42 box, first in
+the dialog, inside the 0.6em padding and 1px border) renders centered
+under the click that opened it: buying again is a click without moving
+the mouse.
 -}
 viewPurchaseDialog : MultiCoinConfig -> Model -> List (Html Msg)
 viewPurchaseDialog config model =
@@ -1203,9 +1219,22 @@ viewPurchaseDialog config model =
         NoPendingPurchase ->
             []
 
-        Considering itemKind ->
-            [ Html.div [ Html.Attributes.class "purchase-dialog" ]
-                [ Html.div []
+        Considering itemKind clickPoint ->
+            [ Html.div
+                [ Html.Attributes.class "purchase-dialog"
+                , Html.Attributes.style "left" (pixels (max 8 (clickPoint.x - 71)))
+                , Html.Attributes.style "top" (pixels (max 8 (clickPoint.y - 32)))
+                ]
+                [ Html.div [ Html.Attributes.class "dialog-actions" ]
+                    [ Html.button
+                        [ Html.Events.onClick PurchaseConfirmed
+                        , Html.Attributes.style "width" "120px"
+                        , Html.Attributes.style "height" "42px"
+                        ]
+                        [ Html.text "Confirm" ]
+                    , Html.button [ Html.Events.onClick PurchaseCancelled ] [ Html.text "Cancel" ]
+                    ]
+                , Html.div []
                     [ Html.strong []
                         [ Html.text
                             ("Buy "
@@ -1217,12 +1246,13 @@ viewPurchaseDialog config model =
                         ]
                     ]
                 , Html.div [] [ Html.text (itemExplanation itemKind) ]
-                , Html.div [ Html.Attributes.class "dialog-actions" ]
-                    [ Html.button [ Html.Events.onClick PurchaseConfirmed ] [ Html.text "Confirm" ]
-                    , Html.button [ Html.Events.onClick PurchaseCancelled ] [ Html.text "Cancel" ]
-                    ]
                 ]
             ]
+
+
+pixels : Float -> String
+pixels amount =
+    String.fromFloat amount ++ "px"
 
 
 {-| The item's name with its article, ready for "Buy ... for $x?".
@@ -1323,13 +1353,22 @@ viewShopToggle fold =
         ]
 
 
-viewShopItem : Msg -> String -> Int -> Html Msg
-viewShopItem onBuy itemName priceCents =
+viewShopItem : (ClickPoint -> Msg) -> String -> Int -> Html Msg
+viewShopItem onBuyAt itemName priceCents =
     Html.button
-        [ Html.Attributes.class "shop-item", Html.Events.onClick onBuy ]
+        [ Html.Attributes.class "shop-item"
+        , Html.Events.on "click" (Decode.map onBuyAt clickPointDecoder)
+        ]
         [ Html.span [] [ Html.text itemName ]
         , Html.span [] [ Html.text ("$" ++ formatCents priceCents) ]
         ]
+
+
+clickPointDecoder : Decode.Decoder ClickPoint
+clickPointDecoder =
+    Decode.map2 ClickPoint
+        (Decode.field "clientX" Decode.float)
+        (Decode.field "clientY" Decode.float)
 
 
 viewTrackerShopItem : TrackerOffer -> Model -> List (Html Msg)

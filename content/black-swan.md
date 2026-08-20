@@ -87,13 +87,16 @@ of a gambler may succeed.
     width: 100%;
   }
   #coin-flip-game .purchase-dialog {
-    border: 1px dashed #196019;
+    position: fixed;
+    z-index: 10;
+    width: 20em;
+    border: 1px solid #196019;
     border-radius: 4px;
     padding: 0.6em;
     text-align: left;
+    background: #eafbea;
   }
-  #coin-flip-game .dialog-actions { display: flex; gap: 0.6em; margin-top: 0.5em; }
-  #coin-flip-game .dialog-actions button { flex: 1; }
+  #coin-flip-game .dialog-actions { display: flex; gap: 0.6em; margin-bottom: 0.5em; }
   #coin-flip-game input[type="number"] {
     font-family: inherit;
     border: 1px solid #196019;
@@ -121,6 +124,7 @@ of a gambler may succeed.
     #coin-flip-game .progress-track { background: #134013; }
     #coin-flip-game .win-text { color: #7dff7d; }
     #coin-flip-game .lose-text { color: #ff6b6b; }
+    #coin-flip-game .purchase-dialog { background: #062606; }
   }
 </style>
 
