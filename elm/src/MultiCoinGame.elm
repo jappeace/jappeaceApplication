@@ -11,8 +11,10 @@ module MultiCoinGame exposing
     , Model
     , Msg(..)
     , MultiCoinConfig
+    , PendingPurchase(..)
     , ProfileAssignment(..)
     , ShopFold(..)
+    , ShopItemKind(..)
     , StakeInput(..)
     , formatPayout
     , gameProgram
@@ -69,6 +71,7 @@ import CoinFlipGame
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
+import Html.Keyed
 import Json.Decode as Decode
 import Random
 import Time
@@ -138,6 +141,25 @@ type ShopFold
     | ShopExpanded
 
 
+{-| The four equipment items a purchase dialog can explain. Uncle is
+deliberately absent: his advice speaks for itself and stays an impulse
+buy.
+-}
+type ShopItemKind
+    = TrackerItem
+    | GlassesItem
+    | AutoclickerItem
+    | FlipHelperItem
+
+
+{-| A purchase mid-consideration: clicking a shop item opens a dialog
+explaining it, and only confirming actually buys.
+-}
+type PendingPurchase
+    = NoPendingPurchase
+    | Considering ShopItemKind
+
+
 {-| Whether the (win percent, payout) profiles play on the coins as
 written in the config, or get dealt across the coin names at random on
 every game start, so a replay means rediscovering which coin is which.
@@ -182,8 +204,10 @@ type alias Model =
     , autoclicker : Autoclicker
     , flipHold : FlipHold
     , flipHelperCount : Int
+    , helperFlipCount : Int
     , nextHelperPriceCents : Int
     , shopFold : ShopFold
+    , pendingPurchase : PendingPurchase
     , uncleAdviceCount : Int
     , uncleGloat : UncleGloat
     , bustCause : BustCause
@@ -211,6 +235,9 @@ type Msg
     | FlipHelperHired
     | FlipHelpersTicked
     | ShopToggled
+    | PurchaseConsidered ShopItemKind
+    | PurchaseConfirmed
+    | PurchaseCancelled
     | CoinsLanded { stakes : List Int, rolls : List Int }
     | ClockTicked
     | TrackerPurchased
@@ -283,8 +310,10 @@ initialModel config =
     , autoclicker = ClickerNotBought
     , flipHold = FlipReleased
     , flipHelperCount = 0
+    , helperFlipCount = 0
     , nextHelperPriceCents = initialHelperPriceCents config.flipHelperOffer
     , shopFold = ShopCollapsed
+    , pendingPurchase = NoPendingPurchase
     , uncleAdviceCount = 0
     , uncleGloat = UncleHasNotGloated
     , bustCause = NotBusted
@@ -330,7 +359,10 @@ update config msg model =
             ( hireFlipHelper config.flipHelperOffer model, Cmd.none )
 
         FlipHelpersTicked ->
-            pressFlip config model
+            -- The counter keys the bird emoji's backflip animation: a
+            -- changed key recreates the span, replaying the CSS
+            -- animation once per helper flip.
+            pressFlip config { model | helperFlipCount = model.helperFlipCount + 1 }
 
         ShopToggled ->
             ( { model
@@ -344,6 +376,41 @@ update config msg model =
               }
             , Cmd.none
             )
+
+        PurchaseConsidered itemKind ->
+            ( { model | pendingPurchase = Considering itemKind }, Cmd.none )
+
+        PurchaseConfirmed ->
+            case model.pendingPurchase of
+                NoPendingPurchase ->
+                    ( model, Cmd.none )
+
+                Considering TrackerItem ->
+                    ( purchaseTracker config.trackerOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering GlassesItem ->
+                    ( purchaseGlasses config.glassesOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering AutoclickerItem ->
+                    ( purchaseAutoclicker config.autoclickerOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering FlipHelperItem ->
+                    ( hireFlipHelper config.flipHelperOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+        PurchaseCancelled ->
+            ( { model | pendingPurchase = NoPendingPurchase }, Cmd.none )
 
         CoinsLanded landedRound ->
             ( settleRound config landedRound model, Cmd.none )
@@ -991,7 +1058,14 @@ viewFlipHelpers model =
 
     else
         [ Html.div [ Html.Attributes.class "helpers" ]
-            [ Html.text ("\u{1F424} Flip helpers: " ++ String.fromInt model.flipHelperCount) ]
+            [ Html.Keyed.node "span"
+                []
+                [ ( String.fromInt model.helperFlipCount
+                  , Html.span [ Html.Attributes.class "helper-bird" ] [ Html.text "\u{1F424}" ]
+                  )
+                ]
+            , Html.text (" Flip helpers: " ++ String.fromInt model.flipHelperCount)
+            ]
         ]
 
 
@@ -1049,7 +1123,10 @@ viewCoinRow coinIndex ( coin, stakeInput ) =
             [ Html.Attributes.class "bet-amount"
             , Html.Attributes.type_ "number"
             , Html.Attributes.step "0.01"
-            , Html.Attributes.min "0.01"
+
+            -- Zero is a real value here, it means "not playing this
+            -- coin", so the stepper must be able to reach it.
+            , Html.Attributes.min "0"
             , Html.Attributes.value stakeInput
             , Html.Events.onInput (StakeInputChanged coinIndex)
             ]
@@ -1108,10 +1185,108 @@ viewShop config model =
                                 []
 
                             ShopExpanded ->
-                                shopItems
+                                shopItems ++ viewPurchaseDialog config model
                        )
                 )
             ]
+
+
+{-| The confirm/cancel dialog a considered purchase opens, explaining
+what the item actually does before any money moves.
+-}
+viewPurchaseDialog : MultiCoinConfig -> Model -> List (Html Msg)
+viewPurchaseDialog config model =
+    case model.pendingPurchase of
+        NoPendingPurchase ->
+            []
+
+        Considering itemKind ->
+            [ Html.div [ Html.Attributes.class "purchase-dialog" ]
+                [ Html.div []
+                    [ Html.strong []
+                        [ Html.text
+                            ("Buy the "
+                                ++ itemDisplayName itemKind
+                                ++ " for $"
+                                ++ formatCents (itemPriceCents config model itemKind)
+                                ++ "?"
+                            )
+                        ]
+                    ]
+                , Html.div [] [ Html.text (itemExplanation itemKind) ]
+                , Html.div [ Html.Attributes.class "dialog-actions" ]
+                    [ Html.button [ Html.Events.onClick PurchaseConfirmed ] [ Html.text "Confirm" ]
+                    , Html.button [ Html.Events.onClick PurchaseCancelled ] [ Html.text "Cancel" ]
+                    ]
+                ]
+            ]
+
+
+itemDisplayName : ShopItemKind -> String
+itemDisplayName itemKind =
+    case itemKind of
+        TrackerItem ->
+            "ratio tracker"
+
+        GlassesItem ->
+            "golden glasses"
+
+        AutoclickerItem ->
+            "autoclicker"
+
+        FlipHelperItem ->
+            "flip helper"
+
+
+itemExplanation : ShopItemKind -> String
+itemExplanation itemKind =
+    case itemKind of
+        TrackerItem ->
+            "Counts how often each coin landed heads across your flips, so you don't have to tally the log by hand."
+
+        GlassesItem ->
+            "Reveal what each coin pays out on a win, right under the flip button. The win chances stay hidden."
+
+        AutoclickerItem ->
+            "Hold the flip button down and it presses it for you, ten times a second."
+
+        FlipHelperItem ->
+            "A tireless helper who presses flip for you once every five seconds. Every next hire asks 10% more."
+
+
+{-| The price the dialog quotes. Zero for an absent offer, which is
+never read: the dialog only opens from a shop button that an absent
+offer never renders.
+-}
+itemPriceCents : MultiCoinConfig -> Model -> ShopItemKind -> Int
+itemPriceCents config model itemKind =
+    case itemKind of
+        TrackerItem ->
+            case config.trackerOffer of
+                NoTrackerForSale ->
+                    0
+
+                TrackerForSale priceCents ->
+                    priceCents
+
+        GlassesItem ->
+            case config.glassesOffer of
+                NoGoldenGlasses ->
+                    0
+
+                GoldenGlassesForSale priceCents ->
+                    priceCents
+
+        AutoclickerItem ->
+            case config.autoclickerOffer of
+                NoAutoclicker ->
+                    0
+
+                AutoclickerForSale priceCents ->
+                    priceCents
+
+        FlipHelperItem ->
+            model.nextHelperPriceCents
 
 
 viewShopToggle : ShopFold -> Html Msg
@@ -1151,7 +1326,7 @@ viewTrackerShopItem offer model =
             []
 
         ( TrackerForSale priceCents, TrackerNotBought ) ->
-            [ viewShopItem TrackerPurchased "Buy ratio tracker" priceCents ]
+            [ viewShopItem (PurchaseConsidered TrackerItem) "Buy ratio tracker" priceCents ]
 
 
 viewGlassesShopItem : GlassesOffer -> Model -> List (Html Msg)
@@ -1167,7 +1342,7 @@ viewGlassesShopItem offer model =
             []
 
         ( GoldenGlassesForSale priceCents, GlassesNotBought ) ->
-            [ viewShopItem GlassesPurchased "Buy golden glasses" priceCents ]
+            [ viewShopItem (PurchaseConsidered GlassesItem) "Buy golden glasses" priceCents ]
 
 
 viewAutoclickerShopItem : AutoclickerOffer -> Model -> List (Html Msg)
@@ -1183,7 +1358,7 @@ viewAutoclickerShopItem offer model =
             []
 
         ( AutoclickerForSale priceCents, ClickerNotBought ) ->
-            [ viewShopItem AutoclickerPurchased "Buy autoclicker" priceCents ]
+            [ viewShopItem (PurchaseConsidered AutoclickerItem) "Buy autoclicker" priceCents ]
 
 
 {-| Unlike the one-shot equipment, helpers stay for sale forever: the
@@ -1196,7 +1371,7 @@ viewFlipHelperShopItem offer model =
             []
 
         FlipHelpersForSale _ ->
-            [ viewShopItem FlipHelperHired "Hire flip helper" model.nextHelperPriceCents ]
+            [ viewShopItem (PurchaseConsidered FlipHelperItem) "Hire flip helper" model.nextHelperPriceCents ]
 
 
 viewUncleShopItem : UncleOffer -> List (Html Msg)

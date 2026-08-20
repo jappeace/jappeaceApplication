@@ -21,6 +21,8 @@ import MultiCoinGame
         , FlipHold(..)
         , GoldenGlasses(..)
         , Model
+        , PendingPurchase(..)
+        , ShopItemKind(..)
         , Msg(..)
         , StakeInput(..)
         , formatPayout
@@ -280,6 +282,35 @@ shopSuite =
                 apply [ AutoclickerTicked ] level3Start
                     |> latestLogText
                     |> Expect.equal "Place a bet on at least one coin first."
+        , test "considering a purchase charges nothing" <|
+            \_ ->
+                let
+                    considering =
+                        apply [ PurchaseConsidered GlassesItem ] level3Start
+                in
+                ( considering.balanceCents, considering.glasses, considering.pendingPurchase )
+                    |> Expect.equal ( 2500, GlassesNotBought, Considering GlassesItem )
+        , test "confirming the considered purchase buys it and closes the dialog" <|
+            \_ ->
+                let
+                    bought =
+                        apply [ PurchaseConsidered GlassesItem, PurchaseConfirmed ] level3Start
+                in
+                ( bought.balanceCents, bought.glasses, bought.pendingPurchase )
+                    |> Expect.equal ( 500, GlassesBought, NoPendingPurchase )
+        , test "cancelling the considered purchase keeps the money" <|
+            \_ ->
+                let
+                    cancelled =
+                        apply [ PurchaseConsidered TrackerItem, PurchaseCancelled ] level3Start
+                in
+                ( cancelled.balanceCents, cancelled.tracker, cancelled.pendingPurchase )
+                    |> Expect.equal ( 2500, TrackerNotBought, NoPendingPurchase )
+        , test "confirming a helper hire goes through the compounding price" <|
+            \_ ->
+                apply [ PurchaseConsidered FlipHelperItem, PurchaseConfirmed ] level3Start
+                    |> .nextHelperPriceCents
+                    |> Expect.equal 110
         , test "hiring a flip helper costs the base price and raises the next one by 10%" <|
             \_ ->
                 let
@@ -306,6 +337,11 @@ shopSuite =
                 apply [ FlipHelpersTicked ] level3Start
                     |> latestLogText
                     |> Expect.equal "Place a bet on at least one coin first."
+        , test "helper ticks count up, keying the bird's backflip" <|
+            \_ ->
+                apply [ FlipHelpersTicked, FlipHelpersTicked, FlipHelpersTicked ] level3Start
+                    |> .helperFlipCount
+                    |> Expect.equal 3
         , test "buying the golden glasses costs $20.00" <|
             \_ ->
                 let

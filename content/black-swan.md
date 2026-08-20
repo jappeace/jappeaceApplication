@@ -72,12 +72,28 @@ of a gambler may succeed.
   }
   #coin-flip-game .shop-toggle { width: 100%; text-align: left; font-weight: bold; }
   #coin-flip-game .helpers { font-weight: bold; }
+  #coin-flip-game .helper-bird {
+    display: inline-block;
+    animation: helper-backflip 0.5s ease-in-out;
+  }
+  @keyframes helper-backflip {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+  }
   #coin-flip-game .shop-item {
     display: flex;
     justify-content: space-between;
     gap: 1em;
     width: 100%;
   }
+  #coin-flip-game .purchase-dialog {
+    border: 1px dashed #196019;
+    border-radius: 4px;
+    padding: 0.6em;
+    text-align: left;
+  }
+  #coin-flip-game .dialog-actions { display: flex; gap: 0.6em; margin-top: 0.5em; }
+  #coin-flip-game .dialog-actions button { flex: 1; }
   #coin-flip-game input[type="number"] {
     font-family: inherit;
     border: 1px solid #196019;
