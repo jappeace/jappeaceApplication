@@ -5,8 +5,8 @@ OPTIONS: toc:nil
 Tags: gambling, finance, game
 
 Even the best gamblers fail on this level.
-Only the unlikely [black swan](https://en.wikipedia.org/wiki/The_Black_Swan:_The_Impact_of_the_Highly_Improbable) 
-of a gambler maybe able to succeed.
+Only a [black swan](https://en.wikipedia.org/wiki/The_Black_Swan:_The_Impact_of_the_Highly_Improbable) 
+of a gambler may succeed.
 
 <div id="coin-flip-game"></div>
 
@@ -113,9 +113,22 @@ Elm.CoinFlipLevel3.init({ node: document.getElementById('coin-flip-game') });
 
 Here the way to win is to carefully study the log messages, 
 you may have to place quite a few bets before you can even map the payouts to the birds.
+You can try getting the golden glasses but you wouldn't have enough money for the tracker,
+I think the tracker is more convenient then the log messages.
 Now you should calculate if it even makes sense to bet on these birds
-once you got their probabilities and payout factors.
+once you've got their probabilities and payout factors.
 This is just common sense.
-Why make bets on stuff that have negative returns? 
-It's like buying a lotto number or playing roulette, madness!
+Why make bets that have negative returns? 
+It's like buying a lotto ticket or playing roulette, madness!
 We don't play for [FUN](https://dwarffortresswiki.org/DF2014:Fun&redirect=no), we play to win!
+
+Please note that we adjusted payout factors in this level, 
+so the kelly criterion changes in accordance with that.
+
+$$f^* = p - \frac{q}{b} = \frac{bp - q}{b}$$
+
+so whichever of those birds is the black swan[^random] gives: $p = 0.05$, $q = 0.95$, $b = 30$:
+
+$$f^* = 0.05 - \frac{0.95}{30} \approx 0.0183$$
+
+[^random]: It's random
