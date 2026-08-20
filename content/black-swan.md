@@ -15,7 +15,7 @@ of a gambler may succeed.
     border: 2px solid #196019;
     border-radius: 6px;
     overflow: hidden;
-    max-width: 26em;
+    max-width: 34em;
     margin: 1.5em auto;
     padding: 0 1em 1em;
     font-family: "Inconsolata", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
@@ -69,7 +69,8 @@ of a gambler may succeed.
     gap: 0.4em;
     text-align: left;
   }
-  #coin-flip-game .shop-header { font-weight: bold; }
+  #coin-flip-game .shop-toggle { width: 100%; text-align: left; font-weight: bold; }
+  #coin-flip-game .helpers { font-weight: bold; }
   #coin-flip-game .shop-item {
     display: flex;
     justify-content: space-between;

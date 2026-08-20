@@ -280,6 +280,32 @@ shopSuite =
                 apply [ AutoclickerTicked ] level3Start
                     |> latestLogText
                     |> Expect.equal "Place a bet on at least one coin first."
+        , test "hiring a flip helper costs the base price and raises the next one by 10%" <|
+            \_ ->
+                let
+                    hired =
+                        apply [ FlipHelperHired ] level3Start
+                in
+                ( hired.balanceCents, hired.flipHelperCount, hired.nextHelperPriceCents )
+                    |> Expect.equal ( 2400, 1, 110 )
+        , test "helper prices compound per hire" <|
+            \_ ->
+                let
+                    hired =
+                        apply [ FlipHelperHired, FlipHelperHired, FlipHelperHired ] level3Start
+                in
+                ( hired.balanceCents, hired.flipHelperCount, hired.nextHelperPriceCents )
+                    |> Expect.equal ( 2500 - 100 - 110 - 121, 3, 133 )
+        , test "a helper hire is refused when it would wipe the balance" <|
+            \_ ->
+                apply [ FlipHelperHired ] { level3Start | balanceCents = 100 }
+                    |> .flipHelperCount
+                    |> Expect.equal 0
+        , test "a helper tick validates stakes exactly like a manual flip" <|
+            \_ ->
+                apply [ FlipHelpersTicked ] level3Start
+                    |> latestLogText
+                    |> Expect.equal "Place a bet on at least one coin first."
         , test "buying the golden glasses costs $20.00" <|
             \_ ->
                 let
@@ -314,6 +340,34 @@ gatingSuite =
                 view CoinFlipLevel3.levelConfig { level3Start | tracker = TrackerBought }
                     |> Query.fromHtml
                     |> Query.has [ class "tally" ]
+        , test "the shop starts collapsed with no items visible" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig level3Start
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "shop-item" ]
+        , test "toggling the shop reveals the items" <|
+            \_ ->
+                apply [ ShopToggled ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "shop-item" ]
+        , test "toggling twice collapses the shop again" <|
+            \_ ->
+                apply [ ShopToggled, ShopToggled ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "shop-item" ]
+        , test "the helper count only renders once helpers are hired" <|
+            \_ ->
+                ( view CoinFlipLevel3.levelConfig level3Start
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "helpers" ]
+                , apply [ FlipHelperHired ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "helpers" ]
+                )
+                    |> (\( noHelpers, oneHelper ) -> Expect.all [ \_ -> noHelpers, \_ -> oneHelper ] ())
         , test "the payout line only renders once the glasses are bought" <|
             \_ ->
                 view CoinFlipLevel3.levelConfig level3Start

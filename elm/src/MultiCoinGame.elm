@@ -4,6 +4,7 @@ module MultiCoinGame exposing
     , BustCause(..)
     , CoinConfig
     , CoinTally
+    , FlipHelperOffer(..)
     , FlipHold(..)
     , GlassesOffer(..)
     , GoldenGlasses(..)
@@ -11,6 +12,7 @@ module MultiCoinGame exposing
     , Msg(..)
     , MultiCoinConfig
     , ProfileAssignment(..)
+    , ShopFold(..)
     , StakeInput(..)
     , formatPayout
     , gameProgram
@@ -118,6 +120,24 @@ type FlipHold
     | FlipHeld
 
 
+{-| Flip helpers flip for the player: each one presses flip once per
+five seconds, staggered, so owning N means a flip every 5000/N ms. The
+price starts at the base and rises by the given percent on every hire,
+compounding: automation gets progressively more expensive.
+-}
+type FlipHelperOffer
+    = NoFlipHelpers
+    | FlipHelpersForSale { basePriceCents : Int, priceIncreasePercent : Int }
+
+
+{-| The shop folds away behind its header and starts collapsed, so the
+game opens on the bets, not the catalogue.
+-}
+type ShopFold
+    = ShopCollapsed
+    | ShopExpanded
+
+
 {-| Whether the (win percent, payout) profiles play on the coins as
 written in the config, or get dealt across the coin names at random on
 every game start, so a replay means rediscovering which coin is which.
@@ -135,6 +155,7 @@ type alias MultiCoinConfig =
     , uncleOffer : UncleOffer
     , glassesOffer : GlassesOffer
     , autoclickerOffer : AutoclickerOffer
+    , flipHelperOffer : FlipHelperOffer
     , introLogLine : String
     }
 
@@ -160,6 +181,9 @@ type alias Model =
     , glasses : GoldenGlasses
     , autoclicker : Autoclicker
     , flipHold : FlipHold
+    , flipHelperCount : Int
+    , nextHelperPriceCents : Int
+    , shopFold : ShopFold
     , uncleAdviceCount : Int
     , uncleGloat : UncleGloat
     , bustCause : BustCause
@@ -184,6 +208,9 @@ type Msg
     | FlipHoldStarted
     | FlipHoldEnded
     | AutoclickerTicked
+    | FlipHelperHired
+    | FlipHelpersTicked
+    | ShopToggled
     | CoinsLanded { stakes : List Int, rolls : List Int }
     | ClockTicked
     | TrackerPurchased
@@ -255,6 +282,9 @@ initialModel config =
     , glasses = GlassesNotBought
     , autoclicker = ClickerNotBought
     , flipHold = FlipReleased
+    , flipHelperCount = 0
+    , nextHelperPriceCents = initialHelperPriceCents config.flipHelperOffer
+    , shopFold = ShopCollapsed
     , uncleAdviceCount = 0
     , uncleGloat = UncleHasNotGloated
     , bustCause = NotBusted
@@ -295,6 +325,25 @@ update config msg model =
 
         AutoclickerTicked ->
             pressFlip config model
+
+        FlipHelperHired ->
+            ( hireFlipHelper config.flipHelperOffer model, Cmd.none )
+
+        FlipHelpersTicked ->
+            pressFlip config model
+
+        ShopToggled ->
+            ( { model
+                | shopFold =
+                    case model.shopFold of
+                        ShopCollapsed ->
+                            ShopExpanded
+
+                        ShopExpanded ->
+                            ShopCollapsed
+              }
+            , Cmd.none
+            )
 
         CoinsLanded landedRound ->
             ( settleRound config landedRound model, Cmd.none )
@@ -644,6 +693,59 @@ purchaseGlasses offer model =
                     }
 
 
+{-| What the very first flip helper costs. Zero without an offer, which
+is never read: hiring is impossible when no helpers are for sale, the
+purchase path matches on the offer before touching the price.
+-}
+initialHelperPriceCents : FlipHelperOffer -> Int
+initialHelperPriceCents offer =
+    case offer of
+        NoFlipHelpers ->
+            0
+
+        FlipHelpersForSale sale ->
+            sale.basePriceCents
+
+
+{-| Hire one more flip helper at the current price, then raise the
+price for the next one. Same wipe-out guard as the other equipment.
+-}
+hireFlipHelper : FlipHelperOffer -> Model -> Model
+hireFlipHelper offer model =
+    case offer of
+        NoFlipHelpers ->
+            model
+
+        FlipHelpersForSale sale ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= model.nextHelperPriceCents then
+                logLine NeutralTone "You cannot afford another flip helper." model
+
+            else
+                logLine NeutralTone
+                    ("Hired flip helper number "
+                        ++ String.fromInt (model.flipHelperCount + 1)
+                        ++ " for $"
+                        ++ formatCents model.nextHelperPriceCents
+                        ++ ". Each helper flips once per five seconds."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - model.nextHelperPriceCents
+                        , flipHelperCount = model.flipHelperCount + 1
+                        , nextHelperPriceCents =
+                            raisePriceByPercent sale.priceIncreasePercent model.nextHelperPriceCents
+                    }
+
+
+{-| A price raised by the given percent, rounded to whole cents.
+-}
+raisePriceByPercent : Int -> Int -> Int
+raisePriceByPercent increasePercent priceCents =
+    (priceCents * (100 + increasePercent) + 50) // 100
+
+
 {-| Buy the autoclicker. Same wipe-out guard as the tracker.
 -}
 purchaseAutoclicker : AutoclickerOffer -> Model -> Model
@@ -716,7 +818,35 @@ logLine tone text model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch [ clockSubscription model, autoclickerSubscription model ]
+    Sub.batch
+        [ clockSubscription model
+        , autoclickerSubscription model
+        , flipHelperSubscription model
+        ]
+
+
+{-| Each hired helper flips once per five seconds, staggered: N helpers
+share one timer at 5000/N ms, which is N evenly spread flips per five
+seconds.
+-}
+flipHelperSubscription : Model -> Sub Msg
+flipHelperSubscription model =
+    case model.phase of
+        Playing ->
+            if model.flipHelperCount > 0 then
+                Time.every (5000 / toFloat model.flipHelperCount) (\_ -> FlipHelpersTicked)
+
+            else
+                Sub.none
+
+        WonGame ->
+            Sub.none
+
+        WentBust ->
+            Sub.none
+
+        RanOutOfTime ->
+            Sub.none
 
 
 clockSubscription : Model -> Sub Msg
@@ -845,9 +975,24 @@ viewControls config model =
               ]
             , viewGlassesPayouts model
             , viewTally config model
+            , viewFlipHelpers model
             , viewShop config model
             ]
         )
+
+
+{-| How many helpers are flipping for the player, shown once any are
+hired.
+-}
+viewFlipHelpers : Model -> List (Html Msg)
+viewFlipHelpers model =
+    if model.flipHelperCount == 0 then
+        []
+
+    else
+        [ Html.div [ Html.Attributes.class "helpers" ]
+            [ Html.text ("\u{1F424} Flip helpers: " ++ String.fromInt model.flipHelperCount) ]
+        ]
 
 
 {-| The payout multipliers the golden glasses reveal, under the flip
@@ -949,6 +1094,7 @@ viewShop config model =
         viewTrackerShopItem config.trackerOffer model
             ++ viewGlassesShopItem config.glassesOffer model
             ++ viewAutoclickerShopItem config.autoclickerOffer model
+            ++ viewFlipHelperShopItem config.flipHelperOffer model
             ++ viewUncleShopItem config.uncleOffer
     of
         [] ->
@@ -956,10 +1102,31 @@ viewShop config model =
 
         shopItems ->
             [ Html.div [ Html.Attributes.class "shop" ]
-                (Html.div [ Html.Attributes.class "shop-header" ] [ Html.text "\u{1F6D2} Shop" ]
-                    :: shopItems
+                (viewShopToggle model.shopFold
+                    :: (case model.shopFold of
+                            ShopCollapsed ->
+                                []
+
+                            ShopExpanded ->
+                                shopItems
+                       )
                 )
             ]
+
+
+viewShopToggle : ShopFold -> Html Msg
+viewShopToggle fold =
+    Html.button
+        [ Html.Attributes.class "shop-toggle", Html.Events.onClick ShopToggled ]
+        [ Html.text
+            (case fold of
+                ShopCollapsed ->
+                    "\u{1F6D2} Shop \u{25B8}"
+
+                ShopExpanded ->
+                    "\u{1F6D2} Shop \u{25BE}"
+            )
+        ]
 
 
 viewShopItem : Msg -> String -> Int -> Html Msg
@@ -1017,6 +1184,19 @@ viewAutoclickerShopItem offer model =
 
         ( AutoclickerForSale priceCents, ClickerNotBought ) ->
             [ viewShopItem AutoclickerPurchased "Buy autoclicker" priceCents ]
+
+
+{-| Unlike the one-shot equipment, helpers stay for sale forever: the
+price just keeps climbing.
+-}
+viewFlipHelperShopItem : FlipHelperOffer -> Model -> List (Html Msg)
+viewFlipHelperShopItem offer model =
+    case offer of
+        NoFlipHelpers ->
+            []
+
+        FlipHelpersForSale _ ->
+            [ viewShopItem FlipHelperHired "Hire flip helper" model.nextHelperPriceCents ]
 
 
 viewUncleShopItem : UncleOffer -> List (Html Msg)
