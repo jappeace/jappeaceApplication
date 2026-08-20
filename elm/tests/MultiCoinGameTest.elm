@@ -16,7 +16,8 @@ import CoinFlipLevel3
 import Expect
 import MultiCoinGame
     exposing
-        ( Model
+        ( GoldenGlasses(..)
+        , Model
         , Msg(..)
         , StakeInput(..)
         , formatPayout
@@ -210,6 +211,24 @@ shopSuite =
                 apply [ UncleAdviceRequested ] { level3Start | balanceCents = 500 }
                     |> .uncleAdviceCount
                     |> Expect.equal 0
+        , test "buying the golden glasses costs $20.00" <|
+            \_ ->
+                let
+                    bought =
+                        apply [ GlassesPurchased ] level3Start
+                in
+                ( bought.balanceCents, bought.glasses )
+                    |> Expect.equal ( 500, GlassesBought )
+        , test "the glasses cannot be bought twice" <|
+            \_ ->
+                apply [ GlassesPurchased, GlassesPurchased ] level3Start
+                    |> .balanceCents
+                    |> Expect.equal 500
+        , test "the glasses are refused when they would wipe the balance" <|
+            \_ ->
+                apply [ GlassesPurchased ] { level3Start | balanceCents = 2000 }
+                    |> .glasses
+                    |> Expect.equal GlassesNotBought
         ]
 
 
@@ -226,6 +245,16 @@ gatingSuite =
                 view CoinFlipLevel3.levelConfig { level3Start | tracker = TrackerBought }
                     |> Query.fromHtml
                     |> Query.has [ class "tally" ]
+        , test "the payout line only renders once the glasses are bought" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig level3Start
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "glasses" ]
+        , test "the bought glasses render the payout line" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig { level3Start | glasses = GlassesBought }
+                    |> Query.fromHtml
+                    |> Query.has [ class "glasses" ]
         , test "bought uncle advice draws a verdict on a bust" <|
             \_ ->
                 view CoinFlipLevel3.levelConfig

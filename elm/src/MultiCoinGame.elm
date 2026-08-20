@@ -1,6 +1,8 @@
 module MultiCoinGame exposing
     ( CoinConfig
     , CoinTally
+    , GlassesOffer(..)
+    , GoldenGlasses(..)
     , Model
     , Msg(..)
     , MultiCoinConfig
@@ -72,11 +74,26 @@ type alias CoinConfig =
     }
 
 
+{-| The golden glasses reveal every coin's payout multiplier while
+playing (the win percents stay hidden; that is what the ratio tracker
+approximates). Price in cents.
+-}
+type GlassesOffer
+    = NoGoldenGlasses
+    | GoldenGlassesForSale Int
+
+
+type GoldenGlasses
+    = GlassesNotBought
+    | GlassesBought
+
+
 type alias MultiCoinConfig =
     { title : String
     , coins : List CoinConfig
     , trackerOffer : TrackerOffer
     , uncleOffer : UncleOffer
+    , glassesOffer : GlassesOffer
     , introLogLine : String
     }
 
@@ -98,6 +115,7 @@ type alias Model =
     , secondsLeft : Int
     , roundCount : Int
     , tracker : TrackerState
+    , glasses : GoldenGlasses
     , uncleAdviceCount : Int
     , log : List LogLine
     }
@@ -109,6 +127,7 @@ type Msg
     | CoinsLanded { stakes : List Int, rolls : List Int }
     | ClockTicked
     | TrackerPurchased
+    | GlassesPurchased
     | UncleAdviceRequested
     | UncleAdviceGiven String
 
@@ -133,6 +152,7 @@ initialModel config =
     , secondsLeft = timeLimitSeconds
     , roundCount = 0
     , tracker = TrackerNotBought
+    , glasses = GlassesNotBought
     , uncleAdviceCount = 0
     , log = [ { tone = NeutralTone, text = config.introLogLine } ]
     }
@@ -168,6 +188,9 @@ update config msg model =
 
         TrackerPurchased ->
             ( purchaseTracker config.trackerOffer model, Cmd.none )
+
+        GlassesPurchased ->
+            ( purchaseGlasses config.glassesOffer model, Cmd.none )
 
         UncleAdviceRequested ->
             purchaseUncleAdvice config.uncleOffer model
@@ -329,16 +352,18 @@ resolveCoin coin tally stake roll =
                     paidOut =
                         payoutCents coin.payoutPercent stake
                 in
+                -- The logged amount is the full return, stake plus
+                -- winnings, because "paid out $0.10 on your $0.10" read
+                -- as a break-even coin. The balance delta stays the
+                -- winnings alone: the stake never left the balance.
                 { tally = { headsCount = tally.headsCount + 1, flipCount = tally.flipCount + 1 }
                 , deltaCents = paidOut
                 , logLines =
                     [ { tone = WinTone
                       , text =
                             coin.coinName
-                                ++ " landed heads! Paid out $"
-                                ++ formatCents paidOut
-                                ++ " on your $"
-                                ++ formatCents stake
+                                ++ " landed heads! You win $"
+                                ++ formatCents (stake + paidOut)
                                 ++ "."
                       }
                     ]
@@ -349,7 +374,7 @@ resolveCoin coin tally stake roll =
                 , deltaCents = -stake
                 , logLines =
                     [ { tone = LoseTone
-                      , text = coin.coinName ++ " landed tails. You lost $" ++ formatCents stake ++ "."
+                      , text = coin.coinName ++ " landed tails. You lost your $" ++ formatCents stake ++ " stake."
                       }
                     ]
                 }
@@ -440,6 +465,36 @@ purchaseTracker offer model =
                     { model
                         | balanceCents = model.balanceCents - priceCents
                         , tracker = TrackerBought
+                    }
+
+
+{-| Buy the golden glasses. Same wipe-out guard as the tracker.
+-}
+purchaseGlasses : GlassesOffer -> Model -> Model
+purchaseGlasses offer model =
+    case ( offer, model.glasses ) of
+        ( NoGoldenGlasses, GlassesNotBought ) ->
+            model
+
+        ( NoGoldenGlasses, GlassesBought ) ->
+            model
+
+        ( GoldenGlassesForSale _, GlassesBought ) ->
+            model
+
+        ( GoldenGlassesForSale priceCents, GlassesNotBought ) ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= priceCents then
+                logLine NeutralTone "You cannot afford the golden glasses." model
+
+            else
+                logLine NeutralTone
+                    ("Bought the golden glasses for $" ++ formatCents priceCents ++ ".")
+                    { model
+                        | balanceCents = model.balanceCents - priceCents
+                        , glasses = GlassesBought
                     }
 
 
@@ -566,10 +621,34 @@ viewControls config model =
                     ]
                     [ Html.text "FLIP" ]
               ]
+            , viewGlassesPayouts config model
             , viewTally config model
             , viewShop config model
             ]
         )
+
+
+{-| The payout multipliers the golden glasses reveal, under the flip
+button. Only the payouts: the win percents stay hidden.
+-}
+viewGlassesPayouts : MultiCoinConfig -> Model -> List (Html Msg)
+viewGlassesPayouts config model =
+    case model.glasses of
+        GlassesNotBought ->
+            []
+
+        GlassesBought ->
+            [ Html.div [ Html.Attributes.class "glasses" ]
+                [ Html.text
+                    ("\u{1F453} Pays: "
+                        ++ String.join " \u{00B7} "
+                            (List.map
+                                (\coin -> coin.coinName ++ " " ++ formatPayout coin.payoutPercent)
+                                config.coins
+                            )
+                    )
+                ]
+            ]
 
 
 viewCoinRow : Int -> ( CoinConfig, String ) -> Html Msg
@@ -621,7 +700,11 @@ coinTallyText coin tally =
 
 viewShop : MultiCoinConfig -> Model -> List (Html Msg)
 viewShop config model =
-    case viewTrackerShopItem config.trackerOffer model ++ viewUncleShopItem config.uncleOffer of
+    case
+        viewTrackerShopItem config.trackerOffer model
+            ++ viewGlassesShopItem config.glassesOffer model
+            ++ viewUncleShopItem config.uncleOffer
+    of
         [] ->
             []
 
@@ -656,6 +739,22 @@ viewTrackerShopItem offer model =
 
         ( TrackerForSale priceCents, TrackerNotBought ) ->
             [ viewShopItem TrackerPurchased "Buy ratio tracker" priceCents ]
+
+
+viewGlassesShopItem : GlassesOffer -> Model -> List (Html Msg)
+viewGlassesShopItem offer model =
+    case ( offer, model.glasses ) of
+        ( NoGoldenGlasses, GlassesNotBought ) ->
+            []
+
+        ( NoGoldenGlasses, GlassesBought ) ->
+            []
+
+        ( GoldenGlassesForSale _, GlassesBought ) ->
+            []
+
+        ( GoldenGlassesForSale priceCents, GlassesNotBought ) ->
+            [ viewShopItem GlassesPurchased "Buy golden glasses" priceCents ]
 
 
 viewUncleShopItem : UncleOffer -> List (Html Msg)

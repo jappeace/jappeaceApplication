@@ -59,6 +59,7 @@ TODO
   #coin-flip-game .coin-bet label { font-weight: bold; }
   #coin-flip-game .flip-button { width: 100%; padding: 0.6em; font-weight: bold; }
   #coin-flip-game .tally { font-weight: bold; }
+  #coin-flip-game .glasses { font-weight: bold; }
   #coin-flip-game .shop {
     border-top: 1px dashed #196019;
     padding-top: 0.6em;
