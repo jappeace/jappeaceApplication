@@ -9,6 +9,7 @@ build-type:         Simple
 executable shake-blog
   main-is:          Shakefile.hs
   other-modules:
+    ArticleSummary
     AssetHash
     Feed
     Metadata
@@ -45,6 +46,7 @@ test-suite unit
   type:             exitcode-stdio-1.0
   main-is:          Test.hs
   other-modules:
+    ArticleSummary
     AssetHash
     PageChrome
     PenguinTemplates

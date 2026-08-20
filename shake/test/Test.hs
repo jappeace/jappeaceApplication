@@ -27,6 +27,7 @@ import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
+import ArticleSummary (truncateHtml)
 import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Data.Char (isHexDigit)
 import qualified Data.ByteString.Char8 as BSC
@@ -193,7 +194,45 @@ main = defaultMain $
         [ taxonomieKrijgtNoindexIndexNiet
         , vierNulVierNoindexEnBuitenSitemap
         ]
+    , testGroup "article summaries stay inert teasers"
+        [ summaryDropsScriptBlocks
+        , summaryDropsStyleBlocks
+        , summaryStillTruncatesAndCloses
+        ]
     ]
+
+-- | Summaries are embedded many-per-page on the index; an inline script that
+-- survives into a summary executes there. Both coin-flip posts mount into the
+-- same #coin-flip-game id, so the level-1 init hijacked the hidden-rewards
+-- summary slot on jappie.me. Scripts must be dropped wholesale.
+summaryDropsScriptBlocks :: TestTree
+summaryDropsScriptBlocks = testCase "script blocks are dropped wholesale" $ do
+  let summary = truncateHtml 50
+        "<p>intro words</p><script src=\"/coin-flip-level2.js\"></script>\
+        \<script>Elm.CoinFlipLevel2.init({ node: document.getElementById('coin-flip-game') });</script>\
+        \<p>closing words</p>"
+  assertBool "keeps the surrounding prose" ("intro words" `T.isInfixOf` summary)
+  assertBool "keeps prose after the scripts" ("closing words" `T.isInfixOf` summary)
+  assertBool "drops the script tags and their content" (not ("script" `T.isInfixOf` summary))
+  assertBool "drops the init call" (not ("CoinFlipLevel2" `T.isInfixOf` summary))
+
+-- | Style blocks used to be copied into the summary verbatim; they belong to
+-- the article page, not to the index.
+summaryDropsStyleBlocks :: TestTree
+summaryDropsStyleBlocks = testCase "style blocks are dropped wholesale" $ do
+  let summary = truncateHtml 50
+        "<p>words</p><style>#coin-flip-game { border: 1px solid red; }</style><p>more</p>"
+  assertBool "keeps the prose" ("words" `T.isInfixOf` summary)
+  assertBool "drops the style tag and its rules" (not ("style" `T.isInfixOf` summary))
+  assertBool "drops the css selector" (not ("coin-flip-game" `T.isInfixOf` summary))
+
+-- | The original truncation contract is unchanged: cut at the word limit and
+-- close whatever tags are still open.
+summaryStillTruncatesAndCloses :: TestTree
+summaryStillTruncatesAndCloses = testCase "truncates at the word limit and closes open tags" $ do
+  let summary = truncateHtml 3 "<p>one two three four five</p>"
+  assertBool "stops after three words" (not ("four" `T.isInfixOf` summary))
+  assertBool "closes the dangling paragraph" ("</p>" `T.isInfixOf` summary)
 
 -- | De 404-pagina draagt noindex (een foutpagina hoort niet in de index) en
 -- ontbreekt in de sitemap. Dit faalt wanneer iemand de pagina per ongeluk
