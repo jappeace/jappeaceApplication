@@ -4,7 +4,9 @@ Category: reflection
 OPTIONS: toc:nil
 Tags: gambling, finance, game
 
-TODO
+Even the best gamblers fail on this level.
+Only the unlikely [black swan](https://en.wikipedia.org/wiki/The_Black_Swan:_The_Impact_of_the_Highly_Improbable) 
+of a gambler maybe able to succeed.
 
 <div id="coin-flip-game"></div>
 
@@ -108,3 +110,12 @@ TODO
 <script>
 Elm.CoinFlipLevel3.init({ node: document.getElementById('coin-flip-game') });
 </script>
+
+Here the way to win is to carefully study the log messages, 
+you may have to place quite a few bets before you can even map the payouts to the birds.
+Now you should calculate if it even makes sense to bet on these birds
+once you got their probabilities and payout factors.
+This is just common sense.
+Why make bets on stuff that have negative returns? 
+It's like buying a lotto number or playing roulette, madness!
+We don't play for [FUN](https://dwarffortresswiki.org/DF2014:Fun&redirect=no), we play to win!

@@ -34,6 +34,9 @@ levelConfig =
                 , "The swan is due, I can feel it."
                 , "If it wins more often than it loses, it's a winner. Simple."
                 , "Your aunt won three magpies in a row once. Three!"
+                , "So a magpie is some kinda pastry right?"
+                , "I saw that movie with a pirate captain called sparrow, bet on the sparrow!"
+                , "To bad dodo isn't an option, best birb."
                 ]
             }
     , introLogLine = "Three coins, three payouts, all hidden. Stake any of them on heads and press flip. The clock starts on your first flip. Good luck!"

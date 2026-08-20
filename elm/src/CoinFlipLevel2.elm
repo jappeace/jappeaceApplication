@@ -33,10 +33,11 @@ levelConfig =
             , morePhrases =
                 [ "Tails never fails! Wait, or was it heads?"
                 , "Double your bet after every loss, that's how you win it back."
-                , "I've got a good feeling about this one. Bet big."
+                , "I've got a good feeling about this one. Bet big. Bigly!"
                 , "It landed heads a lot just now, so tails is due."
                 , "Winners don't do math, son."
-                , "Back in my day we didn't track ratios, we used our gut."
+                , "Back in my day we used our gut for gambling. Good old fashioned instincts."
+                , "Ratios are deceptive because numbers aren't real."
                 ]
             }
     , nextLevelLink = NextLevelLinkTo { url = "/black-swan.html", label = "<<next level>>" }
