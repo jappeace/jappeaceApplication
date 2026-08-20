@@ -138,6 +138,8 @@ shakeRules = do
 
       -- Copy static assets (shared, only once)
       copyStaticAssets
+      buildCoinFlipLevel1
+      buildCoinFlipLevel2
 
       -- Build penguin site
       need ["build-penguin"]
@@ -177,6 +179,8 @@ shakeRules = do
         generateSite localConfig En enArticles enPages nlSlugs nlPageSlugs
         generateSite localConfig Nl nlArticles nlPages enSlugs enPageSlugs
       copyStaticAssets
+      buildCoinFlipLevel1
+      buildCoinFlipLevel2
 
       -- Build penguin + webwinkel sites, with penguin's webwinkelverhuis.nl
       -- links pointing at the locally served copy instead of the live site.
@@ -680,6 +684,26 @@ buildWebwinkelElmApp sourcePath bundleName = do
     ([ "make", sourcePath, "--optimize"
      , "--output", "../_webwinkelverhuis-site/" <> bundleName
      ] :: [String])
+
+-- | Compile one Elm app into the jappie.me blog output. Same idea as
+-- 'buildWebwinkelElmApp', but the blog serves its assets unhashed, so the
+-- bundle lands in _site under its plain name.
+buildBlogElmApp :: String -> String -> Action ()
+buildBlogElmApp sourcePath bundleName = do
+  elmSources <- getDirectoryFiles "" ["elm/src//*.elm"]
+  need ("elm/elm.json" : elmSources)
+  cmd_ (Cwd "elm") ("elm" :: String)
+    ([ "make", sourcePath, "--optimize"
+     , "--output", "../_site/" <> bundleName
+     ] :: [String])
+
+-- | Level 1 of the rigged-coin game (even-with-an-edge-you-lose.html).
+buildCoinFlipLevel1 :: Action ()
+buildCoinFlipLevel1 = buildBlogElmApp "src/CoinFlipLevel1.elm" "coin-flip-level1.js"
+
+-- | Level 2, hidden rewards (hidden-rewards.html).
+buildCoinFlipLevel2 :: Action ()
+buildCoinFlipLevel2 = buildBlogElmApp "src/CoinFlipLevel2.elm" "coin-flip-level2.js"
 
 -- | The /prijzen price calculator.
 buildPrijsCalculator :: Action ()
