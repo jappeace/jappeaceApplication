@@ -1,13 +1,21 @@
 module MultiCoinGame exposing
-    ( BustCause(..)
+    ( Autoclicker(..)
+    , AutoclickerOffer(..)
+    , BustCause(..)
+    , ClickPoint
     , CoinConfig
     , CoinTally
+    , FlipHelperOffer(..)
+    , FlipHold(..)
     , GlassesOffer(..)
     , GoldenGlasses(..)
     , Model
     , Msg(..)
     , MultiCoinConfig
+    , PendingPurchase(..)
     , ProfileAssignment(..)
+    , ShopFold(..)
+    , ShopItemKind(..)
     , StakeInput(..)
     , formatPayout
     , gameProgram
@@ -43,6 +51,7 @@ choice on a single coin.
 -- the duplication to the small view fragments.
 
 import Browser
+import Browser.Events
 import CoinFlipGame
     exposing
         ( ClockState(..)
@@ -64,6 +73,8 @@ import CoinFlipGame
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
+import Html.Keyed
+import Json.Decode as Decode
 import Random
 import Time
 
@@ -92,6 +103,77 @@ type GoldenGlasses
     | GlassesBought
 
 
+{-| The autoclicker spares the player's mouse finger: once bought,
+holding the flip button down fires a flip every 100ms. Price in cents.
+-}
+type AutoclickerOffer
+    = NoAutoclicker
+    | AutoclickerForSale Int
+
+
+type Autoclicker
+    = ClickerNotBought
+    | ClickerBought
+
+
+{-| Whether the flip button is currently held down (mouse or touch).
+Only meaningful with a bought autoclicker: the auto-flip subscription
+runs while held.
+-}
+type FlipHold
+    = FlipReleased
+    | FlipHeld
+
+
+{-| Flip helpers flip for the player: each one presses flip once per
+five seconds, staggered, so owning N means a flip every 5000/N ms. The
+price starts at the base and rises by the given percent on every hire,
+compounding: automation gets progressively more expensive.
+-}
+type FlipHelperOffer
+    = NoFlipHelpers
+    | FlipHelpersForSale { basePriceCents : Int, priceIncreasePercent : Int }
+
+
+{-| The shop folds away behind its header and starts collapsed, so the
+game opens on the bets, not the catalogue.
+-}
+type ShopFold
+    = ShopCollapsed
+    | ShopExpanded
+
+
+{-| The shop items a purchase dialog explains before any money moves.
+-}
+type ShopItemKind
+    = TrackerItem
+    | GlassesItem
+    | AutoclickerItem
+    | FlipHelperItem
+    | UncleAdviceItem
+
+
+{-| Where in the viewport the shop item was clicked. The dialog is
+positioned so its confirm button renders right under this point: the
+pointer cannot be moved by a web page, but the button can be brought to
+the pointer.
+-}
+type alias ClickPoint =
+    { x : Float
+    , y : Float
+    }
+
+
+{-| A purchase mid-consideration: clicking a shop item opens a dialog
+explaining it, and only confirming actually buys. Repeatable items
+(helpers, uncle) keep the dialog open after confirming, so a fleet can
+be hired by mashing confirm; one-shot equipment closes it.
+-}
+type PendingPurchase
+    = NoPendingPurchase
+    | Considering ShopItemKind ClickPoint
+
+
 {-| Whether the (win percent, payout) profiles play on the coins as
 written in the config, or get dealt across the coin names at random on
 every game start, so a replay means rediscovering which coin is which.
@@ -108,6 +190,8 @@ type alias MultiCoinConfig =
     , trackerOffer : TrackerOffer
     , uncleOffer : UncleOffer
     , glassesOffer : GlassesOffer
+    , autoclickerOffer : AutoclickerOffer
+    , flipHelperOffer : FlipHelperOffer
     , introLogLine : String
     }
 
@@ -131,6 +215,13 @@ type alias Model =
     , roundCount : Int
     , tracker : TrackerState
     , glasses : GoldenGlasses
+    , autoclicker : Autoclicker
+    , flipHold : FlipHold
+    , flipHelperCount : Int
+    , helperFlipCount : Int
+    , nextHelperPriceCents : Int
+    , shopFold : ShopFold
+    , pendingPurchase : PendingPurchase
     , uncleAdviceCount : Int
     , uncleGloat : UncleGloat
     , bustCause : BustCause
@@ -152,10 +243,21 @@ type Msg
     = ProfilesShuffled (List CoinConfig)
     | StakeInputChanged Int String
     | FlipPressed
+    | FlipHoldStarted
+    | FlipHoldEnded
+    | AutoclickerTicked
+    | FlipHelperHired
+    | FlipHelpersTicked
+    | ShopToggled
+    | PurchaseConsidered ShopItemKind ClickPoint
+    | PurchaseConfirmed
+    | PurchaseCancelled
+    | DialogClicked
     | CoinsLanded { stakes : List Int, rolls : List Int }
     | ClockTicked
     | TrackerPurchased
     | GlassesPurchased
+    | AutoclickerPurchased
     | UncleAdviceRequested
     | UncleAdviceGiven String
 
@@ -220,6 +322,13 @@ initialModel config =
     , roundCount = 0
     , tracker = TrackerNotBought
     , glasses = GlassesNotBought
+    , autoclicker = ClickerNotBought
+    , flipHold = FlipReleased
+    , flipHelperCount = 0
+    , helperFlipCount = 0
+    , nextHelperPriceCents = initialHelperPriceCents config.flipHelperOffer
+    , shopFold = ShopCollapsed
+    , pendingPurchase = NoPendingPurchase
     , uncleAdviceCount = 0
     , uncleGloat = UncleHasNotGloated
     , bustCause = NotBusted
@@ -252,6 +361,79 @@ update config msg model =
         FlipPressed ->
             pressFlip config model
 
+        FlipHoldStarted ->
+            ( { model | flipHold = FlipHeld }, Cmd.none )
+
+        FlipHoldEnded ->
+            ( { model | flipHold = FlipReleased }, Cmd.none )
+
+        AutoclickerTicked ->
+            pressFlip config model
+
+        FlipHelperHired ->
+            ( hireFlipHelper config.flipHelperOffer model, Cmd.none )
+
+        FlipHelpersTicked ->
+            -- The counter keys the bird emoji's backflip animation: a
+            -- changed key recreates the span, replaying the CSS
+            -- animation once per helper flip.
+            pressFlip config { model | helperFlipCount = model.helperFlipCount + 1 }
+
+        ShopToggled ->
+            ( { model
+                | shopFold =
+                    case model.shopFold of
+                        ShopCollapsed ->
+                            ShopExpanded
+
+                        ShopExpanded ->
+                            ShopCollapsed
+              }
+            , Cmd.none
+            )
+
+        PurchaseConsidered itemKind clickPoint ->
+            ( { model | pendingPurchase = Considering itemKind clickPoint }, Cmd.none )
+
+        PurchaseConfirmed ->
+            case model.pendingPurchase of
+                NoPendingPurchase ->
+                    ( model, Cmd.none )
+
+                Considering TrackerItem _ ->
+                    ( purchaseTracker config.trackerOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering GlassesItem _ ->
+                    ( purchaseGlasses config.glassesOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering AutoclickerItem _ ->
+                    ( purchaseAutoclicker config.autoclickerOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering FlipHelperItem _ ->
+                    -- Stays open: fleets are hired by mashing confirm.
+                    ( hireFlipHelper config.flipHelperOffer model, Cmd.none )
+
+                Considering UncleAdviceItem _ ->
+                    -- Stays open: uncle appreciates repeat customers.
+                    purchaseUncleAdvice config.uncleOffer model
+
+        PurchaseCancelled ->
+            ( { model | pendingPurchase = NoPendingPurchase }, Cmd.none )
+
+        DialogClicked ->
+            -- A click inside the dialog, swallowed (stopPropagation) so
+            -- the document-level dismiss listener never sees it.
+            ( model, Cmd.none )
+
         CoinsLanded landedRound ->
             ( settleRound config landedRound model, Cmd.none )
 
@@ -263,6 +445,9 @@ update config msg model =
 
         GlassesPurchased ->
             ( purchaseGlasses config.glassesOffer model, Cmd.none )
+
+        AutoclickerPurchased ->
+            ( purchaseAutoclicker config.autoclickerOffer model, Cmd.none )
 
         UncleAdviceRequested ->
             purchaseUncleAdvice config.uncleOffer model
@@ -597,6 +782,92 @@ purchaseGlasses offer model =
                     }
 
 
+{-| What the very first flip helper costs. Zero without an offer, which
+is never read: hiring is impossible when no helpers are for sale, the
+purchase path matches on the offer before touching the price.
+-}
+initialHelperPriceCents : FlipHelperOffer -> Int
+initialHelperPriceCents offer =
+    case offer of
+        NoFlipHelpers ->
+            0
+
+        FlipHelpersForSale sale ->
+            sale.basePriceCents
+
+
+{-| Hire one more flip helper at the current price, then raise the
+price for the next one. Same wipe-out guard as the other equipment.
+-}
+hireFlipHelper : FlipHelperOffer -> Model -> Model
+hireFlipHelper offer model =
+    case offer of
+        NoFlipHelpers ->
+            model
+
+        FlipHelpersForSale sale ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= model.nextHelperPriceCents then
+                logLine NeutralTone "You cannot afford another flip helper." model
+
+            else
+                logLine NeutralTone
+                    ("Hired flip helper number "
+                        ++ String.fromInt (model.flipHelperCount + 1)
+                        ++ " for $"
+                        ++ formatCents model.nextHelperPriceCents
+                        ++ ". Each helper flips once per five seconds."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - model.nextHelperPriceCents
+                        , flipHelperCount = model.flipHelperCount + 1
+                        , nextHelperPriceCents =
+                            raisePriceByPercent sale.priceIncreasePercent model.nextHelperPriceCents
+                    }
+
+
+{-| A price raised by the given percent, rounded to whole cents.
+-}
+raisePriceByPercent : Int -> Int -> Int
+raisePriceByPercent increasePercent priceCents =
+    (priceCents * (100 + increasePercent) + 50) // 100
+
+
+{-| Buy the autoclicker. Same wipe-out guard as the tracker.
+-}
+purchaseAutoclicker : AutoclickerOffer -> Model -> Model
+purchaseAutoclicker offer model =
+    case ( offer, model.autoclicker ) of
+        ( NoAutoclicker, ClickerNotBought ) ->
+            model
+
+        ( NoAutoclicker, ClickerBought ) ->
+            model
+
+        ( AutoclickerForSale _, ClickerBought ) ->
+            model
+
+        ( AutoclickerForSale priceCents, ClickerNotBought ) ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= priceCents then
+                logLine NeutralTone "You cannot afford the autoclicker." model
+
+            else
+                logLine NeutralTone
+                    ("Bought the autoclicker for $"
+                        ++ formatCents priceCents
+                        ++ ". Hold the flip button down to use it."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - priceCents
+                        , autoclicker = ClickerBought
+                    }
+
+
 {-| Pay uncle and draw one of his pre-programmed pearls of wisdom.
 Unlike the tracker and glasses, uncle happily takes your last dollars:
 spending yourself into bankruptcy on advice is a lesson the game wants
@@ -636,6 +907,54 @@ logLine tone text model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
+    Sub.batch
+        [ clockSubscription model
+        , autoclickerSubscription model
+        , flipHelperSubscription model
+        , dialogDismissSubscription model
+        ]
+
+
+{-| While a purchase dialog is open, any document-level click closes it.
+Clicks inside the dialog and on the shop items stop propagation, so
+they never reach this listener: only genuinely-outside clicks dismiss.
+-}
+dialogDismissSubscription : Model -> Sub Msg
+dialogDismissSubscription model =
+    case model.pendingPurchase of
+        NoPendingPurchase ->
+            Sub.none
+
+        Considering _ _ ->
+            Browser.Events.onClick (Decode.succeed PurchaseCancelled)
+
+
+{-| Each hired helper flips once per five seconds, staggered: N helpers
+share one timer at 5000/N ms, which is N evenly spread flips per five
+seconds.
+-}
+flipHelperSubscription : Model -> Sub Msg
+flipHelperSubscription model =
+    case model.phase of
+        Playing ->
+            if model.flipHelperCount > 0 then
+                Time.every (5000 / toFloat model.flipHelperCount) (\_ -> FlipHelpersTicked)
+
+            else
+                Sub.none
+
+        WonGame ->
+            Sub.none
+
+        WentBust ->
+            Sub.none
+
+        RanOutOfTime ->
+            Sub.none
+
+
+clockSubscription : Model -> Sub Msg
+clockSubscription model =
     case model.phase of
         Playing ->
             case model.clock of
@@ -643,6 +962,36 @@ subscriptions model =
                     Time.every 1000 (\_ -> ClockTicked)
 
                 ClockIdle ->
+                    Sub.none
+
+        WonGame ->
+            Sub.none
+
+        WentBust ->
+            Sub.none
+
+        RanOutOfTime ->
+            Sub.none
+
+
+{-| While a bought autoclicker's flip button is held down, a flip fires
+every 100ms.
+-}
+autoclickerSubscription : Model -> Sub Msg
+autoclickerSubscription model =
+    case model.phase of
+        Playing ->
+            case ( model.autoclicker, model.flipHold ) of
+                ( ClickerBought, FlipHeld ) ->
+                    Time.every 100 (\_ -> AutoclickerTicked)
+
+                ( ClickerBought, FlipReleased ) ->
+                    Sub.none
+
+                ( ClickerNotBought, FlipHeld ) ->
+                    Sub.none
+
+                ( ClickerNotBought, FlipReleased ) ->
                     Sub.none
 
         WonGame ->
@@ -722,16 +1071,39 @@ viewControls config model =
             [ List.indexedMap viewCoinRow
                 (List.map2 Tuple.pair model.coins model.stakeInputs)
             , [ Html.button
-                    [ Html.Attributes.class "flip-button"
-                    , Html.Events.onClick FlipPressed
-                    ]
+                    (Html.Attributes.class "flip-button"
+                        :: Html.Events.onClick FlipPressed
+                        :: flipHoldEvents model.autoclicker
+                    )
                     [ Html.text "FLIP" ]
               ]
             , viewGlassesPayouts model
             , viewTally config model
+            , viewFlipHelpers model
             , viewShop config model
             ]
         )
+
+
+{-| How many helpers are flipping for the player, shown once any are
+hired.
+-}
+viewFlipHelpers : Model -> List (Html Msg)
+viewFlipHelpers model =
+    if model.flipHelperCount == 0 then
+        []
+
+    else
+        [ Html.div [ Html.Attributes.class "helpers" ]
+            [ Html.Keyed.node "span"
+                []
+                [ ( String.fromInt model.helperFlipCount
+                  , Html.span [ Html.Attributes.class "helper-bird" ] [ Html.text "\u{1F424}" ]
+                  )
+                ]
+            , Html.text (" Flip helpers: " ++ String.fromInt model.flipHelperCount)
+            ]
+        ]
 
 
 {-| The payout multipliers the golden glasses reveal, under the flip
@@ -759,6 +1131,27 @@ viewGlassesPayouts model =
             ]
 
 
+{-| Hold events for the flip button, mouse and touch. Only attached once
+the autoclicker is bought, so an unbought game never tracks hold state.
+Mouse-leave and touch-cancel count as releasing: dragging off the button
+must not leave the clicker running.
+-}
+flipHoldEvents : Autoclicker -> List (Html.Attribute Msg)
+flipHoldEvents clicker =
+    case clicker of
+        ClickerNotBought ->
+            []
+
+        ClickerBought ->
+            [ Html.Events.onMouseDown FlipHoldStarted
+            , Html.Events.onMouseUp FlipHoldEnded
+            , Html.Events.onMouseLeave FlipHoldEnded
+            , Html.Events.on "touchstart" (Decode.succeed FlipHoldStarted)
+            , Html.Events.on "touchend" (Decode.succeed FlipHoldEnded)
+            , Html.Events.on "touchcancel" (Decode.succeed FlipHoldEnded)
+            ]
+
+
 viewCoinRow : Int -> ( CoinConfig, String ) -> Html Msg
 viewCoinRow coinIndex ( coin, stakeInput ) =
     Html.div [ Html.Attributes.class "coin-bet" ]
@@ -767,7 +1160,10 @@ viewCoinRow coinIndex ( coin, stakeInput ) =
             [ Html.Attributes.class "bet-amount"
             , Html.Attributes.type_ "number"
             , Html.Attributes.step "0.01"
-            , Html.Attributes.min "0.01"
+
+            -- Zero is a real value here, it means "not playing this
+            -- coin", so the stepper must be able to reach it.
+            , Html.Attributes.min "0"
             , Html.Attributes.value stakeInput
             , Html.Events.onInput (StakeInputChanged coinIndex)
             ]
@@ -811,6 +1207,8 @@ viewShop config model =
     case
         viewTrackerShopItem config.trackerOffer model
             ++ viewGlassesShopItem config.glassesOffer model
+            ++ viewAutoclickerShopItem config.autoclickerOffer model
+            ++ viewFlipHelperShopItem config.flipHelperOffer model
             ++ viewUncleShopItem config.uncleOffer
     of
         [] ->
@@ -818,19 +1216,186 @@ viewShop config model =
 
         shopItems ->
             [ Html.div [ Html.Attributes.class "shop" ]
-                (Html.div [ Html.Attributes.class "shop-header" ] [ Html.text "\u{1F6D2} Shop" ]
-                    :: shopItems
+                (viewShopToggle model.shopFold
+                    :: (case model.shopFold of
+                            ShopCollapsed ->
+                                []
+
+                            ShopExpanded ->
+                                shopItems ++ viewPurchaseDialog config model
+                       )
                 )
             ]
 
 
-viewShopItem : Msg -> String -> Int -> Html Msg
-viewShopItem onBuy itemName priceCents =
+{-| The confirm/cancel dialog a considered purchase opens, explaining
+what the item actually does before any money moves. The dialog is
+fixed-positioned so the confirm button (a known 120x42 box, first in
+the dialog, inside the 0.6em padding and 1px border) renders centered
+under the click that opened it: buying again is a click without moving
+the mouse.
+-}
+viewPurchaseDialog : MultiCoinConfig -> Model -> List (Html Msg)
+viewPurchaseDialog config model =
+    case model.pendingPurchase of
+        NoPendingPurchase ->
+            []
+
+        Considering itemKind clickPoint ->
+            [ Html.div
+                [ Html.Attributes.class "purchase-dialog"
+                , Html.Attributes.style "left" (pixels (max 8 (clickPoint.x - 71)))
+                , Html.Attributes.style "top" (pixels (max 8 (clickPoint.y - 32)))
+                , Html.Events.stopPropagationOn "click" (Decode.succeed ( DialogClicked, True ))
+                ]
+                [ Html.div [ Html.Attributes.class "dialog-actions" ]
+                    [ Html.button
+                        [ Html.Events.onClick PurchaseConfirmed
+                        , Html.Attributes.style "width" "120px"
+                        , Html.Attributes.style "height" "42px"
+                        ]
+                        [ Html.text "Confirm" ]
+                    , Html.button [ Html.Events.onClick PurchaseCancelled ] [ Html.text "Cancel" ]
+                    ]
+                , Html.div []
+                    [ Html.strong []
+                        [ Html.text
+                            ("Buy "
+                                ++ itemDisplayName itemKind
+                                ++ " for $"
+                                ++ formatCents (itemPriceCents config model itemKind)
+                                ++ "?"
+                            )
+                        ]
+                    ]
+                , Html.div [] [ Html.text (itemExplanation itemKind) ]
+                ]
+            ]
+
+
+pixels : Float -> String
+pixels amount =
+    String.fromFloat amount ++ "px"
+
+
+{-| The item's name with its article, ready for "Buy ... for $x?".
+-}
+itemDisplayName : ShopItemKind -> String
+itemDisplayName itemKind =
+    case itemKind of
+        TrackerItem ->
+            "the ratio tracker"
+
+        GlassesItem ->
+            "the golden glasses"
+
+        AutoclickerItem ->
+            "the autoclicker"
+
+        FlipHelperItem ->
+            "a flip helper"
+
+        UncleAdviceItem ->
+            "uncle's advice"
+
+
+itemExplanation : ShopItemKind -> String
+itemExplanation itemKind =
+    case itemKind of
+        TrackerItem ->
+            "Counts how often each coin landed heads across your flips, so you don't have to tally the log by hand."
+
+        GlassesItem ->
+            "Reveal what each coin pays out on a win, right under the flip button. The win chances stay hidden."
+
+        AutoclickerItem ->
+            "Hold the flip button down and it presses it for you, ten times a second."
+
+        FlipHelperItem ->
+            "A tireless helper who presses flip for you once every five seconds. Every next hire asks 10% more."
+
+        UncleAdviceItem ->
+            "Uncle's advice speaks for itself. He's your uncle, surely he knows best."
+
+
+{-| The price the dialog quotes. Zero for an absent offer, which is
+never read: the dialog only opens from a shop button that an absent
+offer never renders.
+-}
+itemPriceCents : MultiCoinConfig -> Model -> ShopItemKind -> Int
+itemPriceCents config model itemKind =
+    case itemKind of
+        TrackerItem ->
+            case config.trackerOffer of
+                NoTrackerForSale ->
+                    0
+
+                TrackerForSale priceCents ->
+                    priceCents
+
+        GlassesItem ->
+            case config.glassesOffer of
+                NoGoldenGlasses ->
+                    0
+
+                GoldenGlassesForSale priceCents ->
+                    priceCents
+
+        AutoclickerItem ->
+            case config.autoclickerOffer of
+                NoAutoclicker ->
+                    0
+
+                AutoclickerForSale priceCents ->
+                    priceCents
+
+        FlipHelperItem ->
+            model.nextHelperPriceCents
+
+        UncleAdviceItem ->
+            case config.uncleOffer of
+                NoUncleAdvice ->
+                    0
+
+                UncleAdviceForSale uncle ->
+                    uncle.priceCents
+
+
+viewShopToggle : ShopFold -> Html Msg
+viewShopToggle fold =
     Html.button
-        [ Html.Attributes.class "shop-item", Html.Events.onClick onBuy ]
+        [ Html.Attributes.class "shop-toggle", Html.Events.onClick ShopToggled ]
+        [ Html.text
+            (case fold of
+                ShopCollapsed ->
+                    "\u{1F6D2} Shop \u{25B8}"
+
+                ShopExpanded ->
+                    "\u{1F6D2} Shop \u{25BE}"
+            )
+        ]
+
+
+viewShopItem : (ClickPoint -> Msg) -> String -> Int -> Html Msg
+viewShopItem onBuyAt itemName priceCents =
+    Html.button
+        [ Html.Attributes.class "shop-item"
+
+        -- stopPropagation: the click that opens (or switches) the
+        -- dialog must never reach the document-level dismiss listener.
+        , Html.Events.stopPropagationOn "click"
+            (Decode.map (\clickPoint -> ( onBuyAt clickPoint, True )) clickPointDecoder)
+        ]
         [ Html.span [] [ Html.text itemName ]
         , Html.span [] [ Html.text ("$" ++ formatCents priceCents) ]
         ]
+
+
+clickPointDecoder : Decode.Decoder ClickPoint
+clickPointDecoder =
+    Decode.map2 ClickPoint
+        (Decode.field "clientX" Decode.float)
+        (Decode.field "clientY" Decode.float)
 
 
 viewTrackerShopItem : TrackerOffer -> Model -> List (Html Msg)
@@ -846,7 +1411,7 @@ viewTrackerShopItem offer model =
             []
 
         ( TrackerForSale priceCents, TrackerNotBought ) ->
-            [ viewShopItem TrackerPurchased "Buy ratio tracker" priceCents ]
+            [ viewShopItem (PurchaseConsidered TrackerItem) "Buy ratio tracker" priceCents ]
 
 
 viewGlassesShopItem : GlassesOffer -> Model -> List (Html Msg)
@@ -862,7 +1427,36 @@ viewGlassesShopItem offer model =
             []
 
         ( GoldenGlassesForSale priceCents, GlassesNotBought ) ->
-            [ viewShopItem GlassesPurchased "Buy golden glasses" priceCents ]
+            [ viewShopItem (PurchaseConsidered GlassesItem) "Buy golden glasses" priceCents ]
+
+
+viewAutoclickerShopItem : AutoclickerOffer -> Model -> List (Html Msg)
+viewAutoclickerShopItem offer model =
+    case ( offer, model.autoclicker ) of
+        ( NoAutoclicker, ClickerNotBought ) ->
+            []
+
+        ( NoAutoclicker, ClickerBought ) ->
+            []
+
+        ( AutoclickerForSale _, ClickerBought ) ->
+            []
+
+        ( AutoclickerForSale priceCents, ClickerNotBought ) ->
+            [ viewShopItem (PurchaseConsidered AutoclickerItem) "Buy autoclicker" priceCents ]
+
+
+{-| Unlike the one-shot equipment, helpers stay for sale forever: the
+price just keeps climbing.
+-}
+viewFlipHelperShopItem : FlipHelperOffer -> Model -> List (Html Msg)
+viewFlipHelperShopItem offer model =
+    case offer of
+        NoFlipHelpers ->
+            []
+
+        FlipHelpersForSale _ ->
+            [ viewShopItem (PurchaseConsidered FlipHelperItem) "Hire flip helper" model.nextHelperPriceCents ]
 
 
 viewUncleShopItem : UncleOffer -> List (Html Msg)
@@ -872,7 +1466,7 @@ viewUncleShopItem offer =
             []
 
         UncleAdviceForSale uncle ->
-            [ viewShopItem UncleAdviceRequested "Ask uncle for advice" uncle.priceCents ]
+            [ viewShopItem (PurchaseConsidered UncleAdviceItem) "Ask uncle for advice" uncle.priceCents ]
 
 
 viewGameOver : MultiCoinConfig -> Model -> Html Msg

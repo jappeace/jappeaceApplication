@@ -16,9 +16,13 @@ import CoinFlipLevel3
 import Expect
 import MultiCoinGame
     exposing
-        ( BustCause(..)
+        ( Autoclicker(..)
+        , BustCause(..)
+        , FlipHold(..)
         , GoldenGlasses(..)
         , Model
+        , PendingPurchase(..)
+        , ShopItemKind(..)
         , Msg(..)
         , StakeInput(..)
         , formatPayout
@@ -51,6 +55,11 @@ level3Start =
 landedRound : List Int -> List Int -> Msg
 landedRound stakes rolls =
     CoinsLanded { stakes = stakes, rolls = rolls }
+
+
+clickAtOrigin : MultiCoinGame.ClickPoint
+clickAtOrigin =
+    { x = 0, y = 0 }
 
 
 latestLogText : Model -> String
@@ -249,6 +258,127 @@ shopSuite =
                 apply [ UncleAdviceRequested ] { level3Start | balanceCents = 499 }
                     |> .uncleAdviceCount
                     |> Expect.equal 0
+        , test "buying the autoclicker costs $10.00" <|
+            \_ ->
+                let
+                    bought =
+                        apply [ AutoclickerPurchased ] level3Start
+                in
+                ( bought.balanceCents, bought.autoclicker )
+                    |> Expect.equal ( 1500, ClickerBought )
+        , test "the autoclicker cannot be bought twice" <|
+            \_ ->
+                apply [ AutoclickerPurchased, AutoclickerPurchased ] level3Start
+                    |> .balanceCents
+                    |> Expect.equal 1500
+        , test "the autoclicker is refused when it would wipe the balance" <|
+            \_ ->
+                apply [ AutoclickerPurchased ] { level3Start | balanceCents = 1000 }
+                    |> .autoclicker
+                    |> Expect.equal ClickerNotBought
+        , test "holding and releasing the flip button tracks the hold state" <|
+            \_ ->
+                ( apply [ FlipHoldStarted ] level3Start |> .flipHold
+                , apply [ FlipHoldStarted, FlipHoldEnded ] level3Start |> .flipHold
+                )
+                    |> Expect.equal ( FlipHeld, FlipReleased )
+        , test "an autoclicker tick validates stakes exactly like a manual flip" <|
+            \_ ->
+                apply [ AutoclickerTicked ] level3Start
+                    |> latestLogText
+                    |> Expect.equal "Place a bet on at least one coin first."
+        , test "considering a purchase charges nothing" <|
+            \_ ->
+                let
+                    considering =
+                        apply [ PurchaseConsidered GlassesItem clickAtOrigin ] level3Start
+                in
+                ( considering.balanceCents, considering.glasses, considering.pendingPurchase )
+                    |> Expect.equal ( 2500, GlassesNotBought, Considering GlassesItem clickAtOrigin )
+        , test "confirming the considered purchase buys it and closes the dialog" <|
+            \_ ->
+                let
+                    bought =
+                        apply [ PurchaseConsidered GlassesItem clickAtOrigin, PurchaseConfirmed ] level3Start
+                in
+                ( bought.balanceCents, bought.glasses, bought.pendingPurchase )
+                    |> Expect.equal ( 500, GlassesBought, NoPendingPurchase )
+        , test "cancelling the considered purchase keeps the money" <|
+            \_ ->
+                let
+                    cancelled =
+                        apply [ PurchaseConsidered TrackerItem clickAtOrigin, PurchaseCancelled ] level3Start
+                in
+                ( cancelled.balanceCents, cancelled.tracker, cancelled.pendingPurchase )
+                    |> Expect.equal ( 2500, TrackerNotBought, NoPendingPurchase )
+        , test "uncle's advice goes through the dialog, which stays open" <|
+            \_ ->
+                let
+                    advised =
+                        apply [ PurchaseConsidered UncleAdviceItem clickAtOrigin, PurchaseConfirmed ] level3Start
+                in
+                ( advised.balanceCents, advised.uncleAdviceCount, advised.pendingPurchase )
+                    |> Expect.equal ( 2000, 1, Considering UncleAdviceItem clickAtOrigin )
+        , test "a swallowed click inside the dialog keeps it open" <|
+            \_ ->
+                apply [ PurchaseConsidered FlipHelperItem clickAtOrigin, DialogClicked ] level3Start
+                    |> .pendingPurchase
+                    |> Expect.equal (Considering FlipHelperItem clickAtOrigin)
+        , test "cancelling uncle's advice charges nothing" <|
+            \_ ->
+                apply [ PurchaseConsidered UncleAdviceItem clickAtOrigin, PurchaseCancelled ] level3Start
+                    |> .uncleAdviceCount
+                    |> Expect.equal 0
+        , test "confirming a helper hire goes through the compounding price" <|
+            \_ ->
+                apply [ PurchaseConsidered FlipHelperItem clickAtOrigin, PurchaseConfirmed ] level3Start
+                    |> .nextHelperPriceCents
+                    |> Expect.equal 110
+        , test "mashing confirm hires a fleet at compounding prices" <|
+            \_ ->
+                let
+                    fleet =
+                        apply
+                            [ PurchaseConsidered FlipHelperItem clickAtOrigin
+                            , PurchaseConfirmed
+                            , PurchaseConfirmed
+                            , PurchaseConfirmed
+                            ]
+                            level3Start
+                in
+                ( fleet.flipHelperCount, fleet.balanceCents, fleet.pendingPurchase )
+                    |> Expect.equal ( 3, 2500 - 100 - 110 - 121, Considering FlipHelperItem clickAtOrigin )
+        , test "hiring a flip helper costs the base price and raises the next one by 10%" <|
+            \_ ->
+                let
+                    hired =
+                        apply [ FlipHelperHired ] level3Start
+                in
+                ( hired.balanceCents, hired.flipHelperCount, hired.nextHelperPriceCents )
+                    |> Expect.equal ( 2400, 1, 110 )
+        , test "helper prices compound per hire" <|
+            \_ ->
+                let
+                    hired =
+                        apply [ FlipHelperHired, FlipHelperHired, FlipHelperHired ] level3Start
+                in
+                ( hired.balanceCents, hired.flipHelperCount, hired.nextHelperPriceCents )
+                    |> Expect.equal ( 2500 - 100 - 110 - 121, 3, 133 )
+        , test "a helper hire is refused when it would wipe the balance" <|
+            \_ ->
+                apply [ FlipHelperHired ] { level3Start | balanceCents = 100 }
+                    |> .flipHelperCount
+                    |> Expect.equal 0
+        , test "a helper tick validates stakes exactly like a manual flip" <|
+            \_ ->
+                apply [ FlipHelpersTicked ] level3Start
+                    |> latestLogText
+                    |> Expect.equal "Place a bet on at least one coin first."
+        , test "helper ticks count up, keying the bird's backflip" <|
+            \_ ->
+                apply [ FlipHelpersTicked, FlipHelpersTicked, FlipHelpersTicked ] level3Start
+                    |> .helperFlipCount
+                    |> Expect.equal 3
         , test "buying the golden glasses costs $20.00" <|
             \_ ->
                 let
@@ -283,6 +413,34 @@ gatingSuite =
                 view CoinFlipLevel3.levelConfig { level3Start | tracker = TrackerBought }
                     |> Query.fromHtml
                     |> Query.has [ class "tally" ]
+        , test "the shop starts collapsed with no items visible" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig level3Start
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "shop-item" ]
+        , test "toggling the shop reveals the items" <|
+            \_ ->
+                apply [ ShopToggled ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "shop-item" ]
+        , test "toggling twice collapses the shop again" <|
+            \_ ->
+                apply [ ShopToggled, ShopToggled ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "shop-item" ]
+        , test "the helper count only renders once helpers are hired" <|
+            \_ ->
+                ( view CoinFlipLevel3.levelConfig level3Start
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "helpers" ]
+                , apply [ FlipHelperHired ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "helpers" ]
+                )
+                    |> (\( noHelpers, oneHelper ) -> Expect.all [ \_ -> noHelpers, \_ -> oneHelper ] ())
         , test "the payout line only renders once the glasses are bought" <|
             \_ ->
                 view CoinFlipLevel3.levelConfig level3Start

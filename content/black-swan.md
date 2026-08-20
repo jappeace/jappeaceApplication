@@ -3,6 +3,7 @@ Date: 2026-08-20 22:30
 Category: reflection
 OPTIONS: toc:nil
 Tags: gambling, finance, game
+Summary: Even the best gamblers fail on this level. Only a black swan of a gambler may succeed.
 
 Even the best gamblers fail on this level.
 Only a [black swan](https://en.wikipedia.org/wiki/The_Black_Swan:_The_Impact_of_the_Highly_Improbable) 
@@ -15,7 +16,7 @@ of a gambler may succeed.
     border: 2px solid #196019;
     border-radius: 6px;
     overflow: hidden;
-    max-width: 26em;
+    max-width: 34em;
     margin: 1.5em auto;
     padding: 0 1em 1em;
     font-family: "Inconsolata", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
@@ -69,13 +70,33 @@ of a gambler may succeed.
     gap: 0.4em;
     text-align: left;
   }
-  #coin-flip-game .shop-header { font-weight: bold; }
+  #coin-flip-game .shop-toggle { width: 100%; text-align: left; font-weight: bold; }
+  #coin-flip-game .helpers { font-weight: bold; }
+  #coin-flip-game .helper-bird {
+    display: inline-block;
+    animation: helper-backflip 0.5s ease-in-out;
+  }
+  @keyframes helper-backflip {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+  }
   #coin-flip-game .shop-item {
     display: flex;
     justify-content: space-between;
     gap: 1em;
     width: 100%;
   }
+  #coin-flip-game .purchase-dialog {
+    position: fixed;
+    z-index: 10;
+    width: 20em;
+    border: 1px solid #196019;
+    border-radius: 4px;
+    padding: 0.6em;
+    text-align: left;
+    background: #eafbea;
+  }
+  #coin-flip-game .dialog-actions { display: flex; gap: 0.6em; margin-bottom: 0.5em; }
   #coin-flip-game input[type="number"] {
     font-family: inherit;
     border: 1px solid #196019;
@@ -103,6 +124,7 @@ of a gambler may succeed.
     #coin-flip-game .progress-track { background: #134013; }
     #coin-flip-game .win-text { color: #7dff7d; }
     #coin-flip-game .lose-text { color: #ff6b6b; }
+    #coin-flip-game .purchase-dialog { background: #062606; }
   }
 </style>
 

@@ -1,9 +1,20 @@
 -- | Turns an article's rendered HTML into the short summary shown on the
 -- index, tag, and category pages and in the atom feed.
-module ArticleSummary (truncateHtml) where
+module ArticleSummary (summarize, truncateHtml) where
 
 import Data.Text (Text)
 import qualified Data.Text as T
+
+-- | The summary text for an article: an author-provided @Summary:@
+-- header wins outright; without one the first ~50 words of the rendered
+-- content are taken. The override exists because deriving the summary
+-- from content spoiled the coin-flip game posts: the words right after
+-- the game embed are the strategy, and they ended up on the index page.
+summarize :: Maybe Text -> Text -> Text
+summarize authorSummary renderedHtml =
+  case authorSummary of
+    Just provided -> provided
+    Nothing -> truncateHtml 50 renderedHtml
 
 -- | Truncate rendered HTML to ~N words, closing any unclosed tags.
 -- Counts only visible text words, skips inside tags and entities.
