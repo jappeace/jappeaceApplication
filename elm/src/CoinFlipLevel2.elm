@@ -1,16 +1,15 @@
 module CoinFlipLevel2 exposing (levelConfig, main)
 
-{-| Level 2 of the rigged-coin game: hidden rewards. The coin favors tails
-this time, with a win percent drawn between 55 and 65 at game start and
-never shown. The shop sells a ratio tracker (steep) and uncle's terrible
-advice (cheap, worth less).
+{-| Level 2 of the rigged-coin game: hidden rewards. Which side wins is
+drawn fifty-fifty at game start, its win percent between 55 and 65, and
+neither is ever shown, not even on the end screen. The shop sells a
+ratio tracker (steep) and uncle's terrible advice (cheap, worth less).
 -}
 
 import CoinFlipGame
     exposing
         ( BustEnding(..)
         , CoinBias(..)
-        , CoinSide(..)
         , LevelConfig
         , Model
         , Msg
@@ -24,7 +23,7 @@ import CoinFlipGame
 levelConfig : LevelConfig
 levelConfig =
     { title = "\u{1FA99} Rigged Coin Trader II: Hidden Rewards"
-    , bias = HiddenFavoredPercentRange { favored = Tails, minPercent = 55, maxPercent = 65 }
+    , bias = HiddenRandomBias { minPercent = 55, maxPercent = 65 }
     , trackerOffer = TrackerForSale 1500
     , uncleOffer =
         UncleAdviceForSale

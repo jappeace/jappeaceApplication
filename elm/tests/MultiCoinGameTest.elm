@@ -1,4 +1,4 @@
-module MultiCoinGameTest exposing (flipSuite, gatingSuite, payoutSuite, shopSuite, stakeSuite)
+module MultiCoinGameTest exposing (flipSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
 
 {-| Tests for the multi-coin engine behind level 3 (black-swan.html).
 They drive the real `update` with the real level config; the coins
@@ -25,12 +25,14 @@ import MultiCoinGame
         , initialModel
         , parseStake
         , payoutCents
+        , shuffledCoinsGenerator
         , update
         , view
         )
+import Random
 import Test exposing (Test, describe, test)
 import Test.Html.Query as Query
-import Test.Html.Selector exposing (class)
+import Test.Html.Selector exposing (class, text)
 
 
 apply : List Msg -> Model -> Model
@@ -310,15 +312,80 @@ gatingSuite =
                     |> view CoinFlipLevel3.levelConfig
                     |> Query.fromHtml
                     |> Query.hasNot [ class "uncle-bust" ]
-        , test "the coin reveal only renders after the game ends" <|
-            \_ ->
-                view CoinFlipLevel3.levelConfig level3Start
-                    |> Query.fromHtml
-                    |> Query.hasNot [ class "bias-reveal" ]
-        , test "the ended game reveals every coin" <|
+        , test "the ended game keeps every coin's odds and payout hidden" <|
             \_ ->
                 view CoinFlipLevel3.levelConfig { level3Start | phase = WonGame }
                     |> Query.fromHtml
-                    |> Query.findAll [ class "bias-reveal" ]
-                    |> Query.count (Expect.equal 3)
+                    |> Query.hasNot [ class "bias-reveal" ]
         ]
+
+
+shuffleSuite : Test
+shuffleSuite =
+    describe "MultiCoinGame profile shuffling"
+        [ test "the shuffled draw replaces the active coins" <|
+            \_ ->
+                let
+                    reassigned =
+                        [ { coinName = "Swan", winPercent = 60, payoutPercent = 50 }
+                        , { coinName = "Magpie", winPercent = 5, payoutPercent = 3000 }
+                        , { coinName = "Sparrow", winPercent = 45, payoutPercent = 100 }
+                        ]
+                in
+                apply [ ProfilesShuffled reassigned ] level3Start
+                    |> .coins
+                    |> Expect.equal reassigned
+        , test "settling uses the shuffled profiles, not the written ones" <|
+            \_ ->
+                -- After the reassignment above, Magpie carries the 30x
+                -- swan profile: a winning roll of 5 on Magpie pays 30x.
+                apply
+                    [ ProfilesShuffled
+                        [ { coinName = "Swan", winPercent = 60, payoutPercent = 50 }
+                        , { coinName = "Magpie", winPercent = 5, payoutPercent = 3000 }
+                        , { coinName = "Sparrow", winPercent = 45, payoutPercent = 100 }
+                        ]
+                    , landedRound [ 0, 100, 0 ] [ 50, 5, 50 ]
+                    ]
+                    level3Start
+                    |> .balanceCents
+                    |> Expect.equal (2500 + 3000)
+        , test "the glasses report the shuffled deal, not the written one" <|
+            \_ ->
+                apply
+                    [ ProfilesShuffled
+                        [ { coinName = "Swan", winPercent = 60, payoutPercent = 50 }
+                        , { coinName = "Magpie", winPercent = 5, payoutPercent = 3000 }
+                        , { coinName = "Sparrow", winPercent = 45, payoutPercent = 100 }
+                        ]
+                    ]
+                    { level3Start | glasses = GlassesBought }
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.find [ class "glasses" ]
+                    |> Query.has [ text "Magpie 30\u{00D7}" ]
+        , test "shuffling keeps the names in place and deals every profile once" <|
+            \_ ->
+                let
+                    shuffled =
+                        Tuple.first
+                            (Random.step
+                                (shuffledCoinsGenerator CoinFlipLevel3.levelConfig.coins)
+                                (Random.initialSeed 42)
+                            )
+                in
+                ( List.map .coinName shuffled, sortedProfiles shuffled )
+                    |> Expect.equal
+                        ( [ "Swan", "Magpie", "Sparrow" ]
+                        , sortedProfiles CoinFlipLevel3.levelConfig.coins
+                        )
+        ]
+
+
+{-| The (win percent, payout) profiles of a coin list, order-insensitive,
+for comparing a shuffle against the original deal.
+-}
+sortedProfiles : List MultiCoinGame.CoinConfig -> List { winPercent : Int, payoutPercent : Int }
+sortedProfiles coins =
+    List.sortBy .winPercent
+        (List.map (\coin -> { winPercent = coin.winPercent, payoutPercent = coin.payoutPercent }) coins)
