@@ -1,5 +1,6 @@
 module CoinFlipGame exposing
     ( BiasState(..)
+    , ClockState(..)
     , CoinBias(..)
     , CoinSide(..)
     , GamePhase(..)
@@ -24,6 +25,7 @@ module CoinFlipGame exposing
     , startingBalanceCents
     , targetBalanceCents
     , timeLimitSeconds
+    , toneClass
     , update
     , view
     )
@@ -589,20 +591,22 @@ landedPercent sideCount totalFlips =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    case ( model.phase, model.clock ) of
-        ( Playing, ClockRunning ) ->
-            Time.every 1000 (\_ -> ClockTicked)
+    case model.phase of
+        Playing ->
+            case model.clock of
+                ClockRunning ->
+                    Time.every 1000 (\_ -> ClockTicked)
 
-        ( Playing, ClockIdle ) ->
+                ClockIdle ->
+                    Sub.none
+
+        WonGame ->
             Sub.none
 
-        ( WonGame, _ ) ->
+        WentBust ->
             Sub.none
 
-        ( WentBust, _ ) ->
-            Sub.none
-
-        ( RanOutOfTime, _ ) ->
+        RanOutOfTime ->
             Sub.none
 
 

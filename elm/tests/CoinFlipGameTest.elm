@@ -283,9 +283,14 @@ gameOverSuite =
                 view CoinFlipLevel1.levelConfig { level1Start | phase = WentBust }
                     |> Query.fromHtml
                     |> Query.hasNot [ tag "a" ]
-        , test "level 2 has no next level to link on a win" <|
+        , test "level 2 links the next level on a win" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WonGame }
+                    |> Query.fromHtml
+                    |> Query.has [ tag "a" ]
+        , test "level 2 shows no next-level link on a bust" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig { level2Start | phase = WentBust }
                     |> Query.fromHtml
                     |> Query.hasNot [ tag "a" ]
         , test "level 2 shows the bust ending only on a bust" <|
