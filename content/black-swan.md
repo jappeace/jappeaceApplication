@@ -136,7 +136,7 @@ Elm.CoinFlipLevel3.init({ node: document.getElementById('coin-flip-game') });
 Here the way to win is to carefully study the log messages, 
 you may have to place quite a few bets before you can even map the payouts to the birds.
 You can try getting the golden glasses but you wouldn't have enough money for the tracker,
-I think the tracker is more convenient than the log messages.
+I think the tracker is more convenient than knowing the payouts.
 Now you should calculate if it even makes sense to bet on these birds
 once you've got their probabilities and payout factors.
 This is just common sense.
@@ -165,7 +165,7 @@ So whichever of those birds is the black swan[^random] has: $p = 0.05$, $q = 0.9
 
 $$f^* = 0.05 - \frac{0.95}{30} \approx 0.0183$$
 
-I just used about 1% for smashing, 
+I just used about 1% for smashing, for only the black swan, putting the other birds to zero because they had negative expected returns.
 I didn't do the maths on my first run,
 but I saw the low odds and high payout so I decided to do a tiny stake.
 Anyway, if you can't figure all this shit out you can always ask uncle for advice, I'm sure he'll be proud of you.
