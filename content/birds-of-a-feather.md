@@ -61,6 +61,7 @@ TODO
   #coin-flip-game .flip-button { width: 100%; padding: 0.6em; font-weight: bold; }
   #coin-flip-game .tally { font-weight: bold; }
   #coin-flip-game .glasses { font-weight: bold; }
+  #coin-flip-game .correlations { font-weight: bold; }
   #coin-flip-game .shop {
     border-top: 1px dashed #196019;
     padding-top: 0.6em;
@@ -124,10 +125,16 @@ Elm.CoinFlipLevel4.init({ node: document.getElementById('coin-flip-game') });
 
 <!-- TODO: the actual article still has to be written. The game above is
      level 4 of the rigged-coin series: correlation. One hidden weather
-     roll per round (sun 60%, rain 40%); Sunbird wins when sunny paying
-     0.8x, Rainbird when rainy paying 1.8x, perfectly anti-correlated.
-     Their payouts form a Dutch book: staking ~61/39 across both nets a
-     guaranteed ~9.6% per flip ($999 in 41 presses), while either bird
-     alone grows ~0.4% per flip at best, hopeless inside the 200-flip
-     budget. Cuckoo is the red herring: 40x payout at 2%, an 18%
-     negative expected return. -->
+     roll per round (sun 60%, rain 40%); one profile wins when sunny
+     paying 0.8x, another when rainy paying 1.8x, perfectly
+     anti-correlated, and the profiles are dealt across Starling,
+     Swallow, and Cuckoo at random every game. The weather payouts form
+     a Dutch book: staking ~61/39 across the pair nets a guaranteed
+     ~9.6% per flip ($999 in 41 presses), while either alone grows
+     ~0.4% per flip at best, hopeless inside the 200-flip budget. The
+     third profile is the red herring: 40x payout at 2%, an 18%
+     negative expected return. Weather log lines spell the correlation
+     out ("Therefore Swallow loses."); the shop sells the tracker,
+     glasses, a $10 percentage allocator (stakes become percentages of
+     the live balance), and The Elegant Universe at $20, which tracks
+     how often each pair lands the same way. -->

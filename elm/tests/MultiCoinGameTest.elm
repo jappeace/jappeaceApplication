@@ -1,4 +1,4 @@
-module MultiCoinGameTest exposing (correlationSuite, flipSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
+module MultiCoinGameTest exposing (correlationSuite, correlationUpgradeSuite, flipSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
 
 {-| Tests for the multi-coin engine behind level 3 (black-swan.html).
 They drive the real `update` with the real level config; the coins
@@ -17,9 +17,11 @@ import CoinFlipLevel4
 import Expect
 import MultiCoinGame
     exposing
-        ( Autoclicker(..)
+        ( AllocationMode(..)
+        , Autoclicker(..)
         , BustCause(..)
         , CoinOdds(..)
+        , CorrelationBook(..)
         , FlipHold(..)
         , GoldenGlasses(..)
         , Model
@@ -639,4 +641,96 @@ correlationSuite =
                     { level4Start | roundCount = 198 }
                     |> .phase
                     |> Expect.equal Playing
+        ]
+
+
+{-| The correlation upgrades: therefore-clauses in the log, the
+percentage allocator, and The Elegant Universe's pair tallies.
+-}
+correlationUpgradeSuite : Test
+correlationUpgradeSuite =
+    describe "MultiCoinGame correlation upgrades (level 4)"
+        [ test "a weather coin's log line names its partner's fate" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ] ] level4Start
+                    |> latestLogText
+                    |> Expect.equal
+                        "Starling landed heads! You win $1.80, of which $1.00 is your stake. Therefore Swallow loses."
+        , test "the losing weather coin's line says the partner wins" <|
+            \_ ->
+                apply4 [ rainyRound [ 100, 0, 0 ] ] level4Start
+                    |> latestLogText
+                    |> Expect.equal
+                        "Starling landed tails. You lost your $1.00 stake. Therefore Swallow wins."
+        , test "the independent cuckoo gets no therefore clause" <|
+            \_ ->
+                apply4 [ CoinsLanded { stakes = [ 0, 0, 10 ], weatherRoll = 1, rolls = [ 100, 100, 100 ] } ]
+                    level4Start
+                    |> latestLogText
+                    |> Expect.equal "Cuckoo landed tails. You lost your $0.10 stake."
+        , test "buying the allocator costs $10 and switches to percent mode" <|
+            \_ ->
+                let
+                    bought =
+                        apply4 [ AllocatorPurchased ] level4Start
+                in
+                ( bought.balanceCents, bought.allocationMode )
+                    |> Expect.equal ( 1500, PercentAllocation )
+        , test "percent stakes are taken from the live balance" <|
+            \_ ->
+                -- After the $10 allocator: balance $15.00, staking 10%
+                -- of it on the sunny coin is $1.50, winning 0.8x pays
+                -- $1.20: balance 1500 + 120.
+                apply4
+                    [ AllocatorPurchased
+                    , StakeInputChanged 0 "10"
+                    , FlipPressed
+                    ]
+                    level4Start
+                    |> (\beforeLanding ->
+                            apply4 [ sunnyRound [ 150, 0, 0 ] ] beforeLanding
+                       )
+                    |> .balanceCents
+                    |> Expect.equal (1500 + 120)
+        , test "percent totals above 100 are refused like overdrawn dollars" <|
+            \_ ->
+                apply4
+                    [ AllocatorPurchased
+                    , StakeInputChanged 0 "60"
+                    , StakeInputChanged 1 "50"
+                    , FlipPressed
+                    ]
+                    level4Start
+                    |> latestLogText
+                    |> Expect.equal "You cannot bet more than your current balance!"
+        , test "buying the book costs $20 and starts tracking pairs" <|
+            \_ ->
+                let
+                    read =
+                        apply4
+                            [ BookPurchased
+                            , sunnyRound [ 100, 100, 10 ]
+                            , rainyRound [ 100, 100, 0 ]
+                            ]
+                            level4Start
+                in
+                ( read.balanceCents |> (\_ -> read.book)
+                , read.pairTallies
+                )
+                    |> Expect.equal
+                        ( BookBought
+                        , [ { firstIndex = 0, secondIndex = 1, sameCount = 0, bothCount = 2 }
+                          , { firstIndex = 0, secondIndex = 2, sameCount = 0, bothCount = 1 }
+                          , { firstIndex = 1, secondIndex = 2, sameCount = 1, bothCount = 1 }
+                          ]
+                        )
+        , test "pairs only count rounds where both coins were staked" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ] ] level4Start
+                    |> .pairTallies
+                    |> Expect.equal
+                        [ { firstIndex = 0, secondIndex = 1, sameCount = 0, bothCount = 0 }
+                        , { firstIndex = 0, secondIndex = 2, sameCount = 0, bothCount = 0 }
+                        , { firstIndex = 1, secondIndex = 2, sameCount = 0, bothCount = 0 }
+                        ]
         ]

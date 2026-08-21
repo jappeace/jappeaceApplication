@@ -1,7 +1,11 @@
 module MultiCoinGame exposing
-    ( Autoclicker(..)
+    ( AllocationMode(..)
+    , AllocatorOffer(..)
+    , Autoclicker(..)
     , AutoclickerOffer(..)
     , BustCause(..)
+    , CorrelationBook(..)
+    , CorrelationBookOffer(..)
     , CoinConfig
     , CoinOdds(..)
     , CoinTally
@@ -132,6 +136,49 @@ type GoldenGlasses
     | GlassesBought
 
 
+{-| The percentage allocator upgrades the stake inputs: amounts become
+percentages of the live balance, re-sized automatically on every flip.
+Price in cents.
+-}
+type AllocatorOffer
+    = NoAllocator
+    | AllocatorForSale Int
+
+
+{-| How the stake inputs are read: dollar amounts, or (after buying the
+allocator) percentages of the current balance.
+-}
+type AllocationMode
+    = DollarAllocation
+    | PercentAllocation
+
+
+{-| The Elegant Universe, a book about strings: it reveals which coins
+move together by tracking how often each pair lands the same way.
+Price in cents.
+-}
+type CorrelationBookOffer
+    = NoCorrelationBook
+    | CorrelationBookForSale Int
+
+
+type CorrelationBook
+    = BookNotBought
+    | BookBought
+
+
+{-| Same-outcome bookkeeping for one pair of coins, counting only
+rounds where both were staked. Indices point into the coin list, whose
+names never move (only profiles shuffle).
+-}
+type alias PairTally =
+    { firstIndex : Int
+    , secondIndex : Int
+    , sameCount : Int
+    , bothCount : Int
+    }
+
+
 {-| The autoclicker spares the player's mouse finger: once bought,
 holding the flip button down fires a flip every 100ms. Price in cents.
 -}
@@ -171,6 +218,8 @@ type ShopItemKind
     | GlassesItem
     | AutoclickerItem
     | FlipHelperItem
+    | AllocatorItem
+    | BookItem
     | UncleAdviceItem
 
 
@@ -205,6 +254,8 @@ type alias MultiCoinConfig =
     , glassesOffer : GlassesOffer
     , autoclickerOffer : AutoclickerOffer
     , flipHelperOffer : FlipHelperOffer
+    , allocatorOffer : AllocatorOffer
+    , bookOffer : CorrelationBookOffer
     , introLogLine : String
     }
 
@@ -228,6 +279,9 @@ type alias Model =
     , roundCount : Int
     , tracker : TrackerState
     , glasses : GoldenGlasses
+    , allocationMode : AllocationMode
+    , book : CorrelationBook
+    , pairTallies : List PairTally
     , autoclicker : Autoclicker
     , flipHold : FlipHold
     , flipHelperCount : Int
@@ -270,6 +324,8 @@ type Msg
     | ClockTicked
     | TrackerPurchased
     | GlassesPurchased
+    | AllocatorPurchased
+    | BookPurchased
     | AutoclickerPurchased
     | UncleAdviceRequested
     | UncleAdviceGiven String
@@ -341,6 +397,9 @@ initialModel config =
     , roundCount = 0
     , tracker = TrackerNotBought
     , glasses = GlassesNotBought
+    , allocationMode = DollarAllocation
+    , book = BookNotBought
+    , pairTallies = initialPairTallies (List.length config.coins)
     , autoclicker = ClickerNotBought
     , flipHold = FlipReleased
     , flipHelperCount = 0
@@ -441,6 +500,18 @@ update config msg model =
                     -- Stays open: fleets are hired by mashing confirm.
                     ( hireFlipHelper config.flipHelperOffer model, Cmd.none )
 
+                Considering AllocatorItem _ ->
+                    ( purchaseAllocator config.allocatorOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering BookItem _ ->
+                    ( purchaseBook config.bookOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
                 Considering UncleAdviceItem _ ->
                     -- Stays open: uncle appreciates repeat customers.
                     purchaseUncleAdvice config.uncleOffer model
@@ -464,6 +535,12 @@ update config msg model =
 
         GlassesPurchased ->
             ( purchaseGlasses config.glassesOffer model, Cmd.none )
+
+        AllocatorPurchased ->
+            ( purchaseAllocator config.allocatorOffer model, Cmd.none )
+
+        BookPurchased ->
+            ( purchaseBook config.bookOffer model, Cmd.none )
 
         AutoclickerPurchased ->
             ( purchaseAutoclicker config.autoclickerOffer model, Cmd.none )
@@ -525,8 +602,16 @@ pressFlip config model =
                 , Cmd.none
                 )
 
-            ReadableStakes stakes ->
+            ReadableStakes parsedStakes ->
                 let
+                    stakes =
+                        case model.allocationMode of
+                            DollarAllocation ->
+                                parsedStakes
+
+                            PercentAllocation ->
+                                List.map (percentStakeCents model.balanceCents) parsedStakes
+
                     totalStaked =
                         List.sum stakes
                 in
@@ -596,6 +681,19 @@ prependStake cents validated =
             ReadableStakes (cents :: stakes)
 
 
+{-| A percent-mode stake: the input parses to hundredths of a percent
+("24.4" -> 2440), applied to the live balance, floored to whole cents
+but never zero while a percentage was actually entered.
+-}
+percentStakeCents : Int -> Int -> Int
+percentStakeCents balanceCents percentHundredths =
+    if percentHundredths <= 0 then
+        0
+
+    else
+        max 1 (balanceCents * percentHundredths // 10000)
+
+
 {-| What a win on this stake pays out (the profit; the stake itself is
 never taken on a win, matching levels 1 and 2). Floored to whole cents
 but never zero: a "win" that pays nothing would be a silent lie.
@@ -610,14 +708,57 @@ payoutCents payoutPercent stake =
 type alias CoinOutcome =
     { tally : CoinTally
     , deltaCents : Int
+    , landedSide : Maybe CoinSide
     , logLines : List LogLine
     }
 
 
-resolveCoin : SkyState -> CoinConfig -> CoinTally -> Int -> Int -> CoinOutcome
-resolveCoin sky coin tally stake roll =
+{-| The other weather coin's name, for the "therefore" clause in the
+log: a sunny coin's partner is the rainy coin and vice versa.
+Independent coins have none.
+-}
+partnerNameFor : List CoinConfig -> CoinConfig -> Maybe String
+partnerNameFor coins coin =
+    case coin.odds of
+        IndependentPercent _ ->
+            Nothing
+
+        WinsWhenSunny ->
+            oddsCoinName WinsWhenRainy coins
+
+        WinsWhenRainy ->
+            oddsCoinName WinsWhenSunny coins
+
+
+oddsCoinName : CoinOdds -> List CoinConfig -> Maybe String
+oddsCoinName odds coins =
+    List.filter (\coin -> coin.odds == odds) coins
+        |> List.head
+        |> Maybe.map .coinName
+
+
+{-| The correlation, spelled out: when a weather coin lands, its
+partner necessarily landed the other way.
+-}
+thereforeClause : Maybe String -> CoinSide -> String
+thereforeClause mPartner landed =
+    case mPartner of
+        Nothing ->
+            ""
+
+        Just partnerName ->
+            case landed of
+                Heads ->
+                    " Therefore " ++ partnerName ++ " loses."
+
+                Tails ->
+                    " Therefore " ++ partnerName ++ " wins."
+
+
+resolveCoin : SkyState -> Maybe String -> CoinConfig -> CoinTally -> Int -> Int -> CoinOutcome
+resolveCoin sky mPartner coin tally stake roll =
     if stake <= 0 then
-        { tally = tally, deltaCents = 0, logLines = [] }
+        { tally = tally, deltaCents = 0, landedSide = Nothing, logLines = [] }
 
     else
         let
@@ -658,6 +799,7 @@ resolveCoin sky coin tally stake roll =
                 -- winnings alone: the stake never left the balance.
                 { tally = { headsCount = tally.headsCount + 1, flipCount = tally.flipCount + 1 }
                 , deltaCents = paidOut
+                , landedSide = Just Heads
                 , logLines =
                     [ { tone = WinTone
                       , text =
@@ -667,6 +809,7 @@ resolveCoin sky coin tally stake roll =
                                 ++ ", of which $"
                                 ++ formatCents stake
                                 ++ " is your stake."
+                                ++ thereforeClause mPartner Heads
                       }
                     ]
                 }
@@ -674,9 +817,15 @@ resolveCoin sky coin tally stake roll =
             Tails ->
                 { tally = { headsCount = tally.headsCount, flipCount = tally.flipCount + 1 }
                 , deltaCents = -stake
+                , landedSide = Just Tails
                 , logLines =
                     [ { tone = LoseTone
-                      , text = coin.coinName ++ " landed tails. You lost your $" ++ formatCents stake ++ " stake."
+                      , text =
+                            coin.coinName
+                                ++ " landed tails. You lost your $"
+                                ++ formatCents stake
+                                ++ " stake."
+                                ++ thereforeClause mPartner Tails
                       }
                     ]
                 }
@@ -699,8 +848,11 @@ settleRound config landedRound model =
                 else
                     Rainy
 
+            partners =
+                List.map (partnerNameFor model.coins) model.coins
+
             outcomes =
-                List.map4 (resolveCoin sky) model.coins model.tallies landedRound.stakes landedRound.rolls
+                List.map5 (resolveCoin sky) partners model.coins model.tallies landedRound.stakes landedRound.rolls
 
             newBalance =
                 max 0 (model.balanceCents + List.sum (List.map .deltaCents outcomes))
@@ -714,11 +866,52 @@ settleRound config landedRound model =
                     { model
                         | balanceCents = newBalance
                         , tallies = List.map .tally outcomes
+                        , pairTallies =
+                            updatePairTallies (List.map .landedSide outcomes) model.pairTallies
                         , roundCount = model.roundCount + 1
                         , log = List.reverse roundLogLines ++ model.log
                     }
                 )
             )
+
+
+{-| Count same-outcome landings for every pair where both coins were
+staked this round.
+-}
+updatePairTallies : List (Maybe CoinSide) -> List PairTally -> List PairTally
+updatePairTallies landedSides pairTallies =
+    List.map (updatePairTally landedSides) pairTallies
+
+
+updatePairTally : List (Maybe CoinSide) -> PairTally -> PairTally
+updatePairTally landedSides tally =
+    case ( landedSideAt tally.firstIndex landedSides, landedSideAt tally.secondIndex landedSides ) of
+        ( Just firstSide, Just secondSide ) ->
+            { tally
+                | bothCount = tally.bothCount + 1
+                , sameCount =
+                    if firstSide == secondSide then
+                        tally.sameCount + 1
+
+                    else
+                        tally.sameCount
+            }
+
+        ( Just _, Nothing ) ->
+            tally
+
+        ( Nothing, Just _ ) ->
+            tally
+
+        ( Nothing, Nothing ) ->
+            tally
+
+
+landedSideAt : Int -> List (Maybe CoinSide) -> Maybe CoinSide
+landedSideAt index landedSides =
+    List.drop index landedSides
+        |> List.head
+        |> Maybe.andThen identity
 
 
 {-| With a flip budget, the game ends once the last flip has settled.
@@ -902,6 +1095,91 @@ hireFlipHelper offer model =
 raisePriceByPercent : Int -> Int -> Int
 raisePriceByPercent increasePercent priceCents =
     (priceCents * (100 + increasePercent) + 50) // 100
+
+
+{-| Every unordered pair of coin indices, tallies at zero.
+-}
+initialPairTallies : Int -> List PairTally
+initialPairTallies coinCount =
+    List.concatMap
+        (\firstIndex ->
+            List.map
+                (\secondIndex ->
+                    { firstIndex = firstIndex
+                    , secondIndex = secondIndex
+                    , sameCount = 0
+                    , bothCount = 0
+                    }
+                )
+                (List.range (firstIndex + 1) (coinCount - 1))
+        )
+        (List.range 0 (coinCount - 1))
+
+
+{-| Buy the percentage allocator. Same wipe-out guard as the tracker.
+-}
+purchaseAllocator : AllocatorOffer -> Model -> Model
+purchaseAllocator offer model =
+    case ( offer, model.allocationMode ) of
+        ( NoAllocator, DollarAllocation ) ->
+            model
+
+        ( NoAllocator, PercentAllocation ) ->
+            model
+
+        ( AllocatorForSale _, PercentAllocation ) ->
+            model
+
+        ( AllocatorForSale priceCents, DollarAllocation ) ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= priceCents then
+                logLine NeutralTone "You cannot afford the percentage allocator." model
+
+            else
+                logLine NeutralTone
+                    ("Bought the percentage allocator for $"
+                        ++ formatCents priceCents
+                        ++ ". Stakes are now percentages of your balance, re-sized every flip."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - priceCents
+                        , allocationMode = PercentAllocation
+                    }
+
+
+{-| Buy The Elegant Universe. Same wipe-out guard as the tracker.
+-}
+purchaseBook : CorrelationBookOffer -> Model -> Model
+purchaseBook offer model =
+    case ( offer, model.book ) of
+        ( NoCorrelationBook, BookNotBought ) ->
+            model
+
+        ( NoCorrelationBook, BookBought ) ->
+            model
+
+        ( CorrelationBookForSale _, BookBought ) ->
+            model
+
+        ( CorrelationBookForSale priceCents, BookNotBought ) ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= priceCents then
+                logLine NeutralTone "You cannot afford The Elegant Universe." model
+
+            else
+                logLine NeutralTone
+                    ("Bought The Elegant Universe for $"
+                        ++ formatCents priceCents
+                        ++ ". It tracks how often each pair of coins lands the same way."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - priceCents
+                        , book = BookBought
+                    }
 
 
 {-| Buy the autoclicker. Same wipe-out guard as the tracker.
@@ -1151,7 +1429,7 @@ viewControls : MultiCoinConfig -> Model -> Html Msg
 viewControls config model =
     Html.div [ Html.Attributes.class "controls" ]
         (List.concat
-            [ List.indexedMap viewCoinRow
+            [ List.indexedMap (viewCoinRow model.allocationMode)
                 (List.map2 Tuple.pair model.coins model.stakeInputs)
             , [ Html.button
                     (Html.Attributes.class "flip-button"
@@ -1161,6 +1439,7 @@ viewControls config model =
                     [ Html.text "FLIP" ]
               ]
             , viewGlassesPayouts model
+            , viewCorrelations model
             , viewTally config model
             , viewFlipHelpers model
             , viewShop config model
@@ -1235,10 +1514,21 @@ flipHoldEvents clicker =
             ]
 
 
-viewCoinRow : Int -> ( CoinConfig, String ) -> Html Msg
-viewCoinRow coinIndex ( coin, stakeInput ) =
+viewCoinRow : AllocationMode -> Int -> ( CoinConfig, String ) -> Html Msg
+viewCoinRow mode coinIndex ( coin, stakeInput ) =
     Html.div [ Html.Attributes.class "coin-bet" ]
-        [ Html.label [] [ Html.text (coin.coinName ++ " $:") ]
+        [ Html.label []
+            [ Html.text
+                (coin.coinName
+                    ++ (case mode of
+                            DollarAllocation ->
+                                " $:"
+
+                            PercentAllocation ->
+                                " %:"
+                       )
+                )
+            ]
         , Html.input
             [ Html.Attributes.class "bet-amount"
             , Html.Attributes.type_ "number"
@@ -1252,6 +1542,50 @@ viewCoinRow coinIndex ( coin, stakeInput ) =
             ]
             []
         ]
+
+
+{-| The Elegant Universe's readings: how often each pair of coins
+landed the same way, over the rounds both were staked. Only rendered
+once the book is bought.
+-}
+viewCorrelations : Model -> List (Html Msg)
+viewCorrelations model =
+    case model.book of
+        BookNotBought ->
+            []
+
+        BookBought ->
+            [ Html.div [ Html.Attributes.class "correlations" ]
+                [ Html.text
+                    ("\u{1F4D6} Same landing: "
+                        ++ String.join " \u{00B7} "
+                            (List.map (pairTallyText model.coins) model.pairTallies)
+                    )
+                ]
+            ]
+
+
+pairTallyText : List CoinConfig -> PairTally -> String
+pairTallyText coins tally =
+    coinNameAt tally.firstIndex coins
+        ++ "+"
+        ++ coinNameAt tally.secondIndex coins
+        ++ " "
+        ++ String.fromInt tally.sameCount
+        ++ "/"
+        ++ String.fromInt tally.bothCount
+
+
+{-| A coin's display name by position. The fallback is unreachable:
+pair tallies are built from the same list's length at init and names
+never move.
+-}
+coinNameAt : Int -> List CoinConfig -> String
+coinNameAt index coins =
+    List.drop index coins
+        |> List.head
+        |> Maybe.map .coinName
+        |> Maybe.withDefault "?"
 
 
 {-| The per-coin tally the ratio tracker paints under the flip button.
@@ -1292,6 +1626,8 @@ viewShop config model =
             ++ viewGlassesShopItem config.glassesOffer model
             ++ viewAutoclickerShopItem config.autoclickerOffer model
             ++ viewFlipHelperShopItem config.flipHelperOffer model
+            ++ viewAllocatorShopItem config.allocatorOffer model
+            ++ viewBookShopItem config.bookOffer model
             ++ viewUncleShopItem config.uncleOffer
     of
         [] ->
@@ -1358,6 +1694,12 @@ itemDisplayName itemKind =
         FlipHelperItem ->
             "a flip helper"
 
+        AllocatorItem ->
+            "the percentage allocator"
+
+        BookItem ->
+            "The Elegant Universe"
+
         UncleAdviceItem ->
             "uncle's advice"
 
@@ -1376,6 +1718,12 @@ itemExplanation itemKind =
 
         FlipHelperItem ->
             "A tireless helper who presses flip for you once every five seconds. Every next hire asks 10% more."
+
+        AllocatorItem ->
+            "Your stakes become percentages of your balance instead of dollars, re-sized automatically on every flip."
+
+        BookItem ->
+            "A book about strings. It tracks how often each pair of coins lands the same way, revealing which ones are attached."
 
         UncleAdviceItem ->
             "Uncle's advice speaks for itself. He's your uncle, surely he knows best."
@@ -1414,6 +1762,22 @@ itemPriceCents config model itemKind =
 
         FlipHelperItem ->
             model.nextHelperPriceCents
+
+        AllocatorItem ->
+            case config.allocatorOffer of
+                NoAllocator ->
+                    0
+
+                AllocatorForSale priceCents ->
+                    priceCents
+
+        BookItem ->
+            case config.bookOffer of
+                NoCorrelationBook ->
+                    0
+
+                CorrelationBookForSale priceCents ->
+                    priceCents
 
         UncleAdviceItem ->
             case config.uncleOffer of
@@ -1493,6 +1857,38 @@ viewFlipHelperShopItem offer model =
 
         FlipHelpersForSale _ ->
             [ viewShopItem (PurchaseConsidered FlipHelperItem) "Hire flip helper" model.nextHelperPriceCents ]
+
+
+viewAllocatorShopItem : AllocatorOffer -> Model -> List (Html Msg)
+viewAllocatorShopItem offer model =
+    case ( offer, model.allocationMode ) of
+        ( NoAllocator, DollarAllocation ) ->
+            []
+
+        ( NoAllocator, PercentAllocation ) ->
+            []
+
+        ( AllocatorForSale _, PercentAllocation ) ->
+            []
+
+        ( AllocatorForSale priceCents, DollarAllocation ) ->
+            [ viewShopItem (PurchaseConsidered AllocatorItem) "Buy percentage allocator" priceCents ]
+
+
+viewBookShopItem : CorrelationBookOffer -> Model -> List (Html Msg)
+viewBookShopItem offer model =
+    case ( offer, model.book ) of
+        ( NoCorrelationBook, BookNotBought ) ->
+            []
+
+        ( NoCorrelationBook, BookBought ) ->
+            []
+
+        ( CorrelationBookForSale _, BookBought ) ->
+            []
+
+        ( CorrelationBookForSale priceCents, BookNotBought ) ->
+            [ viewShopItem (PurchaseConsidered BookItem) "Buy The Elegant Universe" priceCents ]
 
 
 viewUncleShopItem : UncleOffer -> List (Html Msg)
