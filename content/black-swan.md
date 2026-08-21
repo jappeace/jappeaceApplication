@@ -71,7 +71,7 @@ of a gambler may succeed.
     text-align: left;
   }
   #coin-flip-game .shop-toggle { width: 100%; text-align: left; font-weight: bold; }
-  #coin-flip-game .shop-subtoggle { width: 100%; text-align: left; padding-left: 1.5em; }
+  #coin-flip-game .shop-group-heading { font-weight: bold; }
   #coin-flip-game .helpers { font-weight: bold; }
   #coin-flip-game .helper-bird {
     display: inline-block;
@@ -85,7 +85,7 @@ of a gambler may succeed.
     display: flex;
     justify-content: space-between;
     gap: 1em;
-    width: 100%;
+    margin-left: 1.2em;
   }
   #coin-flip-game .purchase-dialog {
     position: fixed;

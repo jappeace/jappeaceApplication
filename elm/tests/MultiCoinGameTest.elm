@@ -424,21 +424,15 @@ gatingSuite =
                 view CoinFlipLevel3.levelConfig level3Start
                     |> Query.fromHtml
                     |> Query.hasNot [ class "shop-item" ]
-        , test "the open shop shows submenus, not items" <|
+        , test "the open shop shows the section headings and their items" <|
             \_ ->
                 apply [ ShopToggled ] level3Start
                     |> view CoinFlipLevel3.levelConfig
                     |> Query.fromHtml
                     |> Expect.all
-                        [ Query.has [ class "shop-subtoggle" ]
-                        , Query.hasNot [ class "shop-item" ]
+                        [ Query.has [ class "shop-group-heading" ]
+                        , Query.has [ class "shop-item" ]
                         ]
-        , test "toggling a submenu reveals its items" <|
-            \_ ->
-                apply [ ShopToggled, IntelToggled ] level3Start
-                    |> view CoinFlipLevel3.levelConfig
-                    |> Query.fromHtml
-                    |> Query.has [ class "shop-item" ]
         , test "toggling twice collapses the shop again" <|
             \_ ->
                 apply [ ShopToggled, ShopToggled ] level3Start
@@ -784,13 +778,13 @@ refundSuite =
                     |> Expect.equal 1
         , test "the refund is not for sale before the complete works are heard" <|
             \_ ->
-                apply4 [ ShopToggled, IntelToggled ] level4Start
+                apply4 [ ShopToggled ] level4Start
                     |> view CoinFlipLevel4.levelConfig
                     |> Query.fromHtml
                     |> Query.hasNot [ text "Ask your money back" ]
         , test "hearing every phrase puts the refund up for sale" <|
             \_ ->
-                apply4 [ ShopToggled, IntelToggled ] heardEverything
+                apply4 [ ShopToggled ] heardEverything
                     |> view CoinFlipLevel4.levelConfig
                     |> Query.fromHtml
                     |> Query.has [ text "Ask your money back" ]

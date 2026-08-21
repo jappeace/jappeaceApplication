@@ -300,8 +300,6 @@ type alias Model =
     , allocationMode : AllocationMode
     , book : CorrelationBook
     , pairTallies : List PairTally
-    , upgradesFold : ShopFold
-    , intelFold : ShopFold
     , adviceHeard : List String
     , refund : RefundState
     , autoclicker : Autoclicker
@@ -338,8 +336,6 @@ type Msg
     | FlipHelperHired
     | FlipHelpersTicked
     | ShopToggled
-    | UpgradesToggled
-    | IntelToggled
     | RefundRequested
     | PurchaseConsidered ShopItemKind ClickPoint
     | PurchaseConfirmed
@@ -425,8 +421,6 @@ initialModel config =
     , allocationMode = DollarAllocation
     , book = BookNotBought
     , pairTallies = initialPairTallies (List.length config.coins)
-    , upgradesFold = ShopCollapsed
-    , intelFold = ShopCollapsed
     , adviceHeard = []
     , refund = RefundNotAsked
     , autoclicker = ClickerNotBought
@@ -488,12 +482,6 @@ update config msg model =
 
         ShopToggled ->
             ( { model | shopFold = toggleFold model.shopFold }, Cmd.none )
-
-        UpgradesToggled ->
-            ( { model | upgradesFold = toggleFold model.upgradesFold }, Cmd.none )
-
-        IntelToggled ->
-            ( { model | intelFold = toggleFold model.intelFold }, Cmd.none )
 
         RefundRequested ->
             ( requestRefund config.uncleOffer config.refundOffer model, Cmd.none )
@@ -1756,8 +1744,8 @@ viewShop config model =
 
                             ShopExpanded ->
                                 List.concat
-                                    [ viewShopGroup UpgradesToggled "Upgrades" model.upgradesFold upgradeItems
-                                    , viewShopGroup IntelToggled "Intel" model.intelFold intelItems
+                                    [ viewShopGroup "Upgrades" upgradeItems
+                                    , viewShopGroup "Intel" intelItems
                                     , viewPurchaseDialog config model
                                     ]
                        )
@@ -1765,24 +1753,17 @@ viewShop config model =
             ]
 
 
-{-| A shop submenu: a collapsible group header with its items, hidden
-entirely when the group has nothing for sale.
+{-| A shop section: a plain heading with its items, hidden entirely
+when the section has nothing for sale.
 -}
-viewShopGroup : Msg -> String -> ShopFold -> List (Html Msg) -> List (Html Msg)
-viewShopGroup onToggle label fold groupItems =
+viewShopGroup : String -> List (Html Msg) -> List (Html Msg)
+viewShopGroup label groupItems =
     case groupItems of
         [] ->
             []
 
         _ ->
-            ShopDialog.viewShopGroupToggle onToggle label fold
-                :: (case fold of
-                        ShopCollapsed ->
-                            []
-
-                        ShopExpanded ->
-                            groupItems
-                   )
+            ShopDialog.viewShopGroupHeading label :: groupItems
 
 
 {-| The confirm/cancel dialog a considered purchase opens, explaining
