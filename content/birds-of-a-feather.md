@@ -147,20 +147,22 @@ are negatively correlated and win.
 This works because the game is rigged.
 Either the sunny bird or the rainy bird will win, they
 are negatively correlated.
+Furthermore the payouts justify going all in on the birds.
 
 Suppose sunny has a chance of 60% to win, 
 conversely the rainy coin has a 40% chance to win, because when sunny doesn't win, rainy will win.
 Now look at the pricing of these, this is where the unfairness lives:
+
 - Sunny coin, $b_1 = 0.8$: implied $\frac{1}{1.8} = 55.6%$ (true chance: 60%)
 - Rainy coin, $b_2 = 1.8$: implied $\frac{1}{2.8} = 35.7%$ (true chance: 40%)
-- Implied sum: 91.3%. True sum: 100%, as always.
+- Implied sum: 91.3%. True sum: 100%
 
-If we put all our money split across the true chance we'll expect a 8.7 cent harvest yielding $\frac{1}{0.913} - 1 = 9.6%$ per flip.
+If we put all our money split across the true chance we'll expect a 8.7 cent harvest yielding $\frac{1}{0.913} - 1 = 9.6\%$ per flip.
 And there is no reason not to use all our money, 
 because you'll either win 1.8 times your stake 
 or you'll win 2.8 times your stake.
 Of course you'll lose the part of the stake you put on the losing
-bird, so you end up expect around 9.6% per flip anyway.
+bird, so you end up expect around $9.6\%$ per flip anyway.
 The 60/40 split is to maximize average growth, the kelly point.
 
 Now if you want an actual sure bet, 
@@ -221,7 +223,20 @@ which exactly one wins. Put fraction $x$ on sunny and $1-x$ on rainy.
 A flip multiplies your balance by $(1+b_1)\,x$ when sunny, or by
 $(1+b_2)(1-x)$ when rainy, so the long-run growth to maximize is
 
-$$g(x) = p \ln\big((1+b_1)\,x\big) + q \ln\big((1+b_2)(1-x)\big)$$
+$$g(x) = p \cdot \ln\big((1+b_1)\,x\big) + q \cdot \ln\big((1+b_2)(1-x)\big)$$
+
+where:
+
+* $p$ is the true probability of sun, and $q = 1 - p$ that of rain
+* $b_1$ is the net odds on the sun bird: a dollar bet returns $1 + b_1$
+  dollars on a win, the stake plus $b_1$ profit (same $b$ as in
+  level 1's $f^* = p - q/b$)
+* $b_2$ is the same for the rain bird
+* $x$ is the fraction of your balance on
+  sunny, leaving $1-x$ for rainy
+* $g(x)$ is the long-run growth rate: the average of
+  $\ln(\text{balance after} / \text{balance before})$ per flip, the
+  same quantity earlier levels compounded
 
 The logarithm splits products into sums:
 
@@ -246,5 +261,3 @@ their Kelly was $f^* = p - q/b$ and the payout mattered a great deal.
 Bell System Technical Journal, 1956; Cover & Thomas, *Elements of
 Information Theory*, ch. 6: proportional betting is log-optimal, and
 "a Dutch book, though risk-free, does not optimize the doubling rate."
-
-That last footnote quote also lets you sharpen "kelly and the sure bet almost converge. Which is expected." — per Cover & Thomas the convergence is not general: Kelly always grows a hair faster than the sure bet, and the two splits only sit close because this game discounts both birds by nearly the same margin.
