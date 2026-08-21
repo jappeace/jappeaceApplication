@@ -858,8 +858,15 @@ settleRound config landedRound model =
             newBalance =
                 max 0 (model.balanceCents + List.sum (List.map .deltaCents outcomes))
 
+            -- Flip lines carry their round number, so lines from the
+            -- same round can be told apart at a glance in the log.
+            roundNumber =
+                model.roundCount + 1
+
             roundLogLines =
-                List.concatMap .logLines outcomes
+                List.map
+                    (\line -> { line | text = "#" ++ String.fromInt roundNumber ++ " " ++ line.text })
+                    (List.concatMap .logLines outcomes)
         in
         gloatIfBusted config.uncleOffer
             (endWhenOutOfFlips config.turnBudget
