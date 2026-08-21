@@ -8,6 +8,7 @@ module MultiCoinGame exposing
     , BustCause(..)
     , CorrelationBook(..)
     , CorrelationBookOffer(..)
+    , ExtraTurnsOffer(..)
     , CoinConfig
     , CoinOdds(..)
     , CoinTally
@@ -124,6 +125,15 @@ type TurnBudget
     | FlipLimit Int
 
 
+{-| Buying more turns: satire made purchasable. Only offered in
+flip-limited games, repeatable, and priced so that only someone who has
+basically already won can afford to keep playing.
+-}
+type ExtraTurnsOffer
+    = NoExtraTurns
+    | ExtraTurnsForSale { priceCents : Int, extraFlips : Int }
+
+
 {-| The golden glasses reveal every coin's payout multiplier while
 playing (the win percents stay hidden; that is what the ratio tracker
 approximates). Price in cents.
@@ -237,6 +247,7 @@ type ShopItemKind
     | AllocatorItem
     | BookItem
     | RefundItem
+    | ExtraTurnsItem
     | UncleAdviceItem
 
 
@@ -274,6 +285,7 @@ type alias MultiCoinConfig =
     , allocatorOffer : AllocatorOffer
     , bookOffer : CorrelationBookOffer
     , refundOffer : RefundOffer
+    , extraTurnsOffer : ExtraTurnsOffer
     , introLogLine : String
     }
 
@@ -302,6 +314,7 @@ type alias Model =
     , pairTallies : List PairTally
     , adviceHeard : List String
     , refund : RefundState
+    , extraFlipsBought : Int
     , autoclicker : Autoclicker
     , flipHold : FlipHold
     , flipHelperCount : Int
@@ -337,6 +350,7 @@ type Msg
     | FlipHelpersTicked
     | ShopToggled
     | RefundRequested
+    | ExtraTurnsPurchased
     | PurchaseConsidered ShopItemKind ClickPoint
     | PurchaseConfirmed
     | PurchaseCancelled
@@ -423,6 +437,7 @@ initialModel config =
     , pairTallies = initialPairTallies (List.length config.coins)
     , adviceHeard = []
     , refund = RefundNotAsked
+    , extraFlipsBought = 0
     , autoclicker = ClickerNotBought
     , flipHold = FlipReleased
     , flipHelperCount = 0
@@ -486,6 +501,9 @@ update config msg model =
         RefundRequested ->
             ( requestRefund config.uncleOffer config.refundOffer model, Cmd.none )
 
+        ExtraTurnsPurchased ->
+            ( purchaseExtraTurns config.extraTurnsOffer model, Cmd.none )
+
         PurchaseConsidered itemKind clickPoint ->
             ( { model | pendingPurchase = Considering itemKind clickPoint }, Cmd.none )
 
@@ -527,6 +545,10 @@ update config msg model =
                         { model | pendingPurchase = NoPendingPurchase }
                     , Cmd.none
                     )
+
+                Considering ExtraTurnsItem _ ->
+                    -- Stays open: the house sells time by the armful.
+                    ( purchaseExtraTurns config.extraTurnsOffer model, Cmd.none )
 
                 Considering RefundItem _ ->
                     ( requestRefund config.uncleOffer
@@ -904,7 +926,7 @@ endWhenOutOfFlips budget model =
             model
 
         FlipLimit flipLimit ->
-            if model.phase == Playing && model.roundCount >= flipLimit then
+            if model.phase == Playing && model.roundCount >= flipLimit + model.extraFlipsBought then
                 { model | phase = RanOutOfTime }
 
             else
@@ -1125,6 +1147,36 @@ purchaseAllocator offer model =
                     { model
                         | balanceCents = model.balanceCents - priceCents
                         , allocationMode = PercentAllocation
+                    }
+
+
+{-| Buy more flips. Repeatable: the house is always happy to extend
+your opportunity to give it money.
+-}
+purchaseExtraTurns : ExtraTurnsOffer -> Model -> Model
+purchaseExtraTurns offer model =
+    case offer of
+        NoExtraTurns ->
+            model
+
+        ExtraTurnsForSale sale ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= sale.priceCents then
+                logLine NeutralTone "You cannot afford more flips." model
+
+            else
+                logLine NeutralTone
+                    ("Bought "
+                        ++ String.fromInt sale.extraFlips
+                        ++ " more flips for $"
+                        ++ formatCents sale.priceCents
+                        ++ ". Money can buy time after all."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - sale.priceCents
+                        , extraFlipsBought = model.extraFlipsBought + sale.extraFlips
                     }
 
 
@@ -1455,7 +1507,11 @@ viewStats config model =
                 Html.div []
                     [ Html.text "Flips left: "
                     , Html.span [ Html.Attributes.class "timer" ]
-                        [ Html.text (String.fromInt (max 0 (flipLimit - model.roundCount))) ]
+                        [ Html.text
+                            (String.fromInt
+                                (max 0 (flipLimit + model.extraFlipsBought - model.roundCount))
+                            )
+                        ]
                     ]
         ]
 
@@ -1676,6 +1732,7 @@ viewShop config model =
             viewAutoclickerShopItem config.autoclickerOffer model
                 ++ viewFlipHelperShopItem config.flipHelperOffer model
                 ++ viewAllocatorShopItem config.allocatorOffer model
+                ++ viewExtraTurnsShopItem config
 
         intelItems =
             viewTrackerShopItem config.trackerOffer model
@@ -1775,6 +1832,9 @@ itemDisplayName itemKind =
         RefundItem ->
             "your money back from uncle"
 
+        ExtraTurnsItem ->
+            "more flips"
+
         UncleAdviceItem ->
             "uncle's advice"
 
@@ -1802,6 +1862,9 @@ itemExplanation itemKind =
 
         RefundItem ->
             "After all that terrible advice, surely a refund is in order. Asking costs money, he is a busy man."
+
+        ExtraTurnsItem ->
+            "Out of flips? Nonsense. The house happily extends your opportunity to give it money."
 
         UncleAdviceItem ->
             "Uncle's advice speaks for itself. He's your uncle, surely he knows best."
@@ -1864,6 +1927,14 @@ itemPriceCents config model itemKind =
 
                 RefundForSale refund ->
                     refund.priceCents
+
+        ExtraTurnsItem ->
+            case config.extraTurnsOffer of
+                NoExtraTurns ->
+                    0
+
+                ExtraTurnsForSale sale ->
+                    sale.priceCents
 
         UncleAdviceItem ->
             case config.uncleOffer of
@@ -1985,6 +2056,28 @@ viewUncleShopItem offer =
 
         UncleAdviceForSale uncle ->
             [ viewShopItem (PurchaseConsidered UncleAdviceItem) "Ask uncle for advice" uncle.priceCents ]
+
+
+{-| More flips, for sale forever, but only where a flip limit exists to
+extend: under a time limit the item would be nonsense.
+-}
+viewExtraTurnsShopItem : MultiCoinConfig -> List (Html Msg)
+viewExtraTurnsShopItem config =
+    case ( config.extraTurnsOffer, config.turnBudget ) of
+        ( NoExtraTurns, TimeLimit _ ) ->
+            []
+
+        ( NoExtraTurns, FlipLimit _ ) ->
+            []
+
+        ( ExtraTurnsForSale _, TimeLimit _ ) ->
+            []
+
+        ( ExtraTurnsForSale sale, FlipLimit _ ) ->
+            [ viewShopItem (PurchaseConsidered ExtraTurnsItem)
+                ("Buy " ++ String.fromInt sale.extraFlips ++ " more flips")
+                sale.priceCents
+            ]
 
 
 {-| Only for sale once uncle's complete works have been heard, and only

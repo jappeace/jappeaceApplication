@@ -1,4 +1,4 @@
-module MultiCoinGameTest exposing (correlationSuite, correlationUpgradeSuite, flipSuite, refundSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
+module MultiCoinGameTest exposing (correlationSuite, correlationUpgradeSuite, extraTurnsSuite, flipSuite, refundSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
 
 {-| Tests for the multi-coin engine behind level 3 (black-swan.html).
 They drive the real `update` with the real level config; the coins
@@ -806,4 +806,38 @@ refundSuite =
                         , WentBust
                         , "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
                         )
+        ]
+
+
+{-| Buying more turns: $500 for 50 flips, repeatable, satire.
+-}
+extraTurnsSuite : Test
+extraTurnsSuite =
+    describe "MultiCoinGame extra turns (level 4)"
+        [ test "buying 50 more flips costs $500 and extends the budget" <|
+            \_ ->
+                let
+                    extended =
+                        apply4 [ ExtraTurnsPurchased, sunnyRound [ 100, 0, 0 ] ]
+                            { level4Start | balanceCents = 60000, roundCount = 199 }
+                in
+                ( extended.balanceCents, extended.phase )
+                    |> Expect.equal ( 60000 - 50000 + 80, Playing )
+        , test "without the purchase the same flip ends the game" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ] ]
+                    { level4Start | balanceCents = 60000, roundCount = 199 }
+                    |> .phase
+                    |> Expect.equal RanOutOfTime
+        , test "buying flips is repeatable" <|
+            \_ ->
+                apply4 [ ExtraTurnsPurchased, ExtraTurnsPurchased ]
+                    { level4Start | balanceCents = 110000 }
+                    |> .extraFlipsBought
+                    |> Expect.equal 100
+        , test "more flips are refused below the price" <|
+            \_ ->
+                apply4 [ ExtraTurnsPurchased ] { level4Start | balanceCents = 50000 }
+                    |> .extraFlipsBought
+                    |> Expect.equal 0
         ]

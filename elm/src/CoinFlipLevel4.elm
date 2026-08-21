@@ -22,7 +22,7 @@ costs money and yields only his fondest farewell.
 -}
 
 import CoinFlipGame exposing (NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
-import MultiCoinGame exposing (AllocatorOffer(..), AutoclickerOffer(..), CoinOdds(..), CorrelationBookOffer(..), FlipHelperOffer(..), GlassesOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
+import MultiCoinGame exposing (AllocatorOffer(..), AutoclickerOffer(..), CoinOdds(..), CorrelationBookOffer(..), ExtraTurnsOffer(..), FlipHelperOffer(..), GlassesOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
 
 
 levelConfig : MultiCoinConfig
@@ -46,6 +46,7 @@ levelConfig =
     , flipHelperOffer = FlipHelpersForSale { basePriceCents = 100, priceIncreasePercent = 10 }
     , allocatorOffer = AllocatorForSale 1000
     , bookOffer = CorrelationBookForSale 2000
+    , extraTurnsOffer = ExtraTurnsForSale { priceCents = 50000, extraFlips = 50 }
     , refundOffer =
         RefundForSale
             { priceCents = 1000
