@@ -3,6 +3,7 @@ module ShopDialog exposing
     , ShopFold(..)
     , clickPointDecoder
     , viewPurchaseDialog
+    , viewShopGroupHeading
     , viewShopItem
     , viewShopToggle
     )
@@ -67,6 +68,15 @@ viewShopToggle onToggle fold =
                     "\u{1F6D2} Shop \u{25BE}"
             )
         ]
+
+
+{-| A group heading inside the shop, for sections like "Upgrades" and
+"Intel". Plain text, always visible; the items below it get indented by
+CSS.
+-}
+viewShopGroupHeading : String -> Html msg
+viewShopGroupHeading label =
+    Html.div [ Html.Attributes.class "shop-group-heading" ] [ Html.text label ]
 
 
 {-| One row in the shop: item name left, price right. The click carries

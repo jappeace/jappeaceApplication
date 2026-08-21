@@ -96,6 +96,13 @@ gambleSuite =
                 in
                 ( busted.phase, busted.balanceCents )
                     |> Expect.equal ( WentBust, 0 )
+        , test "flip log lines carry their flip number" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ landedFlip Heads 1000 Heads, landedFlip Heads 500 Tails ]
+                    level1Start
+                    |> latestLogText
+                    |> Expect.equal "2: Landed Tails! You lost $5.00"
         , test "flips count both what was bet and what landed" <|
             \_ ->
                 let

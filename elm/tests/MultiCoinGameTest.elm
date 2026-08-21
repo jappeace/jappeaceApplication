@@ -1,4 +1,4 @@
-module MultiCoinGameTest exposing (flipSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
+module MultiCoinGameTest exposing (correlationSuite, correlationUpgradeSuite, extraTurnsSuite, flipSuite, refundSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
 
 {-| Tests for the multi-coin engine behind level 3 (black-swan.html).
 They drive the real `update` with the real level config; the coins
@@ -13,11 +13,16 @@ import CoinFlipGame
         , TrackerState(..)
         )
 import CoinFlipLevel3
+import CoinFlipLevel4
 import Expect
 import MultiCoinGame
     exposing
-        ( Autoclicker(..)
+        ( AllocationMode(..)
+        , Autoclicker(..)
+        , RefundState(..)
         , BustCause(..)
+        , CoinOdds(..)
+        , CorrelationBook(..)
         , FlipHold(..)
         , GoldenGlasses(..)
         , Model
@@ -55,7 +60,7 @@ level3Start =
 
 landedRound : List Int -> List Int -> Msg
 landedRound stakes rolls =
-    CoinsLanded { stakes = stakes, rolls = rolls }
+    CoinsLanded { stakes = stakes, weatherRoll = 1, rolls = rolls }
 
 
 clickAtOrigin : ShopDialog.ClickPoint
@@ -419,12 +424,15 @@ gatingSuite =
                 view CoinFlipLevel3.levelConfig level3Start
                     |> Query.fromHtml
                     |> Query.hasNot [ class "shop-item" ]
-        , test "toggling the shop reveals the items" <|
+        , test "the open shop shows the section headings and their items" <|
             \_ ->
                 apply [ ShopToggled ] level3Start
                     |> view CoinFlipLevel3.levelConfig
                     |> Query.fromHtml
-                    |> Query.has [ class "shop-item" ]
+                    |> Expect.all
+                        [ Query.has [ class "shop-group-heading" ]
+                        , Query.has [ class "shop-item" ]
+                        ]
         , test "toggling twice collapses the shop again" <|
             \_ ->
                 apply [ ShopToggled, ShopToggled ] level3Start
@@ -486,9 +494,9 @@ shuffleSuite =
             \_ ->
                 let
                     reassigned =
-                        [ { coinName = "Swan", winPercent = 60, payoutPercent = 50 }
-                        , { coinName = "Magpie", winPercent = 5, payoutPercent = 3000 }
-                        , { coinName = "Sparrow", winPercent = 45, payoutPercent = 100 }
+                        [ { coinName = "Swan", odds = IndependentPercent 60, payoutPercent = 50 }
+                        , { coinName = "Magpie", odds = IndependentPercent 5, payoutPercent = 3000 }
+                        , { coinName = "Sparrow", odds = IndependentPercent 45, payoutPercent = 100 }
                         ]
                 in
                 apply [ ProfilesShuffled reassigned ] level3Start
@@ -500,9 +508,9 @@ shuffleSuite =
                 -- swan profile: a winning roll of 5 on Magpie pays 30x.
                 apply
                     [ ProfilesShuffled
-                        [ { coinName = "Swan", winPercent = 60, payoutPercent = 50 }
-                        , { coinName = "Magpie", winPercent = 5, payoutPercent = 3000 }
-                        , { coinName = "Sparrow", winPercent = 45, payoutPercent = 100 }
+                        [ { coinName = "Swan", odds = IndependentPercent 60, payoutPercent = 50 }
+                        , { coinName = "Magpie", odds = IndependentPercent 5, payoutPercent = 3000 }
+                        , { coinName = "Sparrow", odds = IndependentPercent 45, payoutPercent = 100 }
                         ]
                     , landedRound [ 0, 100, 0 ] [ 50, 5, 50 ]
                     ]
@@ -513,9 +521,9 @@ shuffleSuite =
             \_ ->
                 apply
                     [ ProfilesShuffled
-                        [ { coinName = "Swan", winPercent = 60, payoutPercent = 50 }
-                        , { coinName = "Magpie", winPercent = 5, payoutPercent = 3000 }
-                        , { coinName = "Sparrow", winPercent = 45, payoutPercent = 100 }
+                        [ { coinName = "Swan", odds = IndependentPercent 60, payoutPercent = 50 }
+                        , { coinName = "Magpie", odds = IndependentPercent 5, payoutPercent = 3000 }
+                        , { coinName = "Sparrow", odds = IndependentPercent 45, payoutPercent = 100 }
                         ]
                     ]
                     { level3Start | glasses = GlassesBought }
@@ -541,10 +549,295 @@ shuffleSuite =
         ]
 
 
-{-| The (win percent, payout) profiles of a coin list, order-insensitive,
-for comparing a shuffle against the original deal.
+{-| The (odds, payout) profiles of a coin list, order-insensitive, for
+comparing a shuffle against the original deal.
 -}
-sortedProfiles : List MultiCoinGame.CoinConfig -> List { winPercent : Int, payoutPercent : Int }
+sortedProfiles : List MultiCoinGame.CoinConfig -> List { odds : CoinOdds, payoutPercent : Int }
 sortedProfiles coins =
-    List.sortBy .winPercent
-        (List.map (\coin -> { winPercent = coin.winPercent, payoutPercent = coin.payoutPercent }) coins)
+    List.sortBy .payoutPercent
+        (List.map (\coin -> { odds = coin.odds, payoutPercent = coin.payoutPercent }) coins)
+
+
+{-| Level 4 (birds of a feather): weather-driven anti-correlated coins,
+a flip budget instead of a clock, and the Dutch-book portfolio.
+Sun percent is 60, so weather rolls 1-60 are sunny and 61-100 rainy.
+-}
+apply4 : List Msg -> Model -> Model
+apply4 msgs model =
+    List.foldl
+        (\msg current -> Tuple.first (update CoinFlipLevel4.levelConfig msg current))
+        model
+        msgs
+
+
+level4Start : Model
+level4Start =
+    initialModel CoinFlipLevel4.levelConfig
+
+
+sunnyRound : List Int -> Msg
+sunnyRound stakes =
+    CoinsLanded { stakes = stakes, weatherRoll = 1, rolls = [ 100, 100, 100 ] }
+
+
+rainyRound : List Int -> Msg
+rainyRound stakes =
+    CoinsLanded { stakes = stakes, weatherRoll = 100, rolls = [ 100, 100, 100 ] }
+
+
+correlationSuite : Test
+correlationSuite =
+    describe "MultiCoinGame weather correlation (level 4)"
+        [ test "on a sunny round the sunbird wins and the rainbird loses" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 100, 0 ] ] level4Start
+                    |> .tallies
+                    |> Expect.equal
+                        [ { headsCount = 1, flipCount = 1 }
+                        , { headsCount = 0, flipCount = 1 }
+                        , { headsCount = 0, flipCount = 0 }
+                        ]
+        , test "on a rainy round the rainbird wins and the sunbird loses" <|
+            \_ ->
+                apply4 [ rainyRound [ 100, 100, 0 ] ] level4Start
+                    |> .tallies
+                    |> Expect.equal
+                        [ { headsCount = 0, flipCount = 1 }
+                        , { headsCount = 1, flipCount = 1 }
+                        , { headsCount = 0, flipCount = 0 }
+                        ]
+        , test "the Dutch-book split profits on a sunny round" <|
+            \_ ->
+                -- $6.10 on Sunbird (pays 0.8x) and $3.90 on Rainbird:
+                -- sunny nets 610*0.8 - 390 = +98 cents.
+                apply4 [ sunnyRound [ 610, 390, 0 ] ] level4Start
+                    |> .balanceCents
+                    |> Expect.equal (2500 + 488 - 390)
+        , test "the Dutch-book split profits on a rainy round too" <|
+            \_ ->
+                -- rainy nets 390*1.8 - 610 = +92 cents.
+                apply4 [ rainyRound [ 610, 390, 0 ] ] level4Start
+                    |> .balanceCents
+                    |> Expect.equal (2500 + 702 - 610)
+        , test "the cuckoo rolls independently of the weather" <|
+            \_ ->
+                -- rainy round, but the cuckoo's own roll of 1 (<= 2) wins:
+                -- 40x on a $0.10 stake pays $4.00.
+                apply4 [ CoinsLanded { stakes = [ 0, 0, 10 ], weatherRoll = 100, rolls = [ 100, 100, 1 ] } ]
+                    level4Start
+                    |> .balanceCents
+                    |> Expect.equal (2500 + 400)
+        , test "the game ends after the flip budget is spent" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ] ]
+                    { level4Start | roundCount = 199 }
+                    |> .phase
+                    |> Expect.equal RanOutOfTime
+        , test "winning on the final flip beats running out of flips" <|
+            \_ ->
+                apply4 [ rainyRound [ 0, 55000, 0 ] ]
+                    { level4Start | roundCount = 199, balanceCents = 55000 }
+                    |> .phase
+                    |> Expect.equal WonGame
+        , test "flips before the budget runs out keep the game going" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ] ]
+                    { level4Start | roundCount = 198 }
+                    |> .phase
+                    |> Expect.equal Playing
+        ]
+
+
+{-| The correlation upgrades: therefore-clauses in the log, the
+percentage allocator, and The Elegant Universe's pair tallies.
+-}
+correlationUpgradeSuite : Test
+correlationUpgradeSuite =
+    describe "MultiCoinGame correlation upgrades (level 4)"
+        [ test "weather coin log lines stay plain, revealing nothing" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ] ] level4Start
+                    |> latestLogText
+                    |> Expect.equal
+                        "1: Starling landed heads! You win $1.80, of which $1.00 is your stake."
+        , test "a losing weather coin's line is equally silent about its partner" <|
+            \_ ->
+                apply4 [ rainyRound [ 100, 0, 0 ] ] level4Start
+                    |> latestLogText
+                    |> Expect.equal "1: Starling landed tails. You lost your $1.00 stake."
+        , test "buying the allocator costs $10 and switches to percent mode" <|
+            \_ ->
+                let
+                    bought =
+                        apply4 [ AllocatorPurchased ] level4Start
+                in
+                ( bought.balanceCents, bought.allocationMode )
+                    |> Expect.equal ( 1500, PercentAllocation )
+        , test "percent stakes are taken from the live balance" <|
+            \_ ->
+                -- After the $10 allocator: balance $15.00, staking 10%
+                -- of it on the sunny coin is $1.50, winning 0.8x pays
+                -- $1.20: balance 1500 + 120.
+                apply4
+                    [ AllocatorPurchased
+                    , StakeInputChanged 0 "10"
+                    , FlipPressed
+                    ]
+                    level4Start
+                    |> (\beforeLanding ->
+                            apply4 [ sunnyRound [ 150, 0, 0 ] ] beforeLanding
+                       )
+                    |> .balanceCents
+                    |> Expect.equal (1500 + 120)
+        , test "percent totals above 100 are refused like overdrawn dollars" <|
+            \_ ->
+                apply4
+                    [ AllocatorPurchased
+                    , StakeInputChanged 0 "60"
+                    , StakeInputChanged 1 "50"
+                    , FlipPressed
+                    ]
+                    level4Start
+                    |> latestLogText
+                    |> Expect.equal "You cannot bet more than your current balance!"
+        , test "buying the book costs $20 and starts tracking pairs" <|
+            \_ ->
+                let
+                    read =
+                        apply4
+                            [ BookPurchased
+                            , sunnyRound [ 100, 100, 10 ]
+                            , rainyRound [ 100, 100, 0 ]
+                            ]
+                            level4Start
+                in
+                ( read.balanceCents |> (\_ -> read.book)
+                , read.pairTallies
+                )
+                    |> Expect.equal
+                        ( BookBought
+                        , [ { firstIndex = 0, secondIndex = 1, sameCount = 0, bothCount = 2 }
+                          , { firstIndex = 0, secondIndex = 2, sameCount = 0, bothCount = 1 }
+                          , { firstIndex = 1, secondIndex = 2, sameCount = 1, bothCount = 1 }
+                          ]
+                        )
+        , test "pairs only count rounds where both coins were staked" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ] ] level4Start
+                    |> .pairTallies
+                    |> Expect.equal
+                        [ { firstIndex = 0, secondIndex = 1, sameCount = 0, bothCount = 0 }
+                        , { firstIndex = 0, secondIndex = 2, sameCount = 0, bothCount = 0 }
+                        , { firstIndex = 1, secondIndex = 2, sameCount = 0, bothCount = 0 }
+                        ]
+        ]
+
+
+{-| Uncle's complete works: 1 first phrase + 8 more in the level-4
+config. Hearing all nine unlocks asking for the money back.
+-}
+allUnclePhrases : List String
+allUnclePhrases =
+    [ "Don't split your money son, pick a winner and commit."
+    , "The cuckoo is due, I can feel it."
+    , "A real gambler doesn't hedge."
+    , "Diversification is for people who don't know what they're doing."
+    , "Starlings and swallows are basically the same bird, so same bet really."
+    , "Correlation? That's when birds fly in a V, right?"
+    , "When one bird loses, bet it harder, it owes you."
+    , "I read half a physics book once. Everything is strings, so nothing matters."
+    , "Your aunt once knitted a swallow. Beautiful bird. What were we talking about?"
+    ]
+
+
+heardEverything : Model
+heardEverything =
+    apply4 (List.map UncleAdviceGiven allUnclePhrases)
+        { level4Start | balanceCents = 10000 }
+
+
+refundSuite : Test
+refundSuite =
+    describe "MultiCoinGame refund request (level 4)"
+        [ test "hearing a phrase twice counts once" <|
+            \_ ->
+                apply4
+                    (List.map UncleAdviceGiven
+                        [ "A real gambler doesn't hedge.", "A real gambler doesn't hedge." ]
+                    )
+                    level4Start
+                    |> .adviceHeard
+                    |> List.length
+                    |> Expect.equal 1
+        , test "the refund is not for sale before the complete works are heard" <|
+            \_ ->
+                apply4 [ ShopToggled ] level4Start
+                    |> view CoinFlipLevel4.levelConfig
+                    |> Query.fromHtml
+                    |> Query.hasNot [ text "Ask your money back" ]
+        , test "hearing every phrase puts the refund up for sale" <|
+            \_ ->
+                apply4 [ ShopToggled ] heardEverything
+                    |> view CoinFlipLevel4.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ text "Ask your money back" ]
+        , test "asking costs $10 and uncle replies with his farewell" <|
+            \_ ->
+                let
+                    asked =
+                        apply4 [ RefundRequested ] heardEverything
+                in
+                ( asked.balanceCents, asked.refund, String.contains "that ship has sailed" (latestLogText asked) )
+                    |> Expect.equal ( 9000, RefundAsked, True )
+        , test "uncle does not do repeat refund conversations" <|
+            \_ ->
+                apply4 [ RefundRequested, RefundRequested ] heardEverything
+                    |> .balanceCents
+                    |> Expect.equal 9000
+        , test "asking with your last ten dollars goes bust, gloat and all" <|
+            \_ ->
+                let
+                    busted =
+                        apply4 [ RefundRequested ] { heardEverything | balanceCents = 1000 }
+                in
+                ( busted.balanceCents, busted.phase, latestLogText busted )
+                    |> Expect.equal
+                        ( 0
+                        , WentBust
+                        , "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+                        )
+        ]
+
+
+{-| Buying more turns: $500 for 50 flips, repeatable, satire.
+-}
+extraTurnsSuite : Test
+extraTurnsSuite =
+    describe "MultiCoinGame extra turns (level 4)"
+        [ test "buying 50 more flips costs $500 and extends the budget" <|
+            \_ ->
+                let
+                    extended =
+                        apply4 [ ExtraTurnsPurchased, sunnyRound [ 100, 0, 0 ] ]
+                            { level4Start | balanceCents = 60000, roundCount = 199 }
+                in
+                ( extended.balanceCents, extended.phase )
+                    |> Expect.equal ( 60000 - 50000 + 80, Playing )
+        , test "without the purchase the same flip ends the game" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ] ]
+                    { level4Start | balanceCents = 60000, roundCount = 199 }
+                    |> .phase
+                    |> Expect.equal RanOutOfTime
+        , test "buying flips is repeatable" <|
+            \_ ->
+                apply4 [ ExtraTurnsPurchased, ExtraTurnsPurchased ]
+                    { level4Start | balanceCents = 110000 }
+                    |> .extraFlipsBought
+                    |> Expect.equal 100
+        , test "more flips are refused below the price" <|
+            \_ ->
+                apply4 [ ExtraTurnsPurchased ] { level4Start | balanceCents = 50000 }
+                    |> .extraFlipsBought
+                    |> Expect.equal 0
+        ]
