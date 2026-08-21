@@ -13,6 +13,7 @@ import CoinFlipGame
         , CoinSide(..)
         , GamePhase(..)
         , LevelConfig
+        , LogTone(..)
         , Model
         , Msg(..)
         , TrackerState(..)
@@ -103,6 +104,15 @@ gambleSuite =
                     level1Start
                     |> latestLogText
                     |> Expect.equal "2: Landed Tails! You lost $5.00"
+        , test "every settled flip adds one log divider" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ landedFlip Heads 100 Heads, landedFlip Heads 100 Tails ]
+                    level1Start
+                    |> .log
+                    |> List.filter (\line -> line.tone == DividerTone)
+                    |> List.length
+                    |> Expect.equal 2
         , test "flips count both what was bet and what landed" <|
             \_ ->
                 let

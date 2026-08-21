@@ -106,6 +106,14 @@ flipSuite =
                 in
                 ( played.balanceCents, List.map .flipCount played.tallies )
                     |> Expect.equal ( 2300, [ 0, 1, 0 ] )
+        , test "every settled round adds one log divider" <|
+            \_ ->
+                apply [ landedRound [ 100, 0, 0 ] [ 5, 100, 100 ], landedRound [ 100, 0, 0 ] [ 5, 100, 100 ] ]
+                    level3Start
+                    |> .log
+                    |> List.filter (\line -> line.tone == CoinFlipGame.DividerTone)
+                    |> List.length
+                    |> Expect.equal 2
         , test "tallies count heads per staked coin" <|
             \_ ->
                 apply

@@ -863,10 +863,14 @@ settleRound config landedRound model =
             roundNumber =
                 model.roundCount + 1
 
+            -- The divider goes first so that after the List.reverse in
+            -- the log update it ends up between this round's lines and
+            -- the older entries.
             roundLogLines =
-                List.map
-                    (\line -> { line | text = String.fromInt roundNumber ++ ": " ++ line.text })
-                    (List.concatMap .logLines outcomes)
+                { tone = DividerTone, text = "" }
+                    :: List.map
+                        (\line -> { line | text = String.fromInt roundNumber ++ ": " ++ line.text })
+                        (List.concatMap .logLines outcomes)
         in
         gloatIfBusted config.uncleOffer
             (endWhenOutOfFlips config.turnBudget
@@ -2262,3 +2266,6 @@ viewLogLine line =
         LoseTone ->
             Html.div [ Html.Attributes.class (CoinFlipGame.toneClass line.tone) ]
                 [ Html.text line.text ]
+
+        DividerTone ->
+            Html.div [ Html.Attributes.class "log-divider" ] []

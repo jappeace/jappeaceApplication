@@ -73,6 +73,7 @@ Try it out:
     padding-top: 0.5em;
     margin-top: 0.8em;
   }
+  #coin-flip-game .log-divider { border-top: 1px solid #333; margin: 0.25em 0; }
   #coin-flip-game .win-text { color: #1e7d1e; }
   #coin-flip-game .lose-text { color: #b03030; }
   #coin-flip-game .game-over { font-weight: bold; text-align: center; font-size: 1.1em; margin: 0.5em 0; }
@@ -80,6 +81,7 @@ Try it out:
   @media (prefers-color-scheme: dark) {
     #coin-flip-game { background: rgba(0, 0, 0, 0.85); }
     #coin-flip-game .progress-track { background: #134013; }
+    #coin-flip-game .log-divider { border-color: #888; }
     #coin-flip-game .win-text { color: #7dff7d; }
     #coin-flip-game .lose-text { color: #ff6b6b; }
   }
