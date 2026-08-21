@@ -659,12 +659,12 @@ correlationUpgradeSuite =
                 apply4 [ sunnyRound [ 100, 0, 0 ] ] level4Start
                     |> latestLogText
                     |> Expect.equal
-                        "#1 Starling landed heads! You win $1.80, of which $1.00 is your stake."
+                        "1: Starling landed heads! You win $1.80, of which $1.00 is your stake."
         , test "a losing weather coin's line is equally silent about its partner" <|
             \_ ->
                 apply4 [ rainyRound [ 100, 0, 0 ] ] level4Start
                     |> latestLogText
-                    |> Expect.equal "#1 Starling landed tails. You lost your $1.00 stake."
+                    |> Expect.equal "1: Starling landed tails. You lost your $1.00 stake."
         , test "buying the allocator costs $10 and switches to percent mode" <|
             \_ ->
                 let

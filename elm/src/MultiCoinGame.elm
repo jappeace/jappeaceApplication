@@ -865,7 +865,7 @@ settleRound config landedRound model =
 
             roundLogLines =
                 List.map
-                    (\line -> { line | text = "#" ++ String.fromInt roundNumber ++ " " ++ line.text })
+                    (\line -> { line | text = String.fromInt roundNumber ++ ": " ++ line.text })
                     (List.concatMap .logLines outcomes)
         in
         gloatIfBusted config.uncleOffer

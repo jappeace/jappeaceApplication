@@ -434,8 +434,11 @@ settleFlip uncleOffer flip model =
                 else
                     max 0 (model.balanceCents - flip.betCents)
 
+            -- Flip lines carry their number, matching the multi-coin
+            -- games' logs.
             outcomeText =
-                "Landed "
+                String.fromInt (model.flipCount + 1)
+                    ++ ": Landed "
                     ++ sideName flip.landed
                     ++ "! You "
                     ++ (if won then
