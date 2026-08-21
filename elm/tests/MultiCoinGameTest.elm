@@ -1,4 +1,4 @@
-module MultiCoinGameTest exposing (correlationSuite, correlationUpgradeSuite, flipSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
+module MultiCoinGameTest exposing (correlationSuite, correlationUpgradeSuite, flipSuite, refundSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
 
 {-| Tests for the multi-coin engine behind level 3 (black-swan.html).
 They drive the real `update` with the real level config; the coins
@@ -19,6 +19,7 @@ import MultiCoinGame
     exposing
         ( AllocationMode(..)
         , Autoclicker(..)
+        , RefundState(..)
         , BustCause(..)
         , CoinOdds(..)
         , CorrelationBook(..)
@@ -423,9 +424,18 @@ gatingSuite =
                 view CoinFlipLevel3.levelConfig level3Start
                     |> Query.fromHtml
                     |> Query.hasNot [ class "shop-item" ]
-        , test "toggling the shop reveals the items" <|
+        , test "the open shop shows submenus, not items" <|
             \_ ->
                 apply [ ShopToggled ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Expect.all
+                        [ Query.has [ class "shop-subtoggle" ]
+                        , Query.hasNot [ class "shop-item" ]
+                        ]
+        , test "toggling a submenu reveals its items" <|
+            \_ ->
+                apply [ ShopToggled, IntelToggled ] level3Start
                     |> view CoinFlipLevel3.levelConfig
                     |> Query.fromHtml
                     |> Query.has [ class "shop-item" ]
@@ -733,4 +743,80 @@ correlationUpgradeSuite =
                         , { firstIndex = 0, secondIndex = 2, sameCount = 0, bothCount = 0 }
                         , { firstIndex = 1, secondIndex = 2, sameCount = 0, bothCount = 0 }
                         ]
+        ]
+
+
+{-| Uncle's complete works: 1 first phrase + 8 more in the level-4
+config. Hearing all nine unlocks asking for the money back.
+-}
+allUnclePhrases : List String
+allUnclePhrases =
+    [ "Don't split your money son, pick a winner and commit."
+    , "The cuckoo is due, I can feel it."
+    , "A real gambler doesn't hedge."
+    , "Diversification is for people who don't know what they're doing."
+    , "Starlings and swallows are basically the same bird, so same bet really."
+    , "Correlation? That's when birds fly in a V, right?"
+    , "When one bird loses, bet it harder, it owes you."
+    , "I read half a physics book once. Everything is strings, so nothing matters."
+    , "Your aunt once knitted a swallow. Beautiful bird. What were we talking about?"
+    ]
+
+
+heardEverything : Model
+heardEverything =
+    apply4 (List.map UncleAdviceGiven allUnclePhrases)
+        { level4Start | balanceCents = 10000 }
+
+
+refundSuite : Test
+refundSuite =
+    describe "MultiCoinGame refund request (level 4)"
+        [ test "hearing a phrase twice counts once" <|
+            \_ ->
+                apply4
+                    (List.map UncleAdviceGiven
+                        [ "A real gambler doesn't hedge.", "A real gambler doesn't hedge." ]
+                    )
+                    level4Start
+                    |> .adviceHeard
+                    |> List.length
+                    |> Expect.equal 1
+        , test "the refund is not for sale before the complete works are heard" <|
+            \_ ->
+                apply4 [ ShopToggled, IntelToggled ] level4Start
+                    |> view CoinFlipLevel4.levelConfig
+                    |> Query.fromHtml
+                    |> Query.hasNot [ text "Ask your money back" ]
+        , test "hearing every phrase puts the refund up for sale" <|
+            \_ ->
+                apply4 [ ShopToggled, IntelToggled ] heardEverything
+                    |> view CoinFlipLevel4.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ text "Ask your money back" ]
+        , test "asking costs $10 and uncle replies with his farewell" <|
+            \_ ->
+                let
+                    asked =
+                        apply4 [ RefundRequested ] heardEverything
+                in
+                ( asked.balanceCents, asked.refund, String.contains "that ship has sailed" (latestLogText asked) )
+                    |> Expect.equal ( 9000, RefundAsked, True )
+        , test "uncle does not do repeat refund conversations" <|
+            \_ ->
+                apply4 [ RefundRequested, RefundRequested ] heardEverything
+                    |> .balanceCents
+                    |> Expect.equal 9000
+        , test "asking with your last ten dollars goes bust, gloat and all" <|
+            \_ ->
+                let
+                    busted =
+                        apply4 [ RefundRequested ] { heardEverything | balanceCents = 1000 }
+                in
+                ( busted.balanceCents, busted.phase, latestLogText busted )
+                    |> Expect.equal
+                        ( 0
+                        , WentBust
+                        , "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+                        )
         ]

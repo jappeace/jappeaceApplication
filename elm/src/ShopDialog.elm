@@ -3,6 +3,7 @@ module ShopDialog exposing
     , ShopFold(..)
     , clickPointDecoder
     , viewPurchaseDialog
+    , viewShopGroupToggle
     , viewShopItem
     , viewShopToggle
     )
@@ -65,6 +66,26 @@ viewShopToggle onToggle fold =
 
                 ShopExpanded ->
                     "\u{1F6D2} Shop \u{25BE}"
+            )
+        ]
+
+
+{-| A collapsible group header inside the shop, for submenus like
+"Upgrades" and "Intel".
+-}
+viewShopGroupToggle : msg -> String -> ShopFold -> Html msg
+viewShopGroupToggle onToggle label fold =
+    Html.button
+        [ Html.Attributes.class "shop-subtoggle", Html.Events.onClick onToggle ]
+        [ Html.text
+            (label
+                ++ (case fold of
+                        ShopCollapsed ->
+                            " \u{25B8}"
+
+                        ShopExpanded ->
+                            " \u{25BE}"
+                   )
             )
         ]
 

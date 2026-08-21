@@ -1,6 +1,8 @@
 module MultiCoinGame exposing
     ( AllocationMode(..)
     , AllocatorOffer(..)
+    , RefundOffer(..)
+    , RefundState(..)
     , Autoclicker(..)
     , AutoclickerOffer(..)
     , BustCause(..)
@@ -167,6 +169,20 @@ type CorrelationBook
     | BookBought
 
 
+{-| The refund request: only for sale once the player has collected
+every one of uncle's phrases, and asking naturally costs money too.
+The reply is configurable because it is the whole joke.
+-}
+type RefundOffer
+    = NoRefund
+    | RefundForSale { priceCents : Int, reply : String }
+
+
+type RefundState
+    = RefundNotAsked
+    | RefundAsked
+
+
 {-| Same-outcome bookkeeping for one pair of coins, counting only
 rounds where both were staked. Indices point into the coin list, whose
 names never move (only profiles shuffle).
@@ -220,6 +236,7 @@ type ShopItemKind
     | FlipHelperItem
     | AllocatorItem
     | BookItem
+    | RefundItem
     | UncleAdviceItem
 
 
@@ -256,6 +273,7 @@ type alias MultiCoinConfig =
     , flipHelperOffer : FlipHelperOffer
     , allocatorOffer : AllocatorOffer
     , bookOffer : CorrelationBookOffer
+    , refundOffer : RefundOffer
     , introLogLine : String
     }
 
@@ -282,6 +300,10 @@ type alias Model =
     , allocationMode : AllocationMode
     , book : CorrelationBook
     , pairTallies : List PairTally
+    , upgradesFold : ShopFold
+    , intelFold : ShopFold
+    , adviceHeard : List String
+    , refund : RefundState
     , autoclicker : Autoclicker
     , flipHold : FlipHold
     , flipHelperCount : Int
@@ -316,6 +338,9 @@ type Msg
     | FlipHelperHired
     | FlipHelpersTicked
     | ShopToggled
+    | UpgradesToggled
+    | IntelToggled
+    | RefundRequested
     | PurchaseConsidered ShopItemKind ClickPoint
     | PurchaseConfirmed
     | PurchaseCancelled
@@ -400,6 +425,10 @@ initialModel config =
     , allocationMode = DollarAllocation
     , book = BookNotBought
     , pairTallies = initialPairTallies (List.length config.coins)
+    , upgradesFold = ShopCollapsed
+    , intelFold = ShopCollapsed
+    , adviceHeard = []
+    , refund = RefundNotAsked
     , autoclicker = ClickerNotBought
     , flipHold = FlipReleased
     , flipHelperCount = 0
@@ -458,17 +487,16 @@ update config msg model =
             pressFlip config { model | helperFlipCount = model.helperFlipCount + 1 }
 
         ShopToggled ->
-            ( { model
-                | shopFold =
-                    case model.shopFold of
-                        ShopCollapsed ->
-                            ShopExpanded
+            ( { model | shopFold = toggleFold model.shopFold }, Cmd.none )
 
-                        ShopExpanded ->
-                            ShopCollapsed
-              }
-            , Cmd.none
-            )
+        UpgradesToggled ->
+            ( { model | upgradesFold = toggleFold model.upgradesFold }, Cmd.none )
+
+        IntelToggled ->
+            ( { model | intelFold = toggleFold model.intelFold }, Cmd.none )
+
+        RefundRequested ->
+            ( requestRefund config.uncleOffer config.refundOffer model, Cmd.none )
 
         PurchaseConsidered itemKind clickPoint ->
             ( { model | pendingPurchase = Considering itemKind clickPoint }, Cmd.none )
@@ -512,6 +540,13 @@ update config msg model =
                     , Cmd.none
                     )
 
+                Considering RefundItem _ ->
+                    ( requestRefund config.uncleOffer
+                        config.refundOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
                 Considering UncleAdviceItem _ ->
                     -- Stays open: uncle appreciates repeat customers.
                     purchaseUncleAdvice config.uncleOffer model
@@ -550,7 +585,10 @@ update config msg model =
 
         UncleAdviceGiven phrase ->
             ( gloatIfBusted config.uncleOffer
-                (logLine NeutralTone ("\u{1F9D3} Uncle: \u{201C}" ++ phrase ++ "\u{201D}") model)
+                (logLine NeutralTone
+                    ("\u{1F9D3} Uncle: \u{201C}" ++ phrase ++ "\u{201D}")
+                    (hearAdvice phrase model)
+                )
             , Cmd.none
             )
 
@@ -1215,6 +1253,77 @@ purchaseAutoclicker offer model =
                     }
 
 
+toggleFold : ShopFold -> ShopFold
+toggleFold fold =
+    case fold of
+        ShopCollapsed ->
+            ShopExpanded
+
+        ShopExpanded ->
+            ShopCollapsed
+
+
+{-| Remember each distinct phrase, so the refund request can unlock
+once uncle's complete works have been collected.
+-}
+hearAdvice : String -> Model -> Model
+hearAdvice phrase model =
+    if List.member phrase model.adviceHeard then
+        model
+
+    else
+        { model | adviceHeard = phrase :: model.adviceHeard }
+
+
+{-| Whether every one of uncle's phrases has been heard at least once.
+-}
+allAdviceHeard : UncleOffer -> Model -> Bool
+allAdviceHeard offer model =
+    case offer of
+        NoUncleAdvice ->
+            False
+
+        UncleAdviceForSale uncle ->
+            List.length model.adviceHeard >= 1 + List.length uncle.morePhrases
+
+
+{-| Ask uncle for the money back. Asking costs money too, uncle can
+take your last dollars doing it (he is family, after all), and the
+configured reply is the only thing you get. No async advice is in
+flight here, so the gloat lands right away when asking was the final
+straw.
+-}
+requestRefund : UncleOffer -> RefundOffer -> Model -> Model
+requestRefund uncleOffer offer model =
+    case ( offer, model.refund ) of
+        ( NoRefund, RefundNotAsked ) ->
+            model
+
+        ( NoRefund, RefundAsked ) ->
+            model
+
+        ( RefundForSale _, RefundAsked ) ->
+            model
+
+        ( RefundForSale refund, RefundNotAsked ) ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents < refund.priceCents then
+                logLine NeutralTone "You cannot afford to ask uncle for your money back." model
+
+            else
+                gloatIfBusted uncleOffer
+                    (logLine NeutralTone ("\u{1F9D3} Uncle: \u{201C}" ++ refund.reply ++ "\u{201D}")
+                        (checkEndState BustByUncleAdvice
+                            { model
+                                | balanceCents = model.balanceCents - refund.priceCents
+                                , refund = RefundAsked
+                            }
+                        )
+                    )
+
+
 {-| Pay uncle and draw one of his pre-programmed pearls of wisdom.
 Unlike the tracker and glasses, uncle happily takes your last dollars:
 spending yourself into bankruptcy on advice is a lesson the game wants
@@ -1621,19 +1730,24 @@ coinTallyText coin tally =
 
 viewShop : MultiCoinConfig -> Model -> List (Html Msg)
 viewShop config model =
-    case
-        viewTrackerShopItem config.trackerOffer model
-            ++ viewGlassesShopItem config.glassesOffer model
-            ++ viewAutoclickerShopItem config.autoclickerOffer model
-            ++ viewFlipHelperShopItem config.flipHelperOffer model
-            ++ viewAllocatorShopItem config.allocatorOffer model
-            ++ viewBookShopItem config.bookOffer model
-            ++ viewUncleShopItem config.uncleOffer
-    of
+    let
+        upgradeItems =
+            viewAutoclickerShopItem config.autoclickerOffer model
+                ++ viewFlipHelperShopItem config.flipHelperOffer model
+                ++ viewAllocatorShopItem config.allocatorOffer model
+
+        intelItems =
+            viewTrackerShopItem config.trackerOffer model
+                ++ viewGlassesShopItem config.glassesOffer model
+                ++ viewBookShopItem config.bookOffer model
+                ++ viewUncleShopItem config.uncleOffer
+                ++ viewRefundShopItem config model
+    in
+    case upgradeItems ++ intelItems of
         [] ->
             []
 
-        shopItems ->
+        _ ->
             [ Html.div [ Html.Attributes.class "shop" ]
                 (viewShopToggle model.shopFold
                     :: (case model.shopFold of
@@ -1641,10 +1755,34 @@ viewShop config model =
                                 []
 
                             ShopExpanded ->
-                                shopItems ++ viewPurchaseDialog config model
+                                List.concat
+                                    [ viewShopGroup UpgradesToggled "Upgrades" model.upgradesFold upgradeItems
+                                    , viewShopGroup IntelToggled "Intel" model.intelFold intelItems
+                                    , viewPurchaseDialog config model
+                                    ]
                        )
                 )
             ]
+
+
+{-| A shop submenu: a collapsible group header with its items, hidden
+entirely when the group has nothing for sale.
+-}
+viewShopGroup : Msg -> String -> ShopFold -> List (Html Msg) -> List (Html Msg)
+viewShopGroup onToggle label fold groupItems =
+    case groupItems of
+        [] ->
+            []
+
+        _ ->
+            ShopDialog.viewShopGroupToggle onToggle label fold
+                :: (case fold of
+                        ShopCollapsed ->
+                            []
+
+                        ShopExpanded ->
+                            groupItems
+                   )
 
 
 {-| The confirm/cancel dialog a considered purchase opens, explaining
@@ -1700,6 +1838,9 @@ itemDisplayName itemKind =
         BookItem ->
             "The Elegant Universe"
 
+        RefundItem ->
+            "your money back from uncle"
+
         UncleAdviceItem ->
             "uncle's advice"
 
@@ -1724,6 +1865,9 @@ itemExplanation itemKind =
 
         BookItem ->
             "A book about strings. It tracks how often each pair of coins lands the same way, revealing which ones are attached."
+
+        RefundItem ->
+            "After all that terrible advice, surely a refund is in order. Asking costs money, he is a busy man."
 
         UncleAdviceItem ->
             "Uncle's advice speaks for itself. He's your uncle, surely he knows best."
@@ -1778,6 +1922,14 @@ itemPriceCents config model itemKind =
 
                 CorrelationBookForSale priceCents ->
                     priceCents
+
+        RefundItem ->
+            case config.refundOffer of
+                NoRefund ->
+                    0
+
+                RefundForSale refund ->
+                    refund.priceCents
 
         UncleAdviceItem ->
             case config.uncleOffer of
@@ -1899,6 +2051,29 @@ viewUncleShopItem offer =
 
         UncleAdviceForSale uncle ->
             [ viewShopItem (PurchaseConsidered UncleAdviceItem) "Ask uncle for advice" uncle.priceCents ]
+
+
+{-| Only for sale once uncle's complete works have been heard, and only
+once: uncle does not do repeat refund conversations.
+-}
+viewRefundShopItem : MultiCoinConfig -> Model -> List (Html Msg)
+viewRefundShopItem config model =
+    case ( config.refundOffer, model.refund ) of
+        ( NoRefund, RefundNotAsked ) ->
+            []
+
+        ( NoRefund, RefundAsked ) ->
+            []
+
+        ( RefundForSale _, RefundAsked ) ->
+            []
+
+        ( RefundForSale refund, RefundNotAsked ) ->
+            if allAdviceHeard config.uncleOffer model then
+                [ viewShopItem (PurchaseConsidered RefundItem) "Ask your money back" refund.priceCents ]
+
+            else
+                []
 
 
 viewGameOver : MultiCoinConfig -> Model -> Html Msg

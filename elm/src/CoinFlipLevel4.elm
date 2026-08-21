@@ -14,13 +14,15 @@ split (about 61/39) nets a guaranteed ~9.6% per flip, reaching $999 in
 at best, hopeless inside the 200-flip budget. Cuckoo is the red
 herring: a fat 40x payout at 2%, which is a -18% expected return.
 
-No automation in this shop: with 200 flips the game is about sizing,
-not pressing.
+The shop groups into Upgrades (autoclicker, flip helpers, percentage
+allocator) and Intel (tracker, glasses, The Elegant Universe, uncle).
+Collecting uncle's complete works unlocks asking for a refund, which
+costs money and yields only his fondest farewell.
 
 -}
 
 import CoinFlipGame exposing (NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
-import MultiCoinGame exposing (AllocatorOffer(..), AutoclickerOffer(..), CoinOdds(..), CorrelationBookOffer(..), FlipHelperOffer(..), GlassesOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), TurnBudget(..), gameProgram)
+import MultiCoinGame exposing (AllocatorOffer(..), AutoclickerOffer(..), CoinOdds(..), CorrelationBookOffer(..), FlipHelperOffer(..), GlassesOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
 
 
 levelConfig : MultiCoinConfig
@@ -40,21 +42,28 @@ levelConfig =
     , profileAssignment = ProfilesShuffledAcrossCoins
     , trackerOffer = TrackerForSale 1500
     , glassesOffer = GoldenGlassesForSale 2000
-    , autoclickerOffer = NoAutoclicker
-    , flipHelperOffer = NoFlipHelpers
+    , autoclickerOffer = AutoclickerForSale 1000
+    , flipHelperOffer = FlipHelpersForSale { basePriceCents = 100, priceIncreasePercent = 10 }
     , allocatorOffer = AllocatorForSale 1000
     , bookOffer = CorrelationBookForSale 2000
+    , refundOffer =
+        RefundForSale
+            { priceCents = 1000
+            , reply = "Son, I gave you my best tricks, you're set for life now. The money though, I invested it all in a very promising cuckoo, so that ship has sailed. No need to thank me."
+            }
     , uncleOffer =
         UncleAdviceForSale
             { priceCents = 500
             , firstPhrase = "Don't split your money son, pick a winner and commit."
             , morePhrases =
-                [ "Oh I don't know son, I'd put it all on the cuckoo."
-                , "The cuckoo is due, I can feel it."
+                [ "The cuckoo is due, I can feel it."
                 , "A real gambler doesn't hedge."
                 , "Diversification is for people who don't know what they're doing."
-                , "Just bet whichever bird won last time, they get on streaks."
-                , "Sunbird AND Rainbird? One of them always loses, that's throwing money away."
+                , "Starlings and swallows are basically the same bird, so same bet really."
+                , "Correlation? That's when birds fly in a V, right?"
+                , "When one bird loses, bet it harder, it owes you."
+                , "I read half a physics book once. Everything is strings, so nothing matters."
+                , "Your aunt once knitted a swallow. Beautiful bird. What were we talking about?"
                 ]
             }
     , introLogLine = "Three birds, one sky, two hundred flips. Stake any of them on heads and press flip. Good luck!"
