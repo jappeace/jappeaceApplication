@@ -166,6 +166,7 @@ type LogTone
     = WinTone
     | LoseTone
     | NeutralTone
+    | DividerTone
 
 
 {-| Whether uncle already dropped his "proud of you" line. He gloats
@@ -471,7 +472,7 @@ settleFlip uncleOffer flip model =
                         LoseTone
                     )
                     outcomeText
-                    counted
+                    (logLine DividerTone "" counted)
                 )
             )
 
@@ -1188,6 +1189,9 @@ viewLogLine line =
         LoseTone ->
             Html.div [ Html.Attributes.class (toneClass line.tone) ] [ Html.text line.text ]
 
+        DividerTone ->
+            Html.div [ Html.Attributes.class "log-divider" ] []
+
 
 toneClass : LogTone -> String
 toneClass tone =
@@ -1199,4 +1203,7 @@ toneClass tone =
             "lose-text"
 
         NeutralTone ->
+            ""
+
+        DividerTone ->
             ""
