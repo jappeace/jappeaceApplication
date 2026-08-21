@@ -1,11 +1,16 @@
-Title: Birds of a feather
+Title: Correlation implies cashation.
 Date: 2026-08-21 22:30
 Category: reflection
 OPTIONS: toc:nil
 Tags: gambling, finance, game
 Summary: Three birds, one sky, two hundred flips. Good luck!
 
-TODO
+Look at you, you're become quite the degenerate gambler, nice!
+Anyway after seeing what you did in [level 3: black swan](http://localhost:8000/black-swan.html), I decided 
+to put a turn limit on this game.
+Your previous strategies wont work due to the turn limit.
+You'll have to figure out how these birds relate,
+once you do that, you'll have a real [money pump](https://en.wikipedia.org/wiki/Dutch_book).
 
 <div id="coin-flip-game"></div>
 
@@ -126,19 +131,120 @@ TODO
 Elm.CoinFlipLevel4.init({ node: document.getElementById('coin-flip-game') });
 </script>
 
-<!-- TODO: the actual article still has to be written. The game above is
-     level 4 of the rigged-coin series: correlation. One hidden weather
-     roll per round (sun 60%, rain 40%); one profile wins when sunny
-     paying 0.8x, another when rainy paying 1.8x, perfectly
-     anti-correlated, and the profiles are dealt across Starling,
-     Swallow, and Cuckoo at random every game. The weather payouts form
-     a Dutch book: staking ~61/39 across the pair nets a guaranteed
-     ~9.6% per flip ($999 in 41 presses), while either alone grows
-     ~0.4% per flip at best, hopeless inside the 200-flip budget. The
-     third profile is the red herring: 40x payout at 2%, an 18%
-     negative expected return. The logs reveal nothing about the
-     correlation; discovering it takes patience or The Elegant Universe
-     at $20, which tracks how often each pair lands the same way. The
-     shop also sells the tracker, glasses, a $10 percentage allocator
-     (stakes become percentages of the live balance), automation, and
-     uncle. -->
+First you need to figure out the probabilities and payouts (as usual).
+I just did a couple 10ct bets on each bird to get those.
+For the probabilities I just used the tracker, 
+20 bets or so give you all the information.
+
+Note the negative correlation. 
+Two of these birds always land on opposites.
+This means you can bet very aggressively because if you play it right it becomes a ["sure bet"](https://en.wikipedia.org/wiki/Dutch_book), also known as a money pump.
+We've two bird profiles here that are negatively correlated,
+the rainy bird and sunny bird.
+
+You can just put your betting percentage on whichever birds
+are negatively correlated and win.
+This works because the game is rigged.
+Either the sunny bird or the rainy bird will win, they
+are negatively correlated.
+
+Suppose sunny has a chance of 60% to win, 
+conversely the rainy coin has a 40% chance to win, because when sunny doesn't win, rainy will win.
+Now look at the pricing of these, this is where the unfairness lives:
+- Sunny coin, $b_1 = 0.8$: implied $\frac{1}{1.8} = 55.6%$ (true chance: 60%)
+- Rainy coin, $b_2 = 1.8$: implied $\frac{1}{2.8} = 35.7%$ (true chance: 40%)
+- Implied sum: 91.3%. True sum: 100%, as always.
+
+If we put all our money split across the true chance we'll expect a 8.7 cent harvest yielding $\frac{1}{0.913} - 1 = 9.6%$ per flip.
+And there is no reason not to use all our money, 
+because you'll either win 1.8 times your stake 
+or you'll win 2.8 times your stake.
+Of course you'll lose the part of the stake you put on the losing
+bird, so you end up expect around 9.6% per flip anyway.
+The 60/40 split is to maximize average growth, the kelly point.
+
+Now if you want an actual sure bet, 
+make the outcome of the
+bet irrelevant and just harvest you have to use the implied percentages
+which add up to 91.3.
+Now we can just divide:
+
+$$55.6 + 35.7 = 91.3 \qquad \frac{55.6}{91.3} = 60.9% \qquad \frac{35.7}{91.3} = 39.1%$$
+
+So 61% on sunny, 39% on rainy,
+kelly and the sure bet almost converge. 
+This is a coincidence of how this game was setup.
+If we for example change the payoff, double the sunny outcome,
+then the kelly point remains the same, but the surebet will
+drift towards 50/50.
+Kelly maximizes the average growth rate[^ev-note], 
+whereas surebet gives no variance (volatility) on payoff.
+
+[^ev-note]: Note that kelly is different from maximizing expected value.
+    the Sunny bird in fact has the highest expectd value, 
+    so you should go all in on that if you want to get more expected value.
+    The problem is that you'd be ruined by the time you reach the end of the game.
+    Expected value doesn't work in repeated games.
+
+
+
+## Do money pumps exist?
+
+You may ask yourself, does a money pump exist in real life.
+The anwser is YES. 
+Risk free money is real, and also boring.
+For example: your bank account gives your risk free interest payments, 
+or if you want to be more creative you can buy a government bond.
+You just don't get to "flip" as often as in the game above.
+
+Adding risk to lose is what makes the above game interesting.
+But the payout per "flip" is also much better.
+The game makes you I made you work to find the money pump,
+do it slightly wrong and you'll lose.
+In real life there are also more "risky" examples of people trying to make money pumps.
+Hedge fund try to find similar discoloration in the stock market.
+If they do it slightly wrong they'll also lose,
+a recent example of loss is the [situational awareness](https://aswathdamodaran.substack.com/p/the-situational-awareness-fund-blow) 
+blow up.
+Something interesting about that loss is that the wider economy doesn't
+actually care, 
+because in these stock market like trading games, if someone loses, another person wins:
+It's zero-sum.
+
+
+
+## Maths
+
+Where does that come from? Kelly again, but the situation changed:
+this time the whole balance goes in, split across two outcomes of
+which exactly one wins. Put fraction $x$ on sunny and $1-x$ on rainy.
+A flip multiplies your balance by $(1+b_1)\,x$ when sunny, or by
+$(1+b_2)(1-x)$ when rainy, so the long-run growth to maximize is
+
+$$g(x) = p \ln\big((1+b_1)\,x\big) + q \ln\big((1+b_2)(1-x)\big)$$
+
+The logarithm splits products into sums:
+
+$$g(x) = \underbrace{p\ln(1+b_1) + q\ln(1+b_2)}_{\text{the payouts}}
+       + \underbrace{p\ln x + q\ln(1-x)}_{\text{your split}}$$
+
+Look at the first bracket: it contains no $x$. Every cent lands on
+some bird, so the payouts multiply your wealth however you split;
+they decide how much you grow, never how to divide. Only the second
+bracket is yours to optimize, and setting its derivative to zero,
+
+$$\frac{p}{x} - \frac{q}{1-x} = 0 \qquad\Rightarrow\qquad x = p$$
+
+Bet your beliefs: the optimal split is the probabilities themselves,
+and the payouts vanished from the answer. This is Kelly's original
+horse-race result[^kelly]. Mind the fine print though: it only holds
+because the bets cover every outcome and all the money is in. The
+earlier levels were a single bet with cash on the side, which is why
+their Kelly was $f^* = p - q/b$ and the payout mattered a great deal.
+
+[^kelly]: J.L. Kelly Jr., "A New Interpretation of Information Rate",
+Bell System Technical Journal, 1956; Cover & Thomas, *Elements of
+Information Theory*, ch. 6: proportional betting is log-optimal, and
+"a Dutch book, though risk-free, does not optimize the doubling rate."
+
+That last footnote quote also lets you sharpen "kelly and the sure bet almost converge. Which is expected." — per Cover & Thomas the convergence is not general: Kelly always grows a hair faster than the sure bet, and the two splits only sit close because this game discounts both birds by nearly the same margin.
