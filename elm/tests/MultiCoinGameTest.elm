@@ -1,4 +1,4 @@
-module MultiCoinGameTest exposing (flipSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
+module MultiCoinGameTest exposing (correlationSuite, flipSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
 
 {-| Tests for the multi-coin engine behind level 3 (black-swan.html).
 They drive the real `update` with the real level config; the coins
@@ -13,11 +13,13 @@ import CoinFlipGame
         , TrackerState(..)
         )
 import CoinFlipLevel3
+import CoinFlipLevel4
 import Expect
 import MultiCoinGame
     exposing
         ( Autoclicker(..)
         , BustCause(..)
+        , CoinOdds(..)
         , FlipHold(..)
         , GoldenGlasses(..)
         , Model
@@ -55,7 +57,7 @@ level3Start =
 
 landedRound : List Int -> List Int -> Msg
 landedRound stakes rolls =
-    CoinsLanded { stakes = stakes, rolls = rolls }
+    CoinsLanded { stakes = stakes, weatherRoll = 1, rolls = rolls }
 
 
 clickAtOrigin : ShopDialog.ClickPoint
@@ -486,9 +488,9 @@ shuffleSuite =
             \_ ->
                 let
                     reassigned =
-                        [ { coinName = "Swan", winPercent = 60, payoutPercent = 50 }
-                        , { coinName = "Magpie", winPercent = 5, payoutPercent = 3000 }
-                        , { coinName = "Sparrow", winPercent = 45, payoutPercent = 100 }
+                        [ { coinName = "Swan", odds = IndependentPercent 60, payoutPercent = 50 }
+                        , { coinName = "Magpie", odds = IndependentPercent 5, payoutPercent = 3000 }
+                        , { coinName = "Sparrow", odds = IndependentPercent 45, payoutPercent = 100 }
                         ]
                 in
                 apply [ ProfilesShuffled reassigned ] level3Start
@@ -500,9 +502,9 @@ shuffleSuite =
                 -- swan profile: a winning roll of 5 on Magpie pays 30x.
                 apply
                     [ ProfilesShuffled
-                        [ { coinName = "Swan", winPercent = 60, payoutPercent = 50 }
-                        , { coinName = "Magpie", winPercent = 5, payoutPercent = 3000 }
-                        , { coinName = "Sparrow", winPercent = 45, payoutPercent = 100 }
+                        [ { coinName = "Swan", odds = IndependentPercent 60, payoutPercent = 50 }
+                        , { coinName = "Magpie", odds = IndependentPercent 5, payoutPercent = 3000 }
+                        , { coinName = "Sparrow", odds = IndependentPercent 45, payoutPercent = 100 }
                         ]
                     , landedRound [ 0, 100, 0 ] [ 50, 5, 50 ]
                     ]
@@ -513,9 +515,9 @@ shuffleSuite =
             \_ ->
                 apply
                     [ ProfilesShuffled
-                        [ { coinName = "Swan", winPercent = 60, payoutPercent = 50 }
-                        , { coinName = "Magpie", winPercent = 5, payoutPercent = 3000 }
-                        , { coinName = "Sparrow", winPercent = 45, payoutPercent = 100 }
+                        [ { coinName = "Swan", odds = IndependentPercent 60, payoutPercent = 50 }
+                        , { coinName = "Magpie", odds = IndependentPercent 5, payoutPercent = 3000 }
+                        , { coinName = "Sparrow", odds = IndependentPercent 45, payoutPercent = 100 }
                         ]
                     ]
                     { level3Start | glasses = GlassesBought }
@@ -541,10 +543,100 @@ shuffleSuite =
         ]
 
 
-{-| The (win percent, payout) profiles of a coin list, order-insensitive,
-for comparing a shuffle against the original deal.
+{-| The (odds, payout) profiles of a coin list, order-insensitive, for
+comparing a shuffle against the original deal.
 -}
-sortedProfiles : List MultiCoinGame.CoinConfig -> List { winPercent : Int, payoutPercent : Int }
+sortedProfiles : List MultiCoinGame.CoinConfig -> List { odds : CoinOdds, payoutPercent : Int }
 sortedProfiles coins =
-    List.sortBy .winPercent
-        (List.map (\coin -> { winPercent = coin.winPercent, payoutPercent = coin.payoutPercent }) coins)
+    List.sortBy .payoutPercent
+        (List.map (\coin -> { odds = coin.odds, payoutPercent = coin.payoutPercent }) coins)
+
+
+{-| Level 4 (birds of a feather): weather-driven anti-correlated coins,
+a flip budget instead of a clock, and the Dutch-book portfolio.
+Sun percent is 60, so weather rolls 1-60 are sunny and 61-100 rainy.
+-}
+apply4 : List Msg -> Model -> Model
+apply4 msgs model =
+    List.foldl
+        (\msg current -> Tuple.first (update CoinFlipLevel4.levelConfig msg current))
+        model
+        msgs
+
+
+level4Start : Model
+level4Start =
+    initialModel CoinFlipLevel4.levelConfig
+
+
+sunnyRound : List Int -> Msg
+sunnyRound stakes =
+    CoinsLanded { stakes = stakes, weatherRoll = 1, rolls = [ 100, 100, 100 ] }
+
+
+rainyRound : List Int -> Msg
+rainyRound stakes =
+    CoinsLanded { stakes = stakes, weatherRoll = 100, rolls = [ 100, 100, 100 ] }
+
+
+correlationSuite : Test
+correlationSuite =
+    describe "MultiCoinGame weather correlation (level 4)"
+        [ test "on a sunny round the sunbird wins and the rainbird loses" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 100, 0 ] ] level4Start
+                    |> .tallies
+                    |> Expect.equal
+                        [ { headsCount = 1, flipCount = 1 }
+                        , { headsCount = 0, flipCount = 1 }
+                        , { headsCount = 0, flipCount = 0 }
+                        ]
+        , test "on a rainy round the rainbird wins and the sunbird loses" <|
+            \_ ->
+                apply4 [ rainyRound [ 100, 100, 0 ] ] level4Start
+                    |> .tallies
+                    |> Expect.equal
+                        [ { headsCount = 0, flipCount = 1 }
+                        , { headsCount = 1, flipCount = 1 }
+                        , { headsCount = 0, flipCount = 0 }
+                        ]
+        , test "the Dutch-book split profits on a sunny round" <|
+            \_ ->
+                -- $6.10 on Sunbird (pays 0.8x) and $3.90 on Rainbird:
+                -- sunny nets 610*0.8 - 390 = +98 cents.
+                apply4 [ sunnyRound [ 610, 390, 0 ] ] level4Start
+                    |> .balanceCents
+                    |> Expect.equal (2500 + 488 - 390)
+        , test "the Dutch-book split profits on a rainy round too" <|
+            \_ ->
+                -- rainy nets 390*1.8 - 610 = +92 cents.
+                apply4 [ rainyRound [ 610, 390, 0 ] ] level4Start
+                    |> .balanceCents
+                    |> Expect.equal (2500 + 702 - 610)
+        , test "the cuckoo rolls independently of the weather" <|
+            \_ ->
+                -- rainy round, but the cuckoo's own roll of 1 (<= 2) wins:
+                -- 40x on a $0.10 stake pays $4.00.
+                apply4 [ CoinsLanded { stakes = [ 0, 0, 10 ], weatherRoll = 100, rolls = [ 100, 100, 1 ] } ]
+                    level4Start
+                    |> .balanceCents
+                    |> Expect.equal (2500 + 400)
+        , test "the game ends after the flip budget is spent" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ] ]
+                    { level4Start | roundCount = 199 }
+                    |> .phase
+                    |> Expect.equal RanOutOfTime
+        , test "winning on the final flip beats running out of flips" <|
+            \_ ->
+                apply4 [ rainyRound [ 0, 55000, 0 ] ]
+                    { level4Start | roundCount = 199, balanceCents = 55000 }
+                    |> .phase
+                    |> Expect.equal WonGame
+        , test "flips before the budget runs out keep the game going" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ] ]
+                    { level4Start | roundCount = 198 }
+                    |> .phase
+                    |> Expect.equal Playing
+        ]

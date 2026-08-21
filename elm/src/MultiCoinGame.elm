@@ -3,8 +3,11 @@ module MultiCoinGame exposing
     , AutoclickerOffer(..)
     , BustCause(..)
     , CoinConfig
+    , CoinOdds(..)
     , CoinTally
     , FlipHelperOffer(..)
+    , SkyState(..)
+    , TurnBudget(..)
     , FlipHold(..)
     , GlassesOffer(..)
     , GoldenGlasses(..)
@@ -57,6 +60,7 @@ import CoinFlipGame
         , GamePhase(..)
         , LogLine
         , LogTone(..)
+        , NextLevelLink(..)
         , TrackerOffer(..)
         , TrackerState(..)
         , UncleGloat(..)
@@ -78,14 +82,40 @@ import ShopDialog exposing (ClickPoint, ShopFold(..))
 import Time
 
 
-{-| One coin on the table. The win percent and the payout (as a percent
-of the stake: 100 = 1:1, 3000 = 30x) are never shown to the player.
+{-| One coin on the table. The odds and the payout (as a percent of the
+stake: 100 = 1:1, 3000 = 30x) are never shown to the player.
 -}
 type alias CoinConfig =
     { coinName : String
-    , winPercent : Int
+    , odds : CoinOdds
     , payoutPercent : Int
     }
+
+
+{-| How a coin decides its landing. Independent coins roll their own
+die; weather coins win exactly when the round's single hidden weather
+roll goes their way, which makes a sunny and a rainy coin perfectly
+anti-correlated: exactly one of them wins every round.
+-}
+type CoinOdds
+    = IndependentPercent Int
+    | WinsWhenSunny
+    | WinsWhenRainy
+
+
+{-| The hidden weather of one round, drawn once and shared by every
+weather coin.
+-}
+type SkyState
+    = Sunny
+    | Rainy
+
+
+{-| Whether the game ends by clock or by a fixed number of flips.
+-}
+type TurnBudget
+    = TimeLimit Int
+    | FlipLimit Int
 
 
 {-| The golden glasses reveal every coin's payout multiplier while
@@ -166,6 +196,9 @@ type ProfileAssignment
 type alias MultiCoinConfig =
     { title : String
     , coins : List CoinConfig
+    , weatherSunPercent : Int
+    , turnBudget : TurnBudget
+    , nextLevelLink : NextLevelLink
     , profileAssignment : ProfileAssignment
     , trackerOffer : TrackerOffer
     , uncleOffer : UncleOffer
@@ -233,7 +266,7 @@ type Msg
     | PurchaseConfirmed
     | PurchaseCancelled
     | DialogClicked
-    | CoinsLanded { stakes : List Int, rolls : List Int }
+    | CoinsLanded { stakes : List Int, weatherRoll : Int, rolls : List Int }
     | ClockTicked
     | TrackerPurchased
     | GlassesPurchased
@@ -247,7 +280,7 @@ gameProgram config =
     Browser.element
         { init = init config
         , update = update config
-        , subscriptions = subscriptions
+        , subscriptions = subscriptions config
         , view = view config
         }
 
@@ -270,9 +303,9 @@ init config () =
     )
 
 
-{-| Deal the (win percent, payout) profiles across the coin names at
-random: the names keep their display order, the profiles land on a
-random coin each.
+{-| Deal the (odds, payout) profiles across the coin names at random:
+the names keep their display order, the profiles land on a random coin
+each.
 -}
 shuffledCoinsGenerator : List CoinConfig -> Random.Generator (List CoinConfig)
 shuffledCoinsGenerator coins =
@@ -280,7 +313,7 @@ shuffledCoinsGenerator coins =
         (\sortKeys ->
             List.map2
                 (\coin profile ->
-                    { coin | winPercent = profile.winPercent, payoutPercent = profile.payoutPercent }
+                    { coin | odds = profile.odds, payoutPercent = profile.payoutPercent }
                 )
                 coins
                 (List.map Tuple.second
@@ -298,7 +331,13 @@ initialModel config =
     , tallies = List.map (\_ -> { headsCount = 0, flipCount = 0 }) config.coins
     , phase = Playing
     , clock = ClockIdle
-    , secondsLeft = timeLimitSeconds
+    , secondsLeft =
+        case config.turnBudget of
+            TimeLimit seconds ->
+                seconds
+
+            FlipLimit _ ->
+                0
     , roundCount = 0
     , tracker = TrackerNotBought
     , glasses = GlassesNotBought
@@ -504,8 +543,13 @@ pressFlip config model =
                 else
                     ( { model | clock = ClockRunning }
                     , Random.generate
-                        (\rolls -> CoinsLanded { stakes = stakes, rolls = rolls })
-                        (Random.list (List.length model.coins) (Random.int 1 100))
+                        (\( weatherRoll, rolls ) ->
+                            CoinsLanded { stakes = stakes, weatherRoll = weatherRoll, rolls = rolls }
+                        )
+                        (Random.pair
+                            (Random.int 1 100)
+                            (Random.list (List.length model.coins) (Random.int 1 100))
+                        )
                     )
 
 
@@ -570,19 +614,37 @@ type alias CoinOutcome =
     }
 
 
-resolveCoin : CoinConfig -> CoinTally -> Int -> Int -> CoinOutcome
-resolveCoin coin tally stake roll =
+resolveCoin : SkyState -> CoinConfig -> CoinTally -> Int -> Int -> CoinOutcome
+resolveCoin sky coin tally stake roll =
     if stake <= 0 then
         { tally = tally, deltaCents = 0, logLines = [] }
 
     else
         let
             landed =
-                if roll <= coin.winPercent then
-                    Heads
+                case coin.odds of
+                    IndependentPercent winPercent ->
+                        if roll <= winPercent then
+                            Heads
 
-                else
-                    Tails
+                        else
+                            Tails
+
+                    WinsWhenSunny ->
+                        case sky of
+                            Sunny ->
+                                Heads
+
+                            Rainy ->
+                                Tails
+
+                    WinsWhenRainy ->
+                        case sky of
+                            Sunny ->
+                                Tails
+
+                            Rainy ->
+                                Heads
         in
         case landed of
             Heads ->
@@ -623,15 +685,22 @@ resolveCoin coin tally stake roll =
 {-| Apply a landed round: pay out or collect per staked coin, update the
 tallies, and check for the win/bust end states.
 -}
-settleRound : MultiCoinConfig -> { stakes : List Int, rolls : List Int } -> Model -> Model
+settleRound : MultiCoinConfig -> { stakes : List Int, weatherRoll : Int, rolls : List Int } -> Model -> Model
 settleRound config landedRound model =
     if model.phase /= Playing then
         model
 
     else
         let
+            sky =
+                if landedRound.weatherRoll <= config.weatherSunPercent then
+                    Sunny
+
+                else
+                    Rainy
+
             outcomes =
-                List.map4 resolveCoin model.coins model.tallies landedRound.stakes landedRound.rolls
+                List.map4 (resolveCoin sky) model.coins model.tallies landedRound.stakes landedRound.rolls
 
             newBalance =
                 max 0 (model.balanceCents + List.sum (List.map .deltaCents outcomes))
@@ -640,14 +709,34 @@ settleRound config landedRound model =
                 List.concatMap .logLines outcomes
         in
         gloatIfBusted config.uncleOffer
-            (checkEndState BustByBetting
-                { model
-                    | balanceCents = newBalance
-                    , tallies = List.map .tally outcomes
-                    , roundCount = model.roundCount + 1
-                    , log = List.reverse roundLogLines ++ model.log
-                }
+            (endWhenOutOfFlips config.turnBudget
+                (checkEndState BustByBetting
+                    { model
+                        | balanceCents = newBalance
+                        , tallies = List.map .tally outcomes
+                        , roundCount = model.roundCount + 1
+                        , log = List.reverse roundLogLines ++ model.log
+                    }
+                )
             )
+
+
+{-| With a flip budget, the game ends once the last flip has settled.
+Winning or busting on that final flip takes precedence: this only fires
+while still playing.
+-}
+endWhenOutOfFlips : TurnBudget -> Model -> Model
+endWhenOutOfFlips budget model =
+    case budget of
+        TimeLimit _ ->
+            model
+
+        FlipLimit flipLimit ->
+            if model.phase == Playing && model.roundCount >= flipLimit then
+                { model | phase = RanOutOfTime }
+
+            else
+                model
 
 
 checkEndState : BustCause -> Model -> Model
@@ -885,10 +974,10 @@ logLine tone text model =
     { model | log = { tone = tone, text = text } :: model.log }
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions : MultiCoinConfig -> Model -> Sub Msg
+subscriptions config model =
     Sub.batch
-        [ clockSubscription model
+        [ clockSubscription config model
         , autoclickerSubscription model
         , flipHelperSubscription model
         , dialogDismissSubscription model
@@ -933,25 +1022,30 @@ flipHelperSubscription model =
             Sub.none
 
 
-clockSubscription : Model -> Sub Msg
-clockSubscription model =
-    case model.phase of
-        Playing ->
-            case model.clock of
-                ClockRunning ->
-                    Time.every 1000 (\_ -> ClockTicked)
+clockSubscription : MultiCoinConfig -> Model -> Sub Msg
+clockSubscription config model =
+    case config.turnBudget of
+        FlipLimit _ ->
+            Sub.none
 
-                ClockIdle ->
+        TimeLimit _ ->
+            case model.phase of
+                Playing ->
+                    case model.clock of
+                        ClockRunning ->
+                            Time.every 1000 (\_ -> ClockTicked)
+
+                        ClockIdle ->
+                            Sub.none
+
+                WonGame ->
                     Sub.none
 
-        WonGame ->
-            Sub.none
+                WentBust ->
+                    Sub.none
 
-        WentBust ->
-            Sub.none
-
-        RanOutOfTime ->
-            Sub.none
+                RanOutOfTime ->
+                    Sub.none
 
 
 {-| While a bought autoclicker's flip button is held down, a flip fires
@@ -997,7 +1091,7 @@ view config model =
     Html.div [ Html.Attributes.id "coin-flip-game" ]
         (List.concat
             [ [ Html.h3 [] [ Html.text config.title ]
-              , viewStats model
+              , viewStats config model
               , viewProgressBar model
               , Html.div []
                     [ Html.text "Total flips: "
@@ -1017,15 +1111,24 @@ view config model =
         )
 
 
-viewStats : Model -> Html Msg
-viewStats model =
+viewStats : MultiCoinConfig -> Model -> Html Msg
+viewStats config model =
     Html.div [ Html.Attributes.class "stats" ]
         [ Html.div [] [ Html.text ("Target: $" ++ String.fromInt (targetBalanceCents // 100)) ]
-        , Html.div []
-            [ Html.text "Time left: "
-            , Html.span [ Html.Attributes.class "timer" ]
-                [ Html.text (formatClock model.secondsLeft) ]
-            ]
+        , case config.turnBudget of
+            TimeLimit _ ->
+                Html.div []
+                    [ Html.text "Time left: "
+                    , Html.span [ Html.Attributes.class "timer" ]
+                        [ Html.text (formatClock model.secondsLeft) ]
+                    ]
+
+            FlipLimit flipLimit ->
+                Html.div []
+                    [ Html.text "Flips left: "
+                    , Html.span [ Html.Attributes.class "timer" ]
+                        [ Html.text (String.fromInt (max 0 (flipLimit - model.roundCount))) ]
+                    ]
         ]
 
 
@@ -1406,12 +1509,13 @@ viewGameOver : MultiCoinConfig -> Model -> Html Msg
 viewGameOver config model =
     let
         ( message, tone ) =
-            gameOverMessage model
+            gameOverMessage config model
     in
     Html.div
         [ Html.Attributes.class ("game-over " ++ CoinFlipGame.toneClass tone) ]
         (List.concat
             [ [ Html.text message ]
+            , viewNextLevelLink config.nextLevelLink model
             , viewUncleBustCallout model
             , [ Html.div []
                     [ Html.text "It took you exactly "
@@ -1439,8 +1543,8 @@ viewUncleBustCallout model =
             ]
 
 
-gameOverMessage : Model -> ( String, LogTone )
-gameOverMessage model =
+gameOverMessage : MultiCoinConfig -> Model -> ( String, LogTone )
+gameOverMessage config model =
     case model.phase of
         Playing ->
             ( "", NeutralTone )
@@ -1452,7 +1556,28 @@ gameOverMessage model =
             ( "\u{1F480} REKT! You hit $0.00. Bankrupt.", LoseTone )
 
         RanOutOfTime ->
-            ( "Time's up! You failed to reach the target.", LoseTone )
+            case config.turnBudget of
+                TimeLimit _ ->
+                    ( "Time's up! You failed to reach the target.", LoseTone )
+
+                FlipLimit _ ->
+                    ( "Out of flips! You failed to reach the target.", LoseTone )
+
+
+viewNextLevelLink : NextLevelLink -> Model -> List (Html Msg)
+viewNextLevelLink link model =
+    case link of
+        NoNextLevelLink ->
+            []
+
+        NextLevelLinkTo nextLevel ->
+            if model.phase == WonGame then
+                [ Html.text " "
+                , Html.a [ Html.Attributes.href nextLevel.url ] [ Html.text nextLevel.label ]
+                ]
+
+            else
+                []
 
 
 {-| A payout percent as a multiplier: 3000 -> "30x", 50 -> "0.5x".

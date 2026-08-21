@@ -142,6 +142,7 @@ shakeRules = do
       buildCoinFlipLevel1
       buildCoinFlipLevel2
       buildCoinFlipLevel3
+      buildCoinFlipLevel4
 
       -- Build penguin site
       need ["build-penguin"]
@@ -184,6 +185,7 @@ shakeRules = do
       buildCoinFlipLevel1
       buildCoinFlipLevel2
       buildCoinFlipLevel3
+      buildCoinFlipLevel4
 
       -- Build penguin + webwinkel sites, with penguin's webwinkelverhuis.nl
       -- links pointing at the locally served copy instead of the live site.
@@ -635,6 +637,10 @@ buildCoinFlipLevel2 = buildBlogElmApp "src/CoinFlipLevel2.elm" "coin-flip-level2
 -- | Level 3, the black swan (black-swan.html).
 buildCoinFlipLevel3 :: Action ()
 buildCoinFlipLevel3 = buildBlogElmApp "src/CoinFlipLevel3.elm" "coin-flip-level3.js"
+
+-- | Level 4, correlation (birds-of-a-feather.html).
+buildCoinFlipLevel4 :: Action ()
+buildCoinFlipLevel4 = buildBlogElmApp "src/CoinFlipLevel4.elm" "coin-flip-level4.js"
 
 -- | The /prijzen price calculator.
 buildPrijsCalculator :: Action ()

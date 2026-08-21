@@ -10,18 +10,21 @@ Which bird got which profile has to be rediscovered every replay.
 
 -}
 
-import CoinFlipGame exposing (TrackerOffer(..), UncleOffer(..))
-import MultiCoinGame exposing (AutoclickerOffer(..), FlipHelperOffer(..), GlassesOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), gameProgram)
+import CoinFlipGame exposing (NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
+import MultiCoinGame exposing (AutoclickerOffer(..), CoinOdds(..), FlipHelperOffer(..), GlassesOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), TurnBudget(..), gameProgram)
 
 
 levelConfig : MultiCoinConfig
 levelConfig =
     { title = "\u{1FA99} Rigged Coin Trader III: Rare Birds"
     , coins =
-        [ { coinName = "Swan", winPercent = 5, payoutPercent = 3000 }
-        , { coinName = "Magpie", winPercent = 45, payoutPercent = 100 }
-        , { coinName = "Sparrow", winPercent = 60, payoutPercent = 50 }
+        [ { coinName = "Swan", odds = IndependentPercent 5, payoutPercent = 3000 }
+        , { coinName = "Magpie", odds = IndependentPercent 45, payoutPercent = 100 }
+        , { coinName = "Sparrow", odds = IndependentPercent 60, payoutPercent = 50 }
         ]
+    , weatherSunPercent = 50
+    , turnBudget = TimeLimit (30 * 60)
+    , nextLevelLink = NextLevelLinkTo { url = "/birds-of-a-feather.html", label = "<<next level>>" }
     , profileAssignment = ProfilesShuffledAcrossCoins
     , trackerOffer = TrackerForSale 1500
     , glassesOffer = GoldenGlassesForSale 2000
