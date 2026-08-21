@@ -739,50 +739,8 @@ type alias CoinOutcome =
     }
 
 
-{-| The other weather coin's name, for the "therefore" clause in the
-log: a sunny coin's partner is the rainy coin and vice versa.
-Independent coins have none.
--}
-partnerNameFor : List CoinConfig -> CoinConfig -> Maybe String
-partnerNameFor coins coin =
-    case coin.odds of
-        IndependentPercent _ ->
-            Nothing
-
-        WinsWhenSunny ->
-            oddsCoinName WinsWhenRainy coins
-
-        WinsWhenRainy ->
-            oddsCoinName WinsWhenSunny coins
-
-
-oddsCoinName : CoinOdds -> List CoinConfig -> Maybe String
-oddsCoinName odds coins =
-    List.filter (\coin -> coin.odds == odds) coins
-        |> List.head
-        |> Maybe.map .coinName
-
-
-{-| The correlation, spelled out: when a weather coin lands, its
-partner necessarily landed the other way.
--}
-thereforeClause : Maybe String -> CoinSide -> String
-thereforeClause mPartner landed =
-    case mPartner of
-        Nothing ->
-            ""
-
-        Just partnerName ->
-            case landed of
-                Heads ->
-                    " Therefore " ++ partnerName ++ " loses."
-
-                Tails ->
-                    " Therefore " ++ partnerName ++ " wins."
-
-
-resolveCoin : SkyState -> Maybe String -> CoinConfig -> CoinTally -> Int -> Int -> CoinOutcome
-resolveCoin sky mPartner coin tally stake roll =
+resolveCoin : SkyState -> CoinConfig -> CoinTally -> Int -> Int -> CoinOutcome
+resolveCoin sky coin tally stake roll =
     if stake <= 0 then
         { tally = tally, deltaCents = 0, landedSide = Nothing, logLines = [] }
 
@@ -835,7 +793,6 @@ resolveCoin sky mPartner coin tally stake roll =
                                 ++ ", of which $"
                                 ++ formatCents stake
                                 ++ " is your stake."
-                                ++ thereforeClause mPartner Heads
                       }
                     ]
                 }
@@ -851,7 +808,6 @@ resolveCoin sky mPartner coin tally stake roll =
                                 ++ " landed tails. You lost your $"
                                 ++ formatCents stake
                                 ++ " stake."
-                                ++ thereforeClause mPartner Tails
                       }
                     ]
                 }
@@ -874,11 +830,8 @@ settleRound config landedRound model =
                 else
                     Rainy
 
-            partners =
-                List.map (partnerNameFor model.coins) model.coins
-
             outcomes =
-                List.map5 (resolveCoin sky) partners model.coins model.tallies landedRound.stakes landedRound.rolls
+                List.map4 (resolveCoin sky) model.coins model.tallies landedRound.stakes landedRound.rolls
 
             newBalance =
                 max 0 (model.balanceCents + List.sum (List.map .deltaCents outcomes))

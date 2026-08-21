@@ -654,24 +654,17 @@ percentage allocator, and The Elegant Universe's pair tallies.
 correlationUpgradeSuite : Test
 correlationUpgradeSuite =
     describe "MultiCoinGame correlation upgrades (level 4)"
-        [ test "a weather coin's log line names its partner's fate" <|
+        [ test "weather coin log lines stay plain, revealing nothing" <|
             \_ ->
                 apply4 [ sunnyRound [ 100, 0, 0 ] ] level4Start
                     |> latestLogText
                     |> Expect.equal
-                        "Starling landed heads! You win $1.80, of which $1.00 is your stake. Therefore Swallow loses."
-        , test "the losing weather coin's line says the partner wins" <|
+                        "Starling landed heads! You win $1.80, of which $1.00 is your stake."
+        , test "a losing weather coin's line is equally silent about its partner" <|
             \_ ->
                 apply4 [ rainyRound [ 100, 0, 0 ] ] level4Start
                     |> latestLogText
-                    |> Expect.equal
-                        "Starling landed tails. You lost your $1.00 stake. Therefore Swallow wins."
-        , test "the independent cuckoo gets no therefore clause" <|
-            \_ ->
-                apply4 [ CoinsLanded { stakes = [ 0, 0, 10 ], weatherRoll = 1, rolls = [ 100, 100, 100 ] } ]
-                    level4Start
-                    |> latestLogText
-                    |> Expect.equal "Cuckoo landed tails. You lost your $0.10 stake."
+                    |> Expect.equal "Starling landed tails. You lost your $1.00 stake."
         , test "buying the allocator costs $10 and switches to percent mode" <|
             \_ ->
                 let

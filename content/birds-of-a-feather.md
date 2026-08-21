@@ -134,8 +134,9 @@ Elm.CoinFlipLevel4.init({ node: document.getElementById('coin-flip-game') });
      ~9.6% per flip ($999 in 41 presses), while either alone grows
      ~0.4% per flip at best, hopeless inside the 200-flip budget. The
      third profile is the red herring: 40x payout at 2%, an 18%
-     negative expected return. Weather log lines spell the correlation
-     out ("Therefore Swallow loses."); the shop sells the tracker,
-     glasses, a $10 percentage allocator (stakes become percentages of
-     the live balance), and The Elegant Universe at $20, which tracks
-     how often each pair lands the same way. -->
+     negative expected return. The logs reveal nothing about the
+     correlation; discovering it takes patience or The Elegant Universe
+     at $20, which tracks how often each pair lands the same way. The
+     shop also sells the tracker, glasses, a $10 percentage allocator
+     (stakes become percentages of the live balance), automation, and
+     uncle. -->
