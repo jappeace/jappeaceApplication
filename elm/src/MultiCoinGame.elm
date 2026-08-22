@@ -19,6 +19,7 @@ module MultiCoinGame exposing
     , TurnBudget(..)
     , FlipHold(..)
     , GlassesOffer(..)
+    , HelperPause(..)
     , GoldenGlasses(..)
     , Model
     , Msg(..)
@@ -256,6 +257,14 @@ type FlipHelperOffer
     | FlipHelpersForSale { basePriceCents : Int, priceIncreasePercent : Int }
 
 
+{-| Whether the hired flip helpers are flipping or on a break. Pausing
+stops their shared timer; the fleet stays hired and can resume.
+-}
+type HelperPause
+    = HelpersFlipping
+    | HelpersPaused
+
+
 {-| The shop items a purchase dialog explains before any money moves.
 -}
 type ShopItemKind
@@ -338,6 +347,7 @@ type alias Model =
     , autoclicker : Autoclicker
     , flipHold : FlipHold
     , flipHelperCount : Int
+    , helperPause : HelperPause
     , helperFlipCount : Int
     , nextHelperPriceCents : Int
     , shopFold : ShopFold
@@ -368,6 +378,7 @@ type Msg
     | AutoclickerTicked
     | FlipHelperHired
     | FlipHelpersTicked
+    | HelperPauseToggled
     | ShopToggled
     | RefundRequested
     | ExtraTurnsPurchased ExtraTurnsPackage
@@ -462,9 +473,10 @@ initialModel config =
     , autoclicker = ClickerNotBought
     , flipHold = FlipReleased
     , flipHelperCount = 0
+    , helperPause = HelpersFlipping
     , helperFlipCount = 0
     , nextHelperPriceCents = initialHelperPriceCents config.flipHelperOffer
-    , shopFold = ShopCollapsed
+    , shopFold = ShopExpanded
     , pendingPurchase = NoPendingPurchase
     , uncleAdviceCount = 0
     , uncleGloat = UncleHasNotGloated
@@ -510,11 +522,22 @@ update config msg model =
         FlipHelperHired ->
             ( hireFlipHelper config.flipHelperOffer model, Cmd.none )
 
+        HelperPauseToggled ->
+            ( { model | helperPause = toggleHelperPause model.helperPause }, Cmd.none )
+
         FlipHelpersTicked ->
-            -- The counter keys the bird emoji's backflip animation: a
-            -- changed key recreates the span, replaying the CSS
-            -- animation once per helper flip.
-            pressFlip config { model | helperFlipCount = model.helperFlipCount + 1 }
+            case model.helperPause of
+                HelpersPaused ->
+                    -- A tick that raced the pause: the fleet is on
+                    -- break, nobody presses anything.
+                    ( model, Cmd.none )
+
+                HelpersFlipping ->
+                    -- The counter keys the bird emoji's backflip
+                    -- animation: a changed key recreates the span,
+                    -- replaying the CSS animation once per helper
+                    -- flip.
+                    pressFlip config { model | helperFlipCount = model.helperFlipCount + 1 }
 
         ShopToggled ->
             ( { model | shopFold = toggleFold model.shopFold }, Cmd.none )
@@ -1463,17 +1486,22 @@ dialogDismissSubscription model =
 
 {-| Each hired helper flips once per five seconds, staggered: N helpers
 share one timer at 5000/N ms, which is N evenly spread flips per five
-seconds.
+seconds. A paused fleet has no timer at all.
 -}
 flipHelperSubscription : Model -> Sub Msg
 flipHelperSubscription model =
     case model.phase of
         Playing ->
-            if model.flipHelperCount > 0 then
-                Time.every (5000 / toFloat model.flipHelperCount) (\_ -> FlipHelpersTicked)
+            case model.helperPause of
+                HelpersPaused ->
+                    Sub.none
 
-            else
-                Sub.none
+                HelpersFlipping ->
+                    if model.flipHelperCount > 0 then
+                        Time.every (5000 / toFloat model.flipHelperCount) (\_ -> FlipHelpersTicked)
+
+                    else
+                        Sub.none
 
         WonGame ->
             Sub.none
@@ -1636,8 +1664,18 @@ viewControls config model =
         )
 
 
+toggleHelperPause : HelperPause -> HelperPause
+toggleHelperPause pause =
+    case pause of
+        HelpersFlipping ->
+            HelpersPaused
+
+        HelpersPaused ->
+            HelpersFlipping
+
+
 {-| How many helpers are flipping for the player, shown once any are
-hired.
+hired, with a button to pause and resume the whole fleet.
 -}
 viewFlipHelpers : Model -> List (Html Msg)
 viewFlipHelpers model =
@@ -1652,7 +1690,20 @@ viewFlipHelpers model =
                   , Html.span [ Html.Attributes.class "helper-bird" ] [ Html.text "\u{1F424}" ]
                   )
                 ]
-            , Html.text (" Flip helpers: " ++ String.fromInt model.flipHelperCount)
+            , Html.text (" Flip helpers: " ++ String.fromInt model.flipHelperCount ++ " ")
+            , Html.button
+                [ Html.Attributes.class "helper-pause"
+                , Html.Events.onClick HelperPauseToggled
+                ]
+                [ Html.text
+                    (case model.helperPause of
+                        HelpersFlipping ->
+                            "pause"
+
+                        HelpersPaused ->
+                            "resume"
+                    )
+                ]
             ]
         ]
 

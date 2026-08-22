@@ -428,26 +428,26 @@ gatingSuite =
                 view CoinFlipLevel3.levelConfig { level3Start | tracker = TrackerBought }
                     |> Query.fromHtml
                     |> Query.has [ class "tally" ]
-        , test "the shop starts collapsed with no items visible" <|
+        , test "the shop starts open with the section headings and their items" <|
             \_ ->
                 view CoinFlipLevel3.levelConfig level3Start
-                    |> Query.fromHtml
-                    |> Query.hasNot [ class "shop-item" ]
-        , test "the open shop shows the section headings and their items" <|
-            \_ ->
-                apply [ ShopToggled ] level3Start
-                    |> view CoinFlipLevel3.levelConfig
                     |> Query.fromHtml
                     |> Expect.all
                         [ Query.has [ class "shop-group-heading" ]
                         , Query.has [ class "shop-item" ]
                         ]
-        , test "toggling twice collapses the shop again" <|
+        , test "toggling the shop collapses it" <|
+            \_ ->
+                apply [ ShopToggled ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "shop-item" ]
+        , test "toggling twice opens the shop again" <|
             \_ ->
                 apply [ ShopToggled, ShopToggled ] level3Start
                     |> view CoinFlipLevel3.levelConfig
                     |> Query.fromHtml
-                    |> Query.hasNot [ class "shop-item" ]
+                    |> Query.has [ class "shop-item" ]
         , test "the helper count only renders once helpers are hired" <|
             \_ ->
                 ( view CoinFlipLevel3.levelConfig level3Start
@@ -459,6 +459,28 @@ gatingSuite =
                     |> Query.has [ class "helpers" ]
                 )
                     |> (\( noHelpers, oneHelper ) -> Expect.all [ \_ -> noHelpers, \_ -> oneHelper ] ())
+        , test "hired helpers render a pause button" <|
+            \_ ->
+                apply [ FlipHelperHired ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "helper-pause" ]
+        , test "a paused helper fleet ignores its ticks" <|
+            \_ ->
+                apply [ FlipHelperHired, HelperPauseToggled, FlipHelpersTicked ] level3Start
+                    |> .helperFlipCount
+                    |> Expect.equal 0
+        , test "resuming the fleet makes ticks flip again" <|
+            \_ ->
+                apply
+                    [ FlipHelperHired
+                    , HelperPauseToggled
+                    , HelperPauseToggled
+                    , FlipHelpersTicked
+                    ]
+                    level3Start
+                    |> .helperFlipCount
+                    |> Expect.equal 1
         , test "the payout line only renders once the glasses are bought" <|
             \_ ->
                 view CoinFlipLevel3.levelConfig level3Start
@@ -777,14 +799,12 @@ refundSuite =
                     |> Expect.equal 1
         , test "the refund is not for sale before the complete works are heard" <|
             \_ ->
-                apply4 [ ShopToggled ] level4Start
-                    |> view CoinFlipLevel4.levelConfig
+                view CoinFlipLevel4.levelConfig level4Start
                     |> Query.fromHtml
                     |> Query.hasNot [ text "Ask your money back" ]
         , test "hearing every phrase puts the refund up for sale" <|
             \_ ->
-                apply4 [ ShopToggled ] heardEverything
-                    |> view CoinFlipLevel4.levelConfig
+                view CoinFlipLevel4.levelConfig heardEverything
                     |> Query.fromHtml
                     |> Query.has [ text "Ask your money back" ]
         , test "asking costs $10 and uncle replies with his farewell" <|
