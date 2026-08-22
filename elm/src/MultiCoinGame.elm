@@ -9,6 +9,8 @@ module MultiCoinGame exposing
     , CorrelationBook(..)
     , CorrelationBookOffer(..)
     , ExtraTurnsOffer(..)
+    , ExtraTurnsPackage
+    , LastChanceTurnOffer(..)
     , CoinConfig
     , CoinOdds(..)
     , CoinTally
@@ -125,13 +127,30 @@ type TurnBudget
     | FlipLimit Int
 
 
+{-| One purchasable batch of extra flips: how many, for how much.
+-}
+type alias ExtraTurnsPackage =
+    { priceCents : Int
+    , extraFlips : Int
+    }
+
+
 {-| Buying more turns: satire made purchasable. Only offered in
-flip-limited games, repeatable, and priced so that only someone who has
-basically already won can afford to keep playing.
+flip-limited games, repeatable. Several package sizes can be on offer
+at once; the "bulk discounts" are part of the joke.
 -}
 type ExtraTurnsOffer
     = NoExtraTurns
-    | ExtraTurnsForSale { priceCents : Int, extraFlips : Int }
+    | ExtraTurnsForSale (List ExtraTurnsPackage)
+
+
+{-| The out-of-flips rescue: once the flip budget runs dry, the game
+over screen offers a single extra flip for a few dollars. Buying it
+resumes play, which runs dry again one flip later, which offers again.
+-}
+type LastChanceTurnOffer
+    = NoLastChanceTurn
+    | LastChanceTurnForSale ExtraTurnsPackage
 
 
 {-| The golden glasses reveal every coin's payout multiplier while
@@ -247,7 +266,7 @@ type ShopItemKind
     | AllocatorItem
     | BookItem
     | RefundItem
-    | ExtraTurnsItem
+    | ExtraTurnsItem ExtraTurnsPackage
     | UncleAdviceItem
 
 
@@ -286,6 +305,7 @@ type alias MultiCoinConfig =
     , bookOffer : CorrelationBookOffer
     , refundOffer : RefundOffer
     , extraTurnsOffer : ExtraTurnsOffer
+    , lastChanceTurnOffer : LastChanceTurnOffer
     , introLogLine : String
     }
 
@@ -350,7 +370,8 @@ type Msg
     | FlipHelpersTicked
     | ShopToggled
     | RefundRequested
-    | ExtraTurnsPurchased
+    | ExtraTurnsPurchased ExtraTurnsPackage
+    | LastChanceTurnPurchased
     | PurchaseConsidered ShopItemKind ClickPoint
     | PurchaseConfirmed
     | PurchaseCancelled
@@ -501,8 +522,11 @@ update config msg model =
         RefundRequested ->
             ( requestRefund config.uncleOffer config.refundOffer model, Cmd.none )
 
-        ExtraTurnsPurchased ->
-            ( purchaseExtraTurns config.extraTurnsOffer model, Cmd.none )
+        ExtraTurnsPurchased package ->
+            ( purchaseExtraTurns config.extraTurnsOffer package model, Cmd.none )
+
+        LastChanceTurnPurchased ->
+            ( purchaseLastChanceTurn config.lastChanceTurnOffer model, Cmd.none )
 
         PurchaseConsidered itemKind clickPoint ->
             ( { model | pendingPurchase = Considering itemKind clickPoint }, Cmd.none )
@@ -546,9 +570,9 @@ update config msg model =
                     , Cmd.none
                     )
 
-                Considering ExtraTurnsItem _ ->
+                Considering (ExtraTurnsItem package) _ ->
                     -- Stays open: the house sells time by the armful.
-                    ( purchaseExtraTurns config.extraTurnsOffer model, Cmd.none )
+                    ( purchaseExtraTurns config.extraTurnsOffer package model, Cmd.none )
 
                 Considering RefundItem _ ->
                     ( requestRefund config.uncleOffer
@@ -1162,33 +1186,81 @@ purchaseAllocator offer model =
 
 
 {-| Buy more flips. Repeatable: the house is always happy to extend
-your opportunity to give it money.
+your opportunity to give it money. Only a package actually on offer is
+honoured; a message carrying any other package does nothing.
 -}
-purchaseExtraTurns : ExtraTurnsOffer -> Model -> Model
-purchaseExtraTurns offer model =
+purchaseExtraTurns : ExtraTurnsOffer -> ExtraTurnsPackage -> Model -> Model
+purchaseExtraTurns offer package model =
     case offer of
         NoExtraTurns ->
             model
 
-        ExtraTurnsForSale sale ->
-            if model.phase /= Playing then
+        ExtraTurnsForSale packages ->
+            if not (List.member package packages) then
                 model
 
-            else if model.balanceCents <= sale.priceCents then
+            else if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= package.priceCents then
                 logLine NeutralTone "You cannot afford more flips." model
 
             else
                 logLine NeutralTone
                     ("Bought "
-                        ++ String.fromInt sale.extraFlips
+                        ++ String.fromInt package.extraFlips
                         ++ " more flips for $"
-                        ++ formatCents sale.priceCents
+                        ++ formatCents package.priceCents
                         ++ ". Money can buy time after all."
                     )
                     { model
-                        | balanceCents = model.balanceCents - sale.priceCents
-                        , extraFlipsBought = model.extraFlipsBought + sale.extraFlips
+                        | balanceCents = model.balanceCents - package.priceCents
+                        , extraFlipsBought = model.extraFlipsBought + package.extraFlips
                     }
+
+
+{-| The out-of-flips rescue purchase. Revives the game: the flip
+budget grows by the package and play resumes, only to run dry again
+shortly after, when the same offer reappears. The house calls this
+customer retention.
+-}
+purchaseLastChanceTurn : LastChanceTurnOffer -> Model -> Model
+purchaseLastChanceTurn offer model =
+    case offer of
+        NoLastChanceTurn ->
+            model
+
+        LastChanceTurnForSale package ->
+            if model.phase /= RanOutOfTime then
+                model
+
+            else if model.balanceCents <= package.priceCents then
+                model
+
+            else
+                logLine NeutralTone
+                    ("Bought "
+                        ++ flipCountText package.extraFlips
+                        ++ " for $"
+                        ++ formatCents package.priceCents
+                        ++ ". Just this one, then you'll stop, right?"
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - package.priceCents
+                        , extraFlipsBought = model.extraFlipsBought + package.extraFlips
+                        , phase = Playing
+                    }
+
+
+{-| "1 more flip" versus "10 more flips".
+-}
+flipCountText : Int -> String
+flipCountText flipCount =
+    if flipCount == 1 then
+        "1 more flip"
+
+    else
+        String.fromInt flipCount ++ " more flips"
 
 
 {-| Buy The Elegant Universe. Same wipe-out guard as the tracker.
@@ -1843,8 +1915,8 @@ itemDisplayName itemKind =
         RefundItem ->
             "your money back from uncle"
 
-        ExtraTurnsItem ->
-            "more flips"
+        ExtraTurnsItem package ->
+            flipCountText package.extraFlips
 
         UncleAdviceItem ->
             "uncle's advice"
@@ -1874,7 +1946,7 @@ itemExplanation itemKind =
         RefundItem ->
             "After all that terrible advice, surely a refund is in order. Asking costs money, he is a busy man."
 
-        ExtraTurnsItem ->
+        ExtraTurnsItem _ ->
             "Out of flips? Nonsense. The house happily extends your opportunity to give it money."
 
         UncleAdviceItem ->
@@ -1939,13 +2011,8 @@ itemPriceCents config model itemKind =
                 RefundForSale refund ->
                     refund.priceCents
 
-        ExtraTurnsItem ->
-            case config.extraTurnsOffer of
-                NoExtraTurns ->
-                    0
-
-                ExtraTurnsForSale sale ->
-                    sale.priceCents
+        ExtraTurnsItem package ->
+            package.priceCents
 
         UncleAdviceItem ->
             case config.uncleOffer of
@@ -2084,11 +2151,14 @@ viewExtraTurnsShopItem config =
         ( ExtraTurnsForSale _, TimeLimit _ ) ->
             []
 
-        ( ExtraTurnsForSale sale, FlipLimit _ ) ->
-            [ viewShopItem (PurchaseConsidered ExtraTurnsItem)
-                ("Buy " ++ String.fromInt sale.extraFlips ++ " more flips")
-                sale.priceCents
-            ]
+        ( ExtraTurnsForSale packages, FlipLimit _ ) ->
+            List.map
+                (\package ->
+                    viewShopItem (PurchaseConsidered (ExtraTurnsItem package))
+                        ("Buy " ++ flipCountText package.extraFlips)
+                        package.priceCents
+                )
+                packages
 
 
 {-| Only for sale once uncle's complete works have been heard, and only
@@ -2125,6 +2195,7 @@ viewGameOver config model =
         (List.concat
             [ [ Html.text message ]
             , viewNextLevelLink config.nextLevelLink model
+            , viewLastChanceTurnButton config model
             , viewUncleBustCallout model
             , [ Html.div []
                     [ Html.text "It took you exactly "
@@ -2135,6 +2206,45 @@ viewGameOver config model =
             , viewUncleSpend config.uncleOffer model
             ]
         )
+
+
+{-| The out-of-flips rescue button. Only on the out-of-flips screen of
+a flip-limited game, and only while the price can actually be paid:
+the offer quietly disappears once the player cannot afford it, like
+all the best predatory upsells.
+-}
+viewLastChanceTurnButton : MultiCoinConfig -> Model -> List (Html Msg)
+viewLastChanceTurnButton config model =
+    case ( config.lastChanceTurnOffer, config.turnBudget ) of
+        ( NoLastChanceTurn, TimeLimit _ ) ->
+            []
+
+        ( NoLastChanceTurn, FlipLimit _ ) ->
+            []
+
+        ( LastChanceTurnForSale _, TimeLimit _ ) ->
+            []
+
+        ( LastChanceTurnForSale package, FlipLimit _ ) ->
+            if model.phase == RanOutOfTime && model.balanceCents > package.priceCents then
+                [ Html.div []
+                    [ Html.button
+                        [ Html.Attributes.class "last-chance-turn"
+                        , Html.Events.onClick LastChanceTurnPurchased
+                        ]
+                        [ Html.text
+                            ("Buy "
+                                ++ flipCountText package.extraFlips
+                                ++ " ($"
+                                ++ formatCents package.priceCents
+                                ++ ")"
+                            )
+                        ]
+                    ]
+                ]
+
+            else
+                []
 
 
 viewUncleBustCallout : Model -> List (Html Msg)
