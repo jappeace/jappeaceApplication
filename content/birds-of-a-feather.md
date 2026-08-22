@@ -6,11 +6,11 @@ Tags: gambling, finance, game
 Summary: Three birds, one sky, two hundred flips. Good luck!
 
 Look at you, you're become quite the degenerate gambler, nice!
-Anyway after seeing what you did in [level 3: black swan](http://localhost:8000/black-swan.html), I decided 
-to put a turn limit on this game.
+Anyway after seeing what you did in [level 3: black swan](/black-swan.html), 
+I decided to put a turn limit on this game.
 Your previous strategies wont work due to the turn limit.
 You'll have to figure out how these birds relate,
-once you do that, you'll have a real [money pump](https://en.wikipedia.org/wiki/Dutch_book).
+once you do that, you can just harvest the gravy.
 
 <div id="coin-flip-game"></div>
 
@@ -131,23 +131,119 @@ once you do that, you'll have a real [money pump](https://en.wikipedia.org/wiki/
 Elm.CoinFlipLevel4.init({ node: document.getElementById('coin-flip-game') });
 </script>
 
+This level is (again) a lot harder then the previous ones.
+No longer is it sufficient to spot a winning bird and just size right,
+you've to come up with a real allocation strategy.
+However once you do, this is a [money pump](https://en.wikipedia.org/wiki/Dutch_book).
+If you lost, don't feel bad, I'll explain the trick and you can try again.
+
 First you need to figure out the probabilities and payouts (as usual).
-I just did a couple 10ct bets on each bird to get those.
+I just did a couple 10ct bets on each bird to get the payouts.
 For the probabilities I just used the tracker, 
 20 bets or so give you all the information.
+There are 3 bird profiles, sunny bird, rainy bird and the red herring.
 
-Note the negative correlation. 
+| name        | probability | payout | expected value |
+|-------------|-------------|--------|----------------|
+| red herring | 2%          | 41x    | -0.18          |
+| sunny       | 60%         | 1.8x   | 0.08           |
+| rainy       | 40%         | 2.8x   | 0.12           |
+
+So we can just ignore the red herring because it has a negative expected value.
+It's there to trap players who won the [previous level](/black-swan.html)
+and assume betting on low odds high payout always wins.
+
+<details>
+<summary>Expected value</summary>
+
+$$\mathbb{E}[X] = \sum_i P(x_i) \cdot x_i$$
+
+where:
+
+* $\mathbb{E}[X]$ reads "the expected value of $X$". The
+  double-struck $\mathbb{E}$ is the expectation operator, a machine
+  that eats a random thing and spits out one number, and the square
+  brackets are the notation for feeding it that thing. They are not
+  multiplication: $\mathbb{E}$ on its own is nothing, like how
+  $\sqrt{\phantom{x}}$ needs something under it.
+* $X$ is the bet, a random variable: the thing whose outcomes chance
+  picks between,
+* $x_i$ are the possible outcomes, as won or lost money,
+* $P(x_i)$ is the probability of outcome $x_i$.
+
+Each outcome's value weighted by its probability. For one dollar
+staked on a bird with win probability $p$ and net odds $b$ (the
+profit on a winning dollar, so the table's payout column minus the
+returned stake: $1 + b$) it collapses to two outcomes, win $+b$ or
+lose $-1$:
+
+$$\mathbb{E} = p \cdot b - q$$
+
+with $q = 1 - p$ the chance of losing. For rainy:
+$0.4 \cdot 1.8 - 0.6 = 0.12$, the table's number.
+
+</details>
+
+Now if you did the maths and found out the best expected value rainy and use
+what you've learned in previous levels. 
+You'll run into another trap, let's figure out an allocation size for rainy:
+
+$$f^* = \frac{bp - q}{b}$$
+
+where:
+
+* $f^*$ is the fraction of your current balance to stake on each flip,
+* $p$ is the probability that the bet wins,
+* $q = 1 - p$ is the probability that it loses,
+* $b$ is the net odds: the profit per dollar staked on a win.
+
+$$f^* = \frac{1.8 \cdot 0.4 - 0.6}{1.8} \approx 0.0666$$
+
+So you can safely stake 6.7% on rainy, giving you an expected arithmetic gain per flip of $6.7% * 0.12 \aprox 0.8%$
+This number is an optimistic estimation of growth and if you plug it in as a growth rate on the starting
+balence of $25 you need around 450 turns to complete.
+What is missing is [volatility drag](https://en.wikipedia.org/wiki/Volatility_tax)
+which yields an expected return instead of 0.39%, requiring around 950 flips to get to $999.
+The scenario is mathematically impossible with a turn limit of 200, which is intentional!
+This is intentional because I want you to look for the correlation, or rather, de-correlation.
+
+
+<details>
+<summary>Volatility Drag</summary>
+For example:
+
+| swing              | multipliers          | after both flips |
+|--------------------|----------------------|------------------|
+| up 12\%, down 12\% | $1.12 \times 0.88$   | $-1.4\%$         |
+| up 30\%, down 30\% | $1.30 \times 0.70$   | $-9.0\%$         |
+
+Even though you go up and down by the same percentage, 
+you pay a tax due to how multiplication 
+works on carried bases.
+This is formalized as:
+
+$$g^* \approx \mu - \frac{\sigma^2}{2}$$
+
+*where:*
+
+* *$\mu$ is the arithmetic average return per flip (our 0.8\%),*
+* *$\sigma^2$ is the variance of that return, how hard the flips
+  swing around their average,*
+* *$\sigma^2 / 2$ is the volatility drag, the toll from the curved
+  logarithm ($\ln(1+x) \approx x - x^2/2$).*
+
+</details>
+
+
+We've to use negative correlation cleverly.
 Two of these birds always land on opposites.
-This means you can bet very aggressively because if you play it right it becomes a ["sure bet"](https://en.wikipedia.org/wiki/Dutch_book), also known as a money pump.
-We've two bird profiles here that are negatively correlated,
-the rainy bird and sunny bird.
-
-You can just put your betting percentage on whichever birds
+Furthermore they pay out sufficiently each to cover the loss of the other.
+So you can just put your betting percentage on whichever birds
 are negatively correlated and win.
-This works because the game is rigged.
+This is known as the kelly point.
+This works because the game is rigged in your favor.
 Either the sunny bird or the rainy bird will win, they
 are negatively correlated.
-Furthermore the payouts justify going all in on the birds.
 
 Suppose sunny has a chance of 60% to win, 
 conversely the rainy coin has a 40% chance to win, because when sunny doesn't win, rainy will win.
@@ -157,6 +253,8 @@ Now look at the pricing of these, this is where the unfairness lives:
 - Rainy coin, $b_2 = 1.8$: implied $\frac{1}{2.8} = 35.7%$ (true chance: 40%)
 - Implied sum: 91.3%. True sum: 100%
 
+Here implied means the probability you'd get from just looking at the prices, it's the "fair" odds.
+If the sum of all implied odds doesn't reach 100% the game is supper fair (rigged in your favor).
 If we put all our money split across the true chance we'll expect a 8.7 cent harvest yielding $\frac{1}{0.913} - 1 = 9.6\%$ per flip.
 And there is no reason not to use all our money, 
 because you'll either win 1.8 times your stake 
@@ -164,6 +262,7 @@ or you'll win 2.8 times your stake.
 Of course you'll lose the part of the stake you put on the losing
 bird, so you end up expect around $9.6\%$ per flip anyway.
 The 60/40 split is to maximize average growth, the kelly point.
+
 
 Now if you want an actual sure bet, 
 make the outcome of the
