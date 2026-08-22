@@ -5,10 +5,10 @@ OPTIONS: toc:nil
 Tags: gambling, finance, game
 Summary: Three birds, one sky, two hundred flips. Good luck!
 
-Look at you, you're become quite the degenerate gambler, nice!
+Look at you, you've become quite the degenerate gambler, nice!
 Anyway after seeing what you did in [level 3: black swan](/black-swan.html), 
 I decided to put a turn limit on this game.
-Your previous strategies wont work due to the turn limit.
+Your previous strategies won't work due to the turn limit.
 You'll have to figure out how these birds relate,
 once you do that, you can just harvest the gravy.
 
@@ -131,7 +131,7 @@ once you do that, you can just harvest the gravy.
 Elm.CoinFlipLevel4.init({ node: document.getElementById('coin-flip-game') });
 </script>
 
-This level is (again) a lot harder then the previous ones.
+This level is (again) a lot harder than the previous ones.
 No longer is it sufficient to spot a winning bird and just size right,
 you've to come up with a real allocation strategy.
 However once you do, this is a [money pump](https://en.wikipedia.org/wiki/Dutch_book).
@@ -172,10 +172,10 @@ where:
 * $P(x_i)$ is the probability of outcome $x_i$.
 
 Each outcome's value weighted by its probability. For one dollar
-staked on a bird with win probability $p$ and net odds $b$ (the
-profit on a winning dollar, so the table's payout column minus the
-returned stake: $1 + b$) it collapses to two outcomes, win $+b$ or
-lose $-1$:
+staked on a bird with win probability $p$ and net odds $b$, the
+profit on a winning dollar: the table's payout column is $1 + b$, the
+stake coming back plus the winnings, so rainy's 2.8x means $b = 1.8$.
+The bet collapses to two outcomes, win $+b$ or lose $-1$:
 
 $$\mathbb{E} = p \cdot b - q$$
 
@@ -184,8 +184,8 @@ $0.4 \cdot 1.8 - 0.6 = 0.12$, the table's number.
 
 </details>
 
-Now if you did the maths and found out the best expected value rainy and use
-what you've learned in previous levels. 
+Now suppose you did the maths, found out rainy has the best expected
+value, and used what you've learned in previous levels.
 You'll run into another trap, let's figure out an allocation size for rainy:
 
 $$f^* = \frac{bp - q}{b}$$
@@ -199,17 +199,18 @@ where:
 
 $$f^* = \frac{1.8 \cdot 0.4 - 0.6}{1.8} \approx 0.0666$$
 
-So you can safely stake 6.7% on rainy, giving you an expected arithmetic gain per flip of $6.7% * 0.12 \aprox 0.8%$
+So you can safely stake 6.7% on rainy, giving you an expected arithmetic gain per flip of $6.7\% \cdot 0.12 \approx 0.8\%$.
 This number is an optimistic estimation of growth and if you plug it in as a growth rate on the starting
-balence of $25 you need around 450 turns to complete.
+balance of $25 you need around 450 turns to complete.
 What is missing is [volatility drag](https://en.wikipedia.org/wiki/Volatility_tax)
-which yields an expected return instead of 0.39%, requiring around 950 flips to get to $999.
-The scenario is mathematically impossible with a turn limit of 200, which is intentional!
-This is intentional because I want you to look for the correlation, or rather, de-correlation.
+which drags the expected return down to 0.39%, requiring around 950 flips to get to $999.
+The scenario is mathematically impossible with a turn limit of 200, which is intentional:
+I want you to look for the correlation, or rather, de-correlation.
 
 
 <details>
 <summary>Volatility Drag</summary>
+
 For example:
 
 | swing              | multipliers          | after both flips |
@@ -220,8 +221,8 @@ For example:
 Even though you go up and down by the same percentage, 
 you pay a tax due to how multiplication 
 works on carried bases.
-Going up by 12% and then down by 12$ doesn't leave you at the same spot,
-you end up at 1.4% lower then your starting position.
+Going up by 12% and then down by 12% doesn't leave you at the same spot,
+you end up at 1.4% lower than your starting position.
 This is the volatility tax, formalized as:
 
 $$g^* \approx \mu - \frac{\sigma^2}{2}$$
@@ -252,18 +253,18 @@ Suppose sunny has a chance of 60% to win,
 conversely the rainy coin has a 40% chance to win, because when sunny doesn't win, rainy will win.
 Now look at the pricing of these, this is where the unfairness lives:
 
-- Sunny coin, $b_1 = 0.8$: implied $\frac{1}{1.8} = 55.6%$ (true chance: 60%)
-- Rainy coin, $b_2 = 1.8$: implied $\frac{1}{2.8} = 35.7%$ (true chance: 40%)
+- Sunny coin, $b_1 = 0.8$: implied $\frac{1}{1.8} = 55.6\%$ (true chance: 60%)
+- Rainy coin, $b_2 = 1.8$: implied $\frac{1}{2.8} = 35.7\%$ (true chance: 40%)
 - Implied sum: 91.3%. True sum: 100%
 
 Here implied means the probability you'd get from just looking at the prices, it's the "fair" odds.
-If the sum of all implied odds doesn't reach 100% the game is supper fair (rigged in your favor).
-If we put all our money split across the true chance we'll expect a 8.7 cent harvest yielding $\frac{1}{0.913} - 1 = 9.6\%$ per flip.
+If the sum of all implied odds doesn't reach 100% the game is superfair (rigged in your favor).
+If we put all our money split across the true chance we'll expect an 8.7 cent harvest yielding $\frac{1}{0.9127} - 1 \approx 9.6\%$ per flip.
 And there is no reason not to use all our money, 
 because you'll either win 1.8 times your stake 
 or you'll win 2.8 times your stake.
 Of course you'll lose the part of the stake you put on the losing
-bird, so you end up expect around $9.6\%$ per flip anyway.
+bird, so you end up expecting around $9.6\%$ per flip anyway.
 The 60/40 split is to maximize average growth, the kelly point.
 
 This isn't quite the same as a money pump, or sure bet.
@@ -274,19 +275,19 @@ you have to use the implied percentages
 which add up to 91.3.
 Now we can just divide:
 
-$$55.6 + 35.7 = 91.3 \qquad \frac{55.6}{91.3} = 60.9% \qquad \frac{35.7}{91.3} = 39.1%$$
+$$55.6 + 35.7 = 91.3 \qquad \frac{55.6}{91.3} = 60.9\% \qquad \frac{35.7}{91.3} = 39.1\%$$
 
 So 61% on sunny, 39% on rainy,
 kelly and the sure bet almost converge. 
-This is a coincidence of how this game was setup.
+This is a coincidence of how this game was set up.
 If we for example change the payoff, double the sunny outcome,
 then the kelly point remains the same, but the surebet will
 drift towards 50/50.
 
-[^avoiding-volatility-tax]: Note that with no varience you avoid the volatility tax! Giving me more scenario ideas :)
+[^avoiding-volatility-tax]: Note that with no variance you avoid the volatility tax! Giving me more scenario ideas :)
 
 [^ev-note]: Note that kelly is different from maximizing expected value.
-    the Sunny bird in fact has the highest expectd value, 
+    The rainy bird in fact has the highest expected value, 
     so you should go all in on that if you want to get more expected value.
     The problem is that you'd be ruined by the time you reach the end of the game.
     Expected value doesn't work in repeated games.
@@ -302,10 +303,10 @@ You just don't get to "flip" as often as in the game above.
 
 Adding risk to lose is what makes the above game interesting.
 But the payout per "flip" is also much better.
-The game makes you I made you work to find the money pump,
+I made you work to find the money pump,
 do it slightly wrong and you'll lose.
 In real life there are also more "risky" examples of people trying to make money pumps.
-Hedge fund try to find similar discoloration[^complex].
+Hedge funds try to find similar decorrelations[^complex].
 If they do it slightly wrong they'll also lose,
 a recent example of loss is the [situational awareness](https://aswathdamodaran.substack.com/p/the-situational-awareness-fund-blow) 
 blow up.
@@ -319,4 +320,4 @@ Bell System Technical Journal, 1956; Cover & Thomas, *Elements of
 Information Theory*, ch. 6: proportional betting is log-optimal, and
 "a Dutch book, though risk-free, does not optimize the doubling rate."
 
-[^complex]: Note that the real world is much more complex then what we do here. And they try to discoralete not just via stocks of course.
+[^complex]: Note that the real world is much more complex than what we do here. And they try to decorrelate not just via stocks of course.
