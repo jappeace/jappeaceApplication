@@ -24,7 +24,7 @@ levelConfig =
         ]
     , weatherSunPercent = 50
     , turnBudget = TimeLimit (30 * 60)
-    , nextLevelLink = NextLevelLinkTo { url = "/birds-of-a-feather.html", label = "<<next level>>" }
+    , nextLevelLink = NextLevelLinkTo { url = "/correlation-implies-cashation.html", label = "<<next level>>" }
     , profileAssignment = ProfilesShuffledAcrossCoins
     , trackerOffer = TrackerForSale 1500
     , glassesOffer = GoldenGlassesForSale 2000
