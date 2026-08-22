@@ -22,7 +22,7 @@ costs money and yields only his fondest farewell.
 -}
 
 import CoinFlipGame exposing (NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
-import MultiCoinGame exposing (AllocatorOffer(..), AutoclickerOffer(..), CoinOdds(..), CorrelationBookOffer(..), ExtraTurnsOffer(..), FlipHelperOffer(..), GlassesOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
+import MultiCoinGame exposing (AllocatorOffer(..), AutoclickerOffer(..), CoinOdds(..), CorrelationBookOffer(..), ExtraTurnsOffer(..), FlipHelperOffer(..), GlassesOffer(..), LastChanceTurnOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
 
 
 levelConfig : MultiCoinConfig
@@ -46,7 +46,15 @@ levelConfig =
     , flipHelperOffer = FlipHelpersForSale { basePriceCents = 100, priceIncreasePercent = 10 }
     , allocatorOffer = AllocatorForSale 1000
     , bookOffer = CorrelationBookForSale 2000
-    , extraTurnsOffer = ExtraTurnsForSale { priceCents = 50000, extraFlips = 50 }
+    -- The per-flip prices run $6 (rescue), $5.50 (10-pack), $10
+    -- (50-pack): the "bulk deal" is the worst buy in the shop, which
+    -- is the joke. Uncle recommends it.
+    , extraTurnsOffer =
+        ExtraTurnsForSale
+            [ { priceCents = 5500, extraFlips = 10 }
+            , { priceCents = 50000, extraFlips = 50 }
+            ]
+    , lastChanceTurnOffer = LastChanceTurnForSale { priceCents = 600, extraFlips = 1 }
     , refundOffer =
         RefundForSale
             { priceCents = 1000
@@ -64,6 +72,7 @@ levelConfig =
                 , "Correlation? That's when birds fly in a V, right?"
                 , "When one bird loses, bet it harder, it owes you."
                 , "I read half a physics book once. Everything is strings, so nothing matters."
+                , "I got this sweet deal for 50 more turns!"
                 , "Your aunt once knitted a swallow. Beautiful bird. What were we talking about?"
                 ]
             }

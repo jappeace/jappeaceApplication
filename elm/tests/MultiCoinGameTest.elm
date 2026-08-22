@@ -11,6 +11,7 @@ import CoinFlipGame
     exposing
         ( GamePhase(..)
         , TrackerState(..)
+        , UncleOffer(..)
         )
 import CoinFlipLevel3
 import CoinFlipLevel4
@@ -741,21 +742,18 @@ correlationUpgradeSuite =
         ]
 
 
-{-| Uncle's complete works: 1 first phrase + 8 more in the level-4
-config. Hearing all nine unlocks asking for the money back.
+{-| Uncle's complete works, read straight from the level-4 config so
+this list can never drift from it. Hearing all of them unlocks asking
+for the money back.
 -}
 allUnclePhrases : List String
 allUnclePhrases =
-    [ "Don't split your money son, pick a winner and commit."
-    , "The cuckoo is due, I can feel it."
-    , "A real gambler doesn't hedge."
-    , "Diversification is for people who don't know what they're doing."
-    , "Starlings and swallows are basically the same bird, so same bet really."
-    , "Correlation? That's when birds fly in a V, right?"
-    , "When one bird loses, bet it harder, it owes you."
-    , "I read half a physics book once. Everything is strings, so nothing matters."
-    , "Your aunt once knitted a swallow. Beautiful bird. What were we talking about?"
-    ]
+    case CoinFlipLevel4.levelConfig.uncleOffer of
+        NoUncleAdvice ->
+            []
+
+        UncleAdviceForSale uncle ->
+            uncle.firstPhrase :: uncle.morePhrases
 
 
 heardEverything : Model
@@ -817,7 +815,20 @@ refundSuite =
         ]
 
 
-{-| Buying more turns: $500 for 50 flips, repeatable, satire.
+{-| The two extra-flip packages sold in level 4's shop.
+-}
+tenFlipPack : MultiCoinGame.ExtraTurnsPackage
+tenFlipPack =
+    { priceCents = 5500, extraFlips = 10 }
+
+
+fiftyFlipPack : MultiCoinGame.ExtraTurnsPackage
+fiftyFlipPack =
+    { priceCents = 50000, extraFlips = 50 }
+
+
+{-| Buying more turns: $55 for 10 flips, $500 for 50, repeatable,
+satire; plus the $6 one-more-flip rescue on the out-of-flips screen.
 -}
 extraTurnsSuite : Test
 extraTurnsSuite =
@@ -826,26 +837,65 @@ extraTurnsSuite =
             \_ ->
                 let
                     extended =
-                        apply4 [ ExtraTurnsPurchased, sunnyRound [ 100, 0, 0 ] ]
+                        apply4 [ ExtraTurnsPurchased fiftyFlipPack, sunnyRound [ 100, 0, 0 ] ]
                             { level4Start | balanceCents = 60000, roundCount = 199 }
                 in
                 ( extended.balanceCents, extended.phase )
                     |> Expect.equal ( 60000 - 50000 + 80, Playing )
+        , test "buying 10 more flips costs $55 and extends the budget" <|
+            \_ ->
+                let
+                    extended =
+                        apply4 [ ExtraTurnsPurchased tenFlipPack, sunnyRound [ 100, 0, 0 ] ]
+                            { level4Start | balanceCents = 60000, roundCount = 199 }
+                in
+                ( extended.balanceCents, extended.phase )
+                    |> Expect.equal ( 60000 - 5500 + 80, Playing )
         , test "without the purchase the same flip ends the game" <|
             \_ ->
                 apply4 [ sunnyRound [ 100, 0, 0 ] ]
                     { level4Start | balanceCents = 60000, roundCount = 199 }
                     |> .phase
                     |> Expect.equal RanOutOfTime
-        , test "buying flips is repeatable" <|
+        , test "buying flips is repeatable and packages mix" <|
             \_ ->
-                apply4 [ ExtraTurnsPurchased, ExtraTurnsPurchased ]
+                apply4 [ ExtraTurnsPurchased fiftyFlipPack, ExtraTurnsPurchased tenFlipPack ]
                     { level4Start | balanceCents = 110000 }
                     |> .extraFlipsBought
-                    |> Expect.equal 100
+                    |> Expect.equal 60
         , test "more flips are refused below the price" <|
             \_ ->
-                apply4 [ ExtraTurnsPurchased ] { level4Start | balanceCents = 50000 }
+                apply4 [ ExtraTurnsPurchased fiftyFlipPack ] { level4Start | balanceCents = 50000 }
                     |> .extraFlipsBought
                     |> Expect.equal 0
+        , test "a package the shop never offered is ignored" <|
+            \_ ->
+                apply4 [ ExtraTurnsPurchased { priceCents = 1, extraFlips = 1000 } ]
+                    { level4Start | balanceCents = 60000 }
+                    |> .extraFlipsBought
+                    |> Expect.equal 0
+        , test "the $6 rescue revives an out-of-flips game for one flip" <|
+            \_ ->
+                let
+                    revived =
+                        apply4
+                            [ sunnyRound [ 100, 0, 0 ]
+                            , LastChanceTurnPurchased
+                            , sunnyRound [ 100, 0, 0 ]
+                            ]
+                            { level4Start | balanceCents = 60000, roundCount = 199 }
+                in
+                ( revived.balanceCents, revived.extraFlipsBought, revived.phase )
+                    |> Expect.equal ( 60000 + 80 - 600 + 80, 1, RanOutOfTime )
+        , test "the rescue does nothing while still playing" <|
+            \_ ->
+                apply4 [ LastChanceTurnPurchased ] { level4Start | balanceCents = 60000 }
+                    |> .extraFlipsBought
+                    |> Expect.equal 0
+        , test "the rescue is refused when the balance cannot pay it" <|
+            \_ ->
+                apply4 [ sunnyRound [ 100, 0, 0 ], LastChanceTurnPurchased ]
+                    { level4Start | balanceCents = 500, roundCount = 199 }
+                    |> .phase
+                    |> Expect.equal RanOutOfTime
         ]
