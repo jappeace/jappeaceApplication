@@ -266,18 +266,35 @@ Of course you'll lose the part of the stake you put on the losing
 bird, so you end up expect around $9.6\%$ per flip anyway.
 The 60/40 split is to maximize average growth, the kelly point.
 
+This isn't quite the same as a money pump, or sure bet.
+The Kelly point maximizes the average growth rate[^ev-note], 
+whereas surebet gives no variance (volatility) on payoff[^avoiding-volatility-tax].
+If you want an actual sure bet, 
+you have to use the implied percentages
+which add up to 91.3.
+Now we can just divide:
+
+$$55.6 + 35.7 = 91.3 \qquad \frac{55.6}{91.3} = 60.9% \qquad \frac{35.7}{91.3} = 39.1%$$
+
+So 61% on sunny, 39% on rainy,
+kelly and the sure bet almost converge. 
+This is a coincidence of how this game was setup.
+If we for example change the payoff, double the sunny outcome,
+then the kelly point remains the same, but the surebet will
+drift towards 50/50.
+
+[^avoiding-volatility-tax]: Note that with no varience you avoid the volatility tax! Giving me more scenario ideas :)
+
 [^ev-note]: Note that kelly is different from maximizing expected value.
     the Sunny bird in fact has the highest expectd value, 
     so you should go all in on that if you want to get more expected value.
     The problem is that you'd be ruined by the time you reach the end of the game.
     Expected value doesn't work in repeated games.
 
-
-
 ## Do money pumps exist?
 
 You may ask yourself, does a money pump exist in real life.
-The anwser is YES. 
+The answer is YES. 
 Risk free money is real, and also boring.
 For example: your bank account gives your risk free interest payments, 
 or if you want to be more creative you can buy a government bond.
