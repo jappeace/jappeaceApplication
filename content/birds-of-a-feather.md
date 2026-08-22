@@ -1,5 +1,5 @@
 Title: Correlation implies cashation.
-Date: 2026-08-21 22:30
+Date: 2026-08-22 21:00
 Category: reflection
 OPTIONS: toc:nil
 Tags: gambling, finance, game
@@ -176,7 +176,7 @@ If we for example change the payoff, double the sunny outcome,
 then the kelly point remains the same, but the sure bet will
 drift towards 50/50.
 
-[^avoiding-volatility-tax]: Note that with no variance you avoid the volatility tax! Giving me more scenario ideas :)
+[^avoiding-volatility-tax]: Note that with no variance you avoid the volatility tax! Your average growth is lower but without variance you can bet with more money then you own. This gives me more scenario ideas :)
 
 [^ev-note]: Note that kelly is different from maximizing expected value.
     The rainy bird in fact has the highest expected value, 
