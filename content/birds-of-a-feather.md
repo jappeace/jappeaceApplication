@@ -161,7 +161,7 @@ The 60/40 split is to maximize average growth, the kelly point.[^kelly]
 
 This isn't quite the same as a money pump, or sure bet.
 The Kelly point maximizes the average growth rate[^ev-note], 
-whereas surebet gives no variance (volatility) on payoff[^avoiding-volatility-tax].
+whereas sure bet gives no variance (volatility) on payoff[^avoiding-volatility-tax].
 If you want an actual sure bet, 
 you have to use the implied percentages
 which add up to 91.3.
@@ -173,7 +173,7 @@ So 61% on sunny, 39% on rainy,
 kelly and the sure bet almost converge. 
 This is a coincidence of how this game was set up.
 If we for example change the payoff, double the sunny outcome,
-then the kelly point remains the same, but the surebet will
+then the kelly point remains the same, but the sure bet will
 drift towards 50/50.
 
 [^avoiding-volatility-tax]: Note that with no variance you avoid the volatility tax! Giving me more scenario ideas :)
