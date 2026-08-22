@@ -3,7 +3,7 @@ Date: 2026-08-22 21:00
 Category: reflection
 OPTIONS: toc:nil
 Tags: gambling, finance, game
-Summary: Three birds, one sky, two hundred flips. Good luck!
+Summary: Figure out how these birds relate and harvest the gravy!
 
 Look at you, you've become quite the degenerate gambler, nice!
 Anyway after seeing what you did in [level 3: black swan](/black-swan.html), 
