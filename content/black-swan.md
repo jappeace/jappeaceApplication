@@ -81,6 +81,7 @@ of a gambler may succeed.
     from { transform: rotate(0deg); }
     to { transform: rotate(-360deg); }
   }
+  #coin-flip-game .helper-pause { font-size: 0.85em; padding: 0.1em 0.5em; }
   #coin-flip-game .shop-item {
     display: flex;
     justify-content: space-between;

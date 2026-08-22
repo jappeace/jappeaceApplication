@@ -204,17 +204,17 @@ clickAtOrigin =
 shopSuite : Test
 shopSuite =
     describe "CoinFlipGame shop (level 2)"
-        [ test "the shop starts collapsed with no items visible" <|
+        [ test "the shop starts open with its items visible" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig level2Start
                     |> Query.fromHtml
-                    |> Query.hasNot [ class "shop-item" ]
-        , test "toggling the shop reveals the items" <|
+                    |> Query.has [ class "shop-item" ]
+        , test "toggling the shop collapses it" <|
             \_ ->
                 apply CoinFlipLevel2.levelConfig [ ShopToggled ] level2Start
                     |> view CoinFlipLevel2.levelConfig
                     |> Query.fromHtml
-                    |> Query.has [ class "shop-item" ]
+                    |> Query.hasNot [ class "shop-item" ]
         , test "considering the tracker charges nothing" <|
             \_ ->
                 let

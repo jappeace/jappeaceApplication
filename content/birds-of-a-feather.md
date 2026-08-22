@@ -76,6 +76,16 @@ once you do that, you'll have a real [money pump](https://en.wikipedia.org/wiki/
   }
   #coin-flip-game .shop-toggle { width: 100%; text-align: left; font-weight: bold; }
   #coin-flip-game .shop-group-heading { font-weight: bold; }
+  #coin-flip-game .helpers { font-weight: bold; }
+  #coin-flip-game .helper-bird {
+    display: inline-block;
+    animation: helper-backflip 0.5s ease-in-out;
+  }
+  @keyframes helper-backflip {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+  }
+  #coin-flip-game .helper-pause { font-size: 0.85em; padding: 0.1em 0.5em; }
   #coin-flip-game .shop-item {
     display: flex;
     justify-content: space-between;
