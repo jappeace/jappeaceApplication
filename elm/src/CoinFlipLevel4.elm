@@ -46,15 +46,17 @@ levelConfig =
     , flipHelperOffer = FlipHelpersForSale { basePriceCents = 100, priceIncreasePercent = 10 }
     , allocatorOffer = AllocatorForSale 1000
     , bookOffer = CorrelationBookForSale 2000
-    -- The per-flip prices run $6 (rescue), $5.50 (10-pack), $10
-    -- (50-pack): the "bulk deal" is the worst buy in the shop, which
-    -- is the joke. Uncle recommends it.
+    -- The per-flip prices run $6 (single), $5.50 (10-pack), $10
+    -- (50-pack), and $8 for the same single flip on the out-of-flips
+    -- screen: the "bulk deal" is the worst buy in the shop and
+    -- desperation pays a $2 premium. Uncle recommends the big one.
     , extraTurnsOffer =
         ExtraTurnsForSale
-            [ { priceCents = 5500, extraFlips = 10 }
+            [ { priceCents = 600, extraFlips = 1 }
+            , { priceCents = 5500, extraFlips = 10 }
             , { priceCents = 50000, extraFlips = 50 }
             ]
-    , lastChanceTurnOffer = LastChanceTurnForSale { priceCents = 600, extraFlips = 1 }
+    , lastChanceTurnOffer = LastChanceTurnForSale { priceCents = 800, extraFlips = 1 }
     , refundOffer =
         RefundForSale
             { priceCents = 1000

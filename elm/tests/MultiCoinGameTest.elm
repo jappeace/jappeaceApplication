@@ -815,8 +815,13 @@ refundSuite =
         ]
 
 
-{-| The two extra-flip packages sold in level 4's shop.
+{-| The three extra-flip packages sold in level 4's shop.
 -}
+oneFlipPack : MultiCoinGame.ExtraTurnsPackage
+oneFlipPack =
+    { priceCents = 600, extraFlips = 1 }
+
+
 tenFlipPack : MultiCoinGame.ExtraTurnsPackage
 tenFlipPack =
     { priceCents = 5500, extraFlips = 10 }
@@ -827,8 +832,9 @@ fiftyFlipPack =
     { priceCents = 50000, extraFlips = 50 }
 
 
-{-| Buying more turns: $55 for 10 flips, $500 for 50, repeatable,
-satire; plus the $6 one-more-flip rescue on the out-of-flips screen.
+{-| Buying more turns: $6 for 1 flip, $55 for 10, $500 for 50,
+repeatable, satire; plus the same single flip at $8 on the
+out-of-flips screen, the desperation premium.
 -}
 extraTurnsSuite : Test
 extraTurnsSuite =
@@ -842,6 +848,19 @@ extraTurnsSuite =
                 in
                 ( extended.balanceCents, extended.phase )
                     |> Expect.equal ( 60000 - 50000 + 80, Playing )
+        , test "buying 1 more flip from the shop costs $6 and lasts one round" <|
+            \_ ->
+                let
+                    extended =
+                        apply4
+                            [ ExtraTurnsPurchased oneFlipPack
+                            , sunnyRound [ 100, 0, 0 ]
+                            , sunnyRound [ 100, 0, 0 ]
+                            ]
+                            { level4Start | balanceCents = 60000, roundCount = 199 }
+                in
+                ( extended.balanceCents, extended.phase )
+                    |> Expect.equal ( 60000 - 600 + 80 + 80, RanOutOfTime )
         , test "buying 10 more flips costs $55 and extends the budget" <|
             \_ ->
                 let
@@ -874,7 +893,7 @@ extraTurnsSuite =
                     { level4Start | balanceCents = 60000 }
                     |> .extraFlipsBought
                     |> Expect.equal 0
-        , test "the $6 rescue revives an out-of-flips game for one flip" <|
+        , test "the $8 rescue revives an out-of-flips game for one flip" <|
             \_ ->
                 let
                     revived =
@@ -886,7 +905,7 @@ extraTurnsSuite =
                             { level4Start | balanceCents = 60000, roundCount = 199 }
                 in
                 ( revived.balanceCents, revived.extraFlipsBought, revived.phase )
-                    |> Expect.equal ( 60000 + 80 - 600 + 80, 1, RanOutOfTime )
+                    |> Expect.equal ( 60000 + 80 - 800 + 80, 1, RanOutOfTime )
         , test "the rescue does nothing while still playing" <|
             \_ ->
                 apply4 [ LastChanceTurnPurchased ] { level4Start | balanceCents = 60000 }

@@ -2155,7 +2155,7 @@ viewExtraTurnsShopItem config =
             List.map
                 (\package ->
                     viewShopItem (PurchaseConsidered (ExtraTurnsItem package))
-                        ("Buy " ++ String.fromInt package.extraFlips ++ " more flips")
+                        ("Buy " ++ flipCountText package.extraFlips)
                         package.priceCents
                 )
                 packages
