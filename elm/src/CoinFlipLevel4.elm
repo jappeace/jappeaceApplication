@@ -1,7 +1,7 @@
 module CoinFlipLevel4 exposing (levelConfig, main)
 
 {-| Level 4 of the rigged-coin game: birds of a feather
-(birds-of-a-feather.html), the correlation level.
+(correlation-implies-cashation.html), the correlation level.
 
 One hidden weather roll per round (sun 60%, rain 40%). One profile
 wins exactly when it is sunny paying 0.8x, another exactly when it
