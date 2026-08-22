@@ -220,7 +220,9 @@ For example:
 Even though you go up and down by the same percentage, 
 you pay a tax due to how multiplication 
 works on carried bases.
-This is formalized as:
+Going up by 12% and then down by 12$ doesn't leave you at the same spot,
+you end up at 1.4% lower then your starting position.
+This is the volatility tax, formalized as:
 
 $$g^* \approx \mu - \frac{\sigma^2}{2}$$
 
@@ -240,7 +242,8 @@ Two of these birds always land on opposites.
 Furthermore they pay out sufficiently each to cover the loss of the other.
 So you can just put your betting percentage on whichever birds
 are negatively correlated and win.
-This is known as the kelly point.
+This is known as the kelly point.[^kelly]
+
 This works because the game is rigged in your favor.
 Either the sunny bird or the rainy bird will win, they
 are negatively correlated.
@@ -262,24 +265,6 @@ or you'll win 2.8 times your stake.
 Of course you'll lose the part of the stake you put on the losing
 bird, so you end up expect around $9.6\%$ per flip anyway.
 The 60/40 split is to maximize average growth, the kelly point.
-
-
-Now if you want an actual sure bet, 
-make the outcome of the
-bet irrelevant and just harvest you have to use the implied percentages
-which add up to 91.3.
-Now we can just divide:
-
-$$55.6 + 35.7 = 91.3 \qquad \frac{55.6}{91.3} = 60.9% \qquad \frac{35.7}{91.3} = 39.1%$$
-
-So 61% on sunny, 39% on rainy,
-kelly and the sure bet almost converge. 
-This is a coincidence of how this game was setup.
-If we for example change the payoff, double the sunny outcome,
-then the kelly point remains the same, but the surebet will
-drift towards 50/50.
-Kelly maximizes the average growth rate[^ev-note], 
-whereas surebet gives no variance (volatility) on payoff.
 
 [^ev-note]: Note that kelly is different from maximizing expected value.
     the Sunny bird in fact has the highest expectd value, 
@@ -303,7 +288,7 @@ But the payout per "flip" is also much better.
 The game makes you I made you work to find the money pump,
 do it slightly wrong and you'll lose.
 In real life there are also more "risky" examples of people trying to make money pumps.
-Hedge fund try to find similar discoloration in the stock market.
+Hedge fund try to find similar discoloration[^complex].
 If they do it slightly wrong they'll also lose,
 a recent example of loss is the [situational awareness](https://aswathdamodaran.substack.com/p/the-situational-awareness-fund-blow) 
 blow up.
@@ -312,51 +297,9 @@ actually care,
 because in these stock market like trading games, if someone loses, another person wins:
 It's zero-sum.
 
-
-
-## Maths
-
-Where does that come from? Kelly again, but the situation changed:
-this time the whole balance goes in, split across two outcomes of
-which exactly one wins. Put fraction $x$ on sunny and $1-x$ on rainy.
-A flip multiplies your balance by $(1+b_1)\,x$ when sunny, or by
-$(1+b_2)(1-x)$ when rainy, so the long-run growth to maximize is
-
-$$g(x) = p \cdot \ln\big((1+b_1)\,x\big) + q \cdot \ln\big((1+b_2)(1-x)\big)$$
-
-where:
-
-* $p$ is the true probability of sun, and $q = 1 - p$ that of rain
-* $b_1$ is the net odds on the sun bird: a dollar bet returns $1 + b_1$
-  dollars on a win, the stake plus $b_1$ profit (same $b$ as in
-  level 1's $f^* = p - q/b$)
-* $b_2$ is the same for the rain bird
-* $x$ is the fraction of your balance on
-  sunny, leaving $1-x$ for rainy
-* $g(x)$ is the long-run growth rate: the average of
-  $\ln(\text{balance after} / \text{balance before})$ per flip, the
-  same quantity earlier levels compounded
-
-The logarithm splits products into sums:
-
-$$g(x) = \underbrace{p\ln(1+b_1) + q\ln(1+b_2)}_{\text{the payouts}}
-       + \underbrace{p\ln x + q\ln(1-x)}_{\text{your split}}$$
-
-Look at the first bracket: it contains no $x$. Every cent lands on
-some bird, so the payouts multiply your wealth however you split;
-they decide how much you grow, never how to divide. Only the second
-bracket is yours to optimize, and setting its derivative to zero,
-
-$$\frac{p}{x} - \frac{q}{1-x} = 0 \qquad\Rightarrow\qquad x = p$$
-
-Bet your beliefs: the optimal split is the probabilities themselves,
-and the payouts vanished from the answer. This is Kelly's original
-horse-race result[^kelly]. Mind the fine print though: it only holds
-because the bets cover every outcome and all the money is in. The
-earlier levels were a single bet with cash on the side, which is why
-their Kelly was $f^* = p - q/b$ and the payout mattered a great deal.
-
 [^kelly]: J.L. Kelly Jr., "A New Interpretation of Information Rate",
 Bell System Technical Journal, 1956; Cover & Thomas, *Elements of
 Information Theory*, ch. 6: proportional betting is log-optimal, and
 "a Dutch book, though risk-free, does not optimize the doubling rate."
+
+[^complex]: Note that the real world is much more complex then what we do here. And they try to discoralete not just via stocks of course.
