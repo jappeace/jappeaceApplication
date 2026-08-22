@@ -243,7 +243,6 @@ Two of these birds always land on opposites.
 Furthermore they pay out sufficiently each to cover the loss of the other.
 So you can just put your betting percentage on whichever birds
 are negatively correlated and win.
-This is known as the kelly point.[^kelly]
 
 This works because the game is rigged in your favor.
 Either the sunny bird or the rainy bird will win, they
@@ -265,7 +264,7 @@ because you'll either win 1.8 times your stake
 or you'll win 2.8 times your stake.
 Of course you'll lose the part of the stake you put on the losing
 bird, so you end up expecting around $9.6\%$ per flip anyway.
-The 60/40 split is to maximize average growth, the kelly point.
+The 60/40 split is to maximize average growth, the kelly point.[^kelly]
 
 This isn't quite the same as a money pump, or sure bet.
 The Kelly point maximizes the average growth rate[^ev-note], 
