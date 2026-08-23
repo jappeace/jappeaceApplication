@@ -9,7 +9,8 @@ running the random command.
 
 import CoinFlipGame
     exposing
-        ( BiasState(..)
+        ( Autoclicker(..)
+        , BiasState(..)
         , CoinSide(..)
         , GamePhase(..)
         , LevelConfig
@@ -206,14 +207,20 @@ clickAtOrigin =
 shopSuite : Test
 shopSuite =
     describe "CoinFlipGame shop (level 2)"
-        [ test "the shop starts open with its items visible" <|
+        [ test "the shop starts collapsed" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig level2Start
                     |> Query.fromHtml
-                    |> Query.has [ class "shop-item" ]
-        , test "toggling the shop collapses it" <|
+                    |> Query.hasNot [ class "shop-item" ]
+        , test "toggling the shop opens its items" <|
             \_ ->
                 apply CoinFlipLevel2.levelConfig [ ShopToggled ] level2Start
+                    |> view CoinFlipLevel2.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "shop-item" ]
+        , test "toggling twice collapses the shop again" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig [ ShopToggled, ShopToggled ] level2Start
                     |> view CoinFlipLevel2.levelConfig
                     |> Query.fromHtml
                     |> Query.hasNot [ class "shop-item" ]
@@ -346,13 +353,65 @@ shopSuite =
                     level2Start
                     |> latestLogText
                     |> Expect.equal "\u{1F9D3} Uncle: \u{201C}Winners don't do math, son.\u{201D}"
-        , test "level 1 has no shop, so a stray purchase changes nothing" <|
+        , test "level 1 sells no tracker or uncle, stray purchases change nothing" <|
             \_ ->
                 apply CoinFlipLevel1.levelConfig
                     [ TrackerPurchased, UncleAdviceRequested ]
                     level1Start
                     |> .balanceCents
                     |> Expect.equal 2500
+        , test "buying the autoclicker costs $10.00" <|
+            \_ ->
+                let
+                    bought =
+                        apply CoinFlipLevel2.levelConfig [ AutoclickerPurchased ] level2Start
+                in
+                ( bought.balanceCents, bought.autoclicker )
+                    |> Expect.equal ( 1500, ClickerBought )
+        , test "level 1 sells the autoclicker too" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig [ AutoclickerPurchased ] level1Start
+                    |> .balanceCents
+                    |> Expect.equal 1500
+        , test "the autoclicker cannot be bought twice" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ AutoclickerPurchased, AutoclickerPurchased ]
+                    level2Start
+                    |> .balanceCents
+                    |> Expect.equal 1500
+        , test "the autoclicker is refused when it would wipe the balance" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ AutoclickerPurchased ]
+                    { level2Start | balanceCents = 1000 }
+                    |> .autoclicker
+                    |> Expect.equal ClickerNotBought
+        , test "holding and releasing a bet button tracks the held side" <|
+            \_ ->
+                let
+                    held =
+                        apply CoinFlipLevel2.levelConfig [ BetHoldStarted Heads ] level2Start
+
+                    released =
+                        apply CoinFlipLevel2.levelConfig [ BetHoldEnded ] held
+                in
+                ( held.betHold, released.betHold )
+                    |> Expect.equal ( CoinFlipGame.BetHeld Heads, CoinFlipGame.NoBetHeld )
+        , test "an autoclicker tick validates the bet exactly like a manual press" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ AutoclickerPurchased, BetHoldStarted Heads, AutoclickerTicked ]
+                    level2Start
+                    |> latestLogText
+                    |> Expect.equal "Enter a bet amount above $0.00."
+        , test "a tick with no button held bets nothing" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ AutoclickerPurchased, AutoclickerTicked ]
+                    level2Start
+                    |> latestLogText
+                    |> Expect.equal "Bought the autoclicker for $10.00. Hold a bet button down to use it."
         ]
 
 
@@ -579,6 +638,16 @@ winCapSuite =
                 in
                 ( raised.phase, raised.balanceCents, raised.winCapTier )
                     |> Expect.equal ( Playing, 149900, DegenerateCap )
+        , test "a raise already past the new target wins again on the spot" <|
+            \_ ->
+                let
+                    raised =
+                        apply CoinFlipLevel2.levelConfig
+                            [ WinCapRaised ]
+                            { level2Start | phase = WonGame, balanceCents = 3000000 }
+                in
+                ( raised.phase, raised.winCapTier, raised.balanceCents )
+                    |> Expect.equal ( WonGame, SecondCap, 2950000 )
         , test "there is no raise beyond the degenerate cap" <|
             \_ ->
                 apply CoinFlipLevel2.levelConfig

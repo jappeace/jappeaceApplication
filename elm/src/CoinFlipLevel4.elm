@@ -21,8 +21,8 @@ costs money and yields only his fondest farewell.
 
 -}
 
-import CoinFlipGame exposing (ExtraTimeOffer(..), NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
-import MultiCoinGame exposing (AllocatorOffer(..), AutoclickerOffer(..), CoinOdds(..), CorrelationBookOffer(..), ExtraTurnsOffer(..), FlipHelperOffer(..), GlassesOffer(..), LastChanceTurnOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
+import CoinFlipGame exposing (AutoclickerOffer(..), ExtraTimeOffer(..), NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
+import MultiCoinGame exposing (AllocatorOffer(..), CoinOdds(..), CorrelationBookOffer(..), ExtraTurnsOffer(..), FlipHelperOffer(..), GlassesOffer(..), LastChanceTurnOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
 
 
 levelConfig : MultiCoinConfig

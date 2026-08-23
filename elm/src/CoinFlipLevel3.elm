@@ -10,8 +10,8 @@ Which bird got which profile has to be rediscovered every replay.
 
 -}
 
-import CoinFlipGame exposing (ExtraTimeOffer(..), NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
-import MultiCoinGame exposing (AllocatorOffer(..), AutoclickerOffer(..), CoinOdds(..), CorrelationBookOffer(..), ExtraTurnsOffer(..), FlipHelperOffer(..), GlassesOffer(..), LastChanceTurnOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
+import CoinFlipGame exposing (AutoclickerOffer(..), ExtraTimeOffer(..), NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
+import MultiCoinGame exposing (AllocatorOffer(..), CoinOdds(..), CorrelationBookOffer(..), ExtraTurnsOffer(..), FlipHelperOffer(..), GlassesOffer(..), LastChanceTurnOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
 
 
 levelConfig : MultiCoinConfig

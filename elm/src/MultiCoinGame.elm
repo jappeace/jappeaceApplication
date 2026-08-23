@@ -3,8 +3,6 @@ module MultiCoinGame exposing
     , AllocatorOffer(..)
     , RefundOffer(..)
     , RefundState(..)
-    , Autoclicker(..)
-    , AutoclickerOffer(..)
     , BustCause(..)
     , CorrelationBook(..)
     , CorrelationBookOffer(..)
@@ -65,7 +63,9 @@ import Browser
 import Browser.Events
 import CoinFlipGame
     exposing
-        ( ClockState(..)
+        ( Autoclicker(..)
+        , AutoclickerOffer(..)
+        , ClockState(..)
         , CoinSide(..)
         , ExtraTimeOffer(..)
         , ExtraTimePackage
@@ -230,19 +230,6 @@ type alias PairTally =
     , sameCount : Int
     , bothCount : Int
     }
-
-
-{-| The autoclicker spares the player's mouse finger: once bought,
-holding the flip button down fires a flip every 100ms. Price in cents.
--}
-type AutoclickerOffer
-    = NoAutoclicker
-    | AutoclickerForSale Int
-
-
-type Autoclicker
-    = ClickerNotBought
-    | ClickerBought
 
 
 {-| Whether the flip button is currently held down (mouse or touch).
@@ -489,7 +476,7 @@ initialModel config =
     , helperPause = HelpersFlipping
     , helperFlipCount = 0
     , nextHelperPriceCents = initialHelperPriceCents config.flipHelperOffer
-    , shopFold = ShopExpanded
+    , shopFold = ShopCollapsed
     , pendingPurchase = NoPendingPurchase
     , uncleAdviceCount = 0
     , uncleGloat = UncleHasNotGloated
@@ -1308,7 +1295,11 @@ purchaseExtraTime budget offer package model =
 
 {-| Pay to raise the winning target and play on. Only offered on the
 win screen; the winning balance always covers the price, but the guard
-stays so a stray message can never charge into bankruptcy.
+stays so a stray message can never charge into bankruptcy. The end
+state is re-checked right away: a win that overshot the raised target
+too (a 30x swan can) wins again on the spot instead of leaving a
+"playing" game already past its target. The bust cause is a formality,
+the guarded balance can never be zero here.
 -}
 raiseWinCap : Model -> Model
 raiseWinCap model =
@@ -1325,18 +1316,20 @@ raiseWinCap model =
                     model
 
                 else
-                    logLine NeutralTone
-                        ("Paid $"
-                            ++ formatCents upsell.priceCents
-                            ++ " to raise the target to $"
-                            ++ String.fromInt (capTargetCents upsell.raisedTier // 100)
-                            ++ ". Winning wasn't enough."
+                    checkEndState BustByBetting
+                        (logLine NeutralTone
+                            ("Paid $"
+                                ++ formatCents upsell.priceCents
+                                ++ " to raise the target to $"
+                                ++ String.fromInt (capTargetCents upsell.raisedTier // 100)
+                                ++ ". Winning wasn't enough."
+                            )
+                            { model
+                                | balanceCents = model.balanceCents - upsell.priceCents
+                                , winCapTier = upsell.raisedTier
+                                , phase = Playing
+                            }
                         )
-                        { model
-                            | balanceCents = model.balanceCents - upsell.priceCents
-                            , winCapTier = upsell.raisedTier
-                            , phase = Playing
-                        }
 
 
 {-| The out-of-flips rescue purchase. Revives the game: the flip

@@ -9,7 +9,8 @@ without running the random command. Level 3's coins: Swan wins on rolls
 
 import CoinFlipGame
     exposing
-        ( GamePhase(..)
+        ( Autoclicker(..)
+        , GamePhase(..)
         , TrackerState(..)
         , UncleOffer(..)
         , WinCapTier(..)
@@ -21,7 +22,6 @@ import Expect
 import MultiCoinGame
     exposing
         ( AllocationMode(..)
-        , Autoclicker(..)
         , RefundState(..)
         , BustCause(..)
         , CoinOdds(..)
@@ -430,26 +430,26 @@ gatingSuite =
                 view CoinFlipLevel3.levelConfig { level3Start | tracker = TrackerBought }
                     |> Query.fromHtml
                     |> Query.has [ class "tally" ]
-        , test "the shop starts open with the section headings and their items" <|
+        , test "the shop starts collapsed" <|
             \_ ->
                 view CoinFlipLevel3.levelConfig level3Start
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "shop-item" ]
+        , test "toggling the shop opens the section headings and their items" <|
+            \_ ->
+                apply [ ShopToggled ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
                     |> Query.fromHtml
                     |> Expect.all
                         [ Query.has [ class "shop-group-heading" ]
                         , Query.has [ class "shop-item" ]
                         ]
-        , test "toggling the shop collapses it" <|
-            \_ ->
-                apply [ ShopToggled ] level3Start
-                    |> view CoinFlipLevel3.levelConfig
-                    |> Query.fromHtml
-                    |> Query.hasNot [ class "shop-item" ]
-        , test "toggling twice opens the shop again" <|
+        , test "toggling twice collapses the shop again" <|
             \_ ->
                 apply [ ShopToggled, ShopToggled ] level3Start
                     |> view CoinFlipLevel3.levelConfig
                     |> Query.fromHtml
-                    |> Query.has [ class "shop-item" ]
+                    |> Query.hasNot [ class "shop-item" ]
         , test "the helper count only renders once helpers are hired" <|
             \_ ->
                 ( view CoinFlipLevel3.levelConfig level3Start
@@ -806,7 +806,8 @@ refundSuite =
                     |> Query.hasNot [ text "Ask your money back" ]
         , test "hearing every phrase puts the refund up for sale" <|
             \_ ->
-                view CoinFlipLevel4.levelConfig heardEverything
+                apply4 [ ShopToggled ] heardEverything
+                    |> view CoinFlipLevel4.levelConfig
                     |> Query.fromHtml
                     |> Query.has [ text "Ask your money back" ]
         , test "asking costs $10 and uncle replies with his farewell" <|
@@ -1042,6 +1043,15 @@ winCapSuite =
                 in
                 ( raised.phase, raised.balanceCents, raised.winCapTier )
                     |> Expect.equal ( Playing, 149900, DegenerateCap )
+        , test "a raise already past the new target wins again on the spot" <|
+            \_ ->
+                let
+                    raised =
+                        apply [ WinCapRaised ]
+                            { level3Start | phase = WonGame, balanceCents = 3000000 }
+                in
+                ( raised.phase, raised.winCapTier, raised.balanceCents )
+                    |> Expect.equal ( WonGame, SecondCap, 2950000 )
         , test "there is no raise beyond the degenerate cap" <|
             \_ ->
                 apply [ WinCapRaised ]
