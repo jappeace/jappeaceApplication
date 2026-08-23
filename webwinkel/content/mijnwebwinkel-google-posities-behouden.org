@@ -7,8 +7,9 @@
 Je hebt jaren in je vindbaarheid geïnvesteerd. Je productpagina's staan goed
 in Google, klanten vinden je zonder dat je voor elke klik betaalt. En dan stapt
 je over naar een nieuw webshopplatform, en binnen een paar weken zakt je
-verkeer weg. We hebben webshops tot 70% van hun organische bezoekers zien
-verliezen na zo'n overstap.
+verkeer weg. In het vak heet dat de [[https://www.searchenginejournal.com/what-is-a-migration-hangover-traffic-drop-how-do-you-avoid-it/575102/][migration hangover]]: goed
+gedocumenteerde, forse verkeersdalingen na een verhuizing zonder
+sluitend redirect-plan.
 
 Dat is geen pech en het is ook geen straf van Google. Het is een
 voorspelbaar gevolg van hoe de meeste migraties worden uitgevoerd. En het

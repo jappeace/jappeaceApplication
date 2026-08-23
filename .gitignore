@@ -20,3 +20,5 @@ result-shake
 # Elm build cache
 elm-stuff/
 elm/elm-stuff/
+dist-newstyle/
+dist-newstyle.bak*/
