@@ -1066,7 +1066,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Ontsnap MijnWebwinkel"
+          H.h1 "Verhuizen van MijnWebwinkel"
           H.p ! A.class_ "subtitle" $ "Je webshop is je broodwinning, en MijnWebwinkel staat al jaren stil. Verhuizen voelt als een grote stap, maar het hoeft geen sprong in het diepe te zijn: wij zetten je complete shop geautomatiseerd over, zonder dataverlies en met zo min mogelijk downtime. Je betaalt pas na een succesvolle migratie."
           -- Decision: de hero-CTA wijst naar de scanner, niet naar de
           -- offerte (Jappie, 3 aug 2026): niemand vraagt een offerte aan
@@ -1205,13 +1205,13 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
-      H.h2 "Klaar om te ontsnappen?"
+      H.h2 "Klaar voor de overstap?"
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven een eerlijke inschatting."
       H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gratis gesprek"
   where
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
-      { pageMetaTitle       = "Ontsnap MijnWebwinkel \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
+      { pageMetaTitle       = "Verhuizen van MijnWebwinkel \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
       , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
@@ -1290,7 +1290,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Ontsnap CCV Shop"
+          H.h1 "Verhuizen van CCV Shop"
           -- Decision: hero benoemt CCV-specifieke pijn (prijsstijging,
           -- krimpend winkelbestand, Fiserv-zwaartepunt) in plaats van de
           -- generieke MWW-tekst. Bronnen in
@@ -1399,14 +1399,14 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
-      H.h2 "Klaar om te ontsnappen?"
+      H.h2 "Klaar voor de overstap?"
       H.p $ H.preEscapedToHtml ("Je hoeft niet langer te wachten tot CCV Shop beter wordt. Neem de controle terug over je webshop." :: Text)
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
-      { pageMetaTitle       = "Ontsnap CCV Shop \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
+      { pageMetaTitle       = "Verhuizen van CCV Shop \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
       , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-ccvshop.html"
@@ -1469,7 +1469,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Ontsnap Lightspeed"
+          H.h1 "Verhuizen van Lightspeed"
           H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt je richting hun nieuwe platform, maar het offici&euml;le upgradeprogramma slaat Nederland over en verliest onderweg je orderhistorie. Ondertussen draait je webshop op software die alleen nog onderhoud krijgt. Wij verhuizen je complete shop naar Shopify: geautomatiseerd, zonder dataverlies, zonder SEO-verlies, en je betaalt pas na succes." :: Text)
           -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
           -- stap in plaats van de offerte.
@@ -1553,14 +1553,14 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
-      H.h2 "Klaar om te ontsnappen?"
+      H.h2 "Klaar voor de overstap?"
       H.p $ H.preEscapedToHtml ("Lightspeed ga je niet helpen met deze overstap. Wij wel." :: Text)
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
-      { pageMetaTitle       = "Ontsnap Lightspeed \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
+      { pageMetaTitle       = "Verhuizen van Lightspeed \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
       , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-lightspeed.html"
@@ -1648,7 +1648,7 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
     -- Why this happens
     H.section ! A.class_ "audit" $ do
       H.h2 "Waarom wordt het verwaarloosd?"
-      H.p $ H.preEscapedToHtml ("MijnWebwinkel is geen slecht bedrijf met incompetente ontwikkelaars. Het is een <strong>winstgevend platform dat bewust wordt leeggemolken</strong> door de eigenaren. Dit is het standaard private-equity draaiboek:" :: Text)
+      H.p $ H.preEscapedToHtml ("MijnWebwinkel is geen slecht bedrijf met incompetente ontwikkelaars. Het is een <strong>winstgevend platform waar bewust niet meer in wordt ge&iuml;nvesteerd</strong>. Dit is het standaard private-equity draaiboek:" :: Text)
       H.ol $ do
         H.li $ do
           H.strong "Koop goedkoop"
@@ -1660,11 +1660,11 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
           H.strong "Verlaag kosten"
           ": stop alle ontwikkeling, minimaliseer support"
         H.li $ do
-          H.strong "Melk de marge"
+          H.strong "Inkomsten zonder investering"
           H.preEscapedToHtml (": 4.500 shops &times; &euro;40/maand = &euro;2,1 miljoen per jaar aan inkomsten met minimale kosten" :: Text)
         H.li $ do
           H.strong "Voeg samen of verkoop"
-          ": als de melkkoe opdroogt, fuseer met een ander product of stoot af"
+          ": lopen de inkomsten terug, fuseer dan met een ander product of stoot af"
 
     -- The numbers
     H.section ! A.class_ "for-who" $ do
@@ -1705,12 +1705,12 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
-      H.h2 "Klaar om te vertrekken?"
+      H.h2 "Zelf het moment kiezen?"
       H.p $ H.preEscapedToHtml ("MijnWebwinkel wordt niet meer beter. Het platform is verkocht, de code is bevroren, en de opvolger kost het dubbele. Je kunt wachten tot je <em>gedwongen</em> wordt te migreren naar Acendy, of je kunt nu zelf kiezen waar je naartoe gaat." :: Text)
       H.p $ do
         H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Bekijk onze migratieservice"
         H.preEscapedToHtml (": volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     waaromMeta :: PageMeta
     waaromMeta = PageMeta
@@ -1733,7 +1733,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
     -- Hero
     H.section ! A.class_ "hero" $ do
       H.h1 "Waarom verlaten steeds meer webshops Lightspeed?"
-      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed is een beursgenoteerd bedrijf. Dat klinkt als stabiliteit, maar het betekent het tegenovergestelde: het management moet elk kwartaal de aandeelhouders laten zien dat de omzet per klant stijgt. De makkelijkste manier? Prijzen verhogen en kleine webshops eruit drukken." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed is een beursgenoteerd bedrijf. Dat klinkt als stabiliteit, maar het betekent het tegenovergestelde: het management moet elk kwartaal de aandeelhouders laten zien dat de omzet per klant stijgt. De makkelijkste manier: de prijzen verhogen bij de klanten die er al zijn." :: Text)
 
     -- The stock market logic
     H.section ! A.class_ "audit" $ do
@@ -1747,7 +1747,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
         H.li $ do
           H.strong "Meer omzet per klant"
           H.preEscapedToHtml (": en d&aacute;t is precies wat er gebeurt" :: Text)
-      H.p $ H.preEscapedToHtml ("Het gevolg: de goedkoopste plannen worden duurder, functies verhuizen naar de duurdere pakketten, en het hele platform wordt opgeschoven richting grotere winkeliers die meer betalen. <strong>Je als kleine webshop bent niet de doelgroep, je bent de ballast.</strong>" :: Text)
+      H.p $ H.preEscapedToHtml ("Het gevolg: de goedkoopste plannen worden duurder, functies verhuizen naar de duurdere pakketten, en het hele platform wordt opgeschoven richting grotere winkeliers die meer betalen. In dat plan is voor kleine webshops steeds minder plek." :: Text)
       H.p $ H.preEscapedToHtml ("Voor jou betekent dit dat de prijsverhogingen geen incidenten zijn maar beleid. Elke brief over een nieuw tarief is geen pech, het is de strategie die zijn werk doet. Reken er dus op dat je volgend jaar meer betaalt voor dezelfde winkel, en het jaar daarna weer." :: Text)
       H.p $ H.preEscapedToHtml ("Wij vinden dat fundamenteel verkeerd. Kleine webshops groeien; dat is het hele punt. De webshop van vandaag met 200 producten is de webshop van volgend jaar met 2.000 producten. Maar als Lightspeed niet in die groei gelooft, hoef je daar niet op te wachten. Wij helpen je graag naar een platform dat w&eacute;l in je investeert." :: Text)
 
@@ -1828,7 +1828,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
 
     -- Nederland specifiek
     H.section ! A.class_ "for-who" $ do
-      H.h2 "Nederland als melkkoe"
+      H.h2 "De grootste markt, de laagste prioriteit"
       H.p $ H.preEscapedToHtml ("27% van alle Lightspeed-webshops zit in Nederland: bijna 5.000 shops. Nederland is veruit de grootste markt, groter dan de VS en Canada samen. Toch wordt het platform bestuurd vanuit Montreal, met Amerikaanse prioriteiten." :: Text)
       H.p $ H.preEscapedToHtml ("De E-Series migratie, de offici&euml;le route om van het oude naar het nieuwe systeem over te stappen, is <strong>alleen beschikbaar in Noord-Amerika</strong>. Nederlandse shops zitten vast op de C-Series, een systeem dat alleen nog onderhouds-updates krijgt, met prijzen die wel doorstijgen. En zelfs wie het offici&euml;le upgradepad w&eacute;l zou krijgen, verliest daarbij de orderhistorie; redirects, apps en (op twee na) thema's moeten opnieuw, en negentig dagen na activatie wordt de oude shop uitgezet." :: Text)
       H.p $ H.preEscapedToHtml ("Onderhouds-updates klinkt geruststellend, maar het betekent alleen dat de lampen blijven branden. Alles wat je vandaag aan je winkel mist, mis je over twee jaar nog steeds; wat er bij Shopify of WooCommerce elk jaar bijkomt, gaat aan jouw shop voorbij. Je abonnement betaalt intussen mee aan ontwikkeling die jij nooit te zien krijgt, en het enige echte besluit dat overblijft is of j&iacute;j het moment van vertrek kiest of Lightspeed dat ooit voor je doet." :: Text)
@@ -1874,17 +1874,17 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
 
     -- CTA
     H.section ! A.class_ "final-cta" $ do
-      H.h2 "Klaar om te vertrekken?"
+      H.h2 "Zelf het moment kiezen?"
       H.p $ H.preEscapedToHtml ("Lightspeed wordt elk kwartaal duurder en elk kwartaal minder gericht op je. Je kunt wachten tot de volgende prijsverhoging, of je kunt nu zelf kiezen waar je naartoe gaat." :: Text)
       H.p $ do
         H.a ! A.href "/migrate-lightspeed.html" $ "Bekijk onze migratieservice"
         H.preEscapedToHtml (": volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Ontsnap nu"
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     waaromLsMeta :: PageMeta
     waaromLsMeta = PageMeta
       { pageMetaTitle       = "Waarom verlaten steeds meer webshops Lightspeed? \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Lightspeed is beursgenoteerd en verschuift richting enterprise-klanten. Prijzen stijgen, kleine shops worden eruit gedrukt. 22% minder webshops in drie jaar. Dit is waarom."
+      , pageMetaDescription = "Lightspeed is beursgenoteerd en verschuift richting enterprise-klanten. Prijzen stijgen en de focus verschuift naar grote klanten. 22% minder webshops in drie jaar. Dit is waarom."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/waarom-lightspeed.html"
       , pageMetaOgImage     = Nothing
