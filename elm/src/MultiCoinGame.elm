@@ -552,7 +552,7 @@ update config msg model =
             ( purchaseExtraTime config.turnBudget config.extraTimeOffer package model, Cmd.none )
 
         WinCapRaised ->
-            ( raiseWinCap model, Cmd.none )
+            ( raiseWinCap config.uncleOffer model, Cmd.none )
 
         LastChanceTurnPurchased ->
             ( purchaseLastChanceTurn config.lastChanceTurnOffer model, Cmd.none )
@@ -1299,15 +1299,17 @@ stays so a stray message can never charge into bankruptcy. The end
 state is re-checked right away: a win that overshot the raised target
 too (a 30x swan can) wins again on the spot instead of leaving a
 "playing" game already past its target. The bust cause is a formality,
-the guarded balance can never be zero here.
+the guarded balance can never be zero here. The flip hold is released:
+the flip button vanished mid-hold when the win screen appeared, so no
+mouse-up ever landed, and resuming must not auto-fire a stale hold.
 -}
-raiseWinCap : Model -> Model
-raiseWinCap model =
+raiseWinCap : UncleOffer -> Model -> Model
+raiseWinCap uncleOffer model =
     if model.phase /= WonGame then
         model
 
     else
-        case winCapUpsell model.winCapTier of
+        case winCapUpsell uncleOffer model.winCapTier of
             NoFurtherUpsell ->
                 model
 
@@ -1328,6 +1330,7 @@ raiseWinCap model =
                                 | balanceCents = model.balanceCents - upsell.priceCents
                                 , winCapTier = upsell.raisedTier
                                 , phase = Playing
+                                , flipHold = FlipReleased
                             }
                         )
 
@@ -1335,7 +1338,9 @@ raiseWinCap model =
 {-| The out-of-flips rescue purchase. Revives the game: the flip
 budget grows by the package and play resumes, only to run dry again
 shortly after, when the same offer reappears. The house calls this
-customer retention.
+customer retention. The flip hold is released like on a cap raise: the
+budget usually runs dry mid-hold, and the rescued flip must be the
+player's own press, not a stale hold's.
 -}
 purchaseLastChanceTurn : LastChanceTurnOffer -> Model -> Model
 purchaseLastChanceTurn offer model =
@@ -1362,6 +1367,7 @@ purchaseLastChanceTurn offer model =
                         | balanceCents = model.balanceCents - package.priceCents
                         , extraFlipsBought = model.extraFlipsBought + package.extraFlips
                         , phase = Playing
+                        , flipHold = FlipReleased
                     }
 
 
@@ -2371,7 +2377,7 @@ viewGameOver config model =
         (List.concat
             [ [ Html.text message ]
             , viewNextLevelLink config.nextLevelLink model
-            , viewWinCapUpsellButton model
+            , viewWinCapUpsellButton config.uncleOffer model
             , viewLastChanceTurnButton config model
             , viewUncleBustCallout model
             , [ Html.div []
@@ -2389,13 +2395,13 @@ viewGameOver config model =
 tenfold and resume playing. Gone once the degenerate cap has been won,
 because there is genuinely nothing left to sell.
 -}
-viewWinCapUpsellButton : Model -> List (Html Msg)
-viewWinCapUpsellButton model =
+viewWinCapUpsellButton : UncleOffer -> Model -> List (Html Msg)
+viewWinCapUpsellButton uncleOffer model =
     if model.phase /= WonGame then
         []
 
     else
-        case winCapUpsell model.winCapTier of
+        case winCapUpsell uncleOffer model.winCapTier of
             NoFurtherUpsell ->
                 []
 

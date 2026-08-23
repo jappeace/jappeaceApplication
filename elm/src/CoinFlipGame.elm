@@ -339,10 +339,12 @@ capTargetCents tier =
 -- lives here (shared) because both engines render it.
 {-| What raising the cap from here costs, and what the button says.
 $500 out of a $999 win, then $8,500 out of a $9,999 win: winning never
-buys satisfaction, only a bigger number to chase.
+buys satisfaction, only a bigger number to chase. The final button
+name-drops uncle only on levels that actually have one; level 1 has
+never met him, so its degenerate shows off to the world instead.
 -}
-winCapUpsell : WinCapTier -> WinCapUpsell
-winCapUpsell tier =
+winCapUpsell : UncleOffer -> WinCapTier -> WinCapUpsell
+winCapUpsell uncleOffer tier =
     case tier of
         FirstCap ->
             WinCapUpsellFor
@@ -354,7 +356,13 @@ winCapUpsell tier =
         SecondCap ->
             WinCapUpsellFor
                 { priceCents = 850000
-                , label = "I NEED TO SHOW UNCLE I'M AN ABSOLUTE DEGENERATE"
+                , label =
+                    case uncleOffer of
+                        NoUncleAdvice ->
+                            "I NEED TO SHOW THE WORLD I'M AN ABSOLUTE DEGENERATE"
+
+                        UncleAdviceForSale _ ->
+                            "I NEED TO SHOW UNCLE I'M AN ABSOLUTE DEGENERATE"
                 , raisedTier = DegenerateCap
                 }
 
@@ -484,7 +492,7 @@ update config msg model =
             ( purchaseExtraTime config.extraTimeOffer package model, Cmd.none )
 
         WinCapRaised ->
-            ( raiseWinCap model, Cmd.none )
+            ( raiseWinCap config.uncleOffer model, Cmd.none )
 
         ShopToggled ->
             ( { model
@@ -854,15 +862,17 @@ win screen; the winning balance always covers the price, but the guard
 stays so a stray message can never charge into bankruptcy. The end
 state is re-checked right away: a win that overshot the raised target
 too (a huge payout can) wins again on the spot instead of leaving a
-"playing" game already past its target.
+"playing" game already past its target. The bet hold is released: the
+bet buttons vanished mid-hold when the win screen appeared, so no
+mouse-up ever landed, and resuming must not auto-fire a stale hold.
 -}
-raiseWinCap : Model -> Model
-raiseWinCap model =
+raiseWinCap : UncleOffer -> Model -> Model
+raiseWinCap uncleOffer model =
     if model.phase /= WonGame then
         model
 
     else
-        case winCapUpsell model.winCapTier of
+        case winCapUpsell uncleOffer model.winCapTier of
             NoFurtherUpsell ->
                 model
 
@@ -883,6 +893,7 @@ raiseWinCap model =
                                 | balanceCents = model.balanceCents - upsell.priceCents
                                 , winCapTier = upsell.raisedTier
                                 , phase = Playing
+                                , betHold = NoBetHeld
                                 , betInput = clampBetInput (model.balanceCents - upsell.priceCents) model.betInput
                             }
                         )
@@ -1456,7 +1467,7 @@ viewGameOver config model =
         (List.concat
             [ [ Html.text message ]
             , viewNextLevelLink config.nextLevelLink model
-            , viewWinCapUpsellButton model
+            , viewWinCapUpsellButton config.uncleOffer model
             , viewBustEnding config.bustEnding model
             , [ Html.div []
                     [ Html.text "It took you exactly "
@@ -1490,13 +1501,13 @@ viewNextLevelLink link model =
 tenfold and resume playing. Gone once the degenerate cap has been won,
 because there is genuinely nothing left to sell.
 -}
-viewWinCapUpsellButton : Model -> List (Html Msg)
-viewWinCapUpsellButton model =
+viewWinCapUpsellButton : UncleOffer -> Model -> List (Html Msg)
+viewWinCapUpsellButton uncleOffer model =
     if model.phase /= WonGame then
         []
 
     else
-        case winCapUpsell model.winCapTier of
+        case winCapUpsell uncleOffer model.winCapTier of
             NoFurtherUpsell ->
                 []
 

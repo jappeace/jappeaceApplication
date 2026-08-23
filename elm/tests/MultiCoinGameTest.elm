@@ -1043,6 +1043,31 @@ winCapSuite =
                 in
                 ( raised.phase, raised.balanceCents, raised.winCapTier )
                     |> Expect.equal ( Playing, 149900, DegenerateCap )
+        , test "raising the cap releases a flip button still held from before the win" <|
+            \_ ->
+                apply [ WinCapRaised ]
+                    { level3Start
+                        | phase = WonGame
+                        , balanceCents = 99900
+                        , autoclicker = ClickerBought
+                        , flipHold = FlipHeld
+                    }
+                    |> .flipHold
+                    |> Expect.equal FlipReleased
+        , test "the last-chance rescue releases a stale flip hold too" <|
+            \_ ->
+                let
+                    rescued =
+                        apply4 [ LastChanceTurnPurchased ]
+                            { level4Start
+                                | phase = RanOutOfTime
+                                , balanceCents = 60000
+                                , autoclicker = ClickerBought
+                                , flipHold = FlipHeld
+                            }
+                in
+                ( rescued.phase, rescued.flipHold )
+                    |> Expect.equal ( Playing, FlipReleased )
         , test "a raise already past the new target wins again on the spot" <|
             \_ ->
                 let

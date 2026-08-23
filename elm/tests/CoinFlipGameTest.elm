@@ -638,6 +638,38 @@ winCapSuite =
                 in
                 ( raised.phase, raised.balanceCents, raised.winCapTier )
                     |> Expect.equal ( Playing, 149900, DegenerateCap )
+        , test "raising the cap releases a bet button still held from before the win" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ WinCapRaised ]
+                    { level2Start
+                        | phase = WonGame
+                        , balanceCents = 99900
+                        , autoclicker = ClickerBought
+                        , betHold = CoinFlipGame.BetHeld Heads
+                    }
+                    |> .betHold
+                    |> Expect.equal CoinFlipGame.NoBetHeld
+        , test "level 1's degenerate button does not name the uncle it never met" <|
+            \_ ->
+                view CoinFlipLevel1.levelConfig
+                    { level1Start
+                        | phase = WonGame
+                        , balanceCents = 999900
+                        , winCapTier = SecondCap
+                    }
+                    |> Query.fromHtml
+                    |> Query.hasNot [ text "UNCLE" ]
+        , test "level 2's degenerate button shows off to uncle" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig
+                    { level2Start
+                        | phase = WonGame
+                        , balanceCents = 999900
+                        , winCapTier = SecondCap
+                    }
+                    |> Query.fromHtml
+                    |> Query.has [ text "UNCLE" ]
         , test "a raise already past the new target wins again on the spot" <|
             \_ ->
                 let
