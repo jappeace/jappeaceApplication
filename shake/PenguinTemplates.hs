@@ -327,11 +327,11 @@ penguinIndexPage webwinkelUrl = penguinBaseTemplate En indexMeta $
           H.strong "Build and deliver"
           ": you check everything before it goes live, and you pay on delivery."
 
-    -- Decision: no consulting section. Consulting leads never came through
-    -- this site and Jappie does not want to push that work here; the site
-    -- sells fixed-price, transactional services (websites, migrations).
-    -- Consulting and case studies live on jappie.me, which the About section
-    -- and footer still link. Alternative considered: keeping a slimmed
+    -- Decision: no consulting section, and since 23 aug 2026 no consulting
+    -- anywhere: Jappie dropped the offering entirely (focus is
+    -- webshop-migraties en WordPress-sites); jappie.me linkt er ook niet
+    -- meer heen. The site sells fixed-price, transactional services
+    -- (websites, migrations). Alternative considered: keeping a slimmed
     -- consulting mention, rejected because it muddies the transactional
     -- positioning for the Ellen/Laura audience.
 
@@ -342,7 +342,7 @@ penguinIndexPage webwinkelUrl = penguinBaseTemplate En indexMeta $
         H.div $ do
           H.p $ H.preEscapedToHtml ("I&rsquo;m Jappie Klooster. I build websites and webshops for entrepreneurs, for a fixed price and in plain language. Behind the scenes I bring ten-plus years of software engineering, so the technology is chosen for reliability." :: Text)
           H.p $ do
-            "Based in the Netherlands. For consulting and case studies, see "
+            "Based in the Netherlands. For case studies and my technical blog, see "
             H.a ! A.href "https://jappie.me/" $ "jappie.me"
             "."
         H.img ! A.class_ "about-portrait"
