@@ -6,8 +6,10 @@ bias is printed right on the bet buttons, and people still bet tails.
 
 import CoinFlipGame
     exposing
-        ( BustEnding(..)
+        ( AutoclickerOffer(..)
+        , BustEnding(..)
         , CoinBias(..)
+        , ExtraTimeOffer(..)
         , LevelConfig
         , Model
         , Msg
@@ -24,6 +26,8 @@ levelConfig =
     , bias = KnownHeadsPercent 60
     , trackerOffer = NoTrackerForSale
     , uncleOffer = NoUncleAdvice
+    , autoclickerOffer = AutoclickerForSale 1000
+    , extraTimeOffer = NoExtraTime
     , nextLevelLink = NextLevelLinkTo { url = "/hidden-rewards.html", label = "<<next level>>" }
     , bustEnding = PlainBustEnding
     , introLogLine = "Heads hits 60%, tails 40%. The clock starts on your first bet. Good luck!"

@@ -1,4 +1,4 @@
-module CoinFlipGameTest exposing (clockSuite, formattingSuite, gambleSuite, gameOverSuite, hiddenBiasSuite, shopSuite)
+module CoinFlipGameTest exposing (clockSuite, extraTimeSuite, formattingSuite, gambleSuite, gameOverSuite, hiddenBiasSuite, shopSuite, winCapSuite)
 
 {-| Tests for the rigged-coin game engine shared by level 1
 (even-with-an-edge-you-lose.html) and level 2 (hidden-rewards.html).
@@ -9,7 +9,8 @@ running the random command.
 
 import CoinFlipGame
     exposing
-        ( BiasState(..)
+        ( Autoclicker(..)
+        , BiasState(..)
         , CoinSide(..)
         , GamePhase(..)
         , LevelConfig
@@ -17,6 +18,8 @@ import CoinFlipGame
         , Model
         , Msg(..)
         , TrackerState(..)
+        , WinCapTier(..)
+        , WinCapUpsell(..)
         , formatCents
         , formatClock
         , initialModel
@@ -25,8 +28,10 @@ import CoinFlipGame
         , ShopItemKind(..)
         , parseBetCents
         , quickBetCents
+        , trueEndingMessage
         , update
         , view
+        , winCapUpsell
         )
 import CoinFlipLevel1
 import CoinFlipLevel2
@@ -34,7 +39,7 @@ import Expect
 import Test exposing (Test, describe, test)
 import ShopDialog
 import Test.Html.Query as Query
-import Test.Html.Selector exposing (class, tag)
+import Test.Html.Selector exposing (class, tag, text)
 
 
 apply : LevelConfig -> List Msg -> Model -> Model
@@ -204,14 +209,20 @@ clickAtOrigin =
 shopSuite : Test
 shopSuite =
     describe "CoinFlipGame shop (level 2)"
-        [ test "the shop starts open with its items visible" <|
+        [ test "the shop starts collapsed" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig level2Start
                     |> Query.fromHtml
-                    |> Query.has [ class "shop-item" ]
-        , test "toggling the shop collapses it" <|
+                    |> Query.hasNot [ class "shop-item" ]
+        , test "toggling the shop opens its items" <|
             \_ ->
                 apply CoinFlipLevel2.levelConfig [ ShopToggled ] level2Start
+                    |> view CoinFlipLevel2.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "shop-item" ]
+        , test "toggling twice collapses the shop again" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig [ ShopToggled, ShopToggled ] level2Start
                     |> view CoinFlipLevel2.levelConfig
                     |> Query.fromHtml
                     |> Query.hasNot [ class "shop-item" ]
@@ -344,13 +355,65 @@ shopSuite =
                     level2Start
                     |> latestLogText
                     |> Expect.equal "\u{1F9D3} Uncle: \u{201C}Winners don't do math, son.\u{201D}"
-        , test "level 1 has no shop, so a stray purchase changes nothing" <|
+        , test "level 1 sells no tracker or uncle, stray purchases change nothing" <|
             \_ ->
                 apply CoinFlipLevel1.levelConfig
                     [ TrackerPurchased, UncleAdviceRequested ]
                     level1Start
                     |> .balanceCents
                     |> Expect.equal 2500
+        , test "buying the autoclicker costs $10.00" <|
+            \_ ->
+                let
+                    bought =
+                        apply CoinFlipLevel2.levelConfig [ AutoclickerPurchased ] level2Start
+                in
+                ( bought.balanceCents, bought.autoclicker )
+                    |> Expect.equal ( 1500, ClickerBought )
+        , test "level 1 sells the autoclicker too" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig [ AutoclickerPurchased ] level1Start
+                    |> .balanceCents
+                    |> Expect.equal 1500
+        , test "the autoclicker cannot be bought twice" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ AutoclickerPurchased, AutoclickerPurchased ]
+                    level2Start
+                    |> .balanceCents
+                    |> Expect.equal 1500
+        , test "the autoclicker is refused when it would wipe the balance" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ AutoclickerPurchased ]
+                    { level2Start | balanceCents = 1000 }
+                    |> .autoclicker
+                    |> Expect.equal ClickerNotBought
+        , test "holding and releasing a bet button tracks the held side" <|
+            \_ ->
+                let
+                    held =
+                        apply CoinFlipLevel2.levelConfig [ BetHoldStarted Heads ] level2Start
+
+                    released =
+                        apply CoinFlipLevel2.levelConfig [ BetHoldEnded ] held
+                in
+                ( held.betHold, released.betHold )
+                    |> Expect.equal ( CoinFlipGame.BetHeld Heads, CoinFlipGame.NoBetHeld )
+        , test "an autoclicker tick validates the bet exactly like a manual press" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ AutoclickerPurchased, BetHoldStarted Heads, AutoclickerTicked ]
+                    level2Start
+                    |> latestLogText
+                    |> Expect.equal "Enter a bet amount above $0.00."
+        , test "a tick with no button held bets nothing" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ AutoclickerPurchased, AutoclickerTicked ]
+                    level2Start
+                    |> latestLogText
+                    |> Expect.equal "Bought the autoclicker for $10.00. Hold a bet button down to use it."
         ]
 
 
@@ -441,6 +504,258 @@ gameOverSuite =
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WentBust }
                     |> Query.fromHtml
                     |> Query.hasNot [ class "uncle-verdict" ]
+        ]
+
+
+oneMinutePack : CoinFlipGame.ExtraTimePackage
+oneMinutePack =
+    { priceCents = 2000, extraSeconds = 60 }
+
+
+thirtyMinutePack : CoinFlipGame.ExtraTimePackage
+thirtyMinutePack =
+    { priceCents = 75000, extraSeconds = 30 * 60 }
+
+
+extraTimeSuite : Test
+extraTimeSuite =
+    describe "CoinFlipGame extra time (level 2)"
+        [ test "buying 1 more minute costs $20 and extends the clock" <|
+            \_ ->
+                let
+                    extended =
+                        apply CoinFlipLevel2.levelConfig
+                            [ ExtraTimePurchased oneMinutePack ]
+                            level2Start
+                in
+                ( extended.balanceCents, extended.secondsLeft )
+                    |> Expect.equal ( 500, 30 * 60 + 60 )
+        , test "buying 30 more minutes costs $750 and extends the clock" <|
+            \_ ->
+                let
+                    extended =
+                        apply CoinFlipLevel2.levelConfig
+                            [ ExtraTimePurchased thirtyMinutePack ]
+                            { level2Start | balanceCents = 100000 }
+                in
+                ( extended.balanceCents, extended.secondsLeft )
+                    |> Expect.equal ( 25000, 2 * 30 * 60 )
+        , test "buying time is repeatable" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ ExtraTimePurchased oneMinutePack, ExtraTimePurchased oneMinutePack ]
+                    { level2Start | balanceCents = 100000 }
+                    |> .secondsLeft
+                    |> Expect.equal (30 * 60 + 120)
+        , test "more time is refused when it would wipe the balance" <|
+            \_ ->
+                let
+                    refused =
+                        apply CoinFlipLevel2.levelConfig
+                            [ ExtraTimePurchased oneMinutePack ]
+                            { level2Start | balanceCents = 2000 }
+                in
+                ( refused.balanceCents, refused.secondsLeft )
+                    |> Expect.equal ( 2000, 30 * 60 )
+        , test "a package the shop never offered is ignored" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ ExtraTimePurchased { priceCents = 1, extraSeconds = 9999 } ]
+                    level2Start
+                    |> .secondsLeft
+                    |> Expect.equal (30 * 60)
+        , test "level 1 sells no time" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ ExtraTimePurchased oneMinutePack ]
+                    level1Start
+                    |> .secondsLeft
+                    |> Expect.equal (30 * 60)
+        , test "confirming a time purchase keeps the dialog open for repeat buys" <|
+            \_ ->
+                let
+                    bought =
+                        apply CoinFlipLevel2.levelConfig
+                            [ PurchaseConsidered (ExtraTimeItem oneMinutePack) clickAtOrigin
+                            , PurchaseConfirmed
+                            ]
+                            { level2Start | balanceCents = 100000 }
+                in
+                ( bought.secondsLeft
+                , bought.pendingPurchase
+                )
+                    |> Expect.equal
+                        ( 30 * 60 + 60
+                        , Considering (ExtraTimeItem oneMinutePack) clickAtOrigin
+                        )
+        ]
+
+
+{-| The button text an upsell would render, so view tests can compare
+against what `winCapUpsell` actually picked without pinning wording.
+-}
+upsellLabel : WinCapUpsell -> String
+upsellLabel upsell =
+    case upsell of
+        NoFurtherUpsell ->
+            "<no upsell>"
+
+        WinCapUpsellFor sale ->
+            sale.label
+
+
+winCapSuite : Test
+winCapSuite =
+    describe "CoinFlipGame win cap upsell"
+        [ test "raising the cap costs $500 and resumes play" <|
+            \_ ->
+                let
+                    raised =
+                        apply CoinFlipLevel2.levelConfig
+                            [ WinCapRaised ]
+                            { level2Start | phase = WonGame, balanceCents = 99900 }
+                in
+                ( raised.phase, raised.balanceCents, raised.winCapTier )
+                    |> Expect.equal ( Playing, 49900, SecondCap )
+        , test "the old target no longer wins after the raise" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ WinCapRaised, landedFlip Heads 50000 Heads ]
+                    { level2Start
+                        | phase = WonGame
+                        , balanceCents = 99900
+                        , biasState = BiasReady { favored = Heads, favoredPercent = 60 }
+                    }
+                    |> .phase
+                    |> Expect.equal Playing
+        , test "reaching $9,999 wins the raised game" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ WinCapRaised, landedFlip Heads 950000 Heads ]
+                    { level2Start
+                        | phase = WonGame
+                        , balanceCents = 99900
+                        , biasState = BiasReady { favored = Heads, favoredPercent = 60 }
+                    }
+                    |> .phase
+                    |> Expect.equal WonGame
+        , test "the second raise costs $8,500 and targets $99,999" <|
+            \_ ->
+                let
+                    raised =
+                        apply CoinFlipLevel2.levelConfig
+                            [ WinCapRaised ]
+                            { level2Start
+                                | phase = WonGame
+                                , balanceCents = 999900
+                                , winCapTier = SecondCap
+                            }
+                in
+                ( raised.phase, raised.balanceCents, raised.winCapTier )
+                    |> Expect.equal ( Playing, 149900, DegenerateCap )
+        , test "raising the cap releases a bet button still held from before the win" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ WinCapRaised ]
+                    { level2Start
+                        | phase = WonGame
+                        , balanceCents = 99900
+                        , autoclicker = ClickerBought
+                        , betHold = CoinFlipGame.BetHeld Heads
+                    }
+                    |> .betHold
+                    |> Expect.equal CoinFlipGame.NoBetHeld
+        , test "an uncle-less level gets its own degenerate label, not the uncle one" <|
+            \_ ->
+                upsellLabel (winCapUpsell CoinFlipLevel1.levelConfig.uncleOffer SecondCap)
+                    |> Expect.notEqual
+                        (upsellLabel (winCapUpsell CoinFlipLevel2.levelConfig.uncleOffer SecondCap))
+        , test "level 1's win screen renders the label its own config picks" <|
+            \_ ->
+                view CoinFlipLevel1.levelConfig
+                    { level1Start
+                        | phase = WonGame
+                        , balanceCents = 999900
+                        , winCapTier = SecondCap
+                    }
+                    |> Query.fromHtml
+                    |> Query.has
+                        [ text (upsellLabel (winCapUpsell CoinFlipLevel1.levelConfig.uncleOffer SecondCap)) ]
+        , test "level 2's win screen renders the label its own config picks" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig
+                    { level2Start
+                        | phase = WonGame
+                        , balanceCents = 999900
+                        , winCapTier = SecondCap
+                    }
+                    |> Query.fromHtml
+                    |> Query.has
+                        [ text (upsellLabel (winCapUpsell CoinFlipLevel2.levelConfig.uncleOffer SecondCap)) ]
+        , test "a raise already past the new target wins again on the spot" <|
+            \_ ->
+                let
+                    raised =
+                        apply CoinFlipLevel2.levelConfig
+                            [ WinCapRaised ]
+                            { level2Start | phase = WonGame, balanceCents = 3000000 }
+                in
+                ( raised.phase, raised.winCapTier, raised.balanceCents )
+                    |> Expect.equal ( WonGame, SecondCap, 2950000 )
+        , test "there is no raise beyond the degenerate cap" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ WinCapRaised ]
+                    { level2Start
+                        | phase = WonGame
+                        , balanceCents = 9999900
+                        , winCapTier = DegenerateCap
+                    }
+                    |> .balanceCents
+                    |> Expect.equal 9999900
+        , test "raising the cap does nothing while still playing" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig [ WinCapRaised ] level2Start
+                    |> .balanceCents
+                    |> Expect.equal 2500
+        , test "the win screen renders the upsell button" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig
+                    { level2Start | phase = WonGame, balanceCents = 99900 }
+                    |> Query.fromHtml
+                    |> Query.has [ class "win-cap-upsell" ]
+        , test "the bust screen renders no upsell button" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig
+                    { level2Start | phase = WentBust }
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "win-cap-upsell" ]
+        , test "the degenerate win renders no upsell button" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig
+                    { level2Start
+                        | phase = WonGame
+                        , balanceCents = 9999900
+                        , winCapTier = DegenerateCap
+                    }
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "win-cap-upsell" ]
+        , test "the degenerate win draws the true ending" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig
+                    { level2Start
+                        | phase = WonGame
+                        , balanceCents = 9999900
+                        , winCapTier = DegenerateCap
+                    }
+                    |> Query.fromHtml
+                    |> Query.has [ text trueEndingMessage ]
+        , test "lower-cap wins do not draw the true ending" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig
+                    { level2Start | phase = WonGame, balanceCents = 99900 }
+                    |> Query.fromHtml
+                    |> Query.hasNot [ text trueEndingMessage ]
         ]
 
 

@@ -1,4 +1,4 @@
-module MultiCoinGameTest exposing (correlationSuite, correlationUpgradeSuite, extraTurnsSuite, flipSuite, refundSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite)
+module MultiCoinGameTest exposing (correlationSuite, correlationUpgradeSuite, extraTimeSuite, extraTurnsSuite, flipSuite, refundSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite, winCapSuite)
 
 {-| Tests for the multi-coin engine behind level 3 (black-swan.html).
 They drive the real `update` with the real level config; the coins
@@ -9,9 +9,12 @@ without running the random command. Level 3's coins: Swan wins on rolls
 
 import CoinFlipGame
     exposing
-        ( GamePhase(..)
+        ( Autoclicker(..)
+        , GamePhase(..)
         , TrackerState(..)
         , UncleOffer(..)
+        , WinCapTier(..)
+        , trueEndingMessage
         )
 import CoinFlipLevel3
 import CoinFlipLevel4
@@ -19,7 +22,6 @@ import Expect
 import MultiCoinGame
     exposing
         ( AllocationMode(..)
-        , Autoclicker(..)
         , RefundState(..)
         , BustCause(..)
         , CoinOdds(..)
@@ -428,26 +430,26 @@ gatingSuite =
                 view CoinFlipLevel3.levelConfig { level3Start | tracker = TrackerBought }
                     |> Query.fromHtml
                     |> Query.has [ class "tally" ]
-        , test "the shop starts open with the section headings and their items" <|
+        , test "the shop starts collapsed" <|
             \_ ->
                 view CoinFlipLevel3.levelConfig level3Start
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "shop-item" ]
+        , test "toggling the shop opens the section headings and their items" <|
+            \_ ->
+                apply [ ShopToggled ] level3Start
+                    |> view CoinFlipLevel3.levelConfig
                     |> Query.fromHtml
                     |> Expect.all
                         [ Query.has [ class "shop-group-heading" ]
                         , Query.has [ class "shop-item" ]
                         ]
-        , test "toggling the shop collapses it" <|
-            \_ ->
-                apply [ ShopToggled ] level3Start
-                    |> view CoinFlipLevel3.levelConfig
-                    |> Query.fromHtml
-                    |> Query.hasNot [ class "shop-item" ]
-        , test "toggling twice opens the shop again" <|
+        , test "toggling twice collapses the shop again" <|
             \_ ->
                 apply [ ShopToggled, ShopToggled ] level3Start
                     |> view CoinFlipLevel3.levelConfig
                     |> Query.fromHtml
-                    |> Query.has [ class "shop-item" ]
+                    |> Query.hasNot [ class "shop-item" ]
         , test "the helper count only renders once helpers are hired" <|
             \_ ->
                 ( view CoinFlipLevel3.levelConfig level3Start
@@ -804,7 +806,8 @@ refundSuite =
                     |> Query.hasNot [ text "Ask your money back" ]
         , test "hearing every phrase puts the refund up for sale" <|
             \_ ->
-                view CoinFlipLevel4.levelConfig heardEverything
+                apply4 [ ShopToggled ] heardEverything
+                    |> view CoinFlipLevel4.levelConfig
                     |> Query.fromHtml
                     |> Query.has [ text "Ask your money back" ]
         , test "asking costs $10 and uncle replies with his farewell" <|
@@ -937,4 +940,188 @@ extraTurnsSuite =
                     { level4Start | balanceCents = 500, roundCount = 199 }
                     |> .phase
                     |> Expect.equal RanOutOfTime
+        ]
+
+
+oneMinutePack : CoinFlipGame.ExtraTimePackage
+oneMinutePack =
+    { priceCents = 2000, extraSeconds = 60 }
+
+
+thirtyMinutePack : CoinFlipGame.ExtraTimePackage
+thirtyMinutePack =
+    { priceCents = 75000, extraSeconds = 30 * 60 }
+
+
+extraTimeSuite : Test
+extraTimeSuite =
+    describe "MultiCoinGame extra time and level-3 upgrades"
+        [ test "buying 1 more minute costs $20 and extends the clock" <|
+            \_ ->
+                let
+                    extended =
+                        apply [ ExtraTimePurchased oneMinutePack ] level3Start
+                in
+                ( extended.balanceCents, extended.secondsLeft )
+                    |> Expect.equal ( 500, 30 * 60 + 60 )
+        , test "buying 30 more minutes costs $750 and extends the clock" <|
+            \_ ->
+                let
+                    extended =
+                        apply [ ExtraTimePurchased thirtyMinutePack ]
+                            { level3Start | balanceCents = 100000 }
+                in
+                ( extended.balanceCents, extended.secondsLeft )
+                    |> Expect.equal ( 25000, 2 * 30 * 60 )
+        , test "more time is refused when it would wipe the balance" <|
+            \_ ->
+                let
+                    refused =
+                        apply [ ExtraTimePurchased oneMinutePack ]
+                            { level3Start | balanceCents = 2000 }
+                in
+                ( refused.balanceCents, refused.secondsLeft )
+                    |> Expect.equal ( 2000, 30 * 60 )
+        , test "a package the shop never offered is ignored" <|
+            \_ ->
+                apply [ ExtraTimePurchased { priceCents = 1, extraSeconds = 9999 } ] level3Start
+                    |> .secondsLeft
+                    |> Expect.equal (30 * 60)
+        , test "the flip-limited level 4 sells no time" <|
+            \_ ->
+                apply4 [ ExtraTimePurchased oneMinutePack ]
+                    { level4Start | balanceCents = 60000 }
+                    |> .balanceCents
+                    |> Expect.equal 60000
+        , test "level 3 sells the percentage allocator for $10" <|
+            \_ ->
+                let
+                    bought =
+                        apply [ AllocatorPurchased ] level3Start
+                in
+                ( bought.balanceCents, bought.allocationMode )
+                    |> Expect.equal ( 1500, PercentAllocation )
+        ]
+
+
+winCapSuite : Test
+winCapSuite =
+    describe "MultiCoinGame win cap upsell"
+        [ test "raising the cap costs $500 and resumes play" <|
+            \_ ->
+                let
+                    raised =
+                        apply [ WinCapRaised ]
+                            { level3Start | phase = WonGame, balanceCents = 99900 }
+                in
+                ( raised.phase, raised.balanceCents, raised.winCapTier )
+                    |> Expect.equal ( Playing, 49900, SecondCap )
+        , test "the old target no longer wins after the raise" <|
+            \_ ->
+                apply
+                    [ WinCapRaised, landedRound [ 1700, 0, 0 ] [ 5, 100, 100 ] ]
+                    { level3Start | phase = WonGame, balanceCents = 99900 }
+                    |> .phase
+                    |> Expect.equal Playing
+        , test "reaching $9,999 wins the raised game" <|
+            \_ ->
+                apply
+                    [ WinCapRaised, landedRound [ 31667, 0, 0 ] [ 5, 100, 100 ] ]
+                    { level3Start | phase = WonGame, balanceCents = 99900 }
+                    |> .phase
+                    |> Expect.equal WonGame
+        , test "the second raise costs $8,500 and targets $99,999" <|
+            \_ ->
+                let
+                    raised =
+                        apply [ WinCapRaised ]
+                            { level3Start
+                                | phase = WonGame
+                                , balanceCents = 999900
+                                , winCapTier = SecondCap
+                            }
+                in
+                ( raised.phase, raised.balanceCents, raised.winCapTier )
+                    |> Expect.equal ( Playing, 149900, DegenerateCap )
+        , test "raising the cap releases a flip button still held from before the win" <|
+            \_ ->
+                apply [ WinCapRaised ]
+                    { level3Start
+                        | phase = WonGame
+                        , balanceCents = 99900
+                        , autoclicker = ClickerBought
+                        , flipHold = FlipHeld
+                    }
+                    |> .flipHold
+                    |> Expect.equal FlipReleased
+        , test "the last-chance rescue releases a stale flip hold too" <|
+            \_ ->
+                let
+                    rescued =
+                        apply4 [ LastChanceTurnPurchased ]
+                            { level4Start
+                                | phase = RanOutOfTime
+                                , balanceCents = 60000
+                                , autoclicker = ClickerBought
+                                , flipHold = FlipHeld
+                            }
+                in
+                ( rescued.phase, rescued.flipHold )
+                    |> Expect.equal ( Playing, FlipReleased )
+        , test "a raise already past the new target wins again on the spot" <|
+            \_ ->
+                let
+                    raised =
+                        apply [ WinCapRaised ]
+                            { level3Start | phase = WonGame, balanceCents = 3000000 }
+                in
+                ( raised.phase, raised.winCapTier, raised.balanceCents )
+                    |> Expect.equal ( WonGame, SecondCap, 2950000 )
+        , test "there is no raise beyond the degenerate cap" <|
+            \_ ->
+                apply [ WinCapRaised ]
+                    { level3Start
+                        | phase = WonGame
+                        , balanceCents = 9999900
+                        , winCapTier = DegenerateCap
+                    }
+                    |> .balanceCents
+                    |> Expect.equal 9999900
+        , test "raising the cap does nothing while still playing" <|
+            \_ ->
+                apply [ WinCapRaised ] level3Start
+                    |> .balanceCents
+                    |> Expect.equal 2500
+        , test "the win screen renders the upsell button" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig
+                    { level3Start | phase = WonGame, balanceCents = 99900 }
+                    |> Query.fromHtml
+                    |> Query.has [ class "win-cap-upsell" ]
+        , test "the degenerate win renders no upsell button" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig
+                    { level3Start
+                        | phase = WonGame
+                        , balanceCents = 9999900
+                        , winCapTier = DegenerateCap
+                    }
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "win-cap-upsell" ]
+        , test "the degenerate win draws the true ending" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig
+                    { level3Start
+                        | phase = WonGame
+                        , balanceCents = 9999900
+                        , winCapTier = DegenerateCap
+                    }
+                    |> Query.fromHtml
+                    |> Query.has [ text trueEndingMessage ]
+        , test "lower-cap wins do not draw the true ending" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig
+                    { level3Start | phase = WonGame, balanceCents = 99900 }
+                    |> Query.fromHtml
+                    |> Query.hasNot [ text trueEndingMessage ]
         ]

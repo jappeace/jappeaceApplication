@@ -29,8 +29,9 @@ import Html.Events
 import Json.Decode as Decode
 
 
-{-| The shop folds away behind its header. It starts expanded so new
-players see the catalogue exists; collapsing it is a click away.
+{-| The shop folds away behind its header. It starts collapsed so the
+game front is the coin, not the catalogue; the labelled toggle is a
+click away.
 -}
 type ShopFold
     = ShopCollapsed

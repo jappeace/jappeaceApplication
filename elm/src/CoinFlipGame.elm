@@ -1,8 +1,13 @@
 module CoinFlipGame exposing
-    ( BiasState(..)
+    ( Autoclicker(..)
+    , AutoclickerOffer(..)
+    , BetHold(..)
+    , BiasState(..)
     , ClockState(..)
     , CoinBias(..)
     , CoinSide(..)
+    , ExtraTimeOffer(..)
+    , ExtraTimePackage
     , GamePhase(..)
     , LevelConfig
     , LogLine
@@ -17,6 +22,10 @@ module CoinFlipGame exposing
     , TrackerState(..)
     , UncleGloat(..)
     , UncleOffer(..)
+    , WinCapTier(..)
+    , WinCapUpsell(..)
+    , capTargetCents
+    , extraTimeText
     , formatCents
     , formatClock
     , gameProgram
@@ -29,8 +38,10 @@ module CoinFlipGame exposing
     , targetBalanceCents
     , timeLimitSeconds
     , toneClass
+    , trueEndingMessage
     , update
     , view
+    , winCapUpsell
     )
 
 {-| Shared engine for the rigged-coin betting games on the blog.
@@ -86,6 +97,67 @@ type TrackerOffer
     | TrackerForSale Int
 
 
+{-| The autoclicker spares the player's mouse finger: once bought,
+holding a bet or flip button down fires a press every 100ms. Price in
+cents. Shared with the multi-coin engine.
+-}
+type AutoclickerOffer
+    = NoAutoclicker
+    | AutoclickerForSale Int
+
+
+type Autoclicker
+    = ClickerNotBought
+    | ClickerBought
+
+
+{-| Which bet button is currently held down (mouse or touch), if any.
+Only meaningful with a bought autoclicker: the auto-bet subscription
+runs while a side is held.
+-}
+type BetHold
+    = NoBetHeld
+    | BetHeld CoinSide
+
+
+{-| One purchasable batch of extra clock time: how many seconds, for how
+much. The time-limited twin of the flip-limited games' extra flips.
+-}
+type alias ExtraTimePackage =
+    { priceCents : Int
+    , extraSeconds : Int
+    }
+
+
+{-| Buying more time on the clock: satire made purchasable, repeatable,
+and deliberately overpriced. Several package sizes can be on offer at
+once.
+-}
+type ExtraTimeOffer
+    = NoExtraTime
+    | ExtraTimeForSale (List ExtraTimePackage)
+
+
+{-| How high the winning target currently sits. Every game starts at
+$999; the win screen sells raising it to $9,999 and, after winning
+that, once more to $99,999. There is nothing beyond the degenerate cap:
+winning it is the true ending.
+-}
+type WinCapTier
+    = FirstCap
+    | SecondCap
+    | DegenerateCap
+
+
+{-| What the win screen offers a freshly minted winner: pay up and play
+on toward a ten-times-higher target, or nothing once the final cap has
+been won.
+-}
+type WinCapUpsell
+    = NoFurtherUpsell
+    | WinCapUpsellFor { priceCents : Int, label : String, raisedTier : WinCapTier }
+
+
 {-| Uncle sells terrible gambling advice, one random phrase per purchase.
 The phrase list is split head/tail so an empty list cannot be configured.
 -}
@@ -98,6 +170,8 @@ type UncleOffer
 -}
 type ShopItemKind
     = TrackerItem
+    | AutoclickerItem
+    | ExtraTimeItem ExtraTimePackage
     | UncleAdviceItem
 
 
@@ -131,6 +205,8 @@ type alias LevelConfig =
     , bias : CoinBias
     , trackerOffer : TrackerOffer
     , uncleOffer : UncleOffer
+    , autoclickerOffer : AutoclickerOffer
+    , extraTimeOffer : ExtraTimeOffer
     , nextLevelLink : NextLevelLink
     , bustEnding : BustEnding
     , introLogLine : String
@@ -195,6 +271,9 @@ type alias Model =
     , headsLandedCount : Int
     , tailsLandedCount : Int
     , tracker : TrackerState
+    , winCapTier : WinCapTier
+    , autoclicker : Autoclicker
+    , betHold : BetHold
     , shopFold : ShopFold
     , pendingPurchase : PendingPurchase
     , uncleAdviceCount : Int
@@ -211,6 +290,12 @@ type Msg
     | CoinLanded { playerChoice : CoinSide, betCents : Int, landed : CoinSide }
     | ClockTicked
     | TrackerPurchased
+    | AutoclickerPurchased
+    | BetHoldStarted CoinSide
+    | BetHoldEnded
+    | AutoclickerTicked
+    | ExtraTimePurchased ExtraTimePackage
+    | WinCapRaised
     | ShopToggled
     | PurchaseConsidered ShopItemKind ClickPoint
     | PurchaseConfirmed
@@ -224,8 +309,72 @@ startingBalanceCents : Int
 startingBalanceCents = 2500
 
 
+{-| The first cap's target, the one every game starts chasing. The
+higher caps only exist through `capTargetCents`.
+-}
 targetBalanceCents : Int
 targetBalanceCents = 99900
+
+
+{-| The balance a game at this cap must reach to win: $999, $9,999, or
+$99,999.
+-}
+capTargetCents : WinCapTier -> Int
+capTargetCents tier =
+    case tier of
+        FirstCap ->
+            targetBalanceCents
+
+        SecondCap ->
+            999900
+
+        DegenerateCap ->
+            9999900
+
+
+-- Decision: the win-cap upsell is engine-behaviour, not a per-level
+-- config offer like the shop items: every level's win screen sells the
+-- same two escalations at the same prices, so a config knob would only
+-- be one more field every level must fill in identically. The ladder
+-- lives here (shared) because both engines render it.
+{-| What raising the cap from here costs, and what the button says.
+$500 out of a $999 win, then $8,500 out of a $9,999 win: winning never
+buys satisfaction, only a bigger number to chase. The final button
+name-drops uncle only on levels that actually have one; level 1 has
+never met him, so its degenerate shows off to the world instead.
+-}
+winCapUpsell : UncleOffer -> WinCapTier -> WinCapUpsell
+winCapUpsell uncleOffer tier =
+    case tier of
+        FirstCap ->
+            WinCapUpsellFor
+                { priceCents = 50000
+                , label = "I'm not satisfied and want to win more"
+                , raisedTier = SecondCap
+                }
+
+        SecondCap ->
+            WinCapUpsellFor
+                { priceCents = 850000
+                , label =
+                    case uncleOffer of
+                        NoUncleAdvice ->
+                            "I NEED TO SHOW THE WORLD I'M AN ABSOLUTE DEGENERATE"
+
+                        UncleAdviceForSale _ ->
+                            "I NEED TO SHOW UNCLE I'M AN ABSOLUTE DEGENERATE"
+                , raisedTier = DegenerateCap
+                }
+
+        DegenerateCap ->
+            NoFurtherUpsell
+
+
+{-| The victory text for winning the final, degenerate cap.
+-}
+trueEndingMessage : String
+trueEndingMessage =
+    "\u{1F389} You win all the internet points, congrats, this is the true ending, if you believe in such things, if not it's just another beginning."
 
 
 timeLimitSeconds : Int
@@ -262,7 +411,10 @@ initialModel config =
     , headsLandedCount = 0
     , tailsLandedCount = 0
     , tracker = TrackerNotBought
-    , shopFold = ShopExpanded
+    , winCapTier = FirstCap
+    , autoclicker = ClickerNotBought
+    , betHold = NoBetHeld
+    , shopFold = ShopCollapsed
     , pendingPurchase = NoPendingPurchase
     , uncleAdviceCount = 0
     , uncleGloat = UncleHasNotGloated
@@ -317,6 +469,31 @@ update config msg model =
         TrackerPurchased ->
             ( purchaseTracker config.trackerOffer model, Cmd.none )
 
+        AutoclickerPurchased ->
+            ( purchaseAutoclicker config.autoclickerOffer model, Cmd.none )
+
+        BetHoldStarted side ->
+            ( { model | betHold = BetHeld side }, Cmd.none )
+
+        BetHoldEnded ->
+            ( { model | betHold = NoBetHeld }, Cmd.none )
+
+        AutoclickerTicked ->
+            case model.betHold of
+                NoBetHeld ->
+                    -- A tick that raced the release: no button is held,
+                    -- nothing is bet.
+                    ( model, Cmd.none )
+
+                BetHeld side ->
+                    placeBet side model
+
+        ExtraTimePurchased package ->
+            ( purchaseExtraTime config.extraTimeOffer package model, Cmd.none )
+
+        WinCapRaised ->
+            ( raiseWinCap config.uncleOffer model, Cmd.none )
+
         ShopToggled ->
             ( { model
                 | shopFold =
@@ -343,6 +520,16 @@ update config msg model =
                         { model | pendingPurchase = NoPendingPurchase }
                     , Cmd.none
                     )
+
+                Considering AutoclickerItem _ ->
+                    ( purchaseAutoclicker config.autoclickerOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering (ExtraTimeItem package) _ ->
+                    -- Stays open: the house sells time by the armful.
+                    ( purchaseExtraTime config.extraTimeOffer package model, Cmd.none )
 
                 Considering UncleAdviceItem _ ->
                     -- Stays open: uncle appreciates repeat customers.
@@ -505,7 +692,7 @@ clampBetInput balanceCents input =
 
 checkEndState : Model -> Model
 checkEndState model =
-    if model.balanceCents >= targetBalanceCents then
+    if model.balanceCents >= capTargetCents model.winCapTier then
         { model | phase = WonGame }
 
     else if model.balanceCents <= 0 then
@@ -584,6 +771,132 @@ purchaseTracker offer model =
                         , tracker = TrackerBought
                         , betInput = clampBetInput (model.balanceCents - priceCents) model.betInput
                     }
+
+
+{-| Buy the autoclicker. Same wipe-out guard as the tracker.
+-}
+purchaseAutoclicker : AutoclickerOffer -> Model -> Model
+purchaseAutoclicker offer model =
+    case ( offer, model.autoclicker ) of
+        ( NoAutoclicker, ClickerNotBought ) ->
+            model
+
+        ( NoAutoclicker, ClickerBought ) ->
+            model
+
+        ( AutoclickerForSale _, ClickerBought ) ->
+            model
+
+        ( AutoclickerForSale priceCents, ClickerNotBought ) ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= priceCents then
+                logLine NeutralTone "You cannot afford the autoclicker." model
+
+            else
+                logLine NeutralTone
+                    ("Bought the autoclicker for $"
+                        ++ formatCents priceCents
+                        ++ ". Hold a bet button down to use it."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - priceCents
+                        , autoclicker = ClickerBought
+                        , betInput = clampBetInput (model.balanceCents - priceCents) model.betInput
+                    }
+
+
+{-| Buy more time on the clock. Repeatable, and refused when it would
+wipe the balance to $0, like the tracker. Only a package actually on
+offer is honoured; a message carrying any other package does nothing.
+-}
+purchaseExtraTime : ExtraTimeOffer -> ExtraTimePackage -> Model -> Model
+purchaseExtraTime offer package model =
+    case offer of
+        NoExtraTime ->
+            model
+
+        ExtraTimeForSale packages ->
+            if not (List.member package packages) then
+                model
+
+            else if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= package.priceCents then
+                logLine NeutralTone "You cannot afford more time." model
+
+            else
+                logLine NeutralTone
+                    ("Bought "
+                        ++ extraTimeText package.extraSeconds
+                        ++ " for $"
+                        ++ formatCents package.priceCents
+                        ++ ". Time is money, apparently in that order."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - package.priceCents
+                        , secondsLeft = model.secondsLeft + package.extraSeconds
+                        , betInput = clampBetInput (model.balanceCents - package.priceCents) model.betInput
+                    }
+
+
+{-| "1 more minute", "30 more minutes", or the raw seconds for a
+package that is not a whole number of minutes.
+-}
+extraTimeText : Int -> String
+extraTimeText extraSeconds =
+    if extraSeconds == 60 then
+        "1 more minute"
+
+    else if modBy 60 extraSeconds == 0 then
+        String.fromInt (extraSeconds // 60) ++ " more minutes"
+
+    else
+        String.fromInt extraSeconds ++ " more seconds"
+
+
+{-| Pay to raise the winning target and play on. Only offered on the
+win screen; the winning balance always covers the price, but the guard
+stays so a stray message can never charge into bankruptcy. The end
+state is re-checked right away: a win that overshot the raised target
+too (a huge payout can) wins again on the spot instead of leaving a
+"playing" game already past its target. The bet hold is released: the
+bet buttons vanished mid-hold when the win screen appeared, so no
+mouse-up ever landed, and resuming must not auto-fire a stale hold.
+-}
+raiseWinCap : UncleOffer -> Model -> Model
+raiseWinCap uncleOffer model =
+    if model.phase /= WonGame then
+        model
+
+    else
+        case winCapUpsell uncleOffer model.winCapTier of
+            NoFurtherUpsell ->
+                model
+
+            WinCapUpsellFor upsell ->
+                if model.balanceCents <= upsell.priceCents then
+                    model
+
+                else
+                    checkEndState
+                        (logLine NeutralTone
+                            ("Paid $"
+                                ++ formatCents upsell.priceCents
+                                ++ " to raise the target to $"
+                                ++ String.fromInt (capTargetCents upsell.raisedTier // 100)
+                                ++ ". Winning wasn't enough."
+                            )
+                            { model
+                                | balanceCents = model.balanceCents - upsell.priceCents
+                                , winCapTier = upsell.raisedTier
+                                , phase = Playing
+                                , betHold = NoBetHeld
+                                , betInput = clampBetInput (model.balanceCents - upsell.priceCents) model.betInput
+                            }
+                        )
 
 
 {-| Pay uncle and draw one of his pre-programmed pearls of wisdom.
@@ -711,7 +1024,41 @@ landedPercent sideCount totalFlips =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch [ clockSubscription model, dialogDismissSubscription model ]
+    Sub.batch
+        [ clockSubscription model
+        , autoclickerSubscription model
+        , dialogDismissSubscription model
+        ]
+
+
+{-| While a bought autoclicker's bet button is held down, a bet on the
+held side fires every 100ms.
+-}
+autoclickerSubscription : Model -> Sub Msg
+autoclickerSubscription model =
+    case model.phase of
+        Playing ->
+            case ( model.autoclicker, model.betHold ) of
+                ( ClickerBought, BetHeld _ ) ->
+                    Time.every 100 (\_ -> AutoclickerTicked)
+
+                ( ClickerBought, NoBetHeld ) ->
+                    Sub.none
+
+                ( ClickerNotBought, BetHeld _ ) ->
+                    Sub.none
+
+                ( ClickerNotBought, NoBetHeld ) ->
+                    Sub.none
+
+        WonGame ->
+            Sub.none
+
+        WentBust ->
+            Sub.none
+
+        RanOutOfTime ->
+            Sub.none
 
 
 {-| While a purchase dialog is open, any document-level click closes it.
@@ -785,7 +1132,7 @@ view config model =
 viewStats : Model -> Html Msg
 viewStats model =
     Html.div [ Html.Attributes.class "stats" ]
-        [ Html.div [] [ Html.text ("Target: $" ++ String.fromInt (targetBalanceCents // 100)) ]
+        [ Html.div [] [ Html.text ("Target: $" ++ String.fromInt (capTargetCents model.winCapTier // 100)) ]
         , Html.div []
             [ Html.text "Time left: "
             , Html.span [ Html.Attributes.class "timer" ]
@@ -798,7 +1145,7 @@ viewProgressBar : Model -> Html Msg
 viewProgressBar model =
     let
         progressPercent =
-            min 100 (100 * toFloat model.balanceCents / toFloat targetBalanceCents)
+            min 100 (100 * toFloat model.balanceCents / toFloat (capTargetCents model.winCapTier))
     in
     Html.div [ Html.Attributes.class "progress-track" ]
         [ Html.div
@@ -829,9 +1176,15 @@ viewControls config model =
                         ]
                     ]
               , Html.div [ Html.Attributes.class "gamble-actions" ]
-                    [ Html.button [ Html.Events.onClick (BetPlaced Heads) ]
+                    [ Html.button
+                        (Html.Events.onClick (BetPlaced Heads)
+                            :: betHoldEvents model.autoclicker Heads
+                        )
                         [ Html.text (betButtonLabel config.bias Heads) ]
-                    , Html.button [ Html.Events.onClick (BetPlaced Tails) ]
+                    , Html.button
+                        (Html.Events.onClick (BetPlaced Tails)
+                            :: betHoldEvents model.autoclicker Tails
+                        )
                         [ Html.text (betButtonLabel config.bias Tails) ]
                     ]
               ]
@@ -851,6 +1204,27 @@ viewQuickBets =
         , Html.button [ Html.Events.onClick (QuickBetPicked 1.0) ] [ Html.text "Max" ]
         , Html.text " of balance"
         ]
+
+
+{-| Hold events for a bet button, mouse and touch. Only attached once
+the autoclicker is bought, so an unbought game never tracks hold state.
+Mouse-leave and touch-cancel count as releasing: dragging off the button
+must not leave the clicker running.
+-}
+betHoldEvents : Autoclicker -> CoinSide -> List (Html.Attribute Msg)
+betHoldEvents clicker side =
+    case clicker of
+        ClickerNotBought ->
+            []
+
+        ClickerBought ->
+            [ Html.Events.onMouseDown (BetHoldStarted side)
+            , Html.Events.onMouseUp BetHoldEnded
+            , Html.Events.onMouseLeave BetHoldEnded
+            , Html.Events.on "touchstart" (Decode.succeed (BetHoldStarted side))
+            , Html.Events.on "touchend" (Decode.succeed BetHoldEnded)
+            , Html.Events.on "touchcancel" (Decode.succeed BetHoldEnded)
+            ]
 
 
 betButtonLabel : CoinBias -> CoinSide -> String
@@ -901,7 +1275,12 @@ viewTally model =
 
 viewShop : LevelConfig -> Model -> List (Html Msg)
 viewShop config model =
-    case viewTrackerShopItem config.trackerOffer model ++ viewUncleShopItem config.uncleOffer of
+    case
+        viewTrackerShopItem config.trackerOffer model
+            ++ viewAutoclickerShopItem config.autoclickerOffer model
+            ++ viewExtraTimeShopItem config.extraTimeOffer
+            ++ viewUncleShopItem config.uncleOffer
+    of
         [] ->
             []
 
@@ -940,6 +1319,22 @@ viewTrackerShopItem offer model =
             [ viewShopItem (PurchaseConsidered TrackerItem) "Buy ratio tracker" priceCents ]
 
 
+viewAutoclickerShopItem : AutoclickerOffer -> Model -> List (Html Msg)
+viewAutoclickerShopItem offer model =
+    case ( offer, model.autoclicker ) of
+        ( NoAutoclicker, ClickerNotBought ) ->
+            []
+
+        ( NoAutoclicker, ClickerBought ) ->
+            []
+
+        ( AutoclickerForSale _, ClickerBought ) ->
+            []
+
+        ( AutoclickerForSale priceCents, ClickerNotBought ) ->
+            [ viewShopItem (PurchaseConsidered AutoclickerItem) "Buy autoclicker" priceCents ]
+
+
 viewUncleShopItem : UncleOffer -> List (Html Msg)
 viewUncleShopItem offer =
     case offer of
@@ -948,6 +1343,25 @@ viewUncleShopItem offer =
 
         UncleAdviceForSale uncle ->
             [ viewShopItem (PurchaseConsidered UncleAdviceItem) "Ask uncle for advice" uncle.priceCents ]
+
+
+{-| More clock time, for sale forever: the price is the deterrent, not
+the stock.
+-}
+viewExtraTimeShopItem : ExtraTimeOffer -> List (Html Msg)
+viewExtraTimeShopItem offer =
+    case offer of
+        NoExtraTime ->
+            []
+
+        ExtraTimeForSale packages ->
+            List.map
+                (\package ->
+                    viewShopItem (PurchaseConsidered (ExtraTimeItem package))
+                        ("Buy " ++ extraTimeText package.extraSeconds)
+                        package.priceCents
+                )
+                packages
 
 
 viewPurchaseDialog : LevelConfig -> Model -> List (Html Msg)
@@ -981,6 +1395,12 @@ itemDisplayName itemKind =
         TrackerItem ->
             "the ratio tracker"
 
+        AutoclickerItem ->
+            "the autoclicker"
+
+        ExtraTimeItem package ->
+            extraTimeText package.extraSeconds
+
         UncleAdviceItem ->
             "uncle's advice"
 
@@ -990,6 +1410,12 @@ itemExplanation itemKind =
     case itemKind of
         TrackerItem ->
             "Counts how often heads and tails won across your flips, so you don't have to tally the log by hand."
+
+        AutoclickerItem ->
+            "Hold a bet button down and it presses it for you, ten times a second."
+
+        ExtraTimeItem _ ->
+            "Clock running low? Nonsense. The house happily extends your opportunity to give it money."
 
         UncleAdviceItem ->
             "Uncle's advice speaks for itself. He's your uncle, surely he knows best."
@@ -1009,6 +1435,17 @@ itemPriceCents config itemKind =
 
                 TrackerForSale priceCents ->
                     priceCents
+
+        AutoclickerItem ->
+            case config.autoclickerOffer of
+                NoAutoclicker ->
+                    0
+
+                AutoclickerForSale priceCents ->
+                    priceCents
+
+        ExtraTimeItem package ->
+            package.priceCents
 
         UncleAdviceItem ->
             case config.uncleOffer of
@@ -1030,6 +1467,7 @@ viewGameOver config model =
         (List.concat
             [ [ Html.text message ]
             , viewNextLevelLink config.nextLevelLink model
+            , viewWinCapUpsellButton config.uncleOffer model
             , viewBustEnding config.bustEnding model
             , [ Html.div []
                     [ Html.text "It took you exactly "
@@ -1057,6 +1495,31 @@ viewNextLevelLink link model =
 
             else
                 []
+
+
+{-| The win screen's "keep going" upsell: pay to raise the target
+tenfold and resume playing. Gone once the degenerate cap has been won,
+because there is genuinely nothing left to sell.
+-}
+viewWinCapUpsellButton : UncleOffer -> Model -> List (Html Msg)
+viewWinCapUpsellButton uncleOffer model =
+    if model.phase /= WonGame then
+        []
+
+    else
+        case winCapUpsell uncleOffer model.winCapTier of
+            NoFurtherUpsell ->
+                []
+
+            WinCapUpsellFor upsell ->
+                [ Html.div []
+                    [ Html.button
+                        [ Html.Attributes.class "win-cap-upsell"
+                        , Html.Events.onClick WinCapRaised
+                        ]
+                        [ Html.text (upsell.label ++ " ($" ++ formatCents upsell.priceCents ++ ")") ]
+                    ]
+                ]
 
 
 viewBustEnding : BustEnding -> Model -> List (Html Msg)
@@ -1130,7 +1593,15 @@ gameOverMessage model =
             ( "", NeutralTone )
 
         WonGame ->
-            ( "\u{1F389} YOU WIN! You reached $" ++ formatCents model.balanceCents ++ "!", WinTone )
+            case model.winCapTier of
+                FirstCap ->
+                    ( "\u{1F389} YOU WIN! You reached $" ++ formatCents model.balanceCents ++ "!", WinTone )
+
+                SecondCap ->
+                    ( "\u{1F389} YOU WIN! You reached $" ++ formatCents model.balanceCents ++ "!", WinTone )
+
+                DegenerateCap ->
+                    ( trueEndingMessage, WinTone )
 
         WentBust ->
             ( "\u{1F480} REKT! You hit $0.00. Bankrupt.", LoseTone )
