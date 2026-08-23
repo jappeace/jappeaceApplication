@@ -1747,7 +1747,8 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
         H.li $ do
           H.strong "Meer omzet per klant"
           H.preEscapedToHtml (": en d&aacute;t is precies wat er gebeurt" :: Text)
-      H.p $ H.preEscapedToHtml ("Het gevolg: de goedkoopste plannen worden duurder, features worden weggehaald uit lagere tiers, en het hele platform wordt opgeschoven richting grotere winkeliers die meer betalen. <strong>Je als kleine webshop bent niet de doelgroep, je bent de ballast.</strong>" :: Text)
+      H.p $ H.preEscapedToHtml ("Het gevolg: de goedkoopste plannen worden duurder, functies verhuizen naar de duurdere pakketten, en het hele platform wordt opgeschoven richting grotere winkeliers die meer betalen. <strong>Je als kleine webshop bent niet de doelgroep, je bent de ballast.</strong>" :: Text)
+      H.p $ H.preEscapedToHtml ("Voor jou betekent dit dat de prijsverhogingen geen incidenten zijn maar beleid. Elke brief over een nieuw tarief is geen pech, het is de strategie die zijn werk doet. Reken er dus op dat je volgend jaar meer betaalt voor dezelfde winkel, en het jaar daarna weer." :: Text)
       H.p $ H.preEscapedToHtml ("Wij vinden dat fundamenteel verkeerd. Kleine webshops groeien; dat is het hele punt. De webshop van vandaag met 200 producten is de webshop van volgend jaar met 2.000 producten. Maar als Lightspeed niet in die groei gelooft, hoef je daar niet op te wachten. Wij helpen je graag naar een platform dat w&eacute;l in je investeert." :: Text)
 
     -- Timeline
@@ -1777,6 +1778,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
         H.li $ do
           H.strong "2026"
           H.preEscapedToHtml (": boekjaar 2026 sluit op $1,23 miljard omzet met $144 miljoen nettoverlies; het Amerikaanse horecaproduct Upserve wordt met ruim 80% verlies verkocht en verdere afstotingen zijn volgens de CEO een kwestie van tijd. Het aantal actieve Lightspeed-webshops wereldwijd daalde intussen van 23.700 naar onder de 18.500." :: Text)
+      H.p $ H.preEscapedToHtml ("Je hoeft geen beurskenner te zijn om dit lijstje samen te vatten: het geld en de aandacht gingen jarenlang naar overnames en aandeelhouders, niet naar de software waar jouw winkel op draait. En elke stap is uiteindelijk betaald uit de abonnementen van winkeliers zoals jij." :: Text)
 
     -- The numbers
     H.section ! A.class_ "for-who" $ do
@@ -1798,6 +1800,8 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
         "Bron: "
         H.a ! A.href "https://storeleads.app/reports/lightspeed" $ "StoreLeads.app"
         " (augustus 2026)"
+      H.p $ H.preEscapedToHtml ("Waarom zou het jou iets uitmaken dat andere shops vertrekken? Omdat een webshopplatform op zijn winkeliers drijft. Minder shops betekent minder abonnementsgeld, en dus nog minder reden voor Lightspeed om in jouw platform te investeren. De bouwers van apps, thema's en koppelingen volgen dezelfde beweging: die stoppen hun tijd in platforms waar de klanten z&iacute;jn, waardoor hulp en koppelingen op Lightspeed steeds schaarser en duurder worden. Zo wordt vertrek een spiraal die zichzelf versnelt." :: Text)
+      H.p $ H.preEscapedToHtml ("De cijfers hierboven vertellen ook wat je opties zijn. Tien vertrekkers voor elke nieuwkomer betekent dat je niet de vraag moet stellen &oacute;f de rij richting de uitgang loopt, maar wanneer jij zelf wilt lopen: nu, op je eigen tempo, of straks, wanneer het moet. En dat 59% van de vertrekkers Shopify kiest scheelt je uitzoekwerk; de winkeliers voor je hebben die vergelijking al gemaakt." :: Text)
 
     -- Why this is structural
     H.section ! A.class_ "audit" $ do
@@ -1820,12 +1824,14 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
           H.strong "Laat kleine shops vanzelf vertrekken"
           H.preEscapedToHtml (": door de prijs hoog genoeg te maken dat het voor kleine shops niet meer rendabel is. Dat is geen vergissing, dat is de strategie." :: Text)
       H.p $ H.preEscapedToHtml ("De aandelenkoers is gedaald van $125 naar rond de $20. Het management staat onder druk om winstgevender te worden. Dat betekent: <strong>hogere prijzen, minder support, en focus op grote klanten</strong>. Kleine webshops passen niet in dat plaatje." :: Text)
+      H.p $ H.preEscapedToHtml ("In de praktijk merk je dat zo: je betaalt meer, maar er komt niets bij. Geen nieuwe functies voor je winkel, langere wachttijden als er iets stuk is, en bij elke vraag eerst een chatbot. Wachten tot het beter wordt heeft bij deze strategie geen zin, want stilstand is hier niet het probleem maar het plan." :: Text)
 
     -- Nederland specifiek
     H.section ! A.class_ "for-who" $ do
       H.h2 "Nederland als melkkoe"
       H.p $ H.preEscapedToHtml ("27% van alle Lightspeed-webshops zit in Nederland: bijna 5.000 shops. Nederland is veruit de grootste markt, groter dan de VS en Canada samen. Toch wordt het platform bestuurd vanuit Montreal, met Amerikaanse prioriteiten." :: Text)
       H.p $ H.preEscapedToHtml ("De E-Series migratie is <strong>alleen beschikbaar in Noord-Amerika</strong>. Nederlandse shops zitten vast op de C-Series, een platform dat alleen nog onderhouds-updates krijgt, met prijzen die wel doorstijgen. En zelfs wie het offici&euml;le upgradepad w&eacute;l zou krijgen, verliest daarbij de orderhistorie; redirects, apps en (op twee na) thema's moeten opnieuw, en negentig dagen na activatie wordt de oude shop uitgezet." :: Text)
+      H.p $ H.preEscapedToHtml ("Onderhouds-updates klinkt geruststellend, maar het betekent alleen dat de lampen blijven branden. Alles wat je vandaag aan je winkel mist, mis je over twee jaar nog steeds; wat er bij Shopify of WooCommerce elk jaar bijkomt, gaat aan jouw shop voorbij. Je abonnement betaalt intussen mee aan ontwikkeling die jij nooit te zien krijgt, en het enige echte besluit dat overblijft is of j&iacute;j het moment van vertrek kiest of Lightspeed dat ooit voor je doet." :: Text)
 
     -- Merchant voice
     H.section ! A.class_ "audit" $ do
