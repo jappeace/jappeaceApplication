@@ -19,6 +19,7 @@ import CoinFlipGame
         , Msg(..)
         , TrackerState(..)
         , WinCapTier(..)
+        , WinCapUpsell(..)
         , formatCents
         , formatClock
         , initialModel
@@ -30,6 +31,7 @@ import CoinFlipGame
         , trueEndingMessage
         , update
         , view
+        , winCapUpsell
         )
 import CoinFlipLevel1
 import CoinFlipLevel2
@@ -589,6 +591,19 @@ extraTimeSuite =
         ]
 
 
+{-| The button text an upsell would render, so view tests can compare
+against what `winCapUpsell` actually picked without pinning wording.
+-}
+upsellLabel : WinCapUpsell -> String
+upsellLabel upsell =
+    case upsell of
+        NoFurtherUpsell ->
+            "<no upsell>"
+
+        WinCapUpsellFor sale ->
+            sale.label
+
+
 winCapSuite : Test
 winCapSuite =
     describe "CoinFlipGame win cap upsell"
@@ -650,7 +665,12 @@ winCapSuite =
                     }
                     |> .betHold
                     |> Expect.equal CoinFlipGame.NoBetHeld
-        , test "level 1's degenerate button does not name the uncle it never met" <|
+        , test "an uncle-less level gets its own degenerate label, not the uncle one" <|
+            \_ ->
+                upsellLabel (winCapUpsell CoinFlipLevel1.levelConfig.uncleOffer SecondCap)
+                    |> Expect.notEqual
+                        (upsellLabel (winCapUpsell CoinFlipLevel2.levelConfig.uncleOffer SecondCap))
+        , test "level 1's win screen renders the label its own config picks" <|
             \_ ->
                 view CoinFlipLevel1.levelConfig
                     { level1Start
@@ -659,8 +679,9 @@ winCapSuite =
                         , winCapTier = SecondCap
                     }
                     |> Query.fromHtml
-                    |> Query.hasNot [ text "UNCLE" ]
-        , test "level 2's degenerate button shows off to uncle" <|
+                    |> Query.has
+                        [ text (upsellLabel (winCapUpsell CoinFlipLevel1.levelConfig.uncleOffer SecondCap)) ]
+        , test "level 2's win screen renders the label its own config picks" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig
                     { level2Start
@@ -669,7 +690,8 @@ winCapSuite =
                         , winCapTier = SecondCap
                     }
                     |> Query.fromHtml
-                    |> Query.has [ text "UNCLE" ]
+                    |> Query.has
+                        [ text (upsellLabel (winCapUpsell CoinFlipLevel2.levelConfig.uncleOffer SecondCap)) ]
         , test "a raise already past the new target wins again on the spot" <|
             \_ ->
                 let
