@@ -2008,14 +2008,14 @@ webwinkelverhuisSitemap articles = T.unlines $
 -- bump-on-edit rule above.
 webwinkelverhuisStaticPages :: [(Text, Day)]
 webwinkelverhuisStaticPages =
-  [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 8)
-  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 8 8)
+  [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 23)
+  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 8)
-  , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 8 8)
-  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 8 8)
-  , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 8 8)
-  , ("https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html", fromGregorian 2026 8 8)
-  , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 8)
+  , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 8 23)
+  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 8 23)
+  , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 8 23)
+  , ("https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html", fromGregorian 2026 8 23)
+  , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/over-ons.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/contact.html", fromGregorian 2026 8 8)
   ]
