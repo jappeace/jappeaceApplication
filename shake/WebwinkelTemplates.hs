@@ -1760,7 +1760,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
           H.preEscapedToHtml (": Lightspeed gaat naar de beurs in Toronto. Haalt $240 miljoen op. Het bedrijf moet nu elk kwartaal groeicijfers laten zien." :: Text)
         H.li $ do
           H.strong "2020"
-          H.preEscapedToHtml (": tweede beursnotering in New York. Nog eens $376 miljoen opgehaald. Begint agressief bedrijven op te kopen: ShopKeep, Vend, Ecwid, NuORDER. Dit lijkt op een leveraged-buyout-strategie: groei door overnames in plaats van door het eigen product te verbeteren. Het probleem is dat Lightspeed hun eigen platform niet kon laten groeien, en nu alle toekomstige groei opoffert voor kortetermijnwinst." :: Text)
+          H.preEscapedToHtml (": tweede beursnotering in New York. Nog eens $376 miljoen opgehaald. Begint agressief bedrijven op te kopen: ShopKeep, Vend, Ecwid, NuORDER. Groeien door andere bedrijven te kopen in plaats van door het eigen product te verbeteren dus; als winkelier merk je dat doordat het geld naar overnames gaat en niet naar de software waar jij dagelijks in werkt." :: Text)
         H.li $ do
           H.strong "2021"
           H.preEscapedToHtml (": aandeel piekt rond $125. Kort daarna publiceert " :: Text)
@@ -1768,13 +1768,13 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
           H.preEscapedToHtml (" een vernietigend rapport dat de groeicijfers in twijfel trekt. Het aandeel keldert." :: Text)
         H.li $ do
           H.strong "2022\8211\&2024"
-          H.preEscapedToHtml (": prijzen worden verhoogd. Het goedkoopste plan (Essential) kost nu &euro;68/maand voor slechts 250 productvarianten. Het oude eCom-platform (C-Series) wordt afgebouwd richting E-Series (Ecwid)." :: Text)
+          H.preEscapedToHtml (": prijzen worden verhoogd. Het goedkoopste plan (Essential) kost nu &euro;68/maand voor slechts 250 productvarianten. Lightspeed heeft intussen twee webshopsystemen: de C-Series (de versie waar vrijwel alle Nederlandse shops op draaien, waarschijnlijk ook de jouwe) en de nieuwere E-Series, gebouwd op het opgekochte Ecwid. Al het bouwwerk gaat voortaan naar die nieuwe versie; die van jou wordt alleen nog onderhouden." :: Text)
         H.li $ do
           H.strong "2024"
           H.preEscapedToHtml (": twee ontslagrondes (10% in april, nog eens ~200 banen in december) en een \"strategische review\" waarin openlijk een verkoop of beursexit wordt verkend." :: Text)
         H.li $ do
           H.strong "2025"
-          H.preEscapedToHtml (": de review eindigt in februari zonder koper: Lightspeed blijft beursgenoteerd en kondigt een aandeleninkoop tot $400 miljoen aan, dezelfde dag als een kwartaalverlies van $266 miljoen. De nieuwe strategie noemt als groeimotoren alleen nog <strong>retail in Noord-Amerika en horeca in Europa</strong>. Europese e-commerce, jouw shop dus, valt daarbuiten." :: Text)
+          H.preEscapedToHtml (": de review eindigt in februari zonder koper: Lightspeed blijft beursgenoteerd en kondigt aan tot $400 miljoen eigen aandelen terug te kopen, geld dat naar beleggers gaat in plaats van naar het product, op dezelfde dag als een kwartaalverlies van $266 miljoen. De nieuwe strategie noemt als groeimotoren alleen nog <strong>retail in Noord-Amerika en horeca in Europa</strong>. Europese e-commerce, jouw shop dus, valt daarbuiten." :: Text)
         H.li $ do
           H.strong "2026"
           H.preEscapedToHtml (": boekjaar 2026 sluit op $1,23 miljard omzet met $144 miljoen nettoverlies; het Amerikaanse horecaproduct Upserve wordt met ruim 80% verlies verkocht en verdere afstotingen zijn volgens de CEO een kwestie van tijd. Het aantal actieve Lightspeed-webshops wereldwijd daalde intussen van 23.700 naar onder de 18.500." :: Text)
@@ -1813,7 +1813,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       H.ol $ do
         H.li $ do
           H.strong "Consolideer platforms"
-          H.preEscapedToHtml (": het oude eCom (C-Series) wordt afgebouwd. De opvolger is E-Series, gebaseerd op het opgekochte Ecwid. Je huidige shop is legacy." :: Text)
+          H.preEscapedToHtml (": het oude webshopsysteem (C-Series) wordt afgebouwd; de opvolger (E-Series) is een ander product, gebouwd op het opgekochte Ecwid. Je huidige shop is wat softwarebouwers legacy noemen: het draait nog, maar niemand bouwt er meer aan." :: Text)
         H.li $ do
           H.strong "Verschuif naar enterprise"
           H.preEscapedToHtml (": het Professional-plan kost &euro;259/maand, Enterprise is op offerte. Lightspeed wil minder klanten die meer betalen." :: Text)
@@ -1830,7 +1830,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
     H.section ! A.class_ "for-who" $ do
       H.h2 "Nederland als melkkoe"
       H.p $ H.preEscapedToHtml ("27% van alle Lightspeed-webshops zit in Nederland: bijna 5.000 shops. Nederland is veruit de grootste markt, groter dan de VS en Canada samen. Toch wordt het platform bestuurd vanuit Montreal, met Amerikaanse prioriteiten." :: Text)
-      H.p $ H.preEscapedToHtml ("De E-Series migratie is <strong>alleen beschikbaar in Noord-Amerika</strong>. Nederlandse shops zitten vast op de C-Series, een platform dat alleen nog onderhouds-updates krijgt, met prijzen die wel doorstijgen. En zelfs wie het offici&euml;le upgradepad w&eacute;l zou krijgen, verliest daarbij de orderhistorie; redirects, apps en (op twee na) thema's moeten opnieuw, en negentig dagen na activatie wordt de oude shop uitgezet." :: Text)
+      H.p $ H.preEscapedToHtml ("De E-Series migratie, de offici&euml;le route om van het oude naar het nieuwe systeem over te stappen, is <strong>alleen beschikbaar in Noord-Amerika</strong>. Nederlandse shops zitten vast op de C-Series, een systeem dat alleen nog onderhouds-updates krijgt, met prijzen die wel doorstijgen. En zelfs wie het offici&euml;le upgradepad w&eacute;l zou krijgen, verliest daarbij de orderhistorie; redirects, apps en (op twee na) thema's moeten opnieuw, en negentig dagen na activatie wordt de oude shop uitgezet." :: Text)
       H.p $ H.preEscapedToHtml ("Onderhouds-updates klinkt geruststellend, maar het betekent alleen dat de lampen blijven branden. Alles wat je vandaag aan je winkel mist, mis je over twee jaar nog steeds; wat er bij Shopify of WooCommerce elk jaar bijkomt, gaat aan jouw shop voorbij. Je abonnement betaalt intussen mee aan ontwikkeling die jij nooit te zien krijgt, en het enige echte besluit dat overblijft is of j&iacute;j het moment van vertrek kiest of Lightspeed dat ooit voor je doet." :: Text)
 
     -- Merchant voice
@@ -1897,7 +1897,7 @@ lightspeedWaaromFaq =
   [ ( "Waarom wordt Lightspeed steeds duurder?"
     , faqAnswerText "Lightspeed is beursgenoteerd (NYSE/TSX: LSPD) en moet elk kwartaal groei laten zien aan aandeelhouders. Omdat de markt verzadigd is, verhoogt het management de prijs per klant in plaats van meer klanten te werven." )
   , ( "Wat is er met Lightspeed eCom C-Series?"
-    , faqAnswerText "De C-Series wordt afgebouwd. De opvolger is E-Series, gebaseerd op het opgekochte Ecwid. De E-Series migratie is alleen beschikbaar in Noord-Amerika; Nederlandse shops zitten vast op het oude platform." )
+    , faqAnswerText "De C-Series is het webshopsysteem waar vrijwel alle Nederlandse Lightspeed-shops op draaien. Het wordt afgebouwd; de opvolger (E-Series) is een ander product, gebaseerd op het opgekochte Ecwid. De offici\235le overstaproute naar E-Series is alleen beschikbaar in Noord-Amerika; Nederlandse shops zitten vast op het oude systeem." )
   , ( "Hoeveel webshops verlaten Lightspeed?"
     , faqAnswerText "In de afgelopen 90 dagen vertrokken 160 webshops terwijl er slechts 16 bijkwamen. Sinds Q3 2023 is het totaal gedaald van 23.700 naar 18.500 shops, een daling van 22%." )
   , ( "Waar gaan vertrekkende Lightspeed-shops naartoe?"
