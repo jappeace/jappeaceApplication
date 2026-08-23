@@ -76,7 +76,6 @@ import Types
   ( Article(..)
   , articleLastmod
   , Page(..)
-  , NavLink(..)
   , PaginationInfo(..)
   , Lang(..)
   , langPrefix
@@ -153,7 +152,8 @@ shakeRules = do
     phony "serve" $ do
       need ["clean"]
 
-      -- Build jappieklooster.nl with local consult link pointing to penguin on port 8001
+      -- Build jappieklooster.nl met de standaardconfig (de lokale
+      -- consult-override verdween met de consult-link zelf, 23 aug 2026)
       mds <- getDirectoryFiles "content" ["//*.md"]
       orgs <- getDirectoryFiles "content" ["//*.org"]
       let enFiles = [(f, "md") | f <- mds, not (isStaticPath f)]
@@ -173,11 +173,6 @@ shakeRules = do
           enPageSlugs = Set.fromList $ map pageSlug enPages
           nlPageSlugs = Set.fromList $ map pageSlug nlPages
           localConfig = defaultSiteConfig
-            { siteLinks =
-                [ NavLink "About \128194" "/pages/about-me.html" "About me" "about"
-                , NavLink "Consult \128039" "http://localhost:8001/" "Software products & expert consulting" "hire"
-                ]
-            }
       liftIO $ do
         generateSite localConfig En enArticles enPages nlSlugs nlPageSlugs
         generateSite localConfig Nl nlArticles nlPages enSlugs enPageSlugs
