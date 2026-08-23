@@ -67,6 +67,8 @@ import CoinFlipGame
     exposing
         ( ClockState(..)
         , CoinSide(..)
+        , ExtraTimeOffer(..)
+        , ExtraTimePackage
         , GamePhase(..)
         , LogLine
         , LogTone(..)
@@ -75,12 +77,17 @@ import CoinFlipGame
         , TrackerState(..)
         , UncleGloat(..)
         , UncleOffer(..)
+        , WinCapTier(..)
+        , WinCapUpsell(..)
+        , capTargetCents
+        , extraTimeText
         , formatCents
         , formatClock
         , landedPercent
         , startingBalanceCents
-        , targetBalanceCents
         , timeLimitSeconds
+        , trueEndingMessage
+        , winCapUpsell
         )
 import Html exposing (Html)
 import Html.Attributes
@@ -276,6 +283,7 @@ type ShopItemKind
     | BookItem
     | RefundItem
     | ExtraTurnsItem ExtraTurnsPackage
+    | ExtraTimeItem ExtraTimePackage
     | UncleAdviceItem
 
 
@@ -314,6 +322,7 @@ type alias MultiCoinConfig =
     , bookOffer : CorrelationBookOffer
     , refundOffer : RefundOffer
     , extraTurnsOffer : ExtraTurnsOffer
+    , extraTimeOffer : ExtraTimeOffer
     , lastChanceTurnOffer : LastChanceTurnOffer
     , introLogLine : String
     }
@@ -337,6 +346,7 @@ type alias Model =
     , secondsLeft : Int
     , roundCount : Int
     , tracker : TrackerState
+    , winCapTier : WinCapTier
     , glasses : GoldenGlasses
     , allocationMode : AllocationMode
     , book : CorrelationBook
@@ -382,6 +392,8 @@ type Msg
     | ShopToggled
     | RefundRequested
     | ExtraTurnsPurchased ExtraTurnsPackage
+    | ExtraTimePurchased ExtraTimePackage
+    | WinCapRaised
     | LastChanceTurnPurchased
     | PurchaseConsidered ShopItemKind ClickPoint
     | PurchaseConfirmed
@@ -463,6 +475,7 @@ initialModel config =
                 0
     , roundCount = 0
     , tracker = TrackerNotBought
+    , winCapTier = FirstCap
     , glasses = GlassesNotBought
     , allocationMode = DollarAllocation
     , book = BookNotBought
@@ -548,6 +561,12 @@ update config msg model =
         ExtraTurnsPurchased package ->
             ( purchaseExtraTurns config.extraTurnsOffer package model, Cmd.none )
 
+        ExtraTimePurchased package ->
+            ( purchaseExtraTime config.turnBudget config.extraTimeOffer package model, Cmd.none )
+
+        WinCapRaised ->
+            ( raiseWinCap model, Cmd.none )
+
         LastChanceTurnPurchased ->
             ( purchaseLastChanceTurn config.lastChanceTurnOffer model, Cmd.none )
 
@@ -596,6 +615,10 @@ update config msg model =
                 Considering (ExtraTurnsItem package) _ ->
                     -- Stays open: the house sells time by the armful.
                     ( purchaseExtraTurns config.extraTurnsOffer package model, Cmd.none )
+
+                Considering (ExtraTimeItem package) _ ->
+                    -- Stays open: the house sells time by the armful.
+                    ( purchaseExtraTime config.turnBudget config.extraTimeOffer package model, Cmd.none )
 
                 Considering RefundItem _ ->
                     ( requestRefund config.uncleOffer
@@ -993,7 +1016,7 @@ endWhenOutOfFlips budget model =
 
 checkEndState : BustCause -> Model -> Model
 checkEndState causeIfBusted model =
-    if model.balanceCents >= targetBalanceCents then
+    if model.balanceCents >= capTargetCents model.winCapTier then
         { model | phase = WonGame }
 
     else if model.balanceCents <= 0 then
@@ -1240,6 +1263,80 @@ purchaseExtraTurns offer package model =
                         | balanceCents = model.balanceCents - package.priceCents
                         , extraFlipsBought = model.extraFlipsBought + package.extraFlips
                     }
+
+
+{-| Buy more time on the clock. The time-limited twin of the extra
+flips: repeatable, only meaningful under a time budget (a flip-limited
+game has no clock to extend, so the purchase is refused there), and
+only a package actually on offer is honoured.
+-}
+purchaseExtraTime : TurnBudget -> ExtraTimeOffer -> ExtraTimePackage -> Model -> Model
+purchaseExtraTime budget offer package model =
+    case ( budget, offer ) of
+        ( FlipLimit _, NoExtraTime ) ->
+            model
+
+        ( FlipLimit _, ExtraTimeForSale _ ) ->
+            model
+
+        ( TimeLimit _, NoExtraTime ) ->
+            model
+
+        ( TimeLimit _, ExtraTimeForSale packages ) ->
+            if not (List.member package packages) then
+                model
+
+            else if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= package.priceCents then
+                logLine NeutralTone "You cannot afford more time." model
+
+            else
+                logLine NeutralTone
+                    ("Bought "
+                        ++ extraTimeText package.extraSeconds
+                        ++ " for $"
+                        ++ formatCents package.priceCents
+                        ++ ". Time is money, apparently in that order."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - package.priceCents
+                        , secondsLeft = model.secondsLeft + package.extraSeconds
+                    }
+
+
+{-| Pay to raise the winning target and play on. Only offered on the
+win screen; the winning balance always covers the price, but the guard
+stays so a stray message can never charge into bankruptcy.
+-}
+raiseWinCap : Model -> Model
+raiseWinCap model =
+    if model.phase /= WonGame then
+        model
+
+    else
+        case winCapUpsell model.winCapTier of
+            NoFurtherUpsell ->
+                model
+
+            WinCapUpsellFor upsell ->
+                if model.balanceCents <= upsell.priceCents then
+                    model
+
+                else
+                    logLine NeutralTone
+                        ("Paid $"
+                            ++ formatCents upsell.priceCents
+                            ++ " to raise the target to $"
+                            ++ String.fromInt (capTargetCents upsell.raisedTier // 100)
+                            ++ ". Winning wasn't enough."
+                        )
+                        { model
+                            | balanceCents = model.balanceCents - upsell.priceCents
+                            , winCapTier = upsell.raisedTier
+                            , phase = Playing
+                        }
 
 
 {-| The out-of-flips rescue purchase. Revives the game: the flip
@@ -1605,7 +1702,7 @@ view config model =
 viewStats : MultiCoinConfig -> Model -> Html Msg
 viewStats config model =
     Html.div [ Html.Attributes.class "stats" ]
-        [ Html.div [] [ Html.text ("Target: $" ++ String.fromInt (targetBalanceCents // 100)) ]
+        [ Html.div [] [ Html.text ("Target: $" ++ String.fromInt (capTargetCents model.winCapTier // 100)) ]
         , case config.turnBudget of
             TimeLimit _ ->
                 Html.div []
@@ -1631,7 +1728,7 @@ viewProgressBar : Model -> Html Msg
 viewProgressBar model =
     let
         progressPercent =
-            min 100 (100 * toFloat model.balanceCents / toFloat targetBalanceCents)
+            min 100 (100 * toFloat model.balanceCents / toFloat (capTargetCents model.winCapTier))
     in
     Html.div [ Html.Attributes.class "progress-track" ]
         [ Html.div
@@ -1867,6 +1964,7 @@ viewShop config model =
                 ++ viewFlipHelperShopItem config.flipHelperOffer model
                 ++ viewAllocatorShopItem config.allocatorOffer model
                 ++ viewExtraTurnsShopItem config
+                ++ viewExtraTimeShopItem config
 
         intelItems =
             viewTrackerShopItem config.trackerOffer model
@@ -1969,6 +2067,9 @@ itemDisplayName itemKind =
         ExtraTurnsItem package ->
             flipCountText package.extraFlips
 
+        ExtraTimeItem package ->
+            extraTimeText package.extraSeconds
+
         UncleAdviceItem ->
             "uncle's advice"
 
@@ -1999,6 +2100,9 @@ itemExplanation itemKind =
 
         ExtraTurnsItem _ ->
             "Out of flips? Nonsense. The house happily extends your opportunity to give it money."
+
+        ExtraTimeItem _ ->
+            "Clock running low? Nonsense. The house happily extends your opportunity to give it money."
 
         UncleAdviceItem ->
             "Uncle's advice speaks for itself. He's your uncle, surely he knows best."
@@ -2063,6 +2167,9 @@ itemPriceCents config model itemKind =
                     refund.priceCents
 
         ExtraTurnsItem package ->
+            package.priceCents
+
+        ExtraTimeItem package ->
             package.priceCents
 
         UncleAdviceItem ->
@@ -2212,6 +2319,31 @@ viewExtraTurnsShopItem config =
                 packages
 
 
+{-| More clock time, for sale forever, but only where a clock exists to
+extend: under a flip limit the item would be nonsense.
+-}
+viewExtraTimeShopItem : MultiCoinConfig -> List (Html Msg)
+viewExtraTimeShopItem config =
+    case ( config.extraTimeOffer, config.turnBudget ) of
+        ( NoExtraTime, TimeLimit _ ) ->
+            []
+
+        ( NoExtraTime, FlipLimit _ ) ->
+            []
+
+        ( ExtraTimeForSale _, FlipLimit _ ) ->
+            []
+
+        ( ExtraTimeForSale packages, TimeLimit _ ) ->
+            List.map
+                (\package ->
+                    viewShopItem (PurchaseConsidered (ExtraTimeItem package))
+                        ("Buy " ++ extraTimeText package.extraSeconds)
+                        package.priceCents
+                )
+                packages
+
+
 {-| Only for sale once uncle's complete works have been heard, and only
 once: uncle does not do repeat refund conversations.
 -}
@@ -2246,6 +2378,7 @@ viewGameOver config model =
         (List.concat
             [ [ Html.text message ]
             , viewNextLevelLink config.nextLevelLink model
+            , viewWinCapUpsellButton model
             , viewLastChanceTurnButton config model
             , viewUncleBustCallout model
             , [ Html.div []
@@ -2257,6 +2390,31 @@ viewGameOver config model =
             , viewUncleSpend config.uncleOffer model
             ]
         )
+
+
+{-| The win screen's "keep going" upsell: pay to raise the target
+tenfold and resume playing. Gone once the degenerate cap has been won,
+because there is genuinely nothing left to sell.
+-}
+viewWinCapUpsellButton : Model -> List (Html Msg)
+viewWinCapUpsellButton model =
+    if model.phase /= WonGame then
+        []
+
+    else
+        case winCapUpsell model.winCapTier of
+            NoFurtherUpsell ->
+                []
+
+            WinCapUpsellFor upsell ->
+                [ Html.div []
+                    [ Html.button
+                        [ Html.Attributes.class "win-cap-upsell"
+                        , Html.Events.onClick WinCapRaised
+                        ]
+                        [ Html.text (upsell.label ++ " ($" ++ formatCents upsell.priceCents ++ ")") ]
+                    ]
+                ]
 
 
 {-| The out-of-flips rescue button. Only on the out-of-flips screen of
@@ -2320,7 +2478,15 @@ gameOverMessage config model =
             ( "", NeutralTone )
 
         WonGame ->
-            ( "\u{1F389} YOU WIN! You reached $" ++ formatCents model.balanceCents ++ "!", WinTone )
+            case model.winCapTier of
+                FirstCap ->
+                    ( "\u{1F389} YOU WIN! You reached $" ++ formatCents model.balanceCents ++ "!", WinTone )
+
+                SecondCap ->
+                    ( "\u{1F389} YOU WIN! You reached $" ++ formatCents model.balanceCents ++ "!", WinTone )
+
+                DegenerateCap ->
+                    ( trueEndingMessage, WinTone )
 
         WentBust ->
             ( "\u{1F480} REKT! You hit $0.00. Bankrupt.", LoseTone )

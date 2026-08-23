@@ -21,7 +21,7 @@ costs money and yields only his fondest farewell.
 
 -}
 
-import CoinFlipGame exposing (NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
+import CoinFlipGame exposing (ExtraTimeOffer(..), NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
 import MultiCoinGame exposing (AllocatorOffer(..), AutoclickerOffer(..), CoinOdds(..), CorrelationBookOffer(..), ExtraTurnsOffer(..), FlipHelperOffer(..), GlassesOffer(..), LastChanceTurnOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
 
 
@@ -56,6 +56,7 @@ levelConfig =
             , { priceCents = 5500, extraFlips = 10 }
             , { priceCents = 50000, extraFlips = 50 }
             ]
+    , extraTimeOffer = NoExtraTime
     , lastChanceTurnOffer = LastChanceTurnForSale { priceCents = 800, extraFlips = 1 }
     , refundOffer =
         RefundForSale

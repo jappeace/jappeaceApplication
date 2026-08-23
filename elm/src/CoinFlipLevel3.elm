@@ -10,7 +10,7 @@ Which bird got which profile has to be rediscovered every replay.
 
 -}
 
-import CoinFlipGame exposing (NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
+import CoinFlipGame exposing (ExtraTimeOffer(..), NextLevelLink(..), TrackerOffer(..), UncleOffer(..))
 import MultiCoinGame exposing (AllocatorOffer(..), AutoclickerOffer(..), CoinOdds(..), CorrelationBookOffer(..), ExtraTurnsOffer(..), FlipHelperOffer(..), GlassesOffer(..), LastChanceTurnOffer(..), Model, Msg, MultiCoinConfig, ProfileAssignment(..), RefundOffer(..), TurnBudget(..), gameProgram)
 
 
@@ -30,10 +30,19 @@ levelConfig =
     , glassesOffer = GoldenGlassesForSale 2000
     , autoclickerOffer = AutoclickerForSale 1000
     , flipHelperOffer = FlipHelpersForSale { basePriceCents = 100, priceIncreasePercent = 10 }
-    , allocatorOffer = NoAllocator
+    , allocatorOffer = AllocatorForSale 1000
     , bookOffer = NoCorrelationBook
     , refundOffer = NoRefund
     , extraTurnsOffer = NoExtraTurns
+
+    -- Time sells at a premium: $20 a minute, and the half-hour "deal"
+    -- charges $25 a minute, mirroring level 4's extra flips where the
+    -- bulk buy is the worst buy in the shop.
+    , extraTimeOffer =
+        ExtraTimeForSale
+            [ { priceCents = 2000, extraSeconds = 60 }
+            , { priceCents = 75000, extraSeconds = 30 * 60 }
+            ]
     , lastChanceTurnOffer = NoLastChanceTurn
     , uncleOffer =
         UncleAdviceForSale

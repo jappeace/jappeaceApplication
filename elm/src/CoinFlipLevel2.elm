@@ -10,6 +10,7 @@ import CoinFlipGame
     exposing
         ( BustEnding(..)
         , CoinBias(..)
+        , ExtraTimeOffer(..)
         , LevelConfig
         , Model
         , Msg
@@ -25,6 +26,15 @@ levelConfig =
     { title = "\u{1FA99} Rigged Coin Trader II: Hidden Rewards"
     , bias = HiddenRandomBias { minPercent = 55, maxPercent = 65 }
     , trackerOffer = TrackerForSale 1500
+
+    -- Time sells at a premium: $20 a minute, and the half-hour "deal"
+    -- charges $25 a minute, mirroring level 4's extra flips where the
+    -- bulk buy is the worst buy in the shop.
+    , extraTimeOffer =
+        ExtraTimeForSale
+            [ { priceCents = 2000, extraSeconds = 60 }
+            , { priceCents = 75000, extraSeconds = 30 * 60 }
+            ]
     , uncleOffer =
         UncleAdviceForSale
             { priceCents = 500
