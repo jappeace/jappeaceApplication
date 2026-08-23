@@ -1362,7 +1362,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- Open kaart bij de voorbeeldwinkels (winkelier-review 23 aug): beide
     -- cases zijn MWW-migraties; dat benoemen we in plaats van het te
     -- verstoppen, met de aanpak als brug.
-    H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Eerlijk is eerlijk: beide voorbeeldwinkels hierboven kwamen van MijnWebwinkel, een eigen CCV Shop-verhaal hebben we nog niet. Het is wel hetzelfde programma en dezelfde aanpak die het werk bij CCV Shop doen." :: Text)
+    H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Open kaart: beide voorbeeldwinkels hierboven kwamen van MijnWebwinkel, een eigen CCV Shop-verhaal hebben we nog niet. Het is wel hetzelfde programma en dezelfde aanpak die het werk bij CCV Shop doen." :: Text)
 
     -- Why us
     waaromViaOnsSectie
@@ -1533,7 +1533,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     -- Open kaart bij de voorbeeldwinkels (winkelier-review 23 aug): beide
     -- cases zijn MWW-migraties; dat benoemen we in plaats van het te
     -- verstoppen, met de aanpak als brug.
-    H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Eerlijk is eerlijk: beide voorbeeldwinkels hierboven kwamen van MijnWebwinkel, een eigen Lightspeed-verhaal hebben we nog niet. Het is wel hetzelfde programma en dezelfde aanpak die het werk bij Lightspeed doen." :: Text)
+    H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Open kaart: beide voorbeeldwinkels hierboven kwamen van MijnWebwinkel, een eigen Lightspeed-verhaal hebben we nog niet. Het is wel hetzelfde programma en dezelfde aanpak die het werk bij Lightspeed doen." :: Text)
 
     -- Why us
     waaromViaOnsSectie
