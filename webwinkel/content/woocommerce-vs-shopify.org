@@ -57,15 +57,22 @@ iets moet gebeuren.
 
 * Vraag het een AI en je krijgt het halve verhaal
 
-Steeds meer winkeliers vragen eerst ChatGPT om advies, en dat
-gesprek eindigt opvallend vaak bij dezelfde conclusie: het
+Steeds meer winkeliers doen eerst een rondje ChatGPT en komen dan,
+zelf verder redenerend, op een geruststellende conclusie uit: het
 technische verschil maakt niet uit, want dat is het probleem van
-degene die de migratie doet. Die redenering is correct, en precies
-daarom gevaarlijk: hij klopt tot de dag van oplevering en breekt
-de dag erna. Vanaf dan is het jouw shop, jouw updates, jouw
-backups. Een AI beantwoordt de vraag die je stelt; de vraag die je
-had moeten stellen, wie dit systeem over een jaar onderhoudt, komt
-alleen boven tafel als iemand hem opwerpt. Bij deze dus.
+degene die de migratie doet. Daar zit veel waars in, en wij kunnen
+het bevestigen: een shop naar WooCommerce of naar Shopify
+verhuizen is voor ons ongeveer even moeilijk, dus voor de migratie
+zelf hoef je het verschil niet te wegen. Maar de moeilijkheid die
+er wél toe doet begint pas na de oplevering, en die zit op drie
+plekken: het onderhoud (updates, backups, beveiliging), de
+complexiteit van het beheerscherm waar je elke week in werkt, en
+het samenspel tussen de onderdelen, thema, plugins of apps en
+betalingen, die elkaar bij elke update opnieuw moeten verdragen.
+Die moeilijkheid verhuist niet mee naar de migrateur; die blijft
+bij de winkel. Een AI beantwoordt de vraag die je stelt, en de
+vraag die je had moeten stellen is niet wie het technische oplost,
+maar wie de complexiteit daarna draagt.
 
 * De kostensom is subtieler dan hij lijkt
 
