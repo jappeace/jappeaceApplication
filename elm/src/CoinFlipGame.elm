@@ -650,18 +650,16 @@ settleFlip uncleOffer flip model =
                     , betInput = clampBetInput newBalance model.betInput
                 }
         in
-        gloatIfBusted uncleOffer
-            (checkEndState
-                (logLine
-                    (if won then
-                        WinTone
+        checkEndState
+            (logLine
+                (if won then
+                    WinTone
 
-                     else
-                        LoseTone
-                    )
-                    outcomeText
-                    (logLine DividerTone "" counted)
+                 else
+                    LoseTone
                 )
+                outcomeText
+                (logLine DividerTone "" counted)
             )
 
 
@@ -703,11 +701,12 @@ checkEndState model =
         model
 
 
-{-| Once bankrupt, uncle pops into the log, if this level has an uncle
-at all. Called after every event that could have busted the game (a
-settled flip, or uncle's own advice landing when the purchase took the
-last dollars), so his gloat is always the newest log line, exactly
-once.
+{-| The last-dollars easter egg: uncle only gloats when buying his
+advice is what bankrupted you (no sane person would, hence the
+reward). Called solely after his advice lands in the log; a bust in
+that moment can only have come from the purchase itself, since Elm
+delivers the advice command before any further player input, and a
+player already bust cannot buy advice at all.
 -}
 gloatIfBusted : UncleOffer -> Model -> Model
 gloatIfBusted offer model =
@@ -1531,7 +1530,10 @@ viewBustEnding ending model =
             []
 
         BustEndingQuote quote ->
-            if model.phase == WentBust then
+            -- Only after money actually went to uncle: level 2's quote
+            -- reads "all the money you gave him", which is nonsense on
+            -- a bust where he never got a cent.
+            if model.phase == WentBust && model.uncleAdviceCount > 0 then
                 [ Html.div [ Html.Attributes.class "bust-ending" ]
                     [ Html.em [] [ Html.text quote ] ]
                 ]

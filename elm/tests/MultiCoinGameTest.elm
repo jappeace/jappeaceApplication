@@ -258,12 +258,18 @@ shopSuite =
                 in
                 ( latestLogText busted, gloatCount )
                     |> Expect.equal ( gloatLine, 1 )
-        , test "going bust summons a proud uncle in the log" <|
+        , test "a betting bust leaves uncle silent" <|
             \_ ->
                 apply [ landedRound [ 100, 0, 0 ] [ 100, 100, 100 ] ]
                     { level3Start | balanceCents = 100 }
                     |> latestLogText
-                    |> Expect.equal "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+                    |> Expect.notEqual "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+        , test "a betting bust after buying advice still leaves uncle silent" <|
+            \_ ->
+                apply [ landedRound [ 100, 0, 0 ] [ 100, 100, 100 ] ]
+                    { level3Start | balanceCents = 100, uncleAdviceCount = 1 }
+                    |> latestLogText
+                    |> Expect.notEqual "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
         , test "busting on a flip is attributed to betting" <|
             \_ ->
                 apply [ landedRound [ 100, 0, 0 ] [ 100, 100, 100 ] ]
