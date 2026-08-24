@@ -1017,7 +1017,10 @@ checkEndState causeIfBusted model =
 at all. Called after every event that could have busted the game (a
 settled round, or uncle's own advice landing when the purchase took the
 last dollars), so his gloat is always the newest log line, exactly
-once.
+once. The bustCause guard makes the gloat the last-dollars easter
+egg: only a bust caused by the advice purchase itself earns it, a
+betting bust leaves uncle silent (no sane person buys themselves
+bankrupt, hence the reward).
 -}
 gloatIfBusted : UncleOffer -> Model -> Model
 gloatIfBusted offer model =
@@ -1026,7 +1029,7 @@ gloatIfBusted offer model =
             model
 
         UncleAdviceForSale _ ->
-            if model.phase == WentBust && model.uncleGloat == UncleHasNotGloated then
+            if model.phase == WentBust && model.uncleGloat == UncleHasNotGloated && model.bustCause == BustByUncleAdvice then
                 logLine NeutralTone
                     "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
                     { model | uncleGloat = UncleHasGloated }

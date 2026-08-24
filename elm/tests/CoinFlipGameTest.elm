@@ -334,13 +334,20 @@ shopSuite =
                 in
                 ( latestLogText busted, gloatCount )
                     |> Expect.equal ( gloatLine, 1 )
-        , test "going bust summons a proud uncle in the log" <|
+        , test "a betting bust leaves uncle silent" <|
             \_ ->
                 apply CoinFlipLevel2.levelConfig
                     [ landedFlip Heads 1000 Tails ]
                     { level2Start | balanceCents = 1000 }
                     |> latestLogText
-                    |> Expect.equal "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+                    |> Expect.notEqual "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
+        , test "a betting bust after buying advice still leaves uncle silent" <|
+            \_ ->
+                apply CoinFlipLevel2.levelConfig
+                    [ landedFlip Heads 1000 Tails ]
+                    { level2Start | balanceCents = 1000, uncleAdviceCount = 1 }
+                    |> latestLogText
+                    |> Expect.notEqual "\u{1F9D3} Uncle: \u{201C}I'm proud of you kid\u{201D} \u{1F911}"
         , test "level 1 has no uncle to gloat on a bust" <|
             \_ ->
                 apply CoinFlipLevel1.levelConfig
@@ -472,11 +479,16 @@ gameOverSuite =
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WentBust }
                     |> Query.fromHtml
                     |> Query.hasNot [ tag "a" ]
-        , test "level 2 shows the bust ending only on a bust" <|
+        , test "level 2 shows the bust ending when uncle got paid" <|
+            \_ ->
+                view CoinFlipLevel2.levelConfig { level2Start | phase = WentBust, uncleAdviceCount = 1 }
+                    |> Query.fromHtml
+                    |> Query.has [ class "bust-ending" ]
+        , test "no bust ending when uncle never got a cent" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WentBust }
                     |> Query.fromHtml
-                    |> Query.has [ class "bust-ending" ]
+                    |> Query.hasNot [ class "bust-ending" ]
         , test "the bust ending stays hidden on a win" <|
             \_ ->
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WonGame }
