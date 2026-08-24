@@ -1,0 +1,97 @@
+#+TITLE: WooCommerce vs Shopify: welke kies je na MijnWebwinkel?
+#+DATE: 2026-08-24
+#+CATEGORY: migratie
+#+TAGS: woocommerce, shopify, vergelijking
+
+Verlaat je MijnWebwinkel (of een ander verouderd platform), dan is
+de volgende vraag: waarheen? Wij verhuizen webshops voor de kost
+naar zowel WooCommerce als Shopify, en voor de migratie zelf maakt
+de keuze ons niet uit: zelfde aanpak, zelfde prijs. Voor het runnen
+van je shop daarna maakt hij wél uit. Dit is hoe wij het verschil
+aan onze eigen klanten uitleggen.
+
+* De vergelijking in het kort
+
+| | WooCommerce | Shopify |
+|---|---|---|
+| Wat het is | Webshop bovenop WordPress, op eigen hosting | Alles-in-één dienst |
+| Software | Gratis, open source | Basic 21 euro/mnd bij jaarbetaling, 28 euro/mnd per maand |
+| Hosting | Zelf regelen, orde enkele tientjes per maand | Inbegrepen |
+| Onderhoud (updates, backups, beveiliging) | Van jou, of van je hoster/onderhoudscontract | Van Shopify |
+| Extra's | Plugins: vaak gratis, of eenmalig/per jaar | Apps: eigen maandprijs per app |
+| Betaalprovider | Vrije keuze zonder toeslag | Shopify Payments, of 2% toeslag op Basic bij een externe provider |
+| Vrijheid en eigenaarschap | Maximaal | Binnen de kaders van het platform |
+
+De Shopify-prijzen komen van de eigen
+[[https://www.shopify.com/nl/prijzen][prijzenpagina van Shopify]]
+(augustus 2026).
+
+* Het belangrijkste verschil: wie draagt het onderhoud
+
+Een uitspraak die we vaker horen: "als het technisch moeilijk is,
+is dat het probleem van de migrateur." Dat klopt, voor de
+verhuizing. Maar daarna is de shop van jou, en wie een systeem met
+meer vrijheid kiest, onderhoudt daarna een systeem met meer
+bewegende delen. Bij WooCommerce zijn WordPress-updates,
+plugin-updates, backups en beveiliging jouw verantwoordelijkheid,
+of die van een hoster of onderhoudscontract dat je ervoor betaalt.
+Bij Shopify bestaat die hele categorie werk niet: het platform doet
+het, en je levert er keuzevrijheid voor in.
+
+Voor een winkelier zonder technisch thuisfront is dit meestal
+doorslaggevender dan de prijs. Het prijsverschil voel je één keer
+per maand op de factuur; het onderhoudsverschil elke keer dat er
+iets moet gebeuren.
+
+* De kostensom is subtieler dan hij lijkt
+
+WooCommerce oogt goedkoper: gratis software, hosting voor enkele
+tientjes per maand. Dat klopt, zolang je het onderhoud zelf doet en
+je eigen tijd niet meerekent. Wie het onderhoud uitbesteedt komt
+vaak vergelijkbaar uit met Shopify.
+
+Daar staat tegenover dat extra's op Shopify structureel geld
+kosten. Twee voorbeelden uit onze eigen praktijk:
+
+- Een gratis cadeau dat automatisch in de winkelwagen verschijnt
+  boven een drempelbedrag: op Shopify heb je daar een app voor
+  nodig (de bekendste kost circa 24 dollar per maand volgens de
+  eigen prijspagina); op WooCommerce doet de betaalde versie van
+  een plugin hetzelfde, doorgaans per jaar afgerekend.
+- Klanten een seintje geven wanneer een product weer op voorraad
+  is: op WooCommerce bestaat daar een gratis, goed onderhouden
+  plugin voor; op Shopify begint de gangbare app gratis met tien
+  mails per maand en kost hij daarboven rond de 20 dollar per
+  maand.
+
+Een Shopify-shop met een handvol apps draagt zo al gauw meer
+maandlasten dan het abonnement alleen. Een WooCommerce-shop koopt
+diezelfde functies vaker eenmalig of per jaar. Reken dus niet
+alleen het abonnement, maar de hele stapel die jouw wensenlijst
+nodig heeft; wij zetten dat voor onze klanten vooraf op een rij.
+
+* Wat op beide platformen gewoon goed zit
+
+- Afrekenen op één pagina: bij Shopify standaard, bij WooCommerce
+  richten we het zo in.
+- Een zoekfunctie die tegen een typefout kan; wie van een verouderd
+  platform komt merkt hier vaak het grootste dagelijkse verschil.
+- Bulkbewerkingen en kortingsregels over hele productgroepen
+  tegelijk.
+- Spaarpunten: systemen als
+  [[https://www.leat.com/integrations/woocommerce][Leat]] leveren
+  koppelingen voor allebei.
+- iDEAL en de Nederlandse betaalmethoden.
+
+* Zo kiezen onze klanten
+
+Kies Shopify als je wilt dat het platform gewoon werkt zonder
+omkijken en je de app-maandlasten voor lief neemt. Kies WooCommerce
+als je de laagste vaste lasten wilt of maximale vrijheid zoekt, en
+het onderhoud zelf regelt of bewust belegt. Beide keuzes zijn goed;
+wat niet goed is, is blijven zitten op een platform dat niet meer
+doorontwikkeld wordt.
+
+Twijfel je voor jouw shop? [[https://webwinkelverhuis.nl][Wij
+verhuizen naar allebei]], voor dezelfde prijs, en denken vrijblijvend
+met je mee over welke kant past.
