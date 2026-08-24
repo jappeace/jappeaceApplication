@@ -2380,6 +2380,7 @@ viewGameOver config model =
             , viewWinCapUpsellButton config.uncleOffer model
             , viewLastChanceTurnButton config model
             , viewUncleBustCallout model
+            , CoinFlipGame.viewExplanationHint model.phase
             , [ Html.div []
                     [ Html.text "It took you exactly "
                     , Html.strong [] [ Html.text (String.fromInt model.roundCount) ]
