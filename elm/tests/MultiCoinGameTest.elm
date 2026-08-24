@@ -420,7 +420,22 @@ shopSuite =
 gatingSuite : Test
 gatingSuite =
     describe "MultiCoinGame view gating"
-        [ test "the tally only renders once the tracker is bought" <|
+        [ test "a bust points at the explanation below the game" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig { level3Start | phase = WentBust }
+                    |> Query.fromHtml
+                    |> Query.has [ class "explanation-hint" ]
+        , test "running out of time points at the explanation too" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig { level3Start | phase = RanOutOfTime }
+                    |> Query.fromHtml
+                    |> Query.has [ class "explanation-hint" ]
+        , test "a win shows no explanation hint" <|
+            \_ ->
+                view CoinFlipLevel3.levelConfig { level3Start | phase = WonGame }
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "explanation-hint" ]
+        , test "the tally only renders once the tracker is bought" <|
             \_ ->
                 view CoinFlipLevel3.levelConfig level3Start
                     |> Query.fromHtml

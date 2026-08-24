@@ -504,6 +504,21 @@ gameOverSuite =
                 view CoinFlipLevel2.levelConfig { level2Start | phase = WentBust }
                     |> Query.fromHtml
                     |> Query.hasNot [ class "uncle-verdict" ]
+        , test "a bust points at the explanation below the game" <|
+            \_ ->
+                view CoinFlipLevel1.levelConfig { level1Start | phase = WentBust }
+                    |> Query.fromHtml
+                    |> Query.has [ class "explanation-hint" ]
+        , test "running out of time points at the explanation too" <|
+            \_ ->
+                view CoinFlipLevel1.levelConfig { level1Start | phase = RanOutOfTime }
+                    |> Query.fromHtml
+                    |> Query.has [ class "explanation-hint" ]
+        , test "a win shows no explanation hint" <|
+            \_ ->
+                view CoinFlipLevel1.levelConfig { level1Start | phase = WonGame }
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "explanation-hint" ]
         ]
 
 

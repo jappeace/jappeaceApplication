@@ -41,6 +41,7 @@ module CoinFlipGame exposing
     , trueEndingMessage
     , update
     , view
+    , viewExplanationHint
     , winCapUpsell
     )
 
@@ -1469,6 +1470,7 @@ viewGameOver config model =
             , viewNextLevelLink config.nextLevelLink model
             , viewWinCapUpsellButton config.uncleOffer model
             , viewBustEnding config.bustEnding model
+            , viewExplanationHint model.phase
             , [ Html.div []
                     [ Html.text "It took you exactly "
                     , Html.strong [] [ Html.text (String.fromInt model.flipCount) ]
@@ -1536,6 +1538,37 @@ viewBustEnding ending model =
 
             else
                 []
+
+
+{-| The lost-game pointer at the article text under the widget.
+Analytics (aug 2026) showed lost players replay and refresh instead of
+scrolling: black swan had more page views than level 1 while level 4
+had none, so the game itself has to say where the answer is. Shared by
+both engines (MultiCoinGame calls it qualified).
+-}
+viewExplanationHint : GamePhase -> List (Html msg)
+viewExplanationHint phase =
+    case phase of
+        Playing ->
+            []
+
+        WonGame ->
+            []
+
+        WentBust ->
+            explanationHintLine
+
+        RanOutOfTime ->
+            explanationHintLine
+
+
+explanationHintLine : List (Html msg)
+explanationHintLine =
+    [ Html.div [ Html.Attributes.class "explanation-hint" ]
+        [ Html.strong [] [ Html.text "Stuck?" ]
+        , Html.text " There's an explanation further down this page \u{2193}"
+        ]
+    ]
 
 
 viewUncleSpend : UncleOffer -> Model -> List (Html Msg)
