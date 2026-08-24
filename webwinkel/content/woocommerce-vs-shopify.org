@@ -38,6 +38,18 @@ of die van een hoster of onderhoudscontract dat je ervoor betaalt.
 Bij Shopify bestaat die hele categorie werk niet: het platform doet
 het, en je levert er keuzevrijheid voor in.
 
+Waarom dat onderhoud er echt toe doet: webwinkelsoftware staat op
+het internet en wordt doorlopend afgetast door geautomatiseerde
+aanvallers. Sla je updates over, dan blijft alles ogenschijnlijk
+gewoon werken terwijl de bekende lekken zich opstapelen tot iemand
+ze vindt, en een gehackte shop betekent klantgegevens op straat of
+stilletjes meegelezen betaalgegevens. Werk je wél bij maar pakt een
+update verkeerd uit, dan krijg je bugs die uiteenlopen van een
+klein ongemak tot een winkel die niet meer laadt. Onderhoud is dus
+doorlopend laveren tussen die twee risico's; dat is precies het
+werk dat Shopify je uit handen neemt en dat bij WooCommerce op jouw
+bord ligt, of op dat van je onderhoudscontract.
+
 Voor een winkelier zonder technisch thuisfront is dit meestal
 doorslaggevender dan de prijs. Het prijsverschil voel je één keer
 per maand op de factuur; het onderhoudsverschil elke keer dat er
