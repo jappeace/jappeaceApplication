@@ -43,6 +43,18 @@ doorslaggevender dan de prijs. Het prijsverschil voel je één keer
 per maand op de factuur; het onderhoudsverschil elke keer dat er
 iets moet gebeuren.
 
+* Vraag het een AI en je krijgt het halve verhaal
+
+Steeds meer winkeliers vragen eerst ChatGPT om advies, en dat
+gesprek eindigt opvallend vaak bij dezelfde conclusie: het
+technische verschil maakt niet uit, want dat is het probleem van
+degene die de migratie doet. Die redenering is correct, en precies
+daarom gevaarlijk: hij klopt tot de dag van oplevering en breekt
+de dag erna. Vanaf dan is het jouw shop, jouw updates, jouw
+backups. Een AI beantwoordt de vraag die je stelt; de vraag die je
+had moeten stellen, wie dit systeem over een jaar onderhoudt, komt
+alleen boven tafel als iemand hem opwerpt. Bij deze dus.
+
 * De kostensom is subtieler dan hij lijkt
 
 WooCommerce oogt goedkoper: gratis software, hosting voor enkele
@@ -100,7 +112,12 @@ De keuze hangt minstens zo veel van jou af als van de platformen.
 
 Beide types zien we onder onze klanten, en soms kiest een echte
 sleutelaar tóch Shopify omdat de zaak voorgaat op de hobby; ook dat
-is een prima keuze.
+is een prima keuze. En er is een stille derde factor: bekendheid.
+Wie al eens met WordPress werkte pakt WooCommerce sneller op, wie
+Shopify van een vorige webshop kent voelt zich daar thuis, en dat
+is geen luiheid maar rationeel: een platform dat je al kent
+onderhoud en bedien je nu eenmaal beter dan het objectief mooiste
+platform dat je nog moet leren.
 
 * Zo kiezen onze klanten
 
