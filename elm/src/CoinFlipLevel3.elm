@@ -61,9 +61,10 @@ levelConfig =
                 ]
             }
     , introLogLine = "Three coins, three payouts, all hidden. Stake any of them on heads and press flip. The clock starts on your first flip. Good luck!"
+    , analyticsLevel = "level3"
     }
 
 
-main : Program () Model Msg
+main : Program Int Model Msg
 main =
     gameProgram levelConfig

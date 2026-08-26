@@ -18,7 +18,15 @@ once you do that, you can just harvest the gravy.
 
 <script src="/coin-flip-level4.js"></script>
 <script>
-Elm.CoinFlipLevel4.init({ node: document.getElementById('coin-flip-game') });
+var coinFlipApp = Elm.CoinFlipLevel4.init({
+  node: document.getElementById('coin-flip-game'),
+  flags: Math.floor(Math.random() * 1000000000)
+});
+if (coinFlipApp.ports && coinFlipApp.ports.gameAnalyticsEvent) {
+  coinFlipApp.ports.gameAnalyticsEvent.subscribe(function (event) {
+    if (window.gtag) { gtag('event', event.name, event.params || {}); }
+  });
+}
 </script>
 
 This level is (again) a lot harder than the previous ones.

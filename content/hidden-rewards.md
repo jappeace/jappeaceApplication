@@ -14,7 +14,15 @@ I won't tell which. Good luck!
 
 <script src="/coin-flip-level2.js"></script>
 <script>
-Elm.CoinFlipLevel2.init({ node: document.getElementById('coin-flip-game') });
+var coinFlipApp = Elm.CoinFlipLevel2.init({
+  node: document.getElementById('coin-flip-game'),
+  flags: Math.floor(Math.random() * 1000000000)
+});
+if (coinFlipApp.ports && coinFlipApp.ports.gameAnalyticsEvent) {
+  coinFlipApp.ports.gameAnalyticsEvent.subscribe(function (event) {
+    if (window.gtag) { gtag('event', event.name, event.params || {}); }
+  });
+}
 </script>
 
 Games in general become more interesting with hidden information.

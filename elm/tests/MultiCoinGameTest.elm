@@ -1,4 +1,4 @@
-module MultiCoinGameTest exposing (correlationSuite, correlationUpgradeSuite, extraTimeSuite, extraTurnsSuite, flipSuite, refundSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite, winCapSuite)
+module MultiCoinGameTest exposing (analyticsSuite, correlationSuite, correlationUpgradeSuite, extraTimeSuite, extraTurnsSuite, flipSuite, refundSuite, gatingSuite, payoutSuite, shopSuite, shuffleSuite, stakeSuite, winCapSuite)
 
 {-| Tests for the multi-coin engine behind level 3 (black-swan.html).
 They drive the real `update` with the real level config; the coins
@@ -19,9 +19,11 @@ import CoinFlipGame
 import CoinFlipLevel3
 import CoinFlipLevel4
 import Expect
+import Json.Encode as Encode
 import MultiCoinGame
     exposing
         ( AllocationMode(..)
+        , analyticsEvents
         , RefundState(..)
         , BustCause(..)
         , CoinOdds(..)
@@ -58,7 +60,7 @@ apply msgs model =
 
 level3Start : Model
 level3Start =
-    initialModel CoinFlipLevel3.levelConfig
+    initialModel 7 CoinFlipLevel3.levelConfig
 
 
 landedRound : List Int -> List Int -> Msg
@@ -626,7 +628,7 @@ apply4 msgs model =
 
 level4Start : Model
 level4Start =
-    initialModel CoinFlipLevel4.levelConfig
+    initialModel 7 CoinFlipLevel4.levelConfig
 
 
 sunnyRound : List Int -> Msg
@@ -874,6 +876,150 @@ tenFlipPack =
 fiftyFlipPack : MultiCoinGame.ExtraTurnsPackage
 fiftyFlipPack =
     { priceCents = 50000, extraFlips = 50 }
+
+
+{-| One update step's analytics events, as (name, encoded params)
+pairs. Drives the real `update` and the real diff, the same composition
+the engine's update wrapper sends to the port.
+-}
+stepEvents : MultiCoinGame.MultiCoinConfig -> Msg -> Model -> List ( String, String )
+stepEvents config msg model =
+    List.map
+        (\event -> ( event.name, Encode.encode 0 (Encode.object event.params) ))
+        (analyticsEvents config model (Tuple.first (update config msg model)))
+
+
+encodedParams : List ( String, Encode.Value ) -> String
+encodedParams params =
+    Encode.encode 0 (Encode.object params)
+
+
+levelParams : String -> List ( String, Encode.Value )
+levelParams level =
+    [ ( "level", Encode.string level )
+    , ( "game_id", Encode.string "7" )
+    ]
+
+
+analyticsSuite : Test
+analyticsSuite =
+    describe "MultiCoinGame analytics events"
+        [ test "a mid-game round emits nothing" <|
+            \_ ->
+                stepEvents CoinFlipLevel3.levelConfig
+                    (landedRound [ 100, 0, 0 ] [ 100, 100, 100 ])
+                    level3Start
+                    |> Expect.equal []
+        , test "going bust reports the loss screen with the run's stats" <|
+            \_ ->
+                stepEvents CoinFlipLevel3.levelConfig
+                    (landedRound [ 100, 100, 100 ] [ 100, 100, 100 ])
+                    { level3Start | balanceCents = 300 }
+                    |> Expect.equal
+                        [ ( "game_over"
+                          , encodedParams
+                                (levelParams "level3"
+                                    ++ [ ( "outcome", Encode.string "bust" )
+                                       , ( "flips", Encode.int 1 )
+                                       , ( "balance", Encode.float 0 )
+                                       , ( "seconds_left", Encode.int (30 * 60) )
+                                       , ( "target", Encode.int 999 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "running out of flips reports out_of_flips" <|
+            \_ ->
+                stepEvents CoinFlipLevel4.levelConfig
+                    (rainyRound [ 0, 0, 100 ])
+                    { level4Start | roundCount = 199, balanceCents = 5000 }
+                    |> Expect.equal
+                        [ ( "game_over"
+                          , encodedParams
+                                (levelParams "level4"
+                                    ++ [ ( "outcome", Encode.string "out_of_flips" )
+                                       , ( "flips", Encode.int 200 )
+                                       , ( "balance", Encode.float 49 )
+                                       , ( "seconds_left", Encode.int 0 )
+                                       , ( "target", Encode.int 999 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "hiring a flip helper reports the purchase and fleet size" <|
+            \_ ->
+                stepEvents CoinFlipLevel3.levelConfig FlipHelperHired level3Start
+                    |> Expect.equal
+                        [ ( "shop_purchase"
+                          , encodedParams
+                                (levelParams "level3"
+                                    ++ [ ( "item", Encode.string "flip_helper" )
+                                       , ( "price", Encode.float 1 )
+                                       , ( "helpers", Encode.int 1 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "the percentage allocator reports its purchase" <|
+            \_ ->
+                stepEvents CoinFlipLevel3.levelConfig AllocatorPurchased level3Start
+                    |> Expect.equal
+                        [ ( "shop_purchase"
+                          , encodedParams
+                                (levelParams "level3"
+                                    ++ [ ( "item", Encode.string "percentage_allocator" )
+                                       , ( "price", Encode.float 10 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "extra flips while playing report as a shop purchase" <|
+            \_ ->
+                stepEvents CoinFlipLevel4.levelConfig
+                    (ExtraTurnsPurchased { priceCents = 600, extraFlips = 1 })
+                    level4Start
+                    |> Expect.equal
+                        [ ( "shop_purchase"
+                          , encodedParams
+                                (levelParams "level4"
+                                    ++ [ ( "item", Encode.string "extra_flips" )
+                                       , ( "price", Encode.float 6 )
+                                       , ( "flips", Encode.int 1 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "the out-of-flips revival reports the play-longer press" <|
+            \_ ->
+                stepEvents CoinFlipLevel4.levelConfig
+                    LastChanceTurnPurchased
+                    { level4Start | phase = RanOutOfTime }
+                    |> Expect.equal
+                        [ ( "last_chance"
+                          , encodedParams
+                                (levelParams "level4"
+                                    ++ [ ( "price", Encode.float 8 )
+                                       , ( "flips", Encode.int 1 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "raising the target reports the play-longer press" <|
+            \_ ->
+                stepEvents CoinFlipLevel3.levelConfig
+                    WinCapRaised
+                    { level3Start | phase = WonGame, balanceCents = 99900 }
+                    |> Expect.equal
+                        [ ( "target_raised"
+                          , encodedParams
+                                (levelParams "level3"
+                                    ++ [ ( "price", Encode.float 500 )
+                                       , ( "new_target", Encode.int 9999 )
+                                       ]
+                                )
+                          )
+                        ]
+        ]
 
 
 {-| Buying more turns: $6 for 1 flip, $55 for 10, $500 for 50,

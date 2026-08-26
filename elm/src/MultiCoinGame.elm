@@ -1,5 +1,6 @@
 module MultiCoinGame exposing
     ( AllocationMode(..)
+    , analyticsEvents
     , AllocatorOffer(..)
     , RefundOffer(..)
     , RefundState(..)
@@ -89,11 +90,13 @@ import CoinFlipGame
         , trueEndingMessage
         , winCapUpsell
         )
+import GameAnalytics exposing (AnalyticsEvent)
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
 import Html.Keyed
 import Json.Decode as Decode
+import Json.Encode as Encode
 import Random
 import ShopDialog exposing (ClickPoint, ShopFold(..))
 import Time
@@ -312,6 +315,10 @@ type alias MultiCoinConfig =
     , extraTimeOffer : ExtraTimeOffer
     , lastChanceTurnOffer : LastChanceTurnOffer
     , introLogLine : String
+
+    -- The level slug ("level3") every analytics event carries, so GA
+    -- reports split per level.
+    , analyticsLevel : String
     }
 
 
@@ -324,7 +331,8 @@ type alias CoinTally =
 
 
 type alias Model =
-    { balanceCents : Int
+    { gameId : Int
+    , balanceCents : Int
     , coins : List CoinConfig
     , stakeInputs : List String
     , tallies : List CoinTally
@@ -397,7 +405,11 @@ type Msg
     | UncleAdviceGiven String
 
 
-gameProgram : MultiCoinConfig -> Program () Model Msg
+{-| The flags are the game id the page rolls at boot: one random number
+per widget instance, stamped on every analytics event so replays within
+one browsing session stay tellable apart.
+-}
+gameProgram : MultiCoinConfig -> Program Int Model Msg
 gameProgram config =
     Browser.element
         { init = init config
@@ -413,9 +425,9 @@ gameProgram config =
 -- BiasUndrawn): the as-written assignment is itself a valid hidden
 -- assignment, no human can act within the tick, and gating every coin
 -- access on an assignment state doubled the case analysis for nothing.
-init : MultiCoinConfig -> () -> ( Model, Cmd Msg )
-init config () =
-    ( initialModel config
+init : MultiCoinConfig -> Int -> ( Model, Cmd Msg )
+init config gameId =
+    ( initialModel gameId config
     , case config.profileAssignment of
         ProfilesAsWritten ->
             Cmd.none
@@ -445,9 +457,10 @@ shuffledCoinsGenerator coins =
         (Random.list (List.length coins) (Random.float 0 1))
 
 
-initialModel : MultiCoinConfig -> Model
-initialModel config =
-    { balanceCents = startingBalanceCents
+initialModel : Int -> MultiCoinConfig -> Model
+initialModel gameId config =
+    { gameId = gameId
+    , balanceCents = startingBalanceCents
     , coins = config.coins
     , stakeInputs = List.map (\_ -> "0.00") config.coins
     , tallies = List.map (\_ -> { headsCount = 0, flipCount = 0 }) config.coins
@@ -485,8 +498,26 @@ initialModel config =
     }
 
 
+{-| The exported update: runs the game logic, then diffs the old and
+new model for analytics events and batches them onto the game's own
+commands, exactly like CoinFlipGame does.
+-}
 update : MultiCoinConfig -> Msg -> Model -> ( Model, Cmd Msg )
 update config msg model =
+    let
+        ( newModel, gameCmd ) =
+            updateGame config msg model
+    in
+    ( newModel
+    , Cmd.batch
+        (gameCmd
+            :: List.map GameAnalytics.send (analyticsEvents config model newModel)
+        )
+    )
+
+
+updateGame : MultiCoinConfig -> Msg -> Model -> ( Model, Cmd Msg )
+updateGame config msg model =
     case msg of
         ProfilesShuffled shuffledCoins ->
             ( { model | coins = shuffledCoins }, Cmd.none )
@@ -1557,6 +1588,220 @@ purchaseUncleAdvice offer model =
 logLine : LogTone -> String -> Model -> Model
 logLine tone text model =
     { model | log = { tone = tone, text = text } :: model.log }
+
+
+-- ANALYTICS
+
+
+{-| All analytics events one update step produced, computed by diffing
+the model before and after, mirroring CoinFlipGame. Four families: shop
+purchases, the win target being raised, the out-of-flips last-chance
+revival, and the game reaching an end screen. Every event carries the
+level slug and the game id.
+-}
+analyticsEvents : MultiCoinConfig -> Model -> Model -> List AnalyticsEvent
+analyticsEvents config before after =
+    List.concat
+        [ shopPurchaseEvents config before after
+        , targetRaisedEvents config before after
+        , lastChanceEvents config before after
+        , gameOverEvents config before after
+        ]
+
+
+{-| The parameters every game event carries: which level, which game.
+The game id goes out as a string because GA4 custom dimensions are
+strings.
+-}
+baseParams : MultiCoinConfig -> Model -> List ( String, Encode.Value )
+baseParams config model =
+    [ ( "level", Encode.string config.analyticsLevel )
+    , ( "game_id", Encode.string (String.fromInt model.gameId) )
+    ]
+
+
+{-| What one update step charged, in dollars. Every purchase is its own
+update step, so the balance drop across the step is exactly the price
+paid.
+-}
+balanceDropDollars : Model -> Model -> Float
+balanceDropDollars before after =
+    toFloat (before.balanceCents - after.balanceCents) / 100
+
+
+shopPurchaseEvent : MultiCoinConfig -> Model -> Model -> String -> List ( String, Encode.Value ) -> AnalyticsEvent
+shopPurchaseEvent config before after item extraParams =
+    { name = "shop_purchase"
+    , params =
+        baseParams config after
+            ++ [ ( "item", Encode.string item )
+               , ( "price", Encode.float (balanceDropDollars before after) )
+               ]
+            ++ extraParams
+    }
+
+
+{-| Every owned upgrade appearing, advice or a refund bought, the fleet
+growing, and both bought play-budget extensions (clock time and extra
+flips while still playing; the out-of-flips revival reports as
+last_chance instead, see lastChanceEvents).
+-}
+shopPurchaseEvents : MultiCoinConfig -> Model -> Model -> List AnalyticsEvent
+shopPurchaseEvents config before after =
+    List.concat
+        [ if before.tracker == TrackerNotBought && after.tracker == TrackerBought then
+            [ shopPurchaseEvent config before after "ratio_tracker" [] ]
+
+          else
+            []
+        , if before.glasses == GlassesNotBought && after.glasses == GlassesBought then
+            [ shopPurchaseEvent config before after "golden_glasses" [] ]
+
+          else
+            []
+        , if before.allocationMode == DollarAllocation && after.allocationMode == PercentAllocation then
+            [ shopPurchaseEvent config before after "percentage_allocator" [] ]
+
+          else
+            []
+        , if before.book == BookNotBought && after.book == BookBought then
+            [ shopPurchaseEvent config before after "correlation_book" [] ]
+
+          else
+            []
+        , if before.refund == RefundNotAsked && after.refund == RefundAsked then
+            [ shopPurchaseEvent config before after "refund_request" [] ]
+
+          else
+            []
+        , if before.autoclicker == ClickerNotBought && after.autoclicker == ClickerBought then
+            [ shopPurchaseEvent config before after "autoclicker" [] ]
+
+          else
+            []
+        , if after.flipHelperCount > before.flipHelperCount then
+            [ shopPurchaseEvent config before after "flip_helper"
+                [ ( "helpers", Encode.int after.flipHelperCount ) ]
+            ]
+
+          else
+            []
+        , if after.uncleAdviceCount > before.uncleAdviceCount then
+            [ shopPurchaseEvent config before after "uncle_advice" [] ]
+
+          else
+            []
+        , if after.secondsLeft > before.secondsLeft then
+            [ shopPurchaseEvent config before after "extra_time"
+                [ ( "seconds", Encode.int (after.secondsLeft - before.secondsLeft) ) ]
+            ]
+
+          else
+            []
+        , if after.extraFlipsBought > before.extraFlipsBought && before.phase == Playing then
+            [ shopPurchaseEvent config before after "extra_flips"
+                [ ( "flips", Encode.int (after.extraFlipsBought - before.extraFlipsBought) ) ]
+            ]
+
+          else
+            []
+        ]
+
+
+{-| The "play longer" press on the win screen: paying to raise the
+target and resume. The new target is in whole dollars.
+-}
+targetRaisedEvents : MultiCoinConfig -> Model -> Model -> List AnalyticsEvent
+targetRaisedEvents config before after =
+    if after.winCapTier /= before.winCapTier then
+        [ { name = "target_raised"
+          , params =
+                baseParams config after
+                    ++ [ ( "price", Encode.float (balanceDropDollars before after) )
+                       , ( "new_target", Encode.int (capTargetCents after.winCapTier // 100) )
+                       ]
+          }
+        ]
+
+    else
+        []
+
+
+{-| The other "play longer" press: buying the last-chance flips on the
+out-of-flips screen, reviving the game. Only that purchase moves the
+phase from RanOutOfTime back to Playing while growing the flip budget.
+-}
+lastChanceEvents : MultiCoinConfig -> Model -> Model -> List AnalyticsEvent
+lastChanceEvents config before after =
+    if
+        (before.phase == RanOutOfTime)
+            && (after.phase == Playing)
+            && (after.extraFlipsBought > before.extraFlipsBought)
+    then
+        [ { name = "last_chance"
+          , params =
+                baseParams config after
+                    ++ [ ( "price", Encode.float (balanceDropDollars before after) )
+                       , ( "flips", Encode.int (after.extraFlipsBought - before.extraFlipsBought) )
+                       ]
+          }
+        ]
+
+    else
+        []
+
+
+{-| Reaching a win or loss screen, with the run's stats. Also fires
+when a cap raise overshoots straight into the next win screen (the
+phase never passes through Playing then, so the tier change is the
+tell).
+-}
+gameOverEvents : MultiCoinConfig -> Model -> Model -> List AnalyticsEvent
+gameOverEvents config before after =
+    if
+        (after.phase /= Playing)
+            && (before.phase == Playing || before.winCapTier /= after.winCapTier)
+    then
+        [ { name = "game_over"
+          , params =
+                baseParams config after
+                    ++ [ ( "outcome", Encode.string (outcomeName config.turnBudget after.phase) )
+                       , ( "flips", Encode.int after.roundCount )
+                       , ( "balance", Encode.float (toFloat after.balanceCents / 100) )
+                       , ( "seconds_left", Encode.int after.secondsLeft )
+                       , ( "target", Encode.int (capTargetCents after.winCapTier // 100) )
+                       ]
+          }
+        ]
+
+    else
+        []
+
+
+{-| The outcome parameter on game_over. RanOutOfTime doubles as the
+out-of-flips ending on flip-limited levels, so the budget kind picks
+the honest name. The Playing branch is unreachable (gameOverEvents only
+fires on a non-Playing phase) but the case must be total.
+-}
+outcomeName : TurnBudget -> GamePhase -> String
+outcomeName budget phase =
+    case phase of
+        Playing ->
+            "playing"
+
+        WonGame ->
+            "won"
+
+        WentBust ->
+            "bust"
+
+        RanOutOfTime ->
+            case budget of
+                TimeLimit _ ->
+                    "out_of_time"
+
+                FlipLimit _ ->
+                    "out_of_flips"
 
 
 subscriptions : MultiCoinConfig -> Model -> Sub Msg

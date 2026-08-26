@@ -1,4 +1,4 @@
-module CoinFlipGameTest exposing (clockSuite, extraTimeSuite, formattingSuite, gambleSuite, gameOverSuite, hiddenBiasSuite, shopSuite, winCapSuite)
+module CoinFlipGameTest exposing (analyticsSuite, clockSuite, extraTimeSuite, formattingSuite, gambleSuite, gameOverSuite, hiddenBiasSuite, shopSuite, sizingSuite, winCapSuite)
 
 {-| Tests for the rigged-coin game engine shared by level 1
 (even-with-an-edge-you-lose.html) and level 2 (hidden-rewards.html).
@@ -20,13 +20,17 @@ import CoinFlipGame
         , TrackerState(..)
         , WinCapTier(..)
         , WinCapUpsell(..)
+        , analyticsEvents
         , formatCents
         , formatClock
         , initialModel
         , landedPercent
         , PendingPurchase(..)
         , ShopItemKind(..)
+        , SizingState(..)
+        , autoSizedBetCents
         , parseBetCents
+        , parseSizingPercent
         , quickBetCents
         , trueEndingMessage
         , update
@@ -36,6 +40,7 @@ import CoinFlipGame
 import CoinFlipLevel1
 import CoinFlipLevel2
 import Expect
+import Json.Encode as Encode
 import Test exposing (Test, describe, test)
 import ShopDialog
 import Test.Html.Query as Query
@@ -49,12 +54,12 @@ apply config msgs model =
 
 level1Start : Model
 level1Start =
-    initialModel CoinFlipLevel1.levelConfig
+    initialModel 7 CoinFlipLevel1.levelConfig
 
 
 level2Start : Model
 level2Start =
-    initialModel CoinFlipLevel2.levelConfig
+    initialModel 7 CoinFlipLevel2.levelConfig
 
 
 landedFlip : CoinSide -> Int -> CoinSide -> Msg
@@ -163,9 +168,11 @@ gambleSuite =
                     |> Expect.equal "5.00"
         , test "a quick-bet button fills in the fraction of the balance" <|
             \_ ->
-                apply CoinFlipLevel1.levelConfig [ QuickBetPicked 0.1 ] level1Start
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased, QuickBetPicked 0.1 ]
+                    level1Start
                     |> .betInput
-                    |> Expect.equal "2.50"
+                    |> Expect.equal "2.00"
         , test "quickBetCents floors to whole cents but never to zero" <|
             \_ ->
                 ( quickBetCents 0.1 3, quickBetCents 1.0 2500 )
@@ -421,6 +428,139 @@ shopSuite =
                     level2Start
                     |> latestLogText
                     |> Expect.equal "Bought the autoclicker for $10.00. Hold a bet button down to use it."
+        ]
+
+
+{-| The sizing ladder backported from levels 3/4 after reddit feedback:
+quick-bet buttons for sale first, then the auto-sizer that replaces
+them with a percentage input re-sized on every flip.
+-}
+sizingSuite : Test
+sizingSuite =
+    describe "CoinFlipGame bet sizing ladder"
+        [ test "a quick bet without the buttons does nothing" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig [ QuickBetPicked 0.1 ] level1Start
+                    |> .betInput
+                    |> Expect.equal "0.00"
+        , test "buying the sizing buttons costs $5.00" <|
+            \_ ->
+                let
+                    bought =
+                        apply CoinFlipLevel1.levelConfig [ SizingButtonsPurchased ] level1Start
+                in
+                ( bought.balanceCents, bought.sizing )
+                    |> Expect.equal ( 2000, SizingButtonsBought )
+        , test "the sizing buttons cannot be bought twice" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased, SizingButtonsPurchased ]
+                    level1Start
+                    |> .balanceCents
+                    |> Expect.equal 2000
+        , test "the sizing buttons are refused when they would wipe the balance" <|
+            \_ ->
+                let
+                    refused =
+                        apply CoinFlipLevel1.levelConfig
+                            [ SizingButtonsPurchased ]
+                            { level1Start | balanceCents = 500 }
+                in
+                ( refused.balanceCents, refused.sizing )
+                    |> Expect.equal ( 500, SizingNotBought )
+        , test "the auto-sizer is refused before the buttons are bought" <|
+            \_ ->
+                let
+                    refused =
+                        apply CoinFlipLevel1.levelConfig [ AutoSizerPurchased ] level1Start
+                in
+                ( refused.balanceCents, refused.sizing )
+                    |> Expect.equal ( 2500, SizingNotBought )
+        , test "buying the auto-sizer costs $10.00 and sizes the bet to 10% right away" <|
+            \_ ->
+                let
+                    bought =
+                        apply CoinFlipLevel1.levelConfig
+                            [ SizingButtonsPurchased, AutoSizerPurchased ]
+                            level1Start
+                in
+                ( bought.balanceCents, bought.sizing, bought.betInput )
+                    |> Expect.equal
+                        ( 1000, AutoSizerBought { percentInput = "10" }, "1.00" )
+        , test "changing the percentage re-sizes the bet before any flip" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased, AutoSizerPurchased, AutoSizerPercentChanged "50" ]
+                    level1Start
+                    |> .betInput
+                    |> Expect.equal "5.00"
+        , test "a flip re-sizes the bet to the chosen percentage of the new balance" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased
+                    , AutoSizerPurchased
+                    , AutoSizerPercentChanged "50"
+                    , landedFlip Heads 500 Heads
+                    ]
+                    level1Start
+                    |> .betInput
+                    |> Expect.equal "7.50"
+        , test "an unreadable percentage falls back to clamping the bet" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased
+                    , AutoSizerPurchased
+                    , AutoSizerPercentChanged "much"
+                    , landedFlip Heads 950 Tails
+                    ]
+                    level1Start
+                    |> .betInput
+                    |> Expect.equal "0.50"
+        , test "changing the percentage without the auto-sizer does nothing" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased, AutoSizerPercentChanged "50" ]
+                    level1Start
+                    |> .betInput
+                    |> Expect.equal "0.00"
+        , test "parseSizingPercent reads decimals and rejects junk and non-positives" <|
+            \_ ->
+                ( parseSizingPercent "12.5", parseSizingPercent "much", parseSizingPercent "0" )
+                    |> Expect.equal ( Just 1250, Nothing, Nothing )
+        , test "autoSizedBetCents floors but never to zero while money remains" <|
+            \_ ->
+                ( autoSizedBetCents 100 30, autoSizedBetCents 100 3 )
+                    |> Expect.equal ( 1, 1 )
+        , test "a percentage over 100 bets the whole balance" <|
+            \_ ->
+                autoSizedBetCents 20000 1000
+                    |> Expect.equal 1000
+        , test "no sizing row renders before any purchase" <|
+            \_ ->
+                view CoinFlipLevel1.levelConfig level1Start
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "quick-bets" ]
+        , test "bought buttons render the quick-bet row" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig [ SizingButtonsPurchased ] level1Start
+                    |> view CoinFlipLevel1.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "quick-bets" ]
+        , test "the auto-sizer replaces the quick-bet buttons with its input" <|
+            \_ ->
+                let
+                    upgraded =
+                        apply CoinFlipLevel1.levelConfig
+                            [ SizingButtonsPurchased, AutoSizerPurchased ]
+                            level1Start
+                            |> view CoinFlipLevel1.levelConfig
+                            |> Query.fromHtml
+                in
+                Expect.all
+                    [ Query.has [ class "auto-sizer" ]
+                    , Query.hasNot [ class "quick-bets" ]
+                    ]
+                    upgraded
         ]
 
 
@@ -783,6 +923,181 @@ winCapSuite =
                     { level2Start | phase = WonGame, balanceCents = 99900 }
                     |> Query.fromHtml
                     |> Query.hasNot [ text trueEndingMessage ]
+        ]
+
+
+{-| One update step's analytics events, as (name, encoded params)
+pairs. Drives the real `update` and the real diff, the same composition
+the engine's update wrapper sends to the port.
+-}
+stepEvents : LevelConfig -> Msg -> Model -> List ( String, String )
+stepEvents config msg model =
+    List.map
+        (\event -> ( event.name, Encode.encode 0 (Encode.object event.params) ))
+        (analyticsEvents config model (Tuple.first (update config msg model)))
+
+
+encodedParams : List ( String, Encode.Value ) -> String
+encodedParams params =
+    Encode.encode 0 (Encode.object params)
+
+
+levelParams : String -> List ( String, Encode.Value )
+levelParams level =
+    [ ( "level", Encode.string level )
+    , ( "game_id", Encode.string "7" )
+    ]
+
+
+analyticsSuite : Test
+analyticsSuite =
+    describe "CoinFlipGame analytics events"
+        [ test "a mid-game flip emits nothing" <|
+            \_ ->
+                stepEvents CoinFlipLevel1.levelConfig (landedFlip Heads 100 Heads) level1Start
+                    |> Expect.equal []
+        , test "reaching the win screen reports the run's stats" <|
+            \_ ->
+                stepEvents CoinFlipLevel1.levelConfig
+                    (landedFlip Heads 1000 Heads)
+                    { level1Start | balanceCents = 99000, flipCount = 41 }
+                    |> Expect.equal
+                        [ ( "game_over"
+                          , encodedParams
+                                (levelParams "level1"
+                                    ++ [ ( "outcome", Encode.string "won" )
+                                       , ( "flips", Encode.int 42 )
+                                       , ( "balance", Encode.float 1000 )
+                                       , ( "seconds_left", Encode.int (30 * 60) )
+                                       , ( "target", Encode.int 999 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "going bust reports the loss screen" <|
+            \_ ->
+                stepEvents CoinFlipLevel1.levelConfig
+                    (landedFlip Heads 1000 Tails)
+                    { level1Start | balanceCents = 1000 }
+                    |> Expect.equal
+                        [ ( "game_over"
+                          , encodedParams
+                                (levelParams "level1"
+                                    ++ [ ( "outcome", Encode.string "bust" )
+                                       , ( "flips", Encode.int 1 )
+                                       , ( "balance", Encode.float 0 )
+                                       , ( "seconds_left", Encode.int (30 * 60) )
+                                       , ( "target", Encode.int 999 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "the clock running out reports out_of_time" <|
+            \_ ->
+                stepEvents CoinFlipLevel1.levelConfig
+                    ClockTicked
+                    { level1Start | secondsLeft = 1 }
+                    |> Expect.equal
+                        [ ( "game_over"
+                          , encodedParams
+                                (levelParams "level1"
+                                    ++ [ ( "outcome", Encode.string "out_of_time" )
+                                       , ( "flips", Encode.int 0 )
+                                       , ( "balance", Encode.float 25 )
+                                       , ( "seconds_left", Encode.int 0 )
+                                       , ( "target", Encode.int 999 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "buying the tracker reports a shop purchase with its price" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig TrackerPurchased level2Start
+                    |> Expect.equal
+                        [ ( "shop_purchase"
+                          , encodedParams
+                                (levelParams "level2"
+                                    ++ [ ( "item", Encode.string "ratio_tracker" )
+                                       , ( "price", Encode.float 15 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "a refused purchase reports nothing" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig
+                    TrackerPurchased
+                    { level2Start | balanceCents = 1500 }
+                    |> Expect.equal []
+        , test "both sizing rungs report their own item" <|
+            \_ ->
+                ( stepEvents CoinFlipLevel1.levelConfig SizingButtonsPurchased level1Start
+                    |> List.map Tuple.first
+                , stepEvents CoinFlipLevel1.levelConfig
+                    AutoSizerPurchased
+                    (apply CoinFlipLevel1.levelConfig [ SizingButtonsPurchased ] level1Start)
+                )
+                    |> Expect.equal
+                        ( [ "shop_purchase" ]
+                        , [ ( "shop_purchase"
+                            , encodedParams
+                                (levelParams "level1"
+                                    ++ [ ( "item", Encode.string "auto_sizer" )
+                                       , ( "price", Encode.float 10 )
+                                       ]
+                                )
+                            )
+                          ]
+                        )
+        , test "buying time reports the seconds bought" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig (ExtraTimePurchased oneMinutePack) level2Start
+                    |> Expect.equal
+                        [ ( "shop_purchase"
+                          , encodedParams
+                                (levelParams "level2"
+                                    ++ [ ( "item", Encode.string "extra_time" )
+                                       , ( "price", Encode.float 20 )
+                                       , ( "seconds", Encode.int 60 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "uncle's advice reports a purchase" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig UncleAdviceRequested level2Start
+                    |> Expect.equal
+                        [ ( "shop_purchase"
+                          , encodedParams
+                                (levelParams "level2"
+                                    ++ [ ( "item", Encode.string "uncle_advice" )
+                                       , ( "price", Encode.float 5 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "raising the target reports the play-longer press" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig
+                    WinCapRaised
+                    { level2Start | phase = WonGame, balanceCents = 99900 }
+                    |> Expect.equal
+                        [ ( "target_raised"
+                          , encodedParams
+                                (levelParams "level2"
+                                    ++ [ ( "price", Encode.float 500 )
+                                       , ( "new_target", Encode.int 9999 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "a raise that overshoots reports the raise and the fresh win" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig
+                    WinCapRaised
+                    { level2Start | phase = WonGame, balanceCents = 3000000 }
+                    |> List.map Tuple.first
+                    |> Expect.equal [ "target_raised", "game_over" ]
         ]
 
 

@@ -102,6 +102,8 @@
     background: transparent;
     color: inherit;
   }
+  /* The auto-sizer's percentage needs fewer digits than a bet. */
+  #coin-flip-game .auto-sizer input[type="number"] { width: 4.5em; }
   #coin-flip-game .log {
     height: 8em;
     overflow-y: auto;

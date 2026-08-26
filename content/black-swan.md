@@ -15,7 +15,15 @@ of a gambler may succeed.
 
 <script src="/coin-flip-level3.js"></script>
 <script>
-Elm.CoinFlipLevel3.init({ node: document.getElementById('coin-flip-game') });
+var coinFlipApp = Elm.CoinFlipLevel3.init({
+  node: document.getElementById('coin-flip-game'),
+  flags: Math.floor(Math.random() * 1000000000)
+});
+if (coinFlipApp.ports && coinFlipApp.ports.gameAnalyticsEvent) {
+  coinFlipApp.ports.gameAnalyticsEvent.subscribe(function (event) {
+    if (window.gtag) { gtag('event', event.name, event.params || {}); }
+  });
+}
 </script>
 
 Here the way to win is to carefully study the log messages, 

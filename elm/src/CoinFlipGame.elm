@@ -18,12 +18,16 @@ module CoinFlipGame exposing
     , NextLevelLink(..)
     , PendingPurchase(..)
     , ShopItemKind(..)
+    , SizingOffer(..)
+    , SizingState(..)
     , TrackerOffer(..)
     , TrackerState(..)
     , UncleGloat(..)
     , UncleOffer(..)
     , WinCapTier(..)
     , WinCapUpsell(..)
+    , analyticsEvents
+    , autoSizedBetCents
     , capTargetCents
     , extraTimeText
     , formatCents
@@ -33,6 +37,7 @@ module CoinFlipGame exposing
     , landedPercent
     , oppositeSide
     , parseBetCents
+    , parseSizingPercent
     , quickBetCents
     , startingBalanceCents
     , targetBalanceCents
@@ -66,10 +71,12 @@ rounded floats after every flip to paper over drift.
 
 import Browser
 import Browser.Events
+import GameAnalytics exposing (AnalyticsEvent)
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
 import Json.Decode as Decode
+import Json.Encode as Encode
 import Random
 import ShopDialog exposing (ClickPoint, ShopFold(..))
 import Time
@@ -110,6 +117,36 @@ type AutoclickerOffer
 type Autoclicker
     = ClickerNotBought
     | ClickerBought
+
+
+-- Decision: bet sizing is a two-step shop ladder (buttons first, then
+-- the auto-sizer), not two independent offers. Reddit feedback on
+-- level 1 (JoshTriplett, /r/WebGames, aug 2026) asked for re-sizing
+-- the bet to a percentage after every autoclick; levels 3/4 already
+-- sell that as the percentage allocator. Backporting it as a plain
+-- second item was rejected: gating it behind the buttons keeps the
+-- shop's escalation joke (first you buy convenience, then you buy
+-- automating the convenience away) and both prices in one offer
+-- record makes the ladder impossible to configure half-missing.
+
+
+{-| The bet sizing ladder for sale: the quick-bet buttons first, and
+only after those the auto-sizer that replaces them with a percentage
+input re-sized on every flip. Prices in cents.
+-}
+type SizingOffer
+    = NoSizingForSale
+    | SizingForSale { buttonsPriceCents : Int, autoSizerPriceCents : Int }
+
+
+{-| How far up the sizing ladder the player has bought. The percent
+input only exists once the auto-sizer does, so an unbought game cannot
+carry one.
+-}
+type SizingState
+    = SizingNotBought
+    | SizingButtonsBought
+    | AutoSizerBought { percentInput : String }
 
 
 {-| Which bet button is currently held down (mouse or touch), if any.
@@ -172,6 +209,8 @@ type UncleOffer
 type ShopItemKind
     = TrackerItem
     | AutoclickerItem
+    | SizingButtonsItem
+    | AutoSizerItem
     | ExtraTimeItem ExtraTimePackage
     | UncleAdviceItem
 
@@ -207,10 +246,15 @@ type alias LevelConfig =
     , trackerOffer : TrackerOffer
     , uncleOffer : UncleOffer
     , autoclickerOffer : AutoclickerOffer
+    , sizingOffer : SizingOffer
     , extraTimeOffer : ExtraTimeOffer
     , nextLevelLink : NextLevelLink
     , bustEnding : BustEnding
     , introLogLine : String
+
+    -- The level slug ("level1") every analytics event carries, so GA
+    -- reports split per level.
+    , analyticsLevel : String
     }
 
 
@@ -260,7 +304,8 @@ type alias LogLine =
 
 
 type alias Model =
-    { balanceCents : Int
+    { gameId : Int
+    , balanceCents : Int
     , betInput : String
     , biasState : BiasState
     , phase : GamePhase
@@ -274,6 +319,7 @@ type alias Model =
     , tracker : TrackerState
     , winCapTier : WinCapTier
     , autoclicker : Autoclicker
+    , sizing : SizingState
     , betHold : BetHold
     , shopFold : ShopFold
     , pendingPurchase : PendingPurchase
@@ -292,6 +338,9 @@ type Msg
     | ClockTicked
     | TrackerPurchased
     | AutoclickerPurchased
+    | SizingButtonsPurchased
+    | AutoSizerPurchased
+    | AutoSizerPercentChanged String
     | BetHoldStarted CoinSide
     | BetHoldEnded
     | AutoclickerTicked
@@ -382,7 +431,11 @@ timeLimitSeconds : Int
 timeLimitSeconds = 30 * 60
 
 
-gameProgram : LevelConfig -> Program () Model Msg
+{-| The flags are the game id the page rolls at boot: one random number
+per widget instance, stamped on every analytics event so replays within
+one browsing session stay tellable apart.
+-}
+gameProgram : LevelConfig -> Program Int Model Msg
 gameProgram config =
     Browser.element
         { init = init config
@@ -392,9 +445,10 @@ gameProgram config =
         }
 
 
-initialModel : LevelConfig -> Model
-initialModel config =
-    { balanceCents = startingBalanceCents
+initialModel : Int -> LevelConfig -> Model
+initialModel gameId config =
+    { gameId = gameId
+    , balanceCents = startingBalanceCents
     , betInput = "0.00"
     , biasState =
         case config.bias of
@@ -414,6 +468,7 @@ initialModel config =
     , tracker = TrackerNotBought
     , winCapTier = FirstCap
     , autoclicker = ClickerNotBought
+    , sizing = SizingNotBought
     , betHold = NoBetHeld
     , shopFold = ShopCollapsed
     , pendingPurchase = NoPendingPurchase
@@ -423,9 +478,9 @@ initialModel config =
     }
 
 
-init : LevelConfig -> () -> ( Model, Cmd Msg )
-init config () =
-    ( initialModel config
+init : LevelConfig -> Int -> ( Model, Cmd Msg )
+init config gameId =
+    ( initialModel gameId config
     , case config.bias of
         KnownHeadsPercent _ ->
             Cmd.none
@@ -440,20 +495,55 @@ init config () =
     )
 
 
+{-| The exported update: runs the game logic, then diffs the old and
+new model for analytics events and batches them onto the game's own
+commands. Analytics lives here as a diff rather than inside each
+handler so no purchase or ending can forget to report itself.
+-}
 update : LevelConfig -> Msg -> Model -> ( Model, Cmd Msg )
 update config msg model =
+    let
+        ( newModel, gameCmd ) =
+            updateGame config msg model
+    in
+    ( newModel
+    , Cmd.batch
+        (gameCmd
+            :: List.map GameAnalytics.send (analyticsEvents config model newModel)
+        )
+    )
+
+
+updateGame : LevelConfig -> Msg -> Model -> ( Model, Cmd Msg )
+updateGame config msg model =
     case msg of
         BiasDrawn bias ->
             ( { model | biasState = BiasReady bias }, Cmd.none )
 
         QuickBetPicked fraction ->
-            if model.phase == Playing then
-                ( { model | betInput = formatCents (quickBetCents fraction model.balanceCents) }
-                , Cmd.none
-                )
+            -- Only a bought (and not yet replaced) button row sizes the
+            -- bet; before the purchase the buttons don't render, so a
+            -- stray message must not act either.
+            case ( model.phase == Playing, model.sizing ) of
+                ( True, SizingButtonsBought ) ->
+                    ( { model | betInput = formatCents (quickBetCents fraction model.balanceCents) }
+                    , Cmd.none
+                    )
 
-            else
-                ( model, Cmd.none )
+                ( True, SizingNotBought ) ->
+                    ( model, Cmd.none )
+
+                ( True, AutoSizerBought _ ) ->
+                    ( model, Cmd.none )
+
+                ( False, SizingNotBought ) ->
+                    ( model, Cmd.none )
+
+                ( False, SizingButtonsBought ) ->
+                    ( model, Cmd.none )
+
+                ( False, AutoSizerBought _ ) ->
+                    ( model, Cmd.none )
 
         BetInputChanged newInput ->
             ( { model | betInput = newInput }, Cmd.none )
@@ -472,6 +562,15 @@ update config msg model =
 
         AutoclickerPurchased ->
             ( purchaseAutoclicker config.autoclickerOffer model, Cmd.none )
+
+        SizingButtonsPurchased ->
+            ( purchaseSizingButtons config.sizingOffer model, Cmd.none )
+
+        AutoSizerPurchased ->
+            ( purchaseAutoSizer config.sizingOffer model, Cmd.none )
+
+        AutoSizerPercentChanged newInput ->
+            ( changeAutoSizerPercent newInput model, Cmd.none )
 
         BetHoldStarted side ->
             ( { model | betHold = BetHeld side }, Cmd.none )
@@ -524,6 +623,18 @@ update config msg model =
 
                 Considering AutoclickerItem _ ->
                     ( purchaseAutoclicker config.autoclickerOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering SizingButtonsItem _ ->
+                    ( purchaseSizingButtons config.sizingOffer
+                        { model | pendingPurchase = NoPendingPurchase }
+                    , Cmd.none
+                    )
+
+                Considering AutoSizerItem _ ->
+                    ( purchaseAutoSizer config.sizingOffer
                         { model | pendingPurchase = NoPendingPurchase }
                     , Cmd.none
                     )
@@ -647,7 +758,7 @@ settleFlip uncleOffer flip model =
                     , tailsBetCount = countSide Tails flip.playerChoice model.tailsBetCount
                     , headsLandedCount = countSide Heads flip.landed model.headsLandedCount
                     , tailsLandedCount = countSide Tails flip.landed model.tailsLandedCount
-                    , betInput = clampBetInput newBalance model.betInput
+                    , betInput = resizeBetInput model.sizing newBalance model.betInput
                 }
         in
         checkEndState
@@ -805,6 +916,182 @@ purchaseAutoclicker offer model =
                         , autoclicker = ClickerBought
                         , betInput = clampBetInput (model.balanceCents - priceCents) model.betInput
                     }
+
+
+{-| Buy the quick-bet sizing buttons, the first rung of the sizing
+ladder. Same wipe-out guard as the tracker.
+-}
+purchaseSizingButtons : SizingOffer -> Model -> Model
+purchaseSizingButtons offer model =
+    case ( offer, model.sizing ) of
+        ( NoSizingForSale, SizingNotBought ) ->
+            model
+
+        ( NoSizingForSale, SizingButtonsBought ) ->
+            model
+
+        ( NoSizingForSale, AutoSizerBought _ ) ->
+            model
+
+        ( SizingForSale _, SizingButtonsBought ) ->
+            model
+
+        ( SizingForSale _, AutoSizerBought _ ) ->
+            model
+
+        ( SizingForSale prices, SizingNotBought ) ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= prices.buttonsPriceCents then
+                logLine NeutralTone "You cannot afford the sizing buttons." model
+
+            else
+                logLine NeutralTone
+                    ("Bought the sizing buttons for $"
+                        ++ formatCents prices.buttonsPriceCents
+                        ++ ". The clicking is still on you."
+                    )
+                    { model
+                        | balanceCents = model.balanceCents - prices.buttonsPriceCents
+                        , sizing = SizingButtonsBought
+                        , betInput = clampBetInput (model.balanceCents - prices.buttonsPriceCents) model.betInput
+                    }
+
+
+{-| The percentage the auto-sizer starts on: the 10% the level-1
+explanation recommends, so the fresh purchase does something sensible
+before the player touches the input.
+-}
+autoSizerStartPercent : String
+autoSizerStartPercent = "10"
+
+
+{-| Buy the auto-sizer, the second rung: only sold once the sizing
+buttons are owned (the shop hides it before that; a stray message is
+refused here too). It replaces the buttons with a percentage input and
+immediately sizes the bet to its starting percentage.
+-}
+purchaseAutoSizer : SizingOffer -> Model -> Model
+purchaseAutoSizer offer model =
+    case ( offer, model.sizing ) of
+        ( NoSizingForSale, SizingNotBought ) ->
+            model
+
+        ( NoSizingForSale, SizingButtonsBought ) ->
+            model
+
+        ( NoSizingForSale, AutoSizerBought _ ) ->
+            model
+
+        ( SizingForSale _, SizingNotBought ) ->
+            model
+
+        ( SizingForSale _, AutoSizerBought _ ) ->
+            model
+
+        ( SizingForSale prices, SizingButtonsBought ) ->
+            if model.phase /= Playing then
+                model
+
+            else if model.balanceCents <= prices.autoSizerPriceCents then
+                logLine NeutralTone "You cannot afford the auto-sizer." model
+
+            else
+                let
+                    boughtSizing =
+                        AutoSizerBought { percentInput = autoSizerStartPercent }
+
+                    newBalance =
+                        model.balanceCents - prices.autoSizerPriceCents
+                in
+                logLine NeutralTone
+                    ("Bought the auto-sizer for $"
+                        ++ formatCents prices.autoSizerPriceCents
+                        ++ ". Every flip re-sizes your bet to your percentage."
+                    )
+                    { model
+                        | balanceCents = newBalance
+                        , sizing = boughtSizing
+                        , betInput = resizeBetInput boughtSizing newBalance model.betInput
+                    }
+
+
+{-| Retype the auto-sizer's percentage. The bet re-sizes right away so
+the effect is visible before the next flip; a percentage that does not
+parse leaves the bet alone until it does.
+-}
+changeAutoSizerPercent : String -> Model -> Model
+changeAutoSizerPercent newInput model =
+    case model.sizing of
+        SizingNotBought ->
+            model
+
+        SizingButtonsBought ->
+            model
+
+        AutoSizerBought _ ->
+            let
+                newSizing =
+                    AutoSizerBought { percentInput = newInput }
+            in
+            { model
+                | sizing = newSizing
+                , betInput = resizeBetInput newSizing model.balanceCents model.betInput
+            }
+
+
+{-| The bet input after the balance changed: a bought auto-sizer with a
+readable percentage re-sizes the bet to that share of the new balance
+(the reddit-requested behaviour); anything less keeps the old clamp.
+-}
+resizeBetInput : SizingState -> Int -> String -> String
+resizeBetInput sizing balanceCents betInput =
+    case sizing of
+        SizingNotBought ->
+            clampBetInput balanceCents betInput
+
+        SizingButtonsBought ->
+            clampBetInput balanceCents betInput
+
+        AutoSizerBought sizer ->
+            case parseSizingPercent sizer.percentInput of
+                Nothing ->
+                    clampBetInput balanceCents betInput
+
+                Just percentHundredths ->
+                    formatCents (autoSizedBetCents percentHundredths balanceCents)
+
+
+{-| Parse the auto-sizer's percentage ("12.5") into hundredths of a
+percent. Same rejection rules as bets: anything that is not positive is
+Nothing.
+-}
+parseSizingPercent : String -> Maybe Int
+parseSizingPercent input =
+    case String.toFloat input of
+        Nothing ->
+            Nothing
+
+        Just percent ->
+            let
+                hundredths =
+                    round (percent * 100)
+            in
+            if hundredths <= 0 then
+                Nothing
+
+            else
+                Just hundredths
+
+
+{-| The auto-sized bet: the given hundredths of a percent of the
+balance, floored to whole cents, at least one cent while money remains
+and never above the balance (a percentage over 100 just bets it all).
+-}
+autoSizedBetCents : Int -> Int -> Int
+autoSizedBetCents percentHundredths balanceCents =
+    min balanceCents (max 1 (balanceCents * percentHundredths // 10000))
 
 
 {-| Buy more time on the clock. Repeatable, and refused when it would
@@ -1022,6 +1309,183 @@ landedPercent sideCount totalFlips =
         round (100 * toFloat sideCount / toFloat totalFlips)
 
 
+-- ANALYTICS
+
+
+{-| All analytics events one update step produced, computed by diffing
+the model before and after. Three families: shop purchases (any owned
+upgrade appearing, advice bought, clock time growing), the win target
+being raised, and the game reaching an end screen. Every event carries
+the level slug and the game id.
+-}
+analyticsEvents : LevelConfig -> Model -> Model -> List AnalyticsEvent
+analyticsEvents config before after =
+    List.concat
+        [ shopPurchaseEvents config before after
+        , targetRaisedEvents config before after
+        , gameOverEvents config before after
+        ]
+
+
+{-| The parameters every game event carries: which level, which game.
+The game id goes out as a string because GA4 custom dimensions are
+strings.
+-}
+baseParams : LevelConfig -> Model -> List ( String, Encode.Value )
+baseParams config model =
+    [ ( "level", Encode.string config.analyticsLevel )
+    , ( "game_id", Encode.string (String.fromInt model.gameId) )
+    ]
+
+
+{-| What one update step charged, in dollars. Every purchase is its own
+update step, so the balance drop across the step is exactly the price
+paid; deriving it this way beats looking prices up per item in the
+config offers, which would repeat every offer's case analysis here.
+-}
+balanceDropDollars : Model -> Model -> Float
+balanceDropDollars before after =
+    toFloat (before.balanceCents - after.balanceCents) / 100
+
+
+shopPurchaseEvent : LevelConfig -> Model -> Model -> String -> List ( String, Encode.Value ) -> AnalyticsEvent
+shopPurchaseEvent config before after item extraParams =
+    { name = "shop_purchase"
+    , params =
+        baseParams config after
+            ++ [ ( "item", Encode.string item )
+               , ( "price", Encode.float (balanceDropDollars before after) )
+               ]
+            ++ extraParams
+    }
+
+
+shopPurchaseEvents : LevelConfig -> Model -> Model -> List AnalyticsEvent
+shopPurchaseEvents config before after =
+    List.concat
+        [ if before.tracker == TrackerNotBought && after.tracker == TrackerBought then
+            [ shopPurchaseEvent config before after "ratio_tracker" [] ]
+
+          else
+            []
+        , if before.autoclicker == ClickerNotBought && after.autoclicker == ClickerBought then
+            [ shopPurchaseEvent config before after "autoclicker" [] ]
+
+          else
+            []
+        , sizingPurchaseEvents config before after
+        , if after.uncleAdviceCount > before.uncleAdviceCount then
+            [ shopPurchaseEvent config before after "uncle_advice" [] ]
+
+          else
+            []
+        , if after.secondsLeft > before.secondsLeft then
+            [ shopPurchaseEvent config before after "extra_time"
+                [ ( "seconds", Encode.int (after.secondsLeft - before.secondsLeft) ) ]
+            ]
+
+          else
+            []
+        ]
+
+
+sizingPurchaseEvents : LevelConfig -> Model -> Model -> List AnalyticsEvent
+sizingPurchaseEvents config before after =
+    case ( before.sizing, after.sizing ) of
+        ( SizingNotBought, SizingButtonsBought ) ->
+            [ shopPurchaseEvent config before after "sizing_buttons" [] ]
+
+        ( SizingButtonsBought, AutoSizerBought _ ) ->
+            [ shopPurchaseEvent config before after "auto_sizer" [] ]
+
+        ( SizingNotBought, SizingNotBought ) ->
+            []
+
+        ( SizingNotBought, AutoSizerBought _ ) ->
+            []
+
+        ( SizingButtonsBought, SizingNotBought ) ->
+            []
+
+        ( SizingButtonsBought, SizingButtonsBought ) ->
+            []
+
+        ( AutoSizerBought _, SizingNotBought ) ->
+            []
+
+        ( AutoSizerBought _, SizingButtonsBought ) ->
+            []
+
+        ( AutoSizerBought _, AutoSizerBought _ ) ->
+            []
+
+
+{-| The "play longer" press on the win screen: paying to raise the
+target and resume. The new target is in whole dollars.
+-}
+targetRaisedEvents : LevelConfig -> Model -> Model -> List AnalyticsEvent
+targetRaisedEvents config before after =
+    if after.winCapTier /= before.winCapTier then
+        [ { name = "target_raised"
+          , params =
+                baseParams config after
+                    ++ [ ( "price", Encode.float (balanceDropDollars before after) )
+                       , ( "new_target", Encode.int (capTargetCents after.winCapTier // 100) )
+                       ]
+          }
+        ]
+
+    else
+        []
+
+
+{-| Reaching a win or loss screen, with the run's stats. Also fires
+when a cap raise overshoots straight into the next win screen (the
+phase never passes through Playing then, so the tier change is the
+tell).
+-}
+gameOverEvents : LevelConfig -> Model -> Model -> List AnalyticsEvent
+gameOverEvents config before after =
+    if
+        (after.phase /= Playing)
+            && (before.phase == Playing || before.winCapTier /= after.winCapTier)
+    then
+        [ { name = "game_over"
+          , params =
+                baseParams config after
+                    ++ [ ( "outcome", Encode.string (outcomeName after.phase) )
+                       , ( "flips", Encode.int after.flipCount )
+                       , ( "balance", Encode.float (toFloat after.balanceCents / 100) )
+                       , ( "seconds_left", Encode.int after.secondsLeft )
+                       , ( "target", Encode.int (capTargetCents after.winCapTier // 100) )
+                       ]
+          }
+        ]
+
+    else
+        []
+
+
+{-| The outcome parameter on game_over. The Playing branch is
+unreachable (gameOverEvents only fires on a non-Playing phase) but the
+case must be total.
+-}
+outcomeName : GamePhase -> String
+outcomeName phase =
+    case phase of
+        Playing ->
+            "playing"
+
+        WonGame ->
+            "won"
+
+        WentBust ->
+            "bust"
+
+        RanOutOfTime ->
+            "out_of_time"
+
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
@@ -1160,8 +1624,8 @@ viewControls : LevelConfig -> Model -> Html Msg
 viewControls config model =
     Html.div [ Html.Attributes.class "controls" ]
         (List.concat
-            [ [ viewQuickBets
-              , Html.div []
+            [ viewSizingRow model.sizing
+            , [ Html.div []
                     [ Html.label []
                         [ Html.text "Bet $: "
                         , Html.input
@@ -1194,6 +1658,23 @@ viewControls config model =
         )
 
 
+{-| The sizing row above the bet input: nothing until the buttons are
+bought, the quick-bet buttons after that, and the auto-sizer's
+percentage input once it replaced them.
+-}
+viewSizingRow : SizingState -> List (Html Msg)
+viewSizingRow sizing =
+    case sizing of
+        SizingNotBought ->
+            []
+
+        SizingButtonsBought ->
+            [ viewQuickBets ]
+
+        AutoSizerBought sizer ->
+            [ viewAutoSizerRow sizer.percentInput ]
+
+
 viewQuickBets : Html Msg
 viewQuickBets =
     Html.div [ Html.Attributes.class "quick-bets" ]
@@ -1203,6 +1684,25 @@ viewQuickBets =
         , Html.button [ Html.Events.onClick (QuickBetPicked 0.5) ] [ Html.text "50%" ]
         , Html.button [ Html.Events.onClick (QuickBetPicked 1.0) ] [ Html.text "Max" ]
         , Html.text " of balance"
+        ]
+
+
+viewAutoSizerRow : String -> Html Msg
+viewAutoSizerRow percentInput =
+    Html.div [ Html.Attributes.class "auto-sizer" ]
+        [ Html.label []
+            [ Html.text "Bet "
+            , Html.input
+                [ Html.Attributes.type_ "number"
+                , Html.Attributes.step "0.1"
+                , Html.Attributes.min "0.01"
+                , Html.Attributes.max "100"
+                , Html.Attributes.value percentInput
+                , Html.Events.onInput AutoSizerPercentChanged
+                ]
+                []
+            , Html.text "% of balance, re-sized every flip"
+            ]
         ]
 
 
@@ -1278,6 +1778,8 @@ viewShop config model =
     case
         viewTrackerShopItem config.trackerOffer model
             ++ viewAutoclickerShopItem config.autoclickerOffer model
+            ++ viewSizingButtonsShopItem config.sizingOffer model
+            ++ viewAutoSizerShopItem config.sizingOffer model
             ++ viewExtraTimeShopItem config.extraTimeOffer
             ++ viewUncleShopItem config.uncleOffer
     of
@@ -1333,6 +1835,53 @@ viewAutoclickerShopItem offer model =
 
         ( AutoclickerForSale priceCents, ClickerNotBought ) ->
             [ viewShopItem (PurchaseConsidered AutoclickerItem) "Buy autoclicker" priceCents ]
+
+
+viewSizingButtonsShopItem : SizingOffer -> Model -> List (Html Msg)
+viewSizingButtonsShopItem offer model =
+    case ( offer, model.sizing ) of
+        ( NoSizingForSale, SizingNotBought ) ->
+            []
+
+        ( NoSizingForSale, SizingButtonsBought ) ->
+            []
+
+        ( NoSizingForSale, AutoSizerBought _ ) ->
+            []
+
+        ( SizingForSale _, SizingButtonsBought ) ->
+            []
+
+        ( SizingForSale _, AutoSizerBought _ ) ->
+            []
+
+        ( SizingForSale prices, SizingNotBought ) ->
+            [ viewShopItem (PurchaseConsidered SizingButtonsItem) "Buy sizing buttons" prices.buttonsPriceCents ]
+
+
+{-| The auto-sizer only goes on display once the sizing buttons are
+owned: the ladder sells one rung at a time.
+-}
+viewAutoSizerShopItem : SizingOffer -> Model -> List (Html Msg)
+viewAutoSizerShopItem offer model =
+    case ( offer, model.sizing ) of
+        ( NoSizingForSale, SizingNotBought ) ->
+            []
+
+        ( NoSizingForSale, SizingButtonsBought ) ->
+            []
+
+        ( NoSizingForSale, AutoSizerBought _ ) ->
+            []
+
+        ( SizingForSale _, SizingNotBought ) ->
+            []
+
+        ( SizingForSale _, AutoSizerBought _ ) ->
+            []
+
+        ( SizingForSale prices, SizingButtonsBought ) ->
+            [ viewShopItem (PurchaseConsidered AutoSizerItem) "Buy auto-sizer" prices.autoSizerPriceCents ]
 
 
 viewUncleShopItem : UncleOffer -> List (Html Msg)
@@ -1398,6 +1947,12 @@ itemDisplayName itemKind =
         AutoclickerItem ->
             "the autoclicker"
 
+        SizingButtonsItem ->
+            "the sizing buttons"
+
+        AutoSizerItem ->
+            "the auto-sizer"
+
         ExtraTimeItem package ->
             extraTimeText package.extraSeconds
 
@@ -1413,6 +1968,12 @@ itemExplanation itemKind =
 
         AutoclickerItem ->
             "Hold a bet button down and it presses it for you, ten times a second."
+
+        SizingButtonsItem ->
+            "Four buttons that size your bet to 10%, 20%, 50%, or all of your balance in one click."
+
+        AutoSizerItem ->
+            "Replaces the sizing buttons with a percentage of your choosing: every flip re-sizes your bet to that share of your balance."
 
         ExtraTimeItem _ ->
             "Clock running low? Nonsense. The house happily extends your opportunity to give it money."
@@ -1443,6 +2004,22 @@ itemPriceCents config itemKind =
 
                 AutoclickerForSale priceCents ->
                     priceCents
+
+        SizingButtonsItem ->
+            case config.sizingOffer of
+                NoSizingForSale ->
+                    0
+
+                SizingForSale prices ->
+                    prices.buttonsPriceCents
+
+        AutoSizerItem ->
+            case config.sizingOffer of
+                NoSizingForSale ->
+                    0
+
+                SizingForSale prices ->
+                    prices.autoSizerPriceCents
 
         ExtraTimeItem package ->
             package.priceCents

@@ -80,9 +80,10 @@ levelConfig =
                 ]
             }
     , introLogLine = "Three birds, one sky, two hundred flips. Stake any of them on heads and press flip. Good luck!"
+    , analyticsLevel = "level4"
     }
 
 
-main : Program () Model Msg
+main : Program Int Model Msg
 main =
     gameProgram levelConfig
