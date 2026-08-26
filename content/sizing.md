@@ -15,7 +15,15 @@ Try it out:
 
 <script src="/coin-flip-level1.js"></script>
 <script>
-Elm.CoinFlipLevel1.init({ node: document.getElementById('coin-flip-game') });
+var coinFlipApp = Elm.CoinFlipLevel1.init({
+  node: document.getElementById('coin-flip-game'),
+  flags: Math.floor(Math.random() * 1000000000)
+});
+if (coinFlipApp.ports && coinFlipApp.ports.gameAnalyticsEvent) {
+  coinFlipApp.ports.gameAnalyticsEvent.subscribe(function (event) {
+    if (window.gtag) { gtag('event', event.name, event.params || {}); }
+  });
+}
 </script>
 
 There is a decent

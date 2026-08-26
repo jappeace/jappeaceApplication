@@ -61,9 +61,10 @@ levelConfig =
     , nextLevelLink = NextLevelLinkTo { url = "/black-swan.html", label = "<<next level>>" }
     , bustEnding = BustEndingQuote "Uncle is proud. Or perhaps he just appreciates all the money you gave him."
     , introLogLine = "The coin is rigged again, but this time I won't tell you how. The clock starts on your first bet. Good luck!"
+    , analyticsLevel = "level2"
     }
 
 
-main : Program () Model Msg
+main : Program Int Model Msg
 main =
     gameProgram levelConfig

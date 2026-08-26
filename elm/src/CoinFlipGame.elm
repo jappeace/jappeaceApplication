@@ -26,6 +26,7 @@ module CoinFlipGame exposing
     , UncleOffer(..)
     , WinCapTier(..)
     , WinCapUpsell(..)
+    , analyticsEvents
     , autoSizedBetCents
     , capTargetCents
     , extraTimeText
@@ -70,10 +71,12 @@ rounded floats after every flip to paper over drift.
 
 import Browser
 import Browser.Events
+import GameAnalytics exposing (AnalyticsEvent)
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
 import Json.Decode as Decode
+import Json.Encode as Encode
 import Random
 import ShopDialog exposing (ClickPoint, ShopFold(..))
 import Time
@@ -248,6 +251,10 @@ type alias LevelConfig =
     , nextLevelLink : NextLevelLink
     , bustEnding : BustEnding
     , introLogLine : String
+
+    -- The level slug ("level1") every analytics event carries, so GA
+    -- reports split per level.
+    , analyticsLevel : String
     }
 
 
@@ -297,7 +304,8 @@ type alias LogLine =
 
 
 type alias Model =
-    { balanceCents : Int
+    { gameId : Int
+    , balanceCents : Int
     , betInput : String
     , biasState : BiasState
     , phase : GamePhase
@@ -423,7 +431,11 @@ timeLimitSeconds : Int
 timeLimitSeconds = 30 * 60
 
 
-gameProgram : LevelConfig -> Program () Model Msg
+{-| The flags are the game id the page rolls at boot: one random number
+per widget instance, stamped on every analytics event so replays within
+one browsing session stay tellable apart.
+-}
+gameProgram : LevelConfig -> Program Int Model Msg
 gameProgram config =
     Browser.element
         { init = init config
@@ -433,9 +445,10 @@ gameProgram config =
         }
 
 
-initialModel : LevelConfig -> Model
-initialModel config =
-    { balanceCents = startingBalanceCents
+initialModel : Int -> LevelConfig -> Model
+initialModel gameId config =
+    { gameId = gameId
+    , balanceCents = startingBalanceCents
     , betInput = "0.00"
     , biasState =
         case config.bias of
@@ -465,9 +478,9 @@ initialModel config =
     }
 
 
-init : LevelConfig -> () -> ( Model, Cmd Msg )
-init config () =
-    ( initialModel config
+init : LevelConfig -> Int -> ( Model, Cmd Msg )
+init config gameId =
+    ( initialModel gameId config
     , case config.bias of
         KnownHeadsPercent _ ->
             Cmd.none
@@ -482,8 +495,27 @@ init config () =
     )
 
 
+{-| The exported update: runs the game logic, then diffs the old and
+new model for analytics events and batches them onto the game's own
+commands. Analytics lives here as a diff rather than inside each
+handler so no purchase or ending can forget to report itself.
+-}
 update : LevelConfig -> Msg -> Model -> ( Model, Cmd Msg )
 update config msg model =
+    let
+        ( newModel, gameCmd ) =
+            updateGame config msg model
+    in
+    ( newModel
+    , Cmd.batch
+        (gameCmd
+            :: List.map GameAnalytics.send (analyticsEvents config model newModel)
+        )
+    )
+
+
+updateGame : LevelConfig -> Msg -> Model -> ( Model, Cmd Msg )
+updateGame config msg model =
     case msg of
         BiasDrawn bias ->
             ( { model | biasState = BiasReady bias }, Cmd.none )
@@ -1275,6 +1307,183 @@ landedPercent sideCount totalFlips =
 
     else
         round (100 * toFloat sideCount / toFloat totalFlips)
+
+
+-- ANALYTICS
+
+
+{-| All analytics events one update step produced, computed by diffing
+the model before and after. Three families: shop purchases (any owned
+upgrade appearing, advice bought, clock time growing), the win target
+being raised, and the game reaching an end screen. Every event carries
+the level slug and the game id.
+-}
+analyticsEvents : LevelConfig -> Model -> Model -> List AnalyticsEvent
+analyticsEvents config before after =
+    List.concat
+        [ shopPurchaseEvents config before after
+        , targetRaisedEvents config before after
+        , gameOverEvents config before after
+        ]
+
+
+{-| The parameters every game event carries: which level, which game.
+The game id goes out as a string because GA4 custom dimensions are
+strings.
+-}
+baseParams : LevelConfig -> Model -> List ( String, Encode.Value )
+baseParams config model =
+    [ ( "level", Encode.string config.analyticsLevel )
+    , ( "game_id", Encode.string (String.fromInt model.gameId) )
+    ]
+
+
+{-| What one update step charged, in dollars. Every purchase is its own
+update step, so the balance drop across the step is exactly the price
+paid; deriving it this way beats looking prices up per item in the
+config offers, which would repeat every offer's case analysis here.
+-}
+balanceDropDollars : Model -> Model -> Float
+balanceDropDollars before after =
+    toFloat (before.balanceCents - after.balanceCents) / 100
+
+
+shopPurchaseEvent : LevelConfig -> Model -> Model -> String -> List ( String, Encode.Value ) -> AnalyticsEvent
+shopPurchaseEvent config before after item extraParams =
+    { name = "shop_purchase"
+    , params =
+        baseParams config after
+            ++ [ ( "item", Encode.string item )
+               , ( "price", Encode.float (balanceDropDollars before after) )
+               ]
+            ++ extraParams
+    }
+
+
+shopPurchaseEvents : LevelConfig -> Model -> Model -> List AnalyticsEvent
+shopPurchaseEvents config before after =
+    List.concat
+        [ if before.tracker == TrackerNotBought && after.tracker == TrackerBought then
+            [ shopPurchaseEvent config before after "ratio_tracker" [] ]
+
+          else
+            []
+        , if before.autoclicker == ClickerNotBought && after.autoclicker == ClickerBought then
+            [ shopPurchaseEvent config before after "autoclicker" [] ]
+
+          else
+            []
+        , sizingPurchaseEvents config before after
+        , if after.uncleAdviceCount > before.uncleAdviceCount then
+            [ shopPurchaseEvent config before after "uncle_advice" [] ]
+
+          else
+            []
+        , if after.secondsLeft > before.secondsLeft then
+            [ shopPurchaseEvent config before after "extra_time"
+                [ ( "seconds", Encode.int (after.secondsLeft - before.secondsLeft) ) ]
+            ]
+
+          else
+            []
+        ]
+
+
+sizingPurchaseEvents : LevelConfig -> Model -> Model -> List AnalyticsEvent
+sizingPurchaseEvents config before after =
+    case ( before.sizing, after.sizing ) of
+        ( SizingNotBought, SizingButtonsBought ) ->
+            [ shopPurchaseEvent config before after "sizing_buttons" [] ]
+
+        ( SizingButtonsBought, AutoSizerBought _ ) ->
+            [ shopPurchaseEvent config before after "auto_sizer" [] ]
+
+        ( SizingNotBought, SizingNotBought ) ->
+            []
+
+        ( SizingNotBought, AutoSizerBought _ ) ->
+            []
+
+        ( SizingButtonsBought, SizingNotBought ) ->
+            []
+
+        ( SizingButtonsBought, SizingButtonsBought ) ->
+            []
+
+        ( AutoSizerBought _, SizingNotBought ) ->
+            []
+
+        ( AutoSizerBought _, SizingButtonsBought ) ->
+            []
+
+        ( AutoSizerBought _, AutoSizerBought _ ) ->
+            []
+
+
+{-| The "play longer" press on the win screen: paying to raise the
+target and resume. The new target is in whole dollars.
+-}
+targetRaisedEvents : LevelConfig -> Model -> Model -> List AnalyticsEvent
+targetRaisedEvents config before after =
+    if after.winCapTier /= before.winCapTier then
+        [ { name = "target_raised"
+          , params =
+                baseParams config after
+                    ++ [ ( "price", Encode.float (balanceDropDollars before after) )
+                       , ( "new_target", Encode.int (capTargetCents after.winCapTier // 100) )
+                       ]
+          }
+        ]
+
+    else
+        []
+
+
+{-| Reaching a win or loss screen, with the run's stats. Also fires
+when a cap raise overshoots straight into the next win screen (the
+phase never passes through Playing then, so the tier change is the
+tell).
+-}
+gameOverEvents : LevelConfig -> Model -> Model -> List AnalyticsEvent
+gameOverEvents config before after =
+    if
+        (after.phase /= Playing)
+            && (before.phase == Playing || before.winCapTier /= after.winCapTier)
+    then
+        [ { name = "game_over"
+          , params =
+                baseParams config after
+                    ++ [ ( "outcome", Encode.string (outcomeName after.phase) )
+                       , ( "flips", Encode.int after.flipCount )
+                       , ( "balance", Encode.float (toFloat after.balanceCents / 100) )
+                       , ( "seconds_left", Encode.int after.secondsLeft )
+                       , ( "target", Encode.int (capTargetCents after.winCapTier // 100) )
+                       ]
+          }
+        ]
+
+    else
+        []
+
+
+{-| The outcome parameter on game_over. The Playing branch is
+unreachable (gameOverEvents only fires on a non-Playing phase) but the
+case must be total.
+-}
+outcomeName : GamePhase -> String
+outcomeName phase =
+    case phase of
+        Playing ->
+            "playing"
+
+        WonGame ->
+            "won"
+
+        WentBust ->
+            "bust"
+
+        RanOutOfTime ->
+            "out_of_time"
 
 
 subscriptions : Model -> Sub Msg

@@ -36,9 +36,10 @@ levelConfig =
     , nextLevelLink = NextLevelLinkTo { url = "/hidden-rewards.html", label = "<<next level>>" }
     , bustEnding = PlainBustEnding
     , introLogLine = "Heads hits 60%, tails 40%. The clock starts on your first bet. Good luck!"
+    , analyticsLevel = "level1"
     }
 
 
-main : Program () Model Msg
+main : Program Int Model Msg
 main =
     gameProgram levelConfig

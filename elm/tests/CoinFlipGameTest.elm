@@ -1,4 +1,4 @@
-module CoinFlipGameTest exposing (clockSuite, extraTimeSuite, formattingSuite, gambleSuite, gameOverSuite, hiddenBiasSuite, shopSuite, sizingSuite, winCapSuite)
+module CoinFlipGameTest exposing (analyticsSuite, clockSuite, extraTimeSuite, formattingSuite, gambleSuite, gameOverSuite, hiddenBiasSuite, shopSuite, sizingSuite, winCapSuite)
 
 {-| Tests for the rigged-coin game engine shared by level 1
 (even-with-an-edge-you-lose.html) and level 2 (hidden-rewards.html).
@@ -20,6 +20,7 @@ import CoinFlipGame
         , TrackerState(..)
         , WinCapTier(..)
         , WinCapUpsell(..)
+        , analyticsEvents
         , formatCents
         , formatClock
         , initialModel
@@ -39,6 +40,7 @@ import CoinFlipGame
 import CoinFlipLevel1
 import CoinFlipLevel2
 import Expect
+import Json.Encode as Encode
 import Test exposing (Test, describe, test)
 import ShopDialog
 import Test.Html.Query as Query
@@ -52,12 +54,12 @@ apply config msgs model =
 
 level1Start : Model
 level1Start =
-    initialModel CoinFlipLevel1.levelConfig
+    initialModel 7 CoinFlipLevel1.levelConfig
 
 
 level2Start : Model
 level2Start =
-    initialModel CoinFlipLevel2.levelConfig
+    initialModel 7 CoinFlipLevel2.levelConfig
 
 
 landedFlip : CoinSide -> Int -> CoinSide -> Msg
@@ -921,6 +923,181 @@ winCapSuite =
                     { level2Start | phase = WonGame, balanceCents = 99900 }
                     |> Query.fromHtml
                     |> Query.hasNot [ text trueEndingMessage ]
+        ]
+
+
+{-| One update step's analytics events, as (name, encoded params)
+pairs. Drives the real `update` and the real diff, the same composition
+the engine's update wrapper sends to the port.
+-}
+stepEvents : LevelConfig -> Msg -> Model -> List ( String, String )
+stepEvents config msg model =
+    List.map
+        (\event -> ( event.name, Encode.encode 0 (Encode.object event.params) ))
+        (analyticsEvents config model (Tuple.first (update config msg model)))
+
+
+encodedParams : List ( String, Encode.Value ) -> String
+encodedParams params =
+    Encode.encode 0 (Encode.object params)
+
+
+levelParams : String -> List ( String, Encode.Value )
+levelParams level =
+    [ ( "level", Encode.string level )
+    , ( "game_id", Encode.string "7" )
+    ]
+
+
+analyticsSuite : Test
+analyticsSuite =
+    describe "CoinFlipGame analytics events"
+        [ test "a mid-game flip emits nothing" <|
+            \_ ->
+                stepEvents CoinFlipLevel1.levelConfig (landedFlip Heads 100 Heads) level1Start
+                    |> Expect.equal []
+        , test "reaching the win screen reports the run's stats" <|
+            \_ ->
+                stepEvents CoinFlipLevel1.levelConfig
+                    (landedFlip Heads 1000 Heads)
+                    { level1Start | balanceCents = 99000, flipCount = 41 }
+                    |> Expect.equal
+                        [ ( "game_over"
+                          , encodedParams
+                                (levelParams "level1"
+                                    ++ [ ( "outcome", Encode.string "won" )
+                                       , ( "flips", Encode.int 42 )
+                                       , ( "balance", Encode.float 1000 )
+                                       , ( "seconds_left", Encode.int (30 * 60) )
+                                       , ( "target", Encode.int 999 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "going bust reports the loss screen" <|
+            \_ ->
+                stepEvents CoinFlipLevel1.levelConfig
+                    (landedFlip Heads 1000 Tails)
+                    { level1Start | balanceCents = 1000 }
+                    |> Expect.equal
+                        [ ( "game_over"
+                          , encodedParams
+                                (levelParams "level1"
+                                    ++ [ ( "outcome", Encode.string "bust" )
+                                       , ( "flips", Encode.int 1 )
+                                       , ( "balance", Encode.float 0 )
+                                       , ( "seconds_left", Encode.int (30 * 60) )
+                                       , ( "target", Encode.int 999 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "the clock running out reports out_of_time" <|
+            \_ ->
+                stepEvents CoinFlipLevel1.levelConfig
+                    ClockTicked
+                    { level1Start | secondsLeft = 1 }
+                    |> Expect.equal
+                        [ ( "game_over"
+                          , encodedParams
+                                (levelParams "level1"
+                                    ++ [ ( "outcome", Encode.string "out_of_time" )
+                                       , ( "flips", Encode.int 0 )
+                                       , ( "balance", Encode.float 25 )
+                                       , ( "seconds_left", Encode.int 0 )
+                                       , ( "target", Encode.int 999 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "buying the tracker reports a shop purchase with its price" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig TrackerPurchased level2Start
+                    |> Expect.equal
+                        [ ( "shop_purchase"
+                          , encodedParams
+                                (levelParams "level2"
+                                    ++ [ ( "item", Encode.string "ratio_tracker" )
+                                       , ( "price", Encode.float 15 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "a refused purchase reports nothing" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig
+                    TrackerPurchased
+                    { level2Start | balanceCents = 1500 }
+                    |> Expect.equal []
+        , test "both sizing rungs report their own item" <|
+            \_ ->
+                ( stepEvents CoinFlipLevel1.levelConfig SizingButtonsPurchased level1Start
+                    |> List.map Tuple.first
+                , stepEvents CoinFlipLevel1.levelConfig
+                    AutoSizerPurchased
+                    (apply CoinFlipLevel1.levelConfig [ SizingButtonsPurchased ] level1Start)
+                )
+                    |> Expect.equal
+                        ( [ "shop_purchase" ]
+                        , [ ( "shop_purchase"
+                            , encodedParams
+                                (levelParams "level1"
+                                    ++ [ ( "item", Encode.string "auto_sizer" )
+                                       , ( "price", Encode.float 10 )
+                                       ]
+                                )
+                            )
+                          ]
+                        )
+        , test "buying time reports the seconds bought" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig (ExtraTimePurchased oneMinutePack) level2Start
+                    |> Expect.equal
+                        [ ( "shop_purchase"
+                          , encodedParams
+                                (levelParams "level2"
+                                    ++ [ ( "item", Encode.string "extra_time" )
+                                       , ( "price", Encode.float 20 )
+                                       , ( "seconds", Encode.int 60 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "uncle's advice reports a purchase" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig UncleAdviceRequested level2Start
+                    |> Expect.equal
+                        [ ( "shop_purchase"
+                          , encodedParams
+                                (levelParams "level2"
+                                    ++ [ ( "item", Encode.string "uncle_advice" )
+                                       , ( "price", Encode.float 5 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "raising the target reports the play-longer press" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig
+                    WinCapRaised
+                    { level2Start | phase = WonGame, balanceCents = 99900 }
+                    |> Expect.equal
+                        [ ( "target_raised"
+                          , encodedParams
+                                (levelParams "level2"
+                                    ++ [ ( "price", Encode.float 500 )
+                                       , ( "new_target", Encode.int 9999 )
+                                       ]
+                                )
+                          )
+                        ]
+        , test "a raise that overshoots reports the raise and the fresh win" <|
+            \_ ->
+                stepEvents CoinFlipLevel2.levelConfig
+                    WinCapRaised
+                    { level2Start | phase = WonGame, balanceCents = 3000000 }
+                    |> List.map Tuple.first
+                    |> Expect.equal [ "target_raised", "game_over" ]
         ]
 
 
