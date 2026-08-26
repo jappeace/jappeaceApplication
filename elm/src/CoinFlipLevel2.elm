@@ -3,13 +3,15 @@ module CoinFlipLevel2 exposing (levelConfig, main)
 {-| Level 2 of the rigged-coin game: hidden rewards. Which side wins is
 drawn fifty-fifty at game start, its win percent between 55 and 65, and
 neither is ever shown, not even on the end screen. The shop sells a
-ratio tracker (steep), an autoclicker, overpriced extra clock time, and
-uncle's terrible advice (cheap, worth less).
+ratio tracker (steep), an autoclicker, the bet sizing ladder (buttons,
+then the auto-sizer), overpriced extra clock time, and uncle's terrible
+advice (cheap, worth less).
 -}
 
 import CoinFlipGame
     exposing
         ( AutoclickerOffer(..)
+        , SizingOffer(..)
         , BustEnding(..)
         , CoinBias(..)
         , ExtraTimeOffer(..)
@@ -29,6 +31,10 @@ levelConfig =
     , bias = HiddenRandomBias { minPercent = 55, maxPercent = 65 }
     , trackerOffer = TrackerForSale 1500
     , autoclickerOffer = AutoclickerForSale 1000
+
+    -- Same sizing ladder as level 1: $5 buttons gating the $10
+    -- auto-sizer.
+    , sizingOffer = SizingForSale { buttonsPriceCents = 500, autoSizerPriceCents = 1000 }
 
     -- Time sells at a premium: $20 a minute, and the half-hour "deal"
     -- charges $25 a minute, mirroring level 4's extra flips where the

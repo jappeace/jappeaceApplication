@@ -1,4 +1,4 @@
-module CoinFlipGameTest exposing (clockSuite, extraTimeSuite, formattingSuite, gambleSuite, gameOverSuite, hiddenBiasSuite, shopSuite, winCapSuite)
+module CoinFlipGameTest exposing (clockSuite, extraTimeSuite, formattingSuite, gambleSuite, gameOverSuite, hiddenBiasSuite, shopSuite, sizingSuite, winCapSuite)
 
 {-| Tests for the rigged-coin game engine shared by level 1
 (even-with-an-edge-you-lose.html) and level 2 (hidden-rewards.html).
@@ -26,7 +26,10 @@ import CoinFlipGame
         , landedPercent
         , PendingPurchase(..)
         , ShopItemKind(..)
+        , SizingState(..)
+        , autoSizedBetCents
         , parseBetCents
+        , parseSizingPercent
         , quickBetCents
         , trueEndingMessage
         , update
@@ -163,9 +166,11 @@ gambleSuite =
                     |> Expect.equal "5.00"
         , test "a quick-bet button fills in the fraction of the balance" <|
             \_ ->
-                apply CoinFlipLevel1.levelConfig [ QuickBetPicked 0.1 ] level1Start
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased, QuickBetPicked 0.1 ]
+                    level1Start
                     |> .betInput
-                    |> Expect.equal "2.50"
+                    |> Expect.equal "2.00"
         , test "quickBetCents floors to whole cents but never to zero" <|
             \_ ->
                 ( quickBetCents 0.1 3, quickBetCents 1.0 2500 )
@@ -421,6 +426,139 @@ shopSuite =
                     level2Start
                     |> latestLogText
                     |> Expect.equal "Bought the autoclicker for $10.00. Hold a bet button down to use it."
+        ]
+
+
+{-| The sizing ladder backported from levels 3/4 after reddit feedback:
+quick-bet buttons for sale first, then the auto-sizer that replaces
+them with a percentage input re-sized on every flip.
+-}
+sizingSuite : Test
+sizingSuite =
+    describe "CoinFlipGame bet sizing ladder"
+        [ test "a quick bet without the buttons does nothing" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig [ QuickBetPicked 0.1 ] level1Start
+                    |> .betInput
+                    |> Expect.equal "0.00"
+        , test "buying the sizing buttons costs $5.00" <|
+            \_ ->
+                let
+                    bought =
+                        apply CoinFlipLevel1.levelConfig [ SizingButtonsPurchased ] level1Start
+                in
+                ( bought.balanceCents, bought.sizing )
+                    |> Expect.equal ( 2000, SizingButtonsBought )
+        , test "the sizing buttons cannot be bought twice" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased, SizingButtonsPurchased ]
+                    level1Start
+                    |> .balanceCents
+                    |> Expect.equal 2000
+        , test "the sizing buttons are refused when they would wipe the balance" <|
+            \_ ->
+                let
+                    refused =
+                        apply CoinFlipLevel1.levelConfig
+                            [ SizingButtonsPurchased ]
+                            { level1Start | balanceCents = 500 }
+                in
+                ( refused.balanceCents, refused.sizing )
+                    |> Expect.equal ( 500, SizingNotBought )
+        , test "the auto-sizer is refused before the buttons are bought" <|
+            \_ ->
+                let
+                    refused =
+                        apply CoinFlipLevel1.levelConfig [ AutoSizerPurchased ] level1Start
+                in
+                ( refused.balanceCents, refused.sizing )
+                    |> Expect.equal ( 2500, SizingNotBought )
+        , test "buying the auto-sizer costs $10.00 and sizes the bet to 10% right away" <|
+            \_ ->
+                let
+                    bought =
+                        apply CoinFlipLevel1.levelConfig
+                            [ SizingButtonsPurchased, AutoSizerPurchased ]
+                            level1Start
+                in
+                ( bought.balanceCents, bought.sizing, bought.betInput )
+                    |> Expect.equal
+                        ( 1000, AutoSizerBought { percentInput = "10" }, "1.00" )
+        , test "changing the percentage re-sizes the bet before any flip" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased, AutoSizerPurchased, AutoSizerPercentChanged "50" ]
+                    level1Start
+                    |> .betInput
+                    |> Expect.equal "5.00"
+        , test "a flip re-sizes the bet to the chosen percentage of the new balance" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased
+                    , AutoSizerPurchased
+                    , AutoSizerPercentChanged "50"
+                    , landedFlip Heads 500 Heads
+                    ]
+                    level1Start
+                    |> .betInput
+                    |> Expect.equal "7.50"
+        , test "an unreadable percentage falls back to clamping the bet" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased
+                    , AutoSizerPurchased
+                    , AutoSizerPercentChanged "much"
+                    , landedFlip Heads 950 Tails
+                    ]
+                    level1Start
+                    |> .betInput
+                    |> Expect.equal "0.50"
+        , test "changing the percentage without the auto-sizer does nothing" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig
+                    [ SizingButtonsPurchased, AutoSizerPercentChanged "50" ]
+                    level1Start
+                    |> .betInput
+                    |> Expect.equal "0.00"
+        , test "parseSizingPercent reads decimals and rejects junk and non-positives" <|
+            \_ ->
+                ( parseSizingPercent "12.5", parseSizingPercent "much", parseSizingPercent "0" )
+                    |> Expect.equal ( Just 1250, Nothing, Nothing )
+        , test "autoSizedBetCents floors but never to zero while money remains" <|
+            \_ ->
+                ( autoSizedBetCents 100 30, autoSizedBetCents 100 3 )
+                    |> Expect.equal ( 1, 1 )
+        , test "a percentage over 100 bets the whole balance" <|
+            \_ ->
+                autoSizedBetCents 20000 1000
+                    |> Expect.equal 1000
+        , test "no sizing row renders before any purchase" <|
+            \_ ->
+                view CoinFlipLevel1.levelConfig level1Start
+                    |> Query.fromHtml
+                    |> Query.hasNot [ class "quick-bets" ]
+        , test "bought buttons render the quick-bet row" <|
+            \_ ->
+                apply CoinFlipLevel1.levelConfig [ SizingButtonsPurchased ] level1Start
+                    |> view CoinFlipLevel1.levelConfig
+                    |> Query.fromHtml
+                    |> Query.has [ class "quick-bets" ]
+        , test "the auto-sizer replaces the quick-bet buttons with its input" <|
+            \_ ->
+                let
+                    upgraded =
+                        apply CoinFlipLevel1.levelConfig
+                            [ SizingButtonsPurchased, AutoSizerPurchased ]
+                            level1Start
+                            |> view CoinFlipLevel1.levelConfig
+                            |> Query.fromHtml
+                in
+                Expect.all
+                    [ Query.has [ class "auto-sizer" ]
+                    , Query.hasNot [ class "quick-bets" ]
+                    ]
+                    upgraded
         ]
 
 
