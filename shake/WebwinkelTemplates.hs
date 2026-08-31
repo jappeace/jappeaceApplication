@@ -899,8 +899,17 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td "Basismigratie: 1.000 producten inbegrepen"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1.999" :: Text)
         H.tr $ do
-          H.td "Extra producten boven die 1.000 (elk product telt per taal \233\233n keer mee)"
+          H.td "Extra producten boven die 1.000: de eerste duizend (elk product telt per taal \233\233n keer mee)"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
+        H.tr $ do
+          H.td "De duizend daarna"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,20 per product" :: Text)
+        H.tr $ do
+          H.td "De duizend daarna"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,15 per product" :: Text)
+        H.tr $ do
+          H.td "Alles daarboven: hoe groter je catalogus, hoe goedkoper per product"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,10 per product" :: Text)
         H.tr $ do
           H.td "Extra taal: configuratie, per taal"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)

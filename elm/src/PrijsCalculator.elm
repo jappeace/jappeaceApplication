@@ -16,7 +16,8 @@ port module PrijsCalculator exposing
 De prijslogica is een 1-op-1 kopie van de standaard prijslijst (jappiesoft
 strategy/standaard-prijslijst.org) en de tabel op /prijzen: basismigratie met
 1.000 inbegrepen productvertalingen (producten maal talen tellen samen tegen
-die ruimte), daarboven €0,25 per productvertaling, plus €250 configuratie per
+die ruimte), daarboven een degressieve staffel per duizend vertalingen
+(€0,25, €0,20, €0,15, daarna €0,10), plus €250 configuratie per
 extra taal, de losse modules (thema, klantaccounts, orderhistorie, nieuwsbrief,
 voorraad) en de diensten domeinverhuizing en e-mail-setup. Alle bedragen worden
 intern in hele centen gerekend zodat er geen afrondingsfouten op de komma
@@ -78,9 +79,34 @@ inbegrepenProducten =
     1000
 
 
-perProductCenten : Int
-perProductCenten =
-    25
+-- Decision: de productstaffel is degressief (besluit Jappie 1 sep 2026,
+-- na plotterenzo.nl en het 50.000-producten-anker van 15 aug): grote
+-- catalogi kosten het migratieprogramma nauwelijks extra werk, dus een
+-- vlak tarief prijst juist de goedkoopste meerschaal het hardst en
+-- jaagt grote shops weg met bedragen die niets met de kostprijs te
+-- maken hebben. Boven de inbegrepen 1.000 productvertalingen kost elke
+-- volgende duizend een trede minder, tot een bodem van 10 cent.
+-- Alternatief overwogen: een tweede maatwerkgrens op 5.000 euro
+-- richtprijs (staat gebouwd op de geparkeerde branch
+-- calculator-richtprijs-grens); afgewezen omdat de degressieve staffel
+-- die bedragen gewoon eerlijk toonbaar maakt en de bestaande
+-- grote-catalogus-grens de echt grote gevallen al naar het gesprek
+-- stuurt.
+
+
+staffelTredenCenten : List Int
+staffelTredenCenten =
+    [ 25, 20, 15 ]
+
+
+staffelBodemCenten : Int
+staffelBodemCenten =
+    10
+
+
+tredeGrootte : Int
+tredeGrootte =
+    1000
 
 
 perTaalConfiguratieCenten : Int
@@ -564,14 +590,19 @@ productVertalingen model =
     aantalProducten model * aantalTalen model
 
 
-{-| Vanaf dit aantal productvertalingen (producten maal talen) is een winkel
-geen standaardmigratie meer; de rekenhulp toont dan een neem-contact-melding
-in plaats van een richtprijs. Besluit Jappie 15 aug 2026, naar aanleiding van
-een lead met 50.000 producten waarvoor het vlakke tarief op ruim veertienduizend
-euro uitkwam: zo'n bedrag zwijgend tonen jaagt de bezoeker weg zonder gesprek. -}
+{-| Vanaf dit aantal productvertalingen (producten maal talen) toont de
+rekenhulp een neem-contact-melding in plaats van een richtprijs. De grens
+stond vanaf 15 aug 2026 op 10.000, omdat het toenmalige vlakke tarief daar
+stil bedragen van ruim veertienduizend euro toonde (het
+50.000-producten-anker). Met de degressieve staffel is datzelfde anker
+7.199 euro en gewoon eerlijk toonbaar, dus de grens is per 1 sep 2026
+verruimd naar 100.000 (besluit Jappie): elke realistische shop ziet nu
+direct zijn prijs, en de melding blijft alleen over als vangnet tegen
+absurde of vertikte invoer, waar een kaal bedrag van tienduizenden euro's
+niemand helpt. -}
 groteCatalogusGrens : Int
 groteCatalogusGrens =
-    10000
+    100000
 
 
 isGroteCatalogus : Model -> Bool
@@ -606,7 +637,29 @@ extraProductVertalingen model =
 
 extraProductVertalingenCenten : Model -> Int
 extraProductVertalingenCenten model =
-    extraProductVertalingen model * perProductCenten
+    staffelCenten (extraProductVertalingen model) staffelTredenCenten
+
+
+{-| De degressieve som over de extra productvertalingen: de eerste
+'tredeGrootte' vertalingen tegen de eerste trede, de volgende duizend
+tegen de tweede, enzovoort; alles voorbij de laatste trede tegen de
+bodemprijs. -}
+staffelCenten : Int -> List Int -> Int
+staffelCenten extra treden =
+    if extra <= 0 then
+        0
+
+    else
+        case treden of
+            [] ->
+                extra * staffelBodemCenten
+
+            tarief :: rest ->
+                let
+                    inDezeTrede =
+                        Basics.min extra tredeGrootte
+                in
+                inDezeTrede * tarief + staffelCenten (extra - inDezeTrede) rest
 
 
 extraTaalConfiguratieCenten : Model -> Int
@@ -908,7 +961,7 @@ prijsRegels model =
     [ PrijsRegel "Basismigratie (1.000 producten inbegrepen, over alle talen samen)" basisMigratieCenten ]
         ++ optioneleRegel
             (extraProductVertalingen model > 0)
-            (aantalLabel (extraProductVertalingen model) "product boven de 1.000 inbegrepen (over alle talen) \u{00D7} \u{20AC}0,25" "producten boven de 1.000 inbegrepen (over alle talen) \u{00D7} \u{20AC}0,25")
+            (aantalLabel (extraProductVertalingen model) "product boven de 1.000 inbegrepen (over alle talen, aflopende staffel)" "producten boven de 1.000 inbegrepen (over alle talen, aflopende staffel)")
             (extraProductVertalingenCenten model)
         ++ optioneleRegel
             (extraTalen model > 0)
