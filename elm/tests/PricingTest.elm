@@ -55,13 +55,29 @@ suite =
         [ test "basis: 1.000 producten, 1 taal, geen modules = 1.999" <|
             \_ ->
                 Expect.equal 199900 (totaalCenten initieelModel)
-        , test "3.000 producten, 1 taal = 2.499 (rekenvoorbeeld)" <|
+        , test "3.000 producten, 1 taal = 2.449 (degressief: 1.000 om 25ct en 1.000 om 20ct)" <|
             \_ ->
-                Expect.equal 249900
+                Expect.equal 244900
                     (totaalCenten (metProducten 3000 1 initieelModel))
-        , test "2.400 producten, 3 talen = 4.049 (Panzer-rekenvoorbeeld)" <|
+        , test "2.000 producten, 1 taal = 2.249 (hele eerste trede om 25ct)" <|
             \_ ->
-                Expect.equal 404900
+                Expect.equal 224900
+                    (totaalCenten (metProducten 2000 1 initieelModel))
+        , test "3.500 producten, 1 taal = 2.524 (halverwege de derde trede)" <|
+            \_ ->
+                Expect.equal 252400
+                    (totaalCenten (metProducten 3500 1 initieelModel))
+        , test "5.000 producten, 1 taal = 2.699 (bodemtrede van 10ct bereikt)" <|
+            \_ ->
+                Expect.equal 269900
+                    (totaalCenten (metProducten 5000 1 initieelModel))
+        , test "10.000 producten, 1 taal = 3.199 (het bedrag achter de grote-catalogus-grens)" <|
+            \_ ->
+                Expect.equal 319900
+                    (totaalCenten (metProducten 10000 1 initieelModel))
+        , test "2.400 producten, 3 talen = 3.419 (Panzer-rekenvoorbeeld, degressief over 6.200 extra vertalingen)" <|
+            \_ ->
+                Expect.equal 341900
                     (totaalCenten (metProducten 2400 3 initieelModel))
         , test "160 producten, 3 talen: vertalingen passen in de basisruimte, alleen 2 x 250 configuratie = 2.499 (bybjor-regel)" <|
             \_ ->
@@ -71,13 +87,13 @@ suite =
             \_ ->
                 Expect.equal 234900
                     (totaalCenten (metProducten 700 2 initieelModel))
-        , test "Panzer + thema overzetten + domeinverhuizing = 5.048" <|
+        , test "Panzer + thema overzetten + domeinverhuizing = 4.418" <|
             \_ ->
                 let
                     model =
                         metProducten 2400 3 initieelModel
                 in
-                Expect.equal 504800
+                Expect.equal 441800
                     (totaalCenten
                         { model
                             | thema = ThemaOverzetten
