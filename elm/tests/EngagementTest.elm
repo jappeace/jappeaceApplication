@@ -37,9 +37,13 @@ suite =
         , test "start is niet als grote catalogus gemeld" <|
             \_ ->
                 Expect.equal False initieelModel.groteCatalogusGemeld
-        , test "50.000 producten invoeren markeert grote catalogus (event vuurt)" <|
+        , test "150.000 producten invoeren markeert grote catalogus (event vuurt)" <|
             \_ ->
                 Expect.equal True
+                    (Tuple.first (update (ProductenGewijzigd "150000") initieelModel)).groteCatalogusGemeld
+        , test "50.000 producten blijft sinds de verruimde grens onder de melding (prijs wordt gewoon getoond)" <|
+            \_ ->
+                Expect.equal False
                     (Tuple.first (update (ProductenGewijzigd "50000") initieelModel)).groteCatalogusGemeld
         , test "onder de grens blijft de melding uit" <|
             \_ ->

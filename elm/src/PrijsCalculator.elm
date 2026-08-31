@@ -590,16 +590,19 @@ productVertalingen model =
     aantalProducten model * aantalTalen model
 
 
-{-| Vanaf dit aantal productvertalingen (producten maal talen) is een winkel
-geen standaardmigratie meer; de rekenhulp toont dan een neem-contact-melding
-in plaats van een richtprijs. Besluit Jappie 15 aug 2026, naar aanleiding van
-een lead met 50.000 producten waarvoor het toenmalige vlakke tarief op ruim
-veertienduizend euro uitkwam; onder de degressieve staffel (1 sep 2026) is
-datzelfde anker 7.199 euro, en de grens blijft staan omdat zo'n catalogus
-hoe dan ook een eigen doorrekening en een gesprek verdient. -}
+{-| Vanaf dit aantal productvertalingen (producten maal talen) toont de
+rekenhulp een neem-contact-melding in plaats van een richtprijs. De grens
+stond vanaf 15 aug 2026 op 10.000, omdat het toenmalige vlakke tarief daar
+stil bedragen van ruim veertienduizend euro toonde (het
+50.000-producten-anker). Met de degressieve staffel is datzelfde anker
+7.199 euro en gewoon eerlijk toonbaar, dus de grens is per 1 sep 2026
+verruimd naar 100.000 (besluit Jappie): elke realistische shop ziet nu
+direct zijn prijs, en de melding blijft alleen over als vangnet tegen
+absurde of vertikte invoer, waar een kaal bedrag van tienduizenden euro's
+niemand helpt. -}
 groteCatalogusGrens : Int
 groteCatalogusGrens =
-    10000
+    100000
 
 
 isGroteCatalogus : Model -> Bool

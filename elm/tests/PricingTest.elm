@@ -33,19 +33,23 @@ metProducten producten talen model =
 
 groteCatalogusSuite : Test
 groteCatalogusSuite =
-    describe "PrijsCalculator.isGroteCatalogus (grens 10.000 productvertalingen)"
-        [ test "9.999 producten in 1 taal is nog standaard" <|
+    describe "PrijsCalculator.isGroteCatalogus (grens 100.000 productvertalingen, vangnet tegen absurde invoer)"
+        [ test "99.999 producten in 1 taal toont gewoon een prijs" <|
             \_ ->
-                Expect.equal False (isGroteCatalogus (metProducten 9999 1 initieelModel))
-        , test "10.000 producten in 1 taal raakt de grens" <|
+                Expect.equal False (isGroteCatalogus (metProducten 99999 1 initieelModel))
+        , test "100.000 producten in 1 taal raakt het vangnet" <|
             \_ ->
-                Expect.equal True (isGroteCatalogus (metProducten 10000 1 initieelModel))
-        , test "producten maal talen telt mee: 4.000 producten in 3 talen is groot" <|
+                Expect.equal True (isGroteCatalogus (metProducten 100000 1 initieelModel))
+        , test "producten maal talen telt mee: 40.000 producten in 3 talen raakt het vangnet" <|
             \_ ->
-                Expect.equal True (isGroteCatalogus (metProducten 4000 3 initieelModel))
-        , test "4.000 producten in 2 talen blijft standaard" <|
+                Expect.equal True (isGroteCatalogus (metProducten 40000 3 initieelModel))
+        , test "het oude 50.000-anker toont nu gewoon zijn prijs: 7.199" <|
             \_ ->
-                Expect.equal False (isGroteCatalogus (metProducten 4000 2 initieelModel))
+                Expect.all
+                    [ \model -> Expect.equal False (isGroteCatalogus model)
+                    , \model -> Expect.equal 719900 (totaalCenten model)
+                    ]
+                    (metProducten 50000 1 initieelModel)
         ]
 
 
@@ -71,7 +75,7 @@ suite =
             \_ ->
                 Expect.equal 269900
                     (totaalCenten (metProducten 5000 1 initieelModel))
-        , test "10.000 producten, 1 taal = 3.199 (het bedrag achter de grote-catalogus-grens)" <|
+        , test "10.000 producten, 1 taal = 3.199" <|
             \_ ->
                 Expect.equal 319900
                     (totaalCenten (metProducten 10000 1 initieelModel))
