@@ -32,7 +32,7 @@ is en niet een toezegging.
 -}
 
 import Browser
-import Html exposing (Html, a, div, fieldset, h3, input, label, legend, li, option, p, select, span, strong, text, ul)
+import Html exposing (Html, a, details, div, fieldset, h3, input, label, legend, li, option, p, select, span, strong, summary, text, ul)
 import Html.Attributes as Attr
 import Html.Events exposing (onCheck, onClick, onInput)
 import Json.Encode as Encode
@@ -1036,16 +1036,25 @@ view model =
             , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "1.000 zit in de basisprijs" ProductenGewijzigd
             , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
             , themaVeld model.thema
-            , div [ Attr.class "calc-check-group" ]
-                [ span [ Attr.class "calc-label" ] [ text "Wat wil je meenemen naar de nieuwe shop?" ]
+              -- Decision: de aanvinkgroepen zitten in een natief
+              -- details/summary-element en staan standaard dicht.
+              -- Gekozen boven een eigen open/dicht-Msg in het model:
+              -- de browser regelt het klappen, er is geen state of
+              -- analytics-ruis bij, en aangevinkte hokjes blijven
+              -- gewoon meetellen als de groep weer dichtklapt (de
+              -- inputs blijven in de DOM). Aanleiding: de rekenhulp
+              -- oogde als een muur van opties, en wie alles aanvinkt
+              -- schrikt van het totaal (plotterenzo-les, 31 aug 2026).
+            , details [ Attr.class "calc-check-group" ]
+                [ summary [ Attr.class "calc-label" ] [ text "Wat wil je meenemen naar de nieuwe shop?" ]
                 , aanvinkVeld "Klantaccounts" "Je klanten houden hun eigen inlog" model.klantaccounts KlantaccountsGewijzigd
                 , aanvinkVeld "Bestelgeschiedenis" "Alle eerdere bestellingen van je klanten" model.orderhistorie OrderhistorieGewijzigd
                 , aanvinkVeld "Nieuwsbrief-aanmeldingen" "De adressenlijst van je nieuwsbrief" model.nieuwsbrief NieuwsbriefGewijzigd
                 , aanvinkVeld "Voorraadaantallen" "De actuele voorraad per product" model.voorraad VoorraadGewijzigd
                 , aanvinkVeld "Reviews / beoordelingen" "Je opgebouwde productbeoordelingen" model.reviews ReviewsGewijzigd
                 ]
-            , div [ Attr.class "calc-check-group" ] <|
-                [ span [ Attr.class "calc-label" ] [ text "Extra diensten en koppelingen" ] ]
+            , details [ Attr.class "calc-check-group" ] <|
+                [ summary [ Attr.class "calc-label" ] [ text "Extra diensten en koppelingen" ] ]
                     ++ domeinEmailVelden model
                     ++ [ aanvinkVeld "Verzendkoppeling (bijv. DHL)" "Pakketten en labels rechtstreeks vanuit je shop" model.verzendkoppeling VerzendkoppelingGewijzigd
                        , aanvinkVeld "B2B-kanaal (zakelijke klanten)" "Aparte prijzen en inlog voor zakelijke klanten" model.b2bKanaal B2bKanaalGewijzigd
