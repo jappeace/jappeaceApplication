@@ -668,7 +668,13 @@ footer small a:hover { color: var(--wit); }
 /* Markup: aanvinkVeld in elm/src/PrijsCalculator.elm: een label.calc-check
    met daarin de checkbox en een span.calc-check-text die de spans
    .calc-check-label en .calc-hint onder elkaar zet. */
-.calc-check-group { display: grid; gap: 0.7rem; }
+/* De aanvinkgroepen zijn dichtgeklapte details-elementen; de summary is de
+   kop. display blijft de browser-default zodat het open/dicht-gedrag en het
+   driehoekje overal werken; de grid-gap zit daarom op de checks zelf via
+   margin. */
+.calc-check-group > summary { cursor: pointer; }
+.calc-check-group > summary:hover { color: var(--navy); }
+.calc-check-group > .calc-check { margin-top: 0.7rem; }
 .calc-check { display: flex; align-items: baseline; gap: 0.7rem; cursor: pointer; }
 .calc-check input { accent-color: var(--groen-vlak); width: 1.05rem; height: 1.05rem; flex: none; }
 .calc-check-text { display: flex; flex-direction: column; }
