@@ -511,7 +511,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.dd "Geen handmatig overtypen, geen kopieerfouten."
         H.div $ do
           H.dt "Gecontroleerd"
-          H.dd "Na afloop controleert het programma elke oude link en elk product; dat controlerapport krijg je te zien."
+          H.dd "Na afloop controleert het programma elke oude link en elk product."
         H.div $ do
           H.dt "SEO-behoud"
           H.dd "Elke oude link krijgt een 301-redirect en blijft werken; je opgebouwde SEO verhuist mee."
@@ -1209,7 +1209,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
             H.preEscapedToHtml (" &rarr;" :: Text))
       [ WaaromPunt "Geen risico" "Je betaalt pas na een succesvolle migratie."
       , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
-      , WaaromPunt "Gecontroleerd" "Het programma telt na afloop alles na, van elk product tot elke klant, en dat controlerapport krijg je te zien."
+      , WaaromPunt "Gecontroleerd" "Het programma telt na afloop alles na, van elk product tot elke klant."
       , WaaromPunt "SEO-behoud" "Elke oude link blijft werken en je opgebouwde positie in Google verhuist mee."
       , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via de offici\235le koppelingen van je nieuwe platform."
       , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
@@ -1270,7 +1270,7 @@ mijnwebwinkelFaq =
         H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
         "), zodat je geen bericht mist." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product; dat rapport krijg je te zien. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
     , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en je nieuwe platform beide ondersteunen. Ook de vertaalde webadressen verhuizen mee." )
   , ( "Kan ik ook naar een ander platform dan Shopify migreren?"
@@ -1414,7 +1414,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
       , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee."
       , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via offici\235le APIs."
-      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product; dat controlerapport krijg je te zien."
+      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product."
       , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
       ]
 
@@ -1456,7 +1456,7 @@ ccvshopFaq =
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product; dat rapport krijg je te zien. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
     , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en je doelplatform beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
@@ -1568,7 +1568,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
                 ! A.alt "Hoofdartikel met subartikelen als boomstructuur" ! A.width "56" ! A.height "56"
           H.h3 "Matrix-artikelen worden nette varianten"
-          H.p $ H.preEscapedToHtml ("Lightspeed slaat een artikel met maten of kleuren op als matrix: een hoofdartikel met losse subartikelen. Ons programma voegt die weer samen tot &eacute;&eacute;n Shopify-product met varianten, inclusief SKU, barcode, prijs en voorraad per maat of kleur. Het controlerapport telt na of elk subartikel is aangekomen." :: Text)
+          H.p $ H.preEscapedToHtml ("Lightspeed slaat een artikel met maten of kleuren op als matrix: een hoofdartikel met losse subartikelen. Ons programma voegt die weer samen tot &eacute;&eacute;n Shopify-product met varianten, inclusief SKU, barcode, prijs en voorraad per maat of kleur. Het programma telt na of elk subartikel is aangekomen." :: Text)
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-klok.svg"
                 ! A.alt "Klok met vinkje" ! A.width "56" ! A.height "56"
@@ -1606,7 +1606,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee."
       , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
       , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via offici\235le APIs."
-      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product; dat controlerapport krijg je te zien."
+      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product."
       , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
       ]
 
@@ -1650,7 +1650,7 @@ lightspeedFaq =
   , ( "Ik gebruik Lightspeed ook als kassa in mijn winkel. Wat gebeurt daarmee?"
     , faqAnswerText $ "Je stapt dan over op Shopify POS, de kassa van Shopify. Die draait op een iPad of telefoon en werkt op dezelfde manier samen met je webshop: \233\233n voorraad, \233\233n klantenbestand, \233\233n omzetoverzicht. Je bonprinter, kassalade en barcodescanner kunnen meestal mee; Shopify ondersteunt de gangbare Star- en Epson-printers en standaard USB- en Bluetooth-scanners. De betaalterminal vervang je door een Shopify-terminal (eenmalig \8364" <> "59 tot \8364" <> "249). We lopen vooraf je apparatuurlijst na zodat je precies weet wat mee kan, en het inrichten van de kassa zit in het migratietraject." )
   , ( "Hoe zetten jullie matrix-artikelen met varianten over?"
-    , faqAnswerText "In Lightspeed bestaat een artikel met maten of kleuren uit een hoofdartikel met losse subartikelen. Shopify werkt met \233\233n product met varianten. Ons programma voegt de subartikelen automatisch weer samen tot dat ene product, met opties zoals maat en kleur, en per variant de juiste SKU, barcode, prijs en voorraad. Na afloop telt het controlerapport na of elk subartikel als variant is aangekomen, dus niets raakt stilletjes zoek." )
+    , faqAnswerText "In Lightspeed bestaat een artikel met maten of kleuren uit een hoofdartikel met losse subartikelen. Shopify werkt met \233\233n product met varianten. Ons programma voegt de subartikelen automatisch weer samen tot dat ene product, met opties zoals maat en kleur, en per variant de juiste SKU, barcode, prijs en voorraad. Na afloop telt het programma na of elk subartikel als variant is aangekomen, dus niets raakt stilletjes zoek." )
   , ( "Ben ik tijdens de overstap een dag dicht?"
     , faqAnswerText "Nee. Je nieuwe shop wordt naast je draaiende Lightspeed-shop gebouwd, dus tot het overstapmoment verkoop je gewoon door, online en in de winkel. De domein-omzet duurt enkele minuten en plannen we samen op een rustig moment; de kassa schakelen we bijvoorbeeld om op een sluitingsdag, zodat je bij opening met Shopify POS verder verkoopt. En je oude shop staat er op dat moment nog naast, dus er is altijd een weg terug." )
   , ( "Kunnen jullie ook naar Shopify Plus migreren?"
@@ -1658,7 +1658,7 @@ lightspeedFaq =
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product; dat rapport krijg je te zien. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Verlies ik mijn Google-posities?"
     , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al je links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Werkt het ook voor meertalige webshops?"
@@ -1754,7 +1754,7 @@ magentoMigrationPage = webwinkelBaseTemplate magentoMeta $
     -- Urgentie, zonder druk: de eigen meting vertelt het verhaal.
     H.section ! A.class_ "about" ! A.id "urgentie" $ do
       H.h2 "Hoe dringend is het echt?"
-      H.p "We gaan je niet opjagen: je shop draait vandaag, en morgen waarschijnlijk ook. Maar we hebben het wel gemeten. In september 2026 telden we nog 652 Nederlandse webshops op Magento 1, en in een steekproef daaruit bleek een kwart al verdwenen. Meerdere van die verlopen domeinen waren opgekocht en doorgelinkt naar gokreclame: dat is wat er met de domeinnaam van een verwaarloosde webshop gebeurt."
+      H.p "We gaan je niet opjagen: je shop draait vandaag, en morgen waarschijnlijk ook. Maar we hebben het wel gemeten. In september 2026 telden we nog ruim 650 Nederlandse webshop-domeinen op Magento 1, en in een steekproef daaruit bleek een kwart al verdwenen. Meerdere van die verlopen domeinen waren opgekocht en doorgelinkt naar gokreclame: dat is wat er met de domeinnaam van een verwaarloosde webshop gebeurt."
       H.p "Magento 1 krijgt sinds juni 2020 geen beveiligingsupdates meer, en betaalproviders toetsen steeds strenger op PCI-compliance. Draai je Magento 2, dan is er geen haast, wel een som: hosting, patches en bureau-uren, elke maand opnieuw, tegenover een vast Shopify-abonnement."
       H.p $ do
         "Wil je weten waar jouw shop staat? "
@@ -1785,7 +1785,7 @@ magentoMigrationPage = webwinkelBaseTemplate magentoMeta $
       , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee."
       , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
       , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via offici\235le APIs."
-      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product; dat controlerapport krijg je te zien."
+      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product."
       , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
       ]
 
@@ -1823,7 +1823,7 @@ magentoFaq =
   , ( "Werkt het voor Magento 1 \233n Magento 2?"
     , faqAnswerText "Ja. Magento 2 lezen we uit via de offici\235le REST-API. Magento 1 heeft een oudere SOAP-API die we net zo goed kunnen uitlezen, en omdat een Magento-shop op je eigen server draait kunnen we altijd terugvallen op een database-export. Ook een shop waar jaren niet naar is omgekeken krijgen we dus compleet leeg, zonder dat je live-site er iets van merkt." )
   , ( "Mijn producten hebben veel eigen attributen. Gaan die mee?"
-    , faqAnswerText "Ja. Magento-shops verzamelen in de loop van de jaren vaak tientallen eigen attributen (materiaal, garantie, maatvoering). Die worden opgelost naar leesbare waarden in plaats van database-ID's, en landen in Shopify als opties of metafields. Het controlerapport laat per product zien wat waar terechtgekomen is." )
+    , faqAnswerText "Ja. Magento-shops verzamelen in de loop van de jaren vaak tientallen eigen attributen (materiaal, garantie, maatvoering). Die worden opgelost naar leesbare waarden in plaats van database-ID's, en landen in Shopify als opties of metafields. Het programma controleert na afloop per product dat alles is aangekomen." )
   , ( "Wat gebeurt er met configurable, grouped en bundle producten?"
     , faqAnswerText "Configurable producten worden \233\233n Shopify-product met varianten, inclusief SKU, prijs en voorraad per variant. Grouped en bundle producten hebben in Shopify geen exact equivalent; afhankelijk van je assortiment maken we er losse producten van of gebruiken we een bundel-app, en die keuze stemmen we vooraf met je af." )
   , ( "Kan ik mijn domeinnaam behouden?"
@@ -1831,7 +1831,7 @@ magentoFaq =
   , ( "Verlies ik mijn Google-posities?"
     , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al je links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product; dat rapport krijg je te zien. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Kunnen mijn klanten met hun oude wachtwoord inloggen?"
     , faqAnswerText "Nee, en wees op je hoede voor wie iets anders belooft: Shopify accepteert om veiligheidsredenen geen wachtwoorden van andere platformen. Wat wel kan, en wat wij doen: alle accounts verhuizen mee en je klanten zetten bij hun eerste bezoek in \233\233n stap een nieuw wachtwoord via een nette reset-flow. In de praktijk merken klanten daar nauwelijks iets van." )
   , ( "Werkt het ook voor meertalige shops en meerdere store views?"
