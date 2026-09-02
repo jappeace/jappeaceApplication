@@ -1696,11 +1696,16 @@ lightspeedFaq =
 -- de NL-doelgroep voor beide dezelfde MWW-achtige winkelier is; het
 -- verschil is urgentie (M1: EOL sinds juni 2020) en extractieroute
 -- (REST versus SOAP/database), en dat leggen we in de urgentie-sectie
--- en de FAQ uit. De cijfers in de urgentie-sectie (652 shops, kwart
--- van de steekproef verdwenen, gokreclame op verlopen domeinen) komen
--- uit onze eigen ct-harvest-meting en steekproef van 2 sep 2026; toon
--- bewust zonder druk (verzoek Jappie: "we don't want to pressure
--- anyone"), de cijfers spreken zelf.
+-- en de FAQ uit. De cijfers in de urgentie-sectie (honderden shops,
+-- kwart van de steekproef verdwenen, gokreclame op verlopen domeinen)
+-- komen uit onze eigen ct-harvest-meting en steekproef van 2 sep
+-- 2026; toon bewust zonder druk (verzoek Jappie: "we don't want to
+-- pressure anyone"), de cijfers spreken zelf. Het exacte getal (652)
+-- is bewust van de pagina gehaald: die telling kwam van de losse
+-- magento1-marker die ook gokspam-klonen ving (megavid PR #219
+-- scherpt de marker aan en migratie 0009 reset de teller). Zodra de
+-- her-fingerprint de teller met de strakke marker gevuld heeft mag
+-- hier weer een echt getal staan.
 magentoMigrationPage :: Html
 magentoMigrationPage = webwinkelBaseTemplate magentoMeta $
   H.main $ do
@@ -1754,7 +1759,7 @@ magentoMigrationPage = webwinkelBaseTemplate magentoMeta $
     -- Urgentie, zonder druk: de eigen meting vertelt het verhaal.
     H.section ! A.class_ "about" ! A.id "urgentie" $ do
       H.h2 "Hoe dringend is het echt?"
-      H.p "We gaan je niet opjagen: je shop draait vandaag, en morgen waarschijnlijk ook. Maar we hebben het wel gemeten. In september 2026 telden we nog ruim 650 Nederlandse webshop-domeinen op Magento 1, en in een steekproef daaruit bleek een kwart al verdwenen. Meerdere van die verlopen domeinen waren opgekocht en doorgelinkt naar gokreclame: dat is wat er met de domeinnaam van een verwaarloosde webshop gebeurt."
+      H.p "We gaan je niet opjagen: je shop draait vandaag, en morgen waarschijnlijk ook. Maar we hebben het wel gemeten. In september 2026 vonden we nog honderden Nederlandse webshops op Magento 1, en in een steekproef bleek een kwart van de domeinen al verdwenen: verlopen, opgekocht en doorgelinkt naar gokreclame. Dat is wat er met de domeinnaam van een verwaarloosde webshop gebeurt."
       H.p "Magento 1 krijgt sinds juni 2020 geen beveiligingsupdates meer, en betaalproviders toetsen steeds strenger op PCI-compliance. Draai je Magento 2, dan is er geen haast, wel een som: hosting, patches en bureau-uren, elke maand opnieuw, tegenover een vast Shopify-abonnement."
       H.p $ do
         "Wil je weten waar jouw shop staat? "
