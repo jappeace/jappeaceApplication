@@ -54,6 +54,7 @@ import WebwinkelTemplates
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
+  , magentoMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
   , overOnsPage
@@ -721,6 +722,7 @@ generateWebwinkelverhuisSite config articles gehashteAssets = do
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-lightspeed.html" lightspeedMigrationPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-magento.html" magentoMigrationPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/over-ons.html" overOnsPage

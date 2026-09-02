@@ -17,6 +17,7 @@ module WebwinkelTemplates
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
+  , magentoMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
   , overOnsPage
@@ -241,6 +242,7 @@ webwinkelBaseWith ogType includeFeed meta content =
             H.li $ H.a ! A.href "/migrate-mijnwebwinkel.html" $ "MijnWebwinkel"
             H.li $ H.a ! A.href "/migrate-lightspeed.html" $ "Lightspeed"
             H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
+            H.li $ H.a ! A.href "/migrate-magento.html" $ "Magento"
             H.li $ H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) ! A.class_ "footer-mail" $ toHtml webwinkelEmail
             H.li $ H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
             H.li $ H.a ! A.href "/blog/" $ "Blog"
@@ -549,6 +551,13 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.h3 "CCV Shop"
           H.p $ H.preEscapedToHtml ("Steeds duurder, terwijl het winkelbestand krimpt en het zwaartepunt na de Fiserv-overname bij betalen en kassa ligt. Wij zetten je producten, talen, klantaccounts en voorraad volledig geautomatiseerd over." :: Text)
           H.a ! A.href "/migrate-ccvshop.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-schild.svg"
+                ! A.alt "Schild met een barst: geen beveiligingsupdates meer"
+                ! A.width "56" ! A.height "56"
+          H.h3 "Magento"
+          H.p $ H.preEscapedToHtml ("Magento 1 is sinds 2020 einde-levensduur, en ook een Magento 2-shop vraagt elke maand hosting en bureau-uren. Wij zetten producten, eigen attributen, klanten en orderhistorie geautomatiseerd over." :: Text)
+          H.a ! A.href "/migrate-magento.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
 
     -- Pricing: listed openly. Hiding the price reads as evasive to a
     -- doubtful merchant; a visible "vanaf" and the breakdown radiate
@@ -1678,6 +1687,164 @@ lightspeedFaq =
   ]
 
 -- =============================================================================
+-- Magento migration landing page
+-- =============================================================================
+
+-- Decision: één pagina voor Magento 1 en 2 samen in plaats van twee
+-- aparte pagina's. Het eigen marktonderzoek (jappiesoft
+-- research/magento-urgentie-en-extractie.org, 2 sep 2026) laat zien dat
+-- de NL-doelgroep voor beide dezelfde MWW-achtige winkelier is; het
+-- verschil is urgentie (M1: EOL sinds juni 2020) en extractieroute
+-- (REST versus SOAP/database), en dat leggen we in de urgentie-sectie
+-- en de FAQ uit. De cijfers in de urgentie-sectie (652 shops, kwart
+-- van de steekproef verdwenen, gokreclame op verlopen domeinen) komen
+-- uit onze eigen ct-harvest-meting en steekproef van 2 sep 2026; toon
+-- bewust zonder druk (verzoek Jappie: "we don't want to pressure
+-- anyone"), de cijfers spreken zelf.
+magentoMigrationPage :: Html
+magentoMigrationPage = webwinkelBaseTemplate magentoMeta $
+  H.main $ do
+    -- Hero
+    H.section ! A.class_ "hero" $
+      H.div ! A.class_ "hero-grid" $ do
+        H.div $ do
+          H.h1 "Migreren van Magento naar Shopify"
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Magento was jarenlang een prima keuze, maar Magento 1 krijgt sinds juni 2020 geen beveiligingsupdates meer, en ook een Magento 2-shop vraagt elke maand hosting, patches en bureau-uren. Wij verhuizen je complete shop geautomatiseerd naar Shopify of WooCommerce: zonder dataverlies, zonder SEO-verlies, en je betaalt pas na een succesvolle migratie." :: Text)
+          H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
+        H.img ! A.class_ "hero-image"
+              ! A.src "/illustratie-ontsnappen.svg"
+              ! A.alt "Illustratie van dozen die een bevroren webshop verlaten richting een zonnige nieuwe winkel"
+              ! A.width "400" ! A.height "300"
+
+    -- What we migrate
+    H.section ! A.class_ "for-who" ! A.id "what" $ do
+      H.h2 "Wat we migreren"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
+                ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
+          H.h3 "Producten & eigen attributen"
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Ook je zelfgebouwde attributen gaan mee: optie-ID's worden opgelost naar leesbare waarden en landen als opties of metafields."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Hoofdproduct met subproducten als boomstructuur" ! A.width "56" ! A.height "56"
+          H.h3 "Alle zes producttypes"
+          H.p $ H.preEscapedToHtml ("Simple, virtual, downloadable, configurable, grouped en bundle. Configurable producten met losse subproducten voegen we samen tot &eacute;&eacute;n Shopify-product met varianten, inclusief SKU, prijs en voorraad per variant." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
+                ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
+          H.h3 "Klanten & orderhistorie"
+          H.p "Klantaccounts en de complete bestelgeschiedenis worden overgezet, zodat je klanten direct verder kunnen en oude facturen terug te vinden blijven."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
+          H.h3 "SEO-redirects"
+          H.p $ H.preEscapedToHtml ("301-redirects van elke oude URL naar de nieuwe URL. Je backlinks blijven werken en je opgebouwde SEO verhuist mee; zonder sluitende redirects verliezen shops bij een verhuizing juist flink zoekmachineverkeer (de <a href=\"https://www.searchenginejournal.com/what-is-a-migration-hangover-traffic-drop-how-do-you-avoid-it/575102/\">migration hangover</a>)." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
+                ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
+          H.h3 "Meerdere talen"
+          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Je klanten blijven je shop in hun eigen taal zien, ook de URL-slugs." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
+                ! A.alt "Stapel dozen" ! A.width "56" ! A.height "56"
+          H.h3 "Voorraad & staffelprijzen"
+          H.p "Voorraadbeheer en staffelprijzen (tier prices) worden correct overgezet. Je voorraadniveaus kloppen direct in je nieuwe shop."
+
+    -- Urgentie, zonder druk: de eigen meting vertelt het verhaal.
+    H.section ! A.class_ "about" ! A.id "urgentie" $ do
+      H.h2 "Hoe dringend is het echt?"
+      H.p "We gaan je niet opjagen: je shop draait vandaag, en morgen waarschijnlijk ook. Maar we hebben het wel gemeten. In september 2026 telden we nog 652 Nederlandse webshops op Magento 1, en in een steekproef daaruit bleek een kwart al verdwenen. Meerdere van die verlopen domeinen waren opgekocht en doorgelinkt naar gokreclame: dat is wat er met de domeinnaam van een verwaarloosde webshop gebeurt."
+      H.p "Magento 1 krijgt sinds juni 2020 geen beveiligingsupdates meer, en betaalproviders toetsen steeds strenger op PCI-compliance. Draai je Magento 2, dan is er geen haast, wel een som: hosting, patches en bureau-uren, elke maand opnieuw, tegenover een vast Shopify-abonnement."
+      H.p $ do
+        "Wil je weten waar jouw shop staat? "
+        H.a ! A.href "/scan.html" $ "Laat hem gratis doormeten"
+        "."
+
+    -- How it works
+    hoeHetWerktSectie
+      [ HoeHetWerktStap "Scan" "Ons programma leest je Magento-shop volledig uit via de API, of bij een oude of trage server via een database-export, en zet alles over naar een testshop: producten, attributen, klanten, redirects."
+      , HoeHetWerktStap "Wennen" "De testshop draait naast je Magento-shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
+      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk."
+      ]
+
+    -- Pricing
+    prijzen
+    H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Open kaart: beide voorbeeldwinkels hierboven kwamen van MijnWebwinkel, een eigen Magento-verhaal hebben we nog niet. Het is wel hetzelfde programma en dezelfde aanpak die het werk bij Magento doen." :: Text)
+
+    -- Why us
+    waaromViaOnsSectie
+      (WaaromBeeld "/assets/beeld/stock-productfoto-raam.jpg"
+        "Webshop-eigenaar fotografeert bij het raam een pakket voor haar webshop"
+        "1200" "1800")
+      (H.div ! A.class_ "testimonials" $
+        H.blockquote $
+          H.p $ H.preEscapedToHtml ("Bureaus rekenen voor een Magento-migratie al gauw tienduizenden euro's op uurtarief, vooral omdat het uitpluizen van tien jaar eigen attributen handwerk is. Ons programma doet precies dat werk geautomatiseerd, en legt daarbij elke oude URL vast (allemaal, niet een steekproef) zodat je opgebouwde SEO meeverhuist in plaats van te verdampen in een <a href=\"https://www.searchenginejournal.com/what-is-a-migration-hangover-traffic-drop-how-do-you-avoid-it/575102/\">migration hangover</a>." :: Text))
+      [ WaaromPunt "Geen risico" "Je betaalt pas na een succesvolle migratie."
+      , WaaromPunt "Platformonafhankelijk" "Je kiest de bestemming, wij migreren naar elk platform."
+      , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee."
+      , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
+      , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via offici\235le APIs."
+      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product; dat controlerapport krijg je te zien."
+      , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
+      ]
+
+    -- FAQ
+    H.section ! A.class_ "about" $ do
+      H.h2 "Veelgestelde vragen"
+      H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible magentoFaq
+
+    -- CTA
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Klaar voor de overstap?"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+  where
+    magentoMeta :: PageMeta
+    magentoMeta = PageMeta
+      { pageMetaTitle       = "Migreren van Magento naar Shopify \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Geautomatiseerde migratie van Magento 1 of Magento 2 naar Shopify of WooCommerce: producten met eigen attributen, klanten, orderhistorie en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-magento.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = faqPageJsonLd magentoFaq <> serviceJsonLd
+          "Magento naar Shopify migratie"
+          "Geautomatiseerde migratie van Magento 1 of Magento 2 naar Shopify of WooCommerce: producten met eigen attributen, klanten, orderhistorie, meertaligheid en SEO-redirects."
+          "https://webwinkelverhuis.nl/migrate-magento.html"
+      }
+
+magentoFaq :: [(FaqQuestion, FaqAnswer)]
+magentoFaq =
+  [ ( "Hoe lang duurt een migratie?"
+    , faqAnswerText "Het technische overzetten van je producten duurt maar enkele uren, ook bij tienduizenden producten. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps, betaalmethoden, en rustig wennen aan je nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang. Het overstapmoment zelf plannen we samen; je bent geen dag dicht." )
+  , ( "Moet het per se Shopify worden?"
+    , faqAnswerText "Nee. Veel Magento-eigenaren hechten juist aan open source en eigen hosting; dan is WooCommerce een logische bestemming, en die migratie doen we net zo geautomatiseerd. Shopify past bij wie van het onderhoud af wil. We adviseren vrijblijvend wat bij jouw shop past." )
+  , ( "Werkt het voor Magento 1 \233n Magento 2?"
+    , faqAnswerText "Ja. Magento 2 lezen we uit via de offici\235le REST-API. Magento 1 heeft een oudere SOAP-API die we net zo goed kunnen uitlezen, en omdat een Magento-shop op je eigen server draait kunnen we altijd terugvallen op een database-export. Ook een shop waar jaren niet naar is omgekeken krijgen we dus compleet leeg, zonder dat je live-site er iets van merkt." )
+  , ( "Mijn producten hebben veel eigen attributen. Gaan die mee?"
+    , faqAnswerText "Ja. Magento-shops verzamelen in de loop van de jaren vaak tientallen eigen attributen (materiaal, garantie, maatvoering). Die worden opgelost naar leesbare waarden in plaats van database-ID's, en landen in Shopify als opties of metafields. Het controlerapport laat per product zien wat waar terechtgekomen is." )
+  , ( "Wat gebeurt er met configurable, grouped en bundle producten?"
+    , faqAnswerText "Configurable producten worden \233\233n Shopify-product met varianten, inclusief SKU, prijs en voorraad per variant. Grouped en bundle producten hebben in Shopify geen exact equivalent; afhankelijk van je assortiment maken we er losse producten van of gebruiken we een bundel-app, en die keuze stemmen we vooraf met je af." )
+  , ( "Kan ik mijn domeinnaam behouden?"
+    , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
+  , ( "Verlies ik mijn Google-posities?"
+    , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al je links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
+  , ( "Wat als er iets niet klopt na de migratie?"
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product; dat rapport krijg je te zien. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+  , ( "Kunnen mijn klanten met hun oude wachtwoord inloggen?"
+    , faqAnswerText "Nee, en wees op je hoede voor wie iets anders belooft: Shopify accepteert om veiligheidsredenen geen wachtwoorden van andere platformen. Wat wel kan, en wat wij doen: alle accounts verhuizen mee en je klanten zetten bij hun eerste bezoek in \233\233n stap een nieuw wachtwoord via een nette reset-flow. In de praktijk merken klanten daar nauwelijks iets van." )
+  , ( "Werkt het ook voor meertalige shops en meerdere store views?"
+    , faqAnswerText "Vertalingen en vertaalde URL-slugs verhuizen mee. Draai je meerdere store views of websites vanuit \233\233n Magento-installatie, dan kijken we vooraf samen wat daarvoor de beste vorm op Shopify is, bijvoorbeeld markten of aparte shops." )
+  , ( "Krijg ik een testshop om te wennen?"
+    , faqAnswerText "Ja. Je krijgt een volledige testshop naast je huidige shop om alvast te wennen. Pas na je akkoord gaan we live; eventuele correcties zijn inbegrepen." )
+  , ( "Kunnen jullie ook naar Shopify Plus migreren?"
+    , faqAnswerText "Ja. Voor grotere webshops en B2B is Shopify Plus een logische bestemming, en voor ons programma maakt het geen verschil: dezelfde geautomatiseerde migratie, dezelfde controles. We adviseren je vooraf of Plus voor jouw omvang de moeite waard is, of dat een gewoon Shopify-abonnement volstaat." )
+  , ( "Is mijn Magento 1-shop nog veilig?"
+    , faqAnswerText "Dat kunnen we van buitenaf niet beoordelen. Wat we wel weten: sinds juni 2020 zijn er geen offici\235le beveiligingsupdates meer, dus elke sindsdien gevonden kwetsbaarheid blijft open, tenzij je een fork zoals OpenMage of betaalde patches draait. Onze rol is niet je bang maken maar je een uitweg geven die geen maanden en geen tienduizenden euro's kost." )
+  ]
+
+-- =============================================================================
 -- MijnWebwinkel "Waarom wordt het verwaarloosd?" article page
 -- =============================================================================
 
@@ -2071,9 +2238,10 @@ webwinkelverhuisStaticPages =
   [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 8)
-  , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 8 23)
-  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 8 23)
-  , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 8 23)
+  , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 9 2)
+  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 9 2)
+  , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 9 2)
+  , ("https://webwinkelverhuis.nl/migrate-magento.html", fromGregorian 2026 9 2)
   , ("https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/over-ons.html", fromGregorian 2026 8 8)
