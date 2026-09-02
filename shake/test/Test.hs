@@ -48,6 +48,7 @@ import WebwinkelTemplates
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
+  , magentoMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
   , overOnsPage
@@ -91,6 +92,7 @@ meetLinkPages =
   , ("mijnwebwinkelMigrationPage", mijnwebwinkelMigrationPage)
   , ("ccvshopMigrationPage", ccvshopMigrationPage)
   , ("lightspeedMigrationPage", lightspeedMigrationPage)
+  , ("magentoMigrationPage", magentoMigrationPage)
   , ("mijnwebwinkelWaaromPage", mijnwebwinkelWaaromPage)
   , ("lightspeedWaaromPage", lightspeedWaaromPage)
   , ("overOnsPage", overOnsPage)
