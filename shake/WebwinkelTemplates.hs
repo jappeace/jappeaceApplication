@@ -1077,7 +1077,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Verhuizen van MijnWebwinkel"
+          H.h1 "Migreren van MijnWebwinkel naar Shopify"
           H.p ! A.class_ "subtitle" $ "Je webshop is je broodwinning, en MijnWebwinkel staat al jaren stil. Verhuizen voelt als een grote stap, maar het hoeft geen sprong in het diepe te zijn: wij zetten je complete shop geautomatiseerd over, zonder dataverlies en met zo min mogelijk downtime. Je betaalt pas na een succesvolle migratie."
           -- Decision: de hero-CTA wijst naar de scanner, niet naar de
           -- offerte (Jappie, 3 aug 2026): niemand vraagt een offerte aan
@@ -1222,7 +1222,11 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
   where
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
-      { pageMetaTitle       = "Verhuizen van MijnWebwinkel \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
+      -- Decision: titel en h1 in de taal van de zoeker ("migreren naar
+      -- Shopify", niet ons merkwoord "verhuizen"): de Search-Console-dump
+      -- van 2 sep 2026 laat zien dat alle zoekverkeer "migreren",
+      -- "migratie" of "overstappen" gebruikt, "verhuizen" komt niet voor.
+      { pageMetaTitle       = "Migreren van MijnWebwinkel naar Shopify \8212 Webwinkelverhuis"
       , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
@@ -1301,7 +1305,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Verhuizen van CCV Shop"
+          H.h1 "Migreren van CCV Shop naar Shopify"
           -- Decision: hero benoemt CCV-specifieke pijn (prijsstijging,
           -- krimpend winkelbestand, Fiserv-zwaartepunt) in plaats van de
           -- generieke MWW-tekst. Bronnen in
@@ -1421,7 +1425,10 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
   where
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
-      { pageMetaTitle       = "Verhuizen van CCV Shop \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
+      -- Decision: zelfde titelkeuze als de MWW-pagina, zoekerstaal
+      -- ("migreren") in plaats van merkwoord ("verhuizen"); zie het
+      -- Decision-commentaar daar (Search-Console-dump 2 sep 2026).
+      { pageMetaTitle       = "Migreren van CCV Shop naar Shopify \8212 Webwinkelverhuis"
       , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-ccvshop.html"
@@ -1484,7 +1491,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Verhuizen van Lightspeed"
+          H.h1 "Migreren van Lightspeed naar Shopify"
           H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt je richting hun nieuwe platform, maar het offici&euml;le upgradeprogramma slaat Nederland over en verliest onderweg je orderhistorie. Ondertussen draait je webshop op software die alleen nog onderhoud krijgt. Wij verhuizen je complete shop naar Shopify: geautomatiseerd, zonder dataverlies, zonder SEO-verlies, en je betaalt pas na succes." :: Text)
           -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
           -- stap in plaats van de offerte.
@@ -1528,6 +1535,36 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
                 ! A.alt "Stapel dozen" ! A.width "56" ! A.height "56"
           H.h3 "Voorraad & prijzen"
           H.p "Voorraadbeheer, staffelprijzen en per-variant pricing worden correct overgezet. Je voorraadniveaus kloppen direct in je nieuwe shop."
+
+    -- Fysieke winkel & kassa. Decision: eigen sectie op de pagina in
+    -- plaats van alleen FAQ-items (Search-Console-dump 2 sep 2026: 336
+    -- vertoningen, 0 kliks op deze pagina). Lightspeed is vaak kassa en
+    -- webshop tegelijk, dus de drie grote twijfels (kassa, matrix-
+    -- varianten, omzetderving bij de overstap) beantwoorden we direct en
+    -- zichtbaar. Hardware-claims gecheckt 2 sep 2026: Shopify POS
+    -- ondersteunt de gangbare Star- en Epson-bonprinters en standaard
+    -- USB/Bluetooth-scanners (help.shopify.com); terminalprijs \8364 59
+    -- tot \8364 249 uit dezelfde bron als de CCV-pinterminal-FAQ
+    -- (gecheckt 2 aug 2026).
+    H.section ! A.class_ "for-who" ! A.id "fysieke-winkel" $ do
+      H.h2 "Ook met een fysieke winkel"
+      H.p ! A.class_ "subtitle" $ "Lightspeed is bij veel winkels kassa en webshop tegelijk. Juist dan voelt overstappen spannend: je wilt geen kassa die hapert en geen dag zonder omzet. Zo pakken we dat aan."
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-kassa.svg"
+                ! A.alt "Kassaterminal met bonnetje" ! A.width "56" ! A.height "56"
+          H.h3 "Van Lightspeed-kassa naar Shopify POS"
+          H.p $ "Shopify POS draait op een iPad of telefoon en deelt voorraad, klanten en omzet met je webshop, zoals je dat van Lightspeed gewend bent. Gangbare bonprinters (Star, Epson), kassaladen en barcodescanners kunnen meestal gewoon mee. Alleen de betaalterminal vervang je door een Shopify-terminal, eenmalig \8364" <> "59 tot \8364" <> "249. Wij richten de kassa in als onderdeel van de migratie."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Hoofdartikel met subartikelen als boomstructuur" ! A.width "56" ! A.height "56"
+          H.h3 "Matrix-artikelen worden nette varianten"
+          H.p $ H.preEscapedToHtml ("Lightspeed slaat een artikel met maten of kleuren op als matrix: een hoofdartikel met losse subartikelen. Ons programma voegt die weer samen tot &eacute;&eacute;n Shopify-product met varianten, inclusief SKU, barcode, prijs en voorraad per maat of kleur. Het controlerapport telt na of elk subartikel is aangekomen." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-klok.svg"
+                ! A.alt "Klok met vinkje" ! A.width "56" ! A.height "56"
+          H.h3 "Geen dag dicht"
+          H.p "Je nieuwe shop bouwen we naast je draaiende Lightspeed-shop; tot het overstapmoment verkoop je gewoon door, online en in de winkel. De omschakeling zelf plannen we samen op een sluitingsdag of rustig moment. Je mist geen verkoopdag."
 
     -- How it works: de gedeelde sectie van de landingspagina, met
     -- Lightspeed-specifieke stapteksten.
@@ -1579,22 +1616,36 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
   where
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
-      { pageMetaTitle       = "Verhuizen van Lightspeed \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      -- Decision: titel en h1 in de taal van de zoeker. De
+      -- Search-Console-dump van 2 sep 2026 telt 336 vertoningen op deze
+      -- pagina met 0 kliks; de zoektermen zijn steevast "lightspeed
+      -- migratie shopify", "overstappen van lightspeed naar shopify"
+      -- enzovoort. "Verhuizen" zoekt niemand, dus die volledige zoekzin
+      -- staat nu aaneengesloten in titel en h1.
+      { pageMetaTitle       = "Migreren van Lightspeed naar Shopify \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, matrix-varianten, vertalingen, voorraad, SEO-redirects en je kassa (Shopify POS). Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd lightspeedFaq <> serviceJsonLd
           "Lightspeed naar Shopify migratie"
-          "Geautomatiseerde migratie van Lightspeed naar Shopify, WooCommerce of een ander platform: producten, vertalingen, afbeeldingen, voorraad en SEO-redirects."
+          "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, matrix-varianten, vertalingen, afbeeldingen, voorraad, SEO-redirects en de kassa (Shopify POS)."
           "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       }
 
 lightspeedFaq :: [(FaqQuestion, FaqAnswer)]
 lightspeedFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , faqAnswerText "Het technische overzetten van je producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan je nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+    , faqAnswerText "Het technische overzetten van je producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, de kassa, en rustig wennen aan je nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang. Het overstapmoment zelf plannen we samen, bijvoorbeeld op een sluitingsdag; je bent geen dag dicht." )
+  , ( "Ik gebruik Lightspeed ook als kassa in mijn winkel. Wat gebeurt daarmee?"
+    , faqAnswerText $ "Je stapt dan over op Shopify POS, de kassa van Shopify. Die draait op een iPad of telefoon en werkt op dezelfde manier samen met je webshop: \233\233n voorraad, \233\233n klantenbestand, \233\233n omzetoverzicht. Je bonprinter, kassalade en barcodescanner kunnen meestal mee; Shopify ondersteunt de gangbare Star- en Epson-printers en standaard USB- en Bluetooth-scanners. De betaalterminal vervang je door een Shopify-terminal (eenmalig \8364" <> "59 tot \8364" <> "249). We lopen vooraf je apparatuurlijst na zodat je precies weet wat mee kan, en het inrichten van de kassa zit in het migratietraject." )
+  , ( "Hoe zetten jullie matrix-artikelen met varianten over?"
+    , faqAnswerText "In Lightspeed bestaat een artikel met maten of kleuren uit een hoofdartikel met losse subartikelen. Shopify werkt met \233\233n product met varianten. Ons programma voegt de subartikelen automatisch weer samen tot dat ene product, met opties zoals maat en kleur, en per variant de juiste SKU, barcode, prijs en voorraad. Na afloop telt het controlerapport na of elk subartikel als variant is aangekomen, dus niets raakt stilletjes zoek." )
+  , ( "Ben ik tijdens de overstap een dag dicht?"
+    , faqAnswerText "Nee. Je nieuwe shop wordt naast je draaiende Lightspeed-shop gebouwd, dus tot het overstapmoment verkoop je gewoon door, online en in de winkel. De domein-omzet duurt enkele minuten en plannen we samen op een rustig moment; de kassa schakelen we bijvoorbeeld om op een sluitingsdag, zodat je bij opening met Shopify POS verder verkoopt. En je oude shop staat er op dat moment nog naast, dus er is altijd een weg terug." )
+  , ( "Kunnen jullie ook naar Shopify Plus migreren?"
+    , faqAnswerText "Ja. Voor grotere webshops en B2B is Shopify Plus een logische bestemming, en voor ons programma maakt het geen verschil: dezelfde geautomatiseerde migratie, dezelfde controles. We adviseren je vooraf of Plus voor jouw omvang de moeite waard is, of dat een gewoon Shopify-abonnement volstaat." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
