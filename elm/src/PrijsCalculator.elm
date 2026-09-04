@@ -74,8 +74,10 @@ gaEvent naam params =
 -- op 1999 leverde 22 calculator_engaged-events en nul conversies op
 -- (geen offerte_aangevraagd, geen gesprek_knop_klik), plus een
 -- expliciete te-duur-mail en een offerte die naar een concurrent
--- ging. Vakantieseizoen zit als confound in dat signaal, maar de
--- prijsverlaging is omkeerbaar en korting is ons vraag-instrument.
+-- ging. Alternatief overwogen: tot half september wachten om de
+-- vakantie-confound uit het vraagsignaal te halen; afgewezen omdat
+-- er bij nul lopende deals weinig marge te verliezen valt en de
+-- verlaging omkeerbaar is. Korting is ons vraag-instrument.
 
 
 basisMigratieCenten : Int
