@@ -1008,18 +1008,21 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
 -- Offerteformulier (offerte.html) en bedankpagina (offerte-verzonden.html)
 -- =============================================================================
 
--- | Het offerteformulier: een kaal HTML-formulier (geen JavaScript
--- nodig) dat naar POST /api/offerte stuurt; de server logt de aanvraag
--- durabel, mailt hem door en stuurt de browser met een 303 naar de
--- bedankpagina. Het bericht-veld staat voorgevuld met dezelfde vragen
--- die vroeger in de mailto-body stonden.
+-- | Het offerteformulier: een Elm-app (elm/src/OfferteForm.elm) met
+-- losse intakevelden die het te versturen bericht eronder toont en als
+-- verborgen veld meestuurt in een native POST naar /api/offerte; de
+-- server logt de aanvraag durabel, mailt hem door en stuurt de browser
+-- met een 303 naar de bedankpagina. Zonder JavaScript valt de pagina
+-- terug op een kaal HTML-formulier met dezelfde vragen als voorgevulde
+-- textarea, zodat versturen altijd werkt.
 offertePagina :: Html
 offertePagina = webwinkelBaseTemplate offerteMeta $
-  H.main $
+  H.main $ do
     H.section ! A.class_ "hero offerte-blok" $ do
       H.h1 "Vraag een offerte aan"
       H.p ! A.class_ "subtitle" $ "Vertel kort iets over je webshop en je ontvangt de offerte per e-mail. Vrijblijvend: je zit nergens aan vast en betaalt pas na een geslaagde migratie."
-      H.form ! A.class_ "offerte-formulier" ! A.action "/api/offerte" ! A.method "post" $ do
+      H.div ! A.id "offerte-formulier-mount" $ mempty
+      H.noscript $ H.form ! A.class_ "offerte-formulier" ! A.action "/api/offerte" ! A.method "post" $ do
         H.label ! A.class_ "calc-field" $ do
           H.span ! A.class_ "calc-label" $ "Je e-mailadres (hierop ontvang je de offerte)"
           H.input ! A.type_ "email" ! A.name "email" ! A.required "required" ! A.placeholder "naam@voorbeeld.nl"
@@ -1029,16 +1032,14 @@ offertePagina = webwinkelBaseTemplate offerteMeta $
         H.label ! A.class_ "calc-field" $ do
           H.span ! A.class_ "calc-label" $ "Je bericht"
           H.textarea ! A.name "bericht" ! A.rows "10" $ toHtml offerteBerichtTemplate
-        -- Honeypot tegen bots: onzichtbaar voor mensen (CSS), en de
-        -- server behandelt een gevuld veld als spam.
-        H.div ! A.class_ "honeypot-veld" $ H.label $ do
-          H.span "Website"
-          H.input ! A.type_ "text" ! A.name "website" ! A.tabindex "-1" ! A.autocomplete "off"
+        honeypotVeld
         H.button ! A.type_ "submit" ! A.class_ "cta-button" $ "Verstuur de aanvraag"
       H.p ! A.class_ "calc-hint" $ do
         "Liever eerst sparren? "
         H.a ! A.href meetLink $ "Plan een gratis gesprek"
         "."
+    H.script ! A.src "/offerte-form.js" $ mempty
+    H.script "Elm.OfferteForm.init({node: document.getElementById('offerte-formulier-mount')});"
   where
     offerteMeta :: PageMeta
     offerteMeta = PageMeta
@@ -1051,22 +1052,32 @@ offertePagina = webwinkelBaseTemplate offerteMeta $
       , pageMetaExtraHead   = mempty
       }
 
--- | Waar de 303 van POST /api/offerte op landt. noindex: een
--- bevestigingspagina hoort niet in de zoekindex.
+-- | Het honeypot-veld tegen bots: onzichtbaar voor mensen (CSS), en de
+-- server behandelt een gevuld veld als spam. Gedeeld door het
+-- noscript-offerteformulier en het contactformulier.
+honeypotVeld :: Html
+honeypotVeld =
+  H.div ! A.class_ "honeypot-veld" $ H.label $ do
+    H.span "Website"
+    H.input ! A.type_ "text" ! A.name "website" ! A.tabindex "-1" ! A.autocomplete "off"
+
+-- | Waar de 303 van POST /api/offerte op landt, voor zowel
+-- offerte-aanvragen als contactberichten; de tekst dekt beide. noindex:
+-- een bevestigingspagina hoort niet in de zoekindex.
 offerteVerzondenPagina :: Html
 offerteVerzondenPagina = webwinkelBaseTemplate verzondenMeta $
   H.main $
     H.section ! A.class_ "hero offerte-blok" $ do
-      H.h1 "Aanvraag ontvangen"
-      H.p ! A.class_ "subtitle" $ "Je offerte-aanvraag is binnen. Je hoort van ons op het opgegeven e-mailadres."
+      H.h1 "Bericht ontvangen"
+      H.p ! A.class_ "subtitle" $ "Je bericht is binnen. Je hoort van ons op het opgegeven e-mailadres."
       H.div ! A.class_ "hero-knoppen" $ do
         H.a ! A.href "/" ! A.class_ "cta-button-secondary" $ "Naar de homepagina"
         H.a ! A.href meetLink ! A.class_ "cta-button" $ "Alvast een gesprek plannen"
   where
     verzondenMeta :: PageMeta
     verzondenMeta = PageMeta
-      { pageMetaTitle       = "Aanvraag ontvangen \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Je offerte-aanvraag is ontvangen; je hoort van ons per e-mail."
+      { pageMetaTitle       = "Bericht ontvangen \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Je bericht is ontvangen; je hoort van ons per e-mail."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/offerte-verzonden.html"
       , pageMetaOgImage     = Nothing
@@ -2433,6 +2444,24 @@ contactPage = webwinkelBaseTemplate contactMeta $
         H.li $ do
           H.strong "Liever meteen inplannen: "
           H.a ! A.href meetLink $ "plan een gratis gesprek"
+
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Of stuur direct een bericht"
+      -- Zelfde endpoint als het offerteformulier; het verborgen
+      -- soort-veld zorgt voor het juiste mailonderwerp en de juiste
+      -- logregel (megavid WebshopScanner.OfferteAanvraag). Het
+      -- shop-veld reist leeg mee omdat het endpoint het verwacht.
+      H.form ! A.class_ "offerte-formulier" ! A.action "/api/offerte" ! A.method "post" $ do
+        H.label ! A.class_ "calc-field" $ do
+          H.span ! A.class_ "calc-label" $ "Je e-mailadres (hierop reageren we)"
+          H.input ! A.type_ "email" ! A.name "email" ! A.required "required" ! A.placeholder "naam@voorbeeld.nl"
+        H.label ! A.class_ "calc-field" $ do
+          H.span ! A.class_ "calc-label" $ "Je bericht"
+          H.textarea ! A.name "bericht" ! A.rows "6" ! A.placeholder "Waarmee kunnen we je helpen?" $ mempty
+        H.input ! A.type_ "hidden" ! A.name "soort" ! A.value "contact"
+        H.input ! A.type_ "hidden" ! A.name "shop" ! A.value ""
+        honeypotVeld
+        H.button ! A.type_ "submit" ! A.class_ "cta-button" $ "Verstuur"
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Bedrijfsgegevens"

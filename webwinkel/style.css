@@ -685,6 +685,16 @@ footer small a:hover { color: var(--wit); }
 /* Honeypot-veld op het offerteformulier: onzichtbaar voor mensen, de
    server leest een gevuld veld als spam-signaal. */
 .honeypot-veld { display: none; }
+/* Het samengestelde bericht onder de intakevelden (OfferteForm.elm):
+   de bezoeker ziet precies wat er verstuurd wordt. */
+.offerte-bericht-voorbeeld {
+  display: flex; flex-direction: column; gap: 0.4rem;
+  background: var(--fond); border: 1px solid var(--lijn);
+  border-radius: 10px; padding: 0.9rem 1rem;
+}
+.offerte-bericht-tekst {
+  white-space: pre-wrap; color: var(--grijs); font-size: 0.95rem;
+}
 .calc-offerte-formulier { display: grid; gap: 1.5rem; margin: 0; }
 /* Voortgangsbalk onder de scanner-statusregel (voortgangsBalk in
    elm/src/ScannerForm.elm): kruipt naar 95% in ~75s. */
