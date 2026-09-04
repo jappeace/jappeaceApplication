@@ -8,35 +8,47 @@ module OfferteForm exposing
     , view
     )
 
-{-| Het offerteformulier op webwinkelverhuis.nl/offerte.html.
-
-De intakevragen die eerst als voorgevulde tekst in een textarea stonden
-zijn losse invoervelden (besluit Jappie 4 sep 2026): losse velden vullen
-makkelijker dan een tekstblok bewerken. Elm stelt er het bericht uit
-samen, toont dat onder de velden zodat de bezoeker ziet wat er verstuurd
-wordt, en stopt het als verborgen veld in een kaal HTML-formulier dat
-native naar POST /api/offerte gaat; de server logt en mailt (megavid
+{-| Het offerteformulier op webwinkelverhuis.nl/offerte.html: een
+handvol intakevelden waaruit Elm het bericht samenstelt dat als
+verborgen veld meereist in een kaal HTML-formulier naar POST
+/api/offerte; de server logt en mailt (megavid
 WebshopScanner.OfferteAanvraag) en stuurt door naar de bedankpagina.
-Geen ports of Cmd's nodig: het versturen is de browser-submit zelf, en
-GA4's enhanced measurement meet form_start/form_submit vanzelf.
-
+De platform-dropdowns delen hun keuzelijsten met de rekenhulp
+(PrijsCalculator.bronKeuzes/doelKeuzes), zodat er een lijst is.
 -}
 
 import Browser
-import Html exposing (Html, button, div, form, input, label, p, span, text, textarea)
+import Html exposing (Html, button, form, input, label, select, span, text, textarea)
 import Html.Attributes as Attr
 import Html.Events exposing (onInput)
+import PrijsCalculator
+    exposing
+        ( BronPlatform(..)
+        , DoelPlatform(..)
+        , bronKeuzes
+        , bronNaarWaarde
+        , bronOmschrijving
+        , doelKeuzes
+        , doelNaarWaarde
+        , doelOmschrijving
+        , leesBron
+        , leesDoel
+        )
 
 
+-- Decision: bewust maar vijf velden (besluit Jappie 4 sep 2026):
+-- e-mailadres, domeinnaam, bron- en doel-dropdown en vrije
+-- bijzonderheden. Alternatief was de volledige intake-vragenlijst uit
+-- de oude mailto-body als velden (productaantal, talen, meenemen,
+-- domein-bij-MijnWebwinkel); afgewezen omdat de domeinnaam genoeg is
+-- om platform en catalogusomvang zelf uit te zoeken (we tellen het
+-- exacte aantal bij de offerte toch na), meenemen in het gesprek aan
+-- bod komt, en elke extra vraag conversie kost.
 type alias Model =
     { emailInvoer : String
     , webshopDomein : String
-    , huidigPlatform : String
-    , gewenstPlatform : String
-    , aantalProducten : String
-    , aantalTalen : String
-    , meenemen : String
-    , domeinOfEmailBijMww : String
+    , bron : BronPlatform
+    , doel : DoelPlatform
     , bijzonderheden : String
     }
 
@@ -45,12 +57,8 @@ initieelModel : Model
 initieelModel =
     { emailInvoer = ""
     , webshopDomein = ""
-    , huidigPlatform = ""
-    , gewenstPlatform = ""
-    , aantalProducten = ""
-    , aantalTalen = ""
-    , meenemen = ""
-    , domeinOfEmailBijMww = ""
+    , bron = BronMijnwebwinkel
+    , doel = DoelShopify
     , bijzonderheden = ""
     }
 
@@ -58,12 +66,8 @@ initieelModel =
 type Msg
     = EmailGewijzigd String
     | WebshopDomeinGewijzigd String
-    | HuidigPlatformGewijzigd String
-    | GewenstPlatformGewijzigd String
-    | AantalProductenGewijzigd String
-    | AantalTalenGewijzigd String
-    | MeenemenGewijzigd String
-    | DomeinOfEmailGewijzigd String
+    | BronGewijzigd String
+    | DoelGewijzigd String
     | BijzonderhedenGewijzigd String
 
 
@@ -76,43 +80,26 @@ update msg model =
         WebshopDomeinGewijzigd waarde ->
             { model | webshopDomein = waarde }
 
-        HuidigPlatformGewijzigd waarde ->
-            { model | huidigPlatform = waarde }
+        BronGewijzigd waarde ->
+            { model | bron = leesBron waarde }
 
-        GewenstPlatformGewijzigd waarde ->
-            { model | gewenstPlatform = waarde }
-
-        AantalProductenGewijzigd waarde ->
-            { model | aantalProducten = waarde }
-
-        AantalTalenGewijzigd waarde ->
-            { model | aantalTalen = waarde }
-
-        MeenemenGewijzigd waarde ->
-            { model | meenemen = waarde }
-
-        DomeinOfEmailGewijzigd waarde ->
-            { model | domeinOfEmailBijMww = waarde }
+        DoelGewijzigd waarde ->
+            { model | doel = leesDoel waarde }
 
         BijzonderhedenGewijzigd waarde ->
             { model | bijzonderheden = waarde }
 
 
-{-| Het bericht dat meegaat in de aanvraag: dezelfde regels die vroeger
-als invulsjabloon in de mailto-body stonden, nu met de veldwaarden
-erachter. Lege velden reizen mee als lege regel; "niets ingevuld" is
-zelf informatie voor de offerte.
+{-| Het bericht dat meegaat in de aanvraag: de platformkeuzes met hun
+leesbare labels plus de vrije bijzonderheden. De domeinnaam reist als
+eigen shop-veld, het e-mailadres als eigen email-veld.
 -}
 samengesteldBericht : Model -> String
 samengesteldBericht model =
     String.join "\n"
-        [ "- Huidig platform (bijv. MijnWebwinkel, CCV Shop): " ++ model.huidigPlatform
-        , "- Gewenst platform (Shopify of WooCommerce): " ++ model.gewenstPlatform
-        , "- Aantal producten (ongeveer): " ++ model.aantalProducten
-        , "- Aantal talen: " ++ model.aantalTalen
-        , "- Meenemen (klantaccounts, bestelgeschiedenis, nieuwsbrief, voorraad, reviews): " ++ model.meenemen
-        , "- Domeinnaam of e-mail nog bij MijnWebwinkel?: " ++ model.domeinOfEmailBijMww
-        , "- Bijzonderheden (kassa/point-of-sale, zakelijke klanten, verzendkoppeling): " ++ model.bijzonderheden
+        [ "Huidig platform: " ++ bronOmschrijving model.bron
+        , "Gewenst platform: " ++ doelOmschrijving model.doel
+        , "Bijzonderheden: " ++ model.bijzonderheden
         ]
 
 
@@ -122,18 +109,31 @@ view model =
         [ Attr.action "/api/offerte", Attr.method "post", Attr.class "offerte-formulier" ]
         [ emailVeld model
         , invoerVeld "Je webshop (domeinnaam)" "bijv. uwshop.nl" model.webshopDomein WebshopDomeinGewijzigd
-        , invoerVeld "Huidig platform" "bijv. MijnWebwinkel, CCV Shop" model.huidigPlatform HuidigPlatformGewijzigd
-        , invoerVeld "Gewenst platform" "Shopify of WooCommerce, of: weet ik nog niet" model.gewenstPlatform GewenstPlatformGewijzigd
-        , invoerVeld "Aantal producten (ongeveer)" "bijv. 1.500" model.aantalProducten AantalProductenGewijzigd
-        , invoerVeld "Aantal talen" "bijv. 1" model.aantalTalen AantalTalenGewijzigd
-        , invoerVeld "Meenemen" "klantaccounts, bestelgeschiedenis, nieuwsbrief, voorraad, reviews" model.meenemen MeenemenGewijzigd
-        , invoerVeld "Domeinnaam of e-mail nog bij MijnWebwinkel?" "ja / nee / weet ik niet" model.domeinOfEmailBijMww DomeinOfEmailGewijzigd
-        , berichtVeld model
+        , keuzeVeld "Waar draait je webshop nu?" BronGewijzigd (bronNaarWaarde model.bron) bronKeuzes
+        , keuzeVeld "Waar wil je naartoe?" DoelGewijzigd (doelNaarWaarde model.doel) doelKeuzes
+        , bijzonderhedenVeld model
         , input [ Attr.type_ "hidden", Attr.name "bericht", Attr.value (samengesteldBericht model) ] []
         , input [ Attr.type_ "hidden", Attr.name "shop", Attr.value model.webshopDomein ] []
         , input [ Attr.type_ "hidden", Attr.name "website", Attr.value "" ] []
         , button [ Attr.type_ "submit", Attr.class "cta-button" ] [ text "Verstuur de aanvraag" ]
         ]
+
+
+keuzeVeld : String -> (String -> Msg) -> String -> List ( String, String ) -> Html Msg
+keuzeVeld veldLabel naarBericht huidigeWaarde keuzes =
+    label [ Attr.class "calc-field" ]
+        [ span [ Attr.class "calc-label" ] [ text veldLabel ]
+        , select [ onInput naarBericht ] (List.map (keuzeOptie huidigeWaarde) keuzes)
+        ]
+
+
+keuzeOptie : String -> ( String, String ) -> Html Msg
+keuzeOptie huidigeWaarde ( waarde, omschrijving ) =
+    Html.option
+        [ Attr.value waarde
+        , Attr.selected (huidigeWaarde == waarde)
+        ]
+        [ text omschrijving ]
 
 
 emailVeld : Model -> Html Msg
@@ -152,10 +152,10 @@ emailVeld model =
         ]
 
 
-{-| Bewust zonder @Attr.name@: deze velden reizen niet los in de POST
-mee maar alleen via het samengestelde bericht (het verborgen
-bericht-veld in 'view'). Alleen email, bericht, shop en de honeypot
-zijn echte formuliervelden. -}
+{-| Bewust zonder @Attr.name@: dit veld reist niet los in de POST mee
+maar alleen via het samengestelde bericht (het verborgen bericht-veld
+in 'view'). Alleen email, bericht, shop en de honeypot zijn echte
+formuliervelden. -}
 invoerVeld : String -> String -> String -> (String -> Msg) -> Html Msg
 invoerVeld veldLabel plaatshouder waarde naarBericht =
     label [ Attr.class "calc-field" ]
@@ -170,28 +170,27 @@ invoerVeld veldLabel plaatshouder waarde naarBericht =
         ]
 
 
-{-| Bijzonderheden als vrij tekstveld, met daaronder het samengestelde
-bericht zodat de bezoeker precies ziet wat er verstuurd wordt. -}
-berichtVeld : Model -> Html Msg
-berichtVeld model =
-    div [ Attr.class "calc-field" ]
-        [ label [ Attr.class "calc-field" ]
-            [ span [ Attr.class "calc-label" ] [ text "Bijzonderheden" ]
-            , textarea
-                [ Attr.rows 3
-                , Attr.placeholder "kassa/point-of-sale, zakelijke klanten, verzendkoppeling"
-                , Attr.value model.bijzonderheden
-                , onInput BijzonderhedenGewijzigd
-                ]
-                []
+bijzonderhedenVeld : Model -> Html Msg
+bijzonderhedenVeld model =
+    label [ Attr.class "calc-field" ]
+        [ span [ Attr.class "calc-label" ] [ text "Bijzonderheden (niet verplicht)" ]
+        , textarea
+            [ Attr.rows 3
+            , Attr.placeholder "bijv. kassa in de winkel, zakelijke klanten, verzendkoppeling"
+            , Attr.value model.bijzonderheden
+            , onInput BijzonderhedenGewijzigd
             ]
-        , div [ Attr.class "offerte-bericht-voorbeeld" ]
-            [ span [ Attr.class "calc-label" ] [ text "Dit bericht versturen we:" ]
-            , p [ Attr.class "offerte-bericht-tekst" ] [ text (samengesteldBericht model) ]
-            ]
+            []
         ]
 
 
+-- Decision: geen ports of Cmd's: het versturen is de native
+-- browser-submit van het formulier, en GA4's enhanced measurement
+-- meet form_start/form_submit vanzelf. Alternatief overwogen: een
+-- eigen analytics-port zoals de rekenhulp (PrijsCalculator); afgewezen
+-- omdat er hier geen rijkere parameters te melden zijn dan wat GA4 al
+-- automatisch meet, en Browser.sandbox zonder ports de simpelste
+-- correcte vorm is.
 main : Program () Model Msg
 main =
     Browser.sandbox

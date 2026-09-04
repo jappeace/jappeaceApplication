@@ -4,9 +4,17 @@ port module PrijsCalculator exposing
     , Model
     , Msg(..)
     , ThemaKeuze(..)
+    , bronKeuzes
+    , bronNaarWaarde
+    , bronOmschrijving
+    , doelKeuzes
+    , doelNaarWaarde
+    , doelOmschrijving
     , formulierGeldig
     , initieelModel
     , isGroteCatalogus
+    , leesBron
+    , leesDoel
     , main
     , totaalCenten
     , update
@@ -869,17 +877,36 @@ keuzeOptie huidig waarde omschrijving =
         [ text omschrijving ]
 
 
+{-| De bron-opties als (keuzewaarde, label): de ene lijst waar zowel de
+rekenhulp-dropdown als het offerteformulier (OfferteForm.elm) uit
+rendert, zodat een platform erbij of eraf op beide plekken tegelijk
+landt. -}
+bronKeuzes : List ( String, String )
+bronKeuzes =
+    [ ( "mijnwebwinkel", bronOmschrijving BronMijnwebwinkel )
+    , ( "ccv", bronOmschrijving BronCcvShop )
+    , ( "lightspeed", bronOmschrijving BronLightspeed )
+    , ( "woocommerce", bronOmschrijving BronWoocommerce )
+    , ( "anders", bronOmschrijving BronAnders )
+    ]
+
+
+{-| De doel-opties, zelfde rol als 'bronKeuzes'. -}
+doelKeuzes : List ( String, String )
+doelKeuzes =
+    [ ( "shopify", doelOmschrijving DoelShopify )
+    , ( "woocommerce", doelOmschrijving DoelWoocommerce )
+    , ( "anders", doelOmschrijving DoelAnders )
+    , ( "weetniet", doelOmschrijving DoelWeetNiet )
+    ]
+
+
 bronVeld : BronPlatform -> Html Msg
 bronVeld bron =
     label [ Attr.class "calc-field" ]
         [ span [ Attr.class "calc-label" ] [ text "Waar draait je webshop nu?" ]
         , select [ onInput BronGewijzigd ]
-            [ keuzeOptie (bronNaarWaarde bron) "mijnwebwinkel" (bronOmschrijving BronMijnwebwinkel)
-            , keuzeOptie (bronNaarWaarde bron) "ccv" (bronOmschrijving BronCcvShop)
-            , keuzeOptie (bronNaarWaarde bron) "lightspeed" (bronOmschrijving BronLightspeed)
-            , keuzeOptie (bronNaarWaarde bron) "woocommerce" (bronOmschrijving BronWoocommerce)
-            , keuzeOptie (bronNaarWaarde bron) "anders" (bronOmschrijving BronAnders)
-            ]
+            (List.map (\( waarde, omschrijving ) -> keuzeOptie (bronNaarWaarde bron) waarde omschrijving) bronKeuzes)
         ]
 
 
@@ -888,11 +915,7 @@ doelVeld doel =
     label [ Attr.class "calc-field" ]
         [ span [ Attr.class "calc-label" ] [ text "Waar wil je naartoe?" ]
         , select [ onInput DoelGewijzigd ]
-            [ keuzeOptie (doelNaarWaarde doel) "shopify" (doelOmschrijving DoelShopify)
-            , keuzeOptie (doelNaarWaarde doel) "woocommerce" (doelOmschrijving DoelWoocommerce)
-            , keuzeOptie (doelNaarWaarde doel) "anders" (doelOmschrijving DoelAnders)
-            , keuzeOptie (doelNaarWaarde doel) "weetniet" (doelOmschrijving DoelWeetNiet)
-            ]
+            (List.map (\( waarde, omschrijving ) -> keuzeOptie (doelNaarWaarde doel) waarde omschrijving) doelKeuzes)
         ]
 
 
@@ -1105,6 +1128,8 @@ view model =
             , bronVeld model.bron
             , doelVeld model.doel
             , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "500 zit in de basisprijs" ProductenGewijzigd
+            , p [ Attr.class "calc-hint" ]
+                [ text "Een schatting is genoeg: bij het maken van de offerte tellen we het exacte aantal voor je na." ]
             , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
             , themaVeld model.thema
               -- Decision: de aanvinkgroepen zitten in een natief

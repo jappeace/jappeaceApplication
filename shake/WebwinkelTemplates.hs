@@ -128,20 +128,17 @@ webwinkelEmail = "jappie@webwinkelverhuis.nl"
 offertePaginaLink :: H.AttributeValue
 offertePaginaLink = "/offerte.html"
 
--- | Fill-in template that prefills the offerte-formulier's bericht-veld:
--- a blank text box is intimidating, and these prompts tell the merchant
--- which details make for a good quote (mirroring the calculator's
--- questions) without forcing them through the calculator first.
+-- | Fill-in template that prefills the noscript-offerteformulier's
+-- bericht-veld: a blank text box is intimidating, and these prompts
+-- mirror the drie vragen van de Elm-variant. Bewust kort (besluit
+-- Jappie 4 sep 2026): productaantal, talen en meenemen vragen we niet,
+-- dat zoeken wij zelf uit of komt in het gesprek.
 offerteBerichtTemplate :: Text
 offerteBerichtTemplate =
-  "Om je een goede prijs te kunnen geven, alvast wat info (vul in wat je weet):\n\n"
+  "Vul in wat je weet:\n\n"
     <> "- Huidig platform (bijv. MijnWebwinkel, CCV Shop): \n"
-    <> "- Gewenst platform (Shopify of WooCommerce): \n"
-    <> "- Aantal producten (ongeveer): \n"
-    <> "- Aantal talen: \n"
-    <> "- Meenemen (klantaccounts, bestelgeschiedenis, nieuwsbrief, voorraad, reviews): \n"
-    <> "- Domeinnaam of e-mail nog bij MijnWebwinkel?: \n"
-    <> "- Bijzonderheden (kassa/point-of-sale, zakelijke klanten, verzendkoppeling): \n"
+    <> "- Gewenst platform (Shopify of WooCommerce, of: weet ik nog niet): \n"
+    <> "- Bijzonderheden (bijv. kassa in de winkel, zakelijke klanten, verzendkoppeling): \n"
 
 -- | Mailto for merchants whose migration is already running or done and who
 -- want follow-up work (mass edits, theme changes, integrations). The subject
