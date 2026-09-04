@@ -15,7 +15,7 @@ port module PrijsCalculator exposing
 
 De prijslogica is een 1-op-1 kopie van de standaard prijslijst (jappiesoft
 strategy/standaard-prijslijst.org) en de tabel op /prijzen: basismigratie met
-1.000 inbegrepen productvertalingen (producten maal talen tellen samen tegen
+500 inbegrepen productvertalingen (producten maal talen tellen samen tegen
 die ruimte), daarboven een degressieve staffel per duizend vertalingen
 (€0,25, €0,20, €0,15, daarna €0,10), plus €250 configuratie per
 extra taal, de losse modules (thema, klantaccounts, orderhistorie, nieuwsbrief,
@@ -69,14 +69,23 @@ gaEvent naam params =
 -- CONSTANTEN (centen), gelijk aan standaard-prijslijst.org en /prijzen
 
 
+-- Decision: basis terug van 199900 naar 149900 met 500 in plaats van
+-- 1.000 inbegrepen vertalingen (besluit Jappie 4 sep 2026): augustus
+-- op 1999 leverde 22 calculator_engaged-events en nul conversies op
+-- (geen offerte_aangevraagd, geen gesprek_knop_klik), plus een
+-- expliciete te-duur-mail en een offerte die naar een concurrent
+-- ging. Vakantieseizoen zit als confound in dat signaal, maar de
+-- prijsverlaging is omkeerbaar en korting is ons vraag-instrument.
+
+
 basisMigratieCenten : Int
 basisMigratieCenten =
-    199900
+    149900
 
 
 inbegrepenProducten : Int
 inbegrepenProducten =
-    1000
+    500
 
 
 -- Decision: de productstaffel is degressief (besluit Jappie 1 sep 2026,
@@ -84,8 +93,9 @@ inbegrepenProducten =
 -- catalogi kosten het migratieprogramma nauwelijks extra werk, dus een
 -- vlak tarief prijst juist de goedkoopste meerschaal het hardst en
 -- jaagt grote shops weg met bedragen die niets met de kostprijs te
--- maken hebben. Boven de inbegrepen 1.000 productvertalingen kost elke
--- volgende duizend een trede minder, tot een bodem van 10 cent.
+-- maken hebben. Boven de inbegrepen productvertalingen (destijds
+-- 1.000, sinds 4 sep 2026 500) kost elke volgende duizend een trede
+-- minder, tot een bodem van 10 cent.
 -- Alternatief overwogen: een tweede maatwerkgrens op 5.000 euro
 -- richtprijs (staat gebouwd op de geparkeerde branch
 -- calculator-richtprijs-grens); afgewezen omdat de degressieve staffel
@@ -239,7 +249,7 @@ type alias Model =
 
 initieelModel : Model
 initieelModel =
-    { productenInvoer = "1000"
+    { productenInvoer = "500"
     , talenInvoer = "1"
     , bron = BronMijnwebwinkel
     , doel = DoelShopify
@@ -573,14 +583,13 @@ extraTalen model =
     aantalTalen model - 1
 
 
--- Decision: productvertalingen tellen samen tegen de 1.000 inbegrepen
+-- Decision: productvertalingen tellen samen tegen de inbegrepen
 -- producten van de basismigratie (besluit Jappie 2026-08-08, n.a.v. de
--- bybjor-offerte). Elk product telt per taal één keer mee: 160 producten
+-- bybjor-offerte, destijds met 1.000 inbegrepen; sinds 4 sep 2026 zijn
+-- dat er 500). Elk product telt per taal één keer mee: 160 producten
 -- in 3 talen zijn 480 productvertalingen en passen dus in de basisruimte,
 -- terwijl het oude model elke extra taal over de hele catalogus liet
--- betalen zonder die ruimte. Voor catalogi vanaf 1.000 producten is de
--- uitkomst wiskundig gelijk aan het oude model; kleinere catalogi met
--- meerdere talen worden er goedkoper van. Alternatief was de oude
+-- betalen zonder die ruimte. Alternatief was de oude
 -- twee-staffels-opzet houden; afgewezen omdat die kleine meertalige
 -- shops liet betalen voor ruimte die ze al gekocht hadden.
 
@@ -958,10 +967,10 @@ de uitsplitsing op het scherm als de vooringevulde offerte-mail, zodat die twee
 nooit uit elkaar lopen. -}
 prijsRegels : Model -> List PrijsRegel
 prijsRegels model =
-    [ PrijsRegel "Basismigratie (1.000 producten inbegrepen, over alle talen samen)" basisMigratieCenten ]
+    [ PrijsRegel "Basismigratie (500 producten inbegrepen, over alle talen samen)" basisMigratieCenten ]
         ++ optioneleRegel
             (extraProductVertalingen model > 0)
-            (aantalLabel (extraProductVertalingen model) "product boven de 1.000 inbegrepen (over alle talen, aflopende staffel)" "producten boven de 1.000 inbegrepen (over alle talen, aflopende staffel)")
+            (aantalLabel (extraProductVertalingen model) "product boven de 500 inbegrepen (over alle talen, aflopende staffel)" "producten boven de 500 inbegrepen (over alle talen, aflopende staffel)")
             (extraProductVertalingenCenten model)
         ++ optioneleRegel
             (extraTalen model > 0)
@@ -1086,7 +1095,7 @@ view model =
             [ legend [] [ text "Je webshop" ]
             , bronVeld model.bron
             , doelVeld model.doel
-            , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "1.000 zit in de basisprijs" ProductenGewijzigd
+            , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "500 zit in de basisprijs" ProductenGewijzigd
             , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
             , themaVeld model.thema
               -- Decision: de aanvinkgroepen zitten in een natief

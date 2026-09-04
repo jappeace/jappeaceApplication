@@ -116,9 +116,12 @@ companyEmail = "hallo@jappiesoftware.com"
 -- only. Single source of truth for every surface that shows it: the
 -- price cards, the meta descriptions and the schema.org Offer markup.
 -- The decision trail lives in jappiesoft
--- strategy/pricing-business-model.org (staffel-2026-07-29).
+-- strategy/pricing-business-model.org (staffel-2026-07-29 en de
+-- verlaging van 2026-09-04: terug van 1999 naar 1499 met 500 in
+-- plaats van 1.000 inbegrepen productvertalingen, na een augustus
+-- met 22 rekenhulp-engagements en nul conversies).
 migratieBasisprijsEuro :: Text
-migratieBasisprijsEuro = "1999"
+migratieBasisprijsEuro = "1499"
 
 -- | Branded scheduling link used by every "plan een gesprek" button across
 -- the sites and the outreach mails. It is a 302 redirect on our own
