@@ -878,10 +878,15 @@ rapportWeergave rapport stand =
     , p [ Attr.class "scanner-platform" ] [ text (platformRegel rapport) ]
     , div [ Attr.class "scanner-scores" ] (List.map scoreWeergave rapport.scores)
     ]
-        ++ kernmetingenDeel rapport stand.kernmetingenUitklap
         ++ [ h3 [] [ text "Verbeterpunten" ] ]
         ++ List.map (puntWeergave rapport.platform) (topVerbeterpunten rapport.verbeterpunten)
-        ++ uitklapDeel rapport stand.puntenUitklap
+        ++ restPuntenDeel rapport stand.puntenUitklap
+        -- de twee uitklapknoppen naast elkaar in een rij (verzoek
+        -- Jappie 4 sep 2026); de kernmetingen hebben geen eigen kop
+        -- meer, de knop is de ingang
+        ++ [ div [ Attr.class "scanner-knoppenrij" ]
+                (puntenKnop rapport stand.puntenUitklap ++ [ kernmetingenKnop stand.kernmetingenUitklap ]) ]
+        ++ kernmetingenLijst rapport stand.kernmetingenUitklap
         ++ upsellBlok rapport
 
 
@@ -934,19 +939,27 @@ platformVerzoekMailto gescandeUrl =
 {-| De kernmetingen, standaard ingeklapt: de meeste bezoekers hebben genoeg
 aan de scores en de verbeterpunten, en de ruwe metingen blijven een klik weg.
 De labels komen van de server en tonen we onvertaald. -}
-kernmetingenDeel : Rapport -> UitklapStand -> List (Html Msg)
-kernmetingenDeel rapport uitklap =
+kernmetingenKnop : UitklapStand -> Html Msg
+kernmetingenKnop uitklap =
     case uitklap of
         Ingeklapt ->
-            [ h3 [] [ text "Kernmetingen" ]
-            , uitklapKnop KernmetingenGewisseld "Toon de kernmetingen"
-            ]
+            uitklapKnop KernmetingenGewisseld "Toon de kernmetingen"
 
         Uitgeklapt ->
-            [ h3 [] [ text "Kernmetingen" ]
-            , dl [ Attr.class "scanner-kernmetingen" ] (List.concatMap kernmetingWeergave rapport.kernmetingen)
-            , uitklapKnop KernmetingenGewisseld "Verberg de kernmetingen"
-            ]
+            uitklapKnop KernmetingenGewisseld "Verberg de kernmetingen"
+
+
+{-| De ruwe metingen, alleen zichtbaar als de knop in de knoppenrij ze
+uitklapt; de lijst landt onder de rij zodat de knoppen op hun plek
+blijven. -}
+kernmetingenLijst : Rapport -> UitklapStand -> List (Html Msg)
+kernmetingenLijst rapport uitklap =
+    case uitklap of
+        Ingeklapt ->
+            []
+
+        Uitgeklapt ->
+            [ dl [ Attr.class "scanner-kernmetingen" ] (List.concatMap kernmetingWeergave rapport.kernmetingen) ]
 
 
 platformRegel : Rapport -> String
@@ -1051,8 +1064,20 @@ oplosbaarBadge platformNaam oplosbaarheid =
             span [ Attr.class "scanner-badge scanner-badge-vast" ] [ text ("Ligt vast in " ++ platformNaam) ]
 
 
-uitklapDeel : Rapport -> UitklapStand -> List (Html Msg)
-uitklapDeel rapport uitklap =
+{-| De verbeterpunten voorbij de top 5, alleen als ze uitgeklapt zijn;
+de bijbehorende knop staat in de knoppenrij ('puntenKnop'). -}
+restPuntenDeel : Rapport -> UitklapStand -> List (Html Msg)
+restPuntenDeel rapport uitklap =
+    case uitklap of
+        Ingeklapt ->
+            []
+
+        Uitgeklapt ->
+            List.map (puntWeergave rapport.platform) (restVerbeterpunten rapport.verbeterpunten)
+
+
+puntenKnop : Rapport -> UitklapStand -> List (Html Msg)
+puntenKnop rapport uitklap =
     if List.isEmpty (restVerbeterpunten rapport.verbeterpunten) then
         []
 
@@ -1062,8 +1087,7 @@ uitklapDeel rapport uitklap =
                 [ uitklapKnop UitklapGewisseld ("Toon alle " ++ String.fromInt (List.length rapport.verbeterpunten) ++ " punten") ]
 
             Uitgeklapt ->
-                List.map (puntWeergave rapport.platform) (restVerbeterpunten rapport.verbeterpunten)
-                    ++ [ uitklapKnop UitklapGewisseld "Verberg de extra punten" ]
+                [ uitklapKnop UitklapGewisseld "Verberg de extra punten" ]
 
 
 uitklapKnop : Msg -> String -> Html Msg

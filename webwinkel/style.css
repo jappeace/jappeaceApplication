@@ -698,6 +698,9 @@ footer small a:hover { color: var(--wit); }
   white-space: pre-wrap; color: var(--grijs); font-size: 0.95rem;
 }
 .calc-offerte-formulier { display: grid; gap: 1.5rem; margin: 0; }
+/* De twee uitklapknoppen van het rapport (alle punten, kernmetingen)
+   naast elkaar; markup: rapportWeergave in elm/src/ScannerForm.elm. */
+.scanner-knoppenrij { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.2rem; }
 /* Voortgangsbalk onder de scanner-statusregel (voortgangsBalk in
    elm/src/ScannerForm.elm): kruipt naar 95% in ~75s. */
 .scanner-voortgang {
