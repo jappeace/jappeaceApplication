@@ -4,8 +4,17 @@ port module PrijsCalculator exposing
     , Model
     , Msg(..)
     , ThemaKeuze(..)
+    , bronKeuzes
+    , bronNaarWaarde
+    , bronOmschrijving
+    , doelKeuzes
+    , doelNaarWaarde
+    , doelOmschrijving
+    , formulierGeldig
     , initieelModel
     , isGroteCatalogus
+    , leesBron
+    , leesDoel
     , main
     , totaalCenten
     , update
@@ -33,7 +42,7 @@ is en niet een toezegging.
 -}
 
 import Browser
-import Html exposing (Html, a, details, div, fieldset, h3, input, label, legend, li, option, p, select, span, strong, summary, text, ul)
+import Html exposing (Html, a, button, details, div, fieldset, form, h3, input, label, legend, li, option, p, select, span, strong, summary, text, ul)
 import Html.Attributes as Attr
 import Html.Events exposing (onCheck, onClick, onInput)
 import Json.Encode as Encode
@@ -243,6 +252,7 @@ type alias Model =
     , cursus : Bool
     , naam : String
     , webshopDomein : String
+    , emailInvoer : String
     , offertePoging : Bool
     , analyticsEngaged : Bool
     , groteCatalogusGemeld : Bool
@@ -269,6 +279,7 @@ initieelModel =
     , cursus = False
     , naam = ""
     , webshopDomein = ""
+    , emailInvoer = ""
     , offertePoging = False
     , analyticsEngaged = False
     , groteCatalogusGemeld = False
@@ -303,6 +314,7 @@ type Msg
     | CursusGewijzigd Bool
     | NaamGewijzigd String
     | WebshopDomeinGewijzigd String
+    | EmailInvoerGewijzigd String
     | OfferteGepoogd
     | OfferteVerzonden
     | GroteCatalogusContact
@@ -537,6 +549,9 @@ update msg model =
 
         WebshopDomeinGewijzigd waarde ->
             markeerEngagement { model | webshopDomein = waarde }
+
+        EmailInvoerGewijzigd waarde ->
+            markeerEngagement { model | emailInvoer = waarde }
 
         OfferteGepoogd ->
             ( { model | offertePoging = True }, gaEvent "offerte_geblokkeerd" [] )
@@ -862,17 +877,36 @@ keuzeOptie huidig waarde omschrijving =
         [ text omschrijving ]
 
 
+{-| De bron-opties als (keuzewaarde, label): de ene lijst waar zowel de
+rekenhulp-dropdown als het offerteformulier (OfferteForm.elm) uit
+rendert, zodat een platform erbij of eraf op beide plekken tegelijk
+landt. -}
+bronKeuzes : List ( String, String )
+bronKeuzes =
+    [ ( "mijnwebwinkel", bronOmschrijving BronMijnwebwinkel )
+    , ( "ccv", bronOmschrijving BronCcvShop )
+    , ( "lightspeed", bronOmschrijving BronLightspeed )
+    , ( "woocommerce", bronOmschrijving BronWoocommerce )
+    , ( "anders", bronOmschrijving BronAnders )
+    ]
+
+
+{-| De doel-opties, zelfde rol als 'bronKeuzes'. -}
+doelKeuzes : List ( String, String )
+doelKeuzes =
+    [ ( "shopify", doelOmschrijving DoelShopify )
+    , ( "woocommerce", doelOmschrijving DoelWoocommerce )
+    , ( "anders", doelOmschrijving DoelAnders )
+    , ( "weetniet", doelOmschrijving DoelWeetNiet )
+    ]
+
+
 bronVeld : BronPlatform -> Html Msg
 bronVeld bron =
     label [ Attr.class "calc-field" ]
         [ span [ Attr.class "calc-label" ] [ text "Waar draait je webshop nu?" ]
         , select [ onInput BronGewijzigd ]
-            [ keuzeOptie (bronNaarWaarde bron) "mijnwebwinkel" (bronOmschrijving BronMijnwebwinkel)
-            , keuzeOptie (bronNaarWaarde bron) "ccv" (bronOmschrijving BronCcvShop)
-            , keuzeOptie (bronNaarWaarde bron) "lightspeed" (bronOmschrijving BronLightspeed)
-            , keuzeOptie (bronNaarWaarde bron) "woocommerce" (bronOmschrijving BronWoocommerce)
-            , keuzeOptie (bronNaarWaarde bron) "anders" (bronOmschrijving BronAnders)
-            ]
+            (List.map (\( waarde, omschrijving ) -> keuzeOptie (bronNaarWaarde bron) waarde omschrijving) bronKeuzes)
         ]
 
 
@@ -881,11 +915,7 @@ doelVeld doel =
     label [ Attr.class "calc-field" ]
         [ span [ Attr.class "calc-label" ] [ text "Waar wil je naartoe?" ]
         , select [ onInput DoelGewijzigd ]
-            [ keuzeOptie (doelNaarWaarde doel) "shopify" (doelOmschrijving DoelShopify)
-            , keuzeOptie (doelNaarWaarde doel) "woocommerce" (doelOmschrijving DoelWoocommerce)
-            , keuzeOptie (doelNaarWaarde doel) "anders" (doelOmschrijving DoelAnders)
-            , keuzeOptie (doelNaarWaarde doel) "weetniet" (doelOmschrijving DoelWeetNiet)
-            ]
+            (List.map (\( waarde, omschrijving ) -> keuzeOptie (doelNaarWaarde doel) waarde omschrijving) doelKeuzes)
         ]
 
 
@@ -1098,6 +1128,8 @@ view model =
             , bronVeld model.bron
             , doelVeld model.doel
             , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "500 zit in de basisprijs" ProductenGewijzigd
+            , p [ Attr.class "calc-hint" ]
+                [ text "Een schatting is genoeg: bij het maken van de offerte tellen we het exacte aantal voor je na." ]
             , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
             , themaVeld model.thema
               -- Decision: de aanvinkgroepen zitten in een natief
@@ -1139,7 +1171,7 @@ view model =
                     ]
                 ]
                     ++ opAanvraagNoten model
-                    ++ [ lockInNoot, contactVelden model, offerteKnop model, vrijblijvendNoot ]
+                    ++ [ lockInNoot, offerteFormulier model, vrijblijvendNoot ]
         ]
 
 
@@ -1158,34 +1190,47 @@ groteCatalogusPaneel model =
                 ++ " producten (over alle talen samen) is jouw winkel geen standaardmigratie meer. Zo'n catalogus verdient een eigen doorrekening in plaats van een standaardtarief; neem contact op en we rekenen een passende prijs voor je door."
             )
         ]
-    , a
-        [ Attr.href (groteCatalogusMailtoUrl model)
-        , Attr.class "cta-button calc-offerte"
-        , onClick GroteCatalogusContact
+    , form
+        [ Attr.action "/api/offerte", Attr.method "post", Attr.class "calc-offerte-formulier" ]
+        [ label [ Attr.class "calc-field" ]
+            [ span [ Attr.class "calc-label" ] [ text "Je e-mailadres (hierop reageren we)" ]
+            , input
+                [ Attr.type_ "email"
+                , Attr.name "email"
+                , Attr.required True
+                , Attr.value model.emailInvoer
+                , Attr.placeholder "naam@voorbeeld.nl"
+                , onInput EmailInvoerGewijzigd
+                ]
+                []
+            ]
+        , input [ Attr.type_ "hidden", Attr.name "bericht", Attr.value (groteCatalogusBericht model) ] []
+        , input [ Attr.type_ "hidden", Attr.name "shop", Attr.value model.webshopDomein ] []
+        , input [ Attr.type_ "hidden", Attr.name "website", Attr.value "" ] []
+        , button
+            [ Attr.type_ "submit"
+            , Attr.class "cta-button calc-offerte"
+            , onClick GroteCatalogusContact
+            ]
+            [ text "Neem contact op" ]
         ]
-        [ text "Neem contact op" ]
     , vrijblijvendNoot
     ]
 
 
-{-| Mailto voor de grote-catalogus-route, met de al ingevulde aantallen en
-platforms in de mailtekst zodat het gesprek meteen ergens over gaat. -}
-groteCatalogusMailtoUrl : Model -> String
-groteCatalogusMailtoUrl model =
-    "mailto:jappie@webwinkelverhuis.nl?subject="
-        ++ Url.percentEncode "Migratie grote catalogus"
-        ++ "&body="
-        ++ Url.percentEncode
-            (String.join "\n"
-                [ "Hallo,"
-                , ""
-                , "Mijn webshop heeft ongeveer " ++ String.fromInt (aantalProducten model) ++ " producten in " ++ String.fromInt (aantalTalen model) ++ " taal/talen."
-                , "Huidig platform: " ++ bronOmschrijving model.bron
-                , "Gewenst platform: " ++ doelOmschrijving model.doel
-                , ""
-                , "Ik hoor graag wat een migratie voor mijn winkel zou kosten."
-                ]
-            )
+{-| Berichttekst voor de grote-catalogus-route, met de al ingevulde
+aantallen en platforms zodat het gesprek meteen ergens over gaat. -}
+groteCatalogusBericht : Model -> String
+groteCatalogusBericht model =
+    String.join "\n"
+        [ "Grote catalogus (rekenhulp-melding):"
+        , ""
+        , "Mijn webshop heeft ongeveer " ++ String.fromInt (aantalProducten model) ++ " producten in " ++ String.fromInt (aantalTalen model) ++ " taal/talen."
+        , "Huidig platform: " ++ bronOmschrijving model.bron
+        , "Gewenst platform: " ++ doelOmschrijving model.doel
+        , ""
+        , "Ik hoor graag wat een migratie voor mijn winkel zou kosten."
+        ]
 
 
 {-| De domein- en e-mailvragen tonen we alleen voor bronplatforms die die zaken
@@ -1210,13 +1255,38 @@ domeinEmailVelden model =
         []
 
 
-{-| De twee verplichte contactvelden onder de richtprijs: naam en het
-webshop-domein. Beide moeten ingevuld zijn voordat de offerte-knop verstuurt. -}
+{-| De drie verplichte contactvelden onder de richtprijs: naam, het
+webshop-domein en het e-mailadres waarop we de offerte terugsturen. Alle
+drie moeten ingevuld zijn voordat de offerte-knop verstuurt. Het
+e-mailveld heeft een @name@ omdat het als formulierveld meegaat in de
+POST naar /api/offerte; naam en domein reizen mee in het
+bericht-verborgenveld. -}
 contactVelden : Model -> Html Msg
 contactVelden model =
     div [ Attr.class "calc-contact" ]
         [ verplichtVeld model.offertePoging "Je naam" "Voor- en achternaam" model.naam NaamGewijzigd
         , verplichtVeld model.offertePoging "Je webshop (domeinnaam)" "bijv. uwshop.nl" model.webshopDomein WebshopDomeinGewijzigd
+        , emailVeld model
+        ]
+
+
+{-| Zoals 'verplichtVeld', maar als e-mail-input die in de formulier-POST
+meegaat. -}
+emailVeld : Model -> Html Msg
+emailVeld model =
+    label [ Attr.class "calc-field" ]
+        [ span [ Attr.class "calc-label" ] [ text "Je e-mailadres (hierop ontvang je de offerte)" ]
+        , input
+            ([ Attr.type_ "email"
+             , Attr.name "email"
+             , Attr.value model.emailInvoer
+             , Attr.placeholder "naam@voorbeeld.nl"
+             , onInput EmailInvoerGewijzigd
+             ]
+                ++ foutRandKlasse model.offertePoging model.emailInvoer
+            )
+            []
+        , foutMelding model.offertePoging model.emailInvoer
         ]
 
 
@@ -1236,37 +1306,55 @@ vrijblijvendNoot =
 
 formulierGeldig : Model -> Bool
 formulierGeldig model =
-    not (isLeeg model.naam) && not (isLeeg model.webshopDomein)
+    not (isLeeg model.naam)
+        && not (isLeeg model.webshopDomein)
+        && not (isLeeg model.emailInvoer)
+        && String.contains "@" model.emailInvoer
 
 
-{-| Knop die een offerte-mail opent met alle gekozen opties al ingevuld. Pas
-klikbaar naar de mail als naam en webshop-domein ingevuld zijn; daarvoor markeert
-een klik alleen de ontbrekende verplichte velden (geen href, dus geen navigatie).
--}
+-- Decision: de offerte-aanvraag POST als kaal HTML-formulier naar
+-- /api/offerte in plaats van de oude mailto-link (besluit Jappie 4 sep
+-- 2026). GA4 augustus: 2 offerte-mailto-kliks, nul ontvangen mails;
+-- mailto faalt geluidloos bij bezoekers zonder gekoppeld
+-- mailprogramma. De server logt elke aanvraag durabel en mailt Jappie,
+-- en stuurt de browser met een 303 door naar /offerte-verzonden.html.
+
+
+{-| Het formulier om de POST heen: de contactvelden, het volledige
+bericht (dezelfde tekst die vroeger in de mailto stond) als verborgen
+veld, en een honeypot-veld dat de server als spam-signaal leest. -}
+offerteFormulier : Model -> Html Msg
+offerteFormulier model =
+    form
+        [ Attr.action "/api/offerte", Attr.method "post", Attr.class "calc-offerte-formulier" ]
+        [ contactVelden model
+        , input [ Attr.type_ "hidden", Attr.name "bericht", Attr.value (offerteBody model) ] []
+        , input [ Attr.type_ "hidden", Attr.name "shop", Attr.value model.webshopDomein ] []
+        , input [ Attr.type_ "hidden", Attr.name "website", Attr.value "" ] []
+        , offerteKnop model
+        ]
+
+
+{-| Verstuurknop van het offerteformulier. Pas een echte submit als de
+verplichte velden ingevuld zijn; daarvoor markeert een klik alleen de
+ontbrekende velden (type button, dus geen verzending). -}
 offerteKnop : Model -> Html Msg
 offerteKnop model =
     if formulierGeldig model then
-        a
-            [ Attr.href (offerteMailtoUrl model)
+        button
+            [ Attr.type_ "submit"
             , Attr.class "cta-button calc-offerte"
             , onClick OfferteVerzonden
             ]
             [ text "Vraag deze offerte aan" ]
 
     else
-        a
-            [ Attr.class "cta-button calc-offerte"
+        button
+            [ Attr.type_ "button"
+            , Attr.class "cta-button calc-offerte"
             , onClick OfferteGepoogd
             ]
             [ text "Vraag deze offerte aan" ]
-
-
-offerteMailtoUrl : Model -> String
-offerteMailtoUrl model =
-    "mailto:jappie@webwinkelverhuis.nl?subject="
-        ++ Url.percentEncode "Offerte-aanvraag webshop-migratie"
-        ++ "&body="
-        ++ Url.percentEncode (offerteBody model)
 
 
 {-| De vooringevulde mailtekst: de shopgegevens plus de volledige prijsregels

@@ -8,7 +8,7 @@ geblokkeerde verzendpoging op True te staan.
 -}
 
 import Expect
-import PrijsCalculator exposing (Msg(..), initieelModel, update)
+import PrijsCalculator exposing (Msg(..), formulierGeldig, initieelModel, update)
 import Test exposing (Test, describe, test)
 
 
@@ -34,6 +34,18 @@ suite =
             \_ ->
                 Expect.equal True
                     (Tuple.first (update OfferteGepoogd initieelModel)).offertePoging
+        , test "zonder e-mailadres is het offerteformulier ongeldig (naam en domein zijn niet genoeg)" <|
+            \_ ->
+                Expect.equal False
+                    (formulierGeldig { initieelModel | naam = "Jan", webshopDomein = "uwshop.nl" })
+        , test "een e-mailadres zonder apenstaartje blijft ongeldig" <|
+            \_ ->
+                Expect.equal False
+                    (formulierGeldig { initieelModel | naam = "Jan", webshopDomein = "uwshop.nl", emailInvoer = "geen-adres" })
+        , test "met naam, domein en e-mailadres is het formulier geldig" <|
+            \_ ->
+                Expect.equal True
+                    (formulierGeldig { initieelModel | naam = "Jan", webshopDomein = "uwshop.nl", emailInvoer = "jan@uwshop.nl" })
         , test "start is niet als grote catalogus gemeld" <|
             \_ ->
                 Expect.equal False initieelModel.groteCatalogusGemeld

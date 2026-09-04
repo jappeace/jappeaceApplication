@@ -247,7 +247,23 @@ updateTests =
                 Expect.equal (Wachten (ScanId "abc123") (InWachtrij 2))
                     (Tuple.first
                         (update (StatusOntvangen (Ok (StatusWachtrij 2)))
-                            { initieelModel | fase = Wachten (ScanId "abc123") Bezig }
+                            { initieelModel | fase = Wachten (ScanId "abc123") (Bezig 0) }
+                        )
+                    ).fase
+        , test "elke bezig-status telt een peiling op, zodat de voortgang meeloopt" <|
+            \_ ->
+                Expect.equal (Wachten (ScanId "abc123") (Bezig 3))
+                    (Tuple.first
+                        (update (StatusOntvangen (Ok StatusBezig))
+                            { initieelModel | fase = Wachten (ScanId "abc123") (Bezig 2) }
+                        )
+                    ).fase
+        , test "van de wachtrij naar bezig begint de telling op nul" <|
+            \_ ->
+                Expect.equal (Wachten (ScanId "abc123") (Bezig 0))
+                    (Tuple.first
+                        (update (StatusOntvangen (Ok StatusBezig))
+                            { initieelModel | fase = Wachten (ScanId "abc123") (InWachtrij 1) }
                         )
                     ).fase
         , test "een klaar-status rendert het rapport volledig ingeklapt" <|
@@ -270,7 +286,7 @@ updateTests =
                     (isMislukt
                         (Tuple.first
                             (update (StatusOntvangen (Ok StatusMislukt))
-                                { initieelModel | fase = Wachten (ScanId "abc123") Bezig }
+                                { initieelModel | fase = Wachten (ScanId "abc123") (Bezig 0) }
                             )
                         ).fase
                     )
@@ -279,7 +295,7 @@ updateTests =
                 Expect.equal (Mislukt "Deze shop beperkt tijdelijk onze metingen (te veel verzoeken kort na elkaar). Probeer het over een uur opnieuw.")
                     (Tuple.first
                         (update (StatusOntvangen (Ok StatusTijdelijkGeweigerd))
-                            { initieelModel | fase = Wachten (ScanId "abc123") Bezig }
+                            { initieelModel | fase = Wachten (ScanId "abc123") (Bezig 0) }
                         )
                     ).fase
         , test "opnieuw proberen keert terug naar de invoer" <|
@@ -316,7 +332,7 @@ modelMetRapport : Rapport -> Model
 modelMetRapport rapport =
     Tuple.first
         (update (StatusOntvangen (Ok (StatusKlaar rapport)))
-            { initieelModel | fase = Wachten (ScanId "abc123") Bezig }
+            { initieelModel | fase = Wachten (ScanId "abc123") (Bezig 0) }
         )
 
 

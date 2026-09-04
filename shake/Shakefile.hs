@@ -46,6 +46,8 @@ import PenguinTemplates (WebwinkelverhuisUrl(..), penguinIndexPage, penguinIndex
 import WebwinkelTemplates
   ( webwinkelIndexPage
   , prijzenPage
+  , offertePagina
+  , offerteVerzondenPagina
   , scanPage
   , vierNulVierPagina
   , webwinkelBlogIndexPage
@@ -468,11 +470,13 @@ maakGehashteWebwinkelAssets = do
   blogCss <- maakGehashteKopie "blog" "css"
   prijsCalculatorJs <- maakGehashteKopie "prijs-calculator" "js"
   scannerFormJs <- maakGehashteKopie "scanner-form" "js"
+  offerteFormJs <- maakGehashteKopie "offerte-form" "js"
   return GehashteAssets
     { gehashteStyleCss = styleCss
     , gehashteBlogCss = blogCss
     , gehashtePrijsCalculatorJs = prijsCalculatorJs
     , gehashteScannerFormJs = scannerFormJs
+    , gehashteOfferteFormJs = offerteFormJs
     }
 
 -- | Kopieer een asset uit _webwinkelverhuis-site naar zijn gehashte naam
@@ -593,6 +597,7 @@ buildPenguinSites webwinkelUrl = do
   copyWebwinkelStaticAssets
   buildPrijsCalculator
   buildScannerForm
+  buildOfferteForm
   gehashteAssets <- liftIO maakGehashteWebwinkelAssets
   liftIO $ generateWebwinkelverhuisSite webwinkelSiteConfig webwinkelArticles gehashteAssets
 
@@ -645,6 +650,10 @@ buildPrijsCalculator = buildWebwinkelElmApp "src/PrijsCalculator.elm" "prijs-cal
 -- | The /scan.html webshop scanner ("beoordeel mijn webshop").
 buildScannerForm :: Action ()
 buildScannerForm = buildWebwinkelElmApp "src/ScannerForm.elm" "scanner-form.js"
+
+-- | Het /offerte.html intakeformulier.
+buildOfferteForm :: Action ()
+buildOfferteForm = buildWebwinkelElmApp "src/OfferteForm.elm" "offerte-form.js"
 
 -- | Generate the jappiesoftware.com site into _penguin-site/
 generatePenguinSite :: WebwinkelverhuisUrl -> SiteConfig -> [Article] -> IO ()
@@ -718,6 +727,8 @@ generateWebwinkelverhuisSite config articles gehashteAssets = do
 
   -- Migration and explainer pages
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/prijzen.html" prijzenPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/offerte.html" offertePagina
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/offerte-verzonden.html" offerteVerzondenPagina
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/scan.html" scanPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage

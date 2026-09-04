@@ -275,10 +275,13 @@ type Fase
 
 
 {-| Wat de server over een lopende scan meldt: in de wachtrij (met positie,
-1 = als eerste aan de beurt) of daadwerkelijk aan het meten. -}
+1 = als eerste aan de beurt) of daadwerkelijk aan het meten. Bezig telt
+de peilingen sinds de meting loopt (om de drie seconden een), zodat de
+weergave verstreken tijd en een voortgangsbalk kan tonen; een minuut
+staren naar een statische regel voelt als een hang. -}
 type WachtStand
     = InWachtrij Int
-    | Bezig
+    | Bezig Int
 
 
 {-| Of een inklapbaar rapportdeel open- of dichtgeklapt staat. -}
@@ -528,7 +531,7 @@ update msg model =
                     )
 
         StartOntvangen (Ok scanId) ->
-            ( { model | fase = Wachten scanId Bezig }, peilStatus scanId )
+            ( { model | fase = Wachten scanId (Bezig 0) }, peilStatus scanId )
 
         StartOntvangen (Err melding) ->
             ( { model | fase = Mislukt melding }, gaEvent "scanner_mislukt" [] )
@@ -583,13 +586,13 @@ meer wachten (de bezoeker begon opnieuw) zijn achterhaald en veranderen niets. -
 verwerkStatus : Result String ScanStatus -> Model -> ( Model, Cmd Msg )
 verwerkStatus resultaat model =
     case model.fase of
-        Wachten scanId _ ->
+        Wachten scanId huidigeStand ->
             case resultaat of
                 Ok (StatusWachtrij positie) ->
                     ( { model | fase = Wachten scanId (InWachtrij positie) }, peilOverDrieSeconden )
 
                 Ok StatusBezig ->
-                    ( { model | fase = Wachten scanId Bezig }, peilOverDrieSeconden )
+                    ( { model | fase = Wachten scanId (volgendeBezigStand huidigeStand) }, peilOverDrieSeconden )
 
                 Ok StatusMislukt ->
                     ( { model | fase = Mislukt scanMisluktMelding }, gaEvent "scanner_mislukt" [] )
@@ -712,7 +715,7 @@ faseWeergave model =
             laadWeergave "We starten de scan."
 
         Wachten _ stand ->
-            laadWeergave (wachtTekst stand)
+            laadWeergaveMet (voortgangsBalk stand) (wachtTekst stand)
 
         Geslaagd rapport stand ->
             if rapport.platformHerkend then
@@ -769,12 +772,57 @@ invoerFoutMelding mFout =
 
 laadWeergave : String -> List (Html Msg)
 laadWeergave statusRegel =
+    laadWeergaveMet [] statusRegel
+
+
+{-| Laadweergave met extra elementen (de voortgangsbalk) tussen de
+statusregel en de hint. -}
+laadWeergaveMet : List (Html Msg) -> String -> List (Html Msg)
+laadWeergaveMet extraElementen statusRegel =
     [ div [ Attr.class "scanner-laden" ]
-        [ div [ Attr.class "scanner-spinner" ] []
-        , p [ Attr.class "scanner-status" ] [ text statusRegel ]
-        , p [ Attr.class "calc-hint" ] [ text "De meting duurt ongeveer een minuut. Laat deze pagina open." ]
-        ]
+        ([ div [ Attr.class "scanner-spinner" ] []
+         , p [ Attr.class "scanner-status" ] [ text statusRegel ]
+         ]
+            ++ extraElementen
+            ++ [ p [ Attr.class "calc-hint" ] [ text "De meting duurt ongeveer een minuut. Laat deze pagina open." ] ]
+        )
     ]
+
+
+{-| Voortgangsbalk zodra de meting echt loopt; in de wachtrij zegt een
+balk niets. -}
+voortgangsBalk : WachtStand -> List (Html Msg)
+voortgangsBalk stand =
+    case stand of
+        InWachtrij _ ->
+            []
+
+        Bezig peilingen ->
+            [ div [ Attr.class "scanner-voortgang" ]
+                [ div
+                    [ Attr.class "scanner-voortgang-balk"
+                    , Attr.style "width" (String.fromInt (voortgangsPercentage peilingen) ++ "%")
+                    ]
+                    []
+                ]
+            ]
+
+
+{-| De balk kruipt in ~75 seconden naar 95% en blijft daar hangen: een
+balk op 100% terwijl de meting nog loopt, liegt. -}
+voortgangsPercentage : Int -> Int
+voortgangsPercentage peilingen =
+    min 95 ((peilingen * 3 * 95) // 75)
+
+
+volgendeBezigStand : WachtStand -> WachtStand
+volgendeBezigStand stand =
+    case stand of
+        InWachtrij _ ->
+            Bezig 0
+
+        Bezig peilingen ->
+            Bezig (peilingen + 1)
 
 
 wachtTekst : WachtStand -> String
@@ -787,8 +835,22 @@ wachtTekst stand =
             else
                 "Je staat op plek " ++ String.fromInt positie ++ " in de wachtrij."
 
-        Bezig ->
-            "We meten je webshop."
+        Bezig peilingen ->
+            bezigTekst (peilingen * 3)
+
+
+{-| Statusregel tijdens het meten, met verstreken tijd zodra die iets
+zegt; na de beloofde minuut managet de tekst de verwachting bij. -}
+bezigTekst : Int -> String
+bezigTekst seconden =
+    if seconden < 6 then
+        "We meten je webshop."
+
+    else if seconden <= 60 then
+        "We meten je webshop, al " ++ String.fromInt seconden ++ " seconden bezig."
+
+    else
+        "Bijna klaar: grote pagina's meten duurt iets langer dan een minuut."
 
 
 {-| Melding wanneer de gescande shop onze meting tijdelijk weigert. -}

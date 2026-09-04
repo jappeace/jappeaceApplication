@@ -286,6 +286,7 @@ testGehashteAssets = GehashteAssets
   , gehashteBlogCss = "blog-bbbbbbbbbb.css"
   , gehashtePrijsCalculatorJs = "prijs-calculator-cccccccccc.js"
   , gehashteScannerFormJs = "scanner-form-dddddddddd.js"
+  , gehashteOfferteFormJs = "offerte-form-eeeeeeeeee.js"
   }
 
 -- | Elke logische assetverwijzing in een pagina moet naar zijn gehashte
@@ -296,6 +297,7 @@ assetVerwijzingenWordenHerschreven = testCase "logische namen worden gehashte na
         "<link href=\"/style.css\"><link href=\"/blog.css\">\
         \<script src=\"/prijs-calculator.js\"></script>\
         \<script src=\"/scanner-form.js\"></script>\
+        \<script src=\"/offerte-form.js\"></script>\
         \<img src=\"/assets/beeld/logo-breed.png\">"
       herschreven = herschrijfAssetVerwijzingen testGehashteAssets pagina
   assertBool "style.css is niet herschreven"
@@ -306,6 +308,8 @@ assetVerwijzingenWordenHerschreven = testCase "logische namen worden gehashte na
     (TL.pack "src=\"/prijs-calculator-cccccccccc.js\"" `TL.isInfixOf` herschreven)
   assertBool "scanner-form.js is niet herschreven"
     (TL.pack "src=\"/scanner-form-dddddddddd.js\"" `TL.isInfixOf` herschreven)
+  assertBool "offerte-form.js is niet herschreven"
+    (TL.pack "src=\"/offerte-form-eeeeeeeeee.js\"" `TL.isInfixOf` herschreven)
   assertBool "een niet-gehasht pad is aangeraakt"
     (TL.pack "src=\"/assets/beeld/logo-breed.png\"" `TL.isInfixOf` herschreven)
   assertBool "er verwijst nog een pagina naar de ongehashte stylesheet"

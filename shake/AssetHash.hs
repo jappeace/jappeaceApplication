@@ -25,6 +25,7 @@ data GehashteAssets = GehashteAssets
   , gehashteBlogCss :: Text
   , gehashtePrijsCalculatorJs :: Text
   , gehashteScannerFormJs :: Text
+  , gehashteOfferteFormJs :: Text
   }
 
 -- | De cache-bestendige bestandsnaam voor een asset: de basisnaam plus de
@@ -46,6 +47,7 @@ herschrijfAssetVerwijzingen gehashte =
   . vervangAsset "/blog.css" (gehashteBlogCss gehashte)
   . vervangAsset "/prijs-calculator.js" (gehashtePrijsCalculatorJs gehashte)
   . vervangAsset "/scanner-form.js" (gehashteScannerFormJs gehashte)
+  . vervangAsset "/offerte-form.js" (gehashteOfferteFormJs gehashte)
 
 vervangAsset :: Text -> Text -> TL.Text -> TL.Text
 vervangAsset logischeNaam gehashteNaam =
