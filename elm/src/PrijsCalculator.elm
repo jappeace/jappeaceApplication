@@ -1206,6 +1206,7 @@ groteCatalogusPaneel model =
             ]
         , input [ Attr.type_ "hidden", Attr.name "bericht", Attr.value (groteCatalogusBericht model) ] []
         , input [ Attr.type_ "hidden", Attr.name "shop", Attr.value model.webshopDomein ] []
+        , input [ Attr.type_ "hidden", Attr.name "soort", Attr.value "rekenhulp" ] []
         , input [ Attr.type_ "hidden", Attr.name "website", Attr.value "" ] []
         , button
             [ Attr.type_ "submit"
@@ -1330,6 +1331,7 @@ offerteFormulier model =
         [ contactVelden model
         , input [ Attr.type_ "hidden", Attr.name "bericht", Attr.value (offerteBody model) ] []
         , input [ Attr.type_ "hidden", Attr.name "shop", Attr.value model.webshopDomein ] []
+        , input [ Attr.type_ "hidden", Attr.name "soort", Attr.value "rekenhulp" ] []
         , input [ Attr.type_ "hidden", Attr.name "website", Attr.value "" ] []
         , offerteKnop model
         ]
