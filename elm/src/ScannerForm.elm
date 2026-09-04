@@ -979,11 +979,13 @@ scoreWeergave score =
         ]
 
 
+{-| Het procentteken maakt het cijfer onmiskenbaar een score en geen
+aantal ("81 praktische tips"-verwarring, Jappie 4 sep 2026). -}
 scoreTekst : Maybe Int -> String
 scoreTekst mScore =
     case mScore of
         Just getal ->
-            String.fromInt getal
+            String.fromInt getal ++ "%"
 
         Nothing ->
             "\u{2013}"
