@@ -9,6 +9,8 @@
 module WebwinkelTemplates
   ( webwinkelIndexPage
   , prijzenPage
+  , offertePagina
+  , offerteVerzondenPagina
   , scanPage
   , vierNulVierPagina
   , webwinkelBlogIndexPage
@@ -44,7 +46,6 @@ import PageChrome
   , customAttribute
   , ogLocale
   , resolveOgImage
-  , percentEncodeQuery
   , migratieBasisprijsEuro
   , meetLink
   , whatsappFloatingButton
@@ -116,37 +117,35 @@ webwinkelOrganizationJsonLd =
 webwinkelEmail :: Text
 webwinkelEmail = "jappie@webwinkelverhuis.nl"
 
--- | The "ask for a quote" mailto used by every call-to-action button. The body
--- is a gentle fill-in template: a blank mail box is intimidating, and these
--- prompts tell the merchant which details make for a good quote (mirroring the
--- calculator's questions) without forcing them through the calculator first.
-offerteMailto :: H.AttributeValue
-offerteMailto =
-  toValue
-    ( "mailto:" <> webwinkelEmail
-        <> "?subject=Migratie%20offerte&body="
-        <> percentEncodeQuery offerteBodyTemplate
-    )
+-- Decision: elke offerte-CTA wijst naar /offerte.html, het formulier
+-- dat naar POST /api/offerte stuurt, in plaats van de oude mailto
+-- (besluit Jappie 4 sep 2026). GA4 augustus: 2 offerte-mailto-kliks,
+-- nul ontvangen mails; mailto faalt geluidloos bij bezoekers zonder
+-- gekoppeld mailprogramma, en dat waren mogelijk de enige conversies
+-- van de maand. Het formulier kan niet stil falen: de server logt elke
+-- aanvraag durabel en mailt hem door (megavid
+-- WebshopScanner.OfferteAanvraag).
+offertePaginaLink :: H.AttributeValue
+offertePaginaLink = "/offerte.html"
 
--- | Fill-in template for a quote request from a plain CTA button (not the
--- calculator). Kept in sync by hand with the calculator's questions.
-offerteBodyTemplate :: Text
-offerteBodyTemplate =
-  "Hallo,\n\n"
-    <> "Ik wil graag een offerte voor het verhuizen van mijn webshop. "
-    <> "Om je een goede prijs te kunnen geven, alvast wat info (vul in wat je weet):\n\n"
+-- | Fill-in template that prefills the offerte-formulier's bericht-veld:
+-- a blank text box is intimidating, and these prompts tell the merchant
+-- which details make for a good quote (mirroring the calculator's
+-- questions) without forcing them through the calculator first.
+offerteBerichtTemplate :: Text
+offerteBerichtTemplate =
+  "Om je een goede prijs te kunnen geven, alvast wat info (vul in wat je weet):\n\n"
     <> "- Huidig platform (bijv. MijnWebwinkel, CCV Shop): \n"
     <> "- Gewenst platform (Shopify of WooCommerce): \n"
     <> "- Aantal producten (ongeveer): \n"
     <> "- Aantal talen: \n"
     <> "- Meenemen (klantaccounts, bestelgeschiedenis, nieuwsbrief, voorraad, reviews): \n"
     <> "- Domeinnaam of e-mail nog bij MijnWebwinkel?: \n"
-    <> "- Bijzonderheden (kassa/point-of-sale, zakelijke klanten, verzendkoppeling): \n\n"
-    <> "Met vriendelijke groet,"
+    <> "- Bijzonderheden (kassa/point-of-sale, zakelijke klanten, verzendkoppeling): \n"
 
 -- | Mailto for merchants whose migration is already running or done and who
 -- want follow-up work (mass edits, theme changes, integrations). The subject
--- differs from 'offerteMailto' so these mails are recognisable as
+-- names uitbreiding so these mails are recognisable as
 -- existing-client work rather than new leads.
 uitbreidingMailto :: H.AttributeValue
 uitbreidingMailto = toValue ("mailto:" <> webwinkelEmail <> "?subject=Uitbreiding%20webshop")
@@ -285,7 +284,7 @@ webwinkelTopNav =
       -- secundaire stijl (review Jappie, 8 aug 2026): hij staat op elke
       -- pagina en mag niet blijvend aandacht trekken; de groene primaire
       -- knop is voor de call-to-actions in de content.
-      H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Offerte"
+      H.a ! A.href offertePaginaLink ! A.class_ "cta-button-secondary" $ "Offerte"
 
 -- | Hamburger-icoon van de mobiele menuknop: twee lijnen, kleur volgt
 -- @currentColor@.
@@ -339,22 +338,24 @@ bandSpeelScript =
     <> "})();"
 
 -- | Track clicks on the call-to-action buttons in Google Analytics, so we see
--- the dropoff per acquisition path: the plain "vraag een offerte aan" mailto
--- buttons (offerte_mailto_klik) and the "plan een gesprek" meeting links
--- (gesprek_knop_klik). Skipped: the calculator's own button (.calc-offerte),
--- which Elm reports itself with richer params, and the footer contact-mail
--- (.footer-mail), which is general contact, not an offerte-CTA, so it would
--- pollute the button metric. Page views are collected by GA4 automatically, so
+-- the dropoff per acquisition path: the plain "vraag een offerte aan" links
+-- naar het offerteformulier (offerte_knop_klik; verving offerte_mailto_klik
+-- toen de mailto's op 4 sep 2026 sneuvelden) and the "plan een gesprek"
+-- meeting links (gesprek_knop_klik). Skipped: the calculator's own button
+-- (.calc-offerte), which Elm reports itself with richer params. De
+-- formulier-inzending zelf meet GA4's enhanced measurement als
+-- form_start/form_submit, en de server telt hem definitief in het
+-- offerte-logboek. Page views are collected by GA4 automatically, so
 -- the migration pages need no extra event here.
 ctaTrackScript :: Text
 ctaTrackScript =
   "document.addEventListener('DOMContentLoaded',function(){"
     <> "function track(sel,ev){document.querySelectorAll(sel).forEach(function(a){"
-    <> "if(a.classList.contains('calc-offerte')||a.classList.contains('footer-mail'))return;"
+    <> "if(a.classList.contains('calc-offerte'))return;"
     <> "a.addEventListener('click',function(){"
     <> "if(window.gtag){gtag('event',ev,{knop_tekst:(a.textContent||'').trim().slice(0,60)});}"
     <> "});});}"
-    <> "track('a[href^=\"mailto:\"]','offerte_mailto_klik');"
+    <> "track('a[href=\"/offerte.html\"]','offerte_knop_klik');"
     <> "track('a[href^=\"https://meet.jappiesoftware.com\"]','gesprek_knop_klik');"
     <> "});"
 
@@ -578,7 +579,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.p ! A.class_ "contact-intro" $ "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
           H.div ! A.class_ "contact-acties" $ do
             H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
-            H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Offerte per e-mail"
+            H.a ! A.href offertePaginaLink ! A.class_ "cta-button-secondary" $ "Vraag een offerte aan"
           H.p ! A.class_ "contact-direct" $ do
             "Liever direct? Mail "
             H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) $ toHtml webwinkelEmail
@@ -986,7 +987,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.h2 "Geldt deze prijs voor mij?"
       H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt je prijs vast. Wil je tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat je prijs zwart-op-wit."
       H.div ! A.class_ "cta-row" $ do
-        H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+        H.a ! A.href offertePaginaLink ! A.class_ "cta-button" $ "Vraag een offerte aan"
         H.a ! A.href meetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
 
     H.script ! A.src "/prijs-calculator.js" $ mempty
@@ -1001,6 +1002,76 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = mempty
+      }
+
+-- =============================================================================
+-- Offerteformulier (offerte.html) en bedankpagina (offerte-verzonden.html)
+-- =============================================================================
+
+-- | Het offerteformulier: een kaal HTML-formulier (geen JavaScript
+-- nodig) dat naar POST /api/offerte stuurt; de server logt de aanvraag
+-- durabel, mailt hem door en stuurt de browser met een 303 naar de
+-- bedankpagina. Het bericht-veld staat voorgevuld met dezelfde vragen
+-- die vroeger in de mailto-body stonden.
+offertePagina :: Html
+offertePagina = webwinkelBaseTemplate offerteMeta $
+  H.main $
+    H.section ! A.class_ "hero offerte-blok" $ do
+      H.h1 "Vraag een offerte aan"
+      H.p ! A.class_ "subtitle" $ "Vertel kort iets over je webshop en je ontvangt de offerte per e-mail. Vrijblijvend: je zit nergens aan vast en betaalt pas na een geslaagde migratie."
+      H.form ! A.class_ "offerte-formulier" ! A.action "/api/offerte" ! A.method "post" $ do
+        H.label ! A.class_ "calc-field" $ do
+          H.span ! A.class_ "calc-label" $ "Je e-mailadres (hierop ontvang je de offerte)"
+          H.input ! A.type_ "email" ! A.name "email" ! A.required "required" ! A.placeholder "naam@voorbeeld.nl"
+        H.label ! A.class_ "calc-field" $ do
+          H.span ! A.class_ "calc-label" $ "Je webshop (domeinnaam)"
+          H.input ! A.type_ "text" ! A.name "shop" ! A.placeholder "bijv. uwshop.nl"
+        H.label ! A.class_ "calc-field" $ do
+          H.span ! A.class_ "calc-label" $ "Je bericht"
+          H.textarea ! A.name "bericht" ! A.rows "10" $ toHtml offerteBerichtTemplate
+        -- Honeypot tegen bots: onzichtbaar voor mensen (CSS), en de
+        -- server behandelt een gevuld veld als spam.
+        H.div ! A.class_ "honeypot-veld" $ H.label $ do
+          H.span "Website"
+          H.input ! A.type_ "text" ! A.name "website" ! A.tabindex "-1" ! A.autocomplete "off"
+        H.button ! A.type_ "submit" ! A.class_ "cta-button" $ "Verstuur de aanvraag"
+      H.p ! A.class_ "calc-hint" $ do
+        "Liever eerst sparren? "
+        H.a ! A.href meetLink $ "Plan een gratis gesprek"
+        "."
+  where
+    offerteMeta :: PageMeta
+    offerteMeta = PageMeta
+      { pageMetaTitle       = "Offerte aanvragen \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Vraag vrijblijvend een offerte aan voor je webshop-migratie. Je ontvangt de offerte per e-mail en betaalt pas na een geslaagde migratie."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/offerte.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = mempty
+      }
+
+-- | Waar de 303 van POST /api/offerte op landt. noindex: een
+-- bevestigingspagina hoort niet in de zoekindex.
+offerteVerzondenPagina :: Html
+offerteVerzondenPagina = webwinkelBaseTemplate verzondenMeta $
+  H.main $
+    H.section ! A.class_ "hero offerte-blok" $ do
+      H.h1 "Aanvraag ontvangen"
+      H.p ! A.class_ "subtitle" $ "Je offerte-aanvraag is binnen. Je hoort van ons op het opgegeven e-mailadres."
+      H.div ! A.class_ "hero-knoppen" $ do
+        H.a ! A.href "/" ! A.class_ "cta-button-secondary" $ "Naar de homepagina"
+        H.a ! A.href meetLink ! A.class_ "cta-button" $ "Alvast een gesprek plannen"
+  where
+    verzondenMeta :: PageMeta
+    verzondenMeta = PageMeta
+      { pageMetaTitle       = "Aanvraag ontvangen \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Je offerte-aanvraag is ontvangen; je hoort van ons per e-mail."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/offerte-verzonden.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = H.meta ! A.name "robots" ! A.content "noindex, follow"
       }
 
 -- =============================================================================
@@ -2240,6 +2311,7 @@ webwinkelverhuisStaticPages :: [(Text, Day)]
 webwinkelverhuisStaticPages =
   [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 8 23)
+  , ("https://webwinkelverhuis.nl/offerte.html", fromGregorian 2026 9 4)
   , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 9 2)
   , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 9 2)
@@ -2369,7 +2441,7 @@ contactPage = webwinkelBaseTemplate contactMeta $
     H.section ! A.class_ "cta-section" $ do
       H.h2 "Benieuwd wat je webshop zou kosten?"
       H.p "Vraag vrijblijvend een offerte aan; je betaalt pas na een geslaagde migratie."
-      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href offertePaginaLink ! A.class_ "cta-button" $ "Vraag een offerte aan"
   where
     contactMeta :: PageMeta
     contactMeta = PageMeta

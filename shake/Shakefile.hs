@@ -46,6 +46,8 @@ import PenguinTemplates (WebwinkelverhuisUrl(..), penguinIndexPage, penguinIndex
 import WebwinkelTemplates
   ( webwinkelIndexPage
   , prijzenPage
+  , offertePagina
+  , offerteVerzondenPagina
   , scanPage
   , vierNulVierPagina
   , webwinkelBlogIndexPage
@@ -718,6 +720,8 @@ generateWebwinkelverhuisSite config articles gehashteAssets = do
 
   -- Migration and explainer pages
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/prijzen.html" prijzenPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/offerte.html" offertePagina
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/offerte-verzonden.html" offerteVerzondenPagina
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/scan.html" scanPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage
