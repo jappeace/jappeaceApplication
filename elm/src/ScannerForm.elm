@@ -24,6 +24,7 @@ port module ScannerForm exposing
     , scanStatusDecoder
     , topVerbeterpunten
     , update
+    , urlVoorop
     , view
     )
 
@@ -1027,9 +1028,70 @@ puntWeergave platformNaam punt =
             ]
         , small [ Attr.class "scanner-punt-categorie" ] [ text punt.categorie ]
         , meetwaardeWeergave punt.meetwaarde
-        , p [ Attr.class "scanner-punt-waarom" ] [ text punt.waarom ]
+        , p [ Attr.class "scanner-punt-waarom" ] (tekstMetLinks punt.waarom)
         , zelfDoenWeergave punt.zelfDoen
         ]
+
+
+{-| Render een servertekst met kale https-URLs als klikbare links
+(nieuw tabblad), zodat een waarom-tekst naar bijvoorbeeld
+https://schema.org/Product kan verwijzen zonder dat de server HTML
+hoeft te sturen. Leestekens direct achter de URL (haakje, punt, komma)
+horen bij de zin, niet bij de link. -}
+tekstMetLinks : String -> List (Html Msg)
+tekstMetLinks tekst =
+    case String.indexes "https://" tekst of
+        [] ->
+            [ text tekst ]
+
+        eerste :: _ ->
+            let
+                voor =
+                    String.left eerste tekst
+
+                rest =
+                    String.dropLeft eerste tekst
+
+                url =
+                    urlVoorop rest
+
+                erna =
+                    String.dropLeft (String.length url) rest
+            in
+            text voor
+                :: a [ Attr.href url, Attr.target "_blank", Attr.rel "noopener" ] [ text url ]
+                :: tekstMetLinks erna
+
+
+{-| Het URL-deel vooraan een tekst die met https:// begint: tot de
+eerste witruimte of het eerste zin-leesteken, en zonder een punt aan
+het eind ("...schema.org/Product." hoort de punt bij de zin). -}
+urlVoorop : String -> String
+urlVoorop rest =
+    zonderSlotpunt (String.fromList (takeWhileUrlTeken (String.toList rest)))
+
+
+takeWhileUrlTeken : List Char -> List Char
+takeWhileUrlTeken tekens =
+    case tekens of
+        [] ->
+            []
+
+        teken :: erna ->
+            if List.member teken [ ' ', '\n', '\t', ')', '(', ',', ';', '"' ] then
+                []
+
+            else
+                teken :: takeWhileUrlTeken erna
+
+
+zonderSlotpunt : String -> String
+zonderSlotpunt url =
+    if String.endsWith "." url then
+        String.dropRight 1 url
+
+    else
+        url
 
 
 {-| De zelf-doen-tip, alleen aanwezig wanneer de server zeker is
@@ -1040,7 +1102,7 @@ zelfDoenWeergave mTip =
     case mTip of
         Just tip ->
             p [ Attr.class "scanner-punt-tip" ]
-                [ strong [] [ text "Tip: " ], text tip ]
+                (strong [] [ text "Tip: " ] :: tekstMetLinks tip)
 
         Nothing ->
             text ""
