@@ -33,6 +33,7 @@ import ScannerForm
         , restVerbeterpunten
         , scanStatusDecoder
         , topVerbeterpunten
+        , urlVoorop
         , update
         , verbeterpuntDecoder
         , view
@@ -298,6 +299,14 @@ updateTests =
                             { initieelModel | fase = Wachten (ScanId "abc123") (Bezig 0) }
                         )
                     ).fase
+        , test "urlVoorop: haakje en zinsdelen horen niet bij de link" <|
+            \_ ->
+                Expect.equal "https://schema.org/Product"
+                    (urlVoorop "https://schema.org/Product) toont Google geen prijs")
+        , test "urlVoorop: een slotpunt hoort bij de zin, niet bij de link" <|
+            \_ ->
+                Expect.equal "https://squoosh.app"
+                    (urlVoorop "https://squoosh.app. Vervang daarna de foto's")
         , test "opnieuw proberen keert terug naar de invoer" <|
             \_ ->
                 Expect.equal (Invoeren Nothing)
