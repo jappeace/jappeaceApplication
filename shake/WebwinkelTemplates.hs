@@ -754,10 +754,10 @@ waaromPuntRij punt = H.div $ do
   H.dt (toHtml (waaromPuntTitel punt))
   H.dd (toHtml (waaromPuntTekst punt))
 
--- | The shared "Recent werk" proof section: the Panzer-ShopNL and
--- Kruidje Roer Me Niet migrations, each linking to the case-study blog
--- post and the live shop. Shown on the index page and the MijnWebwinkel
--- migration page.
+-- | The shared "Recent werk" proof section: the Panzer-ShopNL, Kruidje
+-- Roer Me Niet and Mini Gigant migrations, each linking to the
+-- case-study blog post and the live shop. Shown on the index page and
+-- the MijnWebwinkel migration page.
 recentWerkSection :: Html
 recentWerkSection =
   H.section ! A.class_ "case-sectie" $ do
@@ -800,6 +800,23 @@ recentWerkSection =
     H.div ! A.class_ "case-links" $ do
       H.a ! A.href "/blog/klantverhaal-kruidje-roer-me-niet-van-mijnwebwinkel-naar-shopify-met-spaarpunten-en-al.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
       H.a ! A.href "https://kruidje-roer-me-niet.nl/" $ H.preEscapedToHtml ("kruidje-roer-me-niet.nl &rarr;" :: Text)
+    H.div ! A.class_ "case-cijfers" $ do
+      H.div $ do
+        H.div ! A.class_ "cijfer" $ "17 jaar"
+        H.div ! A.class_ "label" $ "webshop-historie"
+      H.div $ do
+        H.div ! A.class_ "cijfer" $ "1.305"
+        H.div ! A.class_ "label" $ "oude adressen behouden"
+      H.div $ do
+        H.div ! A.class_ "cijfer" $ "3 dagen"
+        H.div ! A.class_ "label" $ "voor de deadline live"
+    H.div ! A.class_ "case-tekst" $
+      H.p $ do
+        H.strong "Mini Gigant"
+        H.preEscapedToHtml (": een speelgoedwinkel uit Marum (sinds 2009) waarvan shop, domein &eacute;n mailbox bij MijnWebwinkel stonden, drie dagen voor het einde van dat account verhuisd naar Shopify. Inclusief domeinoverdracht zonder onderbreking en zeventien jaar mailgeschiedenis." :: Text)
+    H.div ! A.class_ "case-links" $ do
+      H.a ! A.href "/blog/klantverhaal-mini-gigant-van-mijnwebwinkel-naar-shopify-drie-dagen-voor-de-deadline.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
+      H.a ! A.href "https://minigigant.nl/" $ H.preEscapedToHtml ("minigigant.nl &rarr;" :: Text)
 
 appPage :: Html
 appPage = webwinkelBaseTemplate appMeta $ do
