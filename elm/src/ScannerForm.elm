@@ -975,29 +975,17 @@ scoreWeergave : Score -> Html Msg
 scoreWeergave score =
     div [ Attr.class ("scanner-score " ++ scoreKlasse score.score) ]
         [ span [ Attr.class "scanner-score-getal" ] [ text (scoreTekst score.score) ]
-        , schaalWeergave score.score
         , span [ Attr.class "scanner-score-label" ] [ text score.label ]
         ]
 
 
-{-| "/100" achter het getal, zodat niemand de score als een aantal
-leest ("81 praktische tips"-verwarring, Jappie 4 sep 2026); zonder
-score is er ook geen schaal. -}
-schaalWeergave : Maybe Int -> Html Msg
-schaalWeergave mScore =
-    case mScore of
-        Just _ ->
-            span [ Attr.class "scanner-score-schaal" ] [ text "/100" ]
-
-        Nothing ->
-            text ""
-
-
+{-| Het procentteken maakt het cijfer onmiskenbaar een score en geen
+aantal ("81 praktische tips"-verwarring, Jappie 4 sep 2026). -}
 scoreTekst : Maybe Int -> String
 scoreTekst mScore =
     case mScore of
         Just getal ->
-            String.fromInt getal
+            String.fromInt getal ++ "%"
 
         Nothing ->
             "\u{2013}"

@@ -799,12 +799,10 @@ main { display: flex; flex-direction: column; }
   box-shadow: 0 6px 18px rgba(11, 46, 80, 0.05);
 }
 .scanner-score-getal { font-family: var(--kop); font-weight: 750; font-size: 1.9rem; line-height: 1.1; }
-/* de schaal maakt het cijfer onmiskenbaar een score en geen aantal
-   ("81 praktische tips"-verwarring); markup: schaalWeergave in
-   elm/src/ScannerForm.elm. Het label op een eigen regel haalt ook het
-   oude vastgeplakte "58Prestaties" uit elkaar. */
-.scanner-score-schaal { color: var(--grijs); font-size: 1rem; font-weight: 650; margin-left: 0.1rem; }
-.scanner-score-label { display: block; color: var(--grijs); font-size: 0.92rem; }
+/* het label op een eigen regel haalt het oude vastgeplakte
+   "58Prestaties" uit elkaar; het procentteken zit in scoreTekst
+   (elm/src/ScannerForm.elm) */
+.scanner-score-label { display: block; margin-top: 0.25rem; color: var(--grijs); font-size: 0.92rem; }
 .scanner-score-goed .scanner-score-getal { color: var(--groen-tekst); }
 .scanner-score-matig .scanner-score-getal { color: #9a6b00; }
 .scanner-score-slecht .scanner-score-getal { color: #a4262c; }
