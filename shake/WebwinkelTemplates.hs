@@ -432,7 +432,7 @@ prijzen = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
     H.p ! A.class_ "prijs" $ do
       H.preEscapedToHtml ("vanaf &euro;" <> migratieBasisprijsEuro <> " ")
       H.small "eenmalig"
-    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("Inclusief 1.000 producten: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects." :: Text)
+    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("Inclusief 500 producten: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects." :: Text)
     H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Grotere catalogi, extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
     H.hr
     H.p ! A.class_ "abonnement" $ do
@@ -905,10 +905,10 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.h2 "De migratie"
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
-          H.td "Basismigratie: 1.000 producten inbegrepen"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1.999" :: Text)
+          H.td "Basismigratie: 500 producten inbegrepen"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1.499" :: Text)
         H.tr $ do
-          H.td "Extra producten boven die 1.000: de eerste duizend (elk product telt per taal \233\233n keer mee)"
+          H.td "Extra producten boven die 500: de eerste duizend (elk product telt per taal \233\233n keer mee)"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
         H.tr $ do
           H.td "De duizend daarna"
@@ -995,7 +995,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
     prijzenMeta :: PageMeta
     prijzenMeta = PageMeta
       { pageMetaTitle       = "Prijzen \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Vaste prijzen voor je webshop-migratie naar Shopify: vanaf \8364\&1.999 inclusief 1.000 producten. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
+      , pageMetaDescription = "Vaste prijzen voor je webshop-migratie naar Shopify: vanaf \8364\&1.499 inclusief 500 producten. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/prijzen.html"
       , pageMetaOgImage     = Nothing
