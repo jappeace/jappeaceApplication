@@ -20,6 +20,7 @@ module WebwinkelTemplates
   , ccvshopMigrationPage
   , lightspeedMigrationPage
   , magentoMigrationPage
+  , zilvercmsMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
   , overOnsPage
@@ -239,6 +240,7 @@ webwinkelBaseWith ogType includeFeed meta content =
             H.li $ H.a ! A.href "/migrate-lightspeed.html" $ "Lightspeed"
             H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
             H.li $ H.a ! A.href "/migrate-magento.html" $ "Magento"
+            H.li $ H.a ! A.href "/migrate-zilvercms.html" $ "ZilverCMS"
             H.li $ H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) ! A.class_ "footer-mail" $ toHtml webwinkelEmail
             H.li $ H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
             H.li $ H.a ! A.href "/blog/" $ "Blog"
@@ -1930,6 +1932,130 @@ magentoFaq =
 -- MijnWebwinkel "Waarom wordt het verwaarloosd?" article page
 -- =============================================================================
 
+
+-- | De ZilverCMS-migratiepagina. Gegrond in jappiesoft
+-- research/zilvercms-migratie.org (4 sep 2026): het platform is
+-- feitelijk verlaten (leverancier opgegaan in een marketingbureau,
+-- merkdomeinen verlopen en herbezet, platform-CDN offline), maar de
+-- pagina stelt alleen de verifieerbare feiten en vermijdt
+-- "failliet"/"gestopt". Aanleiding: de onbediende GSC-zoekvraag
+-- "zilvercms migratie shopify".
+zilvercmsMigrationPage :: Html
+zilvercmsMigrationPage = webwinkelBaseTemplate zilvercmsMeta $
+  H.main $ do
+    H.section ! A.class_ "hero" $
+      H.div ! A.class_ "hero-grid" $ do
+        H.div $ do
+          H.h1 "Migreren van ZilverCMS naar Shopify"
+          H.p ! A.class_ "subtitle" $ "Om ZilverCMS is het stil geworden: de productpagina's zijn verdwenen en de oude platform-domeinen zijn verlopen. Je webshop verdient een platform dat onderhouden wordt. Wij zetten je complete shop geautomatiseerd over, zonder dataverlies en zonder medewerking van het oude platform nodig te hebben; je betaalt pas na een succesvolle migratie."
+          H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
+        H.img ! A.class_ "hero-image"
+              ! A.src "/illustratie-ontsnappen.svg"
+              ! A.alt "Illustratie van dozen die een bevroren webshop verlaten richting een zonnige nieuwe winkel"
+              ! A.width "400" ! A.height "300"
+
+    H.section ! A.class_ "for-who" ! A.id "what" $ do
+      H.h2 "Wat we migreren"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
+                ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
+          H.h3 "Producten & varianten"
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, artikelnummers en varianten, automatisch overgezet naar je nieuwe platform."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Boomstructuur van categorieen" ! A.width "56" ! A.height "56"
+          H.h3 "Categorie\235n & pagina's"
+          H.p "Je categoriestructuur, informatiepagina's en teksten verhuizen mee, zodat je shop direct compleet aanvoelt."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
+                ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
+          H.h3 "Klanten & orderhistorie"
+          H.p "Klantaccounts en bestelgeschiedenis zetten we over, zodat je klanten direct verder kunnen en oude bestellingen terug te vinden blijven."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
+          H.h3 "SEO-redirects"
+          H.p "301-redirects van elke oude URL naar de nieuwe, zodat je backlinks blijven werken en je opgebouwde positie in Google meeverhuist."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
+                ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
+          H.h3 "Meerdere talen"
+          H.p "Vertalingen worden correct gekoppeld; je klanten blijven je shop in hun eigen taal zien."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
+                ! A.alt "Stapel dozen" ! A.width "56" ! A.height "56"
+          H.h3 "Voorraad"
+          H.p "Voorraadaantallen zetten we vlak voor de livegang live over, zodat ze in je nieuwe shop direct kloppen."
+
+    H.section ! A.class_ "about" ! A.id "urgentie" $ do
+      H.h2 "Hoe dringend is het echt?"
+      H.p "We gaan je niet bang maken; je shop draait vandaag. Maar de feiten rond het platform zijn ongemakkelijk: de productpagina's van ZilverCMS bestaan niet meer, de oude platform-domeinen zijn verlopen en door derden overgenomen, en de maker profileert zich tegenwoordig als online-marketingbureau. Een webshop leunt elke dag op updates, beveiliging en infrastructuur; als een platform stilvalt, merk je dat pas op het slechtste moment."
+      H.p $ do
+        "Wil je weten waar jouw shop staat? "
+        H.a ! A.href "/scan.html" $ "Laat hem gratis doormeten"
+        "."
+
+    hoeHetWerktSectie
+      [ HoeHetWerktStap "Scan" "Ons programma leest je draaiende shop zelf volledig uit: producten, categorie\235n, teksten en URL's. We hebben daarvoor geen medewerking van het oude platform nodig; dat je shop nog bereikbaar is, is genoeg."
+      , HoeHetWerktStap "Wennen" "De nieuwe shop bouwen we op naast je huidige, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
+      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk."
+      ]
+
+    prijzen
+
+    waaromViaOnsSectie
+      (WaaromBeeld "/assets/beeld/stock-productfoto-raam.jpg"
+        "Webshop-eigenaar fotografeert bij het raam een pakket voor haar webshop"
+        "1200" "1800")
+      (H.div ! A.class_ "testimonials" $
+        H.blockquote $
+          H.p "Bij een platform waar de leverancier van is weggevallen kun je niet wachten op exports of support. Ons programma heeft die niet nodig: het leest je draaiende shop zelf uit en legt daarbij elke oude URL vast, zodat je opgebouwde SEO meeverhuist in plaats van te verdampen.")
+      [ WaaromPunt "Geen risico" "Je betaalt pas na een succesvolle migratie."
+      , WaaromPunt "Geen medewerking nodig" "We lezen je draaiende shop zelf uit; het oude platform hoeft nergens aan mee te werken."
+      , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken."
+      , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
+      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product."
+      , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
+      ]
+
+    H.section ! A.class_ "about" $ do
+      H.h2 "Veelgestelde vragen"
+      H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible zilvercmsFaq
+
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Klaar voor de overstap?"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
+      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+  where
+    zilvercmsMeta :: PageMeta
+    zilvercmsMeta = PageMeta
+      { pageMetaTitle       = "Migreren van ZilverCMS naar Shopify \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Geautomatiseerde migratie van ZilverCMS naar Shopify of WooCommerce: producten, klanten, teksten en SEO-redirects, zonder medewerking van het oude platform. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-zilvercms.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = faqPageJsonLd zilvercmsFaq <> serviceJsonLd
+          "ZilverCMS naar Shopify migratie"
+          "Geautomatiseerde migratie van ZilverCMS naar Shopify of WooCommerce: producten, klanten, teksten en SEO-redirects, zonder medewerking van het oude platform."
+          "https://webwinkelverhuis.nl/migrate-zilvercms.html"
+      }
+
+zilvercmsFaq :: [(FaqQuestion, FaqAnswer)]
+zilvercmsFaq =
+  [ ( "Is ZilverCMS gestopt?"
+    , faqAnswerText "Dat kunnen we niet met zekerheid zeggen, en dat is precies het probleem. Wat we wel kunnen vaststellen: de productpagina's van ZilverCMS zijn verdwenen, de oude platform-domeinen zijn verlopen en door derden overgenomen, en de oorspronkelijke maker presenteert zich tegenwoordig als online-marketingbureau. Voor een webshop die dagelijks op updates en beveiliging leunt is die onzekerheid zelf de reden om te verhuizen." )
+  , ( "Kan ik mijn data nog wel uit ZilverCMS krijgen?"
+    , faqAnswerText "Daar heb je ons voor: wij hebben geen exportfunctie of medewerking van het platform nodig. Ons programma leest je draaiende shop zelf volledig uit; producten, categorie\235n, teksten, afbeeldingen en alle URL's. Zolang je shop bereikbaar is, kunnen we hem compleet overzetten." )
+  , ( "Moet het per se Shopify worden?"
+    , faqAnswerText "Nee. Shopify is onze standaard omdat het onderhoudsarm is, maar WooCommerce of een ander platform kan ook; die migratie doen we net zo geautomatiseerd. We adviseren vrijblijvend wat bij jouw shop past." )
+  , ( "Hoe lang duurt een migratie?"
+    , faqAnswerText "Het technische overzetten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, betaalmethoden, en rustig wennen aan je nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang; je bent geen dag dicht." )
+  , ( "Wat kost het?"
+    , faqAnswerText ("Een vaste prijs vanaf " <> migratieBasisprijsEuro <> " euro, afhankelijk van het aantal producten en talen; de rekenhulp op onze prijzenpagina rekent het voor. Je betaalt pas na een geslaagde migratie." ) )
+  ]
+
 mijnwebwinkelWaaromPage :: Html
 mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
   H.main $ do
@@ -2325,6 +2451,7 @@ webwinkelverhuisStaticPages =
   , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 9 2)
   , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 9 2)
   , ("https://webwinkelverhuis.nl/migrate-magento.html", fromGregorian 2026 9 2)
+  , ("https://webwinkelverhuis.nl/migrate-zilvercms.html", fromGregorian 2026 9 4)
   , ("https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/over-ons.html", fromGregorian 2026 8 8)
