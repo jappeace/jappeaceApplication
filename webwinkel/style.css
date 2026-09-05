@@ -406,13 +406,13 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
 .audit-grid p + p, .audit-grid .testimonials + p, .audit-grid p + .waarom-rijen { margin-top: 0.9rem; }
 .proces-beeld img {
   width: 100%; aspect-ratio: 3 / 2; object-fit: cover;
-  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.13);
+  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.3);
 }
 /* Staande portretfoto naast een tekstkolom (over-ons). */
 .portret-beeld img {
   width: min(100%, 22rem); aspect-ratio: 4 / 5; object-fit: cover;
   margin-inline: auto;
-  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.13);
+  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.3);
 }
 
 /* Elke genummerde lijst in een sectie krijgt de stappen-look: cirkels met
@@ -615,7 +615,7 @@ main > section ul li strong { font-family: var(--kop); color: var(--navy-diep); 
 .contact-direct a { font-weight: 600; white-space: nowrap; }
 .contact-beeld img {
   width: 100%; aspect-ratio: 3 / 2; object-fit: cover;
-  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.13);
+  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.3);
 }
 
 /* ---------- footer ---------- */
