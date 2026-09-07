@@ -9,7 +9,7 @@ geblokkeerde verzendpoging op True te staan.
 
 import Expect
 import Json.Encode as Encode
-import PrijsCalculator exposing (Msg(..), formulierGeldig, initieelModel, invoerEventParams, totaalCenten, update)
+import PrijsCalculator exposing (Msg(..), formulierGeldig, initieelModel, invoerEventParams, offerteEventParams, totaalCenten, update)
 import Test exposing (Test, describe, test)
 
 
@@ -90,6 +90,12 @@ suite =
                 Expect.equal []
                     (List.filter herleidbaarVeld
                         (List.map Tuple.first (invoerEventParams ingevuldFormulierModel))
+                    )
+        , test "ook het offerte-event draagt nooit naam, domein of e-mail" <|
+            \_ ->
+                Expect.equal []
+                    (List.filter herleidbaarVeld
+                        (List.map Tuple.first (offerteEventParams ingevuldFormulierModel))
                     )
         ]
 

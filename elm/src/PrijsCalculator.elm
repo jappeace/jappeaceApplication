@@ -14,6 +14,7 @@ port module PrijsCalculator exposing
     , initieelModel
     , invoerEventParams
     , isGroteCatalogus
+    , offerteEventParams
     , leesBron
     , leesDoel
     , main
@@ -517,12 +518,20 @@ herkend; "bron" en "doel" zijn custom parameters die in GA4 als custom dimension
 geregistreerd moeten worden voordat je erop kunt uitsplitsen. -}
 offerteAangevraagdEvent : Model -> Cmd Msg
 offerteAangevraagdEvent model =
-    gaEvent "offerte_aangevraagd"
-        [ ( "value", Encode.int (totaalCenten model // 100) )
-        , ( "currency", Encode.string "EUR" )
-        , ( "bron", Encode.string (bronOmschrijving model.bron) )
-        , ( "doel", Encode.string (doelOmschrijving model.doel) )
-        ]
+    gaEvent "offerte_aangevraagd" (offerteEventParams model)
+
+
+{-| De parameters van het offerte-event, als pure functie zodat dezelfde
+herleidbaarheidstest als bij invoerEventParams geldt: naam, webshopdomein en
+e-mailadres uit het formulier gaan nooit mee naar GA4 (zie de Decision in
+shake/WebwinkelTemplates.hs). -}
+offerteEventParams : Model -> List ( String, Encode.Value )
+offerteEventParams model =
+    [ ( "value", Encode.int (totaalCenten model // 100) )
+    , ( "currency", Encode.string "EUR" )
+    , ( "bron", Encode.string (bronOmschrijving model.bron) )
+    , ( "doel", Encode.string (doelOmschrijving model.doel) )
+    ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
