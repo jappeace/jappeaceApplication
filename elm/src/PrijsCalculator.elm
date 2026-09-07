@@ -12,6 +12,7 @@ port module PrijsCalculator exposing
     , doelOmschrijving
     , formulierGeldig
     , initieelModel
+    , invoerEventParams
     , isGroteCatalogus
     , leesBron
     , leesDoel
@@ -479,6 +480,37 @@ markeerEngagement model =
         ( { model | analyticsEngaged = True }, gaEvent "calculator_engaged" [] )
 
 
+{-| De parameters van het rollende "calculator_invoer"-event: de actuele
+invoer en richtprijs, zodat een sessie in GA4 laat zien wat een bezoeker
+invulde en waar die op uitkwam (issue megavid#244). Pure functie zodat de
+test kan vaststellen wat er meegaat, en vooral wat er nooit meegaat: naam,
+webshopdomein en e-mailadres blijven eruit, die maken de meting herleidbaar
+tot een persoon en dan vervalt de grond onder de bannerloze GA4-opzet (zie
+de Decision in shake/WebwinkelTemplates.hs). -}
+invoerEventParams : Model -> List ( String, Encode.Value )
+invoerEventParams model =
+    [ ( "value", Encode.int (totaalCenten model // 100) )
+    , ( "currency", Encode.string "EUR" )
+    , ( "producten", Encode.int (aantalProducten model) )
+    , ( "talen", Encode.int (aantalTalen model) )
+    , ( "bron", Encode.string (bronOmschrijving model.bron) )
+    , ( "doel", Encode.string (doelOmschrijving model.doel) )
+    ]
+
+
+{-| Rollend event bij elke prijsbepalende wijziging, bovenop de eenmalige
+engagement-markering. GA4's sessielimieten kunnen dit makkelijk hebben: een
+bezoeker die uitgebreid speelt komt op tientallen events, niet honderden. -}
+markeerInvoer : Model -> ( Model, Cmd Msg )
+markeerInvoer model =
+    metRollendeInvoer (markeerEngagement model)
+
+
+metRollendeInvoer : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+metRollendeInvoer ( model, cmd ) =
+    ( model, Cmd.batch [ cmd, gaEvent "calculator_invoer" (invoerEventParams model) ] )
+
+
 {-| Conversie-event met de richtprijs en de gekozen platforms. "value" en
 "currency" zijn GA4's gereserveerde geldparameters, dus de waarde wordt native
 herkend; "bron" en "doel" zijn custom parameters die in GA4 als custom dimension
@@ -497,52 +529,52 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ProductenGewijzigd waarde ->
-            meldGroteCatalogus (markeerEngagement { model | productenInvoer = waarde })
+            meldGroteCatalogus (markeerInvoer { model | productenInvoer = waarde })
 
         TalenGewijzigd waarde ->
-            meldGroteCatalogus (markeerEngagement { model | talenInvoer = waarde })
+            meldGroteCatalogus (markeerInvoer { model | talenInvoer = waarde })
 
         BronGewijzigd waarde ->
-            markeerEngagement { model | bron = leesBron waarde }
+            markeerInvoer { model | bron = leesBron waarde }
 
         DoelGewijzigd waarde ->
-            markeerEngagement { model | doel = leesDoel waarde }
+            markeerInvoer { model | doel = leesDoel waarde }
 
         ThemaGewijzigd waarde ->
-            markeerEngagement { model | thema = leesThema waarde }
+            markeerInvoer { model | thema = leesThema waarde }
 
         KlantaccountsGewijzigd aan ->
-            markeerEngagement { model | klantaccounts = aan }
+            markeerInvoer { model | klantaccounts = aan }
 
         OrderhistorieGewijzigd aan ->
-            markeerEngagement { model | orderhistorie = aan }
+            markeerInvoer { model | orderhistorie = aan }
 
         NieuwsbriefGewijzigd aan ->
-            markeerEngagement { model | nieuwsbrief = aan }
+            markeerInvoer { model | nieuwsbrief = aan }
 
         VoorraadGewijzigd aan ->
-            markeerEngagement { model | voorraad = aan }
+            markeerInvoer { model | voorraad = aan }
 
         ReviewsGewijzigd aan ->
-            markeerEngagement { model | reviews = aan }
+            markeerInvoer { model | reviews = aan }
 
         CursusGewijzigd aan ->
-            markeerEngagement { model | cursus = aan }
+            markeerInvoer { model | cursus = aan }
 
         DomeinGewijzigd aan ->
-            markeerEngagement { model | domeinBijMijnwebwinkel = aan }
+            markeerInvoer { model | domeinBijMijnwebwinkel = aan }
 
         EmailGewijzigd aan ->
-            markeerEngagement { model | emailBijMijnwebwinkel = aan }
+            markeerInvoer { model | emailBijMijnwebwinkel = aan }
 
         VerzendkoppelingGewijzigd aan ->
-            markeerEngagement { model | verzendkoppeling = aan }
+            markeerInvoer { model | verzendkoppeling = aan }
 
         B2bKanaalGewijzigd aan ->
-            markeerEngagement { model | b2bKanaal = aan }
+            markeerInvoer { model | b2bKanaal = aan }
 
         PointOfSaleGewijzigd aan ->
-            markeerEngagement { model | pointOfSale = aan }
+            markeerInvoer { model | pointOfSale = aan }
 
         NaamGewijzigd waarde ->
             markeerEngagement { model | naam = waarde }

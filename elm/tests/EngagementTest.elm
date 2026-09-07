@@ -8,7 +8,8 @@ geblokkeerde verzendpoging op True te staan.
 -}
 
 import Expect
-import PrijsCalculator exposing (Msg(..), formulierGeldig, initieelModel, update)
+import Json.Encode as Encode
+import PrijsCalculator exposing (Msg(..), formulierGeldig, initieelModel, invoerEventParams, totaalCenten, update)
 import Test exposing (Test, describe, test)
 
 
@@ -69,4 +70,44 @@ suite =
                             { initieelModel | groteCatalogusGemeld = True }
                         )
                     ).groteCatalogusGemeld
+        , test "het rollende invoer-event volgt de actuele invoer en richtprijs" <|
+            \_ ->
+                Expect.equal
+                    (Encode.encode 0
+                        (Encode.object
+                            [ ( "value", Encode.int (totaalCenten rollendVoorbeeldModel // 100) )
+                            , ( "currency", Encode.string "EUR" )
+                            , ( "producten", Encode.int 2500 )
+                            , ( "talen", Encode.int 3 )
+                            , ( "bron", Encode.string "CCV Shop" )
+                            , ( "doel", Encode.string "Shopify" )
+                            ]
+                        )
+                    )
+                    (Encode.encode 0 (Encode.object (invoerEventParams rollendVoorbeeldModel)))
+        , test "het rollende invoer-event draagt nooit naam, domein of e-mail (herleidbaarheid)" <|
+            \_ ->
+                Expect.equal []
+                    (List.filter herleidbaarVeld
+                        (List.map Tuple.first (invoerEventParams ingevuldFormulierModel))
+                    )
         ]
+
+
+{-| Een model waarin de bezoeker heeft gespeeld: 2.500 producten, 3 talen,
+vanaf CCV. -}
+rollendVoorbeeldModel : PrijsCalculator.Model
+rollendVoorbeeldModel =
+    { initieelModel | productenInvoer = "2500", talenInvoer = "3", bron = PrijsCalculator.BronCcvShop }
+
+
+{-| Een model met ingevuld offerteformulier: precies de velden die nooit in
+analytics mogen belanden. -}
+ingevuldFormulierModel : PrijsCalculator.Model
+ingevuldFormulierModel =
+    { initieelModel | naam = "Jan", webshopDomein = "uwshop.nl", emailInvoer = "jan@uwshop.nl" }
+
+
+herleidbaarVeld : String -> Bool
+herleidbaarVeld naam =
+    List.member naam [ "naam", "domein", "webshopDomein", "email", "emailInvoer" ]
