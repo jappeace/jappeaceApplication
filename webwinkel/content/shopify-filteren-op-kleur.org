@@ -24,10 +24,11 @@ langs en zet overal handmatig een tag of metafield. Wie dat probeert
 bij een serieuze catalogus merkt snel waarom het zelden af komt: bij
 duizend producten met varianten praat je over dagen werk, het moet
 bij elk nieuw product opnieuw, en één tikfout betekent een kleur die
-stilletjes uit je filter valt. De betaalde filter-apps (vanaf zo'n
-29 dollar per maand, oplopend met je omzet) lossen dit niet op: die
-tonen wat jij aanlevert, en groeperen hooguit waarden die je eerst
-zelf hebt ingevoerd.
+stilletjes uit je filter valt. De filter-apps lossen dit niet op,
+gratis noch betaald (abonnementen lopen van zo'n 19 tot ruim 150
+dollar per maand, vaak gestaffeld op je omzet): die tonen wat jij
+aanlevert, en groeperen hooguit waarden die je eerst zelf hebt
+ingevoerd.
 
 * Wat wij doen: je bestaande data eenmalig goed zetten
 
