@@ -1,0 +1,107 @@
+#+TITLE: Filteren op kleur in je Shopify-shop, zonder alles handmatig te taggen
+#+DATE: 2026-09-10
+#+CATEGORY: shopify
+#+TAGS: shopify, filters, kleuren, metafields
+
+Je Shopify-shop heeft honderden producten, maar je bezoekers kunnen
+niet op kleur filteren. Of erger: het filter staat aan en toont een
+onbruikbare waslijst ("Olive", "Mint", "Cobalt Blue-Marble", "3.
+Lemon & Olive") in plaats van een handjevol nette kleuren met
+bolletjes. Dat ligt niet aan je filter-app en niet aan je thema. Het
+ligt aan je productdata, en dat is eenmalig te repareren zonder dat
+jij weken zit te taggen.
+
+* Waarom je kleurfilter niets toont (of rommel)
+
+Shopify kan uitstekend filteren, maar alleen op gestructureerde
+gegevens: metafields met vaste waarden. In de meeste shops zit de
+kleur echter verstopt in vrije tekst: in producttitels ("Merino Wool
+Scarf Blue Jeans-Melange") en in variantnamen ("6. Poppy & Blush").
+Voor een bezoeker is dat leesbaar, voor een filter is het ruis.
+
+Het standaardadvies op de Shopify-fora is dan: loop al je producten
+langs en zet overal handmatig een tag of metafield. Wie dat probeert
+bij een serieuze catalogus merkt snel waarom het zelden af komt: bij
+duizend producten met varianten praat je over dagen werk, het moet
+bij elk nieuw product opnieuw, en één tikfout betekent een kleur die
+stilletjes uit je filter valt. De betaalde filter-apps (vanaf zo'n
+29 dollar per maand, oplopend met je omzet) lossen dit niet op: die
+tonen wat jij aanlevert, en groeperen hooguit waarden die je eerst
+zelf hebt ingevoerd.
+
+* Wat wij doen: je bestaande data eenmalig goed zetten
+
+Wij draaien het om. In plaats van jou te laten taggen, lezen wij de
+kleuren die al in je shop zitten. Ons programma haalt ze uit je
+titels en variantnamen, normaliseert de tientallen tinten naar een
+klein rijtje filterbare kleuren (olive, mint en emerald worden
+samen "Green"; blush en rose worden "Pink"), en schrijft dat als
+gestructureerde data terug in je shop: kleurobjecten met echte
+kleurcodes, gekoppeld aan elk product én aan elke afzonderlijke
+variant.
+
+Dat laatste maakt meer los dan alleen een filter:
+
+- Je krijgt een kleurenfilter met bolletjes in de zijkant van je
+  collectiepagina's, in de kleuren van je eigen assortiment.
+- Productfoto's springen mee met de gekozen kleur: filtert je
+  bezoeker op rood, dan toont een armband die in tien kleuren
+  bestaat zijn rode uitvoering in het overzicht, niet de
+  standaardfoto.
+- Het werkt met Shopify's eigen gratis Search & Discovery-app, dus
+  een filter-abonnement is niet nodig; heb je er al één, dan kan
+  die eruit.
+- De data staat in je shop zelf en verhuist gewoon mee bij een
+  themawissel.
+
+Bij een sieradenwebshop die wij onlangs overzetten stond dit binnen
+een dag: 276 producten, kleuren verstopt in namen als "B: Cobalt
+Blue-Marble", en nu een filter met veertien kleurbolletjes waarvan
+de foto's meebewegen. De winkelier hoefde er zelf niets voor te
+taggen.
+
+* Voor wie dit is
+
+Voor Shopify-shops met een flinke catalogus: vanaf een paar honderd
+producten wordt handmatig taggen onaantrekkelijk, vanaf duizend is
+het onbegonnen werk. En kleur is het begin: hetzelfde principe werkt
+voor materiaal, maat of stijl, als die informatie ergens in je
+teksten zit.
+
+Benieuwd wat er uit jouw catalogus te halen valt?
+[[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]]
+of mail naar [[mailto:hallo@jappiesoftware.com][hallo@jappiesoftware.com]];
+we kijken samen naar je data en zeggen het ook eerlijk als je
+assortiment zich er niet voor leent.
+
+* Veelgestelde vragen
+
+*Moet ik mijn producten of teksten aanpassen?*
+
+Nee. We werken met de titels en variantnamen die je al hebt; daar
+blijven we ook af. De kleurdata komt er als aparte, gestructureerde
+laag naast te staan.
+
+*Wat als een kleur verkeerd wordt herkend?*
+
+De vertaaltabel van tint naar kleurgroep is per shop bij te sturen:
+een correctie is één regel aanpassen en opnieuw draaien, geen
+handwerk per product.
+
+*Werkt dit met mijn thema en mijn filter-app?*
+
+De data volgt Shopify's eigen standaard (metaobjecten en
+metafields), dus elk actueel thema en elke filter-app die de
+filter-API spreekt kan ermee overweg, inclusief de gratis Search &
+Discovery-app van Shopify zelf.
+
+*Werkt het ook voor nieuwe producten die ik later toevoeg?*
+
+Ja, de doorloop is herhaalbaar: nieuwe producten kunnen periodiek of
+op afroep dezelfde behandeling krijgen.
+
+#+BEGIN_EXPORT html
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Moet ik mijn producten of teksten aanpassen?","acceptedAnswer":{"@type":"Answer","text":"Nee. We werken met de titels en variantnamen die je al hebt; daar blijven we ook af. De kleurdata komt er als aparte, gestructureerde laag naast te staan."}},{"@type":"Question","name":"Wat als een kleur verkeerd wordt herkend?","acceptedAnswer":{"@type":"Answer","text":"De vertaaltabel van tint naar kleurgroep is per shop bij te sturen: een correctie is één regel aanpassen en opnieuw draaien, geen handwerk per product."}},{"@type":"Question","name":"Werkt dit met mijn thema en mijn filter-app?","acceptedAnswer":{"@type":"Answer","text":"De data volgt Shopify's eigen standaard (metaobjecten en metafields), dus elk actueel thema en elke filter-app die de filter-API spreekt kan ermee overweg, inclusief de gratis Search & Discovery-app van Shopify zelf."}},{"@type":"Question","name":"Werkt het ook voor nieuwe producten die ik later toevoeg?","acceptedAnswer":{"@type":"Answer","text":"Ja, de doorloop is herhaalbaar: nieuwe producten kunnen periodiek of op afroep dezelfde behandeling krijgen."}}]}
+</script>
+#+END_EXPORT
