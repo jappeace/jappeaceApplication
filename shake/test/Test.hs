@@ -20,7 +20,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
 import Data.Time (UTCTime(..), fromGregorian)
 import Test.Tasty (TestTree, defaultMain, testGroup)
-import Test.Tasty.HUnit (assertBool, testCase)
+import Test.Tasty.HUnit (assertBool, testCase, (@?=))
 import Text.Blaze.Html (Html)
 import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Text.Blaze.Html5 ((!))
@@ -31,9 +31,9 @@ import ArticleSummary (summarize, truncateHtml)
 import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Data.Char (isHexDigit)
 import qualified Data.ByteString.Char8 as BSC
-import PageChrome (faqAnswerHtml, faqPageJsonLd, renderFaqItem)
+import PageChrome (faqAnswerHtml, faqPageJsonLd, humanDateForLang, renderFaqItem)
 import Templates (renderTagPage, renderIndexPage)
-import Types (Article(..), PaginationInfo(..), defaultSiteConfig)
+import Types (Article(..), Lang(..), PaginationInfo(..), defaultSiteConfig)
 import PenguinTemplates
   ( WebwinkelverhuisUrl(..)
   , penguinIndexPage
@@ -196,6 +196,10 @@ main = defaultMain $
         [ taxonomieKrijgtNoindexIndexNiet
         , vierNulVierNoindexEnBuitenSitemap
         ]
+    , testGroup "artikeldatums volgen de paginataal"
+        [ nederlandseDatumZonderVoorloopnul
+        , engelseDatumBlijftEngels
+        ]
     , testGroup "article summaries stay inert teasers"
         [ summaryDropsScriptBlocks
         , summaryDropsStyleBlocks
@@ -204,6 +208,21 @@ main = defaultMain $
         , withoutAuthorSummaryContentIsTruncated
         ]
     ]
+
+-- | De artikeldatum op webwinkelverhuis.nl rendert in het Nederlands:
+-- vertaalde maandnaam, dagnummer zonder voorloopnul, geen komma. De twee
+-- datums dekken samen de maandtabel-volgorde (maart en september), de
+-- %-e-notatie (dag 1) en het formaatpatroon.
+nederlandseDatumZonderVoorloopnul :: TestTree
+nederlandseDatumZonderVoorloopnul = testCase "Nl rendert 10 september 2026 en 1 maart 2026" $ do
+  humanDateForLang Nl (UTCTime (fromGregorian 2026 9 10) 0) @?= "10 september 2026"
+  humanDateForLang Nl (UTCTime (fromGregorian 2026 3 1) 0) @?= "1 maart 2026"
+
+-- | jappiesoftware.com deelt 'renderBlogSummary' met de webwinkel-blog en
+-- moet zijn Engelse datumnotatie houden.
+engelseDatumBlijftEngels :: TestTree
+engelseDatumBlijftEngels = testCase "En rendert May 15, 2026" $
+  humanDateForLang En (UTCTime (fromGregorian 2026 5 15) 0) @?= "May 15, 2026"
 
 -- | Summaries are embedded many-per-page on the index; an inline script that
 -- survives into a summary executes there. Both coin-flip posts mount into the

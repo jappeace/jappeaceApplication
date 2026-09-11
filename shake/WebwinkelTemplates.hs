@@ -38,7 +38,7 @@ import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
-import Types (SiteConfig(..), Article(..), PaginationInfo(..), articleLastmod)
+import Types (SiteConfig(..), Article(..), Lang(..), PaginationInfo(..), articleLastmod)
 import PageChrome
   ( PageMeta(..)
   , defaultPageMeta
@@ -59,7 +59,7 @@ import PageChrome
   , renderFaqItemCollapsible
   , faqPageJsonLd
   , formatIsoDate
-  , formatHumanDate
+  , formatDutchHumanDate
   , articleMetaDescription
   , renderBlogSummary
   , renderPagination
@@ -2363,7 +2363,7 @@ webwinkelBlogIndexPage _config articles pagination =
   webwinkelBlogBaseTemplate blogIndexMeta $
     H.main ! A.class_ "blog-listing" $ do
       H.h1 "Blog"
-      mapM_ renderBlogSummary articles
+      mapM_ (renderBlogSummary Nl) articles
       renderPagination pagination
   where
     blogIndexMeta :: PageMeta
@@ -2390,7 +2390,7 @@ webwinkelArticlePage _config article =
           H.h1 $ toHtml (articleTitle article)
           H.p ! A.class_ "post-meta" $ do
             H.time ! customAttribute "datetime" (formatIsoDate (articleDate article)) $
-              toHtml (formatHumanDate (articleDate article))
+              toHtml (formatDutchHumanDate (articleDate article))
             case articleTags article of
               [] -> mempty
               tagList -> do

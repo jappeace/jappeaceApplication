@@ -31,6 +31,8 @@ module PageChrome
   , jsonLdString
   , formatIsoDate
   , formatHumanDate
+  , formatDutchHumanDate
+  , humanDateForLang
   , stripHtmlTags
   , articleMetaDescription
   , renderBlogSummary
@@ -43,14 +45,14 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
-import Data.Time (UTCTime, formatTime, defaultTimeLocale)
+import Data.Time (UTCTime, formatTime, defaultTimeLocale, TimeLocale(..))
 import Network.HTTP.Types.URI (urlEncode)
 import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
-import Types (Article(..), PaginationInfo(..))
+import Types (Article(..), Lang(..), PaginationInfo(..))
 
 -- | Convert 'Text' to a blaze attribute value.
 toValue :: Text -> H.AttributeValue
@@ -333,16 +335,17 @@ escapeJsonLdChar c    = T.singleton c
 
 -- | One article summary in a paginated blog index. Both brand blogs
 -- (jappiesoftware.com and webwinkelverhuis.nl) live under @/blog/@, so the
--- link path is fixed here rather than threaded through from the SiteConfig.
-renderBlogSummary :: Article -> Html
-renderBlogSummary article =
+-- link path is fixed here rather than threaded through from the SiteConfig;
+-- the 'Lang' picks the human-readable date rendering.
+renderBlogSummary :: Lang -> Article -> Html
+renderBlogSummary lang article =
   H.article ! A.class_ "post-summary" $ do
     H.h2 $
       H.a ! A.href (toValue ("/blog/" <> articleUrl article)) $
         toHtml (articleTitle article)
     H.p ! A.class_ "post-meta" $ do
       H.time ! customAttribute "datetime" (formatIsoDate (articleDate article)) $
-        toHtml (formatHumanDate (articleDate article))
+        toHtml (humanDateForLang lang (articleDate article))
       case articleTags article of
         [] -> mempty
         tagList -> do
@@ -372,6 +375,28 @@ formatIsoDate = T.pack . formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%SZ"
 
 formatHumanDate :: UTCTime -> Text
 formatHumanDate = T.pack . formatTime defaultTimeLocale "%B %e, %Y"
+
+-- | Dutch-language article date ("10 september 2026"), for the Dutch-only
+-- pages of webwinkelverhuis.nl.
+formatDutchHumanDate :: UTCTime -> Text
+formatDutchHumanDate = T.pack . formatTime dutchTimeLocale "%-e %B %Y"
+
+-- | 'defaultTimeLocale' with translated month names; only the fields that
+-- @"%-e %B %Y"@ reads are relevant, the day names stay English.
+dutchTimeLocale :: TimeLocale
+dutchTimeLocale = defaultTimeLocale
+  { months =
+      [ ("januari", "jan"), ("februari", "feb"), ("maart", "mrt")
+      , ("april", "apr"), ("mei", "mei"), ("juni", "jun")
+      , ("juli", "jul"), ("augustus", "aug"), ("september", "sep")
+      , ("oktober", "okt"), ("november", "nov"), ("december", "dec")
+      ]
+  }
+
+-- | Pick the article-date rendering matching the page language.
+humanDateForLang :: Lang -> UTCTime -> Text
+humanDateForLang En = formatHumanDate
+humanDateForLang Nl = formatDutchHumanDate
 
 -- | Strip HTML tags from text for use in meta descriptions.
 stripHtmlTags :: Text -> Text

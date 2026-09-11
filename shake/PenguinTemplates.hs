@@ -691,7 +691,7 @@ penguinBlogIndexPage _config articles pagination =
   penguinBlogBaseTemplate En blogIndexMeta $
     H.main ! A.class_ "blog-listing" $ do
       H.h1 "Blog"
-      mapM_ renderBlogSummary articles
+      mapM_ (renderBlogSummary En) articles
       renderPagination pagination
   where
     blogIndexMeta :: PageMeta
