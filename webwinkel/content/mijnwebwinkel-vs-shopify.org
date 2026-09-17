@@ -3,6 +3,7 @@
 #+MODIFIED: 2026-08-08
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, shopify, vergelijking
+#+SUMMARY: MijnWebwinkel vs Shopify, vergeleken door migratiespecialisten: prijzen, functies, kassa en SEO, en wat de overstap naar Shopify in de praktijk betekent.
 
 Twijfel je tussen MijnWebwinkel en Shopify, of overweeg je de
 overstap? Wij migreren webshops voor de kost en zien beide platformen

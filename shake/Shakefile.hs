@@ -41,7 +41,7 @@ import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 import ArticleSummary (summarize)
 import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Feed (generateAtomFeed)
-import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
+import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft, resolveSlug)
 import PenguinTemplates (WebwinkelverhuisUrl(..), penguinIndexPage, penguinIndexPageNl, penguinWordpressPage, penguinWordpressPageNl, penguinBlogIndexPage, penguinArticlePage)
 import WebwinkelTemplates
   ( webwinkelIndexPage
@@ -65,7 +65,6 @@ import WebwinkelTemplates
   , relativizeWebwinkelContentImages
   , webwinkelverhuisSitemap
   )
-import Slug (toSlug)
 import Templates
   ( renderArticlePage
   , renderPagePage
@@ -354,7 +353,7 @@ parseContentFile contentDir (path, ext) = do
     then return (Left "draft")
     else do
       let title = fromMaybe (T.pack (takeBaseName path)) (Map.lookup "title" meta)
-          slug = toSlug title
+          slug = resolveSlug meta title
           category = fromMaybe "misc" (Map.lookup "category" meta)
           mDate = Map.lookup "date" meta >>= parseDateField
           mModified = Map.lookup "modified" meta >>= parseDateField
