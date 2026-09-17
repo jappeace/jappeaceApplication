@@ -1,0 +1,199 @@
+#+TITLE: Van Lightspeed naar Shopify Plus voor B2B? Meestal heb je Plus niet nodig
+#+DATE: 2026-09-17
+#+CATEGORY: migratie
+#+TAGS: lightspeed, shopify, b2b, shopify plus
+
+Wie met een Lightspeed-webshop ook aan bedrijven levert en naar
+Shopify kijkt, zoekt vaak meteen op "Shopify Plus". Logisch: tot dit
+voorjaar was Plus het enige Shopify-abonnement met echte zakelijke
+functies, en Plus begint bij 2.100 euro per maand. Dat is voor de
+meeste winkeliers reden om de overstap maar te laten zitten. Sinds
+2 april 2026 klopt dat beeld niet meer. In dit artikel zetten we op
+een rij wat er veranderd is, wanneer je Plus nog wél nodig hebt, en
+hoe wij dit de afgelopen weken bij twee webshops hebben opgezet,
+een daarvan als proefopstelling.
+
+* Wat Shopify op 2 april 2026 heeft veranderd
+
+Shopify schrijft in zijn eigen
+[[https://changelog.shopify.com/posts/key-b2b-features-now-available-on-non-plus-plans][changelog van 2 april 2026]]
+dat webshops op Basic, Grow en Advanced voortaan zonder meerkosten
+zakelijk kunnen verkopen met de ingebouwde B2B-functies:
+
+- Bedrijfsprofielen: een zakelijke klant is een bedrijf met een of
+  meer vestigingen en contactpersonen, met btw-nummer op het
+  account.
+- Maximaal drie actieve B2B-prijslijsten (Shopify noemt ze
+  catalogi), toegewezen via Markets.
+- Staffelprijzen per product, dus goedkoper bij grotere aantallen.
+- Betaaltermijnen, dus op rekening bestellen en later betalen.
+
+Wat Plus-exclusief blijft, staat er in dezelfde alinea bij: een
+onbeperkt aantal prijslijsten voor klantspecifieke prijzen,
+prijslijsten rechtstreeks aan een bedrijf of vestiging hangen,
+deelbetalingen en aanbetalingen.
+
+De prijzen op dit moment (Shopify-prijzenpagina, 16 september
+2026, exclusief btw): Basic 28 euro per maand, Grow 78 euro,
+Advanced 384 euro, en Plus vanaf 2.100 euro per maand op contract.
+Bij jaarbetaling zijn de eerste drie 21, 59 en 289 euro per maand.
+
+Ter vergelijking: bij Lightspeed C-Series zit de B2B-module volgens
+[[https://ecom-support.lightspeedhq.com/hc/en-us/articles/115005022748][de eigen documentatie]]
+alleen in het Professional-pakket, 298 euro per maand (259 euro bij
+jaarbetaling, prijspeil 16 september 2026). Die module biedt
+inloggen na goedkeuring, prijzen exclusief btw en kortingen per
+klantgroep. Een Lightspeed-winkelier die daarvoor betaalt, kan
+dezelfde dingen op Shopify Grow voor 78 euro krijgen.
+
+* Wanneer je Plus wél nodig hebt
+
+De grens zit bij drie prijslijsten. Heb je een consumentenprijs en
+een of twee zakelijke prijsniveaus (bijvoorbeeld "winkels" en
+"groothandel"), dan past dat op een gewoon abonnement. Wil je voor
+elke zakelijke klant een eigen prijsafspraak, dan bots je op die
+limiet en is Plus, of een aparte B2B-app, de route.
+
+Drie andere redenen die we in gesprekken horen:
+
+- Aanbetalingen of betalen in delen: alleen op Plus.
+- Een prijslijst rechtstreeks aan één bedrijf koppelen in plaats
+  van via een markt: alleen op Plus.
+- Volume. Plus rekent lagere transactiekosten per betaling, wat
+  bij een groot ordervolume kan opwegen tegen het abonnement.
+
+Twijfel je? De vraag die alles bepaalt is: krijgen al je zakelijke
+klanten dezelfde inkoopprijzen, of verschilt de prijs per klant?
+Dezelfde prijzen betekent een gewoon abonnement. Prijs per klant
+betekent Plus of een app. Die vraag stellen wij als eerste in elke
+B2B-intake.
+
+* Hoe dat er in de praktijk uitziet
+
+De ingebouwde B2B-functies komen leeg uit de doos. Het werk zit in
+het inrichten, en dat hebben we de afgelopen weken bij twee
+webshops gedaan.
+
+** Een merk dat aan zestig winkels levert
+
+Een sieradenmerk verkoopt aan consumenten en daarnaast aan ruim
+zestig winkels in Nederland, België, Duitsland, Oostenrijk en
+Noorwegen. Op het oude platform ging dat met kortingscodes. Op de
+nieuwe Shopify-shop staan al die winkels nu als bedrijf met eigen
+inlog, btw-nummer en een prijslijst met 45 procent korting op de
+consumentenprijs. Consument en winkel kopen in dezelfde shop; de
+winkel ziet na het inloggen de eigen inkoopprijs op elke
+productpagina.
+
+Onderweg leerden we iets dat niet in de brochure staat. De
+buitenlandse winkels kopen met verlegde btw, dus zonder btw op de
+factuur. Shopify haalt dan de btw niet uit een prijs die inclusief
+btw is ingesteld: een vrijgestelde koper betaalt gewoon het
+vermelde bedrag. Eén prijslijst van 45 procent korting was daardoor
+voor een Belgische winkel netto 21 procent duurder dan voor een
+Nederlandse. De oplossing was een tweede prijslijst voor de
+vrijgestelde winkels met een hoger kortingspercentage, zodat elke
+winkel netto hetzelfde betaalt. Twee prijslijsten, ruim binnen de
+limiet van drie, en geen Plus nodig. Hoe je de btw voor je
+buitenlandse afnemers wilt regelen blijft een vraag voor je
+boekhouder; wat het platform met een ingestelde prijs doet, is wat
+wij testen.
+
+** Eén shop met twee gezichten
+
+Een groothandel in elektromateriaal heeft een consumentenmerk en
+een merk voor installateurs, elk op een eigen domein, en wil één
+voorraad. Op een gewoon Shopify-abonnement hebben we dat op een
+testshop als één shop met twee uitstralingen opgezet: beide
+domeinen wijzen naar dezelfde winkel, het thema wisselt logo en
+kleuren per domein, en een installateur ziet na het inloggen zijn
+zakelijke prijs per product. In die proefopstelling toonde
+hetzelfde product 100 euro voor een bezoeker en 80 euro voor een
+ingelogde installateur. Eén abonnement van 78 euro per maand in
+plaats van twee winkels plus een voorraadkoppeling.
+
+* Wat dit betekent als je van Lightspeed komt
+
+Lightspeed kent klantgroepen met een kortingspercentage. Elke
+klantgroep wordt op Shopify een prijslijst; tot drie groepen pas je
+dus in een gewoon abonnement. Je zakelijke klanten verhuizen mee
+als bedrijf met vestiging en contactpersoon. Wachtwoorden gaan
+nooit mee (Shopify accepteert om veiligheidsredenen geen
+wachtwoorden van andere platformen), maar de zakelijke inlog van
+Shopify werkt sowieso met een code per e-mail, dus je klanten
+hoeven niets opnieuw in te stellen. De rest van de verhuizing,
+producten, matrix-artikelen, voorraad, klanten en redirects, staat
+op onze
+[[https://webwinkelverhuis.nl/migrate-lightspeed.html][Lightspeed-migratiepagina]].
+
+En kom je erachter dat je toch Plus nodig hebt? Voor de migratie
+zelf maakt het geen verschil: dezelfde aanpak, dezelfde controles.
+Dat is precies waarom je dit vooraf wilt weten en niet achteraf.
+
+* Voor de techneuten
+
+De inrichting hierboven loopt bij ons via de Admin API, niet met de
+hand. Bedrijven, vestigingen, catalogi en prijslijsten hebben
+allemaal een mutatie in de GraphQL Admin API. Bij zestig winkels
+maken we de bedrijven aan vanuit een spreadsheet van de klant, met
+per vestiging de btw-vrijstelling, en de prijslijst als
+percentage-korting over het hele assortiment. Het script is
+herdraaibaar: bestaande bedrijven worden herkend en niet dubbel
+aangemaakt.
+
+Eén les die we sindsdien als vaste regel hanteren: voordat je in
+bulk records met echte e-mailadressen aanmaakt, laad je er eerst
+één met een adres van jezelf en kijk je in die inbox. Het aanmaken
+van een bedrijf stuurt geen mail, een uitnodiging wel, en dat wil
+je weten vóór er zestig winkeliers een bericht krijgen van een shop
+die nog niet af is.
+
+Op een gewoon abonnement gaat de toewijzing van een prijslijst
+volgens de documentatie via een B2B-markt; rechtstreeks koppelen
+aan een bedrijf of vestiging is Plus. In onze tests was de API daar
+niet consequent in: op de ene shop werd een directe toewijzing
+geweigerd, op een andere niet-Plus-shop werkte hij. Wij bouwen
+daarom op de gedocumenteerde route via de markt, zodat de
+inrichting niet afhangt van gedrag dat Shopify morgen kan
+rechttrekken.
+
+* Veelgestelde vragen
+
+*Moet ik van Lightspeed naar Shopify Plus als ik aan bedrijven
+verkoop?*
+
+Meestal niet. Sinds 2 april 2026 zitten bedrijfsprofielen, tot
+drie prijslijsten, staffelprijzen en betaaltermijnen in Basic,
+Grow en Advanced. Plus is nodig bij een eigen prijs per klant,
+aanbetalingen of deelbetalingen.
+
+*Wat kost Shopify voor een B2B-webshop zonder Plus?*
+
+Basic kost 28 euro per maand, Grow 78 euro en Advanced 384 euro
+(prijspeil 16 september 2026, exclusief btw, goedkoper bij
+jaarbetaling). Grow is voor de meeste zakelijke shops het startpunt
+vanwege de extra medewerkersaccounts.
+
+*Kunnen consumenten en bedrijven in dezelfde shop kopen?*
+
+Ja. Een zakelijke klant logt in en ziet zijn eigen prijzen; een
+bezoeker zonder inlog ziet de consumentenprijs. Bestellingen lopen
+door dezelfde checkout.
+
+*Verhuizen mijn zakelijke klanten mee vanuit Lightspeed?*
+
+Ja, als bedrijf met vestiging, contactpersoon en btw-nummer.
+Wachtwoorden gaan niet mee; de zakelijke inlog van Shopify werkt
+met een code per e-mail.
+
+*Wat als ik meer dan drie prijsniveaus heb?*
+
+Dan is Shopify Plus de weg, of een B2B-app die prijzen per klant
+regelt. Welke van de twee past hangt af van je volume; dat
+rekenen we vrijblijvend voor je door.
+
+Verkoop je op Lightspeed aan bedrijven en wil je weten of een gewoon
+Shopify-abonnement volstaat?
+[[https://webwinkelverhuis.nl/offerte.html][Vraag een vrijblijvende doorrekening aan]]
+of
+[[https://meet.jappiesoftware.com][plan een gesprek]].
