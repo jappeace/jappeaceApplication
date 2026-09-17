@@ -1,0 +1,109 @@
+#+TITLE: Klantverhaal: Mini Gigant van MijnWebwinkel naar Shopify, drie dagen voor de deadline
+#+DATE: 2026-09-01
+#+CATEGORY: migratie
+#+TAGS: mijnwebwinkel, shopify, klantverhaal
+
+Mini Gigant in Marum verkoopt sinds 2009 speelgoed, puzzels,
+kaarsen, mokken en een eigen Marius van Dokkum-lijn. Zeventien jaar
+webshop-historie, en alles daarvan, de shop, het domein én de
+mailbox, stond bij MijnWebwinkel. Eind augustus 2026 verhuisde de
+winkel naar Shopify, drie dagen voordat dat oude account met alles
+erop en eraan zou verdwijnen. Dit is het verhaal van die migratie,
+inclusief de hobbels, want die waren er ook.
+
+* Alles bij één partij
+
+Sako, de eigenaar van Mini Gigant, wilde al langer weg bij
+MijnWebwinkel. De planning was ontspannen: livegang eind september,
+ruim voor de Sinterklaas- en kerstpiek die voor een speelgoedwinkel
+het hele jaar draagt.
+
+Toen bevestigde MijnWebwinkel wat het einde van zijn jaarabonnement
+op 3 september precies betekende: niet alleen de shop stopt, ook de
+domeinhosting en de mailbox verdwijnen die dag. En de mail draaide
+uitsluitend in de webclient van het platform, dus zonder actie zou
+zeventien jaar aan bestellingen, leverancierscontact en
+klantcorrespondentie onherroepelijk weg zijn.
+
+Dat is de keerzijde van alles-bij-één-partij: wie vertrekt, of van
+wie het abonnement afloopt, moet shop, domein én mail tegelijk
+loskrijgen. De hele planning schoof drie weken naar voren.
+
+* Wat er allemaal mee moest
+
+- ruim 500 producten met teksten, prijzen, foto's en SEO-velden
+  (Sako greep de verhuizing meteen aan om zijn assortiment op te
+  schonen)
+- de categorie-indeling als Shopify-collecties
+- de informatiepagina's
+- de WebwinkelKeur-beoordelingen
+- het domein, weg bij de platform-registrar
+- de mailbox, inclusief de volledige geschiedenis
+- en de doorverwijzingen van alle oude adressen, zodat zeventien
+  jaar vindbaarheid in Google blijft staan
+
+* Het domein losmaken zonder de winkel te raken
+
+Het domein stond bij de registrar achter MijnWebwinkel. Zomaar
+verhuizen kan betekenen dat de draaiende shop en de mail dagen
+onbereikbaar zijn, en dat risico hoort niet bij een winkel die
+gewoon doorverkoopt.
+
+Daarom is de verhuizing in stappen gedaan, elk afzonderlijk
+terug te draaien. Eerst is bij de nieuwe partij een kopie van alle
+DNS-instellingen klaargezet, zodat het domein na de overdracht
+naar precies dezelfde plekken bleef wijzen. De registrar-overdracht
+zelf was daarna binnen minuten rond, zonder waarneembare
+onderbreking: de oude shop draaide gewoon door alsof er niets
+gebeurd was. Een week later ging op dezelfde manier de mail om,
+en pas op de laatste dag de winkel zelf.
+
+* Zeventien jaar mail gered
+
+Voor de mailbox is een nieuwe zakelijke mailbox bij de nieuwe
+domeinpartij opgezet en de bezorging omgezet, met een testmail als
+bewijs vooraf. Daarna is de volledige oude mailbox via IMAP
+overgezet, bericht voor bericht, mappen en al. Sako mailt nu vanaf
+hetzelfde adres als altijd, met zijn hele archief binnen
+handbereik, terwijl de oude bus rustig mag verdwijnen.
+
+* De overstap zelf
+
+Op maandagavond 31 augustus belde Sako nog even, en ging de knop
+om. Binnen een uur stond minigigant.nl met een geldig certificaat
+op de nieuwe shop.
+
+Helemaal zonder verrassing ging dat niet, en dit is de hobbel van
+deze migratie: in dat uur stond de nieuwe DNS overal al goed,
+maar bleef het oude platform het verkeer nog even naar zich toe
+trekken via een routeringslaag die beide platforms delen. Meten
+hielp hier meer dan turen naar dashboards: het beheerscherm
+meldde zelfs al "verbonden" toen er nog niets verbonden was. We
+hebben het uur uitgemeten, de oorzaak vastgelegd en de les in ons
+draaiboek gezet voor elke volgende winkel die zijn DNS bij
+MijnWebwinkel heeft.
+
+Na de omzetting controleerde ons programma alle 1.305 oude
+adressen stuk voor stuk op de live winkel: elk daarvan komt op de
+juiste nieuwe pagina uit, nul afwijkingen. Daar zaten ook 30
+adressen bij die nergens meer in de huidige shop voorkwamen; die
+hebben we via het Internet Archive teruggevonden en alsnog
+aangesloten, zodat ook stokoude links uit fora en oude
+nieuwsbrieven gewoon weer ergens heen gaan.
+
+* Waar de winkel nu staat
+
+De webshop draait op het vertrouwde adres, de beoordelingen staan
+erop, de mail loopt door met het hele archief erin, en Sako richt
+zelf in alle rust zijn thema verder in. De deadline van 3 september
+passeert zonder dat er iets te merken valt: alles wat die dag bij
+het oude platform verdwijnt, is al veilig overgezet.
+
+En de Sinterklaas-piek? Die haalt hij ruim. Daar was het allemaal
+om te doen.
+
+-----
+
+Staat jouw webshop, domein of mailbox ook (nog) bij je
+webwinkelplatform? [[https://webwinkelverhuis.nl/][Webwinkelverhuis]] verhuist het in stappen die elk
+terug te draaien zijn, zonder dat je winkel dicht hoeft.
