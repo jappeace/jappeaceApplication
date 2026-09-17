@@ -2,6 +2,7 @@
 #+DATE: 2026-08-17
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, kassa, pos, shopify
+#+SUMMARY: De Mijnwebwinkel Kassa App staat niet meer in de App Store. Wat dat betekent voor je iPad-kassa, wat er al mis was, en welke opties je nu hebt.
 
 Draait je fysieke winkel op de Mijnwebwinkel Kassa App? Dan is dit
 goed om te weten: de app is begin 2026 stilletjes uit de App Store

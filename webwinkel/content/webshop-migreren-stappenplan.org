@@ -3,6 +3,7 @@
 #+MODIFIED: 2026-08-08
 #+CATEGORY: migratie
 #+TAGS: migratie, stappenplan, shopify
+#+SUMMARY: Webshop migreren in de juiste volgorde: platformkeuze, data, redirects, livegang. Ons eigen stappenplan, de kosten en de valkuilen die we het vaakst zien.
 
 Je webshop migreren naar een ander platform: laten we er eerlijk
 over zijn, het ís een berg werk. Maar het is goed beheersbaar werk

@@ -2,6 +2,7 @@
 #+DATE: 2026-09-17
 #+CATEGORY: migratie
 #+TAGS: lightspeed, shopify, b2b, shopify plus
+#+SUMMARY: Van Lightspeed naar Shopify met zakelijke klanten? Sinds april 2026 zitten B2B-prijslijsten en betaaltermijnen in gewone abonnementen. Wanneer Plus wél moet.
 
 Wie met een Lightspeed-webshop ook aan bedrijven levert en naar
 Shopify kijkt, zoekt vaak meteen op "Shopify Plus". Logisch: tot dit

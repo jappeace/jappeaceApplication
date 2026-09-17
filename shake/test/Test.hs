@@ -31,6 +31,7 @@ import ArticleSummary (summarize, truncateHtml)
 import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Data.Char (isHexDigit)
 import qualified Data.ByteString.Char8 as BSC
+import Metadata (parseOrgMeta, resolveSlug)
 import PageChrome (faqAnswerHtml, faqPageJsonLd, humanDateForLang, renderFaqItem)
 import Templates (renderTagPage, renderIndexPage)
 import Types (Article(..), Lang(..), PaginationInfo(..), defaultSiteConfig)
@@ -195,6 +196,10 @@ main = defaultMain $
     , testGroup "taxonomiepagina's zijn noindex"
         [ taxonomieKrijgtNoindexIndexNiet
         , vierNulVierNoindexEnBuitenSitemap
+        ]
+    , testGroup "artikelslug volgt de slug-header"
+        [ slugHeaderWintVanTitel
+        , zonderSlugHeaderVolgtTitel
         ]
     , testGroup "artikeldatums volgen de paginataal"
         [ nederlandseDatumZonderVoorloopnul
@@ -402,3 +407,15 @@ articleWithoutModifiedFallsBackToPublicationDate = testCase "article without mod
   assertBool "never-edited article does not carry its publication date"
     ("<loc>https://webwinkelverhuis.nl/blog/nieuw-nooit-bijgewerkt.html</loc><lastmod>2026-07-10</lastmod>"
       `T.isInfixOf` sitemapUnderTest)
+
+-- | A post whose title was sharpened for search keeps its published URL
+-- when it carries a slug header; the slug is taken as written.
+slugHeaderWintVanTitel :: TestTree
+slugHeaderWintVanTitel = testCase "slug-header houdt de oude URL bij een nieuwe titel" $ do
+  let (meta, _) = parseOrgMeta "#+TITLE: Alternatief voor MijnWebwinkel of Acendy?\n#+SLUG: alternatief-voor-acendy\n\nbody"
+  resolveSlug meta "Alternatief voor MijnWebwinkel of Acendy?" @?= "alternatief-voor-acendy"
+
+zonderSlugHeaderVolgtTitel :: TestTree
+zonderSlugHeaderVolgtTitel = testCase "zonder slug-header komt de slug uit de titel" $ do
+  let (meta, _) = parseOrgMeta "#+TITLE: Alternatief voor Acendy?\n\nbody"
+  resolveSlug meta "Alternatief voor Acendy?" @?= "alternatief-voor-acendy"

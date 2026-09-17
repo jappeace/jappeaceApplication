@@ -3,6 +3,7 @@
 #+MODIFIED: 2026-08-08
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, shopify, klantverhaal
+#+SUMMARY: Panzer-ShopNL verhuisde 2.400 producten, drie talen en 7.200 oude URLs van MijnWebwinkel naar Shopify. Het verhaal van die migratie, inclusief de hobbels.
 
 Panzer-ShopNL verkoopt militaire schaalmodellen en modelspoor:
 zo'n 2.400 producten, in drie talen (Duits, Engels en Nederlands),

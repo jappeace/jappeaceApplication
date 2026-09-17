@@ -3,6 +3,7 @@
 #+MODIFIED: 2026-08-08
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, seo, migratie
+#+SUMMARY: Waarom webshops na een MijnWebwinkel-migratie Google-verkeer verliezen (de migration hangover) en hoe sluitende redirects van elke oude URL dat voorkomen.
 
 Je hebt jaren in je vindbaarheid geïnvesteerd. Je productpagina's staan goed
 in Google, klanten vinden je zonder dat je voor elke klik betaalt. En dan stapt

@@ -3,6 +3,7 @@
 #+MODIFIED: 2026-08-08
 #+CATEGORY: shopify
 #+TAGS: shopify, bulk, productteksten
+#+SUMMARY: Duizenden Shopify-producten in één run aanpassen: meta-titels, teksten, prijzen. Zo herschreven we 2270 producten in meerdere talen, tot op de winkelpagina.
 
 Sommige klussen zijn te groot voor handwerk. Alle meta-titels van je
 webshop herschrijven. Een leveranciersnaam die overal uit de teksten

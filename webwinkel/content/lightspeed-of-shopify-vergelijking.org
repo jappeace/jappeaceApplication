@@ -2,6 +2,7 @@
 #+DATE: 2026-09-17
 #+CATEGORY: migratie
 #+TAGS: lightspeed, shopify, vergelijking
+#+SUMMARY: Lightspeed of Shopify? Wij verhuizen naar allebei. Pakketten, betaalkosten, twee shops op één voorraad en de financiële positie van beide bedrijven vergeleken.
 
 Wij verhuizen webshops naar Shopify, maar ook naar Lightspeed, en
 voor dezelfde migratieprijs. Aan de uitkomst van de keuze verdienen

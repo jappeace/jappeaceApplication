@@ -2,6 +2,7 @@
 #+DATE: 2026-08-11
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, shopify, klantverhaal
+#+SUMMARY: Reformwinkel Kruidje Roer Me Niet verhuisde van MijnWebwinkel naar Shopify: 1.200 producten, klantaccounts, spaarpunten en pakketpunten gingen mee.
 
 Kruidje Roer Me Niet is een reformwinkel in Amersfoort, sinds 1975.
 Kruidenthee, homeopathie, supplementen, natuurcosmetica en een eigen

@@ -1,8 +1,10 @@
-#+TITLE: Alternatief voor Acendy? Zo zit het met MijnWebwinkel, Mystore en Norvato
+#+TITLE: Alternatief voor MijnWebwinkel of Acendy? Zo zit het met Mystore en Norvato
+#+SLUG: alternatief-voor-acendy-zo-zit-het-met-mijnwebwinkel-mystore-en-norvato
 #+DATE: 2026-07-31
-#+MODIFIED: 2026-08-08
+#+MODIFIED: 2026-09-17
 #+CATEGORY: migratie
 #+TAGS: acendy, mijnwebwinkel, migratie
+#+SUMMARY: MijnWebwinkel heette eind 2025 kort Acendy en hoort bij het Noorse Mystore. Wat er gebeurde, wat het voor je webshop betekent en welke alternatieven je hebt.
 
 Zoek je een alternatief voor Acendy? Acendy is de naam waaronder
 MijnWebwinkel eind 2025 kort verderging na een samenvoeging met het
