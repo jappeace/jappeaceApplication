@@ -1,0 +1,206 @@
+#+TITLE: Lightspeed of Shopify? Wij verhuizen naar allebei, dit kwam uit de vergelijking
+#+DATE: 2026-09-17
+#+CATEGORY: migratie
+#+TAGS: lightspeed, shopify, vergelijking
+
+Wij verhuizen webshops naar Shopify, maar ook naar Lightspeed, en
+voor dezelfde migratieprijs. Aan de uitkomst van de keuze verdienen
+we dus niets extra. Dat maakt ons een bruikbare partij om de
+vergelijking te maken, en dat vroeg een klant ons vorige week ook:
+een groothandel met twee webshops op CCV Shop, één voor
+consumenten en één voor installateurs met lagere prijzen na
+inloggen, allebei op dezelfde voorraad. Hij had Lightspeed op een
+vakbeurs gezien en twijfelde tussen Lightspeed en
+Shopify. Dit is wat wij voor hem op een rij zetten, met de
+bedragen van dat moment. Prijzen zijn exclusief btw, prijspeil 16
+september 2026, en de jaarprijs is het maandbedrag bij jaarlijkse
+betaling.
+
+* Eerst: welke Lightspeed?
+
+Lightspeed verkoopt in Nederland twee verschillende webshopproducten
+onder één naam, en daar gaan vergelijkingen op stuk.
+
+- Lightspeed C-Series is het vroegere SEOshop. De Nederlandse
+  prijzenpagina noemt de pakketten Essential, Advanced en
+  Professional; Lightspeeds eigen pakketdocumentatie noemt die
+  C-Series. Dit product krijgt nog onderhoud, maar geen nieuwe
+  ontwikkeling.
+- Lightspeed E-Series is het overgenomen Ecwid, een ander systeem
+  met eigen pakketten (Venture, Business, Unlimited) en eigen
+  limieten. Het officiële upgradeprogramma van C-Series naar
+  E-Series is alleen beschikbaar voor Noord-Amerika.
+
+Wie een aanbod van Lightspeed krijgt, moet dus eerst vragen welk
+van de twee het is. De limieten hieronder komen uit de
+documentatie van elk product afzonderlijk; een concreet
+Lightspeed-aanbod kan andere voorwaarden hebben.
+
+* Wat je per maand krijgt
+
+De klant heeft zo'n 2.500 producten, wil zakelijke prijzen na
+inloggen en een paar medewerkers die in de shop kunnen werken. Zo
+verhouden de pakketten zich dan:
+
+| Pakket | Per maand | Bij jaarbetaling | Producten of varianten | Medewerkers | Zakelijke prijzen |
+|---|---|---|---|---|---|
+| Shopify Basic | 28 euro | 21 euro | onbeperkt | alleen eigenaar | ingebouwd |
+| Shopify Grow | 78 euro | 59 euro | onbeperkt | 5 extra | ingebouwd |
+| Lightspeed C-Series Essential | 78 euro | 68 euro | 250 varianten | 1 | nee |
+| Lightspeed C-Series Advanced | 138 euro | 120 euro | 5.000 varianten | 3 | nee |
+| Lightspeed C-Series Professional | 298 euro | 259 euro | 15.000 varianten | onbeperkt | B2B-module |
+| Lightspeed E-Series (Ecwid) Business | 65 euro | 49 euro | 2.500 producten | 2 | klantgroep-korting op het mandje |
+| Lightspeed E-Series (Ecwid) Unlimited | 149 euro | 119 euro | onbeperkt | onbeperkt | klantgroep-korting op het mandje |
+
+Bronnen: de
+[[https://www.shopify.com/nl/prijzen][Shopify-prijzenpagina]], de
+[[https://www.lightspeedhq.nl/ecommerce/prijzen/][Lightspeed-prijzenpagina]]
+met de
+[[https://ecom-support.lightspeedhq.com/hc/en-us/articles/220662287][C-Series-pakketdocumentatie]],
+en de [[https://www.ecwid.com/pricing][Ecwid-prijzenpagina]] bij
+rechtstreeks afsluiten.
+
+Wat opvalt: voor 78 euro per maand koop je bij Shopify Grow een
+shop zonder productlimiet, met vijf medewerkersaccounts en
+zakelijke prijzen per product ingebouwd (sinds
+[[https://webwinkelverhuis.nl/blog/van-lightspeed-naar-shopify-plus-voor-b2b-meestal-heb-je-plus-niet-nodig.html][april 2026 ook zonder Shopify Plus]]).
+Voor hetzelfde bedrag koop je bij Lightspeed C-Series Essential
+250 varianten, één gebruiker en geen zakelijke prijzen. Wie op
+C-Series aan bedrijven wil verkopen komt bij Professional uit, 298
+euro. Bij Ecwid zit een klantgroep-korting al in Business, maar
+die werkt anders: de installateur ziet in de catalogus de
+consumentenprijs en de korting verschijnt pas in het winkelmandje.
+Op Shopify ziet hij zijn eigen prijs op elke productpagina.
+
+* Betaalkosten
+
+Hier ligt het dichter bij elkaar. Shopify Payments rekent op Basic
+1,9 procent plus 25 cent per kaartbetaling, op Grow 1,8 procent,
+en iDEAL kost 29 cent per bestelling. Kies je op Shopify een
+externe betaalprovider, dan komt daar een toeslag van 2 procent
+(Basic) of 1 procent (Grow) bovenop het tarief van die provider.
+Voor Lightspeed Payments noemt het Ecwid-helpcentrum in Nederland
+1,9 procent plus 25 cent per online transactie, en Ecwid rekent
+geen eigen toeslag bij een externe provider. Wil je per se je
+huidige betaalprovider houden, dan is dat een punt voor Ecwid. Voor
+C-Series staan de betaalvoorwaarden niet publiek; die moeten uit
+het aanbod komen.
+
+* Twee webshops op één voorraad
+
+Dit was de eigenlijke vraag van de klant, en hier loopt het verschil
+het verst uit elkaar. Vier opzetten, met de abonnementen per maand:
+
+| Opzet | Abonnementen | Wat erbij komt |
+|---|---|---|
+| Shopify, één winkel met twee uitstralingen | 78 euro | niets: één voorraad, thema wisselt per domein |
+| Shopify, twee winkels | 106 euro | voorraadkoppeling, in ons rekenvoorbeeld circa 70 euro |
+| Lightspeed E-Series (Ecwid), één winkel op twee websites | 149 euro | hosting en onderhoud van de tweede website |
+| Lightspeed C-Series, twee winkels | 436 euro | Multishop-koppeling, kosten via Lightspeed |
+
+Op Shopify kan één winkel twee domeinen bedienen met per domein een
+ander logo, andere kleuren en een ander menu, en een ingelogde
+installateur ziet zijn zakelijke prijs. Wij hebben dat op een
+testshop nagebouwd: hetzelfde product toonde 100 euro voor een
+bezoeker en 80 euro na inloggen. Eén abonnement, één voorraad, geen
+koppeling die kan achterlopen. Ecwid kan dezelfde winkel in twee
+websites tonen, maar die tweede website moet je zelf bouwen en
+hosten. C-Series heeft geen één-winkel-twee-gezichten-route; dat
+worden twee shops met de Multishop-koppeling.
+
+* De bedrijven erachter
+
+Je kiest een platform voor jaren, dus de vraag is ook hoe het
+bedrijf erachter ervoor staat. Lightspeed sloot zijn boekjaar 2026
+(tot en met maart 2026) af met 1,23 miljard dollar omzet en 144
+miljoen dollar nettoverlies
+([[https://www.lightspeedhq.com/news/lightspeed-announces-fourth-quarter-and-full-year-2026-financial-results-and-provides-outlook-for-fiscal-2027/][persbericht van 21 mei 2026]]).
+De directie noemt als groeimotoren retail in Noord-Amerika en
+horeca in Europa; Europese webshops vallen daarbuiten. In
+Nederland daalde het aantal Lightspeed-webshops van 6.904 eind 2023
+naar 4.842 in augustus 2026. Shopify maakte in 2025 1,2 miljard
+dollar winst op 11,6 miljard omzet en stak 1,5 miljard in
+productontwikkeling
+([[https://www.shopify.com/news/shopify-q4-2025-financial-results][jaarcijfers 2025]]);
+ruim de helft van de nieuwe Nederlandse webshops koos in 2025 voor
+Shopify.
+
+Waarom dat voor jou uitmaakt: een krimpend platform moet zijn
+bestaande klanten meer laten betalen, een groeiend platform moet
+investeren om ze te houden. Dat zie je terug in de tabel hierboven,
+en uitgebreider op onze pagina
+[[https://webwinkelverhuis.nl/waarom-lightspeed.html][waarom webshops Lightspeed verlaten]].
+
+* Wanneer Lightspeed toch de keuze kan zijn
+
+Er zijn situaties waarin we het advies omdraaien.
+
+- Je fysieke winkel is het hart van de zaak en je hebt meerdere
+  kassa's of vestigingen. Kassasoftware is Lightspeeds kern, en dan
+  is het de moeite om hun kassa en Shopify POS naast elkaar te
+  zetten in plaats van alleen de webshop te vergelijken.
+- Je kent Lightspeed al van een vorige winkel. Een systeem dat je
+  al beheerst bedien je beter dan het objectief betere systeem dat
+  je nog moet leren.
+- Je hebt een kleine catalogus en wilt je eigen betaalprovider
+  houden zonder toeslag; Ecwid Venture kost 35 euro voor 100
+  producten.
+
+Kies je Lightspeed, dan verhuizen we je shop daarheen voor dezelfde
+prijs als naar Shopify. Ons programma schrijft op dit moment naar
+Shopify; de Lightspeed-import bouwen we op eigen kosten wanneer een
+klant ervoor kiest, dat is bewust niet in de prijs verwerkt.
+
+* Wat we de klant adviseerden
+
+Voor zijn situatie, twee merken op één voorraad en zakelijke
+prijzen per product, krijgt hij op Shopify Grow voor 78 euro per
+maand wat hem op Lightspeed minimaal 149 euro plus een tweede
+website of 436 euro plus een koppeling kost. Ons advies was dan
+ook Shopify, met de kanttekening dat hij Lightspeed een concreet
+aanbod moet laten doen: beursprijzen en contractvoorwaarden
+wijken af van de prijzenpagina, en een vergelijking klopt pas
+met twee echte aanbiedingen naast elkaar. De migratie kost in
+beide gevallen hetzelfde.
+
+* Veelgestelde vragen
+
+*Verhuizen jullie ook naar Lightspeed?*
+
+Ja, voor dezelfde prijs als naar Shopify of WooCommerce. Het
+importprogramma schrijft nu naar Shopify; de Lightspeed-uitvoer
+bouwen we wanneer een klant ervoor kiest, zonder dat aan die klant
+door te berekenen.
+
+*Is Lightspeed goedkoper dan Shopify?*
+
+Op abonnement zelden. Shopify Basic kost 28 euro en Grow 78 euro
+zonder productlimiet; Lightspeed C-Series begint bij 78 euro voor
+250 varianten en Ecwid Business kost 65 euro tot 2.500 producten.
+Bij betaalkosten liggen ze dicht bij elkaar. Bij twee webshops op
+één voorraad is Shopify het goedkoopst.
+
+*Wat is het verschil tussen Lightspeed C-Series en E-Series?*
+
+C-Series is het vroegere SEOshop en krijgt alleen nog onderhoud.
+E-Series is het overgenomen Ecwid, een ander systeem met andere
+pakketten. Het officiële upgradeprogramma ertussen geldt alleen
+voor Noord-Amerika.
+
+*Kan ik op Shopify twee webshops op één voorraad draaien?*
+
+Ja, als één winkel met twee domeinen en twee uitstralingen, op een
+gewoon abonnement. Twee losse winkels kan ook, met een
+voorraadkoppeling erbij.
+
+*Hoe staat Lightspeed er financieel voor?*
+
+Boekjaar 2026 sloot met 1,23 miljard dollar omzet en 144 miljoen
+dollar nettoverlies, en het aantal Nederlandse Lightspeed-webshops
+daalt sinds eind 2023. Shopify was in 2025 winstgevend en groeide.
+
+Twijfel je voor jouw shop tussen Lightspeed en Shopify?
+[[https://webwinkelverhuis.nl/offerte.html][Vraag een vrijblijvende doorrekening aan]]
+of
+[[https://meet.jappiesoftware.com][plan een gesprek]];
+we zetten beide opties voor jouw situatie naast elkaar.
