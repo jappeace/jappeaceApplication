@@ -721,6 +721,10 @@ footer small a:hover { color: var(--wit); }
 .calc-check-group > summary { cursor: pointer; }
 .calc-check-group > summary:hover { color: var(--navy); }
 .calc-check-group > .calc-check { margin-top: 0.7rem; }
+/* Het aantal-veld van een meegroeiende module (aantalVeld in
+   PrijsCalculator.elm) staat onder zijn aanvinkhokje, ingesprongen
+   tot onder de tekst ervan. */
+.calc-check-group > .calc-field { margin: 0.5rem 0 0.3rem 1.75rem; }
 .calc-check { display: flex; align-items: baseline; gap: 0.7rem; cursor: pointer; }
 .calc-check input { accent-color: var(--groen-vlak); width: 1.05rem; height: 1.05rem; flex: none; }
 .calc-check-text { display: flex; flex-direction: column; }
@@ -734,6 +738,14 @@ footer small a:hover { color: var(--wit); }
 .calc-line { display: flex; justify-content: space-between; gap: 1rem; }
 .calc-line-label { color: var(--grijs); }
 .calc-line-price { font-family: var(--kop); font-weight: 650; color: var(--navy); white-space: nowrap; }
+/* Subregels (Regelniveau Subregel in PrijsCalculator.elm): de
+   staffelstappen onder de post met het totaal, ingesprongen en lichter. */
+.calc-line-sub { padding-left: 1.4rem; font-size: 0.9rem; }
+.calc-line-sub .calc-line-label::before { content: "\00B7  "; }
+.calc-line-sub .calc-line-price { font-weight: 500; color: var(--grijs); }
+/* Nadrukkelijke noot (themaNoot bij Nieuw ontwerp in PrijsCalculator.elm):
+   een kader, zodat "zit niet in dit totaal" niet als voetnoot leest. */
+.calc-note-nadruk { border: 1px solid var(--navy); border-left-width: 5px; border-radius: 10px; padding: 0.8rem 1rem; background: var(--wit); color: var(--inkt); }
 .calc-total {
   display: flex; justify-content: space-between; gap: 1rem;
   margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--lijn);
