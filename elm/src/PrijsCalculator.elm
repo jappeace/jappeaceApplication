@@ -4,6 +4,8 @@ port module PrijsCalculator exposing
     , ItemStaffel
     , Model
     , Msg(..)
+    , PrijsRegel
+    , Regelniveau(..)
     , StaffelSegment
     , ThemaKeuze(..)
     , bronKeuzes
@@ -19,6 +21,7 @@ port module PrijsCalculator exposing
     , itemStaffelSegmenten
     , offerteEventParams
     , orderhistorieStaffel
+    , prijsRegels
     , productStaffelSegmenten
     , leesBron
     , leesDoel
@@ -1197,17 +1200,27 @@ aanvinkVeld veldLabel toelichting aan naarBericht =
 -- UITSPLITSING
 
 
-{-| Eén prijsregel: omschrijving plus bedrag in centen. -}
+{-| Een hoofdregel is een post die in het totaal telt; een subregel staat
+ingesprongen onder zijn hoofdregel en legt uit hoe dat bedrag is opgebouwd
+(de staffelstappen). Subregels tellen dus niet nog eens mee: het totaal is
+de som van de hoofdregels. -}
+type Regelniveau
+    = Hoofdregel
+    | Subregel
+
+
+{-| Eén prijsregel: omschrijving, bedrag in centen en het niveau. -}
 type alias PrijsRegel =
     { omschrijving : String
     , centen : Int
+    , niveau : Regelniveau
     }
 
 
 optioneleRegel : Bool -> String -> Int -> List PrijsRegel
 optioneleRegel toon omschrijving centen =
     if toon then
-        [ PrijsRegel omschrijving centen ]
+        [ PrijsRegel omschrijving centen Hoofdregel ]
 
     else
         []
@@ -1227,15 +1240,13 @@ aantalLabel aantal enkelvoud meervoud =
            )
 
 
-{-| Eén regel per staffelstap: "Producten 501 t/m 1.500 (1.000 x \u{20AC}0,15)"
-met het bedrag van die stap, zodat de bezoeker ziet hoeveel items tegen
-welk tarief tellen in plaats van één opgeteld staffelbedrag. -}
-segmentRegel : String -> StaffelSegment -> PrijsRegel
-segmentRegel eenheid segment =
+{-| Eén subregel per staffelstap: "501 t/m 1.500 (1.000 x \u{20AC}0,15)" met
+het bedrag van die stap, ingesprongen onder de hoofdregel met het totaal,
+zodat de bezoeker ziet hoeveel items tegen welk tarief tellen. -}
+segmentRegel : StaffelSegment -> PrijsRegel
+segmentRegel segment =
     PrijsRegel
-        (eenheid
-            ++ " "
-            ++ voegDuizendtallenToe (String.fromInt segment.van)
+        (voegDuizendtallenToe (String.fromInt segment.van)
             ++ " t/m "
             ++ voegDuizendtallenToe (String.fromInt segment.tot)
             ++ " ("
@@ -1245,37 +1256,64 @@ segmentRegel eenheid segment =
             ++ ")"
         )
         (segmentCenten segment)
+        Subregel
 
 
-{-| Bij meer talen telt elk product per taal, dus dan heet de telling
-productvertalingen; bij één taal gewoon producten. -}
-productLabel : Model -> String
-productLabel model =
-    if aantalTalen model > 1 then
-        "Productvertalingen (producten \u{00D7} talen)"
+{-| De productpost: een hoofdregel met het totaal en de telling, daaronder
+per staffelstap een subregel. Bij meer talen telt elk product per taal, dus
+dan heet de telling productvertalingen. Zonder producten geen regels. -}
+productRegels : Model -> List PrijsRegel
+productRegels model =
+    let
+        vertalingen =
+            productVertalingen model
+    in
+    if vertalingen <= 0 then
+        []
 
     else
-        "Producten"
+        PrijsRegel (productLabel model vertalingen) (extraProductVertalingenCenten model) Hoofdregel
+            :: List.map segmentRegel (productStaffelSegmenten vertalingen)
 
 
-{-| De regels van een meegroeiende module: het vaste deel met wat erin zit,
-en daaronder per staffelstap een regel voor de items daarboven. Zonder
-opgave (of tot 1.000 items) blijft het bij het vaste deel. -}
-moduleRegels : Bool -> String -> String -> String -> ItemStaffel -> Int -> List PrijsRegel
-moduleRegels aan omschrijving eenheidKop eenheidMeervoud staffel aantal =
+productLabel : Model -> Int -> String
+productLabel model vertalingen =
+    if aantalTalen model > 1 then
+        "Productvertalingen (" ++ voegDuizendtallenToe (String.fromInt (aantalProducten model)) ++ " producten \u{00D7} " ++ String.fromInt (aantalTalen model) ++ " talen = " ++ voegDuizendtallenToe (String.fromInt vertalingen) ++ ")"
+
+    else
+        "Producten (" ++ voegDuizendtallenToe (String.fromInt vertalingen) ++ ")"
+
+
+{-| De regels van een meegroeiende module: een hoofdregel met het totaal en
+de opgegeven telling, daaronder ingesprongen het vaste deel (toegang en de
+eerste 1.000 items) en per staffelstap een subregel voor de items daarboven.
+Zonder opgave, of tot 1.000 items, is het vaste deel de enige subregel. -}
+moduleRegels : Bool -> String -> String -> ItemStaffel -> Int -> List PrijsRegel
+moduleRegels aan omschrijving eenheidMeervoud staffel aantal =
     if aan then
-        PrijsRegel
-            (omschrijving
-                ++ ": toegang en de eerste "
-                ++ voegDuizendtallenToe (String.fromInt moduleInbegrepenItems)
-                ++ " "
-                ++ eenheidMeervoud
-            )
-            moduleVastCenten
-            :: List.map (segmentRegel eenheidKop) (itemStaffelSegmenten staffel aantal)
+        PrijsRegel (omschrijving ++ moduleTelling aantal eenheidMeervoud) (itemStaffelCenten staffel aantal) Hoofdregel
+            :: PrijsRegel
+                ("toegang en de eerste "
+                    ++ voegDuizendtallenToe (String.fromInt moduleInbegrepenItems)
+                    ++ " "
+                    ++ eenheidMeervoud
+                )
+                moduleVastCenten
+                Subregel
+            :: List.map segmentRegel (itemStaffelSegmenten staffel aantal)
 
     else
         []
+
+
+moduleTelling : Int -> String -> String
+moduleTelling aantal eenheidMeervoud =
+    if aantal <= 0 then
+        " (tot " ++ voegDuizendtallenToe (String.fromInt moduleInbegrepenItems) ++ " " ++ eenheidMeervoud ++ ")"
+
+    else
+        " (" ++ voegDuizendtallenToe (String.fromInt aantal) ++ " " ++ eenheidMeervoud ++ ")"
 
 
 themaRegels : Model -> List PrijsRegel
@@ -1285,7 +1323,7 @@ themaRegels model =
             []
 
         ThemaOverzetten ->
-            [ PrijsRegel "Uitstraling overzetten" themaOverzettenCenten ]
+            [ PrijsRegel "Uitstraling overzetten" themaOverzettenCenten Hoofdregel ]
 
         ThemaNieuw ->
             []
@@ -1296,17 +1334,17 @@ de uitsplitsing op het scherm als de vooringevulde offerte-mail, zodat die twee
 nooit uit elkaar lopen. -}
 prijsRegels : Model -> List PrijsRegel
 prijsRegels model =
-    [ PrijsRegel "Basismigratie (vaste basis: redirects, categorie\u{00EB}n, pagina's, standaardthema)" basisMigratieCenten ]
-        ++ List.map (segmentRegel (productLabel model)) (productStaffelSegmenten (productVertalingen model))
+    [ PrijsRegel "Basismigratie (vaste basis: redirects, categorie\u{00EB}n, pagina's, standaardthema)" basisMigratieCenten Hoofdregel ]
+        ++ productRegels model
         ++ optioneleRegel
             (extraTalen model > 0)
             (aantalLabel (extraTalen model) "extra taal: configuratie \u{00D7} \u{20AC}250" "extra talen: configuratie \u{00D7} \u{20AC}250")
             (extraTaalConfiguratieCenten model)
         ++ themaRegels model
-        ++ moduleRegels model.klantaccounts "Klantaccounts meenemen" "Accounts" "accounts" klantaccountsStaffel (aantalKlantaccounts model)
-        ++ moduleRegels model.orderhistorie "Bestelgeschiedenis meenemen" "Bestellingen" "bestellingen" orderhistorieStaffel (aantalBestellingen model)
-        ++ moduleRegels model.nieuwsbrief "Nieuwsbrief-aanmeldingen meenemen" "Adressen" "adressen" nieuwsbriefStaffel (aantalAbonnees model)
-        ++ moduleRegels model.voorraad "Voorraadaantallen live overzetten" "Producten" "producten" voorraadStaffel (aantalProducten model)
+        ++ moduleRegels model.klantaccounts "Klantaccounts meenemen" "accounts" klantaccountsStaffel (aantalKlantaccounts model)
+        ++ moduleRegels model.orderhistorie "Bestelgeschiedenis meenemen" "bestellingen" orderhistorieStaffel (aantalBestellingen model)
+        ++ moduleRegels model.nieuwsbrief "Nieuwsbrief-aanmeldingen meenemen" "adressen" nieuwsbriefStaffel (aantalAbonnees model)
+        ++ moduleRegels model.voorraad "Voorraadaantallen live overzetten" "producten" voorraadStaffel (aantalProducten model)
         ++ optioneleRegel model.reviews "Reviews / beoordelingen overzetten" reviewsCenten
         ++ optioneleRegel (domeinGekozen model) "Domeinverhuizing" domeinverhuizingCenten
         ++ optioneleRegel (emailGekozen model) "E-mail-setup" emailSetupCenten
@@ -1318,10 +1356,20 @@ prijsRegels model =
 
 regelNaarHtml : PrijsRegel -> Html Msg
 regelNaarHtml prijsregel =
-    li [ Attr.class "calc-line" ]
+    li [ Attr.class (regelKlasse prijsregel.niveau) ]
         [ span [ Attr.class "calc-line-label" ] [ text prijsregel.omschrijving ]
         , span [ Attr.class "calc-line-price" ] [ text (formatteerEuro prijsregel.centen) ]
         ]
+
+
+regelKlasse : Regelniveau -> String
+regelKlasse niveau =
+    case niveau of
+        Hoofdregel ->
+            "calc-line"
+
+        Subregel ->
+            "calc-line calc-line-sub"
 
 
 uitsplitsing : Model -> Html Msg
@@ -1688,7 +1736,12 @@ offerteBody model =
 
 prijsRegelTekst : PrijsRegel -> String
 prijsRegelTekst prijsregel =
-    "- " ++ prijsregel.omschrijving ++ ": " ++ formatteerEuro prijsregel.centen
+    case prijsregel.niveau of
+        Hoofdregel ->
+            "- " ++ prijsregel.omschrijving ++ ": " ++ formatteerEuro prijsregel.centen
+
+        Subregel ->
+            "    \u{00B7} " ++ prijsregel.omschrijving ++ ": " ++ formatteerEuro prijsregel.centen
 
 
 {-| Reiskosten-voorbehoud voor point-of-sale, alleen als die gekozen is; het

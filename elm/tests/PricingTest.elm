@@ -18,7 +18,9 @@ import PrijsCalculator
         , initieelModel
         , isGroteCatalogus
         , itemStaffelSegmenten
+        , Regelniveau(..)
         , orderhistorieStaffel
+        , prijsRegels
         , productStaffelSegmenten
         , totaalCenten
         , update
@@ -94,6 +96,44 @@ staffelSegmentenSuite =
         , test "bestelgeschiedenis 800: niets boven de inbegrepen items, geen stappen" <|
             \_ ->
                 Expect.equal [] (itemStaffelSegmenten orderhistorieStaffel 800)
+        , test "uitsplitsing 5.000 producten: na de basis een hoofdregel met het staffeltotaal en drie subregels die er precies op optellen" <|
+            \_ ->
+                let
+                    regels =
+                        prijsRegels (metProducten 5000 1 initieelModel)
+
+                    niveaus =
+                        List.map .niveau regels
+
+                    subCenten =
+                        List.sum (List.map .centen (List.filter (\r -> r.niveau == Subregel) regels))
+
+                    hoofdCenten =
+                        List.map .centen (List.filter (\r -> r.niveau == Hoofdregel) regels)
+                in
+                Expect.all
+                    [ \_ -> Expect.equal [ Hoofdregel, Hoofdregel, Subregel, Subregel, Subregel ] niveaus
+                    , \_ -> Expect.equal [ 99900, 60000 ] hoofdCenten
+                    , \_ -> Expect.equal 60000 subCenten
+                    ]
+                    ()
+        , test "uitsplitsing bestelgeschiedenis 11.504: hoofdregel 920,16 met vaste deel en twee stappen eronder, som gelijk" <|
+            \_ ->
+                let
+                    regels =
+                        List.drop 3 (prijsRegels { initieelModel | orderhistorie = True, bestellingenInvoer = "11504" })
+                in
+                Expect.equal
+                    [ ( Hoofdregel, 92016 ), ( Subregel, 10000 ), ( Subregel, 80000 ), ( Subregel, 2016 ) ]
+                    (List.map (\r -> ( r.niveau, r.centen )) regels)
+        , test "het totaal is de som van de hoofdregels alleen (subregels tellen niet dubbel)" <|
+            \_ ->
+                let
+                    model =
+                        { initieelModel | productenInvoer = "5000", orderhistorie = True, bestellingenInvoer = "11504", klantaccounts = True, klantaccountsInvoer = "4850" }
+                in
+                Expect.equal (totaalCenten model)
+                    (List.sum (List.map .centen (List.filter (\r -> r.niveau == Hoofdregel) (prijsRegels model))))
         ]
 
 

@@ -738,6 +738,11 @@ footer small a:hover { color: var(--wit); }
 .calc-line { display: flex; justify-content: space-between; gap: 1rem; }
 .calc-line-label { color: var(--grijs); }
 .calc-line-price { font-family: var(--kop); font-weight: 650; color: var(--navy); white-space: nowrap; }
+/* Subregels (Regelniveau Subregel in PrijsCalculator.elm): de
+   staffelstappen onder de post met het totaal, ingesprongen en lichter. */
+.calc-line-sub { padding-left: 1.4rem; font-size: 0.9rem; }
+.calc-line-sub .calc-line-label::before { content: "\00B7  "; }
+.calc-line-sub .calc-line-price { font-weight: 500; color: var(--grijs); }
 .calc-total {
   display: flex; justify-content: space-between; gap: 1rem;
   margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--lijn);
