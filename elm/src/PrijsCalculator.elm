@@ -1174,7 +1174,7 @@ deel (tot 1.000 items), en bij de offerte tellen we het echte aantal na. -}
 aantalVeld : Bool -> String -> String -> (String -> Msg) -> List (Html Msg)
 aantalVeld aan veldLabel waarde naarBericht =
     if aan then
-        [ getalVeld veldLabel waarde "een schatting is genoeg; leeg = tot 1.000" naarBericht ]
+        [ getalVeld veldLabel waarde "Een schatting is genoeg. Laat je het leeg, dan rekenen we met de eerste 1.000 (\u{20AC}100)." naarBericht ]
 
     else
         []
