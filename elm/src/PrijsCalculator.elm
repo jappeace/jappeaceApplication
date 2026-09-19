@@ -1334,7 +1334,7 @@ de uitsplitsing op het scherm als de vooringevulde offerte-mail, zodat die twee
 nooit uit elkaar lopen. -}
 prijsRegels : Model -> List PrijsRegel
 prijsRegels model =
-    [ PrijsRegel "Basismigratie (vaste basis: redirects, categorie\u{00EB}n, pagina's, standaardthema)" basisMigratieCenten Hoofdregel ]
+    [ PrijsRegel "Basismigratie" basisMigratieCenten Hoofdregel ]
         ++ productRegels model
         ++ optioneleRegel
             (extraTalen model > 0)

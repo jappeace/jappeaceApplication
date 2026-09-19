@@ -905,7 +905,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.h2 "De migratie"
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
-          H.td "Basismigratie: de vaste basis voor elke shop (categorie\235n, pagina's, SEO-redirects, standaardthema, testshop en begeleiding)"
+          H.td "Basismigratie: de vaste basis voor elke shop"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;999" :: Text)
         H.tr $ do
           H.td "Je producten, de eerste vijfhonderd (elk product telt per taal \233\233n keer mee)"
