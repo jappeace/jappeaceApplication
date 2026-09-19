@@ -1384,8 +1384,10 @@ themaNoot : ThemaKeuze -> List (Html Msg)
 themaNoot thema =
     case thema of
         ThemaNieuw ->
-            [ p [ Attr.class "calc-note" ]
-                [ text "Nieuw ontwerp: een eigen ontwerp maakt onze ontwerppartner, die stuurt daar een aparte offerte voor. Dat bedrag zit niet in dit totaal; de bouw van het ontwerp in je shop begroten wij apart." ]
+            [ p [ Attr.class "calc-note calc-note-nadruk" ]
+                [ strong [] [ text "Let op: het nieuwe ontwerp zit niet in dit totaal. " ]
+                , text "Een eigen ontwerp maakt onze ontwerppartner, die stuurt daar een aparte offerte voor. De bouw van dat ontwerp in je shop begroten wij daarna apart."
+                ]
             ]
 
         ThemaStandaard ->

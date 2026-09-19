@@ -743,6 +743,9 @@ footer small a:hover { color: var(--wit); }
 .calc-line-sub { padding-left: 1.4rem; font-size: 0.9rem; }
 .calc-line-sub .calc-line-label::before { content: "\00B7  "; }
 .calc-line-sub .calc-line-price { font-weight: 500; color: var(--grijs); }
+/* Nadrukkelijke noot (themaNoot bij Nieuw ontwerp in PrijsCalculator.elm):
+   een kader, zodat "zit niet in dit totaal" niet als voetnoot leest. */
+.calc-note-nadruk { border: 1px solid var(--navy); border-left-width: 5px; border-radius: 10px; padding: 0.8rem 1rem; background: var(--wit); color: var(--inkt); }
 .calc-total {
   display: flex; justify-content: space-between; gap: 1rem;
   margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--lijn);
