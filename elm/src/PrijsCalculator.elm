@@ -25,12 +25,16 @@ port module PrijsCalculator exposing
 {-| Interactieve prijsindicatie voor een webshop-migratie op webwinkelverhuis.nl.
 
 De prijslogica is een 1-op-1 kopie van de standaard prijslijst (jappiesoft
-strategy/standaard-prijslijst.org) en de tabel op /prijzen: basismigratie met
-500 inbegrepen productvertalingen (producten maal talen tellen samen tegen
-die ruimte), daarboven een degressieve staffel per duizend vertalingen
-(€0,25, €0,20, €0,15, daarna €0,10), plus €250 configuratie per
-extra taal, de losse modules (thema, klantaccounts, orderhistorie, nieuwsbrief,
-voorraad) en de diensten domeinverhuizing en e-mail-setup. Alle bedragen worden
+strategy/standaard-prijslijst.org) en de tabel op /prijzen: een vaste basis
+van €999 voor de overhead van elke migratie, daarbovenop elke
+productvertaling (producten maal talen) vanaf de eerste in een aflopende
+staffel per vijfhonderd (€0,20, €0,15, €0,15, €0,10, daarna €0,10), plus
+€250 configuratie per extra taal. De modules die met de shop meegroeien
+(klantaccounts, orderhistorie, nieuwsbrief, voorraad) kosten €100 met de
+eerste 1.000 items inbegrepen en daarboven een aflopend tarief per item;
+de bezoeker vult daarvoor een schatting van het aantal in. De overige
+modules en diensten (thema, reviews, domeinverhuizing, e-mail-setup,
+verzendkoppeling, B2B, kassa, cursus) zijn vaste bedragen. Alle bedragen worden
 intern in hele centen gerekend zodat er geen afrondingsfouten op de komma
 ontstaan; pas bij het tonen zetten we centen om naar euro's.
 
@@ -80,25 +84,29 @@ gaEvent naam params =
 -- CONSTANTEN (centen), gelijk aan standaard-prijslijst.org en /prijzen
 
 
--- Decision: basis terug van 199900 naar 149900 met 500 in plaats van
--- 1.000 inbegrepen vertalingen (besluit Jappie 4 sep 2026): augustus
--- op 1999 leverde 22 calculator_engaged-events en nul conversies op
--- (geen offerte_aangevraagd, geen gesprek_knop_klik), plus een
--- expliciete te-duur-mail en een offerte die naar een concurrent
--- ging. Alternatief overwogen: tot half september wachten om de
--- vakantie-confound uit het vraagsignaal te halen; afgewezen omdat
--- er bij nul lopende deals weinig marge te verliezen valt en de
--- verlaging omkeerbaar is. Korting is ons vraag-instrument.
+-- Decision: basis naar 99900 zonder inbegrepen producten (besluit
+-- Jappie 19 sep 2026, jappiesoft pricing-business-model.org, sectie
+-- "typist999"). De meting van 19 sep: op 1499 (sinds 4 sep) kwam de
+-- enige offerte van een middelgrote CCV-shop, en van 138 mails aan
+-- MijnWebwinkel-shops kwam nul reactie waar CCV er vier gaf; de
+-- kleine MWW-shop klikt, ziet de prijs en loopt weg. De 999 dekt de
+-- afsluit- en communicatie-overhead die elke migratie heeft; de
+-- omvang van de shop zit vanaf de eerste vertaling in de staffel en
+-- in de meegroeiende modules. Alternatieven overwogen: 1.299 met 250
+-- inbegrepen (de oktoberafspraak van 4 sep; helpt geen van beide
+-- segmenten) en 999 met 500 inbegrepen (de 9-sep-offerteversie;
+-- geeft de middenmaat een korting die niemand vroeg). Eerdere
+-- stappen: 1999 (aug, nul conversies), 1499 met 500 (4 sep).
 
 
 basisMigratieCenten : Int
 basisMigratieCenten =
-    149900
+    99900
 
 
 inbegrepenProducten : Int
 inbegrepenProducten =
-    500
+    0
 
 
 -- Decision: de productstaffel is degressief (besluit Jappie 1 sep 2026,
@@ -106,9 +114,14 @@ inbegrepenProducten =
 -- catalogi kosten het migratieprogramma nauwelijks extra werk, dus een
 -- vlak tarief prijst juist de goedkoopste meerschaal het hardst en
 -- jaagt grote shops weg met bedragen die niets met de kostprijs te
--- maken hebben. Boven de inbegrepen productvertalingen (destijds
--- 1.000, sinds 4 sep 2026 500) kost elke volgende duizend een trede
--- minder, tot een bodem van 10 cent.
+-- maken hebben. Sinds 19 sep 2026 telt elke vertaling vanaf de eerste
+-- mee, in treden van vijfhonderd: 20, 15, 15, 10 cent en daarna de
+-- bodem van 10 cent. Het ijkpunt is de winkelier die het met de hand
+-- laat doen (een typist haalt twaalf producten per uur, wat bij de
+-- goedkoopste tarieven op zo'n 30 cent per product uitkomt); de
+-- eerste trede is daar bewust onder gelegd omdat het productaantal de
+-- catalogus meet en niet de omzet (een kleine zaak kan een grote
+-- catalogus hebben), het gewicht ligt bij de meegroeiende modules.
 -- Alternatief overwogen: een tweede maatwerkgrens op 5.000 euro
 -- richtprijs (staat gebouwd op de geparkeerde branch
 -- calculator-richtprijs-grens); afgewezen omdat de degressieve staffel
@@ -119,7 +132,7 @@ inbegrepenProducten =
 
 staffelTredenCenten : List Int
 staffelTredenCenten =
-    [ 25, 20, 15 ]
+    [ 20, 15, 15, 10 ]
 
 
 staffelBodemCenten : Int
@@ -129,7 +142,7 @@ staffelBodemCenten =
 
 tredeGrootte : Int
 tredeGrootte =
-    1000
+    500
 
 
 perTaalConfiguratieCenten : Int
@@ -142,24 +155,60 @@ themaOverzettenCenten =
     74900
 
 
-klantaccountsCenten : Int
-klantaccountsCenten =
-    25000
+-- Decision: klantaccounts, orderhistorie, nieuwsbrief en voorraad zijn
+-- sinds 19 sep 2026 geen vaste 250 meer maar een staffel per item
+-- (besluit Jappie, jappiesoft pricing-business-model.org, sectie
+-- "modules die met de shop meegroeien"). Orders en klanten meten hoe
+-- groot de zaak is, beter dan het productaantal; wie er veel heeft,
+-- heeft er ook het meeste aan en kan het dragen. Vast deel van €100
+-- voor het gedoe om bij de data te komen (beheer-toegang, secret) met
+-- de eerste 1.000 items inbegrepen, daarboven per item, na een trede
+-- een lager tarief. Geen ander vast deel: de basis dekt de overhead en
+-- de module-tooling is eenmalig betaald. Alternatief overwogen: de
+-- staffel op orders in de basisprijs stoppen; afgewezen omdat orders
+-- en accounts achter het beheer zitten en dus niet vooraf telbaar zijn,
+-- terwijl modules toch pas na opgave van de winkelier geoffreerd
+-- worden. De vier blijven aparte regels (besluit 25 jul 2026).
 
 
-orderhistorieCenten : Int
-orderhistorieCenten =
-    25000
+{-| Het tarief per item boven de inbegrepen items van een meegroeiende
+module: eerst 'tariefCenten' per item, na 'tredeOmvang' items het lagere
+'tariefDaarbovenCenten'. -}
+type alias ItemStaffel =
+    { tariefCenten : Int
+    , tredeOmvang : Int
+    , tariefDaarbovenCenten : Int
+    }
 
 
-nieuwsbriefCenten : Int
-nieuwsbriefCenten =
-    25000
+moduleVastCenten : Int
+moduleVastCenten =
+    10000
 
 
-voorraadCenten : Int
-voorraadCenten =
-    25000
+moduleInbegrepenItems : Int
+moduleInbegrepenItems =
+    1000
+
+
+orderhistorieStaffel : ItemStaffel
+orderhistorieStaffel =
+    { tariefCenten = 8, tredeOmvang = 10000, tariefDaarbovenCenten = 4 }
+
+
+klantaccountsStaffel : ItemStaffel
+klantaccountsStaffel =
+    { tariefCenten = 15, tredeOmvang = 5000, tariefDaarbovenCenten = 8 }
+
+
+nieuwsbriefStaffel : ItemStaffel
+nieuwsbriefStaffel =
+    { tariefCenten = 5, tredeOmvang = 5000, tariefDaarbovenCenten = 3 }
+
+
+voorraadStaffel : ItemStaffel
+voorraadStaffel =
+    { tariefCenten = 5, tredeOmvang = 5000, tariefDaarbovenCenten = 3 }
 
 
 reviewsCenten : Int
@@ -242,8 +291,11 @@ type alias Model =
     , doel : DoelPlatform
     , thema : ThemaKeuze
     , klantaccounts : Bool
+    , klantaccountsInvoer : String
     , orderhistorie : Bool
+    , bestellingenInvoer : String
     , nieuwsbrief : Bool
+    , abonneesInvoer : String
     , voorraad : Bool
     , reviews : Bool
     , domeinBijMijnwebwinkel : Bool
@@ -269,8 +321,11 @@ initieelModel =
     , doel = DoelShopify
     , thema = ThemaStandaard
     , klantaccounts = False
+    , klantaccountsInvoer = ""
     , orderhistorie = False
+    , bestellingenInvoer = ""
     , nieuwsbrief = False
+    , abonneesInvoer = ""
     , voorraad = False
     , reviews = False
     , domeinBijMijnwebwinkel = False
@@ -304,8 +359,11 @@ type Msg
     | DoelGewijzigd String
     | ThemaGewijzigd String
     | KlantaccountsGewijzigd Bool
+    | KlantaccountsAantalGewijzigd String
     | OrderhistorieGewijzigd Bool
+    | BestellingenGewijzigd String
     | NieuwsbriefGewijzigd Bool
+    | AbonneesGewijzigd String
     | VoorraadGewijzigd Bool
     | ReviewsGewijzigd Bool
     | DomeinGewijzigd Bool
@@ -555,11 +613,20 @@ update msg model =
         KlantaccountsGewijzigd aan ->
             markeerInvoer { model | klantaccounts = aan }
 
+        KlantaccountsAantalGewijzigd waarde ->
+            markeerInvoer { model | klantaccountsInvoer = waarde }
+
         OrderhistorieGewijzigd aan ->
             markeerInvoer { model | orderhistorie = aan }
 
+        BestellingenGewijzigd waarde ->
+            markeerInvoer { model | bestellingenInvoer = waarde }
+
         NieuwsbriefGewijzigd aan ->
             markeerInvoer { model | nieuwsbrief = aan }
+
+        AbonneesGewijzigd waarde ->
+            markeerInvoer { model | abonneesInvoer = waarde }
 
         VoorraadGewijzigd aan ->
             markeerInvoer { model | voorraad = aan }
@@ -782,6 +849,64 @@ emailGekozen model =
     bundeltDomeinEnEmail model.bron && model.emailBijMijnwebwinkel
 
 
+{-| De prijs van een meegroeiende module bij een aantal items: het vaste
+deel dekt de eerste 'moduleInbegrepenItems', daarboven het tarief van de
+staffel, na de trede het lagere tarief. Een lege of onleesbare invoer telt
+als 0 items en geeft dus het vaste deel; dat is de laagste prijs die de
+module kan hebben, geen verzonnen bedrag. -}
+itemStaffelCenten : ItemStaffel -> Int -> Int
+itemStaffelCenten staffel aantal =
+    let
+        bovenInbegrepen =
+            Basics.max 0 (aantal - moduleInbegrepenItems)
+
+        inEersteTrede =
+            Basics.min bovenInbegrepen staffel.tredeOmvang
+    in
+    moduleVastCenten
+        + inEersteTrede
+        * staffel.tariefCenten
+        + (bovenInbegrepen - inEersteTrede)
+        * staffel.tariefDaarbovenCenten
+
+
+aantalKlantaccounts : Model -> Int
+aantalKlantaccounts model =
+    leesGetal model.klantaccountsInvoer
+
+
+aantalBestellingen : Model -> Int
+aantalBestellingen model =
+    leesGetal model.bestellingenInvoer
+
+
+aantalAbonnees : Model -> Int
+aantalAbonnees model =
+    leesGetal model.abonneesInvoer
+
+
+klantaccountsCenten : Model -> Int
+klantaccountsCenten model =
+    itemStaffelCenten klantaccountsStaffel (aantalKlantaccounts model)
+
+
+orderhistorieCenten : Model -> Int
+orderhistorieCenten model =
+    itemStaffelCenten orderhistorieStaffel (aantalBestellingen model)
+
+
+nieuwsbriefCenten : Model -> Int
+nieuwsbriefCenten model =
+    itemStaffelCenten nieuwsbriefStaffel (aantalAbonnees model)
+
+
+{-| Voorraad gaat per product, niet per vertaling: de voorraad van een
+product is in elke taal dezelfde. -}
+voorraadCenten : Model -> Int
+voorraadCenten model =
+    itemStaffelCenten voorraadStaffel (aantalProducten model)
+
+
 {-| Tel een module alleen mee als de bezoeker hem heeft aangevinkt. -}
 indienAan : Bool -> Int -> Int
 indienAan aan centen =
@@ -798,10 +923,10 @@ totaalCenten model =
         + extraProductVertalingenCenten model
         + extraTaalConfiguratieCenten model
         + themaCenten model
-        + indienAan model.klantaccounts klantaccountsCenten
-        + indienAan model.orderhistorie orderhistorieCenten
-        + indienAan model.nieuwsbrief nieuwsbriefCenten
-        + indienAan model.voorraad voorraadCenten
+        + indienAan model.klantaccounts (klantaccountsCenten model)
+        + indienAan model.orderhistorie (orderhistorieCenten model)
+        + indienAan model.nieuwsbrief (nieuwsbriefCenten model)
+        + indienAan model.voorraad (voorraadCenten model)
         + indienAan model.reviews reviewsCenten
         + indienAan (domeinGekozen model) domeinverhuizingCenten
         + indienAan (emailGekozen model) emailSetupCenten
@@ -972,6 +1097,18 @@ themaVeld thema =
         ]
 
 
+{-| Het aantal-veld van een meegroeiende module, alleen zichtbaar als de
+module is aangevinkt. Leeg laten mag: dan rekent de richtprijs met het vaste
+deel (tot 1.000 items), en bij de offerte tellen we het echte aantal na. -}
+aantalVeld : Bool -> String -> String -> (String -> Msg) -> List (Html Msg)
+aantalVeld aan veldLabel waarde naarBericht =
+    if aan then
+        [ getalVeld veldLabel waarde "een schatting is genoeg; leeg = tot 1.000" naarBericht ]
+
+    else
+        []
+
+
 aanvinkVeld : String -> String -> Bool -> (Bool -> Msg) -> Html Msg
 aanvinkVeld veldLabel toelichting aan naarBericht =
     label [ Attr.class "calc-check" ]
@@ -1022,6 +1159,18 @@ aantalLabel aantal enkelvoud meervoud =
            )
 
 
+{-| Omschrijving van een meegroeiende module met het opgegeven aantal erbij,
+zodat de bezoeker (en de offerte-mail) ziet waar het bedrag op rust. Zonder
+opgave staat er "tot 1.000", het aantal dat in het vaste deel zit. -}
+metAantal : String -> Int -> String -> String -> String
+metAantal omschrijving aantal enkelvoud meervoud =
+    if aantal <= 0 then
+        omschrijving ++ " (tot " ++ voegDuizendtallenToe (String.fromInt moduleInbegrepenItems) ++ " " ++ meervoud ++ ")"
+
+    else
+        omschrijving ++ " (" ++ voegDuizendtallenToe (String.fromInt aantal) ++ " " ++ (if aantal == 1 then enkelvoud else meervoud) ++ ")"
+
+
 themaRegels : Model -> List PrijsRegel
 themaRegels model =
     case model.thema of
@@ -1040,20 +1189,20 @@ de uitsplitsing op het scherm als de vooringevulde offerte-mail, zodat die twee
 nooit uit elkaar lopen. -}
 prijsRegels : Model -> List PrijsRegel
 prijsRegels model =
-    [ PrijsRegel "Basismigratie (500 producten inbegrepen, over alle talen samen)" basisMigratieCenten ]
+    [ PrijsRegel "Basismigratie (vaste basis: redirects, categorie\u{00EB}n, pagina's, standaardthema)" basisMigratieCenten ]
         ++ optioneleRegel
             (extraProductVertalingen model > 0)
-            (aantalLabel (extraProductVertalingen model) "product boven de 500 inbegrepen (over alle talen, aflopende staffel)" "producten boven de 500 inbegrepen (over alle talen, aflopende staffel)")
+            (aantalLabel (extraProductVertalingen model) "product (over alle talen, aflopende staffel vanaf 20 cent)" "producten (over alle talen, aflopende staffel vanaf 20 cent)")
             (extraProductVertalingenCenten model)
         ++ optioneleRegel
             (extraTalen model > 0)
             (aantalLabel (extraTalen model) "extra taal: configuratie \u{00D7} \u{20AC}250" "extra talen: configuratie \u{00D7} \u{20AC}250")
             (extraTaalConfiguratieCenten model)
         ++ themaRegels model
-        ++ optioneleRegel model.klantaccounts "Klantaccounts meenemen" klantaccountsCenten
-        ++ optioneleRegel model.orderhistorie "Bestelgeschiedenis meenemen" orderhistorieCenten
-        ++ optioneleRegel model.nieuwsbrief "Nieuwsbrief-aanmeldingen meenemen" nieuwsbriefCenten
-        ++ optioneleRegel model.voorraad "Voorraadaantallen live overzetten" voorraadCenten
+        ++ optioneleRegel model.klantaccounts (metAantal "Klantaccounts meenemen" (aantalKlantaccounts model) "account" "accounts") (klantaccountsCenten model)
+        ++ optioneleRegel model.orderhistorie (metAantal "Bestelgeschiedenis meenemen" (aantalBestellingen model) "bestelling" "bestellingen") (orderhistorieCenten model)
+        ++ optioneleRegel model.nieuwsbrief (metAantal "Nieuwsbrief-aanmeldingen meenemen" (aantalAbonnees model) "adres" "adressen") (nieuwsbriefCenten model)
+        ++ optioneleRegel model.voorraad (metAantal "Voorraadaantallen live overzetten" (aantalProducten model) "product" "producten") (voorraadCenten model)
         ++ optioneleRegel model.reviews "Reviews / beoordelingen overzetten" reviewsCenten
         ++ optioneleRegel (domeinGekozen model) "Domeinverhuizing" domeinverhuizingCenten
         ++ optioneleRegel (emailGekozen model) "E-mail-setup" emailSetupCenten
@@ -1168,7 +1317,7 @@ view model =
             [ legend [] [ text "Je webshop" ]
             , bronVeld model.bron
             , doelVeld model.doel
-            , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "500 zit in de basisprijs" ProductenGewijzigd
+            , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "vanaf 20 cent per product, hoe meer hoe goedkoper per stuk" ProductenGewijzigd
             , p [ Attr.class "calc-hint" ]
                 [ text "Een schatting is genoeg: bij het maken van de offerte tellen we het exacte aantal voor je na." ]
             , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
@@ -1182,14 +1331,18 @@ view model =
               -- inputs blijven in de DOM). Aanleiding: de rekenhulp
               -- oogde als een muur van opties, en wie alles aanvinkt
               -- schrikt van het totaal (plotterenzo-les, 31 aug 2026).
-            , details [ Attr.class "calc-check-group" ]
+            , details [ Attr.class "calc-check-group" ] <|
                 [ summary [ Attr.class "calc-label" ] [ text "Wat wil je meenemen naar de nieuwe shop?" ]
-                , aanvinkVeld "Klantaccounts" "Je klanten houden hun eigen inlog" model.klantaccounts KlantaccountsGewijzigd
-                , aanvinkVeld "Bestelgeschiedenis" "Alle eerdere bestellingen van je klanten" model.orderhistorie OrderhistorieGewijzigd
-                , aanvinkVeld "Nieuwsbrief-aanmeldingen" "De adressenlijst van je nieuwsbrief" model.nieuwsbrief NieuwsbriefGewijzigd
-                , aanvinkVeld "Voorraadaantallen" "De actuele voorraad per product" model.voorraad VoorraadGewijzigd
-                , aanvinkVeld "Reviews / beoordelingen" "Je opgebouwde productbeoordelingen" model.reviews ReviewsGewijzigd
+                , aanvinkVeld "Klantaccounts" "Je klanten houden hun eigen inlog. \u{20AC}100 tot 1.000 accounts, daarboven per account" model.klantaccounts KlantaccountsGewijzigd
                 ]
+                    ++ aantalVeld model.klantaccounts "Hoeveel klantaccounts ongeveer?" model.klantaccountsInvoer KlantaccountsAantalGewijzigd
+                    ++ [ aanvinkVeld "Bestelgeschiedenis" "Alle eerdere bestellingen van je klanten. \u{20AC}100 tot 1.000 bestellingen, daarboven per bestelling" model.orderhistorie OrderhistorieGewijzigd ]
+                    ++ aantalVeld model.orderhistorie "Hoeveel bestellingen staan er in je shop ongeveer?" model.bestellingenInvoer BestellingenGewijzigd
+                    ++ [ aanvinkVeld "Nieuwsbrief-aanmeldingen" "De adressenlijst van je nieuwsbrief. \u{20AC}100 tot 1.000 adressen, daarboven per adres" model.nieuwsbrief NieuwsbriefGewijzigd ]
+                    ++ aantalVeld model.nieuwsbrief "Hoeveel nieuwsbrief-adressen ongeveer?" model.abonneesInvoer AbonneesGewijzigd
+                    ++ [ aanvinkVeld "Voorraadaantallen" "De actuele voorraad per product. \u{20AC}100 tot 1.000 producten, daarboven per product" model.voorraad VoorraadGewijzigd
+                       , aanvinkVeld "Reviews / beoordelingen" "Je opgebouwde productbeoordelingen" model.reviews ReviewsGewijzigd
+                       ]
             , details [ Attr.class "calc-check-group" ] <|
                 [ summary [ Attr.class "calc-label" ] [ text "Extra diensten en koppelingen" ] ]
                     ++ domeinEmailVelden model

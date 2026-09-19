@@ -721,6 +721,10 @@ footer small a:hover { color: var(--wit); }
 .calc-check-group > summary { cursor: pointer; }
 .calc-check-group > summary:hover { color: var(--navy); }
 .calc-check-group > .calc-check { margin-top: 0.7rem; }
+/* Het aantal-veld van een meegroeiende module (aantalVeld in
+   PrijsCalculator.elm) staat onder zijn aanvinkhokje, ingesprongen
+   tot onder de tekst ervan. */
+.calc-check-group > .calc-field { margin: 0.5rem 0 0.3rem 1.75rem; }
 .calc-check { display: flex; align-items: baseline; gap: 0.7rem; cursor: pointer; }
 .calc-check input { accent-color: var(--groen-vlak); width: 1.05rem; height: 1.05rem; flex: none; }
 .calc-check-text { display: flex; flex-direction: column; }

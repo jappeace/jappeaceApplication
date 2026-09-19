@@ -432,8 +432,8 @@ prijzen = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
     H.p ! A.class_ "prijs" $ do
       H.preEscapedToHtml ("vanaf &euro;" <> migratieBasisprijsEuro <> " ")
       H.small "eenmalig"
-    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("Inclusief 500 producten: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects." :: Text)
-    H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Grotere catalogi, extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
+    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product." :: Text)
+    H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Klantaccounts, bestelgeschiedenis en nieuwsbrief-adressen neem je mee voor &euro;100 per onderdeel tot 1.000 stuks, daarboven per stuk. Extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
     H.hr
     H.p ! A.class_ "abonnement" $ do
       H.preEscapedToHtml
@@ -905,19 +905,16 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.h2 "De migratie"
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
-          H.td "Basismigratie: 500 producten inbegrepen"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1.499" :: Text)
+          H.td "Basismigratie: de vaste basis voor elke shop (categorie\235n, pagina's, SEO-redirects, standaardthema, testshop en begeleiding)"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;999" :: Text)
         H.tr $ do
-          H.td "Extra producten boven die 500: de eerste duizend (elk product telt per taal \233\233n keer mee)"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
-        H.tr $ do
-          H.td "De duizend daarna"
+          H.td "Je producten, de eerste vijfhonderd (elk product telt per taal \233\233n keer mee)"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,20 per product" :: Text)
         H.tr $ do
-          H.td "De duizend daarna"
+          H.td "Van 501 tot 1.500"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,15 per product" :: Text)
         H.tr $ do
-          H.td "Alles daarboven: hoe groter je catalogus, hoe goedkoper per product"
+          H.td "Alles boven de 1.500: hoe groter je catalogus, hoe goedkoper per product"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,10 per product" :: Text)
         H.tr $ do
           H.td "Extra taal: configuratie, per taal"
@@ -926,23 +923,23 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
 
     H.section ! A.class_ "engagement" $ do
       H.h2 "Modules en extra diensten"
-      H.p "Losse onderdelen die je naar keuze bijschakelt. Je betaalt alleen voor wat je meeneemt."
+      H.p "Losse onderdelen die je naar keuze bijschakelt. Je betaalt alleen voor wat je meeneemt. Bij klantaccounts, bestelgeschiedenis, nieuwsbrief en voorraad groeit de prijs mee met de hoeveelheid: \8364\&100 dekt de toegang tot je huidige beheer en de eerste 1.000 stuks, daarboven betaal je per stuk, en hoe meer je hebt, hoe minder per stuk."
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
           H.td "Uitstraling overzetten"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;749" :: Text)
         H.tr $ do
-          H.td $ H.preEscapedToHtml ("Klantaccounts meenemen (je klanten houden hun inlog)" :: Text)
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+          H.td $ H.preEscapedToHtml ("Klantaccounts meenemen (je klanten houden hun inlog): &euro;100 tot 1.000 accounts, daarna &euro;0,15 per account, boven de 6.000 &euro;0,08" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
         H.tr $ do
-          H.td "Bestelgeschiedenis meenemen"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+          H.td $ H.preEscapedToHtml ("Bestelgeschiedenis meenemen: &euro;100 tot 1.000 bestellingen, daarna &euro;0,08 per bestelling, boven de 11.000 &euro;0,04" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
         H.tr $ do
-          H.td "Nieuwsbrief-aanmeldingen meenemen"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+          H.td $ H.preEscapedToHtml ("Nieuwsbrief-aanmeldingen meenemen: &euro;100 tot 1.000 adressen, daarna &euro;0,05 per adres, boven de 6.000 &euro;0,03" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
         H.tr $ do
-          H.td "Voorraadaantallen live overzetten"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+          H.td $ H.preEscapedToHtml ("Voorraadaantallen live overzetten: &euro;100 tot 1.000 producten, daarna &euro;0,05 per product, boven de 6.000 &euro;0,03" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
         H.tr $ do
           H.td "Reviews / beoordelingen overzetten"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
@@ -995,7 +992,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
     prijzenMeta :: PageMeta
     prijzenMeta = PageMeta
       { pageMetaTitle       = "Prijzen \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Vaste prijzen voor je webshop-migratie naar Shopify: vanaf \8364\&1.499 inclusief 500 producten. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
+      , pageMetaDescription = "Vaste prijzen voor je webshop-migratie naar Shopify: \8364\&999 basis plus vanaf 20 cent per product, aflopend. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/prijzen.html"
       , pageMetaOgImage     = Nothing
