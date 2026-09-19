@@ -163,6 +163,21 @@ themaOverzettenCenten =
     74900
 
 
+-- Decision: een nieuw ontwerp telt sinds 19 sep 2026 wél mee in het
+-- totaal, voor het deel dat wij doen: het ontwerp in de shop bouwen,
+-- €999 (Jappie 19 sep: "we do know it's going to be about 999 for
+-- realizing the design from our side"). Het ontwerp zelf maakt de
+-- ontwerppartner en die stuurt een aparte offerte; alleen dat deel
+-- blijft buiten het totaal. Daarvoor stond het hele nieuwe ontwerp op
+-- "op aanvraag" en telde het als nul, wat de richtprijs te laag liet
+-- lezen voor precies de keuze die het meeste werk is.
+
+
+themaNieuwBouwCenten : Int
+themaNieuwBouwCenten =
+    99900
+
+
 -- Decision: klantaccounts, orderhistorie, nieuwsbrief en voorraad zijn
 -- sinds 19 sep 2026 geen vaste 250 meer maar een staffel per item
 -- (besluit Jappie, jappiesoft pricing-business-model.org, sectie
@@ -893,7 +908,7 @@ themaCenten model =
             themaOverzettenCenten
 
         ThemaNieuw ->
-            0
+            themaNieuwBouwCenten
 
 
 {-| Platforms die het domein en de e-mail vaak zelf bundelen, dus waar een
@@ -1326,7 +1341,7 @@ themaRegels model =
             [ PrijsRegel "Uitstraling overzetten" themaOverzettenCenten Hoofdregel ]
 
         ThemaNieuw ->
-            []
+            [ PrijsRegel "Nieuw ontwerp bouwen in je shop (het ontwerp zelf: aparte offerte van onze ontwerppartner)" themaNieuwBouwCenten Hoofdregel ]
 
 
 {-| De volledige lijst prijsregels voor de huidige keuzes. Eén bron voor zowel
@@ -1385,8 +1400,8 @@ themaNoot thema =
     case thema of
         ThemaNieuw ->
             [ p [ Attr.class "calc-note calc-note-nadruk" ]
-                [ strong [] [ text "Let op: het nieuwe ontwerp zit niet in dit totaal. " ]
-                , text "Een eigen ontwerp maakt onze ontwerppartner, die stuurt daar een aparte offerte voor. De bouw van dat ontwerp in je shop begroten wij daarna apart."
+                [ strong [] [ text "Let op: het ontwerp zelf zit niet in dit totaal. " ]
+                , text "Een eigen ontwerp maakt onze ontwerppartner, die stuurt daar een aparte offerte voor. Wat wel in het totaal zit, is het bouwen van dat ontwerp in je shop (\u{20AC}999)."
                 ]
             ]
 

@@ -899,7 +899,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.h3 "Over de themakeuze"
         H.p "Kies je voor zelf inrichten, dan staat je shop na de migratie op een standaard Shopify-thema dat je zelf verzorgt of door een ontwerper naar keuze laat doen. Theming hoeft niet via ons; wij doen het ook en zijn er inmiddels aardig goed in. Probeer het gerust eerst zelf: je oude shop blijft gewoon draaien naast de nieuwe, dus je loopt geen risico. Kom je er niet uit, dan helpen we je alsnog."
         H.p $ H.preEscapedToHtml ("Bij uitstraling overzetten (&euro;749) benaderen we je huidige uitstraling zo dicht mogelijk; kleine aanpassingen op verzoek zitten erbij." :: Text)
-        H.p "Een volledig nieuw ontwerp maakt onze ontwerppartner; die stuurt daar een aparte offerte voor, en de bouw van dat ontwerp in je shop begroten wij apart."
+        H.p $ H.preEscapedToHtml ("Een volledig nieuw ontwerp maakt onze ontwerppartner; die stuurt daar een aparte offerte voor. Het bouwen van dat ontwerp in je shop doen wij voor &euro;999." :: Text)
 
     H.section ! A.class_ "engagement" $ do
       H.h2 "De migratie"
@@ -962,12 +962,12 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td $ H.preEscapedToHtml ("Cursus Shopify (2 uur, 1-op-1, samen door je nieuwe shop)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;300" :: Text)
         H.tr $ do
-          H.td "Volledig nieuw ontwerp (via onze ontwerppartner)"
-          H.td ! A.class_ "price-cell" $ "aparte offerte"
+          H.td $ H.preEscapedToHtml ("Volledig nieuw ontwerp bouwen in je shop (het ontwerp zelf: aparte offerte van onze ontwerppartner)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;999" :: Text)
         H.tr $ do
           H.td "Catalogus-brede teksttransformaties"
           H.td ! A.class_ "price-cell" $ "op aanvraag"
-      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat je shop op een standaard Shopify-thema dat je zelf inricht. De vormgeving hoeft niet via ons: je kunt het zelf doen of een ontwerper naar keuze inhuren. Wil je het uit handen geven, dan benaderen wij je huidige uitstraling zo dicht mogelijk (&euro;749) of maakt onze ontwerppartner iets nieuws (aparte offerte)." :: Text)
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat je shop op een standaard Shopify-thema dat je zelf inricht. De vormgeving hoeft niet via ons: je kunt het zelf doen of een ontwerper naar keuze inhuren. Wil je het uit handen geven, dan benaderen wij je huidige uitstraling zo dicht mogelijk (&euro;749) of bouwen wij een nieuw ontwerp van onze ontwerppartner in je shop (&euro;999, het ontwerp zelf via een aparte offerte van de partner)." :: Text)
       H.p ! A.class_ "engagement-note" $ "Kassa/point-of-sale zetten we bij je op locatie op. Installatie en reiskosten komen daar los bij, op aanvraag."
 
     H.section ! A.class_ "results" $ do
