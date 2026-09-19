@@ -1,8 +1,10 @@
 port module PrijsCalculator exposing
     ( BronPlatform(..)
     , DoelPlatform(..)
+    , ItemStaffel
     , Model
     , Msg(..)
+    , StaffelSegment
     , ThemaKeuze(..)
     , bronKeuzes
     , bronNaarWaarde
@@ -14,7 +16,10 @@ port module PrijsCalculator exposing
     , initieelModel
     , invoerEventParams
     , isGroteCatalogus
+    , itemStaffelSegmenten
     , offerteEventParams
+    , orderhistorieStaffel
+    , productStaffelSegmenten
     , leesBron
     , leesDoel
     , main
@@ -771,29 +776,103 @@ extraProductVertalingen model =
 
 extraProductVertalingenCenten : Model -> Int
 extraProductVertalingenCenten model =
-    staffelCenten (extraProductVertalingen model) staffelTredenCenten
+    segmentenCenten (productStaffelSegmenten (productVertalingen model))
 
 
-{-| De degressieve som over de extra productvertalingen: de eerste
-'tredeGrootte' vertalingen tegen de eerste trede, de volgende duizend
-tegen de tweede, enzovoort; alles voorbij de laatste trede tegen de
-bodemprijs. -}
-staffelCenten : Int -> List Int -> Int
-staffelCenten extra treden =
-    if extra <= 0 then
-        0
+
+-- STAFFELSEGMENTEN
+
+
+{-| Eén stuk van een staffel zoals de bezoeker hem te zien krijgt: de
+items 'van' tot en met 'tot' (1-gebaseerd, over de hele telling) tegen
+één tarief. De uitsplitsing op het scherm toont per segment een regel, en
+de totalen zijn de som van dezelfde segmenten, zodat regels en totaal
+nooit uit elkaar kunnen lopen. -}
+type alias StaffelSegment =
+    { van : Int
+    , tot : Int
+    , tariefCenten : Int
+    }
+
+
+{-| Verdeel 'aantal' items, te beginnen bij itemnummer 'start', over de
+treden (omvang, tarief) en daarna de bodem. Lege treden en een aantal van
+nul geven geen segmenten. -}
+segmentenVanTreden : Int -> Int -> List ( Int, Int ) -> Int -> List StaffelSegment
+segmentenVanTreden start aantal treden bodemCenten =
+    if aantal <= 0 then
+        []
 
     else
         case treden of
             [] ->
-                extra * staffelBodemCenten
+                [ { van = start, tot = start + aantal - 1, tariefCenten = bodemCenten } ]
 
-            tarief :: rest ->
+            ( omvang, tarief ) :: rest ->
                 let
                     inDezeTrede =
-                        Basics.min extra tredeGrootte
+                        Basics.min aantal omvang
                 in
-                inDezeTrede * tarief + staffelCenten (extra - inDezeTrede) rest
+                { van = start, tot = start + inDezeTrede - 1, tariefCenten = tarief }
+                    :: segmentenVanTreden (start + inDezeTrede) (aantal - inDezeTrede) rest bodemCenten
+
+
+{-| Twee opeenvolgende treden met hetzelfde tarief leest de bezoeker als
+één stap ("501 t/m 1.500 om 15 cent"), dus die voegen we samen. -}
+voegGelijkeSegmentenSamen : List StaffelSegment -> List StaffelSegment
+voegGelijkeSegmentenSamen segmenten =
+    case segmenten of
+        eerste :: tweede :: rest ->
+            if eerste.tariefCenten == tweede.tariefCenten then
+                voegGelijkeSegmentenSamen ({ eerste | tot = tweede.tot } :: rest)
+
+            else
+                eerste :: voegGelijkeSegmentenSamen (tweede :: rest)
+
+        _ ->
+            segmenten
+
+
+segmentAantal : StaffelSegment -> Int
+segmentAantal segment =
+    segment.tot - segment.van + 1
+
+
+segmentCenten : StaffelSegment -> Int
+segmentCenten segment =
+    segmentAantal segment * segment.tariefCenten
+
+
+segmentenCenten : List StaffelSegment -> Int
+segmentenCenten segmenten =
+    List.sum (List.map segmentCenten segmenten)
+
+
+{-| De productstaffel voor een aantal productvertalingen: treden van
+'tredeGrootte' tegen 'staffelTredenCenten', daarna de bodem, met gelijke
+buurtreden samengevoegd. -}
+productStaffelSegmenten : Int -> List StaffelSegment
+productStaffelSegmenten vertalingen =
+    voegGelijkeSegmentenSamen
+        (segmentenVanTreden
+            (inbegrepenProducten + 1)
+            (Basics.max 0 (vertalingen - inbegrepenProducten))
+            (List.map (\tarief -> ( tredeGrootte, tarief )) staffelTredenCenten)
+            staffelBodemCenten
+        )
+
+
+{-| De staffel van een meegroeiende module boven de inbegrepen items:
+eerst 'tredeOmvang' items tegen het eerste tarief, daarna het lagere. -}
+itemStaffelSegmenten : ItemStaffel -> Int -> List StaffelSegment
+itemStaffelSegmenten staffel aantal =
+    voegGelijkeSegmentenSamen
+        (segmentenVanTreden
+            (moduleInbegrepenItems + 1)
+            (Basics.max 0 (aantal - moduleInbegrepenItems))
+            [ ( staffel.tredeOmvang, staffel.tariefCenten ) ]
+            staffel.tariefDaarbovenCenten
+        )
 
 
 extraTaalConfiguratieCenten : Model -> Int
@@ -856,18 +935,7 @@ als 0 items en geeft dus het vaste deel; dat is de laagste prijs die de
 module kan hebben, geen verzonnen bedrag. -}
 itemStaffelCenten : ItemStaffel -> Int -> Int
 itemStaffelCenten staffel aantal =
-    let
-        bovenInbegrepen =
-            Basics.max 0 (aantal - moduleInbegrepenItems)
-
-        inEersteTrede =
-            Basics.min bovenInbegrepen staffel.tredeOmvang
-    in
-    moduleVastCenten
-        + inEersteTrede
-        * staffel.tariefCenten
-        + (bovenInbegrepen - inEersteTrede)
-        * staffel.tariefDaarbovenCenten
+    moduleVastCenten + segmentenCenten (itemStaffelSegmenten staffel aantal)
 
 
 aantalKlantaccounts : Model -> Int
@@ -1159,16 +1227,55 @@ aantalLabel aantal enkelvoud meervoud =
            )
 
 
-{-| Omschrijving van een meegroeiende module met het opgegeven aantal erbij,
-zodat de bezoeker (en de offerte-mail) ziet waar het bedrag op rust. Zonder
-opgave staat er "tot 1.000", het aantal dat in het vaste deel zit. -}
-metAantal : String -> Int -> String -> String -> String
-metAantal omschrijving aantal enkelvoud meervoud =
-    if aantal <= 0 then
-        omschrijving ++ " (tot " ++ voegDuizendtallenToe (String.fromInt moduleInbegrepenItems) ++ " " ++ meervoud ++ ")"
+{-| Eén regel per staffelstap: "Producten 501 t/m 1.500 (1.000 x \u{20AC}0,15)"
+met het bedrag van die stap, zodat de bezoeker ziet hoeveel items tegen
+welk tarief tellen in plaats van één opgeteld staffelbedrag. -}
+segmentRegel : String -> StaffelSegment -> PrijsRegel
+segmentRegel eenheid segment =
+    PrijsRegel
+        (eenheid
+            ++ " "
+            ++ voegDuizendtallenToe (String.fromInt segment.van)
+            ++ " t/m "
+            ++ voegDuizendtallenToe (String.fromInt segment.tot)
+            ++ " ("
+            ++ voegDuizendtallenToe (String.fromInt (segmentAantal segment))
+            ++ " \u{00D7} "
+            ++ formatteerEuro segment.tariefCenten
+            ++ ")"
+        )
+        (segmentCenten segment)
+
+
+{-| Bij meer talen telt elk product per taal, dus dan heet de telling
+productvertalingen; bij één taal gewoon producten. -}
+productLabel : Model -> String
+productLabel model =
+    if aantalTalen model > 1 then
+        "Productvertalingen (producten \u{00D7} talen)"
 
     else
-        omschrijving ++ " (" ++ voegDuizendtallenToe (String.fromInt aantal) ++ " " ++ (if aantal == 1 then enkelvoud else meervoud) ++ ")"
+        "Producten"
+
+
+{-| De regels van een meegroeiende module: het vaste deel met wat erin zit,
+en daaronder per staffelstap een regel voor de items daarboven. Zonder
+opgave (of tot 1.000 items) blijft het bij het vaste deel. -}
+moduleRegels : Bool -> String -> String -> String -> ItemStaffel -> Int -> List PrijsRegel
+moduleRegels aan omschrijving eenheidKop eenheidMeervoud staffel aantal =
+    if aan then
+        PrijsRegel
+            (omschrijving
+                ++ ": toegang en de eerste "
+                ++ voegDuizendtallenToe (String.fromInt moduleInbegrepenItems)
+                ++ " "
+                ++ eenheidMeervoud
+            )
+            moduleVastCenten
+            :: List.map (segmentRegel eenheidKop) (itemStaffelSegmenten staffel aantal)
+
+    else
+        []
 
 
 themaRegels : Model -> List PrijsRegel
@@ -1190,19 +1297,16 @@ nooit uit elkaar lopen. -}
 prijsRegels : Model -> List PrijsRegel
 prijsRegels model =
     [ PrijsRegel "Basismigratie (vaste basis: redirects, categorie\u{00EB}n, pagina's, standaardthema)" basisMigratieCenten ]
-        ++ optioneleRegel
-            (extraProductVertalingen model > 0)
-            (aantalLabel (extraProductVertalingen model) "product (over alle talen, aflopende staffel vanaf 20 cent)" "producten (over alle talen, aflopende staffel vanaf 20 cent)")
-            (extraProductVertalingenCenten model)
+        ++ List.map (segmentRegel (productLabel model)) (productStaffelSegmenten (productVertalingen model))
         ++ optioneleRegel
             (extraTalen model > 0)
             (aantalLabel (extraTalen model) "extra taal: configuratie \u{00D7} \u{20AC}250" "extra talen: configuratie \u{00D7} \u{20AC}250")
             (extraTaalConfiguratieCenten model)
         ++ themaRegels model
-        ++ optioneleRegel model.klantaccounts (metAantal "Klantaccounts meenemen" (aantalKlantaccounts model) "account" "accounts") (klantaccountsCenten model)
-        ++ optioneleRegel model.orderhistorie (metAantal "Bestelgeschiedenis meenemen" (aantalBestellingen model) "bestelling" "bestellingen") (orderhistorieCenten model)
-        ++ optioneleRegel model.nieuwsbrief (metAantal "Nieuwsbrief-aanmeldingen meenemen" (aantalAbonnees model) "adres" "adressen") (nieuwsbriefCenten model)
-        ++ optioneleRegel model.voorraad (metAantal "Voorraadaantallen live overzetten" (aantalProducten model) "product" "producten") (voorraadCenten model)
+        ++ moduleRegels model.klantaccounts "Klantaccounts meenemen" "Accounts" "accounts" klantaccountsStaffel (aantalKlantaccounts model)
+        ++ moduleRegels model.orderhistorie "Bestelgeschiedenis meenemen" "Bestellingen" "bestellingen" orderhistorieStaffel (aantalBestellingen model)
+        ++ moduleRegels model.nieuwsbrief "Nieuwsbrief-aanmeldingen meenemen" "Adressen" "adressen" nieuwsbriefStaffel (aantalAbonnees model)
+        ++ moduleRegels model.voorraad "Voorraadaantallen live overzetten" "Producten" "producten" voorraadStaffel (aantalProducten model)
         ++ optioneleRegel model.reviews "Reviews / beoordelingen overzetten" reviewsCenten
         ++ optioneleRegel (domeinGekozen model) "Domeinverhuizing" domeinverhuizingCenten
         ++ optioneleRegel (emailGekozen model) "E-mail-setup" emailSetupCenten

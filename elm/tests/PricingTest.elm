@@ -1,4 +1,4 @@
-module PricingTest exposing (groteCatalogusSuite, suite)
+module PricingTest exposing (groteCatalogusSuite, staffelSegmentenSuite, suite)
 
 {-| Test dat de prijsberekening van de calculator gelijk blijft aan de tabel op
 /prijzen (en dus aan standaard-prijslijst.org). Deze test faalt zodra de
@@ -17,6 +17,9 @@ import PrijsCalculator
         , ThemaKeuze(..)
         , initieelModel
         , isGroteCatalogus
+        , itemStaffelSegmenten
+        , orderhistorieStaffel
+        , productStaffelSegmenten
         , totaalCenten
         , update
         )
@@ -50,6 +53,47 @@ groteCatalogusSuite =
                     , \model -> Expect.equal 609900 (totaalCenten model)
                     ]
                     (metProducten 50000 1 initieelModel)
+        ]
+
+
+staffelSegmentenSuite : Test
+staffelSegmentenSuite =
+    describe "staffelsegmenten: de stappen die de bezoeker te zien krijgt"
+        [ test "5.000 producten: drie stappen, gelijke buurtreden samengevoegd (1-500 om 20, 501-1.500 om 15, 1.501-5.000 om 10)" <|
+            \_ ->
+                Expect.equal
+                    [ { van = 1, tot = 500, tariefCenten = 20 }
+                    , { van = 501, tot = 1500, tariefCenten = 15 }
+                    , { van = 1501, tot = 5000, tariefCenten = 10 }
+                    ]
+                    (productStaffelSegmenten 5000)
+        , test "1.170 producten eindigt midden in een trede: 1-500, 501-1.170" <|
+            \_ ->
+                Expect.equal
+                    [ { van = 1, tot = 500, tariefCenten = 20 }
+                    , { van = 501, tot = 1170, tariefCenten = 15 }
+                    ]
+                    (productStaffelSegmenten 1170)
+        , test "40 producten: één stap" <|
+            \_ ->
+                Expect.equal [ { van = 1, tot = 40, tariefCenten = 20 } ] (productStaffelSegmenten 40)
+        , test "0 producten: geen stappen" <|
+            \_ ->
+                Expect.equal [] (productStaffelSegmenten 0)
+        , test "de som van de stappen is het staffelbedrag: 5.000 producten = 600" <|
+            \_ ->
+                Expect.equal 60000
+                    (List.sum (List.map (\seg -> (seg.tot - seg.van + 1) * seg.tariefCenten) (productStaffelSegmenten 5000)))
+        , test "bestelgeschiedenis 11.504: boven de inbegrepen 1.000 eerst 10.000 om 8ct, dan 504 om 4ct" <|
+            \_ ->
+                Expect.equal
+                    [ { van = 1001, tot = 11000, tariefCenten = 8 }
+                    , { van = 11001, tot = 11504, tariefCenten = 4 }
+                    ]
+                    (itemStaffelSegmenten orderhistorieStaffel 11504)
+        , test "bestelgeschiedenis 800: niets boven de inbegrepen items, geen stappen" <|
+            \_ ->
+                Expect.equal [] (itemStaffelSegmenten orderhistorieStaffel 800)
         ]
 
 
