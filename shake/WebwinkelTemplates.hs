@@ -406,23 +406,6 @@ shopifyPrijspeil = "augustus 2026"
 shopifyPrijzenUrl :: H.AttributeValue
 shopifyPrijzenUrl = "https://www.shopify.com/nl/prijzen"
 
--- | Note under the price sections: what the merchant pays Shopify itself per
--- month after the migration, datestamped and linked to Shopify's own pricing
--- page. Shown wherever 'prijzen' appears and on 'prijzenPage'.
-shopifyKostenNote :: Html
-shopifyKostenNote =
-  H.p ! A.class_ "engagement-note" $ do
-    H.preEscapedToHtml
-      ( "Naast onze eenmalige migratieprijs betaal je het abonnement van je nieuwe platform. Shopify Basic kost bijvoorbeeld &euro;"
-          <> shopifyBasicJaarlijksEuroPerMaand
-          <> " per maand bij jaarlijkse betaling en &euro;"
-          <> shopifyBasicMaandelijksEuroPerMaand
-          <> " per maand bij maandelijkse betaling (prijspeil " <> shopifyPrijspeil <> ", zie "
-      )
-    H.a ! A.href shopifyPrijzenUrl $ "de actuele Shopify-prijzen"
-    ")."
-    H.preEscapedToHtml (" Sommige extra's gaan op Shopify via losse apps met een eigen maandprijs; die betaal je alleen voor functies die je zelf kiest, en in de vrijblijvende doorrekening zetten we vooraf op een rij welke apps jouw shop nodig heeft en wat die kosten. Op je huidige platform is zo'n uitbreiding vaak niet duurder, maar simpelweg niet verkrijgbaar." :: Text)
-
 -- | De gedeelde prijzen-sectie: de prijs-kaart uit het joepa-ontwerp, met de
 -- rekenhulp-knop als vervolgstap en de betaal-na-succes-garantie eronder.
 prijzen :: Html
@@ -434,18 +417,6 @@ prijzen = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
       H.small "eenmalig"
     H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product." :: Text)
     H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Klantaccounts, bestelgeschiedenis en nieuwsbrief-adressen neem je mee voor &euro;100 per onderdeel tot 1.000 stuks, daarboven per stuk. Extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
-    H.hr
-    H.p ! A.class_ "abonnement" $ do
-      H.preEscapedToHtml
-        ( "Naast onze eenmalige migratieprijs betaal je het abonnement van je nieuwe platform. Shopify Basic kost bijvoorbeeld &euro;"
-            <> shopifyBasicJaarlijksEuroPerMaand
-            <> " per maand bij jaarlijkse betaling en &euro;"
-            <> shopifyBasicMaandelijksEuroPerMaand
-            <> " per maand bij maandelijkse betaling (prijspeil " <> shopifyPrijspeil <> ", zie "
-        )
-      H.a ! A.href shopifyPrijzenUrl $ "de actuele Shopify-prijzen"
-      ")."
-      H.preEscapedToHtml (" Sommige extra's gaan op Shopify via losse apps met een eigen maandprijs; die betaal je alleen voor functies die je zelf kiest, en in de vrijblijvende doorrekening zetten we vooraf op een rij welke apps jouw shop nodig heeft en wat die kosten. Op je huidige platform is zo'n uitbreiding vaak niet duurder, maar simpelweg niet verkrijgbaar." :: Text)
     H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct je prijs"
     H.p ! A.class_ "garantie" $ do
       H.preEscapedToHtml vinkjeSvg
@@ -919,7 +890,6 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.tr $ do
           H.td "Extra taal: configuratie, per taal"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
-      shopifyKostenNote
 
     H.section ! A.class_ "engagement" $ do
       H.h2 "Modules en extra diensten"
