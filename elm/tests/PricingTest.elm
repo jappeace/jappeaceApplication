@@ -200,7 +200,7 @@ suite =
                             , domeinBijMijnwebwinkel = True
                         }
                     )
-        , test "nieuw ontwerp telt de bouw van 999 mee (het ontwerp zelf is de aparte offerte van de partner)" <|
+        , test "nieuw ontwerp telt het uitwerken van 999 mee (het ontwerp zelf is de aparte offerte van de partner)" <|
             \_ ->
                 Expect.equal (109900 + 99900)
                     (totaalCenten { initieelModel | thema = ThemaNieuw })

@@ -164,7 +164,7 @@ themaOverzettenCenten =
 
 
 -- Decision: een nieuw ontwerp telt sinds 19 sep 2026 wél mee in het
--- totaal, voor het deel dat wij doen: het ontwerp in de shop bouwen,
+-- totaal, voor het deel dat wij doen: het ontwerp in de shop uitwerken,
 -- €999 (Jappie 19 sep: "we do know it's going to be about 999 for
 -- realizing the design from our side"). Het ontwerp zelf maakt de
 -- ontwerppartner en die stuurt een aparte offerte; alleen dat deel
@@ -173,8 +173,8 @@ themaOverzettenCenten =
 -- lezen voor precies de keuze die het meeste werk is.
 
 
-themaNieuwBouwCenten : Int
-themaNieuwBouwCenten =
+themaNieuwUitwerkenCenten : Int
+themaNieuwUitwerkenCenten =
     99900
 
 
@@ -908,7 +908,7 @@ themaCenten model =
             themaOverzettenCenten
 
         ThemaNieuw ->
-            themaNieuwBouwCenten
+            themaNieuwUitwerkenCenten
 
 
 {-| Platforms die het domein en de e-mail vaak zelf bundelen, dus waar een
@@ -1341,7 +1341,7 @@ themaRegels model =
             [ PrijsRegel "Uitstraling overzetten" themaOverzettenCenten Hoofdregel ]
 
         ThemaNieuw ->
-            [ PrijsRegel "Nieuw ontwerp bouwen in je shop (het ontwerp zelf: aparte offerte van onze ontwerppartner)" themaNieuwBouwCenten Hoofdregel ]
+            [ PrijsRegel "Nieuw ontwerp uitwerken in je shop (het ontwerp zelf: aparte offerte van onze ontwerppartner)" themaNieuwUitwerkenCenten Hoofdregel ]
 
 
 {-| De volledige lijst prijsregels voor de huidige keuzes. Eén bron voor zowel
@@ -1401,7 +1401,7 @@ themaNoot thema =
         ThemaNieuw ->
             [ p [ Attr.class "calc-note calc-note-nadruk" ]
                 [ strong [] [ text "Let op: het ontwerp zelf zit niet in dit totaal. " ]
-                , text "Een eigen ontwerp maakt onze ontwerppartner, die stuurt daar een aparte offerte voor. Wat wel in het totaal zit, is het bouwen van dat ontwerp in je shop (\u{20AC}999)."
+                , text "Een eigen ontwerp maakt onze ontwerppartner, die stuurt daar een aparte offerte voor. Wat wel in het totaal zit, is het uitwerken van dat ontwerp in je shop (\u{20AC}999)."
                 ]
             ]
 
