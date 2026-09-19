@@ -543,7 +543,6 @@ main > section ul li strong { font-family: var(--kop); color: var(--navy-diep); 
 .prijs-kaart .inbegrepen { color: var(--inkt); }
 .prijs-kaart .meerprijs { color: var(--grijs); font-size: 0.97rem; margin-top: 0.8rem; }
 .prijs-kaart hr { border: 0; border-top: 1px solid var(--lijn); margin-block: 1.4rem; }
-.prijs-kaart .abonnement { color: var(--grijs); font-size: 0.92rem; }
 .prijs-kaart .cta-button { margin-top: 1.5rem; }
 .prijs-kaart .garantie {
   margin-top: 0.9rem; font-size: 0.92rem; font-weight: 600; color: var(--groen-tekst);
