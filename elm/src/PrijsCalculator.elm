@@ -1385,7 +1385,7 @@ themaNoot thema =
     case thema of
         ThemaNieuw ->
             [ p [ Attr.class "calc-note" ]
-                [ text "Nieuw ontwerp: op aanvraag, nog niet meegerekend in het totaal." ]
+                [ text "Nieuw ontwerp: een eigen ontwerp maakt onze ontwerppartner, die stuurt daar een aparte offerte voor. Dat bedrag zit niet in dit totaal; de bouw van het ontwerp in je shop begroten wij apart." ]
             ]
 
         ThemaStandaard ->
