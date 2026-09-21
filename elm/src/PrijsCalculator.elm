@@ -15,6 +15,7 @@ port module PrijsCalculator exposing
     , doelNaarWaarde
     , doelOmschrijving
     , formulierGeldig
+    , heeftProductExport
     , initieelModel
     , invoerEventParams
     , isGroteCatalogus
@@ -25,9 +26,11 @@ port module PrijsCalculator exposing
     , productStaffelSegmenten
     , leesBron
     , leesDoel
+    , leesQuery
     , main
     , totaalCenten
     , update
+    , zelfImportActief
     )
 
 {-| Interactieve prijsindicatie voor een webshop-migratie op webwinkelverhuis.nl.
@@ -269,6 +272,47 @@ cursusCenten =
     30000
 
 
+-- Decision: afrondingsregels voor wie de producten al zelf in Shopify
+-- zette (besluit Jappie 21 sep 2026, jappiesoft
+-- strategy/standaard-prijslijst.org, sectie "Al zelf begonnen?", en
+-- strategy/ccv-positionering-plan.org). CCV Shop en Lightspeed hebben
+-- een productexport en Shopify importeert CSV; de Asat-meting van 21
+-- sep liet zien wat die route laat liggen: de categoriekoppeling van
+-- de helft van de producten, alle productopties met meerprijs, een
+-- dubbele import, pagina's en nieuws, redirects. Voor die winkelier
+-- vervalt de productstaffel ("door jou gedaan") en wordt de basis van
+-- 999 uitgesplitst in drie regels die er precies op optellen
+-- (499 + 350 + 150), elk apart af te vinken zodat hij ook alleen de
+-- collecties kan afnemen. Alternatief overwogen: de basis laten staan
+-- en alleen de staffel op nul zetten; afgewezen omdat de winkelier dan
+-- niet ziet dat hij precies het werk koopt waar hij op vastliep.
+
+
+collectiesHerstellenCenten : Int
+collectiesHerstellenCenten =
+    49900
+
+
+redirectsSeoCenten : Int
+redirectsSeoCenten =
+    35000
+
+
+paginasNieuwsCenten : Int
+paginasNieuwsCenten =
+    15000
+
+
+productoptiesHerstellenCenten : Int
+productoptiesHerstellenCenten =
+    25000
+
+
+tweedeDomeinRedirectsCenten : Int
+tweedeDomeinRedirectsCenten =
+    25000
+
+
 
 -- MODEL
 
@@ -327,6 +371,12 @@ type alias Model =
     , b2bKanaal : Bool
     , pointOfSale : Bool
     , cursus : Bool
+    , zelfGeimporteerd : Bool
+    , afrondingCollecties : Bool
+    , afrondingRedirects : Bool
+    , afrondingPaginas : Bool
+    , productoptiesHerstellen : Bool
+    , tweedeDomeinRedirects : Bool
     , naam : String
     , webshopDomein : String
     , emailInvoer : String
@@ -357,6 +407,12 @@ initieelModel =
     , b2bKanaal = False
     , pointOfSale = False
     , cursus = False
+    , zelfGeimporteerd = False
+    , afrondingCollecties = True
+    , afrondingRedirects = True
+    , afrondingPaginas = True
+    , productoptiesHerstellen = False
+    , tweedeDomeinRedirects = False
     , naam = ""
     , webshopDomein = ""
     , emailInvoer = ""
@@ -366,9 +422,36 @@ initieelModel =
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( initieelModel, Cmd.none )
+{-| De pagina geeft window.location.search als flag mee, zodat een link
+vanaf een landingspagina de rekenhulp kan voorinvullen:
+/prijzen.html?bron=ccv&zelf=ja#rekenhulp. -}
+init : String -> ( Model, Cmd Msg )
+init query =
+    ( leesQuery query initieelModel, Cmd.none )
+
+
+{-| Lees de voorinvulling uit een query-string ("?bron=ccv&zelf=ja").
+Onbekende sleutels en waarden veranderen niets; "zelf" telt alleen voor
+platforms met een productexport, zoals de vinkbox in de rekenhulp. -}
+leesQuery : String -> Model -> Model
+leesQuery query model =
+    List.foldl pasQueryParameterToe model (String.split "&" (String.replace "?" "" query))
+
+
+pasQueryParameterToe : String -> Model -> Model
+pasQueryParameterToe parameter model =
+    case String.split "=" parameter of
+        [ "bron", waarde ] ->
+            { model | bron = leesBron waarde }
+
+        [ "doel", waarde ] ->
+            { model | doel = leesDoel waarde }
+
+        [ "zelf", "ja" ] ->
+            zetZelfGeimporteerd True model
+
+        _ ->
+            model
 
 
 
@@ -395,6 +478,12 @@ type Msg
     | B2bKanaalGewijzigd Bool
     | PointOfSaleGewijzigd Bool
     | CursusGewijzigd Bool
+    | ZelfGeimporteerdGewijzigd Bool
+    | AfrondingCollectiesGewijzigd Bool
+    | AfrondingRedirectsGewijzigd Bool
+    | AfrondingPaginasGewijzigd Bool
+    | ProductoptiesGewijzigd Bool
+    | TweedeDomeinGewijzigd Bool
     | NaamGewijzigd String
     | WebshopDomeinGewijzigd String
     | EmailInvoerGewijzigd String
@@ -577,6 +666,7 @@ invoerEventParams model =
     , ( "talen", Encode.int (aantalTalen model) )
     , ( "bron", Encode.string (bronOmschrijving model.bron) )
     , ( "doel", Encode.string (doelOmschrijving model.doel) )
+    , ( "zelf_geimporteerd", Encode.bool (zelfImportActief model) )
     ]
 
 
@@ -612,6 +702,7 @@ offerteEventParams model =
     , ( "currency", Encode.string "EUR" )
     , ( "bron", Encode.string (bronOmschrijving model.bron) )
     , ( "doel", Encode.string (doelOmschrijving model.doel) )
+    , ( "zelf_geimporteerd", Encode.bool (zelfImportActief model) )
     ]
 
 
@@ -674,6 +765,24 @@ update msg model =
 
         PointOfSaleGewijzigd aan ->
             markeerInvoer { model | pointOfSale = aan }
+
+        ZelfGeimporteerdGewijzigd aan ->
+            markeerInvoer (zetZelfGeimporteerd aan model)
+
+        AfrondingCollectiesGewijzigd aan ->
+            markeerInvoer { model | afrondingCollecties = aan }
+
+        AfrondingRedirectsGewijzigd aan ->
+            markeerInvoer { model | afrondingRedirects = aan }
+
+        AfrondingPaginasGewijzigd aan ->
+            markeerInvoer { model | afrondingPaginas = aan }
+
+        ProductoptiesGewijzigd aan ->
+            markeerInvoer { model | productoptiesHerstellen = aan }
+
+        TweedeDomeinGewijzigd aan ->
+            markeerInvoer { model | tweedeDomeinRedirects = aan }
 
         NaamGewijzigd waarde ->
             markeerEngagement { model | naam = waarde }
@@ -934,6 +1043,48 @@ bundeltDomeinEnEmail bron =
             False
 
 
+{-| Platforms met een productexport die de winkelier zelf in Shopify kan
+importeren (CCV Shop en Lightspeed; gemeten bij Asat, 21 sep 2026, en
+besluit Jappie om Lightspeed gelijk te behandelen). Alleen daar stellen we
+de vraag "staan je producten al in Shopify?". -}
+heeftProductExport : BronPlatform -> Bool
+heeftProductExport bron =
+    case bron of
+        BronCcvShop ->
+            True
+
+        BronLightspeed ->
+            True
+
+        BronMijnwebwinkel ->
+            False
+
+        BronWoocommerce ->
+            False
+
+        BronAnders ->
+            False
+
+
+{-| De afrondingsroute geldt alleen als het platform een export heeft én de
+bezoeker zegt dat de producten al in Shopify staan. Een vinkje dat bij een
+ander platform is blijven staan telt dus niet mee. -}
+zelfImportActief : Model -> Bool
+zelfImportActief model =
+    heeftProductExport model.bron && model.zelfGeimporteerd
+
+
+{-| Wie de producten al zelf overzette, heeft ook al een thema gekozen; de
+themavraag verdwijnt dan uit beeld en telt niet mee. -}
+zetZelfGeimporteerd : Bool -> Model -> Model
+zetZelfGeimporteerd aan model =
+    if aan then
+        { model | zelfGeimporteerd = True, thema = ThemaStandaard }
+
+    else
+        { model | zelfGeimporteerd = False }
+
+
 {-| Domeinverhuizing telt alleen als het bronplatform het domein bundelt én de
 bezoeker aangeeft dat het domein daar staat. -}
 domeinGekozen : Model -> Bool
@@ -1003,10 +1154,29 @@ indienAan aan centen =
         0
 
 
+{-| De basis en de productstaffel, of bij een eigen import de
+afrondingsregels in plaats daarvan. -}
+basisEnProductenCenten : Model -> Int
+basisEnProductenCenten model =
+    if zelfImportActief model then
+        afrondingCenten model
+
+    else
+        basisMigratieCenten + extraProductVertalingenCenten model
+
+
+afrondingCenten : Model -> Int
+afrondingCenten model =
+    indienAan model.afrondingCollecties collectiesHerstellenCenten
+        + indienAan model.afrondingRedirects redirectsSeoCenten
+        + indienAan model.afrondingPaginas paginasNieuwsCenten
+        + indienAan model.productoptiesHerstellen productoptiesHerstellenCenten
+        + indienAan model.tweedeDomeinRedirects tweedeDomeinRedirectsCenten
+
+
 totaalCenten : Model -> Int
 totaalCenten model =
-    basisMigratieCenten
-        + extraProductVertalingenCenten model
+    basisEnProductenCenten model
         + extraTaalConfiguratieCenten model
         + themaCenten model
         + indienAan model.klantaccounts (klantaccountsCenten model)
@@ -1349,8 +1519,7 @@ de uitsplitsing op het scherm als de vooringevulde offerte-mail, zodat die twee
 nooit uit elkaar lopen. -}
 prijsRegels : Model -> List PrijsRegel
 prijsRegels model =
-    [ PrijsRegel "Basismigratie" basisMigratieCenten Hoofdregel ]
-        ++ productRegels model
+    basisEnProductRegels model
         ++ optioneleRegel
             (extraTalen model > 0)
             (aantalLabel (extraTalen model) "extra taal: configuratie \u{00D7} \u{20AC}250" "extra talen: configuratie \u{00D7} \u{20AC}250")
@@ -1367,6 +1536,23 @@ prijsRegels model =
         ++ optioneleRegel model.b2bKanaal "B2B-kanaal (zakelijke prijzen)" b2bKanaalCenten
         ++ optioneleRegel model.pointOfSale "Kassa / point-of-sale" pointOfSaleCenten
         ++ optioneleRegel model.cursus "Cursus Shopify (2 uur, 1-op-1)" cursusCenten
+
+
+{-| De eerste regels: de basis met de productstaffel, of bij een eigen
+import de regel "door jou gedaan" op nul en daaronder de afgevinkte
+afrondingsregels. -}
+basisEnProductRegels : Model -> List PrijsRegel
+basisEnProductRegels model =
+    if zelfImportActief model then
+        PrijsRegel "Producten overzetten: door jou gedaan" 0 Hoofdregel
+            :: optioneleRegel model.afrondingCollecties "Collecties en menu herstellen (categorieboom, elk product toegewezen, dubbele import opgeruimd)" collectiesHerstellenCenten
+            ++ optioneleRegel model.afrondingRedirects "301-redirects van je oude shop, SEO-velden waar nodig" redirectsSeoCenten
+            ++ optioneleRegel model.afrondingPaginas "Informatiepagina's en nieuwsberichten overzetten" paginasNieuwsCenten
+            ++ optioneleRegel model.productoptiesHerstellen "Productopties met meerprijs herstellen" productoptiesHerstellenCenten
+            ++ optioneleRegel model.tweedeDomeinRedirects "301-redirects van een tweede domein" tweedeDomeinRedirectsCenten
+
+    else
+        PrijsRegel "Basismigratie" basisMigratieCenten Hoofdregel :: productRegels model
 
 
 regelNaarHtml : PrijsRegel -> Html Msg
@@ -1424,10 +1610,14 @@ bronNoot bron =
             []
 
         BronCcvShop ->
-            []
+            [ p [ Attr.class "calc-note" ]
+                [ text "CCV Shop heeft een productexport, maar die neemt je categorieën, productopties en pagina's niet mee. Al zelf geïmporteerd? Vink dat hierboven aan, dan rekenen we alleen de afronding." ]
+            ]
 
         BronLightspeed ->
-            []
+            [ p [ Attr.class "calc-note" ]
+                [ text "Producten al zelf uit Lightspeed overgezet? Vink dat hierboven aan, dan rekenen we alleen de afronding: collecties, redirects en pagina's." ]
+            ]
 
         BronWoocommerce ->
             []
@@ -1482,16 +1672,19 @@ pointOfSaleNoot pointOfSale =
 view : Model -> Html Msg
 view model =
     div [ Attr.class "prijs-calculator" ]
-        [ fieldset [ Attr.class "calc-inputs" ]
+        [ fieldset [ Attr.class "calc-inputs" ] <|
             [ legend [] [ text "Je webshop" ]
             , bronVeld model.bron
             , doelVeld model.doel
-            , getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer "vanaf 20 cent per product, hoe meer hoe goedkoper per stuk" ProductenGewijzigd
-            , p [ Attr.class "calc-hint" ]
-                [ text "Een schatting is genoeg: bij het maken van de offerte tellen we het exacte aantal voor je na." ]
-            , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
-            , themaVeld model.thema
-              -- Decision: de aanvinkgroepen zitten in een natief
+            ]
+                ++ zelfImportVelden model
+                ++ [ getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer (productenHint model) ProductenGewijzigd
+                   , p [ Attr.class "calc-hint" ]
+                        [ text "Een schatting is genoeg: bij het maken van de offerte tellen we het exacte aantal voor je na." ]
+                   , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
+                   ]
+                ++ themaVelden model
+                ++ [ -- Decision: de aanvinkgroepen zitten in een natief
               -- details/summary-element en staan standaard dicht.
               -- Gekozen boven een eigen open/dicht-Msg in het model:
               -- de browser regelt het klappen, er is geen state of
@@ -1500,7 +1693,7 @@ view model =
               -- inputs blijven in de DOM). Aanleiding: de rekenhulp
               -- oogde als een muur van opties, en wie alles aanvinkt
               -- schrikt van het totaal (plotterenzo-les, 31 aug 2026).
-            , details [ Attr.class "calc-check-group" ] <|
+              details [ Attr.class "calc-check-group" ] <|
                 [ summary [ Attr.class "calc-label" ] [ text "Wat wil je meenemen naar de nieuwe shop?" ]
                 , aanvinkVeld "Klantaccounts" "Je klanten houden hun eigen inlog. \u{20AC}100 tot 1.000 accounts, daarboven per account" model.klantaccounts KlantaccountsGewijzigd
                 ]
@@ -1520,7 +1713,7 @@ view model =
                        , aanvinkVeld "Kassa / point-of-sale voor mijn fysieke winkel" "Verkopen in de winkel \u{00E9}n online met \u{00E9}\u{00E9}n systeem (Shopify POS)" model.pointOfSale PointOfSaleGewijzigd
                        , aanvinkVeld "Cursus Shopify (2 uur, 1-op-1)" "Samen door je nieuwe shop, zodat je hem daarna zelf beheert" model.cursus CursusGewijzigd
                        ]
-            ]
+                   ]
         , div [ Attr.class "calc-result" ] <|
             if isGroteCatalogus model then
                 groteCatalogusPaneel model
@@ -1536,6 +1729,61 @@ view model =
                     ++ opAanvraagNoten model
                     ++ [ lockInNoot, offerteFormulier model, vrijblijvendNoot ]
         ]
+
+
+{-| De vraag "staan je producten al in Shopify?", alleen bij platforms met
+een productexport, en daaronder (open) de afrondingsregels zodra hij
+aanstaat: drie regels die samen de basis vormen, standaard aangevinkt, plus
+twee losse posten. -}
+zelfImportVelden : Model -> List (Html Msg)
+zelfImportVelden model =
+    if heeftProductExport model.bron then
+        aanvinkVeld
+            "Mijn producten staan al in Shopify"
+            ("Heb je de export van " ++ bronOmschrijving model.bron ++ " al zelf geïmporteerd? Dan rekenen we alleen het werk dat die export laat liggen.")
+            model.zelfGeimporteerd
+            ZelfGeimporteerdGewijzigd
+            :: afrondingVelden model
+
+    else
+        []
+
+
+afrondingVelden : Model -> List (Html Msg)
+afrondingVelden model =
+    if zelfImportActief model then
+        [ details [ Attr.class "calc-check-group", Attr.attribute "open" "" ]
+            [ summary [ Attr.class "calc-label" ] [ text "Wat moet er nog gebeuren?" ]
+            , aanvinkVeld "Collecties en menu herstellen" "De categorieboom van je oude shop, elk product in de juiste collecties, dubbele import opgeruimd. €499" model.afrondingCollecties AfrondingCollectiesGewijzigd
+            , aanvinkVeld "301-redirects en SEO-velden" "Elke oude URL naar het nieuwe adres, meta-titels en -beschrijvingen aangevuld waar nodig. €350" model.afrondingRedirects AfrondingRedirectsGewijzigd
+            , aanvinkVeld "Informatiepagina's en nieuwsberichten" "Alle pagina's en berichten van je oude shop. €150" model.afrondingPaginas AfrondingPaginasGewijzigd
+            , aanvinkVeld "Productopties met meerprijs herstellen" "Keuzes zoals een grotere harde schijf of extra batterijen komen terug als varianten. €250" model.productoptiesHerstellen ProductoptiesGewijzigd
+            , aanvinkVeld "301-redirects van een tweede domein" "Bijvoorbeeld een aparte groothandelshop die in de nieuwe shop opgaat. €250" model.tweedeDomeinRedirects TweedeDomeinGewijzigd
+            ]
+        ]
+
+    else
+        []
+
+
+productenHint : Model -> String
+productenHint model =
+    if zelfImportActief model then
+        "telt niet mee in de prijs: die producten staan er al"
+
+    else
+        "vanaf 20 cent per product, hoe meer hoe goedkoper per stuk"
+
+
+{-| De themavraag vervalt bij een eigen import: wie de producten al
+overzette, koos zijn thema ook al. -}
+themaVelden : Model -> List (Html Msg)
+themaVelden model =
+    if zelfImportActief model then
+        []
+
+    else
+        [ themaVeld model.thema ]
 
 
 {-| Boven de grens tonen we geen richtprijs: een vlak tarief zegt daar niets
@@ -1738,6 +1986,7 @@ offerteBody model =
          , "Aantal talen: " ++ String.fromInt (aantalTalen model)
          , "Huidig platform: " ++ bronOmschrijving model.bron
          , "Gewenst platform: " ++ doelOmschrijving model.doel
+         , "Producten al zelf in Shopify gezet: " ++ jaNee (zelfImportActief model)
          , "Thema: " ++ themaOmschrijving model.thema
          , ""
          , "Prijsindicatie (excl. BTW):"
@@ -1749,6 +1998,15 @@ offerteBody model =
                , "Kun je mij hiervoor een offerte sturen?"
                ]
         )
+
+
+jaNee : Bool -> String
+jaNee waarde =
+    if waarde then
+        "ja"
+
+    else
+        "nee"
 
 
 prijsRegelTekst : PrijsRegel -> String
@@ -1776,7 +2034,7 @@ pointOfSaleReiskostenRegel model =
 -- MAIN
 
 
-main : Program () Model Msg
+main : Program String Model Msg
 main =
     Browser.element
         { init = init
