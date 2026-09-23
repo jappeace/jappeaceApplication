@@ -81,6 +81,7 @@ suite =
                             , ( "talen", Encode.int 3 )
                             , ( "bron", Encode.string "CCV Shop" )
                             , ( "doel", Encode.string "Shopify" )
+                            , ( "zelf_geimporteerd", Encode.bool False )
                             ]
                         )
                     )

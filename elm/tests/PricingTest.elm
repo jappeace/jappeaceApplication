@@ -1,4 +1,4 @@
-module PricingTest exposing (groteCatalogusSuite, staffelSegmentenSuite, suite)
+module PricingTest exposing (groteCatalogusSuite, staffelSegmentenSuite, suite, zelfImportSuite)
 
 {-| Test dat de prijsberekening van de calculator gelijk blijft aan de tabel op
 /prijzen (en dus aan standaard-prijslijst.org). Deze test faalt zodra de
@@ -15,8 +15,10 @@ import PrijsCalculator
         , Model
         , Msg(..)
         , ThemaKeuze(..)
+        , heeftProductExport
         , initieelModel
         , isGroteCatalogus
+        , leesQuery
         , itemStaffelSegmenten
         , Regelniveau(..)
         , orderhistorieStaffel
@@ -24,6 +26,7 @@ import PrijsCalculator
         , productStaffelSegmenten
         , totaalCenten
         , update
+        , zelfImportActief
         )
 import Test exposing (Test, describe, test)
 
@@ -304,4 +307,74 @@ suite =
                         (\doel -> totaalCenten { initieelModel | doel = doel })
                         [ DoelShopify, DoelWoocommerce, DoelAnders, DoelWeetNiet ]
                     )
+        ]
+
+
+{-| Iemand die de producten al zelf uit CCV Shop in Shopify zette: de
+staffel vervalt, de basis wordt drie afrondingsregels die er precies op
+optellen, en elk vinkje haalt zijn regel uit het totaal. -}
+ccvZelf : Model
+ccvZelf =
+    Tuple.first (update (ZelfGeimporteerdGewijzigd True) { initieelModel | bron = BronCcvShop, productenInvoer = "5000" })
+
+
+zelfImportSuite : Test
+zelfImportSuite =
+    describe "PrijsCalculator: producten al zelf in Shopify (afrondingsroute)"
+        [ test "CCV met 5.000 producten, alles aangevinkt: 999, gelijk aan de basis, geen staffel" <|
+            \_ ->
+                Expect.equal 99900 (totaalCenten ccvZelf)
+        , test "de regels: producten door jou gedaan op 0, dan collecties 499, redirects 350, pagina's 150" <|
+            \_ ->
+                Expect.equal [ 0, 49900, 35000, 15000 ]
+                    (List.map .centen (List.filter (\r -> r.niveau == Hoofdregel) (prijsRegels ccvZelf)))
+        , test "pagina's uitvinken haalt 150 van het totaal: 849" <|
+            \_ ->
+                Expect.equal 84900 (totaalCenten (Tuple.first (update (AfrondingPaginasGewijzigd False) ccvZelf)))
+        , test "alleen collecties: 499" <|
+            \_ ->
+                let
+                    alleenCollecties =
+                        { ccvZelf | afrondingRedirects = False, afrondingPaginas = False }
+                in
+                Expect.equal 49900 (totaalCenten alleenCollecties)
+        , test "productopties en tweede domein tellen erbij: 999 + 250 + 250" <|
+            \_ ->
+                Expect.equal 149900 (totaalCenten { ccvZelf | productoptiesHerstellen = True, tweedeDomeinRedirects = True })
+        , test "de meegroeiende modules en B2B blijven gewoon werken: B2B erbij is 1.749" <|
+            \_ ->
+                Expect.equal 174900 (totaalCenten (Tuple.first (update (B2bKanaalGewijzigd True) ccvZelf)))
+        , test "aanvinken zet het thema terug op standaard, want dat heeft hij al" <|
+            \_ ->
+                Expect.equal ThemaStandaard
+                    (Tuple.first (update (ZelfGeimporteerdGewijzigd True) { initieelModel | bron = BronCcvShop, thema = ThemaOverzetten })).thema
+        , test "bij MijnWebwinkel telt het vinkje niet: gewone prijs, geen afrondingsroute" <|
+            \_ ->
+                let
+                    mww =
+                        { initieelModel | zelfGeimporteerd = True }
+                in
+                Expect.all
+                    [ \m -> Expect.equal False (zelfImportActief m)
+                    , \m -> Expect.equal (totaalCenten initieelModel) (totaalCenten m)
+                    ]
+                    mww
+        , test "Lightspeed heeft de vraag ook, MijnWebwinkel en WooCommerce niet" <|
+            \_ ->
+                Expect.equal [ True, True, False, False, False ]
+                    (List.map heeftProductExport [ BronCcvShop, BronLightspeed, BronMijnwebwinkel, BronWoocommerce, BronAnders ])
+        , test "de link vanaf de landingspagina vult voor: ?bron=ccv&zelf=ja" <|
+            \_ ->
+                let
+                    model =
+                        leesQuery "?bron=ccv&zelf=ja" initieelModel
+                in
+                Expect.all
+                    [ \m -> Expect.equal BronCcvShop m.bron
+                    , \m -> Expect.equal True (zelfImportActief m)
+                    ]
+                    model
+        , test "een onbekende query verandert niets" <|
+            \_ ->
+                Expect.equal initieelModel (leesQuery "?utm_source=x&zelf=nee" initieelModel)
         ]

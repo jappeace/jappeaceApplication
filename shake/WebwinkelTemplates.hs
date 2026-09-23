@@ -363,7 +363,7 @@ ctaTrackScript =
 -- Analytics alongside the page views.
 prijsCalculatorInitScript :: Text
 prijsCalculatorInitScript =
-  "var prijsCalcApp = Elm.PrijsCalculator.init({node: document.getElementById('prijs-calculator-mount')});"
+  "var prijsCalcApp = Elm.PrijsCalculator.init({node: document.getElementById('prijs-calculator-mount'), flags: window.location.search});"
     <> "if(prijsCalcApp.ports&&prijsCalcApp.ports.analyticsEvent){"
     <> "prijsCalcApp.ports.analyticsEvent.subscribe(function(e){"
     <> "if(window.gtag){gtag('event', e.name, e.params||{});}"
@@ -891,6 +891,36 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td "Extra taal: configuratie, per taal"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
 
+    -- Decision: aparte tabel voor wie de producten al zelf in Shopify
+    -- zette (besluit Jappie 21 sep 2026, jappiesoft
+    -- strategy/ccv-positionering-plan.org). CCV Shop en Lightspeed
+    -- hebben een productexport en Shopify importeert CSV; wat die
+    -- route laat liggen (categorieën, productopties, dubbele import,
+    -- pagina's, redirects, SEO-velden) is precies ons werk. De drie
+    -- eerste regels zijn de basis van 999 uitgesplitst, zodat de
+    -- winkelier ook één onderdeel kan afnemen. Bedragen gelijk aan
+    -- standaard-prijslijst.org en elm/src/PrijsCalculator.elm.
+    H.section ! A.class_ "engagement" $ do
+      H.h2 "Al zelf begonnen? (CCV Shop, Lightspeed)"
+      H.p $ H.preEscapedToHtml ("Heb je de productexport van CCV Shop of Lightspeed al zelf in Shopify ge&iuml;mporteerd? Die export neemt je categorie&euml;n, productopties met meerprijs en pagina&apos;s niet mee, en zet je producten soms twee keer neer. Dan betaal je niet voor het overzetten van producten, maar alleen voor de afronding. Kies in de rekenhulp hierboven &bdquo;mijn producten staan al in Shopify&rdquo; om dit door te rekenen." :: Text)
+      H.table ! A.class_ "price-table" $ H.tbody $ do
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Collecties en menu herstellen: de categorieboom van je oude shop, elk product in de juiste collecties, dubbele import opgeruimd" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;499" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("301-redirects van je oude shop, met de SEO-velden (meta-titels en -beschrijvingen) waar nodig aangevuld" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;350" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Informatiepagina&apos;s en nieuwsberichten overzetten" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Productopties met meerprijs herstellen (bijvoorbeeld een grotere harde schijf erbij), als varianten" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("301-redirects van een tweede domein, bijvoorbeeld een aparte groothandelshop die in de nieuwe shop opgaat" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("De eerste drie zijn samen de basismigratie van &euro;999, en net als daar zitten de testshop en de livegang erbij. Klantaccounts, bestelgeschiedenis, B2B en de andere modules hieronder gelden ook hier." :: Text)
+
     H.section ! A.class_ "engagement" $ do
       H.h2 "Modules en extra diensten"
       H.p "Losse onderdelen die je naar keuze bijschakelt. Je betaalt alleen voor wat je meeneemt. Bij klantaccounts, bestelgeschiedenis, nieuwsbrief en voorraad groeit de prijs mee met de hoeveelheid: \8364\&100 dekt de toegang tot je huidige beheer en de eerste 1.000 stuks, daarboven betaal je per stuk, en hoe meer je hebt, hoe minder per stuk."
@@ -1375,7 +1405,16 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           -- functies gebruikt, prikt daar meteen doorheen. Wat blijft is
           -- wat we kunnen aantonen; de Fiserv-passage blijft bewust een
           -- constatering over zwaartepunt, geen EOL-voorspelling.
-          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Sinds de Amerikaanse betaalreus Fiserv CCV overnam ligt het zwaartepunt bij betalen en kassa: je webshop is een tweede rang product. Wij verhuizen je complete shop geautomatiseerd naar Shopify, WooCommerce of een ander platform van je keuze: zonder dataverlies, met zo min mogelijk downtime." :: Text)
+          -- Decision: de export-rem is sinds 21 sep 2026 de kern van de
+          -- pagina (besluit Jappie na het Asat-gesprek, jappiesoft
+          -- strategy/ccv-positionering-plan.org): een CCV-winkelier
+          -- exporteert zijn producten zelf en loopt daarna vast op wat
+          -- de export laat liggen. De pagina verkoopt dus het afmaken
+          -- (categorieën, redirects, pagina's, productopties, B2B), niet
+          -- het overzetten van producten. Cijfers uit het Asat-geval
+          -- staan hier bewust niet: dat verhaal komt met naam na de
+          -- livegang (besluit Jappie 21 sep).
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Sinds de Amerikaanse betaalreus Fiserv CCV overnam ligt het zwaartepunt bij betalen en kassa: je webshop is een tweede rang product. Eruit komen is het moeilijke deel: de export uit CCV neemt je categorie&euml;n, productopties en pagina&apos;s niet mee. Precies dat deel doen wij, ook als je al zelf begonnen bent." :: Text)
           -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
           -- stap in plaats van de offerte.
           H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
@@ -1384,15 +1423,62 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
               ! A.alt "Illustratie van dozen die een bevroren webshop verlaten richting een zonnige nieuwe winkel"
               ! A.width "400" ! A.height "300"
 
-    -- What we migrate
+    -- Al zelf begonnen: wat de CCV-export laat liggen, en dat wij dat
+    -- afmaken. Volgorde op de pijn die CCV-winkeliers in het gesprek
+    -- noemen: het zakelijke kanaal voorop (Jappie 21 sep: "most pain
+    -- is in the b2b setup"), dan collecties, redirects en opties.
+    H.section ! A.class_ "for-who" ! A.id "zelf-begonnen" $ do
+      H.h2 "Al zelf begonnen? Wij maken het af"
+      H.p $ H.preEscapedToHtml ("CCV Shop heeft een productexport en Shopify importeert die. Veel winkeliers zetten hun producten daarom zelf over, en lopen dan vast op de rest. Dat is geen falen: de export neemt het gewoon niet mee. Je betaalt bij ons dan niet voor producten, maar alleen voor de afronding, per onderdeel." :: Text)
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
+                ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
+          H.h3 "Zakelijke klanten (B2B)"
+          H.p $ H.preEscapedToHtml ("Inkoopprijzen die pas na inloggen zichtbaar zijn, staffels, en een aanvraagpagina waarop nieuwe bedrijven zich melden en jij ze goedkeurt. Ook als je groothandel nu op een ander systeem draait: die voegen we samen tot &eacute;&eacute;n shop." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
+          H.h3 "Collecties en menu"
+          H.p $ H.preEscapedToHtml ("De export laat je categorie&euml;n achter: producten komen los binnen, zonder collectie en zonder menu. Wij lezen de categorieboom uit je oude shop en zetten elk product op zijn plek, dubbele imports opgeruimd." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
+          H.h3 "Redirects en SEO"
+          H.p "Elke oude URL krijgt een 301 naar het nieuwe adres, en de meta-titels en -beschrijvingen vullen we aan waar de export ze liet vallen. Zo blijft je vindbaarheid staan."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
+                ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
+          H.h3 "Productopties en pagina's"
+          H.p "Keuzes met meerprijs, zoals een grotere harde schijf erbij, komen in de export als losse producten of helemaal niet; wij zetten ze terug als varianten. Je informatiepagina's en nieuwsberichten nemen we ook mee."
+      H.p $ H.a ! A.href "/prijzen.html?bron=ccv&zelf=ja#rekenhulp" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bereken de afronding &rarr;" :: Text)
+
+    -- What we migrate. Volgorde sinds 21 sep 2026 op wat een
+    -- CCV-winkelier mist na een eigen export: categorieën en
+    -- redirects eerst, producten daarna.
     H.section ! A.class_ "for-who" ! A.id "what" $ do
       H.h2 "Wat we migreren"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
+          H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
+          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met het navigatiemenu erbij; elk product staat in de juiste collecties." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
+          H.h3 "SEO-redirects"
+          H.p "301-redirects van elke oude URL naar de nieuwe URL. Je backlinks blijven werken en je opgebouwde SEO verhuist mee."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-thema.svg"
+                ! A.alt "Pagina met tekst" ! A.width "56" ! A.height "56"
+          H.h3 "Pagina's en nieuws"
+          H.p "Je informatiepagina's (voorwaarden, klantenservice, handleidingen) en nieuwsberichten verhuizen mee, ook de pagina's die niet in je menu staan."
+        H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
                 ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
-          H.h3 "Producten & varianten"
-          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van je doelplatform."
+          H.h3 "Producten, varianten & opties"
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's, varianten en keuzes met meerprijs. Automatisch overgezet naar het formaat van je doelplatform."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
                 ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
@@ -1404,16 +1490,6 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.h3 "Klantaccounts"
           H.p "Klantgegevens en bestelgeschiedenis worden overgezet zodat je klanten direct kunnen inloggen op de nieuwe shop."
         H.li ! A.class_ "card" $ do
-          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
-                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
-          H.h3 "SEO-redirects"
-          H.p "301-redirects van elke oude URL naar de nieuwe URL. Je backlinks blijven werken en je opgebouwde SEO verhuist mee."
-        H.li ! A.class_ "card" $ do
-          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
-                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
-          H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
-          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
-        H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
                 ! A.alt "Stapel dozen" ! A.width "56" ! A.height "56"
           H.h3 "Voorraad & prijzen"
@@ -1422,7 +1498,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- How it works: de gedeelde sectie van de landingspagina, met
     -- CCV-specifieke stapteksten.
     hoeHetWerktSectie
-      [ HoeHetWerktStap "Scan" "Ons programma leest je CCV Shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+      [ HoeHetWerktStap "Scan" "Ons programma leest je CCV Shop volledig uit en zet alles over naar een testshop: producten, collections, pagina's, redirects. Staan je producten al in Shopify? Dan vullen we die aan in plaats van opnieuw te importeren; ze houden hun adres."
       , HoeHetWerktStap "Wennen" "De testshop draait naast je CCV Shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
       , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk."
       ]
@@ -1486,7 +1562,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       -- ("migreren") in plaats van merkwoord ("verhuizen"); zie het
       -- Decision-commentaar daar (Search-Console-dump 2 sep 2026).
       { pageMetaTitle       = "Migreren van CCV Shop naar Shopify \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      , pageMetaDescription = "Migratie van CCV Shop naar Shopify, ook als je al zelf begonnen bent: categorie\235n, 301-redirects, pagina's, productopties en zakelijke prijzen (B2B). Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       , pageMetaOgImage     = Nothing
@@ -1499,7 +1575,16 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
 
 ccvshopFaq :: [(FaqQuestion, FaqAnswer)]
 ccvshopFaq =
-  [ ( "Hoe lang duurt een migratie?"
+  [ ( "Ik heb mijn producten al zelf in Shopify gezet. Kunnen jullie de rest doen?"
+    , faqAnswerText "Ja, en dat komt vaak voor: de CCV-export en de Shopify-import zijn geen probleem, de rest wel. Je betaalt dan niet voor het overzetten van producten. Wij herstellen de collecties en het menu, zetten de 301-redirects en de SEO-velden, verhuizen je pagina's en nieuwsberichten en zetten productopties met meerprijs terug als varianten. Elk onderdeel heeft een vaste prijs, je kiest wat je nodig hebt. Je producten blijven staan waar ze staan." )
+  , ( "Wat neemt de CCV-export niet mee?"
+    , faqAnswerText "De koppeling van producten aan categorieën, keuzes met meerprijs (zoals een grotere harde schijf erbij), je informatiepagina's en nieuwsberichten, en de doorverwijzingen van je oude adressen. Wie twee keer importeert, krijgt bovendien elk product dubbel. Meta-titels en -beschrijvingen komen soms mee en soms niet. Al die punten lezen wij rechtstreeks uit je CCV Shop." )
+  , ( "Ik heb ook een groothandel-shop. Kan dat één shop worden met zakelijke prijzen?"
+    , faqAnswerHtml $ do
+        "Ja. Shopify heeft sinds april 2026 zakelijke functies op de gewone abonnementen: inkoopprijzen met staffels die pas na inloggen zichtbaar zijn, bedrijfsaccounts, en een aanvraagpagina waarop een nieuw bedrijf zich meldt en jij het goedkeurt. Je zakelijke klanten zetten wij over als bedrijfsaccount, ook als je groothandel nu op een ander systeem draait. Consumenten bestellen gewoon zoals nu. Meer over wat wel en niet in het gewone abonnement zit: "
+        H.a ! A.href "/blog/van-lightspeed-naar-shopify-plus-voor-b2b-meestal-heb-je-plus-niet-nodig.html" $ "meestal heb je Plus niet nodig"
+        "." )
+  , ( "Hoe lang duurt een migratie?"
     , faqAnswerText "Het technische overzetten van je producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan je nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
