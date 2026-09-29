@@ -1699,8 +1699,13 @@ view model =
                        -- veld boven de prijs leest als een "variabele"
                        -- (PlayMoto-les, 28 sep 2026: "erg veel variabelen, ik
                        -- zou een vaste prijs verwachten"). Zichtbaar blijven:
-                       -- bron, doel, productaantal, prijs.
-                       , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
+                       -- bron, doel, productaantal, prijs. De div eromheen
+                       -- houdt het veld buiten de inspring-regel voor
+                       -- aantalvelden onder een aanvinkhokje (style.css
+                       -- .calc-check-group > .calc-field), anders leest het
+                       -- als onderdeel van "Reviews / beoordelingen".
+                       , div [ Attr.class "calc-taalveld" ]
+                            [ getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd ]
                        ]
             , details [ Attr.class "calc-check-group" ] <|
                 [ summary [ Attr.class "calc-label" ] [ text "Extra diensten en koppelingen" ] ]
