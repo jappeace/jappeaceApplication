@@ -1,5 +1,6 @@
 port module PrijsCalculator exposing
-    ( BronPlatform(..)
+    ( basisTotaalCenten
+    , BronPlatform(..)
     , DoelPlatform(..)
     , ItemStaffel
     , Model
@@ -30,6 +31,7 @@ port module PrijsCalculator exposing
     , main
     , totaalCenten
     , update
+    , voorbeeldPrijs
     , zelfImportActief
     )
 
@@ -54,8 +56,8 @@ zonder technische kennis: geen "registrar" of "MX-records", maar "je domeinnaam"
 en "je e-mailadressen".
 
 Deze indicatie is bewust geen offerte: alleen een offerte legt de prijs vast.
-Dat staat ook onder de uitkomst, zodat de bezoeker weet dat dit een richtprijs
-is en niet een toezegging.
+Dat staat ook onder de uitkomst: de prijs staat vast zodra wij de producten
+geteld hebben, en zonder extra's is hij ook het maximum.
 -}
 
 import Browser
@@ -1679,9 +1681,7 @@ view model =
             ]
                 ++ zelfImportVelden model
                 ++ [ getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer (productenHint model) ProductenGewijzigd
-                   , p [ Attr.class "calc-hint" ]
-                        [ text "Een schatting is genoeg: bij het maken van de offerte tellen we het exacte aantal voor je na." ]
-                   , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
+                   , voorbeeldPrijzenRegel model
                    ]
                 ++ themaVelden model
                 ++ [ -- Decision: de aanvinkgroepen zitten in een natief
@@ -1704,6 +1704,15 @@ view model =
                     ++ aantalVeld model.nieuwsbrief "Hoeveel nieuwsbrief-adressen ongeveer?" model.abonneesInvoer AbonneesGewijzigd
                     ++ [ aanvinkVeld "Voorraadaantallen" "De actuele voorraad per product. \u{20AC}100 tot 1.000 producten, daarboven per product" model.voorraad VoorraadGewijzigd
                        , aanvinkVeld "Reviews / beoordelingen" "Je opgebouwde productbeoordelingen" model.reviews ReviewsGewijzigd
+
+                       -- Decision: het talenveld staat sinds 29 sep 2026 in
+                       -- deze ingeklapte groep in plaats van bovenaan. Vrijwel
+                       -- elke lead is eentalig (standaard 1), en elk zichtbaar
+                       -- veld boven de prijs leest als een "variabele"
+                       -- (PlayMoto-les, 28 sep 2026: "erg veel variabelen, ik
+                       -- zou een vaste prijs verwachten"). Zichtbaar blijven:
+                       -- bron, doel, productaantal, prijs.
+                       , getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd
                        ]
             , details [ Attr.class "calc-check-group" ] <|
                 [ summary [ Attr.class "calc-label" ] [ text "Extra diensten en koppelingen" ] ]
@@ -1719,7 +1728,7 @@ view model =
                 groteCatalogusPaneel model
 
             else
-                [ h3 [] [ text "Je richtprijs" ]
+                [ h3 [] [ text "Je prijs" ]
                 , uitsplitsing model
                 , p [ Attr.class "calc-total" ]
                     [ span [] [ text "Totaal (excl. BTW)" ]
@@ -1772,7 +1781,71 @@ productenHint model =
         "telt niet mee in de prijs: die producten staan er al"
 
     else
-        "vanaf 20 cent per product, hoe meer hoe goedkoper per stuk"
+        "een schatting is genoeg: bij de offerte tellen we het exacte aantal voor je na"
+
+
+{-| Drie voorbeeldshops met hun prijs, onder het productveld. Een bezoeker
+met een grote catalogus ziet zo in een oogopslag zijn eigen bracket; op
+"vanaf 20 cent per product" rekende niemand door, het las als een lopende
+meter (PlayMoto-les, 28 sep 2026). De bedragen komen uit dezelfde
+'totaalCenten' als het totaal, met alleen de basis (huidige bron en doel,
+standaardthema, geen modules), zodat een tariefwijziging ze niet kan laten
+verlopen. Verborgen als de producten al in Shopify staan: dan tellen ze
+niet mee en zouden de voorbeelden tegenspreken wat de hint zegt. -}
+voorbeeldPrijzenRegel : Model -> Html Msg
+voorbeeldPrijzenRegel model =
+    if zelfImportActief model then
+        text ""
+
+    else
+        p [ Attr.class "calc-hint" ]
+            [ text
+                ("Ter indicatie, alles inbegrepen: "
+                    ++ String.join ", " (List.map (voorbeeldPrijs model) voorbeeldAantallen)
+                    ++ ". Hoe meer producten, hoe goedkoper per stuk."
+                )
+            ]
+
+
+{-| De catalogusgroottes van de voorbeeldregel: een kleine, een middelgrote
+en een grote shop, ruwweg de eerste trede, het einde van de tweede en het
+punt waar het bodemtarief al een derde van het bedrag uitmaakt. -}
+voorbeeldAantallen : List Int
+voorbeeldAantallen =
+    [ 500, 1000, 3000 ]
+
+
+{-| "3.000 producten \u{20AC}1.399" voor de voorbeeldregel: de basisprijs voor
+dat aantal in een taal, met de bron en het doel die de bezoeker koos maar
+zonder modules of thema. -}
+voorbeeldPrijs : Model -> Int -> String
+voorbeeldPrijs model aantal =
+    voegDuizendtallenToe (String.fromInt aantal)
+        ++ " producten "
+        ++ formatteerEuroRond (basisTotaalCenten model aantal)
+
+
+{-| Het totaal voor de basis alleen: het gekozen bron- en doelplatform met
+@aantal@ producten in een taal, standaardthema, niets aangevinkt. -}
+basisTotaalCenten : Model -> Int -> Int
+basisTotaalCenten model aantal =
+    totaalCenten
+        { initieelModel
+            | productenInvoer = String.fromInt aantal
+            , bron = model.bron
+            , doel = model.doel
+        }
+
+
+{-| Hele euro's voor de voorbeeldregel; de staffel geeft daar altijd hele
+bedragen, en ",00" achter drie voorbeelden op een rij is ruis. -}
+formatteerEuroRond : Int -> String
+formatteerEuroRond centen =
+    if modBy 100 centen == 0 then
+        "\u{20AC}" ++ voegDuizendtallenToe (String.fromInt (centen // 100))
+
+    else
+        formatteerEuro centen
 
 
 {-| De themavraag vervalt bij een eigen import: wie de producten al
@@ -1905,7 +1978,7 @@ emailVeld model =
 lockInNoot : Html Msg
 lockInNoot =
     p [ Attr.class "calc-lockin" ]
-        [ text "Dit is een richtprijs. Wil je tegen deze prijs verhuizen? Vraag nu een offerte aan." ]
+        [ text "Deze prijs staat vast zodra we je producten geteld hebben. Zonder extra's is dit ook het maximum. Wil je tegen deze prijs verhuizen? Vraag nu een offerte aan." ]
 
 
 {-| Geruststelling onder de offerte-knop: de aanvraag verplicht tot niets, de

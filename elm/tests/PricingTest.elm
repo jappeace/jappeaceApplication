@@ -25,6 +25,8 @@ import PrijsCalculator
         , prijsRegels
         , productStaffelSegmenten
         , totaalCenten
+    , voorbeeldPrijs
+    , basisTotaalCenten
         , update
         , zelfImportActief
         )
@@ -215,6 +217,14 @@ suite =
             \_ ->
                 Expect.equal 109900
                     (totaalCenten { initieelModel | bron = BronCcvShop })
+        , test "voorbeeldregel: 3.000 producten toont dezelfde basisprijs als het totaal (1.399, hele euro's)" <|
+            \_ ->
+                Expect.equal "3.000 producten \u{20AC}1.399" (voorbeeldPrijs initieelModel 3000)
+        , test "voorbeeldregel negeert aangevinkte modules en het ingevulde productaantal" <|
+            \_ ->
+                Expect.equal
+                    (totaalCenten (metProducten 500 1 initieelModel))
+                    (basisTotaalCenten { initieelModel | productenInvoer = "12345", reviews = True, klantaccounts = True } 500)
         , test "reviews overzetten voegt 150 toe" <|
             \_ ->
                 Expect.equal 124900
