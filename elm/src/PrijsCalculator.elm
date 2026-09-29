@@ -1,6 +1,5 @@
 port module PrijsCalculator exposing
-    ( basisTotaalCenten
-    , BronPlatform(..)
+    ( BronPlatform(..)
     , DoelPlatform(..)
     , ItemStaffel
     , Model
@@ -31,7 +30,6 @@ port module PrijsCalculator exposing
     , main
     , totaalCenten
     , update
-    , voorbeeldPrijs
     , zelfImportActief
     )
 
@@ -91,7 +89,6 @@ gaEvent naam params =
             , ( "params", Encode.object params )
             ]
         )
-
 
 
 -- CONSTANTEN (centen), gelijk aan standaard-prijslijst.org en /prijzen
@@ -315,7 +312,6 @@ tweedeDomeinRedirectsCenten =
     25000
 
 
-
 -- MODEL
 
 
@@ -454,7 +450,6 @@ pasQueryParameterToe parameter model =
 
         _ ->
             model
-
 
 
 -- UPDATE
@@ -805,7 +800,6 @@ update msg model =
             ( model, gaEvent "grote_catalogus_contact" [] )
 
 
-
 -- PRIJSBEREKENING
 
 
@@ -906,7 +900,6 @@ extraProductVertalingen model =
 extraProductVertalingenCenten : Model -> Int
 extraProductVertalingenCenten model =
     segmentenCenten (productStaffelSegmenten (productVertalingen model))
-
 
 
 -- STAFFELSEGMENTEN
@@ -1194,7 +1187,6 @@ totaalCenten model =
         + indienAan model.cursus cursusCenten
 
 
-
 -- WEERGAVE VAN BEDRAGEN
 
 
@@ -1229,7 +1221,6 @@ formatteerEuro centen =
             modBy 100 centen
     in
     "\u{20AC}" ++ voegDuizendtallenToe (String.fromInt euros) ++ "," ++ pad2 restCenten
-
 
 
 -- INVOERVELDEN
@@ -1381,7 +1372,6 @@ aanvinkVeld veldLabel toelichting aan naarBericht =
             , span [ Attr.class "calc-hint" ] [ text toelichting ]
             ]
         ]
-
 
 
 -- UITSPLITSING
@@ -1667,7 +1657,6 @@ pointOfSaleNoot pointOfSale =
         []
 
 
-
 -- VIEW
 
 
@@ -1681,7 +1670,6 @@ view model =
             ]
                 ++ zelfImportVelden model
                 ++ [ getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer (productenHint model) ProductenGewijzigd
-                   , voorbeeldPrijzenRegel model
                    ]
                 ++ themaVelden model
                 ++ [ -- Decision: de aanvinkgroepen zitten in een natief
@@ -1783,69 +1771,6 @@ productenHint model =
     else
         "een schatting is genoeg: bij de offerte tellen we het exacte aantal voor je na"
 
-
-{-| Drie voorbeeldshops met hun prijs, onder het productveld. Een bezoeker
-met een grote catalogus ziet zo in een oogopslag zijn eigen bracket; op
-"vanaf 20 cent per product" rekende niemand door, het las als een lopende
-meter (PlayMoto-les, 28 sep 2026). De bedragen komen uit dezelfde
-'totaalCenten' als het totaal, met alleen de basis (huidige bron en doel,
-standaardthema, geen modules), zodat een tariefwijziging ze niet kan laten
-verlopen. Verborgen als de producten al in Shopify staan: dan tellen ze
-niet mee en zouden de voorbeelden tegenspreken wat de hint zegt. -}
-voorbeeldPrijzenRegel : Model -> Html Msg
-voorbeeldPrijzenRegel model =
-    if zelfImportActief model then
-        text ""
-
-    else
-        p [ Attr.class "calc-hint" ]
-            [ text
-                ("Ter indicatie, alles inbegrepen: "
-                    ++ String.join ", " (List.map (voorbeeldPrijs model) voorbeeldAantallen)
-                    ++ ". Hoe meer producten, hoe goedkoper per stuk."
-                )
-            ]
-
-
-{-| De catalogusgroottes van de voorbeeldregel: een kleine, een middelgrote
-en een grote shop, ruwweg de eerste trede, het einde van de tweede en het
-punt waar het bodemtarief al een derde van het bedrag uitmaakt. -}
-voorbeeldAantallen : List Int
-voorbeeldAantallen =
-    [ 500, 1000, 3000 ]
-
-
-{-| "3.000 producten \u{20AC}1.399" voor de voorbeeldregel: de basisprijs voor
-dat aantal in een taal, met de bron en het doel die de bezoeker koos maar
-zonder modules of thema. -}
-voorbeeldPrijs : Model -> Int -> String
-voorbeeldPrijs model aantal =
-    voegDuizendtallenToe (String.fromInt aantal)
-        ++ " producten "
-        ++ formatteerEuroRond (basisTotaalCenten model aantal)
-
-
-{-| Het totaal voor de basis alleen: het gekozen bron- en doelplatform met
-@aantal@ producten in een taal, standaardthema, niets aangevinkt. -}
-basisTotaalCenten : Model -> Int -> Int
-basisTotaalCenten model aantal =
-    totaalCenten
-        { initieelModel
-            | productenInvoer = String.fromInt aantal
-            , bron = model.bron
-            , doel = model.doel
-        }
-
-
-{-| Hele euro's voor de voorbeeldregel; de staffel geeft daar altijd hele
-bedragen, en ",00" achter drie voorbeelden op een rij is ruis. -}
-formatteerEuroRond : Int -> String
-formatteerEuroRond centen =
-    if modBy 100 centen == 0 then
-        "\u{20AC}" ++ voegDuizendtallenToe (String.fromInt (centen // 100))
-
-    else
-        formatteerEuro centen
 
 
 {-| De themavraag vervalt bij een eigen import: wie de producten al
@@ -2101,7 +2026,6 @@ pointOfSaleReiskostenRegel model =
 
     else
         []
-
 
 
 -- MAIN
