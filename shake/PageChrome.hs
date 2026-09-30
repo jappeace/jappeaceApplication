@@ -18,6 +18,8 @@ module PageChrome
   , migratieBasisprijsEuro
   , meetLink
   , webwinkelverhuisMeetLink
+  , WebwinkelSchedulingLinkFout(..)
+  , webwinkelSchedulingLinkFout
   , companyWhatsappNumber
   , whatsappFloatingButton
   , organizationJsonLd
@@ -140,6 +142,27 @@ meetLink = "https://meet.jappiesoftware.com"
 -- (megavid blog/vhost.nix), so a visitor never leaves the brand.
 webwinkelverhuisMeetLink :: H.AttributeValue
 webwinkelverhuisMeetLink = "https://meet.webwinkelverhuis.nl"
+
+-- | Scheduling links a rendered webwinkelverhuis.nl page may not carry.
+data WebwinkelSchedulingLinkFout
+  = RawCalendarLink
+    -- ^ A raw calendar.app.google URL once sent visitors to the wrong calendar.
+  | JappiesoftwareMeetLink
+    -- ^ Leaves the brand, and the gesprek_knop_klik GA selector no longer counts it.
+  deriving (Eq, Show)
+
+-- | Checked on every rendered HTML page, blog content included, because
+-- the template tests cannot see what org content renders to. The Elm
+-- scanner's link is pinned separately by ScannerFormTest, which nix-build
+-- runs before the site build.
+webwinkelSchedulingLinkFout :: TL.Text -> Maybe WebwinkelSchedulingLinkFout
+webwinkelSchedulingLinkFout rendered =
+  if TL.isInfixOf "calendar.app.google" rendered
+    then Just RawCalendarLink
+    else
+      if TL.isInfixOf "meet.jappiesoftware.com" rendered
+        then Just JappiesoftwareMeetLink
+        else Nothing
 
 -- =============================================================================
 -- Floating WhatsApp contact button ("bolletje")
