@@ -151,8 +151,10 @@ data WebwinkelSchedulingLinkFout
     -- ^ Leaves the brand, and the gesprek_knop_klik GA selector no longer counts it.
   deriving (Eq, Show)
 
--- | Checked on every rendered page, blog content included, because the
--- template tests cannot see what org content renders to.
+-- | Checked on every rendered HTML page, blog content included, because
+-- the template tests cannot see what org content renders to. The Elm
+-- scanner's link is pinned separately by ScannerFormTest, which nix-build
+-- runs before the site build.
 webwinkelSchedulingLinkFout :: TL.Text -> Maybe WebwinkelSchedulingLinkFout
 webwinkelSchedulingLinkFout rendered =
   if TL.isInfixOf "calendar.app.google" rendered
