@@ -95,12 +95,16 @@ function expect(description, condition) {
     mails.length === 1 && mails[0].params.link_url.startsWith('mailto:jappie@'));
 }
 
-{
-  const footerMail = link('mailto:jappie@webwinkelverhuis.nl', 'jappie@webwinkelverhuis.nl');
-  const page = freshPage([footerMail]);
-  clickElement(page, footerMail);
-  expect('a mailto link present at load gives exactly one mail_klik, not one per binding',
-    page.events.filter(e => e.name === 'mail_klik').length === 1);
+for (const [href, eventName] of [
+  ['mailto:jappie@webwinkelverhuis.nl', 'mail_klik'],
+  ['https://wa.me/31644237437', 'whatsapp_klik'],
+  ['tel:+31644237437', 'bel_klik'],
+]) {
+  const staticLink = link(href, 'footer');
+  const page = freshPage([staticLink]);
+  clickElement(page, staticLink);
+  expect('a ' + eventName + ' link present at load counts exactly once, not once per binding',
+    page.events.filter(e => e.name === eventName).length === 1);
 }
 
 {
