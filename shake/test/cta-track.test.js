@@ -29,12 +29,16 @@ function matchesSelector(href, selector) {
 }
 
 function link(href, text) {
+  const ownListeners = [];
   const element = {
     textContent: text,
+    ownListeners,
     getAttribute: name => (name === 'href' ? href : null),
     matches: selector => matchesSelector(href, selector),
     classList: { contains: () => false },
-    addEventListener: () => {},
+    addEventListener: (type, handler) => {
+      if (type === 'click') ownListeners.push(handler);
+    },
   };
   element.closest = selector => (selector === 'a' ? element : null);
   return element;
@@ -44,14 +48,16 @@ function formField(form) {
   return { closest: selector => (selector === 'form' ? form : null) };
 }
 
-function freshPage() {
+// staticLinks are the links present at DOMContentLoaded, which
+// querySelectorAll returns; later links only exist when clicked.
+function freshPage(staticLinks = []) {
   const documentListeners = {};
   const events = [];
   const document = {
     addEventListener: (type, handler) => {
       (documentListeners[type] = documentListeners[type] || []).push(handler);
     },
-    querySelectorAll: () => [],
+    querySelectorAll: selector => staticLinks.filter(l => l.matches(selector)),
   };
   const gtag = (kind, name, params) => {
     if (kind === 'event') events.push({ name, params });
@@ -65,8 +71,14 @@ function freshPage() {
   return { fire, events };
 }
 
+// A click runs the link's own listeners, then bubbles to the document.
+function clickElement(page, element) {
+  element.ownListeners.forEach(handler => handler({ target: element }));
+  page.fire('click', element);
+}
+
 function clickOn(page, href, text) {
-  page.fire('click', link(href, text));
+  clickElement(page, link(href, text));
 }
 
 const failures = [];
@@ -81,6 +93,14 @@ function expect(description, condition) {
   expect('a mailto link that appears after load gives one mail_klik', mails.length === 1);
   expect('mail_klik carries the link_url',
     mails.length === 1 && mails[0].params.link_url.startsWith('mailto:jappie@'));
+}
+
+{
+  const footerMail = link('mailto:jappie@webwinkelverhuis.nl', 'jappie@webwinkelverhuis.nl');
+  const page = freshPage([footerMail]);
+  clickElement(page, footerMail);
+  expect('a mailto link present at load gives exactly one mail_klik, not one per binding',
+    page.events.filter(e => e.name === 'mail_klik').length === 1);
 }
 
 {
