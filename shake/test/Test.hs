@@ -32,7 +32,7 @@ import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzi
 import Data.Char (isHexDigit)
 import qualified Data.ByteString.Char8 as BSC
 import Metadata (parseOrgMeta, resolveSlug)
-import PageChrome (faqAnswerHtml, faqPageJsonLd, humanDateForLang, renderFaqItem)
+import PageChrome (WebwinkelSchedulingLinkFout(..), faqAnswerHtml, faqPageJsonLd, humanDateForLang, renderFaqItem, webwinkelSchedulingLinkFout)
 import Templates (renderTagPage, renderIndexPage)
 import Types (Article(..), Lang(..), PaginationInfo(..), defaultSiteConfig)
 import PenguinTemplates
@@ -186,6 +186,14 @@ main = defaultMain $
         (map (usesMeetLinkCase "https://meet.webwinkelverhuis.nl") meetLinkPages)
     , testGroup "penguin scheduling buttons use meet.jappiesoftware.com"
         (map (usesMeetLinkCase "https://meet.jappiesoftware.com") penguinMeetLinkPages)
+    , testGroup "the build refuses off-brand scheduling links in rendered webwinkel pages"
+        [ testCase "brand redirect passes" $
+            webwinkelSchedulingLinkFout "<a href=\"https://meet.webwinkelverhuis.nl\">plan</a>" @?= Nothing
+        , testCase "jappiesoftware redirect in blog content is refused" $
+            webwinkelSchedulingLinkFout "<a href=\"https://meet.jappiesoftware.com\">plan</a>" @?= Just JappiesoftwareMeetLink
+        , testCase "raw calendar link is refused" $
+            webwinkelSchedulingLinkFout "<a href=\"https://calendar.app.google/x\">plan</a>" @?= Just RawCalendarLink
+        ]
     , testGroup "no page publishes share-URL tracking parameters"
         (map noTrackingParamsCase allStaticPages)
     , testGroup "webwinkel content images load on the serve preview"
