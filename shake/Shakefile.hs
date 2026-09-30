@@ -493,8 +493,8 @@ maakGehashteKopie basisnaam extensie = do
 -- the local serve preview, rewrite asset references to their content-hashed
 -- names ('herschrijfAssetVerwijzingen'), and refuse to emit a page that links
 -- a raw calendar.app.google URL. Scheduling links must use the
--- https://meet.jappiesoftware.com redirect ('meetLink' in
--- 'WebwinkelTemplates'): a raw link in blog content once routed visitors to
+-- meet.* redirect ('meetLink' and 'webwinkelverhuisMeetLink' in
+-- 'PageChrome'): a raw link in blog content once routed visitors to
 -- the wrong calendar, and the template test suite cannot see rendered
 -- content. Crashing the build here beats publishing the bad link silently.
 writeWebwinkelHtmlFile :: GehashteAssets -> FilePath -> Html -> IO ()
@@ -502,7 +502,7 @@ writeWebwinkelHtmlFile gehashteAssets path html = do
   let rendered = herschrijfAssetVerwijzingen gehashteAssets
         (relativizeWebwinkelContentImages (renderHtml html))
   if TL.pack "calendar.app.google" `TL.isInfixOf` rendered
-    then error (path <> " links a raw calendar.app.google URL; use https://meet.jappiesoftware.com instead")
+    then error (path <> " links a raw calendar.app.google URL; use the meet.webwinkelverhuis.nl or meet.jappiesoftware.com redirect instead")
     else do
       Dir.createDirectoryIfMissing True (takeDirectory path)
       TLIO.writeFile path rendered

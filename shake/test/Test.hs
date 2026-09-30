@@ -98,24 +98,30 @@ meetLinkPages =
   , ("lightspeedWaaromPage", lightspeedWaaromPage)
   , ("overOnsPage", overOnsPage)
   , ("contactPage", contactPage)
-  , ("penguinWordpressPage", penguinWordpressPage (WebwinkelverhuisUrl testOrigin))
+  ]
+
+-- | The penguin (wordpress service) pages with a scheduling button; they
+-- stay on the jappiesoftware.com redirect.
+penguinMeetLinkPages :: [(String, Html)]
+penguinMeetLinkPages =
+  [ ("penguinWordpressPage", penguinWordpressPage (WebwinkelverhuisUrl testOrigin))
   , ("penguinWordpressPageNl", penguinWordpressPageNl (WebwinkelverhuisUrl testOrigin))
   ]
 
--- | Scheduling buttons must use the branded meet.jappiesoftware.com redirect,
--- never a raw calendar.app.google URL: the raw link routed to the wrong
--- calendar once, and the redirect is the single place the target may change.
-usesMeetLinkCase :: (String, Html) -> TestTree
-usesMeetLinkCase (pageName, page) = testCase pageName $ do
+-- | Scheduling buttons must use their brand's meet.* redirect, never a raw
+-- calendar.app.google URL: the raw link routed to the wrong calendar once,
+-- and the redirect is the single place the target may change.
+usesMeetLinkCase :: T.Text -> (String, Html) -> TestTree
+usesMeetLinkCase expectedMeetUrl (pageName, page) = testCase pageName $ do
   let rendered = TL.toStrict (renderHtml page)
-  assertBool "expected a link to https://meet.jappiesoftware.com but found none"
-    ("href=\"https://meet.jappiesoftware.com\"" `T.isInfixOf` rendered)
+  assertBool ("expected a link to " <> T.unpack expectedMeetUrl <> " but found none")
+    (("href=\"" <> expectedMeetUrl <> "\"") `T.isInfixOf` rendered)
   assertBool "links a raw calendar.app.google URL instead of the meet redirect"
     (not ("calendar.app.google" `T.isInfixOf` rendered))
 
 -- | Every statically renderable page of both brand sites: the index pages
--- plus everything already in 'meetLinkPages' (which contains the wordpress
--- and webwinkel service pages).
+-- plus everything already in 'meetLinkPages' (the webwinkel service pages)
+-- and 'penguinMeetLinkPages' (the wordpress pages).
 -- scanPage is listed here but not in 'meetLinkPages': its plan-een-gesprek
 -- buttons live inside the Elm scanner app, not in the static HTML.
 allStaticPages :: [(String, Html)]
@@ -123,7 +129,7 @@ allStaticPages =
   [ ("penguinIndexPage", penguinIndexPage (WebwinkelverhuisUrl testOrigin))
   , ("penguinIndexPageNl", penguinIndexPageNl (WebwinkelverhuisUrl testOrigin))
   , ("scanPage", scanPage)
-  ] <> meetLinkPages
+  ] <> meetLinkPages <> penguinMeetLinkPages
 
 -- | No page may publish share-URL tracking parameters. URLs copied from a
 -- platform's share button (LinkedIn in particular) embed utm_* junk and an
@@ -176,8 +182,10 @@ main = defaultMain $
   testGroup "shake-blog templates"
     [ testGroup "webwinkel links follow WebwinkelverhuisUrl"
         (map linksFollowOriginCase pagesUnderTest)
-    , testGroup "scheduling buttons use meet.jappiesoftware.com"
-        (map usesMeetLinkCase meetLinkPages)
+    , testGroup "webwinkelverhuis scheduling buttons use meet.webwinkelverhuis.nl"
+        (map (usesMeetLinkCase "https://meet.webwinkelverhuis.nl") meetLinkPages)
+    , testGroup "penguin scheduling buttons use meet.jappiesoftware.com"
+        (map (usesMeetLinkCase "https://meet.jappiesoftware.com") penguinMeetLinkPages)
     , testGroup "no page publishes share-URL tracking parameters"
         (map noTrackingParamsCase allStaticPages)
     , testGroup "webwinkel content images load on the serve preview"

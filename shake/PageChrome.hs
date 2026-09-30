@@ -17,6 +17,7 @@ module PageChrome
   , percentEncodeQuery
   , migratieBasisprijsEuro
   , meetLink
+  , webwinkelverhuisMeetLink
   , companyWhatsappNumber
   , whatsappFloatingButton
   , organizationJsonLd
@@ -133,6 +134,12 @@ migratieBasisprijsEuro = "999"
 -- built pages or already-sent mails.
 meetLink :: H.AttributeValue
 meetLink = "https://meet.jappiesoftware.com"
+
+-- | The same redirect on the webwinkelverhuis.nl brand, for every page of
+-- that site and its blog. The cold-mail footer already uses this name
+-- (megavid blog/vhost.nix), so a visitor never leaves the brand.
+webwinkelverhuisMeetLink :: H.AttributeValue
+webwinkelverhuisMeetLink = "https://meet.webwinkelverhuis.nl"
 
 -- =============================================================================
 -- Floating WhatsApp contact button ("bolletje")

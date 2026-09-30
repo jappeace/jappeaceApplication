@@ -48,7 +48,7 @@ import PageChrome
   , ogLocale
   , resolveOgImage
   , migratieBasisprijsEuro
-  , meetLink
+  , webwinkelverhuisMeetLink
   , whatsappFloatingButton
   , jsonLdString
   , serviceJsonLd
@@ -355,7 +355,7 @@ ctaTrackScript =
     <> "if(window.gtag){gtag('event',ev,{knop_tekst:(a.textContent||'').trim().slice(0,60)});}"
     <> "});});}"
     <> "track('a[href=\"/offerte.html\"]','offerte_knop_klik');"
-    <> "track('a[href^=\"https://meet.jappiesoftware.com\"]','gesprek_knop_klik');"
+    <> "track('a[href^=\"https://meet.webwinkelverhuis.nl\"]','gesprek_knop_klik');"
     <> "});"
 
 -- | Boot the Elm price calculator and forward its analytics port to gtag, so the
@@ -548,7 +548,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.h2 "Klaar om te verhuizen?"
           H.p ! A.class_ "contact-intro" $ "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
           H.div ! A.class_ "contact-acties" $ do
-            H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+            H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
             H.a ! A.href offertePaginaLink ! A.class_ "cta-button-secondary" $ "Vraag een offerte aan"
           H.p ! A.class_ "contact-direct" $ do
             "Liever direct? Mail "
@@ -984,7 +984,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt je prijs vast. Wil je tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat je prijs zwart-op-wit."
       H.div ! A.class_ "cta-row" $ do
         H.a ! A.href offertePaginaLink ! A.class_ "cta-button" $ "Vraag een offerte aan"
-        H.a ! A.href meetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
+        H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
 
     H.script ! A.src "/prijs-calculator.js" $ mempty
     H.script $ H.preEscapedToHtml prijsCalculatorInitScript
@@ -1032,7 +1032,7 @@ offertePagina = webwinkelBaseTemplate offerteMeta $
         H.button ! A.type_ "submit" ! A.class_ "cta-button" $ "Verstuur de aanvraag"
       H.p ! A.class_ "calc-hint" $ do
         "Liever eerst sparren? "
-        H.a ! A.href meetLink $ "Plan een gratis gesprek"
+        H.a ! A.href webwinkelverhuisMeetLink $ "Plan een gratis gesprek"
         "."
     H.script ! A.src "/offerte-form.js" $ mempty
     H.script "Elm.OfferteForm.init({node: document.getElementById('offerte-formulier-mount')});"
@@ -1068,7 +1068,7 @@ offerteVerzondenPagina = webwinkelBaseTemplate verzondenMeta $
       H.p ! A.class_ "subtitle" $ "Je bericht is binnen. Je hoort van ons op het opgegeven e-mailadres."
       H.div ! A.class_ "hero-knoppen" $ do
         H.a ! A.href "/" ! A.class_ "cta-button-secondary" $ "Naar de homepagina"
-        H.a ! A.href meetLink ! A.class_ "cta-button" $ "Alvast een gesprek plannen"
+        H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Alvast een gesprek plannen"
   where
     verzondenMeta :: PageMeta
     verzondenMeta = PageMeta
@@ -1112,7 +1112,7 @@ scanPage = webwinkelBaseTemplate scanMeta $
       H.h1 "Beoordeel mijn webshop"
       H.p ! A.class_ "subtitle" $ "Vul het adres van je webshop in. Wij meten hem door en je ziet binnen enkele minuten waar je staat: snelheid, vindbaarheid en de punten die beter kunnen."
       H.div ! A.id "webshop-scanner-mount" $ mempty
-      H.noscript $ H.p "De beoordeling heeft JavaScript nodig. Liever direct contact? Plan een gratis gesprek via meet.jappiesoftware.com."
+      H.noscript $ H.p "De beoordeling heeft JavaScript nodig. Liever direct contact? Plan een gratis gesprek via meet.webwinkelverhuis.nl."
     H.script ! A.src "/scanner-form.js" $ mempty
     H.script $ H.preEscapedToHtml scannerFormInitScript
   where
@@ -1305,7 +1305,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar voor de overstap?"
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven een eerlijke inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gratis gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gratis gesprek"
   where
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
@@ -1554,7 +1554,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       H.h2 "Klaar voor de overstap?"
       H.p $ H.preEscapedToHtml ("Je hoeft niet langer te wachten tot CCV Shop beter wordt. Neem de controle terug over je webshop." :: Text)
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
@@ -1754,7 +1754,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.h2 "Klaar voor de overstap?"
       H.p $ H.preEscapedToHtml ("Lightspeed ga je niet helpen met deze overstap. Wij wel." :: Text)
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
@@ -1934,7 +1934,7 @@ magentoMigrationPage = webwinkelBaseTemplate magentoMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar voor de overstap?"
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     magentoMeta :: PageMeta
     magentoMeta = PageMeta
@@ -2078,7 +2078,7 @@ zilvercmsMigrationPage = webwinkelBaseTemplate zilvercmsMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar voor de overstap?"
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     zilvercmsMeta :: PageMeta
     zilvercmsMeta = PageMeta
@@ -2208,7 +2208,7 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
       H.p $ do
         H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Bekijk onze migratieservice"
         H.preEscapedToHtml (": volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     waaromMeta :: PageMeta
     waaromMeta = PageMeta
@@ -2379,7 +2379,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       H.p $ do
         H.a ! A.href "/migrate-lightspeed.html" $ "Bekijk onze migratieservice"
         H.preEscapedToHtml (": volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     waaromLsMeta :: PageMeta
     waaromLsMeta = PageMeta
@@ -2581,7 +2581,7 @@ overOnsPage = webwinkelBaseTemplate overOnsMeta $
     H.section ! A.class_ "cta-section" $ do
       H.h2 "Kennismaken?"
       H.p "Een gesprek kost niets en je weet meteen met wie je te maken heeft."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     overOnsMeta :: PageMeta
     overOnsMeta = PageMeta
@@ -2619,7 +2619,7 @@ contactPage = webwinkelBaseTemplate contactMeta $
           H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
         H.li $ do
           H.strong "Liever meteen inplannen: "
-          H.a ! A.href meetLink $ "plan een gratis gesprek"
+          H.a ! A.href webwinkelverhuisMeetLink $ "plan een gratis gesprek"
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Of stuur direct een bericht"

@@ -691,7 +691,7 @@ restVerbeterpunten punten =
 
 meetUrl : String
 meetUrl =
-    "https://meet.jappiesoftware.com"
+    "https://meet.webwinkelverhuis.nl"
 
 
 {-| De prijs-rekenhulp op de eigen prijzenpagina, dezelfde bestemming als de

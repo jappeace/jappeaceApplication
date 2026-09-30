@@ -114,7 +114,7 @@ hebt en wat herbruikbaar is. Vaste prijs, betaling na een geslaagde
 migratie. Lees hoe
 [[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][onze
 migratieservice]] werkt, of
-[[https://meet.jappiesoftware.com][plan een vrijblijvend gesprek]].
+[[https://meet.webwinkelverhuis.nl][plan een vrijblijvend gesprek]].
 
 * Veelgestelde vragen
 

@@ -160,7 +160,7 @@ gebruikt: elke nieuwe migratie voegt randgevallen toe die we daarna
 automatisch goed doen.
 
 Staat je winkel ook al jaren "bijna" op het punt te verhuizen?
-[[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
+[[https://meet.webwinkelverhuis.nl][Plan een vrijblijvend gesprek]],
 of bekijk eerst
 [[https://webwinkelverhuis.nl/prijzen.html][wat een migratie kost]].
 Je betaalt pas na een geslaagde migratie.
