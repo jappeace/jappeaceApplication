@@ -343,19 +343,52 @@ bandSpeelScript =
 -- meeting links (gesprek_knop_klik). Skipped: the calculator's own button
 -- (.calc-offerte), which Elm reports itself with richer params. De
 -- formulier-inzending zelf meet GA4's enhanced measurement als
--- form_start/form_submit, en de server telt hem definitief in het
+-- form_submit, en de server telt hem definitief in het
 -- offerte-logboek. Page views are collected by GA4 automatically, so
 -- the migration pages need no extra event here.
+--
+-- Decision: de contactroutes (WhatsApp, mail, bellen) krijgen elk een
+-- eigen event, alle klik-events dragen de bestemming (link_url), en
+-- formulier_gestart meldt per pagina welk formulier werd aangeraakt.
+-- Aanleiding: de GA4-export van 30 sep 2026 had alleen GA4's eigen
+-- "click" (uitgaand, alle bestemmingen door elkaar) en form_start
+-- (scan, offerte en contact door elkaar), zodat niet te zeggen was of
+-- iemand op "plan een gesprek" klikte of het offerteformulier
+-- verliet. Alternatief overwogen: form_id en link_url als custom
+-- dimensies registreren in GA4; afgewezen omdat de eventnamen dan nog
+-- steeds niets zeggen in de export die Jappie gebruikt. De
+-- contactroutes en de formulierstart luisteren op document (click,
+-- focusin) omdat Elm links en formulieren pas na DOMContentLoaded
+-- tekent en bij elke fase opnieuw aanmaakt (de mailto van "platform
+-- niet herkend" in de scanner, het scanformulier na een scan);
+-- formulier_gestart telt daarom eenmaal per paginabezoek, niet per
+-- DOM-node. De offerte- en gesprekknoppen blijven aan de statische
+-- links gebonden: de scanner meldt zijn eigen gesprekknop al via zijn
+-- port, een documentbrede listener zou die dubbel tellen.
+-- OfferteForm blijft zonder ports.
 ctaTrackScript :: Text
 ctaTrackScript =
   "document.addEventListener('DOMContentLoaded',function(){"
     <> "function track(sel,ev){document.querySelectorAll(sel).forEach(function(a){"
     <> "if(a.classList.contains('calc-offerte'))return;"
     <> "a.addEventListener('click',function(){"
-    <> "if(window.gtag){gtag('event',ev,{knop_tekst:(a.textContent||'').trim().slice(0,60)});}"
+    <> "if(window.gtag){gtag('event',ev,{knop_tekst:(a.textContent||'').trim().slice(0,60),link_url:(a.getAttribute('href')||'').slice(0,100)});}"
     <> "});});}"
     <> "track('a[href=\"/offerte.html\"]','offerte_knop_klik');"
     <> "track('a[href^=\"https://meet.webwinkelverhuis.nl\"]','gesprek_knop_klik');"
+    <> "var routes=[['a[href^=\"https://wa.me/\"]','whatsapp_klik'],['a[href^=\"mailto:\"]','mail_klik'],['a[href^=\"tel:\"]','bel_klik']];"
+    <> "document.addEventListener('click',function(e){"
+    <> "var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;"
+    <> "routes.forEach(function(r){if(a.matches(r[0])&&window.gtag){"
+    <> "gtag('event',r[1],{knop_tekst:(a.textContent||'').trim().slice(0,60),link_url:(a.getAttribute('href')||'').slice(0,100)});}});"
+    <> "});"
+    <> "var formulierGemeld=false;"
+    <> "document.addEventListener('focusin',function(e){"
+    <> "if(formulierGemeld)return;"
+    <> "var f=e.target&&e.target.closest?e.target.closest('form'):null;if(!f)return;"
+    <> "formulierGemeld=true;"
+    <> "if(window.gtag){gtag('event','formulier_gestart',{pagina:location.pathname});}"
+    <> "});"
     <> "});"
 
 -- | Boot the Elm price calculator and forward its analytics port to gtag, so the

@@ -44,6 +44,10 @@ pkgs.stdenv.mkDerivation {
 
     shake-blog build
 
+    # Behaviour test for the webwinkel tracking script, on the page as built:
+    # late-rendered contact links must count and a re-created form only once.
+    node shake/test/cta-track.test.js _webwinkelverhuis-site/contact.html
+
     # Copy talks (make writable since nix store files are read-only)
     mkdir -p _site/talks
     cp -R ${talks}/* _site/talks/
