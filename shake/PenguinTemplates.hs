@@ -511,7 +511,7 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
         H.blockquote $
           H.p $ do
             H.strong "Het Waardegebaar"
-            H.preEscapedToHtml (": a one-page site for a made-to-measure corporate gifts service, built from a wireframe, with a hero, a \"who it is for\" section, a three-step approach, reviews, an inspiration gallery and a contact portal. Responsive, with basic SEO built in. " :: Text)
+            H.preEscapedToHtml (": a site for a made-to-measure corporate gifts service. A one-page home built from a wireframe (hero, \"who it is for\", a three-step approach, reviews and an inspiration gallery), plus contact and quote-request pages with their own forms and a WhatsApp button. Responsive, with basic SEO built in. " :: Text)
             H.a ! A.href "https://hetwaardegebaar.nl/" $ H.preEscapedToHtml ("hetwaardegebaar.nl &rarr;" :: Text)
 
     -- How it works
@@ -627,7 +627,7 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
         H.blockquote $
           H.p $ do
             H.strong "Het Waardegebaar"
-            H.preEscapedToHtml (": een \233\233n-pagina-site voor relatiegeschenken op maat, gebouwd vanaf een wireframe, met een hero, een \"voor wie\"-sectie, een werkwijze in drie stappen, reviews, een inspiratie-galerij en een contactportaal. Responsive, met basis-SEO ingebouwd. " :: Text)
+            H.preEscapedToHtml (": een site voor relatiegeschenken op maat. Een homepage op \233\233n pagina, gebouwd vanaf een wireframe (hero, \"voor wie\", een werkwijze in drie stappen, reviews en een inspiratie-galerij), plus een contact- en een offertepagina met eigen formulieren en een WhatsApp-knop. Responsive, met basis-SEO ingebouwd. " :: Text)
             H.a ! A.href "https://hetwaardegebaar.nl/" $ H.preEscapedToHtml ("hetwaardegebaar.nl &rarr;" :: Text)
 
     -- Hoe het werkt
