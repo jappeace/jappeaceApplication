@@ -357,8 +357,15 @@ bandSpeelScript =
 -- verliet. Alternatief overwogen: form_id en link_url als custom
 -- dimensies registreren in GA4; afgewezen omdat de eventnamen dan nog
 -- steeds niets zeggen in de export die Jappie gebruikt. De
--- formulierstart luistert op document (focusin) omdat de Elm-formulieren
--- pas na DOMContentLoaded verschijnen; OfferteForm blijft zonder ports.
+-- contactroutes en de formulierstart luisteren op document (click,
+-- focusin) omdat Elm links en formulieren pas na DOMContentLoaded
+-- tekent en bij elke fase opnieuw aanmaakt (de mailto van "platform
+-- niet herkend" in de scanner, het scanformulier na een scan);
+-- formulier_gestart telt daarom eenmaal per paginabezoek, niet per
+-- DOM-node. De offerte- en gesprekknoppen blijven aan de statische
+-- links gebonden: de scanner meldt zijn eigen gesprekknop al via zijn
+-- port, een documentbrede listener zou die dubbel tellen.
+-- OfferteForm blijft zonder ports.
 ctaTrackScript :: Text
 ctaTrackScript =
   "document.addEventListener('DOMContentLoaded',function(){"
@@ -369,13 +376,17 @@ ctaTrackScript =
     <> "});});}"
     <> "track('a[href=\"/offerte.html\"]','offerte_knop_klik');"
     <> "track('a[href^=\"https://meet.webwinkelverhuis.nl\"]','gesprek_knop_klik');"
-    <> "track('a[href^=\"https://wa.me/\"]','whatsapp_klik');"
-    <> "track('a[href^=\"mailto:\"]','mail_klik');"
-    <> "track('a[href^=\"tel:\"]','bel_klik');"
-    <> "var gemeld=[];"
+    <> "var routes=[['a[href^=\"https://wa.me/\"]','whatsapp_klik'],['a[href^=\"mailto:\"]','mail_klik'],['a[href^=\"tel:\"]','bel_klik']];"
+    <> "document.addEventListener('click',function(e){"
+    <> "var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;"
+    <> "routes.forEach(function(r){if(a.matches(r[0])&&window.gtag){"
+    <> "gtag('event',r[1],{knop_tekst:(a.textContent||'').trim().slice(0,60),link_url:(a.getAttribute('href')||'').slice(0,100)});}});"
+    <> "});"
+    <> "var formulierGemeld=false;"
     <> "document.addEventListener('focusin',function(e){"
-    <> "var f=e.target&&e.target.closest?e.target.closest('form'):null;"
-    <> "if(!f||gemeld.indexOf(f)!==-1)return;gemeld.push(f);"
+    <> "if(formulierGemeld)return;"
+    <> "var f=e.target&&e.target.closest?e.target.closest('form'):null;if(!f)return;"
+    <> "formulierGemeld=true;"
     <> "if(window.gtag){gtag('event','formulier_gestart',{pagina:location.pathname});}"
     <> "});"
     <> "});"
