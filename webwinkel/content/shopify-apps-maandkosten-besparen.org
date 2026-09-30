@@ -114,7 +114,7 @@ Daarna bouwen we de aanpassing in een eigen blok van je thema, testen
 we hem op je winkel (ook bij het wisselen van maat of kleur), en pas
 dan zeg jij de app op. Wij ruimen de restjes van de oude app op.
 
-Benieuwd wat er in jouw winkel kan? [[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
+Benieuwd wat er in jouw winkel kan? [[https://meet.webwinkelverhuis.nl][Plan een vrijblijvend gesprek]],
 dan lopen we je apps samen door.
 
 * Veelgestelde vragen
