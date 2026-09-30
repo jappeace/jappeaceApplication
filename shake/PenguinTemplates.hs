@@ -445,8 +445,8 @@ penguinIndexPageNl webwinkelUrl = penguinBaseTemplate Nl indexMetaNl $
 -- WordPress sites for small businesses (warm-intro leads so far), and this page
 -- gives that work a home and frames it as the natural first step before a
 -- webshop, linking onward to the migration service on webwinkelverhuis.nl.
--- The delivered build (Voedzame Kost, live since July 2026) is the proof of
--- work; Het Waardegebaar joins the list once it is delivered.
+-- The delivered builds (Voedzame Kost, live since July 2026, and Het
+-- Waardegebaar, delivered September 2026) are the proof of work.
 penguinWordpressPage :: WebwinkelverhuisUrl -> Html
 penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En wordpressMeta $
   H.main $ do
@@ -497,11 +497,9 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
           H.h3 "Update it yourself, no need to call us"
           H.p "A personal video walkthrough plus a short written manual: edit text, replace a photo, update a page. After that you can do it yourself, and we stay available for bigger jobs."
 
-    -- Recent work: Voedzame Kost was delivered (live 2026-07) and shows here;
-    -- Het Waardegebaar stays hidden below until it is delivered and live.
     H.section ! A.class_ "results" $ do
       H.h2 "Recent work"
-      H.div ! A.class_ "testimonials" $
+      H.div ! A.class_ "testimonials" $ do
         H.blockquote $
           H.p $ do
             H.strong "Voedzame Kost"
@@ -510,13 +508,11 @@ penguinWordpressPage (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate En
             " ("
             H.a ! A.href voedzameKostAnnouncementUrl $ "announcement"
             ")"
-    {-
         H.blockquote $
           H.p $ do
             H.strong "Het Waardegebaar"
-            H.preEscapedToHtml (": a one-page site built from a wireframe, with a hero, a \"who it is for\" section, a three-step approach, reviews, an inspiration gallery and a contact portal. Responsive, with basic SEO built in. " :: Text)
-            H.a ! A.href "https://waardegebaar.nl/" $ H.preEscapedToHtml ("waardegebaar.nl &rarr;" :: Text)
-    -}
+            H.preEscapedToHtml (": a one-page site for a made-to-measure corporate gifts service, built from a wireframe, with a hero, a \"who it is for\" section, a three-step approach, reviews, an inspiration gallery and a contact portal. Responsive, with basic SEO built in. " :: Text)
+            H.a ! A.href "https://hetwaardegebaar.nl/" $ H.preEscapedToHtml ("hetwaardegebaar.nl &rarr;" :: Text)
 
     -- How it works
     H.section ! A.class_ "audit" $ do
@@ -617,11 +613,9 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
           H.h3 "Zelf aanpassen zonder ons te bellen"
           H.p "Een persoonlijke videorondleiding plus een korte handleiding: tekst aanpassen, een foto vervangen, een pagina bijwerken. U kunt het daarna zelf, en voor grotere klussen blijven we bereikbaar."
 
-    -- Recent werk: Voedzame Kost is opgeleverd (live juli 2026) en staat hier;
-    -- Het Waardegebaar blijft hieronder verborgen tot het opgeleverd en live is.
     H.section ! A.class_ "results" $ do
       H.h2 "Recent werk"
-      H.div ! A.class_ "testimonials" $
+      H.div ! A.class_ "testimonials" $ do
         H.blockquote $
           H.p $ do
             H.strong "Voedzame Kost"
@@ -630,13 +624,11 @@ penguinWordpressPageNl (WebwinkelverhuisUrl webwinkelUrl) = penguinBaseTemplate 
             " ("
             H.a ! A.href voedzameKostAnnouncementUrl $ "aankondiging"
             ")"
-    {-
         H.blockquote $
           H.p $ do
             H.strong "Het Waardegebaar"
-            H.preEscapedToHtml (": een \233\233n-pagina-site gebouwd vanaf een wireframe, met een hero, een \"voor wie\"-sectie, een werkwijze in drie stappen, reviews, een inspiratie-galerij en een contactportaal. Responsive, met basis-SEO ingebouwd. " :: Text)
-            H.a ! A.href "https://waardegebaar.nl/" $ H.preEscapedToHtml ("waardegebaar.nl &rarr;" :: Text)
-    -}
+            H.preEscapedToHtml (": een \233\233n-pagina-site voor relatiegeschenken op maat, gebouwd vanaf een wireframe, met een hero, een \"voor wie\"-sectie, een werkwijze in drie stappen, reviews, een inspiratie-galerij en een contactportaal. Responsive, met basis-SEO ingebouwd. " :: Text)
+            H.a ! A.href "https://hetwaardegebaar.nl/" $ H.preEscapedToHtml ("hetwaardegebaar.nl &rarr;" :: Text)
 
     -- Hoe het werkt
     H.section ! A.class_ "audit" $ do
