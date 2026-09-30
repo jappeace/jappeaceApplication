@@ -130,7 +130,7 @@ Per platform lees je de details op onze migratiepagina's voor
 [[https://webwinkelverhuis.nl/migrate-ccvshop.html][CCV Shop]] en
 [[https://webwinkelverhuis.nl/migrate-lightspeed.html][Lightspeed]].
 Liever direct overleggen?
-[[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
+[[https://meet.webwinkelverhuis.nl][Plan een vrijblijvend gesprek]],
 dan kijken we samen naar je shop.
 
 * Veelgestelde vragen

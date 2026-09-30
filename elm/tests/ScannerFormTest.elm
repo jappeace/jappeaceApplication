@@ -363,7 +363,7 @@ rekenhulpLink =
 
 gesprekLink : Selector.Selector
 gesprekLink =
-    Selector.attribute (Attr.href "https://meet.jappiesoftware.com")
+    Selector.attribute (Attr.href "https://meet.webwinkelverhuis.nl")
 
 
 viewTests : Test
