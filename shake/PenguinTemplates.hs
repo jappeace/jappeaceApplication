@@ -692,7 +692,7 @@ penguinBlogIndexPage _config articles pagination =
     H.main ! A.class_ "blog-listing" $ do
       H.h1 "Blog"
       mapM_ (renderBlogSummary En) articles
-      renderPagination pagination
+      renderPagination En pagination
   where
     blogIndexMeta :: PageMeta
     blogIndexMeta = (defaultPageMeta "Blog \8212 Jappie Software B.V.")

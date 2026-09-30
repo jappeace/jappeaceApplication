@@ -41,6 +41,7 @@ import PenguinTemplates
   , penguinIndexPageNl
   , penguinWordpressPage
   , penguinWordpressPageNl
+  , penguinBlogIndexPage
   )
 import WebwinkelTemplates
   ( webwinkelIndexPage
@@ -57,6 +58,7 @@ import WebwinkelTemplates
   , relativizeWebwinkelContentImages
   , webwinkelverhuisSitemap
   , webwinkelverhuisStaticPages
+  , webwinkelBlogIndexPage
   )
 
 -- | A recognisable fake origin: it can only appear in the output when the
@@ -118,6 +120,10 @@ usesMeetLinkCase expectedMeetUrl (pageName, page) = testCase pageName $ do
     (("href=\"" <> expectedMeetUrl <> "\"") `T.isInfixOf` rendered)
   assertBool "links a raw calendar.app.google URL instead of the meet redirect"
     (not ("calendar.app.google" `T.isInfixOf` rendered))
+
+-- | A blog index page with both a newer and an older neighbour.
+middlePage :: PaginationInfo
+middlePage = PaginationInfo 2 3 (Just "/blog/") (Just "/blog/index3.html")
 
 -- | Every statically renderable page of both brand sites: the index pages
 -- plus everything already in 'meetLinkPages' (the webwinkel service pages)
@@ -193,6 +199,17 @@ main = defaultMain $
             webwinkelSchedulingLinkFout "<a href=\"https://meet.jappiesoftware.com\">plan</a>" @?= Just JappiesoftwareMeetLink
         , testCase "raw calendar link is refused" $
             webwinkelSchedulingLinkFout "<a href=\"https://calendar.app.google/x\">plan</a>" @?= Just RawCalendarLink
+        ]
+    , testGroup "blog pagination speaks the language of its site"
+        [ testCase "webwinkelverhuis blog index is Dutch" $ do
+            let rendered = TL.toStrict (renderHtml (webwinkelBlogIndexPage defaultSiteConfig [] middlePage))
+            assertBool "Dutch newer link" ("Nieuwere berichten" `T.isInfixOf` rendered)
+            assertBool "Dutch older link" ("Oudere berichten" `T.isInfixOf` rendered)
+            assertBool "no English pagination label" (not ("Older" `T.isInfixOf` rendered))
+        , testCase "penguin blog index stays English" $ do
+            let rendered = TL.toStrict (renderHtml (penguinBlogIndexPage defaultSiteConfig [] middlePage))
+            assertBool "English older link" ("Older" `T.isInfixOf` rendered)
+            assertBool "no Dutch pagination label" (not ("Oudere berichten" `T.isInfixOf` rendered))
         ]
     , testGroup "no page publishes share-URL tracking parameters"
         (map noTrackingParamsCase allStaticPages)

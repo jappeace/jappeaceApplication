@@ -2416,7 +2416,7 @@ webwinkelBlogIndexPage _config articles pagination =
     H.main ! A.class_ "blog-listing" $ do
       H.h1 "Blog"
       mapM_ (renderBlogSummary Nl) articles
-      renderPagination pagination
+      renderPagination Nl pagination
   where
     blogIndexMeta :: PageMeta
     blogIndexMeta = PageMeta
