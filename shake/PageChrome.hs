@@ -55,7 +55,7 @@ import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
-import Types (Article(..), Lang(..), PaginationInfo(..))
+import Types (Article(..), Lang(..), PaginationInfo(..), Translations(..), translationsFor)
 
 -- | Convert 'Text' to a blaze attribute value.
 toValue :: Text -> H.AttributeValue
@@ -386,15 +386,20 @@ renderBlogSummary lang article =
       Just summary -> H.div ! A.class_ "summary" $ summary
       Nothing -> mempty
 
--- | Newer/older navigation between paginated blog index pages.
-renderPagination :: PaginationInfo -> Html
-renderPagination pagination =
+-- | Newer/older navigation between paginated blog index pages, in the
+-- language of the page (webwinkelverhuis.nl is Dutch, penguin English).
+renderPagination :: Lang -> PaginationInfo -> Html
+renderPagination lang pagination =
   H.nav ! A.class_ "pagination" $ do
     case paginationPrevUrl pagination of
-      Just url -> H.a ! A.class_ "prev" ! A.href (toValue url) $ H.preEscapedToHtml ("&larr; Newer" :: Text)
+      Just url -> H.a ! A.class_ "prev" ! A.href (toValue url) $ do
+        H.preEscapedToHtml ("&larr; " :: Text)
+        toHtml (tNewer (translationsFor lang))
       Nothing -> mempty
     case paginationNextUrl pagination of
-      Just url -> H.a ! A.class_ "next" ! A.href (toValue url) $ H.preEscapedToHtml ("Older &rarr;" :: Text)
+      Just url -> H.a ! A.class_ "next" ! A.href (toValue url) $ do
+        toHtml (tOlder (translationsFor lang))
+        H.preEscapedToHtml (" &rarr;" :: Text)
       Nothing -> mempty
 
 -- =============================================================================
