@@ -42,10 +42,8 @@ is in Shopify soms een instelling en soms een app die je erbij
 installeert. Dat zijn veel kleine keuzes, en elke keuze voelt als
 een gok.
 
-Na een eerste rondleiding hoorden we het onlangs nog: je snapt wat er
-wordt voorgedaan, maar er zitten nog veel vragen en onwennigheden in
-je hoofd. Uitleg volgen is iets anders dan de volgende ochtend alleen
-achter je nieuwe shop zitten.
+Uitleg volgen is iets anders dan de volgende ochtend alleen achter
+je nieuwe shop zitten.
 
 * Hoe je tijdens de overstap aan het stuur blijft
 
@@ -91,8 +89,10 @@ waarom.
 
 ** Een cursus rond jouw werk, niet rond de menu's
 
-De cursus Shopify duurt twee uur en is één-op-één, in je eigen
-nieuwe shop. We beginnen bij wat je elke dag doet, zoals producten
+De cursus Shopify is optioneel en kost €300, apart van de migratie.
+Hij duurt twee uur en is één-op-één, in je eigen nieuwe shop.
+Zie ook [[https://webwinkelverhuis.nl/prijzen.html][onze prijzenpagina]].
+We beginnen bij wat je elke dag doet, zoals producten
 aanpassen en bestellingen verwerken, en pas daarna bij de
 instellingen. Elke taak doen we eerst voor, daarna doe je hem zelf
 en bekijken we samen het resultaat. Aan het eind vragen we niet
@@ -104,11 +104,11 @@ een paar korte oefenafspraken af, met het tempo en de kosten erbij.
 
 ** Pas live als jij er klaar voor bent
 
-De livegang plannen we samen. Een datum is een voorstel, geen
-deadline: voel je je nog niet klaar, dan schuiven we hem op en blijft
-je oude shop gewoon verkopen. Correcties vóór de livegang zijn
-inbegrepen. Na afloop controleert ons programma elke oude link en
-elk product, en je betaalt pas na een geslaagde migratie.
+De livegang plannen we samen en gebeurt pas na jouw akkoord.
+Ben je nog niet klaar, dan bespreken we een nieuwe datum. Daarbij
+houden we rekening met een eventuele einddatum van je huidige platform.
+Correcties vóór de livegang zijn inbegrepen.
+Na afloop controleert ons programma elke oude link en elk product.
 
 * Wat blijft
 
@@ -121,8 +121,7 @@ voordat jij akkoord geeft.
 
 En soms past een overstap nu gewoon niet, omdat het je drukste
 seizoen is of omdat er naast je winkel al genoeg speelt. Dan is
-wachten een goede keuze. Je oude shop loopt niet weg, en de overstap
-ook niet.
+wachten een goede keuze, zolang je huidige platform beschikbaar blijft.
 
 Wil je weten hoe dat er voor jouw winkel uitziet?
 [[https://meet.webwinkelverhuis.nl][Plan een vrijblijvend gesprek]].
@@ -150,13 +149,13 @@ er klaar voor bent.
 
 ** Wat als ik na de cursus nog niet durf?
 
-Dan schuiven we de livegang op. Je oude shop
-blijft verkopen zolang de nieuwe nog niet live is. Wil je langer
-begeleid worden, dan spreken we korte oefenafspraken af, met de
-kosten vooraf erbij.
+Dan bespreken we een nieuwe datum, rekening houdend met een eventuele
+einddatum van je huidige platform. We gaan niet live zonder jouw akkoord.
+Wil je langer begeleid worden, dan spreken we korte oefenafspraken af,
+met de kosten vooraf erbij.
 
 #+BEGIN_EXPORT html
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Kan ik iets kapotmaken in de testshop?","acceptedAnswer":{"@type":"Answer","text":"Niet aan je huidige winkel. De testshop staat los van je bestaande webshop: wat je daar aanpast of uitprobeert, zien je klanten pas na de livegang, en alleen als je het zo laat staan."}},{"@type":"Question","name":"Is het beheer van Shopify in het Nederlands?","acceptedAnswer":{"@type":"Answer","text":"Ja, het beheer van Shopify is in het Nederlands te gebruiken. Een deel van de apps in de appwinkel is alleen in het Engels."}},{"@type":"Question","name":"Hoe lang heb ik om te wennen?","acceptedAnswer":{"@type":"Answer","text":"Reken op ongeveer een maand van start tot livegang. In die tijd heb je toegang tot de testshop, en de livegang plannen we pas als jij er klaar voor bent."}},{"@type":"Question","name":"Wat als ik na de cursus nog niet durf?","acceptedAnswer":{"@type":"Answer","text":"Dan schuiven we de livegang op. Je oude shop blijft verkopen zolang de nieuwe nog niet live is. Wil je langer begeleid worden, dan spreken we korte oefenafspraken af, met de kosten vooraf erbij."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Kan ik iets kapotmaken in de testshop?","acceptedAnswer":{"@type":"Answer","text":"Niet aan je huidige winkel. De testshop staat los van je bestaande webshop: wat je daar aanpast of uitprobeert, zien je klanten pas na de livegang, en alleen als je het zo laat staan."}},{"@type":"Question","name":"Is het beheer van Shopify in het Nederlands?","acceptedAnswer":{"@type":"Answer","text":"Ja, het beheer van Shopify is in het Nederlands te gebruiken. Een deel van de apps in de appwinkel is alleen in het Engels."}},{"@type":"Question","name":"Hoe lang heb ik om te wennen?","acceptedAnswer":{"@type":"Answer","text":"Reken op ongeveer een maand van start tot livegang. In die tijd heb je toegang tot de testshop, en de livegang plannen we pas als jij er klaar voor bent."}},{"@type":"Question","name":"Wat als ik na de cursus nog niet durf?","acceptedAnswer":{"@type":"Answer","text":"Dan bespreken we een nieuwe datum, rekening houdend met een eventuele einddatum van je huidige platform. We gaan niet live zonder jouw akkoord. Wil je langer begeleid worden, dan spreken we korte oefenafspraken af, met de kosten vooraf erbij."}}]}
 </script>
 #+END_EXPORT
