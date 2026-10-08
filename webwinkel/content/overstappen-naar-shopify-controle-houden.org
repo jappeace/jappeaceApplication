@@ -1,0 +1,162 @@
+#+TITLE: Overstappen naar Shopify voelt als de controle kwijtraken. Zo houd je hem
+#+DATE: 2026-10-08
+#+CATEGORY: migratie
+#+TAGS: shopify, overstap, migratie, testshop, cursus
+#+SUMMARY: De eerste keer in het beheer van Shopify is overweldigend, en een verhuizing voelt alsof je je eigen winkel uit handen geeft. Waar dat gevoel vandaan komt en hoe je tijdens de overstap zelf aan het stuur blijft.
+
+Je kent je huidige webshop blind. Na jaren weet je precies waar je
+een bestelling afhandelt, waar de voorraad staat en welk knopje de
+pakbon print. Dan log je voor het eerst in bij Shopify. Alles staat
+op een andere plek, er zijn menu's voor dingen waar je nog nooit van
+hebt gehoord, en de appwinkel biedt duizenden uitbreidingen aan
+waarvan je niet weet of je ze nodig hebt. Zelfs als de nieuwe shop er
+mooi uitziet, voelt hij nog niet als de jouwe.
+
+Dat gevoel is normaal, en het zegt niets over hoe handig je bent. Je
+webshop is je broodwinning. Een verhuizing raakt aan alles wat je
+dagelijks doet, en een deel van dat werk ligt een tijdje bij iemand
+anders. In dit artikel lees je waar het gevoel van controleverlies
+vandaan komt, en hoe wij de overstap zo inrichten dat jij aan het
+stuur blijft.
+
+* Waarom een overstap zo onwennig voelt
+
+Je verliest je routine. Wat je in je oude shop zonder nadenken deed,
+kost in Shopify ineens aandacht. Een bestelling verwerken is geen
+moeilijk werk, maar als je eerst moet zoeken waar het zit, voelt het
+wel zo.
+
+Je weet niet wat je kapot kunt maken. In een systeem dat je niet
+kent, voelt elke knop alsof hij iets aan je echte winkel verandert.
+Dus klik je liever nergens op, en dan leer je het ook niet.
+
+Er werkt iemand anders in je winkel. Tijdens een migratie zijn wij
+bezig met jouw producten, jouw teksten en jouw klanten. Als je niet
+ziet wat er gebeurt en wat er nog komt, voelt dat als je winkel uit
+handen geven.
+
+Er verandert veel tegelijk. Je domein, je betaalprovider, je
+boekhouding en je verzending werkten gewoon, en nu moeten ze allemaal
+mee. Shopify werkt bovendien met apps: wat je oude pakket zelf deed,
+is in Shopify soms een instelling en soms een app die je erbij
+installeert. Dat zijn veel kleine keuzes, en elke keuze voelt als
+een gok.
+
+Na een eerste rondleiding hoorden we het onlangs nog: je snapt wat er
+wordt voorgedaan, maar er zitten nog veel vragen en onwennigheden in
+je hoofd. Uitleg volgen is iets anders dan de volgende ochtend alleen
+achter je nieuwe shop zitten.
+
+* Hoe je tijdens de overstap aan het stuur blijft
+
+** Je huidige shop blijft gewoon draaien
+
+We bouwen je nieuwe shop naast je huidige webshop op. Die blijft
+open en verkoopt door, en je blijft er gewoon in werken. Je klanten
+merken niets tot de dag dat je overstapt. Vlak voor de livegang zetten
+we de laatste stand over, zodat ook recente bestellingen en je actuele
+voorraad meekomen als je die laat verhuizen.
+Je domeinnaam blijft al die tijd naar je oude shop wijzen.
+
+** Je oefent in je eigen winkel, niet in een lege demo
+
+De testshop is je eigen winkel: jouw producten, jouw pagina's, jouw
+vertalingen, in Shopify. Je leert het nieuwe beheer dus met
+producten die je kent, en je ziet meteen of iets klopt. Wat je in de
+testshop aanpast of uitprobeert, raakt je huidige shop niet. Je kunt
+er rustig rondklikken.
+
+** Wennen is een stap in de planning
+
+Je krijgt toegang tot het beheer ruim voordat er iets live gaat. Die
+weken zijn bedoeld om rond te kijken, proefbestellingen te doen en
+vragen te verzamelen. Reken op ongeveer een maand van start tot
+livegang, en een flink deel daarvan is jouw wentijd.
+
+** Je ziet wie wat doet, en wanneer
+
+Elke stap van de verhuizing staat met een datum in ons klantportaal,
+met erbij wie hem uitvoert: wij of jij. Je ziet wat al af is en wat
+er nog komt. Wat wij van je nodig hebben, zoals een inlog of een
+lijst met klanten, vraagt het portaal één keer op één plek, in plaats
+van verspreid over een reeks mails.
+
+** Koppelingen doen we samen, in een eigen stap
+
+Betalingen, boekhouding en verzending zetten we niet tussen de
+bedrijven door aan. Daar plannen we een apart moment voor, meestal
+een videogesprek waarin jij inlogt bij je eigen accounts en wij
+meekijken en instellen. Zo weet je welke koppeling er draait en
+waarom.
+
+** Een cursus rond jouw werk, niet rond de menu's
+
+De cursus Shopify duurt twee uur en is één-op-één, in je eigen
+nieuwe shop. We beginnen bij wat je elke dag doet, zoals producten
+aanpassen en bestellingen verwerken, en pas daarna bij de
+instellingen. Elke taak doen we eerst voor, daarna doe je hem zelf
+en bekijken we samen het resultaat. Aan het eind vragen we niet
+alleen of je nog vragen hebt, maar welke onderdelen nog lastig
+voelen om straks zelf te doen. Die oefen je dan meteen.
+
+Heb je meer nodig dan één cursus, dan kan dat. We spreken dan vooraf
+een paar korte oefenafspraken af, met het tempo en de kosten erbij.
+
+** Pas live als jij er klaar voor bent
+
+De livegang plannen we samen. Een datum is een voorstel, geen
+deadline: voel je je nog niet klaar, dan schuiven we hem op en blijft
+je oude shop gewoon verkopen. Correcties vóór de livegang zijn
+inbegrepen. Na afloop controleert ons programma elke oude link en
+elk product, en je betaalt pas na een geslaagde migratie.
+
+* Wat blijft
+
+We gaan niet beweren dat het vanzelf gaat. Shopify is een ander
+systeem, met andere plekken voor dezelfde dingen en meer keuzes dan
+je gewend bent. De eerste weken blijft het wennen. Het verschil zit
+erin dat je dat wennen doet terwijl je oude shop nog draait, in je
+eigen winkel, met iemand die meekijkt, en dat niets live gaat
+voordat jij akkoord geeft.
+
+En soms past een overstap nu gewoon niet, omdat het je drukste
+seizoen is of omdat er naast je winkel al genoeg speelt. Dan is
+wachten een goede keuze. Je oude shop loopt niet weg, en de overstap
+ook niet.
+
+Wil je weten hoe dat er voor jouw winkel uitziet?
+[[https://meet.webwinkelverhuis.nl][Plan een vrijblijvend gesprek]].
+We lopen samen door wat je dagelijks doet en je hoort wat er
+verandert, ook als ons advies is om nog even te wachten.
+
+* Veelgestelde vragen
+
+** Kan ik iets kapotmaken in de testshop?
+
+Niet aan je huidige winkel. De testshop staat los van je bestaande
+webshop: wat je daar aanpast of uitprobeert, zien je klanten pas na
+de livegang, en alleen als je het zo laat staan.
+
+** Is het beheer van Shopify in het Nederlands?
+
+Ja, het beheer van Shopify is in het Nederlands te gebruiken. Een
+deel van de apps in de appwinkel is alleen in het Engels.
+
+** Hoe lang heb ik om te wennen?
+
+Reken op ongeveer een maand van start tot livegang. In die tijd heb
+je toegang tot de testshop, en de livegang plannen we pas als jij
+er klaar voor bent.
+
+** Wat als ik na de cursus nog niet durf?
+
+Dan schuiven we de livegang op. Je oude shop
+blijft verkopen zolang de nieuwe nog niet live is. Wil je langer
+begeleid worden, dan spreken we korte oefenafspraken af, met de
+kosten vooraf erbij.
+
+#+BEGIN_EXPORT html
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Kan ik iets kapotmaken in de testshop?","acceptedAnswer":{"@type":"Answer","text":"Niet aan je huidige winkel. De testshop staat los van je bestaande webshop: wat je daar aanpast of uitprobeert, zien je klanten pas na de livegang, en alleen als je het zo laat staan."}},{"@type":"Question","name":"Is het beheer van Shopify in het Nederlands?","acceptedAnswer":{"@type":"Answer","text":"Ja, het beheer van Shopify is in het Nederlands te gebruiken. Een deel van de apps in de appwinkel is alleen in het Engels."}},{"@type":"Question","name":"Hoe lang heb ik om te wennen?","acceptedAnswer":{"@type":"Answer","text":"Reken op ongeveer een maand van start tot livegang. In die tijd heb je toegang tot de testshop, en de livegang plannen we pas als jij er klaar voor bent."}},{"@type":"Question","name":"Wat als ik na de cursus nog niet durf?","acceptedAnswer":{"@type":"Answer","text":"Dan schuiven we de livegang op. Je oude shop blijft verkopen zolang de nieuwe nog niet live is. Wil je langer begeleid worden, dan spreken we korte oefenafspraken af, met de kosten vooraf erbij."}}]}
+</script>
+#+END_EXPORT
