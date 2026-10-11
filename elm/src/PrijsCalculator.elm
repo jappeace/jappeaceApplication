@@ -24,10 +24,12 @@ port module PrijsCalculator exposing
     , orderhistorieStaffel
     , prijsRegels
     , productStaffelSegmenten
+    , spaarpuntenStaffel
     , leesBron
     , leesDoel
     , leesQuery
     , main
+    , meerPuntenDanAccounts
     , totaalCenten
     , update
     , zelfImportActief
@@ -43,7 +45,9 @@ staffel per vijfhonderd (€0,20, €0,15, €0,15, €0,10, daarna €0,10), pl
 €250 configuratie per extra taal. De modules die met de shop meegroeien
 (klantaccounts, orderhistorie, nieuwsbrief, voorraad) kosten €100 met de
 eerste 1.000 items inbegrepen en daarboven een aflopend tarief per item;
-de bezoeker vult daarvoor een schatting van het aantal in. De overige
+de bezoeker vult daarvoor een schatting van het aantal in. Spaarpunten
+liften mee op de €100 van de klantaccounts en kosten pas boven de 1.000
+accounts met punten een vlak tarief per account. De overige
 modules en diensten (thema, reviews, domeinverhuizing, e-mail-setup,
 verzendkoppeling, B2B, kassa, cursus) zijn vaste bedragen. Alle bedragen worden
 intern in hele centen gerekend zodat er geen afrondingsfouten op de komma
@@ -197,12 +201,11 @@ themaNieuwUitwerkenCenten =
 
 
 {-| Het tarief per item boven de inbegrepen items van een meegroeiende
-module: eerst 'tariefCenten' per item, na 'tredeOmvang' items het lagere
-'tariefDaarbovenCenten'. -}
+module: eerst de 'treden' als (omvang, tarief per item), daarna
+'bodemCenten' per item. Zonder treden is het tarief vlak. -}
 type alias ItemStaffel =
-    { tariefCenten : Int
-    , tredeOmvang : Int
-    , tariefDaarbovenCenten : Int
+    { treden : List ( Int, Int )
+    , bodemCenten : Int
     }
 
 
@@ -218,22 +221,37 @@ moduleInbegrepenItems =
 
 orderhistorieStaffel : ItemStaffel
 orderhistorieStaffel =
-    { tariefCenten = 8, tredeOmvang = 10000, tariefDaarbovenCenten = 4 }
+    { treden = [ ( 10000, 8 ) ], bodemCenten = 4 }
 
 
 klantaccountsStaffel : ItemStaffel
 klantaccountsStaffel =
-    { tariefCenten = 15, tredeOmvang = 5000, tariefDaarbovenCenten = 8 }
+    { treden = [ ( 5000, 15 ) ], bodemCenten = 8 }
+
+
+-- Decision: spaarpunten zijn sinds 11 okt 2026 een toevoeging op de
+-- klantaccounts (besluit Jappie): de €100 van de klantaccounts dekt ook
+-- de eerste 1.000 accounts met punten en de inrichting, daarboven €0,05
+-- per account met punten, vlak. Accounts zonder punten tellen niet mee.
+-- Een eigen vaste €100 zoals bij de andere modules is afgewezen: het saldo
+-- hangt aan het klantaccount, dus de toegang is al betaald. Vervangt de
+-- regel in standaard-prijslijst.org (spaarpunten per geval, nooit los op
+-- de klantgegevens stapelen).
+
+
+spaarpuntenStaffel : ItemStaffel
+spaarpuntenStaffel =
+    { treden = [], bodemCenten = 5 }
 
 
 nieuwsbriefStaffel : ItemStaffel
 nieuwsbriefStaffel =
-    { tariefCenten = 5, tredeOmvang = 5000, tariefDaarbovenCenten = 3 }
+    { treden = [ ( 5000, 5 ) ], bodemCenten = 3 }
 
 
 voorraadStaffel : ItemStaffel
 voorraadStaffel =
-    { tariefCenten = 5, tredeOmvang = 5000, tariefDaarbovenCenten = 3 }
+    { treden = [ ( 5000, 5 ) ], bodemCenten = 3 }
 
 
 reviewsCenten : Int
@@ -357,6 +375,8 @@ type alias Model =
     , thema : ThemaKeuze
     , klantaccounts : Bool
     , klantaccountsInvoer : String
+    , spaarpunten : Bool
+    , spaarpuntenInvoer : String
     , orderhistorie : Bool
     , bestellingenInvoer : String
     , nieuwsbrief : Bool
@@ -393,6 +413,8 @@ initieelModel =
     , thema = ThemaStandaard
     , klantaccounts = False
     , klantaccountsInvoer = ""
+    , spaarpunten = False
+    , spaarpuntenInvoer = ""
     , orderhistorie = False
     , bestellingenInvoer = ""
     , nieuwsbrief = False
@@ -463,6 +485,8 @@ type Msg
     | ThemaGewijzigd String
     | KlantaccountsGewijzigd Bool
     | KlantaccountsAantalGewijzigd String
+    | SpaarpuntenGewijzigd Bool
+    | SpaarpuntenAantalGewijzigd String
     | OrderhistorieGewijzigd Bool
     | BestellingenGewijzigd String
     | NieuwsbriefGewijzigd Bool
@@ -727,6 +751,12 @@ update msg model =
         KlantaccountsAantalGewijzigd waarde ->
             markeerInvoer { model | klantaccountsInvoer = waarde }
 
+        SpaarpuntenGewijzigd aan ->
+            markeerInvoer { model | spaarpunten = aan }
+
+        SpaarpuntenAantalGewijzigd waarde ->
+            markeerInvoer { model | spaarpuntenInvoer = waarde }
+
         OrderhistorieGewijzigd aan ->
             markeerInvoer { model | orderhistorie = aan }
 
@@ -985,15 +1015,15 @@ productStaffelSegmenten vertalingen =
 
 
 {-| De staffel van een meegroeiende module boven de inbegrepen items:
-eerst 'tredeOmvang' items tegen het eerste tarief, daarna het lagere. -}
+eerst de treden, daarna de bodem. -}
 itemStaffelSegmenten : ItemStaffel -> Int -> List StaffelSegment
 itemStaffelSegmenten staffel aantal =
     voegGelijkeSegmentenSamen
         (segmentenVanTreden
             (moduleInbegrepenItems + 1)
             (Basics.max 0 (aantal - moduleInbegrepenItems))
-            [ ( staffel.tredeOmvang, staffel.tariefCenten ) ]
-            staffel.tariefDaarbovenCenten
+            staffel.treden
+            staffel.bodemCenten
         )
 
 
@@ -1107,6 +1137,11 @@ aantalKlantaccounts model =
     leesGetal model.klantaccountsInvoer
 
 
+aantalSpaarpuntenAccounts : Model -> Int
+aantalSpaarpuntenAccounts model =
+    leesGetal model.spaarpuntenInvoer
+
+
 aantalBestellingen : Model -> Int
 aantalBestellingen model =
     leesGetal model.bestellingenInvoer
@@ -1120,6 +1155,28 @@ aantalAbonnees model =
 klantaccountsCenten : Model -> Int
 klantaccountsCenten model =
     itemStaffelCenten klantaccountsStaffel (aantalKlantaccounts model)
+
+
+{-| Spaarpunten gaan mee met de klantaccounts; een vinkje dat blijft staan
+nadat de klantaccounts uit gingen telt niet mee. -}
+spaarpuntenGekozen : Model -> Bool
+spaarpuntenGekozen model =
+    model.klantaccounts && model.spaarpunten
+
+
+{-| Elk account met punten is ook een klantaccount, dus meer accounts met
+punten dan klantaccounts is een tikfout in een van beide. We melden het
+alleen als het de prijs raakt: boven de 1.000 die de €100 al dekt. -}
+meerPuntenDanAccounts : Model -> Bool
+meerPuntenDanAccounts model =
+    spaarpuntenGekozen model
+        && aantalSpaarpuntenAccounts model > Basics.max (aantalKlantaccounts model) moduleInbegrepenItems
+
+
+{-| Alleen de staffel, geen vast deel: dat zit in 'klantaccountsCenten'. -}
+spaarpuntenCenten : Model -> Int
+spaarpuntenCenten model =
+    segmentenCenten (itemStaffelSegmenten spaarpuntenStaffel (aantalSpaarpuntenAccounts model))
 
 
 orderhistorieCenten : Model -> Int
@@ -1175,6 +1232,7 @@ totaalCenten model =
         + extraTaalConfiguratieCenten model
         + themaCenten model
         + indienAan model.klantaccounts (klantaccountsCenten model)
+        + indienAan (spaarpuntenGekozen model) (spaarpuntenCenten model)
         + indienAan model.orderhistorie (orderhistorieCenten model)
         + indienAan model.nieuwsbrief (nieuwsbriefCenten model)
         + indienAan model.voorraad (voorraadCenten model)
@@ -1484,6 +1542,26 @@ moduleRegels aan omschrijving eenheidMeervoud staffel aantal =
         []
 
 
+{-| Zoals 'moduleRegels', maar het vaste deel staat op nul met een
+verwijzing naar de klantaccounts, zodat de bezoeker ziet dat de eerste
+1.000 accounts met punten al betaald zijn. -}
+spaarpuntenRegels : Model -> List PrijsRegel
+spaarpuntenRegels model =
+    if spaarpuntenGekozen model then
+        PrijsRegel ("Spaarpunten meenemen" ++ moduleTelling (aantalSpaarpuntenAccounts model) "accounts met punten") (spaarpuntenCenten model) Hoofdregel
+            :: PrijsRegel
+                ("de eerste "
+                    ++ voegDuizendtallenToe (String.fromInt moduleInbegrepenItems)
+                    ++ " accounts met punten en de inrichting: in de \u{20AC}100 van de klantaccounts"
+                )
+                0
+                Subregel
+            :: List.map segmentRegel (itemStaffelSegmenten spaarpuntenStaffel (aantalSpaarpuntenAccounts model))
+
+    else
+        []
+
+
 moduleTelling : Int -> String -> String
 moduleTelling aantal eenheidMeervoud =
     if aantal <= 0 then
@@ -1518,6 +1596,7 @@ prijsRegels model =
             (extraTaalConfiguratieCenten model)
         ++ themaRegels model
         ++ moduleRegels model.klantaccounts "Klantaccounts meenemen" "accounts" klantaccountsStaffel (aantalKlantaccounts model)
+        ++ spaarpuntenRegels model
         ++ moduleRegels model.orderhistorie "Bestelgeschiedenis meenemen" "bestellingen" orderhistorieStaffel (aantalBestellingen model)
         ++ moduleRegels model.nieuwsbrief "Nieuwsbrief-aanmeldingen meenemen" "adressen" nieuwsbriefStaffel (aantalAbonnees model)
         ++ moduleRegels model.voorraad "Voorraadaantallen live overzetten" "producten" voorraadStaffel (aantalProducten model)
@@ -1641,7 +1720,18 @@ nieuw ontwerp en een onbekend bronplatform gaan op aanvraag, en een nog
 onbekend doelplatform krijgt de advies-toezegging. -}
 opAanvraagNoten : Model -> List (Html Msg)
 opAanvraagNoten model =
-    themaNoot model.thema ++ bronNoot model.bron ++ doelNoot model.doel ++ pointOfSaleNoot model.pointOfSale
+    themaNoot model.thema ++ bronNoot model.bron ++ doelNoot model.doel ++ pointOfSaleNoot model.pointOfSale ++ spaarpuntenNoot model
+
+
+spaarpuntenNoot : Model -> List (Html Msg)
+spaarpuntenNoot model =
+    if meerPuntenDanAccounts model then
+        [ p [ Attr.class "calc-note calc-note-nadruk" ]
+            [ text "Je vulde meer accounts met spaarpunten in dan klantaccounts. Elk account met punten is ook een klantaccount: pas het aantal klantaccounts aan, dan klopt de prijs." ]
+        ]
+
+    else
+        []
 
 
 {-| Bij point-of-sale komt de installatie op locatie: die en de reiskosten
@@ -1686,6 +1776,7 @@ view model =
                 , aanvinkVeld "Klantaccounts" "Je klanten houden hun eigen inlog. \u{20AC}100 tot 1.000 accounts, daarboven per account" model.klantaccounts KlantaccountsGewijzigd
                 ]
                     ++ aantalVeld model.klantaccounts "Hoeveel klantaccounts ongeveer?" model.klantaccountsInvoer KlantaccountsAantalGewijzigd
+                    ++ spaarpuntenVelden model
                     ++ [ aanvinkVeld "Bestelgeschiedenis" "Alle eerdere bestellingen van je klanten. \u{20AC}100 tot 1.000 bestellingen, daarboven per bestelling" model.orderhistorie OrderhistorieGewijzigd ]
                     ++ aantalVeld model.orderhistorie "Hoeveel bestellingen staan er in je shop ongeveer?" model.bestellingenInvoer BestellingenGewijzigd
                     ++ [ aanvinkVeld "Nieuwsbrief-aanmeldingen" "De adressenlijst van je nieuwsbrief. \u{20AC}100 tot 1.000 adressen, daarboven per adres" model.nieuwsbrief NieuwsbriefGewijzigd ]
@@ -1763,6 +1854,27 @@ afrondingVelden model =
             , aanvinkVeld "301-redirects van een tweede domein" "Bijvoorbeeld een aparte groothandelshop die in de nieuwe shop opgaat. €250" model.tweedeDomeinRedirects TweedeDomeinGewijzigd
             ]
         ]
+
+    else
+        []
+
+
+{-| De spaarpuntenvraag verschijnt pas als de klantaccounts aanstaan: de
+punten hangen aan de accounts. -}
+spaarpuntenVelden : Model -> List (Html Msg)
+spaarpuntenVelden model =
+    if model.klantaccounts then
+        aanvinkVeld "Spaarpunten" "Je klanten houden hun gespaarde punten. De eerste 1.000 accounts met punten zitten in de \u{20AC}100 van de klantaccounts, daarboven \u{20AC}0,05 per account met punten" model.spaarpunten SpaarpuntenGewijzigd
+            :: spaarpuntenAantalVeld model
+
+    else
+        []
+
+
+spaarpuntenAantalVeld : Model -> List (Html Msg)
+spaarpuntenAantalVeld model =
+    if spaarpuntenGekozen model then
+        [ getalVeld "Hoeveel klantaccounts hebben spaarpunten ongeveer?" model.spaarpuntenInvoer "Alleen accounts met een puntensaldo tellen. Een schatting is genoeg; laat je het leeg, dan rekenen we met de eerste 1.000." SpaarpuntenAantalGewijzigd ]
 
     else
         []

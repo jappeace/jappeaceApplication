@@ -20,10 +20,12 @@ import PrijsCalculator
         , isGroteCatalogus
         , leesQuery
         , itemStaffelSegmenten
+        , meerPuntenDanAccounts
         , Regelniveau(..)
         , orderhistorieStaffel
         , prijsRegels
         , productStaffelSegmenten
+        , spaarpuntenStaffel
         , totaalCenten
         , update
         , zelfImportActief
@@ -96,6 +98,20 @@ staffelSegmentenSuite =
                     , { van = 11001, tot = 11504, tariefCenten = 4 }
                     ]
                     (itemStaffelSegmenten orderhistorieStaffel 11504)
+        , test "spaarpunten 20.000: één vlakke stap om 5ct boven de inbegrepen 1.000, geen lagere trede" <|
+            \_ ->
+                Expect.equal
+                    [ { van = 1001, tot = 20000, tariefCenten = 5 } ]
+                    (itemStaffelSegmenten spaarpuntenStaffel 20000)
+        , test "uitsplitsing spaarpunten 3.000 bij 4.850 accounts: hoofdregel 100 met de eerste 1.000 op nul en één stap eronder" <|
+            \_ ->
+                let
+                    regels =
+                        List.drop 6 (prijsRegels { initieelModel | klantaccounts = True, klantaccountsInvoer = "4850", spaarpunten = True, spaarpuntenInvoer = "3000" })
+                in
+                Expect.equal
+                    [ ( Hoofdregel, 10000 ), ( Subregel, 0 ), ( Subregel, 10000 ) ]
+                    (List.map (\r -> ( r.niveau, r.centen )) regels)
         , test "bestelgeschiedenis 800: niets boven de inbegrepen items, geen stappen" <|
             \_ ->
                 Expect.equal [] (itemStaffelSegmenten orderhistorieStaffel 800)
@@ -268,6 +284,34 @@ suite =
             \_ ->
                 Expect.equal (109900 + 101000)
                     (totaalCenten { initieelModel | klantaccounts = True, klantaccountsInvoer = "8000" })
+        , test "spaarpunten delen de 100 van de klantaccounts: 900 accounts met punten kosten niets extra" <|
+            \_ ->
+                Expect.equal (109900 + 10000)
+                    (totaalCenten { initieelModel | klantaccounts = True, klantaccountsInvoer = "900", spaarpunten = True, spaarpuntenInvoer = "900" })
+        , test "4.850 accounts waarvan 3.000 met punten = 677,50 + 2.000 om 5ct = 777,50" <|
+            \_ ->
+                Expect.equal (109900 + 67750 + 10000)
+                    (totaalCenten { initieelModel | klantaccounts = True, klantaccountsInvoer = "4850", spaarpunten = True, spaarpuntenInvoer = "3000" })
+        , test "spaarpunten zonder klantaccounts tellen niet mee (de punten hangen aan de accounts)" <|
+            \_ ->
+                Expect.equal 109900
+                    (totaalCenten { initieelModel | spaarpunten = True, spaarpuntenInvoer = "3000" })
+        , test "meer accounts met punten dan klantaccounts wordt gemeld: 5.000 met punten op 500 accounts" <|
+            \_ ->
+                Expect.equal True
+                    (meerPuntenDanAccounts { initieelModel | klantaccounts = True, klantaccountsInvoer = "500", spaarpunten = True, spaarpuntenInvoer = "5000" })
+        , test "3.000 met punten op 4.850 accounts is geen melding" <|
+            \_ ->
+                Expect.equal False
+                    (meerPuntenDanAccounts { initieelModel | klantaccounts = True, klantaccountsInvoer = "4850", spaarpunten = True, spaarpuntenInvoer = "3000" })
+        , test "binnen de 1.000 die de 100 dekt geen melding, ook zonder opgave van de klantaccounts" <|
+            \_ ->
+                Expect.equal False
+                    (meerPuntenDanAccounts { initieelModel | klantaccounts = True, spaarpunten = True, spaarpuntenInvoer = "800" })
+        , test "het aantal accounts met punten loopt via update in het model en de prijs" <|
+            \_ ->
+                Expect.equal (109900 + 10000 + 5000)
+                    (totaalCenten (Tuple.first (update (SpaarpuntenAantalGewijzigd "2000") { initieelModel | klantaccounts = True, spaarpunten = True })))
         , test "bestelgeschiedenis met 11.504 bestellingen = 920,16 (100 + 10.000 om 8ct + 504 om 4ct; Panzer)" <|
             \_ ->
                 Expect.equal (109900 + 92016)
