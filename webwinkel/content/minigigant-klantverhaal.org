@@ -65,7 +65,7 @@ domeinpartij opgezet en de bezorging omgezet, met een testmail als
 bewijs vooraf. Daarna is de volledige oude mailbox via IMAP
 overgezet, bericht voor bericht, mappen en al. Sako mailt nu vanaf
 hetzelfde adres als altijd, met zijn hele archief binnen
-handbereik, terwijl de oude bus rustig mag verdwijnen.
+handbereik, ook nu de oude mailbox verdwenen is.
 
 * De overstap zelf
 
@@ -96,8 +96,8 @@ nieuwsbrieven gewoon weer ergens heen gaan.
 De webshop draait op het vertrouwde adres, de beoordelingen staan
 erop, de mail loopt door met het hele archief erin, en Sako richt
 zelf in alle rust zijn thema verder in. De deadline van 3 september
-passeert zonder dat er iets te merken valt: alles wat die dag bij
-het oude platform verdwijnt, is al veilig overgezet.
+passeerde zonder dat er iets van te merken was: alles wat die dag bij
+het oude platform verdween, was al veilig overgezet.
 
 En de Sinterklaas-piek? Die haalt hij ruim. Daar was het allemaal
 om te doen.
