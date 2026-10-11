@@ -2,8 +2,9 @@
 #+DATE: 2026-09-01
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, shopify, klantverhaal
+#+SUMMARY: Speelgoedwinkel Mini Gigant verhuisde shop, domein en mailbox van MijnWebwinkel naar Shopify, drie dagen voordat het oude account verdween. Het verhaal van die migratie, inclusief de hobbels.
 
-Mini Gigant in Marum verkoopt sinds 2009 speelgoed, puzzels,
+[[https://minigigant.nl/][Mini Gigant]] in Marum verkoopt sinds 2009 speelgoed, puzzels,
 kaarsen, mokken en een Marius van Dokkum-lijn. Zeventien jaar
 webshop-historie, en alles daarvan, de shop, het domein én de
 mailbox, stond bij MijnWebwinkel. Eind augustus 2026 verhuisde de
@@ -39,8 +40,8 @@ loskrijgen. De hele planning schoof drie weken naar voren.
 - de WebwinkelKeur-beoordelingen
 - het domein, weg bij de platform-registrar
 - de mailbox, met de mailgeschiedenis
-- en de doorverwijzingen van alle oude adressen, zodat zeventien
-  jaar vindbaarheid in Google blijft staan
+- en doorverwijzingen van de oude adressen, zodat de opgebouwde
+  vindbaarheid in Google mee kon verhuizen
 
 * Het domein losmaken zonder de winkel te raken
 
@@ -62,7 +63,7 @@ augustus de winkel zelf.
 
 Voor de mailbox is een nieuwe zakelijke mailbox bij de nieuwe
 domeinpartij opgezet en de bezorging omgezet, met een testmail als
-bewijs vooraf. Daarna zijn de inbox, de verzonden mail en de concepten via IMAP
+bewijs. Daarna zijn de inbox, de verzonden mail en de concepten via IMAP
 overgezet, bericht voor bericht; alleen de prullenbak en de spam
 bleven achter. Sako mailt nu vanaf
 hetzelfde adres als altijd, met zijn oude mail binnen
@@ -82,26 +83,33 @@ hebben het uur uitgemeten, de mogelijke oorzaken vastgelegd en de les opgeschrev
 MijnWebwinkel heeft.
 
 Na de omzetting controleerde ons programma alle 1.305 oude
-adressen stuk voor stuk op de live winkel: elk daarvan komt op de
+adressen stuk voor stuk op de live winkel: elk daarvan kwam op de
 juiste nieuwe pagina uit, nul afwijkingen. Daar zaten ook 30
 adressen bij die nergens meer in de huidige shop voorkwamen; die
 hebben we via het Internet Archive teruggevonden en alsnog
 aangesloten, zodat ook stokoude links uit fora en oude
-nieuwsbrieven gewoon weer ergens heen gaan.
+nieuwsbrieven weer ergens heen gingen.
 
 * Waar de winkel nu staat
 
-De webshop draait op het vertrouwde adres, de beoordelingen staan
+De webshop draait op het vertrouwde adres, [[https://minigigant.nl/][minigigant.nl]], de beoordelingen staan
 erop, de mail loopt door met de oude mail erin, en Sako richt
 zelf in alle rust zijn thema verder in. Op 3 september verdwenen bij
 MijnWebwinkel de oude shop, de domeinhosting en de mailbox; winkel,
 domein en mail stonden toen al op hun nieuwe plek.
 
-En de Sinterklaas-piek? Die haalt hij ruim. Daar was het allemaal
-om te doen.
+Sako's eigen samenvatting: "Hartelijk bedankt voor je goede service
+en duidelijke communicatie."
+
+En de Sinterklaas-piek? Daar staat de winkel nu klaar voor. Daar was
+het allemaal om te doen.
 
 -----
 
 Staat jouw webshop, domein of mailbox ook (nog) bij je
-webwinkelplatform? [[https://webwinkelverhuis.nl/][Webwinkelverhuis]] verhuist het in stappen die elk
-terug te draaien zijn, zonder dat je winkel dicht hoeft.
+webwinkelplatform? We verhuizen het in stappen die elk terug te
+draaien zijn.
+[[https://meet.webwinkelverhuis.nl][Plan een vrijblijvend gesprek]],
+of bekijk eerst
+[[https://webwinkelverhuis.nl/prijzen.html][wat een migratie kost]].
+Je betaalt pas na een geslaagde migratie.
