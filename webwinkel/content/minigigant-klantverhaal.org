@@ -4,7 +4,7 @@
 #+TAGS: mijnwebwinkel, shopify, klantverhaal
 
 Mini Gigant in Marum verkoopt sinds 2009 speelgoed, puzzels,
-kaarsen, mokken en een eigen Marius van Dokkum-lijn. Zeventien jaar
+kaarsen, mokken en een Marius van Dokkum-lijn. Zeventien jaar
 webshop-historie, en alles daarvan, de shop, het domein én de
 mailbox, stond bij MijnWebwinkel. Eind augustus 2026 verhuisde de
 winkel naar Shopify, drie dagen voordat dat oude account met alles
@@ -78,8 +78,7 @@ deze migratie: in dat uur stond de nieuwe DNS overal al goed,
 maar kwamen bezoekers nog even bij het oude platform uit. Meten
 hielp hier meer dan turen naar dashboards: het beheerscherm
 meldde zelfs al "verbonden" toen er nog niets verbonden was. We
-hebben het uur uitgemeten, de mogelijke oorzaken vastgelegd en de les in ons
-draaiboek gezet voor elke volgende winkel die zijn DNS bij
+hebben het uur uitgemeten, de mogelijke oorzaken vastgelegd en de les opgeschreven voor elke volgende winkel die zijn DNS bij
 MijnWebwinkel heeft.
 
 Na de omzetting controleerde ons programma alle 1.305 oude
