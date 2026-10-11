@@ -62,15 +62,15 @@ augustus de winkel zelf.
 
 Voor de mailbox is een nieuwe zakelijke mailbox bij de nieuwe
 domeinpartij opgezet en de bezorging omgezet, met een testmail als
-bewijs vooraf. Daarna is de volledige oude mailbox via IMAP
-overgezet, bericht voor bericht, mappen en al. Sako mailt nu vanaf
+bewijs vooraf. Daarna zijn de inbox, de verzonden mail en de concepten via IMAP
+overgezet, bericht voor bericht; alleen de prullenbak en de spam
+bleven achter. Sako mailt nu vanaf
 hetzelfde adres als altijd, met zijn hele archief binnen
 handbereik, ook nu de oude mailbox verdwenen is.
 
 * De overstap zelf
 
-Op maandagavond 31 augustus belde Sako nog even, en ging de knop
-om. Binnen een uur stond minigigant.nl met een geldig certificaat
+Op maandagavond 31 augustus ging de knop om. Binnen een uur stond minigigant.nl met een geldig certificaat
 op de nieuwe shop.
 
 Helemaal zonder verrassing ging dat niet, en dit is de hobbel van
