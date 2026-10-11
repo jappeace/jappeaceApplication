@@ -13,8 +13,8 @@ inclusief de hobbels, want die waren er ook.
 
 * Alles bij één partij
 
-Sako, de eigenaar van Mini Gigant, wilde al langer weg bij
-MijnWebwinkel. De planning was ontspannen: livegang eind september,
+Sako, de eigenaar van Mini Gigant, wilde weg bij MijnWebwinkel.
+De planning was ontspannen: livegang eind september,
 ruim voor de Sinterklaas- en kerstpiek die voor een speelgoedwinkel
 het hele jaar draagt.
 
@@ -22,7 +22,7 @@ Toen bevestigde MijnWebwinkel wat het einde van zijn jaarabonnement
 op 3 september precies betekende: niet alleen de shop stopt, ook de
 domeinhosting en de mailbox verdwijnen die dag. En de mail draaide
 uitsluitend in de webclient van het platform, dus zonder actie zou
-zeventien jaar aan bestellingen, leverancierscontact en
+zijn hele mailgeschiedenis met bestellingen, leverancierscontact en
 klantcorrespondentie onherroepelijk weg zijn.
 
 Dat is de keerzijde van alles-bij-één-partij: wie vertrekt, of van
@@ -38,7 +38,7 @@ loskrijgen. De hele planning schoof drie weken naar voren.
 - de informatiepagina's
 - de WebwinkelKeur-beoordelingen
 - het domein, weg bij de platform-registrar
-- de mailbox, inclusief de volledige geschiedenis
+- de mailbox, met de mailgeschiedenis
 - en de doorverwijzingen van alle oude adressen, zodat zeventien
   jaar vindbaarheid in Google blijft staan
 
@@ -58,14 +58,14 @@ onderbreking: de oude shop draaide gewoon door alsof er niets
 gebeurd was. Dezelfde avond ging de mail om, en op maandag 31
 augustus de winkel zelf.
 
-* Zeventien jaar mail gered
+* De mailgeschiedenis gered
 
 Voor de mailbox is een nieuwe zakelijke mailbox bij de nieuwe
 domeinpartij opgezet en de bezorging omgezet, met een testmail als
 bewijs vooraf. Daarna zijn de inbox, de verzonden mail en de concepten via IMAP
 overgezet, bericht voor bericht; alleen de prullenbak en de spam
 bleven achter. Sako mailt nu vanaf
-hetzelfde adres als altijd, met zijn hele archief binnen
+hetzelfde adres als altijd, met zijn oude mail binnen
 handbereik, ook nu de oude mailbox verdwenen is.
 
 * De overstap zelf
@@ -75,11 +75,10 @@ op de nieuwe shop.
 
 Helemaal zonder verrassing ging dat niet, en dit is de hobbel van
 deze migratie: in dat uur stond de nieuwe DNS overal al goed,
-maar bleef het oude platform het verkeer nog even naar zich toe
-trekken via een routeringslaag die beide platforms delen. Meten
+maar kwamen bezoekers nog even bij het oude platform uit. Meten
 hielp hier meer dan turen naar dashboards: het beheerscherm
 meldde zelfs al "verbonden" toen er nog niets verbonden was. We
-hebben het uur uitgemeten, de oorzaak vastgelegd en de les in ons
+hebben het uur uitgemeten, de mogelijke oorzaken vastgelegd en de les in ons
 draaiboek gezet voor elke volgende winkel die zijn DNS bij
 MijnWebwinkel heeft.
 
@@ -94,7 +93,7 @@ nieuwsbrieven gewoon weer ergens heen gaan.
 * Waar de winkel nu staat
 
 De webshop draait op het vertrouwde adres, de beoordelingen staan
-erop, de mail loopt door met het hele archief erin, en Sako richt
+erop, de mail loopt door met de oude mail erin, en Sako richt
 zelf in alle rust zijn thema verder in. Op 3 september verdwenen bij
 MijnWebwinkel de oude shop, de domeinhosting en de mailbox; winkel,
 domein en mail stonden toen al op hun nieuwe plek.

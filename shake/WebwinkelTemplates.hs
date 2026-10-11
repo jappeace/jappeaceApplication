@@ -819,7 +819,7 @@ recentWerkSection =
     H.div ! A.class_ "case-tekst" $
       H.p $ do
         H.strong "Mini Gigant"
-        H.preEscapedToHtml (": een speelgoedwinkel uit Marum (sinds 2009) waarvan shop, domein &eacute;n mailbox bij MijnWebwinkel stonden, drie dagen voor het einde van dat account verhuisd naar Shopify. Inclusief domeinoverdracht zonder onderbreking en zeventien jaar mailgeschiedenis." :: Text)
+        H.preEscapedToHtml (": een speelgoedwinkel uit Marum (sinds 2009) waarvan shop, domein &eacute;n mailbox bij MijnWebwinkel stonden, drie dagen voor het einde van dat account verhuisd naar Shopify. Inclusief domeinoverdracht zonder onderbreking en de mailgeschiedenis." :: Text)
     H.div ! A.class_ "case-links" $ do
       H.a ! A.href "/blog/klantverhaal-mini-gigant-van-mijnwebwinkel-naar-shopify-drie-dagen-voor-de-deadline.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
       H.a ! A.href "https://minigigant.nl/" $ H.preEscapedToHtml ("minigigant.nl &rarr;" :: Text)
