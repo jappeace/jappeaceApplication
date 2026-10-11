@@ -83,8 +83,8 @@ hebben het uur uitgemeten, de mogelijke oorzaken vastgelegd en de les opgeschrev
 MijnWebwinkel heeft.
 
 Na de omzetting controleerde ons programma alle 1.305 oude
-adressen stuk voor stuk op de live winkel: elk daarvan kwam op de
-juiste nieuwe pagina uit, nul afwijkingen. Daar zaten ook 30
+adressen stuk voor stuk op de live winkel: elk daarvan stuurde door
+naar precies het bedoelde nieuwe adres, nul afwijkingen. Daar zaten ook 30
 adressen bij die nergens meer in de huidige shop voorkwamen; die
 hebben we via het Internet Archive teruggevonden en alsnog
 aangesloten, zodat ook stokoude links uit fora en oude
