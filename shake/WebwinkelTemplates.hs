@@ -449,7 +449,7 @@ prijzen = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
       H.preEscapedToHtml ("vanaf &euro;" <> migratieBasisprijsEuro <> " ")
       H.small "eenmalig"
     H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product." :: Text)
-    H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Klantaccounts, bestelgeschiedenis en nieuwsbrief-adressen neem je mee voor &euro;100 per onderdeel tot 1.000 stuks, daarboven per stuk. Extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
+    H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Klantaccounts (met hun spaarpunten), bestelgeschiedenis en nieuwsbrief-adressen neem je mee voor &euro;100 per onderdeel tot 1.000 stuks, daarboven per stuk. Extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
     H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct je prijs"
     H.p ! A.class_ "garantie" $ do
       H.preEscapedToHtml vinkjeSvg
@@ -964,6 +964,9 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.tr $ do
           H.td $ H.preEscapedToHtml ("Klantaccounts meenemen (je klanten houden hun inlog): &euro;100 tot 1.000 accounts, daarna &euro;0,15 per account, boven de 6.000 &euro;0,08" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Spaarpunten meenemen bij je klantaccounts (je klanten houden hun gespaarde punten): de eerste 1.000 accounts met punten en de inrichting zitten in de &euro;100 van de klantaccounts, daarboven per account met punten; accounts zonder punten tellen niet mee" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,05 per account" :: Text)
         H.tr $ do
           H.td $ H.preEscapedToHtml ("Bestelgeschiedenis meenemen: &euro;100 tot 1.000 bestellingen, daarna &euro;0,08 per bestelling, boven de 11.000 &euro;0,04" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
