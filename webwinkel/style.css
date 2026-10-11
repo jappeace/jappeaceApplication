@@ -137,7 +137,7 @@ body > header {
    zodat de call-to-action pas gaat trekken als de bezoeker zich ingelezen
    heeft. forwards houdt de groene eindstand vast; met
    prefers-reduced-motion blijft hij gewoon secundair. De klik wordt al
-   gemeten via ctaTrackScript (offerte_mailto_klik op elke mailto-knop). */
+   gemeten via ctaTrackScript (offerte_knop_klik op elke offerte-link). */
 .hoofdnav .cta-button-secondary {
   animation: offerte-promotie 120s linear 180s 1 forwards;
 }
@@ -406,13 +406,13 @@ main > section > ul:not([class]), main > section > ol { max-width: var(--maat-sm
 .audit-grid p + p, .audit-grid .testimonials + p, .audit-grid p + .waarom-rijen { margin-top: 0.9rem; }
 .proces-beeld img {
   width: 100%; aspect-ratio: 3 / 2; object-fit: cover;
-  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.13);
+  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.3);
 }
 /* Staande portretfoto naast een tekstkolom (over-ons). */
 .portret-beeld img {
   width: min(100%, 22rem); aspect-ratio: 4 / 5; object-fit: cover;
   margin-inline: auto;
-  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.13);
+  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.3);
 }
 
 /* Elke genummerde lijst in een sectie krijgt de stappen-look: cirkels met
@@ -543,7 +543,6 @@ main > section ul li strong { font-family: var(--kop); color: var(--navy-diep); 
 .prijs-kaart .inbegrepen { color: var(--inkt); }
 .prijs-kaart .meerprijs { color: var(--grijs); font-size: 0.97rem; margin-top: 0.8rem; }
 .prijs-kaart hr { border: 0; border-top: 1px solid var(--lijn); margin-block: 1.4rem; }
-.prijs-kaart .abonnement { color: var(--grijs); font-size: 0.92rem; }
 .prijs-kaart .cta-button { margin-top: 1.5rem; }
 .prijs-kaart .garantie {
   margin-top: 0.9rem; font-size: 0.92rem; font-weight: 600; color: var(--groen-tekst);
@@ -615,7 +614,7 @@ main > section ul li strong { font-family: var(--kop); color: var(--navy-diep); 
 .contact-direct a { font-weight: 600; white-space: nowrap; }
 .contact-beeld img {
   width: 100%; aspect-ratio: 3 / 2; object-fit: cover;
-  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.13);
+  border-radius: var(--radius); box-shadow: 0 10px 28px rgba(11, 46, 80, 0.3);
 }
 
 /* ---------- footer ---------- */
@@ -665,10 +664,70 @@ footer small a:hover { color: var(--wit); }
 .calc-field input:focus, .calc-field select:focus {
   outline: 2px solid var(--navy); outline-offset: 1px; border-color: var(--navy);
 }
+/* Markup: offertePagina in shake/WebwinkelTemplates.hs (het formulier
+   naar POST /api/offerte) en offerteFormulier in
+   elm/src/PrijsCalculator.elm (dezelfde POST vanuit de rekenhulp). */
+/* Links uitgelijnd zoals de rest van de sectie-inhoud; alleen de
+   breedte is begrensd op leesmaat. */
+.offerte-formulier {
+  display: flex; flex-direction: column; gap: 1.2rem;
+  max-width: 34rem; margin: 2rem 0 0; text-align: left;
+}
+.offerte-formulier textarea {
+  font-family: var(--tekst); font-size: 1.02rem; color: var(--inkt);
+  padding: 0.7rem 1rem; border: 1px solid var(--lijn); border-radius: 10px;
+  background: var(--wit); width: 100%;
+}
+.offerte-formulier textarea:focus {
+  outline: 2px solid var(--navy); outline-offset: 1px; border-color: var(--navy);
+}
+.offerte-formulier .calc-field input { max-width: none; }
+.offerte-formulier .cta-button { align-self: flex-start; }
+/* Honeypot-veld op het offerteformulier: onzichtbaar voor mensen, de
+   server leest een gevuld veld als spam-signaal. */
+.honeypot-veld { display: none; }
+/* Het samengestelde bericht onder de intakevelden (OfferteForm.elm):
+   de bezoeker ziet precies wat er verstuurd wordt. */
+.offerte-bericht-voorbeeld {
+  display: flex; flex-direction: column; gap: 0.4rem;
+  background: var(--fond); border: 1px solid var(--lijn);
+  border-radius: 10px; padding: 0.9rem 1rem;
+}
+.offerte-bericht-tekst {
+  white-space: pre-wrap; color: var(--grijs); font-size: 0.95rem;
+}
+.calc-offerte-formulier { display: grid; gap: 1.5rem; margin: 0; }
+/* De twee uitklapknoppen van het rapport (alle punten, kernmetingen)
+   naast elkaar; markup: rapportWeergave in elm/src/ScannerForm.elm. */
+.scanner-knoppenrij { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.2rem; }
+/* Voortgangsbalk onder de scanner-statusregel (voortgangsBalk in
+   elm/src/ScannerForm.elm): kruipt naar 95% in ~75s. */
+.scanner-voortgang {
+  flex-basis: 100%; height: 0.5rem; border-radius: 999px;
+  background: var(--lijn); overflow: hidden;
+}
+.scanner-voortgang-balk {
+  height: 100%; background: var(--navy); border-radius: 999px;
+  transition: width 2.9s linear;
+}
 /* Markup: aanvinkVeld in elm/src/PrijsCalculator.elm: een label.calc-check
    met daarin de checkbox en een span.calc-check-text die de spans
    .calc-check-label en .calc-hint onder elkaar zet. */
-.calc-check-group { display: grid; gap: 0.7rem; }
+/* De aanvinkgroepen zijn dichtgeklapte details-elementen; de summary is de
+   kop. display blijft de browser-default zodat het open/dicht-gedrag en het
+   driehoekje overal werken; de grid-gap zit daarom op de checks zelf via
+   margin. */
+.calc-check-group > summary { cursor: pointer; }
+.calc-check-group > summary:hover { color: var(--navy); }
+.calc-check-group > .calc-check { margin-top: 0.7rem; }
+/* Het aantal-veld van een meegroeiende module (aantalVeld in
+   PrijsCalculator.elm) staat onder zijn aanvinkhokje, ingesprongen
+   tot onder de tekst ervan. */
+.calc-check-group > .calc-field { margin: 0.5rem 0 0.3rem 1.75rem; }
+/* Het talenveld staat ook in de groep maar hoort bij geen hokje: eigen
+   wrapper (div.calc-taalveld in PrijsCalculator.elm) zodat de
+   inspring-regel hierboven niet grijpt, en wat lucht boven het veld. */
+.calc-check-group > .calc-taalveld { margin-top: 1.1rem; }
 .calc-check { display: flex; align-items: baseline; gap: 0.7rem; cursor: pointer; }
 .calc-check input { accent-color: var(--groen-vlak); width: 1.05rem; height: 1.05rem; flex: none; }
 .calc-check-text { display: flex; flex-direction: column; }
@@ -682,6 +741,14 @@ footer small a:hover { color: var(--wit); }
 .calc-line { display: flex; justify-content: space-between; gap: 1rem; }
 .calc-line-label { color: var(--grijs); }
 .calc-line-price { font-family: var(--kop); font-weight: 650; color: var(--navy); white-space: nowrap; }
+/* Subregels (Regelniveau Subregel in PrijsCalculator.elm): de
+   staffelstappen onder de post met het totaal, ingesprongen en lichter. */
+.calc-line-sub { padding-left: 1.4rem; font-size: 0.9rem; }
+.calc-line-sub .calc-line-label::before { content: "\00B7  "; }
+.calc-line-sub .calc-line-price { font-weight: 500; color: var(--grijs); }
+/* Nadrukkelijke noot (themaNoot bij Nieuw ontwerp in PrijsCalculator.elm):
+   een kader, zodat "zit niet in dit totaal" niet als voetnoot leest. */
+.calc-note-nadruk { border: 1px solid var(--navy); border-left-width: 5px; border-radius: 10px; padding: 0.8rem 1rem; background: var(--wit); color: var(--inkt); }
 .calc-total {
   display: flex; justify-content: space-between; gap: 1rem;
   margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--lijn);
@@ -724,7 +791,7 @@ main { display: flex; flex-direction: column; }
 }
 .scanner-form input:focus { outline: 2px solid var(--navy); outline-offset: 1px; }
 .scanner-status { margin-top: 1rem; color: var(--grijs); }
-.scanner-laden { display: flex; align-items: center; gap: 0.8rem; margin-top: 1.2rem; }
+.scanner-laden { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin-top: 1.2rem; }
 .scanner-spinner {
   width: 1.4rem; height: 1.4rem; flex: none;
   border: 3px solid var(--lijn); border-top-color: var(--groen-vlak);
@@ -747,7 +814,10 @@ main { display: flex; flex-direction: column; }
   box-shadow: 0 6px 18px rgba(11, 46, 80, 0.05);
 }
 .scanner-score-getal { font-family: var(--kop); font-weight: 750; font-size: 1.9rem; line-height: 1.1; }
-.scanner-score-label { color: var(--grijs); font-size: 0.92rem; }
+/* het label op een eigen regel haalt het oude vastgeplakte
+   "58Prestaties" uit elkaar; het procentteken zit in scoreTekst
+   (elm/src/ScannerForm.elm) */
+.scanner-score-label { display: block; margin-top: 0.25rem; color: var(--grijs); font-size: 0.92rem; }
 .scanner-score-goed .scanner-score-getal { color: var(--groen-tekst); }
 .scanner-score-matig .scanner-score-getal { color: #9a6b00; }
 .scanner-score-slecht .scanner-score-getal { color: #a4262c; }

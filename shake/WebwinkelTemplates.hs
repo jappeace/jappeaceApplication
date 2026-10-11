@@ -9,6 +9,8 @@
 module WebwinkelTemplates
   ( webwinkelIndexPage
   , prijzenPage
+  , offertePagina
+  , offerteVerzondenPagina
   , scanPage
   , vierNulVierPagina
   , webwinkelBlogIndexPage
@@ -17,6 +19,8 @@ module WebwinkelTemplates
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
+  , magentoMigrationPage
+  , zilvercmsMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
   , overOnsPage
@@ -34,7 +38,7 @@ import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
-import Types (SiteConfig(..), Article(..), PaginationInfo(..), articleLastmod)
+import Types (SiteConfig(..), Article(..), Lang(..), PaginationInfo(..), articleLastmod)
 import PageChrome
   ( PageMeta(..)
   , defaultPageMeta
@@ -43,9 +47,8 @@ import PageChrome
   , customAttribute
   , ogLocale
   , resolveOgImage
-  , percentEncodeQuery
   , migratieBasisprijsEuro
-  , meetLink
+  , webwinkelverhuisMeetLink
   , whatsappFloatingButton
   , jsonLdString
   , serviceJsonLd
@@ -56,7 +59,7 @@ import PageChrome
   , renderFaqItemCollapsible
   , faqPageJsonLd
   , formatIsoDate
-  , formatHumanDate
+  , formatDutchHumanDate
   , articleMetaDescription
   , renderBlogSummary
   , renderPagination
@@ -115,37 +118,32 @@ webwinkelOrganizationJsonLd =
 webwinkelEmail :: Text
 webwinkelEmail = "jappie@webwinkelverhuis.nl"
 
--- | The "ask for a quote" mailto used by every call-to-action button. The body
--- is a gentle fill-in template: a blank mail box is intimidating, and these
--- prompts tell the merchant which details make for a good quote (mirroring the
--- calculator's questions) without forcing them through the calculator first.
-offerteMailto :: H.AttributeValue
-offerteMailto =
-  toValue
-    ( "mailto:" <> webwinkelEmail
-        <> "?subject=Migratie%20offerte&body="
-        <> percentEncodeQuery offerteBodyTemplate
-    )
+-- Decision: elke offerte-CTA wijst naar /offerte.html, het formulier
+-- dat naar POST /api/offerte stuurt, in plaats van de oude mailto
+-- (besluit Jappie 4 sep 2026). GA4 augustus: 2 offerte-mailto-kliks,
+-- nul ontvangen mails; mailto faalt geluidloos bij bezoekers zonder
+-- gekoppeld mailprogramma, en dat waren mogelijk de enige conversies
+-- van de maand. Het formulier kan niet stil falen: de server logt elke
+-- aanvraag durabel en mailt hem door (megavid
+-- WebshopScanner.OfferteAanvraag).
+offertePaginaLink :: H.AttributeValue
+offertePaginaLink = "/offerte.html"
 
--- | Fill-in template for a quote request from a plain CTA button (not the
--- calculator). Kept in sync by hand with the calculator's questions.
-offerteBodyTemplate :: Text
-offerteBodyTemplate =
-  "Hallo,\n\n"
-    <> "Ik wil graag een offerte voor het verhuizen van mijn webshop. "
-    <> "Om je een goede prijs te kunnen geven, alvast wat info (vul in wat je weet):\n\n"
+-- | Fill-in template that prefills the noscript-offerteformulier's
+-- bericht-veld: a blank text box is intimidating, and these prompts
+-- mirror the drie vragen van de Elm-variant. Bewust kort (besluit
+-- Jappie 4 sep 2026): productaantal, talen en meenemen vragen we niet,
+-- dat zoeken wij zelf uit of komt in het gesprek.
+offerteBerichtTemplate :: Text
+offerteBerichtTemplate =
+  "Vul in wat je weet:\n\n"
     <> "- Huidig platform (bijv. MijnWebwinkel, CCV Shop): \n"
-    <> "- Gewenst platform (Shopify of WooCommerce): \n"
-    <> "- Aantal producten (ongeveer): \n"
-    <> "- Aantal talen: \n"
-    <> "- Meenemen (klantaccounts, bestelgeschiedenis, nieuwsbrief, voorraad, reviews): \n"
-    <> "- Domeinnaam of e-mail nog bij MijnWebwinkel?: \n"
-    <> "- Bijzonderheden (kassa/point-of-sale, zakelijke klanten, verzendkoppeling): \n\n"
-    <> "Met vriendelijke groet,"
+    <> "- Gewenst platform (Shopify of WooCommerce, of: weet ik nog niet): \n"
+    <> "- Bijzonderheden (bijv. kassa in de winkel, zakelijke klanten, verzendkoppeling): \n"
 
 -- | Mailto for merchants whose migration is already running or done and who
 -- want follow-up work (mass edits, theme changes, integrations). The subject
--- differs from 'offerteMailto' so these mails are recognisable as
+-- names uitbreiding so these mails are recognisable as
 -- existing-client work rather than new leads.
 uitbreidingMailto :: H.AttributeValue
 uitbreidingMailto = toValue ("mailto:" <> webwinkelEmail <> "?subject=Uitbreiding%20webshop")
@@ -241,6 +239,8 @@ webwinkelBaseWith ogType includeFeed meta content =
             H.li $ H.a ! A.href "/migrate-mijnwebwinkel.html" $ "MijnWebwinkel"
             H.li $ H.a ! A.href "/migrate-lightspeed.html" $ "Lightspeed"
             H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
+            H.li $ H.a ! A.href "/migrate-magento.html" $ "Magento"
+            H.li $ H.a ! A.href "/migrate-zilvercms.html" $ "ZilverCMS"
             H.li $ H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) ! A.class_ "footer-mail" $ toHtml webwinkelEmail
             H.li $ H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
             H.li $ H.a ! A.href "/blog/" $ "Blog"
@@ -283,7 +283,7 @@ webwinkelTopNav =
       -- secundaire stijl (review Jappie, 8 aug 2026): hij staat op elke
       -- pagina en mag niet blijvend aandacht trekken; de groene primaire
       -- knop is voor de call-to-actions in de content.
-      H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Offerte"
+      H.a ! A.href offertePaginaLink ! A.class_ "cta-button-secondary" $ "Offerte"
 
 -- | Hamburger-icoon van de mobiele menuknop: twee lijnen, kleur volgt
 -- @currentColor@.
@@ -337,23 +337,58 @@ bandSpeelScript =
     <> "})();"
 
 -- | Track clicks on the call-to-action buttons in Google Analytics, so we see
--- the dropoff per acquisition path: the plain "vraag een offerte aan" mailto
--- buttons (offerte_mailto_klik) and the "plan een gesprek" meeting links
--- (gesprek_knop_klik). Skipped: the calculator's own button (.calc-offerte),
--- which Elm reports itself with richer params, and the footer contact-mail
--- (.footer-mail), which is general contact, not an offerte-CTA, so it would
--- pollute the button metric. Page views are collected by GA4 automatically, so
+-- the dropoff per acquisition path: the plain "vraag een offerte aan" links
+-- naar het offerteformulier (offerte_knop_klik; verving offerte_mailto_klik
+-- toen de mailto's op 4 sep 2026 sneuvelden) and the "plan een gesprek"
+-- meeting links (gesprek_knop_klik). Skipped: the calculator's own button
+-- (.calc-offerte), which Elm reports itself with richer params. De
+-- formulier-inzending zelf meet GA4's enhanced measurement als
+-- form_submit, en de server telt hem definitief in het
+-- offerte-logboek. Page views are collected by GA4 automatically, so
 -- the migration pages need no extra event here.
+--
+-- Decision: de contactroutes (WhatsApp, mail, bellen) krijgen elk een
+-- eigen event, alle klik-events dragen de bestemming (link_url), en
+-- formulier_gestart meldt per pagina welk formulier werd aangeraakt.
+-- Aanleiding: de GA4-export van 30 sep 2026 had alleen GA4's eigen
+-- "click" (uitgaand, alle bestemmingen door elkaar) en form_start
+-- (scan, offerte en contact door elkaar), zodat niet te zeggen was of
+-- iemand op "plan een gesprek" klikte of het offerteformulier
+-- verliet. Alternatief overwogen: form_id en link_url als custom
+-- dimensies registreren in GA4; afgewezen omdat de eventnamen dan nog
+-- steeds niets zeggen in de export die Jappie gebruikt. De
+-- contactroutes en de formulierstart luisteren op document (click,
+-- focusin) omdat Elm links en formulieren pas na DOMContentLoaded
+-- tekent en bij elke fase opnieuw aanmaakt (de mailto van "platform
+-- niet herkend" in de scanner, het scanformulier na een scan);
+-- formulier_gestart telt daarom eenmaal per paginabezoek, niet per
+-- DOM-node. De offerte- en gesprekknoppen blijven aan de statische
+-- links gebonden: de scanner meldt zijn eigen gesprekknop al via zijn
+-- port, een documentbrede listener zou die dubbel tellen.
+-- OfferteForm blijft zonder ports.
 ctaTrackScript :: Text
 ctaTrackScript =
   "document.addEventListener('DOMContentLoaded',function(){"
     <> "function track(sel,ev){document.querySelectorAll(sel).forEach(function(a){"
-    <> "if(a.classList.contains('calc-offerte')||a.classList.contains('footer-mail'))return;"
+    <> "if(a.classList.contains('calc-offerte'))return;"
     <> "a.addEventListener('click',function(){"
-    <> "if(window.gtag){gtag('event',ev,{knop_tekst:(a.textContent||'').trim().slice(0,60)});}"
+    <> "if(window.gtag){gtag('event',ev,{knop_tekst:(a.textContent||'').trim().slice(0,60),link_url:(a.getAttribute('href')||'').slice(0,100)});}"
     <> "});});}"
-    <> "track('a[href^=\"mailto:\"]','offerte_mailto_klik');"
-    <> "track('a[href^=\"https://meet.jappiesoftware.com\"]','gesprek_knop_klik');"
+    <> "track('a[href=\"/offerte.html\"]','offerte_knop_klik');"
+    <> "track('a[href^=\"https://meet.webwinkelverhuis.nl\"]','gesprek_knop_klik');"
+    <> "var routes=[['a[href^=\"https://wa.me/\"]','whatsapp_klik'],['a[href^=\"mailto:\"]','mail_klik'],['a[href^=\"tel:\"]','bel_klik']];"
+    <> "document.addEventListener('click',function(e){"
+    <> "var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;"
+    <> "routes.forEach(function(r){if(a.matches(r[0])&&window.gtag){"
+    <> "gtag('event',r[1],{knop_tekst:(a.textContent||'').trim().slice(0,60),link_url:(a.getAttribute('href')||'').slice(0,100)});}});"
+    <> "});"
+    <> "var formulierGemeld=false;"
+    <> "document.addEventListener('focusin',function(e){"
+    <> "if(formulierGemeld)return;"
+    <> "var f=e.target&&e.target.closest?e.target.closest('form'):null;if(!f)return;"
+    <> "formulierGemeld=true;"
+    <> "if(window.gtag){gtag('event','formulier_gestart',{pagina:location.pathname});}"
+    <> "});"
     <> "});"
 
 -- | Boot the Elm price calculator and forward its analytics port to gtag, so the
@@ -361,7 +396,7 @@ ctaTrackScript =
 -- Analytics alongside the page views.
 prijsCalculatorInitScript :: Text
 prijsCalculatorInitScript =
-  "var prijsCalcApp = Elm.PrijsCalculator.init({node: document.getElementById('prijs-calculator-mount')});"
+  "var prijsCalcApp = Elm.PrijsCalculator.init({node: document.getElementById('prijs-calculator-mount'), flags: window.location.search});"
     <> "if(prijsCalcApp.ports&&prijsCalcApp.ports.analyticsEvent){"
     <> "prijsCalcApp.ports.analyticsEvent.subscribe(function(e){"
     <> "if(window.gtag){gtag('event', e.name, e.params||{});}"
@@ -404,23 +439,6 @@ shopifyPrijspeil = "augustus 2026"
 shopifyPrijzenUrl :: H.AttributeValue
 shopifyPrijzenUrl = "https://www.shopify.com/nl/prijzen"
 
--- | Note under the price sections: what the merchant pays Shopify itself per
--- month after the migration, datestamped and linked to Shopify's own pricing
--- page. Shown wherever 'prijzen' appears and on 'prijzenPage'.
-shopifyKostenNote :: Html
-shopifyKostenNote =
-  H.p ! A.class_ "engagement-note" $ do
-    H.preEscapedToHtml
-      ( "Naast onze eenmalige migratieprijs betaal je het abonnement van je nieuwe platform. Shopify Basic kost bijvoorbeeld &euro;"
-          <> shopifyBasicJaarlijksEuroPerMaand
-          <> " per maand bij jaarlijkse betaling en &euro;"
-          <> shopifyBasicMaandelijksEuroPerMaand
-          <> " per maand bij maandelijkse betaling (prijspeil " <> shopifyPrijspeil <> ", zie "
-      )
-    H.a ! A.href shopifyPrijzenUrl $ "de actuele Shopify-prijzen"
-    ")."
-    H.preEscapedToHtml (" Sommige extra's gaan op Shopify via losse apps met een eigen maandprijs; die betaal je alleen voor functies die je zelf kiest, en in de vrijblijvende doorrekening zetten we vooraf op een rij welke apps jouw shop nodig heeft en wat die kosten. Op je huidige platform is zo'n uitbreiding vaak niet duurder, maar simpelweg niet verkrijgbaar." :: Text)
-
 -- | De gedeelde prijzen-sectie: de prijs-kaart uit het joepa-ontwerp, met de
 -- rekenhulp-knop als vervolgstap en de betaal-na-succes-garantie eronder.
 prijzen :: Html
@@ -430,20 +448,8 @@ prijzen = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
     H.p ! A.class_ "prijs" $ do
       H.preEscapedToHtml ("vanaf &euro;" <> migratieBasisprijsEuro <> " ")
       H.small "eenmalig"
-    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("Inclusief 1.000 producten: producten, afbeeldingen, categorie&euml;n, klantdata, voorraad en SEO-redirects." :: Text)
-    H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Grotere catalogi, extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
-    H.hr
-    H.p ! A.class_ "abonnement" $ do
-      H.preEscapedToHtml
-        ( "Naast onze eenmalige migratieprijs betaal je het abonnement van je nieuwe platform. Shopify Basic kost bijvoorbeeld &euro;"
-            <> shopifyBasicJaarlijksEuroPerMaand
-            <> " per maand bij jaarlijkse betaling en &euro;"
-            <> shopifyBasicMaandelijksEuroPerMaand
-            <> " per maand bij maandelijkse betaling (prijspeil " <> shopifyPrijspeil <> ", zie "
-        )
-      H.a ! A.href shopifyPrijzenUrl $ "de actuele Shopify-prijzen"
-      ")."
-      H.preEscapedToHtml (" Sommige extra's gaan op Shopify via losse apps met een eigen maandprijs; die betaal je alleen voor functies die je zelf kiest, en in de vrijblijvende doorrekening zetten we vooraf op een rij welke apps jouw shop nodig heeft en wat die kosten. Op je huidige platform is zo'n uitbreiding vaak niet duurder, maar simpelweg niet verkrijgbaar." :: Text)
+    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product." :: Text)
+    H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Klantaccounts (met hun spaarpunten), bestelgeschiedenis en nieuwsbrief-adressen neem je mee voor &euro;100 per onderdeel tot 1.000 stuks, daarboven per stuk. Extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
     H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct je prijs"
     H.p ! A.class_ "garantie" $ do
       H.preEscapedToHtml vinkjeSvg
@@ -509,7 +515,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.dd "Geen handmatig overtypen, geen kopieerfouten."
         H.div $ do
           H.dt "Gecontroleerd"
-          H.dd "Na afloop controleert het programma elke oude link en elk product; dat controlerapport krijg je te zien."
+          H.dd "Na afloop controleert het programma elke oude link en elk product."
         H.div $ do
           H.dt "SEO-behoud"
           H.dd "Elke oude link krijgt een 301-redirect en blijft werken; je opgebouwde SEO verhuist mee."
@@ -549,6 +555,13 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.h3 "CCV Shop"
           H.p $ H.preEscapedToHtml ("Steeds duurder, terwijl het winkelbestand krimpt en het zwaartepunt na de Fiserv-overname bij betalen en kassa ligt. Wij zetten je producten, talen, klantaccounts en voorraad volledig geautomatiseerd over." :: Text)
           H.a ! A.href "/migrate-ccvshop.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-schild.svg"
+                ! A.alt "Schild met een barst: geen beveiligingsupdates meer"
+                ! A.width "56" ! A.height "56"
+          H.h3 "Magento"
+          H.p $ H.preEscapedToHtml ("Magento 1 is sinds 2020 einde-levensduur, en ook een Magento 2-shop vraagt elke maand hosting en bureau-uren. Wij zetten producten, eigen attributen, klanten en orderhistorie geautomatiseerd over." :: Text)
+          H.a ! A.href "/migrate-magento.html" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bekijk migratie &rarr;" :: Text)
 
     -- Pricing: listed openly. Hiding the price reads as evasive to a
     -- doubtful merchant; a visible "vanaf" and the breakdown radiate
@@ -568,8 +581,8 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
           H.h2 "Klaar om te verhuizen?"
           H.p ! A.class_ "contact-intro" $ "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
           H.div ! A.class_ "contact-acties" $ do
-            H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
-            H.a ! A.href offerteMailto ! A.class_ "cta-button-secondary" $ "Offerte per e-mail"
+            H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+            H.a ! A.href offertePaginaLink ! A.class_ "cta-button-secondary" $ "Vraag een offerte aan"
           H.p ! A.class_ "contact-direct" $ do
             "Liever direct? Mail "
             H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) $ toHtml webwinkelEmail
@@ -907,41 +920,79 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.h3 "Over de themakeuze"
         H.p "Kies je voor zelf inrichten, dan staat je shop na de migratie op een standaard Shopify-thema dat je zelf verzorgt of door een ontwerper naar keuze laat doen. Theming hoeft niet via ons; wij doen het ook en zijn er inmiddels aardig goed in. Probeer het gerust eerst zelf: je oude shop blijft gewoon draaien naast de nieuwe, dus je loopt geen risico. Kom je er niet uit, dan helpen we je alsnog."
         H.p $ H.preEscapedToHtml ("Bij uitstraling overzetten (&euro;749) benaderen we je huidige uitstraling zo dicht mogelijk; kleine aanpassingen op verzoek zitten erbij." :: Text)
-        H.p "Een volledig nieuw ontwerp is los ontwerpwerk en prijzen we op aanvraag."
+        H.p $ H.preEscapedToHtml ("Een volledig nieuw ontwerp maakt onze ontwerppartner; die stuurt daar een aparte offerte voor. Het uitwerken van dat ontwerp in je shop doen wij voor &euro;999." :: Text)
 
     H.section ! A.class_ "engagement" $ do
       H.h2 "De migratie"
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
-          H.td "Basismigratie: 1.000 producten inbegrepen"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1.999" :: Text)
+          H.td "Basismigratie: de vaste basis voor elke shop"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;999" :: Text)
         H.tr $ do
-          H.td "Extra producten boven die 1.000 (elk product telt per taal \233\233n keer mee)"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,25 per product" :: Text)
+          H.td "Je producten, de eerste vijfhonderd (elk product telt per taal \233\233n keer mee)"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,20 per product" :: Text)
+        H.tr $ do
+          H.td "Van 501 tot 1.500"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,15 per product" :: Text)
+        H.tr $ do
+          H.td "Alles boven de 1.500: hoe groter je catalogus, hoe goedkoper per product"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,10 per product" :: Text)
         H.tr $ do
           H.td "Extra taal: configuratie, per taal"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
-      shopifyKostenNote
+
+    -- Decision: aparte tabel voor wie de producten al zelf in Shopify
+    -- zette (besluit Jappie 21 sep 2026, jappiesoft
+    -- strategy/ccv-positionering-plan.org). CCV Shop en Lightspeed
+    -- hebben een productexport en Shopify importeert CSV; wat die
+    -- route laat liggen (categorieën, productopties, dubbele import,
+    -- pagina's, redirects, SEO-velden) is precies ons werk. De drie
+    -- eerste regels zijn de basis van 999 uitgesplitst, zodat de
+    -- winkelier ook één onderdeel kan afnemen. Bedragen gelijk aan
+    -- standaard-prijslijst.org en elm/src/PrijsCalculator.elm.
+    H.section ! A.class_ "engagement" $ do
+      H.h2 "Al zelf begonnen? (CCV Shop, Lightspeed)"
+      H.p $ H.preEscapedToHtml ("Heb je de productexport van CCV Shop of Lightspeed al zelf in Shopify ge&iuml;mporteerd? Die export neemt je categorie&euml;n, productopties met meerprijs en pagina&apos;s niet mee, en zet je producten soms twee keer neer. Dan betaal je niet voor het overzetten van producten, maar alleen voor de afronding. Kies in de rekenhulp hierboven &bdquo;mijn producten staan al in Shopify&rdquo; om dit door te rekenen." :: Text)
+      H.table ! A.class_ "price-table" $ H.tbody $ do
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Collecties en menu herstellen: de categorieboom van je oude shop, elk product in de juiste collecties, dubbele import opgeruimd" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;499" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("301-redirects van je oude shop, met de SEO-velden (meta-titels en -beschrijvingen) waar nodig aangevuld" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;350" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Informatiepagina&apos;s en nieuwsberichten overzetten" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Productopties met meerprijs herstellen (bijvoorbeeld een grotere harde schijf erbij), als varianten" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("301-redirects van een tweede domein, bijvoorbeeld een aparte groothandelshop die in de nieuwe shop opgaat" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("De eerste drie zijn samen de basismigratie van &euro;999, en net als daar zitten de testshop en de livegang erbij. Klantaccounts, bestelgeschiedenis, B2B en de andere modules hieronder gelden ook hier." :: Text)
 
     H.section ! A.class_ "engagement" $ do
       H.h2 "Modules en extra diensten"
-      H.p "Losse onderdelen die je naar keuze bijschakelt. Je betaalt alleen voor wat je meeneemt."
+      H.p "Losse onderdelen die je naar keuze bijschakelt. Je betaalt alleen voor wat je meeneemt. Bij klantaccounts, bestelgeschiedenis, nieuwsbrief en voorraad groeit de prijs mee met de hoeveelheid: \8364\&100 dekt de toegang tot je huidige beheer en de eerste 1.000 stuks, daarboven betaal je per stuk, en hoe meer je hebt, hoe minder per stuk."
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
           H.td "Uitstraling overzetten"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;749" :: Text)
         H.tr $ do
-          H.td $ H.preEscapedToHtml ("Klantaccounts meenemen (je klanten houden hun inlog)" :: Text)
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+          H.td $ H.preEscapedToHtml ("Klantaccounts meenemen (je klanten houden hun inlog): &euro;100 tot 1.000 accounts, daarna &euro;0,15 per account, boven de 6.000 &euro;0,08" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
         H.tr $ do
-          H.td "Bestelgeschiedenis meenemen"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+          H.td $ H.preEscapedToHtml ("Spaarpunten meenemen bij je klantaccounts (je klanten houden hun gespaarde punten): de eerste 1.000 accounts met punten en de inrichting zitten in de &euro;100 van de klantaccounts, daarboven per account met punten; accounts zonder punten tellen niet mee" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,05 per account" :: Text)
         H.tr $ do
-          H.td "Nieuwsbrief-aanmeldingen meenemen"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+          H.td $ H.preEscapedToHtml ("Bestelgeschiedenis meenemen: &euro;100 tot 1.000 bestellingen, daarna &euro;0,08 per bestelling, boven de 11.000 &euro;0,04" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
         H.tr $ do
-          H.td "Voorraadaantallen live overzetten"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
+          H.td $ H.preEscapedToHtml ("Nieuwsbrief-aanmeldingen meenemen: &euro;100 tot 1.000 adressen, daarna &euro;0,05 per adres, boven de 6.000 &euro;0,03" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Voorraadaantallen live overzetten: &euro;100 tot 1.000 producten, daarna &euro;0,05 per product, boven de 6.000 &euro;0,03" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
         H.tr $ do
           H.td "Reviews / beoordelingen overzetten"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
@@ -964,12 +1015,12 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td $ H.preEscapedToHtml ("Cursus Shopify (2 uur, 1-op-1, samen door je nieuwe shop)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;300" :: Text)
         H.tr $ do
-          H.td "Volledig nieuw ontwerp"
-          H.td ! A.class_ "price-cell" $ "op aanvraag"
+          H.td $ H.preEscapedToHtml ("Volledig nieuw ontwerp uitwerken in je shop (het ontwerp zelf: aparte offerte van onze ontwerppartner)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;999" :: Text)
         H.tr $ do
           H.td "Catalogus-brede teksttransformaties"
           H.td ! A.class_ "price-cell" $ "op aanvraag"
-      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat je shop op een standaard Shopify-thema dat je zelf inricht. De vormgeving hoeft niet via ons: je kunt het zelf doen of een ontwerper naar keuze inhuren. Wil je het uit handen geven, dan benaderen wij je huidige uitstraling zo dicht mogelijk (&euro;749) of ontwerpen we iets nieuws (op aanvraag)." :: Text)
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat je shop op een standaard Shopify-thema dat je zelf inricht. De vormgeving hoeft niet via ons: je kunt het zelf doen of een ontwerper naar keuze inhuren. Wil je het uit handen geven, dan benaderen wij je huidige uitstraling zo dicht mogelijk (&euro;749) of werken wij een nieuw ontwerp van onze ontwerppartner uit in je shop (&euro;999, het ontwerp zelf via een aparte offerte van de partner)." :: Text)
       H.p ! A.class_ "engagement-note" $ "Kassa/point-of-sale zetten we bij je op locatie op. Installatie en reiskosten komen daar los bij, op aanvraag."
 
     H.section ! A.class_ "results" $ do
@@ -985,8 +1036,8 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.h2 "Geldt deze prijs voor mij?"
       H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt je prijs vast. Wil je tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat je prijs zwart-op-wit."
       H.div ! A.class_ "cta-row" $ do
-        H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
-        H.a ! A.href meetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
+        H.a ! A.href offertePaginaLink ! A.class_ "cta-button" $ "Vraag een offerte aan"
+        H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
 
     H.script ! A.src "/prijs-calculator.js" $ mempty
     H.script $ H.preEscapedToHtml prijsCalculatorInitScript
@@ -994,12 +1045,93 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
     prijzenMeta :: PageMeta
     prijzenMeta = PageMeta
       { pageMetaTitle       = "Prijzen \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Vaste prijzen voor je webshop-migratie naar Shopify: vanaf \8364\&1.999 inclusief 1.000 producten. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
+      , pageMetaDescription = "Vaste prijzen voor je webshop-migratie naar Shopify: \8364\&999 basis plus vanaf 20 cent per product, aflopend. Domeinverhuizing \8364\&250, e-mail-setup \8364\&150. Betaling na succesvolle migratie."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/prijzen.html"
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = mempty
+      }
+
+-- =============================================================================
+-- Offerteformulier (offerte.html) en bedankpagina (offerte-verzonden.html)
+-- =============================================================================
+
+-- | Het offerteformulier: een Elm-app (elm/src/OfferteForm.elm) met
+-- losse intakevelden die het te versturen bericht eronder toont en als
+-- verborgen veld meestuurt in een native POST naar /api/offerte; de
+-- server logt de aanvraag durabel, mailt hem door en stuurt de browser
+-- met een 303 naar de bedankpagina. Zonder JavaScript valt de pagina
+-- terug op een kaal HTML-formulier met dezelfde vragen als voorgevulde
+-- textarea, zodat versturen altijd werkt.
+offertePagina :: Html
+offertePagina = webwinkelBaseTemplate offerteMeta $
+  H.main $ do
+    H.section ! A.class_ "hero offerte-blok" $ do
+      H.h1 "Vraag een offerte aan"
+      H.p ! A.class_ "subtitle" $ "Vertel kort iets over je webshop en je ontvangt de offerte per e-mail. Vrijblijvend: je zit nergens aan vast en betaalt pas na een geslaagde migratie."
+      H.div ! A.id "offerte-formulier-mount" $ mempty
+      H.noscript $ H.form ! A.class_ "offerte-formulier" ! A.action "/api/offerte" ! A.method "post" $ do
+        H.label ! A.class_ "calc-field" $ do
+          H.span ! A.class_ "calc-label" $ "Je e-mailadres (hierop ontvang je de offerte)"
+          H.input ! A.type_ "email" ! A.name "email" ! A.required "required" ! A.placeholder "naam@voorbeeld.nl"
+        H.label ! A.class_ "calc-field" $ do
+          H.span ! A.class_ "calc-label" $ "Je webshop (domeinnaam)"
+          H.input ! A.type_ "text" ! A.name "shop" ! A.placeholder "bijv. uwshop.nl"
+        H.label ! A.class_ "calc-field" $ do
+          H.span ! A.class_ "calc-label" $ "Je bericht"
+          H.textarea ! A.name "bericht" ! A.rows "10" $ toHtml offerteBerichtTemplate
+        honeypotVeld
+        H.button ! A.type_ "submit" ! A.class_ "cta-button" $ "Verstuur de aanvraag"
+      H.p ! A.class_ "calc-hint" $ do
+        "Liever eerst sparren? "
+        H.a ! A.href webwinkelverhuisMeetLink $ "Plan een gratis gesprek"
+        "."
+    H.script ! A.src "/offerte-form.js" $ mempty
+    H.script "Elm.OfferteForm.init({node: document.getElementById('offerte-formulier-mount')});"
+  where
+    offerteMeta :: PageMeta
+    offerteMeta = PageMeta
+      { pageMetaTitle       = "Offerte aanvragen \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Vraag vrijblijvend een offerte aan voor je webshop-migratie. Je ontvangt de offerte per e-mail en betaalt pas na een geslaagde migratie."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/offerte.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = mempty
+      }
+
+-- | Het honeypot-veld tegen bots: onzichtbaar voor mensen (CSS), en de
+-- server behandelt een gevuld veld als spam. Gedeeld door het
+-- noscript-offerteformulier en het contactformulier.
+honeypotVeld :: Html
+honeypotVeld =
+  H.div ! A.class_ "honeypot-veld" $ H.label $ do
+    H.span "Website"
+    H.input ! A.type_ "text" ! A.name "website" ! A.tabindex "-1" ! A.autocomplete "off"
+
+-- | Waar de 303 van POST /api/offerte op landt, voor zowel
+-- offerte-aanvragen als contactberichten; de tekst dekt beide. noindex:
+-- een bevestigingspagina hoort niet in de zoekindex.
+offerteVerzondenPagina :: Html
+offerteVerzondenPagina = webwinkelBaseTemplate verzondenMeta $
+  H.main $
+    H.section ! A.class_ "hero offerte-blok" $ do
+      H.h1 "Bericht ontvangen"
+      H.p ! A.class_ "subtitle" $ "Je bericht is binnen. Je hoort van ons op het opgegeven e-mailadres."
+      H.div ! A.class_ "hero-knoppen" $ do
+        H.a ! A.href "/" ! A.class_ "cta-button-secondary" $ "Naar de homepagina"
+        H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Alvast een gesprek plannen"
+  where
+    verzondenMeta :: PageMeta
+    verzondenMeta = PageMeta
+      { pageMetaTitle       = "Bericht ontvangen \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Je bericht is ontvangen; je hoort van ons per e-mail."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/offerte-verzonden.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = H.meta ! A.name "robots" ! A.content "noindex, follow"
       }
 
 -- =============================================================================
@@ -1033,7 +1165,7 @@ scanPage = webwinkelBaseTemplate scanMeta $
       H.h1 "Beoordeel mijn webshop"
       H.p ! A.class_ "subtitle" $ "Vul het adres van je webshop in. Wij meten hem door en je ziet binnen enkele minuten waar je staat: snelheid, vindbaarheid en de punten die beter kunnen."
       H.div ! A.id "webshop-scanner-mount" $ mempty
-      H.noscript $ H.p "De beoordeling heeft JavaScript nodig. Liever direct contact? Plan een gratis gesprek via meet.jappiesoftware.com."
+      H.noscript $ H.p "De beoordeling heeft JavaScript nodig. Liever direct contact? Plan een gratis gesprek via meet.webwinkelverhuis.nl."
     H.script ! A.src "/scanner-form.js" $ mempty
     H.script $ H.preEscapedToHtml scannerFormInitScript
   where
@@ -1085,7 +1217,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Verhuizen van MijnWebwinkel"
+          H.h1 "Migreren van MijnWebwinkel naar Shopify"
           H.p ! A.class_ "subtitle" $ "Je webshop is je broodwinning, en MijnWebwinkel staat al jaren stil. Verhuizen voelt als een grote stap, maar het hoeft geen sprong in het diepe te zijn: wij zetten je complete shop geautomatiseerd over, zonder dataverlies en met zo min mogelijk downtime. Je betaalt pas na een succesvolle migratie."
           -- Decision: de hero-CTA wijst naar de scanner, niet naar de
           -- offerte (Jappie, 3 aug 2026): niemand vraagt een offerte aan
@@ -1208,7 +1340,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
             H.preEscapedToHtml (" &rarr;" :: Text))
       [ WaaromPunt "Geen risico" "Je betaalt pas na een succesvolle migratie."
       , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
-      , WaaromPunt "Gecontroleerd" "Het programma telt na afloop alles na, van elk product tot elke klant, en dat controlerapport krijg je te zien."
+      , WaaromPunt "Gecontroleerd" "Het programma telt na afloop alles na, van elk product tot elke klant."
       , WaaromPunt "SEO-behoud" "Elke oude link blijft werken en je opgebouwde positie in Google verhuist mee."
       , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via de offici\235le koppelingen van je nieuwe platform."
       , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
@@ -1226,11 +1358,15 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Klaar voor de overstap?"
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven een eerlijke inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gratis gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gratis gesprek"
   where
     migrationMeta :: PageMeta
     migrationMeta = PageMeta
-      { pageMetaTitle       = "Verhuizen van MijnWebwinkel \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
+      -- Decision: titel en h1 in de taal van de zoeker ("migreren naar
+      -- Shopify", niet ons merkwoord "verhuizen"): de Search-Console-dump
+      -- van 2 sep 2026 laat zien dat alle zoekverkeer "migreren",
+      -- "migratie" of "overstappen" gebruikt, "verhuizen" komt niet voor.
+      { pageMetaTitle       = "Migreren van MijnWebwinkel naar Shopify \8212 Webwinkelverhuis"
       , pageMetaDescription = "Geautomatiseerde migratie van MijnWebwinkel naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html"
@@ -1265,7 +1401,7 @@ mijnwebwinkelFaq =
         H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
         "), zodat je geen bericht mist." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product; dat rapport krijg je te zien. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
     , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en je nieuwe platform beide ondersteunen. Ook de vertaalde webadressen verhuizen mee." )
   , ( "Kan ik ook naar een ander platform dan Shopify migreren?"
@@ -1309,7 +1445,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Verhuizen van CCV Shop"
+          H.h1 "Migreren van CCV Shop naar Shopify"
           -- Decision: hero benoemt CCV-specifieke pijn (prijsstijging,
           -- krimpend winkelbestand, Fiserv-zwaartepunt) in plaats van de
           -- generieke MWW-tekst. Bronnen in
@@ -1322,7 +1458,16 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           -- functies gebruikt, prikt daar meteen doorheen. Wat blijft is
           -- wat we kunnen aantonen; de Fiserv-passage blijft bewust een
           -- constatering over zwaartepunt, geen EOL-voorspelling.
-          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Sinds de Amerikaanse betaalreus Fiserv CCV overnam ligt het zwaartepunt bij betalen en kassa: je webshop is een tweede rang product. Wij verhuizen je complete shop geautomatiseerd naar Shopify, WooCommerce of een ander platform van je keuze: zonder dataverlies, met zo min mogelijk downtime." :: Text)
+          -- Decision: de export-rem is sinds 21 sep 2026 de kern van de
+          -- pagina (besluit Jappie na het Asat-gesprek, jappiesoft
+          -- strategy/ccv-positionering-plan.org): een CCV-winkelier
+          -- exporteert zijn producten zelf en loopt daarna vast op wat
+          -- de export laat liggen. De pagina verkoopt dus het afmaken
+          -- (categorieën, redirects, pagina's, productopties, B2B), niet
+          -- het overzetten van producten. Cijfers uit het Asat-geval
+          -- staan hier bewust niet: dat verhaal komt met naam na de
+          -- livegang (besluit Jappie 21 sep).
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Sinds de Amerikaanse betaalreus Fiserv CCV overnam ligt het zwaartepunt bij betalen en kassa: je webshop is een tweede rang product. Eruit komen is het moeilijke deel: de export uit CCV neemt je categorie&euml;n, productopties en pagina&apos;s niet mee. Precies dat deel doen wij, ook als je al zelf begonnen bent." :: Text)
           -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
           -- stap in plaats van de offerte.
           H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
@@ -1331,15 +1476,62 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
               ! A.alt "Illustratie van dozen die een bevroren webshop verlaten richting een zonnige nieuwe winkel"
               ! A.width "400" ! A.height "300"
 
-    -- What we migrate
+    -- Al zelf begonnen: wat de CCV-export laat liggen, en dat wij dat
+    -- afmaken. Volgorde op de pijn die CCV-winkeliers in het gesprek
+    -- noemen: het zakelijke kanaal voorop (Jappie 21 sep: "most pain
+    -- is in the b2b setup"), dan collecties, redirects en opties.
+    H.section ! A.class_ "for-who" ! A.id "zelf-begonnen" $ do
+      H.h2 "Al zelf begonnen? Wij maken het af"
+      H.p $ H.preEscapedToHtml ("CCV Shop heeft een productexport en Shopify importeert die. Veel winkeliers zetten hun producten daarom zelf over, en lopen dan vast op de rest. Dat is geen falen: de export neemt het gewoon niet mee. Je betaalt bij ons dan niet voor producten, maar alleen voor de afronding, per onderdeel." :: Text)
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
+                ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
+          H.h3 "Zakelijke klanten (B2B)"
+          H.p $ H.preEscapedToHtml ("Inkoopprijzen die pas na inloggen zichtbaar zijn, staffels, en een aanvraagpagina waarop nieuwe bedrijven zich melden en jij ze goedkeurt. Ook als je groothandel nu op een ander systeem draait: die voegen we samen tot &eacute;&eacute;n shop." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
+          H.h3 "Collecties en menu"
+          H.p $ H.preEscapedToHtml ("De export laat je categorie&euml;n achter: producten komen los binnen, zonder collectie en zonder menu. Wij lezen de categorieboom uit je oude shop en zetten elk product op zijn plek, dubbele imports opgeruimd." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
+          H.h3 "Redirects en SEO"
+          H.p "Elke oude URL krijgt een 301 naar het nieuwe adres, en de meta-titels en -beschrijvingen vullen we aan waar de export ze liet vallen. Zo blijft je vindbaarheid staan."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
+                ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
+          H.h3 "Productopties en pagina's"
+          H.p "Keuzes met meerprijs, zoals een grotere harde schijf erbij, komen in de export als losse producten of helemaal niet; wij zetten ze terug als varianten. Je informatiepagina's en nieuwsberichten nemen we ook mee."
+      H.p $ H.a ! A.href "/prijzen.html?bron=ccv&zelf=ja#rekenhulp" ! A.class_ "cta-button-secondary" $ H.preEscapedToHtml ("Bereken de afronding &rarr;" :: Text)
+
+    -- What we migrate. Volgorde sinds 21 sep 2026 op wat een
+    -- CCV-winkelier mist na een eigen export: categorieën en
+    -- redirects eerst, producten daarna.
     H.section ! A.class_ "for-who" ! A.id "what" $ do
       H.h2 "Wat we migreren"
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
+          H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
+          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met het navigatiemenu erbij; elk product staat in de juiste collecties." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
+          H.h3 "SEO-redirects"
+          H.p "301-redirects van elke oude URL naar de nieuwe URL. Je backlinks blijven werken en je opgebouwde SEO verhuist mee."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-thema.svg"
+                ! A.alt "Pagina met tekst" ! A.width "56" ! A.height "56"
+          H.h3 "Pagina's en nieuws"
+          H.p "Je informatiepagina's (voorwaarden, klantenservice, handleidingen) en nieuwsberichten verhuizen mee, ook de pagina's die niet in je menu staan."
+        H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
                 ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
-          H.h3 "Producten & varianten"
-          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Automatisch overgezet naar het formaat van je doelplatform."
+          H.h3 "Producten, varianten & opties"
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's, varianten en keuzes met meerprijs. Automatisch overgezet naar het formaat van je doelplatform."
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
                 ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
@@ -1351,16 +1543,6 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
           H.h3 "Klantaccounts"
           H.p "Klantgegevens en bestelgeschiedenis worden overgezet zodat je klanten direct kunnen inloggen op de nieuwe shop."
         H.li ! A.class_ "card" $ do
-          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
-                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
-          H.h3 "SEO-redirects"
-          H.p "301-redirects van elke oude URL naar de nieuwe URL. Je backlinks blijven werken en je opgebouwde SEO verhuist mee."
-        H.li ! A.class_ "card" $ do
-          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
-                ! A.alt "Categorieboom" ! A.width "56" ! A.height "56"
-          H.h3 $ H.preEscapedToHtml ("Categorie&euml;n" :: Text)
-          H.p $ H.preEscapedToHtml ("De volledige categorieboom wordt overgezet naar Collections met vertaalde titels en het navigatiemenu." :: Text)
-        H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
                 ! A.alt "Stapel dozen" ! A.width "56" ! A.height "56"
           H.h3 "Voorraad & prijzen"
@@ -1369,7 +1551,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- How it works: de gedeelde sectie van de landingspagina, met
     -- CCV-specifieke stapteksten.
     hoeHetWerktSectie
-      [ HoeHetWerktStap "Scan" "Ons programma leest je CCV Shop volledig uit en zet alles over naar een testshop: producten, vertalingen, collections, redirects."
+      [ HoeHetWerktStap "Scan" "Ons programma leest je CCV Shop volledig uit en zet alles over naar een testshop: producten, collections, pagina's, redirects. Staan je producten al in Shopify? Dan vullen we die aan in plaats van opnieuw te importeren; ze houden hun adres."
       , HoeHetWerktStap "Wennen" "De testshop draait naast je CCV Shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
       , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk."
       ]
@@ -1409,7 +1591,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
       , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee."
       , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via offici\235le APIs."
-      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product; dat controlerapport krijg je te zien."
+      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product."
       , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
       ]
 
@@ -1425,12 +1607,15 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       H.h2 "Klaar voor de overstap?"
       H.p $ H.preEscapedToHtml ("Je hoeft niet langer te wachten tot CCV Shop beter wordt. Neem de controle terug over je webshop." :: Text)
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     ccvMeta :: PageMeta
     ccvMeta = PageMeta
-      { pageMetaTitle       = "Verhuizen van CCV Shop \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Geautomatiseerde migratie van CCV Shop naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      -- Decision: zelfde titelkeuze als de MWW-pagina, zoekerstaal
+      -- ("migreren") in plaats van merkwoord ("verhuizen"); zie het
+      -- Decision-commentaar daar (Search-Console-dump 2 sep 2026).
+      { pageMetaTitle       = "Migreren van CCV Shop naar Shopify \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Migratie van CCV Shop naar Shopify, ook als je al zelf begonnen bent: categorie\235n, 301-redirects, pagina's, productopties en zakelijke prijzen (B2B). Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-ccvshop.html"
       , pageMetaOgImage     = Nothing
@@ -1443,12 +1628,21 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
 
 ccvshopFaq :: [(FaqQuestion, FaqAnswer)]
 ccvshopFaq =
-  [ ( "Hoe lang duurt een migratie?"
+  [ ( "Ik heb mijn producten al zelf in Shopify gezet. Kunnen jullie de rest doen?"
+    , faqAnswerText "Ja, en dat komt vaak voor: de CCV-export en de Shopify-import zijn geen probleem, de rest wel. Je betaalt dan niet voor het overzetten van producten. Wij herstellen de collecties en het menu, zetten de 301-redirects en de SEO-velden, verhuizen je pagina's en nieuwsberichten en zetten productopties met meerprijs terug als varianten. Elk onderdeel heeft een vaste prijs, je kiest wat je nodig hebt. Je producten blijven staan waar ze staan." )
+  , ( "Wat neemt de CCV-export niet mee?"
+    , faqAnswerText "De koppeling van producten aan categorieën, keuzes met meerprijs (zoals een grotere harde schijf erbij), je informatiepagina's en nieuwsberichten, en de doorverwijzingen van je oude adressen. Wie twee keer importeert, krijgt bovendien elk product dubbel. Meta-titels en -beschrijvingen komen soms mee en soms niet. Al die punten lezen wij rechtstreeks uit je CCV Shop." )
+  , ( "Ik heb ook een groothandel-shop. Kan dat één shop worden met zakelijke prijzen?"
+    , faqAnswerHtml $ do
+        "Ja. Shopify heeft sinds april 2026 zakelijke functies op de gewone abonnementen: inkoopprijzen met staffels die pas na inloggen zichtbaar zijn, bedrijfsaccounts, en een aanvraagpagina waarop een nieuw bedrijf zich meldt en jij het goedkeurt. Je zakelijke klanten zetten wij over als bedrijfsaccount, ook als je groothandel nu op een ander systeem draait. Consumenten bestellen gewoon zoals nu. Meer over wat wel en niet in het gewone abonnement zit: "
+        H.a ! A.href "/blog/van-lightspeed-naar-shopify-plus-voor-b2b-meestal-heb-je-plus-niet-nodig.html" $ "meestal heb je Plus niet nodig"
+        "." )
+  , ( "Hoe lang duurt een migratie?"
     , faqAnswerText "Het technische overzetten van je producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan je nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product; dat rapport krijg je te zien. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Werkt het ook voor meertalige webshops?"
     , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en je doelplatform beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
@@ -1492,7 +1686,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
     H.section ! A.class_ "hero" $
       H.div ! A.class_ "hero-grid" $ do
         H.div $ do
-          H.h1 "Verhuizen van Lightspeed"
+          H.h1 "Migreren van Lightspeed naar Shopify"
           H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Lightspeed duwt je richting hun nieuwe platform, maar het offici&euml;le upgradeprogramma slaat Nederland over en verliest onderweg je orderhistorie. Ondertussen draait je webshop op software die alleen nog onderhoud krijgt. Wij verhuizen je complete shop naar Shopify: geautomatiseerd, zonder dataverlies, zonder SEO-verlies, en je betaalt pas na succes." :: Text)
           -- Zelfde besluit als de MWW-hero (3 aug 2026): scanner als eerste
           -- stap in plaats van de offerte.
@@ -1537,6 +1731,36 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
           H.h3 "Voorraad & prijzen"
           H.p "Voorraadbeheer, staffelprijzen en per-variant pricing worden correct overgezet. Je voorraadniveaus kloppen direct in je nieuwe shop."
 
+    -- Fysieke winkel & kassa. Decision: eigen sectie op de pagina in
+    -- plaats van alleen FAQ-items (Search-Console-dump 2 sep 2026: 336
+    -- vertoningen, 0 kliks op deze pagina). Lightspeed is vaak kassa en
+    -- webshop tegelijk, dus de drie grote twijfels (kassa, matrix-
+    -- varianten, omzetderving bij de overstap) beantwoorden we direct en
+    -- zichtbaar. Hardware-claims gecheckt 2 sep 2026: Shopify POS
+    -- ondersteunt de gangbare Star- en Epson-bonprinters en standaard
+    -- USB/Bluetooth-scanners (help.shopify.com); terminalprijs \8364 59
+    -- tot \8364 249 uit dezelfde bron als de CCV-pinterminal-FAQ
+    -- (gecheckt 2 aug 2026).
+    H.section ! A.class_ "for-who" ! A.id "fysieke-winkel" $ do
+      H.h2 "Ook met een fysieke winkel"
+      H.p ! A.class_ "subtitle" $ "Lightspeed is bij veel winkels kassa en webshop tegelijk. Juist dan voelt overstappen spannend: je wilt geen kassa die hapert en geen dag zonder omzet. Zo pakken we dat aan."
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-kassa.svg"
+                ! A.alt "Kassaterminal met bonnetje" ! A.width "56" ! A.height "56"
+          H.h3 "Van Lightspeed-kassa naar Shopify POS"
+          H.p $ "Shopify POS draait op een iPad of telefoon en deelt voorraad, klanten en omzet met je webshop, zoals je dat van Lightspeed gewend bent. Gangbare bonprinters (Star, Epson), kassaladen en barcodescanners kunnen meestal gewoon mee. Alleen de betaalterminal vervang je door een Shopify-terminal, eenmalig \8364" <> "59 tot \8364" <> "249. Wij richten de kassa in als onderdeel van de migratie."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Hoofdartikel met subartikelen als boomstructuur" ! A.width "56" ! A.height "56"
+          H.h3 "Matrix-artikelen worden nette varianten"
+          H.p $ H.preEscapedToHtml ("Lightspeed slaat een artikel met maten of kleuren op als matrix: een hoofdartikel met losse subartikelen. Ons programma voegt die weer samen tot &eacute;&eacute;n Shopify-product met varianten, inclusief SKU, barcode, prijs en voorraad per maat of kleur. Het programma telt na of elk subartikel is aangekomen." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-klok.svg"
+                ! A.alt "Klok met vinkje" ! A.width "56" ! A.height "56"
+          H.h3 "Geen dag dicht"
+          H.p "Je nieuwe shop bouwen we naast je draaiende Lightspeed-shop; tot het overstapmoment verkoop je gewoon door, online en in de winkel. De omschakeling zelf plannen we samen op een sluitingsdag of rustig moment. Je mist geen verkoopdag."
+
     -- How it works: de gedeelde sectie van de landingspagina, met
     -- Lightspeed-specifieke stapteksten.
     hoeHetWerktSectie
@@ -1568,7 +1792,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee."
       , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
       , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via offici\235le APIs."
-      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product; dat controlerapport krijg je te zien."
+      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product."
       , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
       ]
 
@@ -1583,30 +1807,44 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       H.h2 "Klaar voor de overstap?"
       H.p $ H.preEscapedToHtml ("Lightspeed ga je niet helpen met deze overstap. Wij wel." :: Text)
       H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     lightspeedMeta :: PageMeta
     lightspeedMeta = PageMeta
-      { pageMetaTitle       = "Verhuizen van Lightspeed \8212 Migratie naar Shopify \8212 Webwinkelverhuis"
-      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify, WooCommerce of een ander platform. Producten, vertalingen, afbeeldingen, voorraad en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      -- Decision: titel en h1 in de taal van de zoeker. De
+      -- Search-Console-dump van 2 sep 2026 telt 336 vertoningen op deze
+      -- pagina met 0 kliks; de zoektermen zijn steevast "lightspeed
+      -- migratie shopify", "overstappen van lightspeed naar shopify"
+      -- enzovoort. "Verhuizen" zoekt niemand, dus die volledige zoekzin
+      -- staat nu aaneengesloten in titel en h1.
+      { pageMetaTitle       = "Migreren van Lightspeed naar Shopify \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, matrix-varianten, vertalingen, voorraad, SEO-redirects en je kassa (Shopify POS). Vanaf \8364" <> migratieBasisprijsEuro <> "."
       , pageMetaLang        = "nl"
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = faqPageJsonLd lightspeedFaq <> serviceJsonLd
           "Lightspeed naar Shopify migratie"
-          "Geautomatiseerde migratie van Lightspeed naar Shopify, WooCommerce of een ander platform: producten, vertalingen, afbeeldingen, voorraad en SEO-redirects."
+          "Geautomatiseerde migratie van Lightspeed naar Shopify: producten, matrix-varianten, vertalingen, afbeeldingen, voorraad, SEO-redirects en de kassa (Shopify POS)."
           "https://webwinkelverhuis.nl/migrate-lightspeed.html"
       }
 
 lightspeedFaq :: [(FaqQuestion, FaqAnswer)]
 lightspeedFaq =
   [ ( "Hoe lang duurt een migratie?"
-    , faqAnswerText "Het technische overzetten van je producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, en rustig wennen aan je nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang." )
+    , faqAnswerText "Het technische overzetten van je producten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps en plugins, betaalmethoden, de kassa, en rustig wennen aan je nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang. Het overstapmoment zelf plannen we samen, bijvoorbeeld op een sluitingsdag; je bent geen dag dicht." )
+  , ( "Ik gebruik Lightspeed ook als kassa in mijn winkel. Wat gebeurt daarmee?"
+    , faqAnswerText $ "Je stapt dan over op Shopify POS, de kassa van Shopify. Die draait op een iPad of telefoon en werkt op dezelfde manier samen met je webshop: \233\233n voorraad, \233\233n klantenbestand, \233\233n omzetoverzicht. Je bonprinter, kassalade en barcodescanner kunnen meestal mee; Shopify ondersteunt de gangbare Star- en Epson-printers en standaard USB- en Bluetooth-scanners. De betaalterminal vervang je door een Shopify-terminal (eenmalig \8364" <> "59 tot \8364" <> "249). We lopen vooraf je apparatuurlijst na zodat je precies weet wat mee kan, en het inrichten van de kassa zit in het migratietraject." )
+  , ( "Hoe zetten jullie matrix-artikelen met varianten over?"
+    , faqAnswerText "In Lightspeed bestaat een artikel met maten of kleuren uit een hoofdartikel met losse subartikelen. Shopify werkt met \233\233n product met varianten. Ons programma voegt de subartikelen automatisch weer samen tot dat ene product, met opties zoals maat en kleur, en per variant de juiste SKU, barcode, prijs en voorraad. Na afloop telt het programma na of elk subartikel als variant is aangekomen, dus niets raakt stilletjes zoek." )
+  , ( "Ben ik tijdens de overstap een dag dicht?"
+    , faqAnswerText "Nee. Je nieuwe shop wordt naast je draaiende Lightspeed-shop gebouwd, dus tot het overstapmoment verkoop je gewoon door, online en in de winkel. De domein-omzet duurt enkele minuten en plannen we samen op een rustig moment; de kassa schakelen we bijvoorbeeld om op een sluitingsdag, zodat je bij opening met Shopify POS verder verkoopt. En je oude shop staat er op dat moment nog naast, dus er is altijd een weg terug." )
+  , ( "Kunnen jullie ook naar Shopify Plus migreren?"
+    , faqAnswerText "Ja. Voor grotere webshops en B2B is Shopify Plus een logische bestemming, en voor ons programma maakt het geen verschil: dezelfde geautomatiseerde migratie, dezelfde controles. We adviseren je vooraf of Plus voor jouw omvang de moeite waard is, of dat een gewoon Shopify-abonnement volstaat." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product; dat rapport krijg je te zien. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
   , ( "Verlies ik mijn Google-posities?"
     , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al je links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Werkt het ook voor meertalige webshops?"
@@ -1635,8 +1873,293 @@ lightspeedFaq =
   ]
 
 -- =============================================================================
+-- Magento migration landing page
+-- =============================================================================
+
+-- Decision: één pagina voor Magento 1 en 2 samen in plaats van twee
+-- aparte pagina's. Het eigen marktonderzoek (jappiesoft
+-- research/magento-urgentie-en-extractie.org, 2 sep 2026) laat zien dat
+-- de NL-doelgroep voor beide dezelfde MWW-achtige winkelier is; het
+-- verschil is urgentie (M1: EOL sinds juni 2020) en extractieroute
+-- (REST versus SOAP/database), en dat leggen we in de urgentie-sectie
+-- en de FAQ uit. De urgentie-sectie steunt bewust ALLEEN op publieke
+-- feiten (M1-EOL juni 2020, PCI-druk, M2-onderhoudskosten) en is
+-- zonder druk getoonzet (verzoek Jappie: "we don't want to pressure
+-- anyone"). De eigen ct-harvest-cijfers (652 domeinen, steekproef
+-- met gokspam op verlopen domeinen) stonden hier eerst maar zijn op
+-- Jappies verzoek (2 sep 2026) volledig verwijderd: de telling kwam
+-- van de losse magento1-marker die ook gokspam-klonen ving. Megavid
+-- PR #219 scherpt de marker aan en migratie 0009 reset de teller;
+-- pas als die opnieuw gevuld en gecontroleerd is, is een eigen
+-- meting hier weer bruikbaar.
+magentoMigrationPage :: Html
+magentoMigrationPage = webwinkelBaseTemplate magentoMeta $
+  H.main $ do
+    -- Hero
+    H.section ! A.class_ "hero" $
+      H.div ! A.class_ "hero-grid" $ do
+        H.div $ do
+          H.h1 "Migreren van Magento naar Shopify"
+          H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Magento was jarenlang een prima keuze, maar Magento 1 krijgt sinds juni 2020 geen beveiligingsupdates meer, en ook een Magento 2-shop vraagt elke maand hosting, patches en bureau-uren. Wij verhuizen je complete shop geautomatiseerd naar Shopify of WooCommerce: zonder dataverlies, zonder SEO-verlies, en je betaalt pas na een succesvolle migratie." :: Text)
+          H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
+        H.img ! A.class_ "hero-image"
+              ! A.src "/illustratie-ontsnappen.svg"
+              ! A.alt "Illustratie van dozen die een bevroren webshop verlaten richting een zonnige nieuwe winkel"
+              ! A.width "400" ! A.height "300"
+
+    -- What we migrate
+    H.section ! A.class_ "for-who" ! A.id "what" $ do
+      H.h2 "Wat we migreren"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
+                ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
+          H.h3 "Producten & eigen attributen"
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, SKU's en varianten. Ook je zelfgebouwde attributen gaan mee: optie-ID's worden opgelost naar leesbare waarden en landen als opties of metafields."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Hoofdproduct met subproducten als boomstructuur" ! A.width "56" ! A.height "56"
+          H.h3 "Alle zes producttypes"
+          H.p $ H.preEscapedToHtml ("Simple, virtual, downloadable, configurable, grouped en bundle. Configurable producten met losse subproducten voegen we samen tot &eacute;&eacute;n Shopify-product met varianten, inclusief SKU, prijs en voorraad per variant." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
+                ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
+          H.h3 "Klanten & orderhistorie"
+          H.p "Klantaccounts en de complete bestelgeschiedenis worden overgezet, zodat je klanten direct verder kunnen en oude facturen terug te vinden blijven."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
+          H.h3 "SEO-redirects"
+          H.p $ H.preEscapedToHtml ("301-redirects van elke oude URL naar de nieuwe URL. Je backlinks blijven werken en je opgebouwde SEO verhuist mee; zonder sluitende redirects verliezen shops bij een verhuizing juist flink zoekmachineverkeer (de <a href=\"https://www.searchenginejournal.com/what-is-a-migration-hangover-traffic-drop-how-do-you-avoid-it/575102/\">migration hangover</a>)." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
+                ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
+          H.h3 "Meerdere talen"
+          H.p $ H.preEscapedToHtml ("Vertalingen worden correct gekoppeld. Je klanten blijven je shop in hun eigen taal zien, ook de URL-slugs." :: Text)
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
+                ! A.alt "Stapel dozen" ! A.width "56" ! A.height "56"
+          H.h3 "Voorraad & staffelprijzen"
+          H.p "Voorraadbeheer en staffelprijzen (tier prices) worden correct overgezet. Je voorraadniveaus kloppen direct in je nieuwe shop."
+
+    -- Urgentie, zonder druk: de eigen meting vertelt het verhaal.
+    H.section ! A.class_ "about" ! A.id "urgentie" $ do
+      H.h2 "Hoe dringend is het echt?"
+      H.p "We gaan je niet opjagen: je shop draait vandaag, en morgen waarschijnlijk ook. Maar Magento 1 krijgt sinds juni 2020 geen beveiligingsupdates meer, en betaalproviders toetsen steeds strenger op PCI-compliance. Draai je Magento 2, dan is er geen haast, wel een som: hosting, patches en bureau-uren, elke maand opnieuw, tegenover een vast Shopify-abonnement."
+      H.p $ do
+        "Wil je weten waar jouw shop staat? "
+        H.a ! A.href "/scan.html" $ "Laat hem gratis doormeten"
+        "."
+
+    -- How it works
+    hoeHetWerktSectie
+      [ HoeHetWerktStap "Scan" "Ons programma leest je Magento-shop volledig uit via de API, of bij een oude of trage server via een database-export, en zet alles over naar een testshop: producten, attributen, klanten, redirects."
+      , HoeHetWerktStap "Wennen" "De testshop draait naast je Magento-shop, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
+      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk."
+      ]
+
+    -- Pricing
+    prijzen
+
+    -- Why us
+    waaromViaOnsSectie
+      (WaaromBeeld "/assets/beeld/stock-productfoto-raam.jpg"
+        "Webshop-eigenaar fotografeert bij het raam een pakket voor haar webshop"
+        "1200" "1800")
+      (H.div ! A.class_ "testimonials" $
+        H.blockquote $
+          H.p $ H.preEscapedToHtml ("Bureaus rekenen voor een Magento-migratie al gauw tienduizenden euro's op uurtarief, vooral omdat het uitpluizen van tien jaar eigen attributen handwerk is. Ons programma doet precies dat werk geautomatiseerd, en legt daarbij elke oude URL vast (allemaal, niet een steekproef) zodat je opgebouwde SEO meeverhuist in plaats van te verdampen in een <a href=\"https://www.searchenginejournal.com/what-is-a-migration-hangover-traffic-drop-how-do-you-avoid-it/575102/\">migration hangover</a>." :: Text))
+      [ WaaromPunt "Geen risico" "Je betaalt pas na een succesvolle migratie."
+      , WaaromPunt "Platformonafhankelijk" "Je kiest de bestemming, wij migreren naar elk platform."
+      , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken, je opgebouwde SEO verhuist mee."
+      , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
+      , WaaromPunt "Meertalig" "Vertalingen correct gekoppeld via offici\235le APIs."
+      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product."
+      , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
+      ]
+
+    -- FAQ
+    H.section ! A.class_ "about" $ do
+      H.h2 "Veelgestelde vragen"
+      H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible magentoFaq
+
+    -- CTA
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Klaar voor de overstap?"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+  where
+    magentoMeta :: PageMeta
+    magentoMeta = PageMeta
+      { pageMetaTitle       = "Migreren van Magento naar Shopify \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Geautomatiseerde migratie van Magento 1 of Magento 2 naar Shopify of WooCommerce: producten met eigen attributen, klanten, orderhistorie en SEO-redirects. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-magento.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = faqPageJsonLd magentoFaq <> serviceJsonLd
+          "Magento naar Shopify migratie"
+          "Geautomatiseerde migratie van Magento 1 of Magento 2 naar Shopify of WooCommerce: producten met eigen attributen, klanten, orderhistorie, meertaligheid en SEO-redirects."
+          "https://webwinkelverhuis.nl/migrate-magento.html"
+      }
+
+magentoFaq :: [(FaqQuestion, FaqAnswer)]
+magentoFaq =
+  [ ( "Hoe lang duurt een migratie?"
+    , faqAnswerText "Het technische overzetten van je producten duurt maar enkele uren, ook bij tienduizenden producten. Maar er komt bij een verhuizing meestal meer kijken: het thema, apps, betaalmethoden, en rustig wennen aan je nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang. Het overstapmoment zelf plannen we samen; je bent geen dag dicht." )
+  , ( "Moet het per se Shopify worden?"
+    , faqAnswerText "Nee. Veel Magento-eigenaren hechten juist aan open source en eigen hosting; dan is WooCommerce een logische bestemming, en die migratie doen we net zo geautomatiseerd. Shopify past bij wie van het onderhoud af wil. We adviseren vrijblijvend wat bij jouw shop past." )
+  , ( "Werkt het voor Magento 1 \233n Magento 2?"
+    , faqAnswerText "Ja. Magento 2 lezen we uit via de offici\235le REST-API. Magento 1 heeft een oudere SOAP-API die we net zo goed kunnen uitlezen, en omdat een Magento-shop op je eigen server draait kunnen we altijd terugvallen op een database-export. Ook een shop waar jaren niet naar is omgekeken krijgen we dus compleet leeg, zonder dat je live-site er iets van merkt." )
+  , ( "Mijn producten hebben veel eigen attributen. Gaan die mee?"
+    , faqAnswerText "Ja. Magento-shops verzamelen in de loop van de jaren vaak tientallen eigen attributen (materiaal, garantie, maatvoering). Die worden opgelost naar leesbare waarden in plaats van database-ID's, en landen in Shopify als opties of metafields. Het programma controleert na afloop per product dat alles is aangekomen." )
+  , ( "Wat gebeurt er met configurable, grouped en bundle producten?"
+    , faqAnswerText "Configurable producten worden \233\233n Shopify-product met varianten, inclusief SKU, prijs en voorraad per variant. Grouped en bundle producten hebben in Shopify geen exact equivalent; afhankelijk van je assortiment maken we er losse producten van of gebruiken we een bundel-app, en die keuze stemmen we vooraf met je af." )
+  , ( "Kan ik mijn domeinnaam behouden?"
+    , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
+  , ( "Verlies ik mijn Google-posities?"
+    , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al je links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
+  , ( "Wat als er iets niet klopt na de migratie?"
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op." )
+  , ( "Kunnen mijn klanten met hun oude wachtwoord inloggen?"
+    , faqAnswerText "Nee, en wees op je hoede voor wie iets anders belooft: Shopify accepteert om veiligheidsredenen geen wachtwoorden van andere platformen. Wat wel kan, en wat wij doen: alle accounts verhuizen mee en je klanten zetten bij hun eerste bezoek in \233\233n stap een nieuw wachtwoord via een nette reset-flow. In de praktijk merken klanten daar nauwelijks iets van." )
+  , ( "Werkt het ook voor meertalige shops en meerdere store views?"
+    , faqAnswerText "Vertalingen en vertaalde URL-slugs verhuizen mee. Draai je meerdere store views of websites vanuit \233\233n Magento-installatie, dan kijken we vooraf samen wat daarvoor de beste vorm op Shopify is, bijvoorbeeld markten of aparte shops." )
+  , ( "Krijg ik een testshop om te wennen?"
+    , faqAnswerText "Ja. Je krijgt een volledige testshop naast je huidige shop om alvast te wennen. Pas na je akkoord gaan we live; eventuele correcties zijn inbegrepen." )
+  , ( "Kunnen jullie ook naar Shopify Plus migreren?"
+    , faqAnswerText "Ja. Voor grotere webshops en B2B is Shopify Plus een logische bestemming, en voor ons programma maakt het geen verschil: dezelfde geautomatiseerde migratie, dezelfde controles. We adviseren je vooraf of Plus voor jouw omvang de moeite waard is, of dat een gewoon Shopify-abonnement volstaat." )
+  , ( "Is mijn Magento 1-shop nog veilig?"
+    , faqAnswerText "Dat kunnen we van buitenaf niet beoordelen. Wat we wel weten: sinds juni 2020 zijn er geen offici\235le beveiligingsupdates meer, dus elke sindsdien gevonden kwetsbaarheid blijft open, tenzij je een fork zoals OpenMage of betaalde patches draait. Onze rol is niet je bang maken maar je een uitweg geven die geen maanden en geen tienduizenden euro's kost." )
+  ]
+
+-- =============================================================================
 -- MijnWebwinkel "Waarom wordt het verwaarloosd?" article page
 -- =============================================================================
+
+
+-- | De ZilverCMS-migratiepagina. Gegrond in jappiesoft
+-- research/zilvercms-migratie.org (4 sep 2026): het platform is
+-- feitelijk verlaten (leverancier opgegaan in een marketingbureau,
+-- merkdomeinen verlopen en herbezet, platform-CDN offline), maar de
+-- pagina stelt alleen de verifieerbare feiten en vermijdt
+-- "failliet"/"gestopt". Aanleiding: de onbediende GSC-zoekvraag
+-- "zilvercms migratie shopify".
+zilvercmsMigrationPage :: Html
+zilvercmsMigrationPage = webwinkelBaseTemplate zilvercmsMeta $
+  H.main $ do
+    H.section ! A.class_ "hero" $
+      H.div ! A.class_ "hero-grid" $ do
+        H.div $ do
+          H.h1 "Migreren van ZilverCMS naar Shopify"
+          H.p ! A.class_ "subtitle" $ "Om ZilverCMS is het stil geworden: de productpagina's zijn verdwenen en de oude platform-domeinen zijn verlopen. Je webshop verdient een platform dat onderhouden wordt. Wij zetten je complete shop geautomatiseerd over, zonder dataverlies en zonder medewerking van het oude platform nodig te hebben; je betaalt pas na een succesvolle migratie."
+          H.a ! A.href "/scan.html" ! A.class_ "cta-button" $ "Beoordeel mijn webshop"
+        H.img ! A.class_ "hero-image"
+              ! A.src "/illustratie-ontsnappen.svg"
+              ! A.alt "Illustratie van dozen die een bevroren webshop verlaten richting een zonnige nieuwe winkel"
+              ! A.width "400" ! A.height "300"
+
+    H.section ! A.class_ "for-who" ! A.id "what" $ do
+      H.h2 "Wat we migreren"
+      H.ul ! A.class_ "card-grid" $ do
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-producten.svg"
+                ! A.alt "Doos met producten" ! A.width "56" ! A.height "56"
+          H.h3 "Producten & varianten"
+          H.p "Alle producten inclusief titels, beschrijvingen, prijzen, afbeeldingen, artikelnummers en varianten, automatisch overgezet naar je nieuwe platform."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-categorieen.svg"
+                ! A.alt "Boomstructuur van categorieen" ! A.width "56" ! A.height "56"
+          H.h3 "Categorie\235n & pagina's"
+          H.p "Je categoriestructuur, informatiepagina's en teksten verhuizen mee, zodat je shop direct compleet aanvoelt."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
+                ! A.alt "Munt met ster" ! A.width "56" ! A.height "56"
+          H.h3 "Klanten & orderhistorie"
+          H.p "Klantaccounts en bestelgeschiedenis zetten we over, zodat je klanten direct verder kunnen en oude bestellingen terug te vinden blijven."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-redirects.svg"
+                ! A.alt "Pijl die een nieuwe route neemt" ! A.width "56" ! A.height "56"
+          H.h3 "SEO-redirects"
+          H.p "301-redirects van elke oude URL naar de nieuwe, zodat je backlinks blijven werken en je opgebouwde positie in Google meeverhuist."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-talen.svg"
+                ! A.alt "Twee tekstballonnen" ! A.width "56" ! A.height "56"
+          H.h3 "Meerdere talen"
+          H.p "Vertalingen worden correct gekoppeld; je klanten blijven je shop in hun eigen taal zien."
+        H.li ! A.class_ "card" $ do
+          H.img ! A.class_ "card-icon" ! A.src "/icoon-bulk.svg"
+                ! A.alt "Stapel dozen" ! A.width "56" ! A.height "56"
+          H.h3 "Voorraad"
+          H.p "Voorraadaantallen zetten we vlak voor de livegang live over, zodat ze in je nieuwe shop direct kloppen."
+
+    H.section ! A.class_ "about" ! A.id "urgentie" $ do
+      H.h2 "Hoe dringend is het echt?"
+      H.p "We gaan je niet bang maken; je shop draait vandaag. Maar de feiten rond het platform zijn ongemakkelijk: de productpagina's van ZilverCMS bestaan niet meer, de oude platform-domeinen zijn verlopen en door derden overgenomen, en de maker profileert zich tegenwoordig als online-marketingbureau. Een webshop leunt elke dag op updates, beveiliging en infrastructuur; als een platform stilvalt, merk je dat pas op het slechtste moment."
+      H.p $ do
+        "Wil je weten waar jouw shop staat? "
+        H.a ! A.href "/scan.html" $ "Laat hem gratis doormeten"
+        "."
+
+    hoeHetWerktSectie
+      [ HoeHetWerktStap "Scan" "Ons programma leest je draaiende shop zelf volledig uit: producten, categorie\235n, teksten en URL's. We hebben daarvoor geen medewerking van het oude platform nodig; dat je shop nog bereikbaar is, is genoeg."
+      , HoeHetWerktStap "Wennen" "De nieuwe shop bouwen we op naast je huidige, die gewoon doordraait. Je raakt op je gemak bekend met je nieuwe shop."
+      , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk."
+      ]
+
+    prijzen
+
+    waaromViaOnsSectie
+      (WaaromBeeld "/assets/beeld/stock-productfoto-raam.jpg"
+        "Webshop-eigenaar fotografeert bij het raam een pakket voor haar webshop"
+        "1200" "1800")
+      (H.div ! A.class_ "testimonials" $
+        H.blockquote $
+          H.p "Bij een platform waar de leverancier van is weggevallen kun je niet wachten op exports of support. Ons programma heeft die niet nodig: het leest je draaiende shop zelf uit en legt daarbij elke oude URL vast, zodat je opgebouwde SEO meeverhuist in plaats van te verdampen.")
+      [ WaaromPunt "Geen risico" "Je betaalt pas na een succesvolle migratie."
+      , WaaromPunt "Geen medewerking nodig" "We lezen je draaiende shop zelf uit; het oude platform hoeft nergens aan mee te werken."
+      , WaaromPunt "SEO-behoud" "Elke oude link krijgt een 301-redirect en blijft werken."
+      , WaaromPunt "Geautomatiseerd" "Geen handmatig overtypen, geen kopieerfouten."
+      , WaaromPunt "Gecontroleerd" "Na afloop controleert het programma elke oude link en elk product."
+      , WaaromPunt "Vaste prijs" "Geen uurtarief, je weet vooraf wat het kost."
+      ]
+
+    H.section ! A.class_ "about" $ do
+      H.h2 "Veelgestelde vragen"
+      H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible zilvercmsFaq
+
+    H.section ! A.class_ "final-cta" $ do
+      H.h2 "Klaar voor de overstap?"
+      H.p "Plan een gratis, vrijblijvend gesprek. We bekijken samen je webshop en geven direct een inschatting."
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+  where
+    zilvercmsMeta :: PageMeta
+    zilvercmsMeta = PageMeta
+      { pageMetaTitle       = "Migreren van ZilverCMS naar Shopify \8212 Webwinkelverhuis"
+      , pageMetaDescription = "Geautomatiseerde migratie van ZilverCMS naar Shopify of WooCommerce: producten, klanten, teksten en SEO-redirects, zonder medewerking van het oude platform. Vanaf \8364" <> migratieBasisprijsEuro <> "."
+      , pageMetaLang        = "nl"
+      , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/migrate-zilvercms.html"
+      , pageMetaOgImage     = Nothing
+      , pageMetaSwitchUrl   = Nothing
+      , pageMetaExtraHead   = faqPageJsonLd zilvercmsFaq <> serviceJsonLd
+          "ZilverCMS naar Shopify migratie"
+          "Geautomatiseerde migratie van ZilverCMS naar Shopify of WooCommerce: producten, klanten, teksten en SEO-redirects, zonder medewerking van het oude platform."
+          "https://webwinkelverhuis.nl/migrate-zilvercms.html"
+      }
+
+zilvercmsFaq :: [(FaqQuestion, FaqAnswer)]
+zilvercmsFaq =
+  [ ( "Is ZilverCMS gestopt?"
+    , faqAnswerText "Dat kunnen we niet met zekerheid zeggen, en dat is precies het probleem. Wat we wel kunnen vaststellen: de productpagina's van ZilverCMS zijn verdwenen, de oude platform-domeinen zijn verlopen en door derden overgenomen, en de oorspronkelijke maker presenteert zich tegenwoordig als online-marketingbureau. Voor een webshop die dagelijks op updates en beveiliging leunt is die onzekerheid zelf de reden om te verhuizen." )
+  , ( "Kan ik mijn data nog wel uit ZilverCMS krijgen?"
+    , faqAnswerText "Daar heb je ons voor: wij hebben geen exportfunctie of medewerking van het platform nodig. Ons programma leest je draaiende shop zelf volledig uit; producten, categorie\235n, teksten, afbeeldingen en alle URL's. Zolang je shop bereikbaar is, kunnen we hem compleet overzetten." )
+  , ( "Moet het per se Shopify worden?"
+    , faqAnswerText "Nee. Shopify is onze standaard omdat het onderhoudsarm is, maar WooCommerce of een ander platform kan ook; die migratie doen we net zo geautomatiseerd. We adviseren vrijblijvend wat bij jouw shop past." )
+  , ( "Hoe lang duurt een migratie?"
+    , faqAnswerText "Het technische overzetten duurt maar enkele uren. Maar er komt bij een verhuizing meestal meer kijken: het thema, betaalmethoden, en rustig wennen aan je nieuwe shop. Reken daarom op ongeveer een maand van start tot livegang; je bent geen dag dicht." )
+  , ( "Wat kost het?"
+    , faqAnswerText ("Een vaste prijs vanaf " <> migratieBasisprijsEuro <> " euro, afhankelijk van het aantal producten en talen; de rekenhulp op onze prijzenpagina rekent het voor. Je betaalt pas na een geslaagde migratie." ) )
+  ]
 
 mijnwebwinkelWaaromPage :: Html
 mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
@@ -1738,7 +2261,7 @@ mijnwebwinkelWaaromPage = webwinkelBaseTemplate waaromMeta $
       H.p $ do
         H.a ! A.href "/migrate-mijnwebwinkel.html" $ "Bekijk onze migratieservice"
         H.preEscapedToHtml (": volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     waaromMeta :: PageMeta
     waaromMeta = PageMeta
@@ -1909,7 +2432,7 @@ lightspeedWaaromPage = webwinkelBaseTemplate waaromLsMeta $
       H.p $ do
         H.a ! A.href "/migrate-lightspeed.html" $ "Bekijk onze migratieservice"
         H.preEscapedToHtml (": volledig geautomatiseerd, vaste prijs, betaling na succes." :: Text)
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     waaromLsMeta :: PageMeta
     waaromLsMeta = PageMeta
@@ -1945,8 +2468,8 @@ webwinkelBlogIndexPage _config articles pagination =
   webwinkelBlogBaseTemplate blogIndexMeta $
     H.main ! A.class_ "blog-listing" $ do
       H.h1 "Blog"
-      mapM_ renderBlogSummary articles
-      renderPagination pagination
+      mapM_ (renderBlogSummary Nl) articles
+      renderPagination Nl pagination
   where
     blogIndexMeta :: PageMeta
     blogIndexMeta = PageMeta
@@ -1972,7 +2495,7 @@ webwinkelArticlePage _config article =
           H.h1 $ toHtml (articleTitle article)
           H.p ! A.class_ "post-meta" $ do
             H.time ! customAttribute "datetime" (formatIsoDate (articleDate article)) $
-              toHtml (formatHumanDate (articleDate article))
+              toHtml (formatDutchHumanDate (articleDate article))
             case articleTags article of
               [] -> mempty
               tagList -> do
@@ -2027,10 +2550,13 @@ webwinkelverhuisStaticPages :: [(Text, Day)]
 webwinkelverhuisStaticPages =
   [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 8 23)
+  , ("https://webwinkelverhuis.nl/offerte.html", fromGregorian 2026 9 4)
   , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 8)
-  , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 8 23)
-  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 8 23)
-  , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 8 23)
+  , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 9 2)
+  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 9 2)
+  , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 9 2)
+  , ("https://webwinkelverhuis.nl/migrate-magento.html", fromGregorian 2026 9 2)
+  , ("https://webwinkelverhuis.nl/migrate-zilvercms.html", fromGregorian 2026 9 4)
   , ("https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/over-ons.html", fromGregorian 2026 8 8)
@@ -2108,7 +2634,7 @@ overOnsPage = webwinkelBaseTemplate overOnsMeta $
     H.section ! A.class_ "cta-section" $ do
       H.h2 "Kennismaken?"
       H.p "Een gesprek kost niets en je weet meteen met wie je te maken heeft."
-      H.a ! A.href meetLink ! A.class_ "cta-button" $ "Plan een gesprek"
+      H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button" $ "Plan een gesprek"
   where
     overOnsMeta :: PageMeta
     overOnsMeta = PageMeta
@@ -2146,7 +2672,25 @@ contactPage = webwinkelBaseTemplate contactMeta $
           H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
         H.li $ do
           H.strong "Liever meteen inplannen: "
-          H.a ! A.href meetLink $ "plan een gratis gesprek"
+          H.a ! A.href webwinkelverhuisMeetLink $ "plan een gratis gesprek"
+
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Of stuur direct een bericht"
+      -- Zelfde endpoint als het offerteformulier; het verborgen
+      -- soort-veld zorgt voor het juiste mailonderwerp en de juiste
+      -- logregel (megavid WebshopScanner.OfferteAanvraag). Het
+      -- shop-veld reist leeg mee omdat het endpoint het verwacht.
+      H.form ! A.class_ "offerte-formulier" ! A.action "/api/offerte" ! A.method "post" $ do
+        H.label ! A.class_ "calc-field" $ do
+          H.span ! A.class_ "calc-label" $ "Je e-mailadres (hierop reageren we)"
+          H.input ! A.type_ "email" ! A.name "email" ! A.required "required" ! A.placeholder "naam@voorbeeld.nl"
+        H.label ! A.class_ "calc-field" $ do
+          H.span ! A.class_ "calc-label" $ "Je bericht"
+          H.textarea ! A.name "bericht" ! A.rows "6" ! A.placeholder "Waarmee kunnen we je helpen?" $ mempty
+        H.input ! A.type_ "hidden" ! A.name "soort" ! A.value "contact"
+        H.input ! A.type_ "hidden" ! A.name "shop" ! A.value ""
+        honeypotVeld
+        H.button ! A.type_ "submit" ! A.class_ "cta-button" $ "Verstuur"
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Bedrijfsgegevens"
@@ -2155,7 +2699,7 @@ contactPage = webwinkelBaseTemplate contactMeta $
     H.section ! A.class_ "cta-section" $ do
       H.h2 "Benieuwd wat je webshop zou kosten?"
       H.p "Vraag vrijblijvend een offerte aan; je betaalt pas na een geslaagde migratie."
-      H.a ! A.href offerteMailto ! A.class_ "cta-button" $ "Vraag een offerte aan"
+      H.a ! A.href offertePaginaLink ! A.class_ "cta-button" $ "Vraag een offerte aan"
   where
     contactMeta :: PageMeta
     contactMeta = PageMeta

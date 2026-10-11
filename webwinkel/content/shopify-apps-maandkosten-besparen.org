@@ -1,0 +1,150 @@
+#+TITLE: Betaal je elke maand voor Shopify-apps die je niet nodig hebt?
+#+DATE: 2026-09-30
+#+CATEGORY: shopify
+#+TAGS: shopify, apps, kosten, thema
+
+Een Shopify-winkel groeit met apps. Een balkje bovenaan, een
+WhatsApp-knop, een vertaalapp, een pop-up voor de nieuwsbrief. Elk
+kost een paar euro tot een paar tientjes per maand, en samen tellen
+ze op tot een tweede abonnement naast Shopify zelf. Een flink deel
+van die apps doet iets wat Shopify zelf al gratis kan, of wat met een
+kleine, eenmalige aanpassing in je thema net zo goed werkt.
+
+Onlangs vroeg een klant hoe hij in Shopify de levertijd kon tonen bij
+uitverkochte producten. Daar is een app voor, met een betaalde versie vanaf $9,90 per maand.
+Dezelfde regel op de productpagina is ook een eenmalige aanpassing in
+het thema, zonder maandkosten. Dat zette ons aan het tellen.
+
+* Drie soorten apps
+
+We hebben ruim tachtig veelgebruikte apps nagelopen, met de prijzen
+zoals ze op 30 september 2026 in de Shopify App Store stonden. Ze
+vallen in drie groepen.
+
+** Apps die iets doen wat Shopify zelf al kan
+
+Deze kun je vaak vandaag nog opzeggen. Voorbeelden:
+
+- Vertaalapps zoals Weglot (betaald vanaf $17 per maand) of langify
+  (vanaf $17,50): Shopify's eigen Translate & Adapt is gratis en vertaalt
+  twee talen automatisch.
+- Valuta-omrekenaars (rond $10 per maand): met Shopify Payments toont
+  Shopify Markets lokale prijzen zonder extra app.
+- Pop-ups voor je nieuwsbrief, zoals Privy (vanaf $24 per maand): Shopify Forms
+  is gratis en doet pop-ups en inschrijfblokken.
+- Filter-apps (betaald vanaf $14 per maand): de gratis Search & Discovery-app van
+  Shopify filtert ook op je eigen productvelden. Hoe je daar een
+  mooi kleurenfilter van maakt lees je in [[https://webwinkelverhuis.nl/blog/filteren-op-kleur-in-je-shopify-shop-zonder-alles-handmatig-te-taggen.html][ons artikel over filteren op
+  kleur]].
+- Megamenu's, aankondigingsbalken en tabbladen op de productpagina:
+  de standaardthema's van Shopify hebben daar eigen blokken voor.
+
+** Apps die een eenmalige aanpassing kan vervangen
+
+Hier doet de app iets kleins dat in je thema zelf kan wonen. Een
+paar voorbeelden:
+
+| Wat de app doet                        | Voorbeeld, betaald vanaf              | Eenmalige aanpassing                           |
+|----------------------------------------+---------------------------------------+------------------------------------------------|
+| WhatsApp-knop                          | Chaty, $15 per maand            | Een zwevende knop met je nummer                |
+| Levertijd bij uitverkocht              | PreOrder Globo, $9,90 per maand | Levertijd per product, getoond bij uitverkocht |
+| Vaste "in winkelwagen"-knop bij scrollen | STKY, $6,99 per maand         | Een balk die meeloopt met de bestelknop        |
+| Balk "nog €X tot gratis verzending"    | K: Free Shipping Bar, $6,70     | Een balk in de winkelwagen                     |
+| Labels als "nieuw" of "sale"           | DECO Product Labels, $9         | Labels op basis van tags of productvelden      |
+| Maattabel                              | Kiwi Size Chart, $7,99          | Een pop-up met jouw tabel per product          |
+
+Veel van deze apps hebben ook een gratis versie met een plafond. Het
+geld zit in de winkels die daarboven uitkomen. Let vooral op apps die
+meegroeien met je winkel: sommige rekenen per
+bezoeker, per klik of per bestelling. Hoe beter je verkoopt, hoe
+hoger de rekening, terwijl de knop zelf niet verandert.
+
+** Apps die je moet houden
+
+Niet alles kan weg. Apps die e-mails versturen (terug op voorraad,
+reviewverzoeken), die klantgegevens bewaren of die regels afdwingen
+in de kassa hebben een eigen server nodig. Die vervang je niet met
+een aanpassing in je thema. En sommige bekende apps hebben een ruime
+gratis versie: Judge.me verzamelt reviews gratis, dus daar is
+overstappen naar de gratis versie soms genoeg.
+
+* De rekensom
+
+Een app van $10 per maand kost je $120 per jaar, elk jaar opnieuw.
+Een eenmalige aanpassing heb je dan na ruim een jaar terugverdiend,
+en daarna betaal je niets meer. Heb je drie of vier van zulke apps,
+dan loopt het verschil snel op.
+
+Bij de goedkopere apps van een paar dollar per maand is het minder
+duidelijk. Die vervangen we alleen als je er meerdere tegelijk
+opruimt, anders duurt het te lang voor het zich terugbetaalt.
+
+* Waar je op moet letten
+
+- Een app verwijderen haalt ook alles weg wat de app op de
+  achtergrond deed. Controleer dus eerst of je echt alleen het
+  zichtbare deel gebruikt.
+- Oude apps laten na het verwijderen soms stukjes code in je thema
+  achter. Die kunnen je winkel vertragen of de opmaak verstoren; bij
+  een vervanging ruimen wij die mee op.
+- Opzeggen stopt de volgende rekening, maar de lopende periode kan
+  nog in rekening worden gebracht. Apps die buiten Shopify factureren
+  moet je apart opzeggen.
+- Een thema-update neemt eigen aanpassingen niet altijd automatisch
+  mee. Daarom zetten wij een aanpassing in een eigen blok van je
+  thema, zodat hij na een update makkelijk terug te zetten is.
+
+* Zelf nakijken wat je betaalt
+
+In je Shopify-beheer staat onder Instellingen > Facturering wat je
+per app betaalt, en onder Apps welke apps er geïnstalleerd zijn. Leg
+die twee lijsten naast de drie groepen hierboven: elke betaalde app
+die in de eerste of tweede groep valt, is een kandidaat om op te
+zeggen.
+
+* Hoe wij het aanpakken
+
+We beginnen bij je facturering en de lijst met apps in je beheer:
+welke apps draaien er, wat kosten ze en wat gebruik je er echt van. Per app krijg je een advies.
+Kan Shopify het zelf, dan leggen we uit welke instelling je aanzet.
+Is er een gratis versie die volstaat, dan zeggen we dat. Alleen waar
+echt iets gebouwd moet worden, krijg je een vaste prijs vooraf.
+
+Daarna bouwen we de aanpassing in een eigen blok van je thema, testen
+we hem op je winkel (ook bij het wisselen van maat of kleur), en pas
+dan zeg jij de app op. Wij ruimen de restjes van de oude app op.
+
+Benieuwd wat er in jouw winkel kan? [[https://meet.webwinkelverhuis.nl][Plan een vrijblijvend gesprek]],
+dan lopen we je apps samen door.
+
+* Veelgestelde vragen
+
+** Gaat een thema-update mijn aanpassing overschrijven?
+
+Shopify neemt eigen aanpassingen bij een update mee zolang ze niet
+botsen met de nieuwe versie. Wij houden de aanpassing daarom in een
+eigen blok, los van de rest van het thema. Botst er toch iets, dan
+is hij snel terug te zetten.
+
+** Wat als ik de app later toch weer wil?
+
+Dan installeer je hem opnieuw. De aanpassing staat in een eigen blok
+en is met één klik uit te zetten.
+
+** Wat kost een vervanging?
+
+Je krijgt per app een vaste prijs vooraf, geen uurtarief. Kleine
+aanpassingen zoals een WhatsApp-knop of een levertijdregel beginnen
+rond de €150. Wat Shopify zelf kan zetten we niet op de rekening: dat
+advies krijg je gewoon.
+
+** Moet mijn winkel door jullie gemigreerd zijn?
+
+Nee. Dit werkt op elke Shopify-winkel, ook als wij hem niet zelf
+hebben opgezet.
+
+#+BEGIN_EXPORT html
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Gaat een thema-update mijn aanpassing overschrijven?","acceptedAnswer":{"@type":"Answer","text":"Shopify neemt eigen aanpassingen bij een update mee zolang ze niet botsen met de nieuwe versie. Wij houden de aanpassing daarom in een eigen blok, los van de rest van het thema. Botst er toch iets, dan is hij snel terug te zetten."}},{"@type":"Question","name":"Wat als ik de app later toch weer wil?","acceptedAnswer":{"@type":"Answer","text":"Dan installeer je hem opnieuw. De aanpassing staat in een eigen blok en is met een klik uit te zetten."}},{"@type":"Question","name":"Wat kost een vervanging?","acceptedAnswer":{"@type":"Answer","text":"Je krijgt per app een vaste prijs vooraf, geen uurtarief. Kleine aanpassingen zoals een WhatsApp-knop of een levertijdregel beginnen rond de 150 euro. Wat Shopify zelf kan zetten we niet op de rekening: dat advies krijg je gewoon."}},{"@type":"Question","name":"Moet mijn winkel door jullie gemigreerd zijn?","acceptedAnswer":{"@type":"Answer","text":"Nee. Dit werkt op elke Shopify-winkel, ook als wij hem niet zelf hebben opgezet."}}]}
+</script>
+#+END_EXPORT

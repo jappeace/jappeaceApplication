@@ -17,6 +17,9 @@ module PageChrome
   , percentEncodeQuery
   , migratieBasisprijsEuro
   , meetLink
+  , webwinkelverhuisMeetLink
+  , WebwinkelSchedulingLinkFout(..)
+  , webwinkelSchedulingLinkFout
   , companyWhatsappNumber
   , whatsappFloatingButton
   , organizationJsonLd
@@ -31,6 +34,8 @@ module PageChrome
   , jsonLdString
   , formatIsoDate
   , formatHumanDate
+  , formatDutchHumanDate
+  , humanDateForLang
   , stripHtmlTags
   , articleMetaDescription
   , renderBlogSummary
@@ -43,14 +48,14 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
-import Data.Time (UTCTime, formatTime, defaultTimeLocale)
+import Data.Time (UTCTime, formatTime, defaultTimeLocale, TimeLocale(..))
 import Network.HTTP.Types.URI (urlEncode)
 import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Text.Blaze.Html5 (Html, (!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
-import Types (Article(..), PaginationInfo(..))
+import Types (Article(..), Lang(..), PaginationInfo(..), Translations(..), translationsFor)
 
 -- | Convert 'Text' to a blaze attribute value.
 toValue :: Text -> H.AttributeValue
@@ -116,9 +121,13 @@ companyEmail = "hallo@jappiesoftware.com"
 -- only. Single source of truth for every surface that shows it: the
 -- price cards, the meta descriptions and the schema.org Offer markup.
 -- The decision trail lives in jappiesoft
--- strategy/pricing-business-model.org (staffel-2026-07-29).
+-- strategy/pricing-business-model.org (staffel-2026-07-29, de
+-- verlaging van 2026-09-04 naar 1499 met 500 inbegrepen, en het
+-- besluit van 2026-09-19: 999 als vaste basis voor de overhead,
+-- zonder inbegrepen producten, elke vertaling vanaf de eerste in een
+-- aflopende staffel; de meegroeiende modules per item).
 migratieBasisprijsEuro :: Text
-migratieBasisprijsEuro = "1999"
+migratieBasisprijsEuro = "999"
 
 -- | Branded scheduling link used by every "plan een gesprek" button across
 -- the sites and the outreach mails. It is a 302 redirect on our own
@@ -127,6 +136,33 @@ migratieBasisprijsEuro = "1999"
 -- built pages or already-sent mails.
 meetLink :: H.AttributeValue
 meetLink = "https://meet.jappiesoftware.com"
+
+-- | The same redirect on the webwinkelverhuis.nl brand, for every page of
+-- that site and its blog. The cold-mail footer already uses this name
+-- (megavid blog/vhost.nix), so a visitor never leaves the brand.
+webwinkelverhuisMeetLink :: H.AttributeValue
+webwinkelverhuisMeetLink = "https://meet.webwinkelverhuis.nl"
+
+-- | Scheduling links a rendered webwinkelverhuis.nl page may not carry.
+data WebwinkelSchedulingLinkFout
+  = RawCalendarLink
+    -- ^ A raw calendar.app.google URL once sent visitors to the wrong calendar.
+  | JappiesoftwareMeetLink
+    -- ^ Leaves the brand, and the gesprek_knop_klik GA selector no longer counts it.
+  deriving (Eq, Show)
+
+-- | Checked on every rendered HTML page, blog content included, because
+-- the template tests cannot see what org content renders to. The Elm
+-- scanner's link is pinned separately by ScannerFormTest, which nix-build
+-- runs before the site build.
+webwinkelSchedulingLinkFout :: TL.Text -> Maybe WebwinkelSchedulingLinkFout
+webwinkelSchedulingLinkFout rendered =
+  if TL.isInfixOf "calendar.app.google" rendered
+    then Just RawCalendarLink
+    else
+      if TL.isInfixOf "meet.jappiesoftware.com" rendered
+        then Just JappiesoftwareMeetLink
+        else Nothing
 
 -- =============================================================================
 -- Floating WhatsApp contact button ("bolletje")
@@ -330,16 +366,17 @@ escapeJsonLdChar c    = T.singleton c
 
 -- | One article summary in a paginated blog index. Both brand blogs
 -- (jappiesoftware.com and webwinkelverhuis.nl) live under @/blog/@, so the
--- link path is fixed here rather than threaded through from the SiteConfig.
-renderBlogSummary :: Article -> Html
-renderBlogSummary article =
+-- link path is fixed here rather than threaded through from the SiteConfig;
+-- the 'Lang' picks the human-readable date rendering.
+renderBlogSummary :: Lang -> Article -> Html
+renderBlogSummary lang article =
   H.article ! A.class_ "post-summary" $ do
     H.h2 $
       H.a ! A.href (toValue ("/blog/" <> articleUrl article)) $
         toHtml (articleTitle article)
     H.p ! A.class_ "post-meta" $ do
       H.time ! customAttribute "datetime" (formatIsoDate (articleDate article)) $
-        toHtml (formatHumanDate (articleDate article))
+        toHtml (humanDateForLang lang (articleDate article))
       case articleTags article of
         [] -> mempty
         tagList -> do
@@ -349,15 +386,20 @@ renderBlogSummary article =
       Just summary -> H.div ! A.class_ "summary" $ summary
       Nothing -> mempty
 
--- | Newer/older navigation between paginated blog index pages.
-renderPagination :: PaginationInfo -> Html
-renderPagination pagination =
+-- | Newer/older navigation between paginated blog index pages, in the
+-- language of the page (webwinkelverhuis.nl is Dutch, penguin English).
+renderPagination :: Lang -> PaginationInfo -> Html
+renderPagination lang pagination =
   H.nav ! A.class_ "pagination" $ do
     case paginationPrevUrl pagination of
-      Just url -> H.a ! A.class_ "prev" ! A.href (toValue url) $ H.preEscapedToHtml ("&larr; Newer" :: Text)
+      Just url -> H.a ! A.class_ "prev" ! A.href (toValue url) $ do
+        H.preEscapedToHtml ("&larr; " :: Text)
+        toHtml (tNewer (translationsFor lang))
       Nothing -> mempty
     case paginationNextUrl pagination of
-      Just url -> H.a ! A.class_ "next" ! A.href (toValue url) $ H.preEscapedToHtml ("Older &rarr;" :: Text)
+      Just url -> H.a ! A.class_ "next" ! A.href (toValue url) $ do
+        toHtml (tOlder (translationsFor lang))
+        H.preEscapedToHtml (" &rarr;" :: Text)
       Nothing -> mempty
 
 -- =============================================================================
@@ -369,6 +411,28 @@ formatIsoDate = T.pack . formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%SZ"
 
 formatHumanDate :: UTCTime -> Text
 formatHumanDate = T.pack . formatTime defaultTimeLocale "%B %e, %Y"
+
+-- | Dutch-language article date ("10 september 2026"), for the Dutch-only
+-- pages of webwinkelverhuis.nl.
+formatDutchHumanDate :: UTCTime -> Text
+formatDutchHumanDate = T.pack . formatTime dutchTimeLocale "%-e %B %Y"
+
+-- | 'defaultTimeLocale' with translated month names; only the fields that
+-- @"%-e %B %Y"@ reads are relevant, the day names stay English.
+dutchTimeLocale :: TimeLocale
+dutchTimeLocale = defaultTimeLocale
+  { months =
+      [ ("januari", "jan"), ("februari", "feb"), ("maart", "mrt")
+      , ("april", "apr"), ("mei", "mei"), ("juni", "jun")
+      , ("juli", "jul"), ("augustus", "aug"), ("september", "sep")
+      , ("oktober", "okt"), ("november", "nov"), ("december", "dec")
+      ]
+  }
+
+-- | Pick the article-date rendering matching the page language.
+humanDateForLang :: Lang -> UTCTime -> Text
+humanDateForLang En = formatHumanDate
+humanDateForLang Nl = formatDutchHumanDate
 
 -- | Strip HTML tags from text for use in meta descriptions.
 stripHtmlTags :: Text -> Text

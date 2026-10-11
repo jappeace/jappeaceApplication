@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- "Fysieke winkel" card icon: a kassa/POS-terminal (tablet op standaard)
+     met een bonnetje, in de stijl van de andere icoon-*.svg bestanden. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <circle cx="32" cy="32" r="30" fill="#eaf1f8"/>
+  <rect x="16" y="16" width="24" height="18" rx="2" fill="#10456b" stroke="#0c2f47" stroke-width="2.5"/>
+  <rect x="20" y="20" width="16" height="10" rx="1" fill="#cfe6c0"/>
+  <path d="M24 34 L22 44 h12 L32 34" fill="#10456b"/>
+  <rect x="16" y="44" width="24" height="4" rx="2" fill="#10456b"/>
+  <rect x="42" y="24" width="10" height="20" rx="1.5" fill="#ffffff" stroke="#10456b" stroke-width="2.5"/>
+  <g stroke="#6cb44c" stroke-width="2" stroke-linecap="round">
+    <path d="M45 30 h4 M45 34 h4 M45 38 h4"/>
+  </g>
+</svg>

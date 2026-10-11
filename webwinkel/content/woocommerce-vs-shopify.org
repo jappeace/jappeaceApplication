@@ -2,6 +2,7 @@
 #+DATE: 2026-08-24
 #+CATEGORY: migratie
 #+TAGS: woocommerce, shopify, vergelijking
+#+SUMMARY: WooCommerce of Shopify na MijnWebwinkel? Wij verhuizen naar allebei voor dezelfde prijs. Het verschil zit in onderhoud, maandlasten en wie de techniek draagt.
 
 Verlaat je MijnWebwinkel (of een ander verouderd platform), dan is
 de volgende vraag: waarheen? Wij verhuizen webshops voor de kost

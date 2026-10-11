@@ -48,8 +48,10 @@ test-suite unit
   other-modules:
     ArticleSummary
     AssetHash
+    Metadata
     PageChrome
     PenguinTemplates
+    Slug
     Templates
     Types
     WebwinkelTemplates
@@ -67,3 +69,4 @@ test-suite unit
     , tasty-hunit >=0.10 && <0.11
     , text >=1.2 && <2.2
     , time >=1.9 && <1.15
+    , containers

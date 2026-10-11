@@ -3,6 +3,7 @@
 #+MODIFIED: 2026-08-08
 #+CATEGORY: shopify
 #+TAGS: shopify, ccv, mijnwebwinkel, achtergrond
+#+SUMMARY: Shopify gaf in 2025 ruim 1,5 miljard dollar uit aan productontwikkeling. Wat dat geld oplevert en waarom geen Nederlands webshopplatform dat kan bijbenen.
 
 Shopify gaf in 2025 ruim anderhalf miljard dollar uit aan
 productontwikkeling. Nederlandse webshopplatformen zijn niet lui of

@@ -24,6 +24,7 @@ port module ScannerForm exposing
     , scanStatusDecoder
     , topVerbeterpunten
     , update
+    , urlVoorop
     , view
     )
 
@@ -275,10 +276,13 @@ type Fase
 
 
 {-| Wat de server over een lopende scan meldt: in de wachtrij (met positie,
-1 = als eerste aan de beurt) of daadwerkelijk aan het meten. -}
+1 = als eerste aan de beurt) of daadwerkelijk aan het meten. Bezig telt
+de peilingen sinds de meting loopt (om de drie seconden een), zodat de
+weergave verstreken tijd en een voortgangsbalk kan tonen; een minuut
+staren naar een statische regel voelt als een hang. -}
 type WachtStand
     = InWachtrij Int
-    | Bezig
+    | Bezig Int
 
 
 {-| Of een inklapbaar rapportdeel open- of dichtgeklapt staat. -}
@@ -528,7 +532,7 @@ update msg model =
                     )
 
         StartOntvangen (Ok scanId) ->
-            ( { model | fase = Wachten scanId Bezig }, peilStatus scanId )
+            ( { model | fase = Wachten scanId (Bezig 0) }, peilStatus scanId )
 
         StartOntvangen (Err melding) ->
             ( { model | fase = Mislukt melding }, gaEvent "scanner_mislukt" [] )
@@ -583,13 +587,13 @@ meer wachten (de bezoeker begon opnieuw) zijn achterhaald en veranderen niets. -
 verwerkStatus : Result String ScanStatus -> Model -> ( Model, Cmd Msg )
 verwerkStatus resultaat model =
     case model.fase of
-        Wachten scanId _ ->
+        Wachten scanId huidigeStand ->
             case resultaat of
                 Ok (StatusWachtrij positie) ->
                     ( { model | fase = Wachten scanId (InWachtrij positie) }, peilOverDrieSeconden )
 
                 Ok StatusBezig ->
-                    ( { model | fase = Wachten scanId Bezig }, peilOverDrieSeconden )
+                    ( { model | fase = Wachten scanId (volgendeBezigStand huidigeStand) }, peilOverDrieSeconden )
 
                 Ok StatusMislukt ->
                     ( { model | fase = Mislukt scanMisluktMelding }, gaEvent "scanner_mislukt" [] )
@@ -687,7 +691,7 @@ restVerbeterpunten punten =
 
 meetUrl : String
 meetUrl =
-    "https://meet.jappiesoftware.com"
+    "https://meet.webwinkelverhuis.nl"
 
 
 {-| De prijs-rekenhulp op de eigen prijzenpagina, dezelfde bestemming als de
@@ -712,7 +716,7 @@ faseWeergave model =
             laadWeergave "We starten de scan."
 
         Wachten _ stand ->
-            laadWeergave (wachtTekst stand)
+            laadWeergaveMet (voortgangsBalk stand) (wachtTekst stand)
 
         Geslaagd rapport stand ->
             if rapport.platformHerkend then
@@ -769,12 +773,57 @@ invoerFoutMelding mFout =
 
 laadWeergave : String -> List (Html Msg)
 laadWeergave statusRegel =
+    laadWeergaveMet [] statusRegel
+
+
+{-| Laadweergave met extra elementen (de voortgangsbalk) tussen de
+statusregel en de hint. -}
+laadWeergaveMet : List (Html Msg) -> String -> List (Html Msg)
+laadWeergaveMet extraElementen statusRegel =
     [ div [ Attr.class "scanner-laden" ]
-        [ div [ Attr.class "scanner-spinner" ] []
-        , p [ Attr.class "scanner-status" ] [ text statusRegel ]
-        , p [ Attr.class "calc-hint" ] [ text "De meting duurt ongeveer een minuut. Laat deze pagina open." ]
-        ]
+        ([ div [ Attr.class "scanner-spinner" ] []
+         , p [ Attr.class "scanner-status" ] [ text statusRegel ]
+         ]
+            ++ extraElementen
+            ++ [ p [ Attr.class "calc-hint" ] [ text "De meting duurt ongeveer een minuut. Laat deze pagina open." ] ]
+        )
     ]
+
+
+{-| Voortgangsbalk zodra de meting echt loopt; in de wachtrij zegt een
+balk niets. -}
+voortgangsBalk : WachtStand -> List (Html Msg)
+voortgangsBalk stand =
+    case stand of
+        InWachtrij _ ->
+            []
+
+        Bezig peilingen ->
+            [ div [ Attr.class "scanner-voortgang" ]
+                [ div
+                    [ Attr.class "scanner-voortgang-balk"
+                    , Attr.style "width" (String.fromInt (voortgangsPercentage peilingen) ++ "%")
+                    ]
+                    []
+                ]
+            ]
+
+
+{-| De balk kruipt in ~75 seconden naar 95% en blijft daar hangen: een
+balk op 100% terwijl de meting nog loopt, liegt. -}
+voortgangsPercentage : Int -> Int
+voortgangsPercentage peilingen =
+    min 95 ((peilingen * 3 * 95) // 75)
+
+
+volgendeBezigStand : WachtStand -> WachtStand
+volgendeBezigStand stand =
+    case stand of
+        InWachtrij _ ->
+            Bezig 0
+
+        Bezig peilingen ->
+            Bezig (peilingen + 1)
 
 
 wachtTekst : WachtStand -> String
@@ -787,8 +836,22 @@ wachtTekst stand =
             else
                 "Je staat op plek " ++ String.fromInt positie ++ " in de wachtrij."
 
-        Bezig ->
-            "We meten je webshop."
+        Bezig peilingen ->
+            bezigTekst (peilingen * 3)
+
+
+{-| Statusregel tijdens het meten, met verstreken tijd zodra die iets
+zegt; na de beloofde minuut managet de tekst de verwachting bij. -}
+bezigTekst : Int -> String
+bezigTekst seconden =
+    if seconden < 6 then
+        "We meten je webshop."
+
+    else if seconden <= 60 then
+        "We meten je webshop, al " ++ String.fromInt seconden ++ " seconden bezig."
+
+    else
+        "Bijna klaar: grote pagina's meten duurt iets langer dan een minuut."
 
 
 {-| Melding wanneer de gescande shop onze meting tijdelijk weigert. -}
@@ -816,10 +879,15 @@ rapportWeergave rapport stand =
     , p [ Attr.class "scanner-platform" ] [ text (platformRegel rapport) ]
     , div [ Attr.class "scanner-scores" ] (List.map scoreWeergave rapport.scores)
     ]
-        ++ kernmetingenDeel rapport stand.kernmetingenUitklap
         ++ [ h3 [] [ text "Verbeterpunten" ] ]
         ++ List.map (puntWeergave rapport.platform) (topVerbeterpunten rapport.verbeterpunten)
-        ++ uitklapDeel rapport stand.puntenUitklap
+        ++ restPuntenDeel rapport stand.puntenUitklap
+        -- de twee uitklapknoppen naast elkaar in een rij (verzoek
+        -- Jappie 4 sep 2026); de kernmetingen hebben geen eigen kop
+        -- meer, de knop is de ingang
+        ++ [ div [ Attr.class "scanner-knoppenrij" ]
+                (puntenKnop rapport stand.puntenUitklap ++ [ kernmetingenKnop stand.kernmetingenUitklap ]) ]
+        ++ kernmetingenLijst rapport stand.kernmetingenUitklap
         ++ upsellBlok rapport
 
 
@@ -872,19 +940,27 @@ platformVerzoekMailto gescandeUrl =
 {-| De kernmetingen, standaard ingeklapt: de meeste bezoekers hebben genoeg
 aan de scores en de verbeterpunten, en de ruwe metingen blijven een klik weg.
 De labels komen van de server en tonen we onvertaald. -}
-kernmetingenDeel : Rapport -> UitklapStand -> List (Html Msg)
-kernmetingenDeel rapport uitklap =
+kernmetingenKnop : UitklapStand -> Html Msg
+kernmetingenKnop uitklap =
     case uitklap of
         Ingeklapt ->
-            [ h3 [] [ text "Kernmetingen" ]
-            , uitklapKnop KernmetingenGewisseld "Toon de kernmetingen"
-            ]
+            uitklapKnop KernmetingenGewisseld "Toon de kernmetingen"
 
         Uitgeklapt ->
-            [ h3 [] [ text "Kernmetingen" ]
-            , dl [ Attr.class "scanner-kernmetingen" ] (List.concatMap kernmetingWeergave rapport.kernmetingen)
-            , uitklapKnop KernmetingenGewisseld "Verberg de kernmetingen"
-            ]
+            uitklapKnop KernmetingenGewisseld "Verberg de kernmetingen"
+
+
+{-| De ruwe metingen, alleen zichtbaar als de knop in de knoppenrij ze
+uitklapt; de lijst landt onder de rij zodat de knoppen op hun plek
+blijven. -}
+kernmetingenLijst : Rapport -> UitklapStand -> List (Html Msg)
+kernmetingenLijst rapport uitklap =
+    case uitklap of
+        Ingeklapt ->
+            []
+
+        Uitgeklapt ->
+            [ dl [ Attr.class "scanner-kernmetingen" ] (List.concatMap kernmetingWeergave rapport.kernmetingen) ]
 
 
 platformRegel : Rapport -> String
@@ -904,11 +980,13 @@ scoreWeergave score =
         ]
 
 
+{-| Het procentteken maakt het cijfer onmiskenbaar een score en geen
+aantal ("81 praktische tips"-verwarring, Jappie 4 sep 2026). -}
 scoreTekst : Maybe Int -> String
 scoreTekst mScore =
     case mScore of
         Just getal ->
-            String.fromInt getal
+            String.fromInt getal ++ "%"
 
         Nothing ->
             "\u{2013}"
@@ -950,9 +1028,70 @@ puntWeergave platformNaam punt =
             ]
         , small [ Attr.class "scanner-punt-categorie" ] [ text punt.categorie ]
         , meetwaardeWeergave punt.meetwaarde
-        , p [ Attr.class "scanner-punt-waarom" ] [ text punt.waarom ]
+        , p [ Attr.class "scanner-punt-waarom" ] (tekstMetLinks punt.waarom)
         , zelfDoenWeergave punt.zelfDoen
         ]
+
+
+{-| Render een servertekst met kale https-URLs als klikbare links
+(nieuw tabblad), zodat een waarom-tekst naar bijvoorbeeld
+https://schema.org/Product kan verwijzen zonder dat de server HTML
+hoeft te sturen. Leestekens direct achter de URL (haakje, punt, komma)
+horen bij de zin, niet bij de link. -}
+tekstMetLinks : String -> List (Html Msg)
+tekstMetLinks tekst =
+    case String.indexes "https://" tekst of
+        [] ->
+            [ text tekst ]
+
+        eerste :: _ ->
+            let
+                voor =
+                    String.left eerste tekst
+
+                rest =
+                    String.dropLeft eerste tekst
+
+                url =
+                    urlVoorop rest
+
+                erna =
+                    String.dropLeft (String.length url) rest
+            in
+            text voor
+                :: a [ Attr.href url, Attr.target "_blank", Attr.rel "noopener" ] [ text url ]
+                :: tekstMetLinks erna
+
+
+{-| Het URL-deel vooraan een tekst die met https:// begint: tot de
+eerste witruimte of het eerste zin-leesteken, en zonder een punt aan
+het eind ("...schema.org/Product." hoort de punt bij de zin). -}
+urlVoorop : String -> String
+urlVoorop rest =
+    zonderSlotpunt (String.fromList (takeWhileUrlTeken (String.toList rest)))
+
+
+takeWhileUrlTeken : List Char -> List Char
+takeWhileUrlTeken tekens =
+    case tekens of
+        [] ->
+            []
+
+        teken :: erna ->
+            if List.member teken [ ' ', '\n', '\t', ')', '(', ',', ';', '"' ] then
+                []
+
+            else
+                teken :: takeWhileUrlTeken erna
+
+
+zonderSlotpunt : String -> String
+zonderSlotpunt url =
+    if String.endsWith "." url then
+        String.dropRight 1 url
+
+    else
+        url
 
 
 {-| De zelf-doen-tip, alleen aanwezig wanneer de server zeker is
@@ -963,7 +1102,7 @@ zelfDoenWeergave mTip =
     case mTip of
         Just tip ->
             p [ Attr.class "scanner-punt-tip" ]
-                [ strong [] [ text "Tip: " ], text tip ]
+                (strong [] [ text "Tip: " ] :: tekstMetLinks tip)
 
         Nothing ->
             text ""
@@ -989,8 +1128,20 @@ oplosbaarBadge platformNaam oplosbaarheid =
             span [ Attr.class "scanner-badge scanner-badge-vast" ] [ text ("Ligt vast in " ++ platformNaam) ]
 
 
-uitklapDeel : Rapport -> UitklapStand -> List (Html Msg)
-uitklapDeel rapport uitklap =
+{-| De verbeterpunten voorbij de top 5, alleen als ze uitgeklapt zijn;
+de bijbehorende knop staat in de knoppenrij ('puntenKnop'). -}
+restPuntenDeel : Rapport -> UitklapStand -> List (Html Msg)
+restPuntenDeel rapport uitklap =
+    case uitklap of
+        Ingeklapt ->
+            []
+
+        Uitgeklapt ->
+            List.map (puntWeergave rapport.platform) (restVerbeterpunten rapport.verbeterpunten)
+
+
+puntenKnop : Rapport -> UitklapStand -> List (Html Msg)
+puntenKnop rapport uitklap =
     if List.isEmpty (restVerbeterpunten rapport.verbeterpunten) then
         []
 
@@ -1000,8 +1151,7 @@ uitklapDeel rapport uitklap =
                 [ uitklapKnop UitklapGewisseld ("Toon alle " ++ String.fromInt (List.length rapport.verbeterpunten) ++ " punten") ]
 
             Uitgeklapt ->
-                List.map (puntWeergave rapport.platform) (restVerbeterpunten rapport.verbeterpunten)
-                    ++ [ uitklapKnop UitklapGewisseld "Verberg de extra punten" ]
+                [ uitklapKnop UitklapGewisseld "Verberg de extra punten" ]
 
 
 uitklapKnop : Msg -> String -> Html Msg

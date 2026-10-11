@@ -41,11 +41,14 @@ import WaiAppStatic.Types (ssIndices, unsafeToPiece, ssAddTrailingSlash)
 import ArticleSummary (summarize)
 import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Feed (generateAtomFeed)
-import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft)
+import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft, resolveSlug)
 import PenguinTemplates (WebwinkelverhuisUrl(..), penguinIndexPage, penguinIndexPageNl, penguinWordpressPage, penguinWordpressPageNl, penguinBlogIndexPage, penguinArticlePage)
+import PageChrome (WebwinkelSchedulingLinkFout(..), webwinkelSchedulingLinkFout)
 import WebwinkelTemplates
   ( webwinkelIndexPage
   , prijzenPage
+  , offertePagina
+  , offerteVerzondenPagina
   , scanPage
   , vierNulVierPagina
   , webwinkelBlogIndexPage
@@ -54,6 +57,8 @@ import WebwinkelTemplates
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
+  , magentoMigrationPage
+  , zilvercmsMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
   , overOnsPage
@@ -61,7 +66,6 @@ import WebwinkelTemplates
   , relativizeWebwinkelContentImages
   , webwinkelverhuisSitemap
   )
-import Slug (toSlug)
 import Templates
   ( renderArticlePage
   , renderPagePage
@@ -350,7 +354,7 @@ parseContentFile contentDir (path, ext) = do
     then return (Left "draft")
     else do
       let title = fromMaybe (T.pack (takeBaseName path)) (Map.lookup "title" meta)
-          slug = toSlug title
+          slug = resolveSlug meta title
           category = fromMaybe "misc" (Map.lookup "category" meta)
           mDate = Map.lookup "date" meta >>= parseDateField
           mModified = Map.lookup "modified" meta >>= parseDateField
@@ -467,11 +471,13 @@ maakGehashteWebwinkelAssets = do
   blogCss <- maakGehashteKopie "blog" "css"
   prijsCalculatorJs <- maakGehashteKopie "prijs-calculator" "js"
   scannerFormJs <- maakGehashteKopie "scanner-form" "js"
+  offerteFormJs <- maakGehashteKopie "offerte-form" "js"
   return GehashteAssets
     { gehashteStyleCss = styleCss
     , gehashteBlogCss = blogCss
     , gehashtePrijsCalculatorJs = prijsCalculatorJs
     , gehashteScannerFormJs = scannerFormJs
+    , gehashteOfferteFormJs = offerteFormJs
     }
 
 -- | Kopieer een asset uit _webwinkelverhuis-site naar zijn gehashte naam
@@ -486,19 +492,19 @@ maakGehashteKopie basisnaam extensie = do
 -- | Write a webwinkelverhuis.nl page: rewrite absolute content-image sources
 -- to root-relative ones ('relativizeWebwinkelContentImages') so they load on
 -- the local serve preview, rewrite asset references to their content-hashed
--- names ('herschrijfAssetVerwijzingen'), and refuse to emit a page that links
--- a raw calendar.app.google URL. Scheduling links must use the
--- https://meet.jappiesoftware.com redirect ('meetLink' in
--- 'WebwinkelTemplates'): a raw link in blog content once routed visitors to
--- the wrong calendar, and the template test suite cannot see rendered
--- content. Crashing the build here beats publishing the bad link silently.
+-- names ('herschrijfAssetVerwijzingen'), and refuse to emit a page whose
+-- scheduling link is not the brand redirect ('webwinkelSchedulingLinkFout').
+-- Crashing the build here beats publishing the bad link silently.
 writeWebwinkelHtmlFile :: GehashteAssets -> FilePath -> Html -> IO ()
 writeWebwinkelHtmlFile gehashteAssets path html = do
   let rendered = herschrijfAssetVerwijzingen gehashteAssets
         (relativizeWebwinkelContentImages (renderHtml html))
-  if TL.pack "calendar.app.google" `TL.isInfixOf` rendered
-    then error (path <> " links a raw calendar.app.google URL; use https://meet.jappiesoftware.com instead")
-    else do
+  case webwinkelSchedulingLinkFout rendered of
+    Just RawCalendarLink ->
+      error (path <> " links a raw calendar.app.google URL; use https://meet.webwinkelverhuis.nl instead")
+    Just JappiesoftwareMeetLink ->
+      error (path <> " links meet.jappiesoftware.com; webwinkelverhuis.nl pages use https://meet.webwinkelverhuis.nl")
+    Nothing -> do
       Dir.createDirectoryIfMissing True (takeDirectory path)
       TLIO.writeFile path rendered
 
@@ -592,6 +598,7 @@ buildPenguinSites webwinkelUrl = do
   copyWebwinkelStaticAssets
   buildPrijsCalculator
   buildScannerForm
+  buildOfferteForm
   gehashteAssets <- liftIO maakGehashteWebwinkelAssets
   liftIO $ generateWebwinkelverhuisSite webwinkelSiteConfig webwinkelArticles gehashteAssets
 
@@ -644,6 +651,10 @@ buildPrijsCalculator = buildWebwinkelElmApp "src/PrijsCalculator.elm" "prijs-cal
 -- | The /scan.html webshop scanner ("beoordeel mijn webshop").
 buildScannerForm :: Action ()
 buildScannerForm = buildWebwinkelElmApp "src/ScannerForm.elm" "scanner-form.js"
+
+-- | Het /offerte.html intakeformulier.
+buildOfferteForm :: Action ()
+buildOfferteForm = buildWebwinkelElmApp "src/OfferteForm.elm" "offerte-form.js"
 
 -- | Generate the jappiesoftware.com site into _penguin-site/
 generatePenguinSite :: WebwinkelverhuisUrl -> SiteConfig -> [Article] -> IO ()
@@ -717,10 +728,14 @@ generateWebwinkelverhuisSite config articles gehashteAssets = do
 
   -- Migration and explainer pages
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/prijzen.html" prijzenPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/offerte.html" offertePagina
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/offerte-verzonden.html" offerteVerzondenPagina
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/scan.html" scanPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-mijnwebwinkel.html" mijnwebwinkelMigrationPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-ccvshop.html" ccvshopMigrationPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-lightspeed.html" lightspeedMigrationPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-magento.html" magentoMigrationPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/migrate-zilvercms.html" zilvercmsMigrationPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/waarom-mijnwebwinkel.html" mijnwebwinkelWaaromPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/over-ons.html" overOnsPage

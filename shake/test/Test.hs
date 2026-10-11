@@ -20,7 +20,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
 import Data.Time (UTCTime(..), fromGregorian)
 import Test.Tasty (TestTree, defaultMain, testGroup)
-import Test.Tasty.HUnit (assertBool, testCase)
+import Test.Tasty.HUnit (assertBool, testCase, (@?=))
 import Text.Blaze.Html (Html)
 import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Text.Blaze.Html5 ((!))
@@ -31,15 +31,17 @@ import ArticleSummary (summarize, truncateHtml)
 import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Data.Char (isHexDigit)
 import qualified Data.ByteString.Char8 as BSC
-import PageChrome (faqAnswerHtml, faqPageJsonLd, renderFaqItem)
+import Metadata (parseOrgMeta, resolveSlug)
+import PageChrome (WebwinkelSchedulingLinkFout(..), faqAnswerHtml, faqPageJsonLd, humanDateForLang, renderFaqItem, webwinkelSchedulingLinkFout)
 import Templates (renderTagPage, renderIndexPage)
-import Types (Article(..), PaginationInfo(..), defaultSiteConfig)
+import Types (Article(..), Lang(..), PaginationInfo(..), defaultSiteConfig)
 import PenguinTemplates
   ( WebwinkelverhuisUrl(..)
   , penguinIndexPage
   , penguinIndexPageNl
   , penguinWordpressPage
   , penguinWordpressPageNl
+  , penguinBlogIndexPage
   )
 import WebwinkelTemplates
   ( webwinkelIndexPage
@@ -48,6 +50,7 @@ import WebwinkelTemplates
   , mijnwebwinkelMigrationPage
   , ccvshopMigrationPage
   , lightspeedMigrationPage
+  , magentoMigrationPage
   , mijnwebwinkelWaaromPage
   , lightspeedWaaromPage
   , overOnsPage
@@ -55,6 +58,7 @@ import WebwinkelTemplates
   , relativizeWebwinkelContentImages
   , webwinkelverhuisSitemap
   , webwinkelverhuisStaticPages
+  , webwinkelBlogIndexPage
   )
 
 -- | A recognisable fake origin: it can only appear in the output when the
@@ -91,28 +95,39 @@ meetLinkPages =
   , ("mijnwebwinkelMigrationPage", mijnwebwinkelMigrationPage)
   , ("ccvshopMigrationPage", ccvshopMigrationPage)
   , ("lightspeedMigrationPage", lightspeedMigrationPage)
+  , ("magentoMigrationPage", magentoMigrationPage)
   , ("mijnwebwinkelWaaromPage", mijnwebwinkelWaaromPage)
   , ("lightspeedWaaromPage", lightspeedWaaromPage)
   , ("overOnsPage", overOnsPage)
   , ("contactPage", contactPage)
-  , ("penguinWordpressPage", penguinWordpressPage (WebwinkelverhuisUrl testOrigin))
+  ]
+
+-- | The penguin (wordpress service) pages with a scheduling button; they
+-- stay on the jappiesoftware.com redirect.
+penguinMeetLinkPages :: [(String, Html)]
+penguinMeetLinkPages =
+  [ ("penguinWordpressPage", penguinWordpressPage (WebwinkelverhuisUrl testOrigin))
   , ("penguinWordpressPageNl", penguinWordpressPageNl (WebwinkelverhuisUrl testOrigin))
   ]
 
--- | Scheduling buttons must use the branded meet.jappiesoftware.com redirect,
--- never a raw calendar.app.google URL: the raw link routed to the wrong
--- calendar once, and the redirect is the single place the target may change.
-usesMeetLinkCase :: (String, Html) -> TestTree
-usesMeetLinkCase (pageName, page) = testCase pageName $ do
+-- | Scheduling buttons must use their brand's meet.* redirect, never a raw
+-- calendar.app.google URL: the raw link routed to the wrong calendar once,
+-- and the redirect is the single place the target may change.
+usesMeetLinkCase :: T.Text -> (String, Html) -> TestTree
+usesMeetLinkCase expectedMeetUrl (pageName, page) = testCase pageName $ do
   let rendered = TL.toStrict (renderHtml page)
-  assertBool "expected a link to https://meet.jappiesoftware.com but found none"
-    ("href=\"https://meet.jappiesoftware.com\"" `T.isInfixOf` rendered)
+  assertBool ("expected a link to " <> T.unpack expectedMeetUrl <> " but found none")
+    (("href=\"" <> expectedMeetUrl <> "\"") `T.isInfixOf` rendered)
   assertBool "links a raw calendar.app.google URL instead of the meet redirect"
     (not ("calendar.app.google" `T.isInfixOf` rendered))
 
+-- | A blog index page with both a newer and an older neighbour.
+middlePage :: PaginationInfo
+middlePage = PaginationInfo 2 3 (Just "/blog/") (Just "/blog/index3.html")
+
 -- | Every statically renderable page of both brand sites: the index pages
--- plus everything already in 'meetLinkPages' (which contains the wordpress
--- and webwinkel service pages).
+-- plus everything already in 'meetLinkPages' (the webwinkel service pages)
+-- and 'penguinMeetLinkPages' (the wordpress pages).
 -- scanPage is listed here but not in 'meetLinkPages': its plan-een-gesprek
 -- buttons live inside the Elm scanner app, not in the static HTML.
 allStaticPages :: [(String, Html)]
@@ -120,7 +135,7 @@ allStaticPages =
   [ ("penguinIndexPage", penguinIndexPage (WebwinkelverhuisUrl testOrigin))
   , ("penguinIndexPageNl", penguinIndexPageNl (WebwinkelverhuisUrl testOrigin))
   , ("scanPage", scanPage)
-  ] <> meetLinkPages
+  ] <> meetLinkPages <> penguinMeetLinkPages
 
 -- | No page may publish share-URL tracking parameters. URLs copied from a
 -- platform's share button (LinkedIn in particular) embed utm_* junk and an
@@ -173,8 +188,29 @@ main = defaultMain $
   testGroup "shake-blog templates"
     [ testGroup "webwinkel links follow WebwinkelverhuisUrl"
         (map linksFollowOriginCase pagesUnderTest)
-    , testGroup "scheduling buttons use meet.jappiesoftware.com"
-        (map usesMeetLinkCase meetLinkPages)
+    , testGroup "webwinkelverhuis scheduling buttons use meet.webwinkelverhuis.nl"
+        (map (usesMeetLinkCase "https://meet.webwinkelverhuis.nl") meetLinkPages)
+    , testGroup "penguin scheduling buttons use meet.jappiesoftware.com"
+        (map (usesMeetLinkCase "https://meet.jappiesoftware.com") penguinMeetLinkPages)
+    , testGroup "the build refuses off-brand scheduling links in rendered webwinkel pages"
+        [ testCase "brand redirect passes" $
+            webwinkelSchedulingLinkFout "<a href=\"https://meet.webwinkelverhuis.nl\">plan</a>" @?= Nothing
+        , testCase "jappiesoftware redirect in blog content is refused" $
+            webwinkelSchedulingLinkFout "<a href=\"https://meet.jappiesoftware.com\">plan</a>" @?= Just JappiesoftwareMeetLink
+        , testCase "raw calendar link is refused" $
+            webwinkelSchedulingLinkFout "<a href=\"https://calendar.app.google/x\">plan</a>" @?= Just RawCalendarLink
+        ]
+    , testGroup "blog pagination speaks the language of its site"
+        [ testCase "webwinkelverhuis blog index is Dutch" $ do
+            let rendered = TL.toStrict (renderHtml (webwinkelBlogIndexPage defaultSiteConfig [] middlePage))
+            assertBool "Dutch newer link" ("Nieuwere berichten" `T.isInfixOf` rendered)
+            assertBool "Dutch older link" ("Oudere berichten" `T.isInfixOf` rendered)
+            assertBool "no English pagination label" (not ("Older" `T.isInfixOf` rendered))
+        , testCase "penguin blog index stays English" $ do
+            let rendered = TL.toStrict (renderHtml (penguinBlogIndexPage defaultSiteConfig [] middlePage))
+            assertBool "English older link" ("Older" `T.isInfixOf` rendered)
+            assertBool "no Dutch pagination label" (not ("Oudere berichten" `T.isInfixOf` rendered))
+        ]
     , testGroup "no page publishes share-URL tracking parameters"
         (map noTrackingParamsCase allStaticPages)
     , testGroup "webwinkel content images load on the serve preview"
@@ -194,6 +230,14 @@ main = defaultMain $
         [ taxonomieKrijgtNoindexIndexNiet
         , vierNulVierNoindexEnBuitenSitemap
         ]
+    , testGroup "artikelslug volgt de slug-header"
+        [ slugHeaderWintVanTitel
+        , zonderSlugHeaderVolgtTitel
+        ]
+    , testGroup "artikeldatums volgen de paginataal"
+        [ nederlandseDatumZonderVoorloopnul
+        , engelseDatumBlijftEngels
+        ]
     , testGroup "article summaries stay inert teasers"
         [ summaryDropsScriptBlocks
         , summaryDropsStyleBlocks
@@ -202,6 +246,21 @@ main = defaultMain $
         , withoutAuthorSummaryContentIsTruncated
         ]
     ]
+
+-- | De artikeldatum op webwinkelverhuis.nl rendert in het Nederlands:
+-- vertaalde maandnaam, dagnummer zonder voorloopnul, geen komma. De twee
+-- datums dekken samen de maandtabel-volgorde (maart en september), de
+-- %-e-notatie (dag 1) en het formaatpatroon.
+nederlandseDatumZonderVoorloopnul :: TestTree
+nederlandseDatumZonderVoorloopnul = testCase "Nl rendert 10 september 2026 en 1 maart 2026" $ do
+  humanDateForLang Nl (UTCTime (fromGregorian 2026 9 10) 0) @?= "10 september 2026"
+  humanDateForLang Nl (UTCTime (fromGregorian 2026 3 1) 0) @?= "1 maart 2026"
+
+-- | jappiesoftware.com deelt 'renderBlogSummary' met de webwinkel-blog en
+-- moet zijn Engelse datumnotatie houden.
+engelseDatumBlijftEngels :: TestTree
+engelseDatumBlijftEngels = testCase "En rendert May 15, 2026" $
+  humanDateForLang En (UTCTime (fromGregorian 2026 5 15) 0) @?= "May 15, 2026"
 
 -- | Summaries are embedded many-per-page on the index; an inline script that
 -- survives into a summary executes there. Both coin-flip posts mount into the
@@ -284,6 +343,7 @@ testGehashteAssets = GehashteAssets
   , gehashteBlogCss = "blog-bbbbbbbbbb.css"
   , gehashtePrijsCalculatorJs = "prijs-calculator-cccccccccc.js"
   , gehashteScannerFormJs = "scanner-form-dddddddddd.js"
+  , gehashteOfferteFormJs = "offerte-form-eeeeeeeeee.js"
   }
 
 -- | Elke logische assetverwijzing in een pagina moet naar zijn gehashte
@@ -294,6 +354,7 @@ assetVerwijzingenWordenHerschreven = testCase "logische namen worden gehashte na
         "<link href=\"/style.css\"><link href=\"/blog.css\">\
         \<script src=\"/prijs-calculator.js\"></script>\
         \<script src=\"/scanner-form.js\"></script>\
+        \<script src=\"/offerte-form.js\"></script>\
         \<img src=\"/assets/beeld/logo-breed.png\">"
       herschreven = herschrijfAssetVerwijzingen testGehashteAssets pagina
   assertBool "style.css is niet herschreven"
@@ -304,6 +365,8 @@ assetVerwijzingenWordenHerschreven = testCase "logische namen worden gehashte na
     (TL.pack "src=\"/prijs-calculator-cccccccccc.js\"" `TL.isInfixOf` herschreven)
   assertBool "scanner-form.js is niet herschreven"
     (TL.pack "src=\"/scanner-form-dddddddddd.js\"" `TL.isInfixOf` herschreven)
+  assertBool "offerte-form.js is niet herschreven"
+    (TL.pack "src=\"/offerte-form-eeeeeeeeee.js\"" `TL.isInfixOf` herschreven)
   assertBool "een niet-gehasht pad is aangeraakt"
     (TL.pack "src=\"/assets/beeld/logo-breed.png\"" `TL.isInfixOf` herschreven)
   assertBool "er verwijst nog een pagina naar de ongehashte stylesheet"
@@ -377,3 +440,15 @@ articleWithoutModifiedFallsBackToPublicationDate = testCase "article without mod
   assertBool "never-edited article does not carry its publication date"
     ("<loc>https://webwinkelverhuis.nl/blog/nieuw-nooit-bijgewerkt.html</loc><lastmod>2026-07-10</lastmod>"
       `T.isInfixOf` sitemapUnderTest)
+
+-- | A post whose title was sharpened for search keeps its published URL
+-- when it carries a slug header; the slug is taken as written.
+slugHeaderWintVanTitel :: TestTree
+slugHeaderWintVanTitel = testCase "slug-header houdt de oude URL bij een nieuwe titel" $ do
+  let (meta, _) = parseOrgMeta "#+TITLE: Alternatief voor MijnWebwinkel of Acendy?\n#+SLUG: alternatief-voor-acendy\n\nbody"
+  resolveSlug meta "Alternatief voor MijnWebwinkel of Acendy?" @?= "alternatief-voor-acendy"
+
+zonderSlugHeaderVolgtTitel :: TestTree
+zonderSlugHeaderVolgtTitel = testCase "zonder slug-header komt de slug uit de titel" $ do
+  let (meta, _) = parseOrgMeta "#+TITLE: Alternatief voor Acendy?\n\nbody"
+  resolveSlug meta "Alternatief voor Acendy?" @?= "alternatief-voor-acendy"

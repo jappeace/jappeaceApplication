@@ -3,6 +3,7 @@
 #+MODIFIED: 2026-08-08
 #+CATEGORY: migratie
 #+TAGS: migratie, stappenplan, shopify
+#+SUMMARY: Webshop migreren in de juiste volgorde: platformkeuze, data, redirects, livegang. Ons eigen stappenplan, de kosten en de valkuilen die we het vaakst zien.
 
 Je webshop migreren naar een ander platform: laten we er eerlijk
 over zijn, het ís een berg werk. Maar het is goed beheersbaar werk
@@ -120,7 +121,7 @@ honderden of duizenden producten, meerdere talen of een shop die
 goed vindbaar is, komt daar het handwerk-probleem bij: dan is
 automatiseren geen luxe maar de enige manier om het foutloos te
 doen. Dat is precies wat wij leveren, met een vaste prijs vanaf
-1.999 euro (zie [[https://webwinkelverhuis.nl/prijzen.html][onze
+999 euro (zie [[https://webwinkelverhuis.nl/prijzen.html][onze
 prijzenpagina]]) en betaling na een geslaagde migratie. Reken van
 start tot livegang op ongeveer een maand.
 
@@ -129,7 +130,7 @@ Per platform lees je de details op onze migratiepagina's voor
 [[https://webwinkelverhuis.nl/migrate-ccvshop.html][CCV Shop]] en
 [[https://webwinkelverhuis.nl/migrate-lightspeed.html][Lightspeed]].
 Liever direct overleggen?
-[[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
+[[https://meet.webwinkelverhuis.nl][Plan een vrijblijvend gesprek]],
 dan kijken we samen naar je shop.
 
 * Veelgestelde vragen
@@ -151,7 +152,7 @@ betaalmethoden en rustig wennen aan de nieuwe shop bij kijken.
 *Wat kost een webshop-migratie?*
 
 Doe je het zelf, dan kost het vooral tijd. Laat je het door ons
-doen, dan geldt een vaste prijs vanaf 1.999 euro, afhankelijk van
+doen, dan geldt een vaste prijs vanaf 999 euro, afhankelijk van
 het aantal producten en talen, met betaling na een geslaagde
 migratie.
 
@@ -162,6 +163,6 @@ geen moment dicht; pas bij de livegang wijs je je domein om.
 
 #+BEGIN_EXPORT html
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Kun je een website importeren naar Shopify?","acceptedAnswer":{"@type":"Answer","text":"Ja. Producten, teksten, afbeeldingen, klanten en de categoriestructuur van je bestaande webshop kunnen naar Shopify worden overgezet. Bij een klein assortiment kan dat met een CSV-export; bij grotere of meertalige shops doen wij dit volledig geautomatiseerd, inclusief 301-redirects van je oude URLs."}},{"@type":"Question","name":"Hoe lang duurt een webshop-migratie?","acceptedAnswer":{"@type":"Answer","text":"Het technische overzetten duurt maar enkele uren, maar reken van start tot livegang op ongeveer een maand: er komt ook een thema, betaalmethoden en rustig wennen aan de nieuwe shop bij kijken."}},{"@type":"Question","name":"Wat kost een webshop-migratie?","acceptedAnswer":{"@type":"Answer","text":"Doe je het zelf, dan kost het vooral tijd. Laat je het door ons doen, dan geldt een vaste prijs vanaf 1.999 euro, afhankelijk van het aantal producten en talen, met betaling na een geslaagde migratie."}},{"@type":"Question","name":"Kan mijn shop blijven doorverkopen tijdens de migratie?","acceptedAnswer":{"@type":"Answer","text":"Ja. De nieuwe shop wordt naast de oude opgebouwd en je winkel hoeft geen moment dicht; pas bij de livegang wijs je je domein om."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Kun je een website importeren naar Shopify?","acceptedAnswer":{"@type":"Answer","text":"Ja. Producten, teksten, afbeeldingen, klanten en de categoriestructuur van je bestaande webshop kunnen naar Shopify worden overgezet. Bij een klein assortiment kan dat met een CSV-export; bij grotere of meertalige shops doen wij dit volledig geautomatiseerd, inclusief 301-redirects van je oude URLs."}},{"@type":"Question","name":"Hoe lang duurt een webshop-migratie?","acceptedAnswer":{"@type":"Answer","text":"Het technische overzetten duurt maar enkele uren, maar reken van start tot livegang op ongeveer een maand: er komt ook een thema, betaalmethoden en rustig wennen aan de nieuwe shop bij kijken."}},{"@type":"Question","name":"Wat kost een webshop-migratie?","acceptedAnswer":{"@type":"Answer","text":"Doe je het zelf, dan kost het vooral tijd. Laat je het door ons doen, dan geldt een vaste prijs vanaf 999 euro, afhankelijk van het aantal producten en talen, met betaling na een geslaagde migratie."}},{"@type":"Question","name":"Kan mijn shop blijven doorverkopen tijdens de migratie?","acceptedAnswer":{"@type":"Answer","text":"Ja. De nieuwe shop wordt naast de oude opgebouwd en je winkel hoeft geen moment dicht; pas bij de livegang wijs je je domein om."}}]}
 </script>
 #+END_EXPORT

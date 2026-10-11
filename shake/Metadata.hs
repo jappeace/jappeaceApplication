@@ -5,6 +5,7 @@ module Metadata
   , parseDateField
   , parseTags
   , isDraft
+  , resolveSlug
   ) where
 
 import Data.Map.Strict (Map)
@@ -12,6 +13,7 @@ import qualified Data.Map.Strict as Map
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Time (UTCTime, defaultTimeLocale, parseTimeM)
+import Slug (toSlug)
 
 -- | Parse Pelican-style markdown frontmatter.
 -- Lines of "Key: Value" until the first blank line.
@@ -104,3 +106,19 @@ isDraft :: Map Text Text -> Bool
 isDraft meta = case Map.lookup "status" meta of
   Just s  -> T.toLower (T.strip s) == "draft"
   Nothing -> False
+
+-- | The URL slug of an article: an explicit @slug@ header wins, otherwise
+-- the slug is derived from the title.
+--
+-- Decision: the override exists so a published title can be sharpened for
+-- search snippets without moving the URL (the Acendy post ranked on
+-- "alternatief mijnwebwinkel" at its old address, 17 sep 2026). The
+-- alternative, a redirect table for renamed posts, was rejected: the site
+-- is static and redirects would live in the megavid nginx config, far from
+-- the content. The header value is used verbatim, not re-slugified, so a
+-- typo shows up as a broken URL in the build output instead of being
+-- silently normalised.
+resolveSlug :: Map Text Text -> Text -> Text
+resolveSlug meta title = case Map.lookup "slug" meta of
+  Just explicitSlug -> T.strip explicitSlug
+  Nothing -> toSlug title

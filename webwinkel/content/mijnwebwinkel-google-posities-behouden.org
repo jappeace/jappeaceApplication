@@ -3,6 +3,7 @@
 #+MODIFIED: 2026-08-08
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, seo, migratie
+#+SUMMARY: Waarom webshops na een MijnWebwinkel-migratie Google-verkeer verliezen (de migration hangover) en hoe sluitende redirects van elke oude URL dat voorkomen.
 
 Je hebt jaren in je vindbaarheid geïnvesteerd. Je productpagina's staan goed
 in Google, klanten vinden je zonder dat je voor elke klik betaalt. En dan stapt
@@ -78,7 +79,7 @@ Wil je eerst lezen [[https://webwinkelverhuis.nl/waarom-mijnwebwinkel.html][waar
 MijnWebwinkel niet meer wordt doorontwikkeld]], of meteen weten hoe
 [[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][onze migratieservice]]
 werkt? Beide leggen we graag uit. En als je liever direct spart over je eigen
-winkel: [[https://meet.jappiesoftware.com][plan een vrijblijvend
+winkel: [[https://meet.webwinkelverhuis.nl][plan een vrijblijvend
 gesprek]]. We kijken samen naar je shop en geven een eerlijke inschatting van de
 migratie en de redirects.
 

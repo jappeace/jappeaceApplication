@@ -2,6 +2,7 @@
 #+DATE: 2026-08-17
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, acendy, prijzen
+#+SUMMARY: Wordt MijnWebwinkel fors duurder door Acendy? Wat er in augustus 2026 feitelijk te controleren valt over prijzen, eigenaar en toekomst van het platform.
 
 Er circuleren stevige verhalen: MijnWebwinkel zou opgaan in Acendy
 en "fors duurder" worden, met genoemde bedragen tot 150 euro per
@@ -81,7 +82,7 @@ Geen paniek, wel een plan. Concreet:
 Wil je het uitbesteden: wij verhuizen je shop naar Shopify of
 WooCommerce voor een vaste prijs, met automatische 301-redirects
 voor je Google-posities en betaling na een geslaagde migratie.
-[[https://meet.jappiesoftware.com][Plan een vrijblijvend gesprek]],
+[[https://meet.webwinkelverhuis.nl][Plan een vrijblijvend gesprek]],
 dan kijken we samen naar je shop; ook als de uitkomst "blijf
 voorlopig zitten" is.
 

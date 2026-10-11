@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- "Fysieke winkel" card icon: klok met vinkje, de overstap gebeurt op een
+     gepland rustig moment zonder verloren verkoopdag. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <circle cx="32" cy="32" r="30" fill="#eaf1f8"/>
+  <circle cx="30" cy="30" r="16" fill="#ffffff" stroke="#10456b" stroke-width="3"/>
+  <path d="M30 20 v10 l7 5" fill="none" stroke="#10456b" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="47" cy="45" r="9" fill="#6cb44c"/>
+  <path d="M43 45 l3 3 l6 -6" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
