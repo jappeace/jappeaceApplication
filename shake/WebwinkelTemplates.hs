@@ -808,8 +808,8 @@ recentWerkSection =
       H.a ! A.href "https://kruidje-roer-me-niet.nl/" $ H.preEscapedToHtml ("kruidje-roer-me-niet.nl &rarr;" :: Text)
     H.div ! A.class_ "case-cijfers" $ do
       H.div $ do
-        H.div ! A.class_ "cijfer" $ "17 jaar"
-        H.div ! A.class_ "label" $ "webshop-historie"
+        H.div ! A.class_ "cijfer" $ "3 weken"
+        H.div ! A.class_ "label" $ "eerder over dan gepland"
       H.div $ do
         H.div ! A.class_ "cijfer" $ "1.305"
         H.div ! A.class_ "label" $ "oude adressen behouden"
@@ -819,9 +819,9 @@ recentWerkSection =
     H.div ! A.class_ "case-tekst" $
       H.p $ do
         H.strong "Mini Gigant"
-        H.preEscapedToHtml (": een speelgoedwinkel uit Marum (sinds 2009) waarvan shop, domein &eacute;n mailbox bij MijnWebwinkel stonden, drie dagen voor het einde van dat account verhuisd naar Shopify. Inclusief domeinoverdracht zonder onderbreking en de mailgeschiedenis." :: Text)
+        H.preEscapedToHtml (": toen de verhuizing plotseling drie weken eerder klaar moest zijn, pasten we de planning aan. Deze speelgoedwinkel uit Marum ging op tijd over naar Shopify, met de producten, beoordelingen, het vertrouwde webadres en de e-mail." :: Text)
     H.div ! A.class_ "case-links" $ do
-      H.a ! A.href "/blog/klantverhaal-mini-gigant-van-mijnwebwinkel-naar-shopify-drie-dagen-voor-de-deadline.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
+      H.a ! A.href "/blog/klantverhaal-mini-gigant-drie-weken-eerder-over-naar-shopify.html" $ H.preEscapedToHtml ("Lees het klantverhaal &rarr;" :: Text)
       H.a ! A.href "https://minigigant.nl/" $ H.preEscapedToHtml ("minigigant.nl &rarr;" :: Text)
 
 appPage :: Html
