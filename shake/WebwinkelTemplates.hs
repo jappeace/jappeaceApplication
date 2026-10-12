@@ -242,6 +242,7 @@ webwinkelBaseWith ogType includeFeed meta content =
             H.li $ H.a ! A.href "/migrate-ccvshop.html" $ "CCV Shop"
             H.li $ H.a ! A.href "/migrate-magento.html" $ "Magento"
             H.li $ H.a ! A.href "/migrate-zilvercms.html" $ "ZilverCMS"
+            H.li $ H.a ! A.href "/ondersteuning.html" $ "Ondersteuning"
             H.li $ H.a ! A.href (toValue ("mailto:" <> webwinkelEmail)) ! A.class_ "footer-mail" $ toHtml webwinkelEmail
             H.li $ H.a ! A.href "tel:+31644237437" $ "+31 6 4423 7437"
             H.li $ H.a ! A.href "/blog/" $ "Blog"
