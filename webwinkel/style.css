@@ -544,6 +544,17 @@ main > section ul li strong { font-family: var(--kop); color: var(--navy-diep); 
 .prijs-kaart .meerprijs { color: var(--grijs); font-size: 0.97rem; margin-top: 0.8rem; }
 .prijs-kaart hr { border: 0; border-top: 1px solid var(--lijn); margin-block: 1.4rem; }
 .prijs-kaart .cta-button { margin-top: 1.5rem; }
+.prijs-kaarten {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: clamp(1.2rem, 2.5vw, 2rem); max-width: 60rem; margin-inline: auto;
+}
+.prijs-kaarten .prijs-kaart { max-width: none; margin-inline: 0; text-align: left; }
+.prijs-kaart ul { list-style: none; display: grid; gap: 0.55rem; margin-top: 1.1rem; }
+.prijs-kaart li { position: relative; padding-left: 1.5rem; }
+.prijs-kaart li::before {
+  content: "\2713"; position: absolute; left: 0;
+  color: var(--groen-tekst); font-weight: 700;
+}
 .prijs-kaart .garantie {
   margin-top: 0.9rem; font-size: 0.92rem; font-weight: 600; color: var(--groen-tekst);
   display: flex; align-items: center; justify-content: center; gap: 0.4rem;
@@ -890,7 +901,7 @@ main { display: flex; flex-direction: column; }
   .hero-grid, .proces, .contact, .audit-grid { grid-template-columns: 1fr; }
   .hero-beeld { max-width: 32rem; }
   .proces-beeld { order: -1; }
-  .card-grid { grid-template-columns: 1fr; }
+  .card-grid, .prijs-kaarten { grid-template-columns: 1fr; }
   .waarom-rijen > div { grid-template-columns: 1fr; padding-block: 0.9rem; }
 }
 

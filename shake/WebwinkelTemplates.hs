@@ -25,6 +25,7 @@ module WebwinkelTemplates
   , lightspeedWaaromPage
   , overOnsPage
   , contactPage
+  , webwinkelBaseTemplate
   , relativizeWebwinkelContentImages
   , webwinkelverhuisSitemap
   , webwinkelverhuisStaticPages
@@ -1005,6 +1006,9 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td ! A.class_ "price-cell" $ "op aanvraag"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat je shop op een standaard Shopify-thema dat je zelf inricht. De vormgeving hoeft niet via ons: je kunt het zelf doen of een ontwerper naar keuze inhuren. Wil je het uit handen geven, dan benaderen wij je huidige uitstraling zo dicht mogelijk (&euro;749) of werken wij een nieuw ontwerp van onze ontwerppartner uit in je shop (&euro;999, het ontwerp zelf via een aparte offerte van de partner)." :: Text)
       H.p ! A.class_ "engagement-note" $ "Kassa/point-of-sale zetten we bij je op locatie op. Ligt je winkel meer dan 30 minuten rijden van Kampen, dan kunnen we reiskosten rekenen. We lopen vooraf je kassa-apparatuur na, zodat je weet wat mee kan en wat vervangen moet. Daarna garanderen we dat de kassa op al die apparaten werkt. Liever zelf inrichten? Dan laat je dit onderdeel weg en betaal je ons er niets voor."
+      H.p ! A.class_ "engagement-note" $ do
+        H.preEscapedToHtml ("Na de livegang kun je ondersteuning afnemen voor je vragen, kleine aanpassingen en storingen, vanaf &euro;99 per maand. " :: Text)
+        H.a ! A.href "/ondersteuning.html" $ "Bekijk de ondersteuning"
 
     H.section ! A.class_ "results" $ do
       H.h2 "Altijd inbegrepen"
@@ -2532,7 +2536,7 @@ webwinkelverhuisSitemap articles = T.unlines $
 webwinkelverhuisStaticPages :: [(Text, Day)]
 webwinkelverhuisStaticPages =
   [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 23)
-  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 8 23)
+  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 12)
   , ("https://webwinkelverhuis.nl/offerte.html", fromGregorian 2026 9 4)
   , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 9 2)
@@ -2544,6 +2548,7 @@ webwinkelverhuisStaticPages =
   , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/over-ons.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/contact.html", fromGregorian 2026 8 8)
+  , ("https://webwinkelverhuis.nl/ondersteuning.html", fromGregorian 2026 10 12)
   ]
 
 webwinkelStaticSitemapEntry :: (Text, Day) -> Text
