@@ -1007,7 +1007,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat je shop op een standaard Shopify-thema dat je zelf inricht. De vormgeving hoeft niet via ons: je kunt het zelf doen of een ontwerper naar keuze inhuren. Wil je het uit handen geven, dan benaderen wij je huidige uitstraling zo dicht mogelijk (&euro;749) of werken wij een nieuw ontwerp van onze ontwerppartner uit in je shop (&euro;999, het ontwerp zelf via een aparte offerte van de partner)." :: Text)
       H.p ! A.class_ "engagement-note" $ "Kassa/point-of-sale zetten we bij je op locatie op. Ligt je winkel meer dan 30 minuten rijden van Kampen, dan kunnen we reiskosten rekenen. We lopen vooraf je kassa-apparatuur na, zodat je weet wat mee kan en wat vervangen moet. Daarna garanderen we dat de kassa op al die apparaten werkt. Liever zelf inrichten? Dan laat je dit onderdeel weg en betaal je ons er niets voor."
       H.p ! A.class_ "engagement-note" $ do
-        H.preEscapedToHtml ("Na de livegang kun je ondersteuning afnemen voor je vragen, kleine aanpassingen en storingen, vanaf &euro;99 per maand. " :: Text)
+        H.preEscapedToHtml ("Ook na de verhuizing iemand achter de hand die je webshop kent? Met ondersteuning heb je een vertrouwd aanspreekpunt als er iets misgaat of je ergens niet uitkomt. Vanaf &euro;99 per maand, met hulp bij storingen op werkdagen of ook in de avond en het weekend, afhankelijk van je pakket. " :: Text)
         H.a ! A.href "/ondersteuning.html" $ "Bekijk de ondersteuning"
 
     H.section ! A.class_ "results" $ do
