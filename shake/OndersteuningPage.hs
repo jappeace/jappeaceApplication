@@ -3,13 +3,11 @@
 -- | The /ondersteuning page of webwinkelverhuis.nl: the two support
 -- subscriptions a shop can take after its migration.
 --
--- The €249 terms (volumes, the 07:00–22:45 incident window, the three-hour
--- reply, the 25% credit, the 10% moving discount and cancellation) are the
--- ones offered to Kralenstulpje in jappiesoft offertes/offerte-kralenstulpje-
--- esther.org, bijlage 2 and 3. The €99 tier was never quoted; its volumes
--- (two questions, one change) come from the werkdagpakket in jappiesoft
--- strategy/webshopsupport-sla-concept.md.
--- Jappie limited the €99 incident window to working hours on 12 October.
+-- The response, credit, discount and cancellation terms originate in
+-- jappiesoft offertes/offerte-kralenstulpje-esther.org, appendices 2 and 3.
+-- Jappie's 12 October revisions set five working hours for €99 incidents
+-- and five questions plus three changes for €249, without a question-length
+-- limit. The €99 volumes remain proposals from webshopsupport-sla-concept.md.
 --
 -- Decision: a module of its own instead of another page in
 -- 'WebwinkelTemplates', which is already far past the 1000-line limit.
@@ -35,7 +33,7 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
     H.section ! A.class_ "audit" $ do
       H.h2 "Een vertrouwd aanspreekpunt, ook na de verhuizing"
       H.p "Even twijfelen over een instelling hoort erbij. Je hoeft niet eerst de juiste technische woorden te kennen: vertel ons wat je wilt doen of wat je opvalt. We kennen je winkel en helpen je verder, binnen de afspraken van je pakket."
-      H.p "Voor een vast maandbedrag is er ruimte voor korte vragen en kleine aanpassingen. En als klanten niet meer kunnen bestellen, weet je bij wie je terechtkunt en wanneer je antwoord krijgt. Zo hoef je niet alles zelf uit te zoeken."
+      H.p "Voor een vast maandbedrag is er ruimte voor vragen en kleine aanpassingen. En als klanten niet meer kunnen bestellen, weet je bij wie je terechtkunt en wanneer je antwoord krijgt. Zo hoef je niet alles zelf uit te zoeken."
       H.p "Regel je dit liever zelf? Dan heb je geen abonnement nodig. Ondersteuning is een keuze, geen verplicht onderdeel van je verhuizing."
 
     H.section ! A.class_ "prijs-sectie" $ do
@@ -46,7 +44,8 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Voor je vragen en kleine aanpassingen"
-      H.p "Wil je weten hoe je een kortingscode instelt of een tekst aanpast? Een korte hulpvraag gaat over één concrete handeling in je winkel. Wil je dat wij iets aanpassen, zoals een banner vervangen of een eenvoudige app installeren? Bij een kleine aanpassing spreken we vooraf één concreet resultaat af en wanneer we het uitvoeren."
+      H.p "Wil je weten hoe je een kortingscode instelt of waarom een instelling anders werkt dan verwacht? Een hulpvraag gaat over één onderwerp in je webshop. Je vraag hoeft niet kort te zijn. Doorvragen over hetzelfde antwoord hoort bij diezelfde vraag."
+      H.p "Een kleine aanpassing is één afgebakende wijziging in je bestaande webshop. Denk aan een app installeren en instellen, een banner vervangen of een kleine wijziging aan de indeling of opmaak van je thema. We spreken vooraf af wat het resultaat wordt en wanneer we het uitvoeren."
       H.p "Het aantal inbegrepen vragen en kleine aanpassingen staat bij je pakket. We behandelen die in beide pakketten van maandag tot en met vrijdag, van 09:00 tot 17:00, behalve op Nederlandse feestdagen. Ongebruikte vragen en aanpassingen gaan niet mee naar de volgende maand."
 
     H.section ! A.class_ "audit" $ do
@@ -56,9 +55,9 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
       H.p "We kunnen niet beloven hoe snel een storing is opgelost, bijvoorbeeld als Shopify of een andere leverancier iets moet herstellen. Wel spreken we af wanneer je een eerste inhoudelijk antwoord van ons krijgt."
 
     H.section ! A.class_ "audit" $ do
-      H.h2 "Ondersteuning van €99: antwoord binnen acht werkuren"
-      H.p "Bij een urgente storing krijg je binnen acht werkuren een inhoudelijk antwoord. We tellen alleen maandag tot en met vrijdag, van 09:00 tot 17:00 Nederlandse tijd, behalve op Nederlandse feestdagen. Buiten die uren staat de klok stil en hervatten we de storingshulp op de volgende werkdag."
-      H.p "Een melding op vrijdag om 16:00 krijgt dus uiterlijk maandag om 16:00 antwoord, als maandag geen feestdag is. Dit is een afspraak over ons antwoord, niet over wanneer de storing opgelost is."
+      H.h2 "Ondersteuning van €99: antwoord binnen vijf werkuren"
+      H.p "Bij een urgente storing krijg je binnen vijf werkuren een inhoudelijk antwoord. We tellen alleen maandag tot en met vrijdag, van 09:00 tot 17:00 Nederlandse tijd, behalve op Nederlandse feestdagen. Buiten die uren staat de klok stil en hervatten we de storingshulp op de volgende werkdag."
+      H.p "Een melding op vrijdag om 16:00 krijgt dus uiterlijk maandag om 13:00 antwoord, als maandag geen feestdag is. Dit is een afspraak over ons antwoord, niet over wanneer de storing opgelost is."
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Uitgebreide ondersteuning: antwoord en plan binnen drie uur"
@@ -79,7 +78,7 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Groter werk spreken we apart af"
-      H.p "Een nieuwe functie laten bouwen, je winkel opnieuw ontwerpen, veel producten tegelijk aanpassen of een uitgebreide training volgen valt buiten het pakket. Daarvoor spreken we vooraf een vaste prijs af."
+      H.p "Een nieuwe functie of koppeling op maat laten bouwen, je winkel opnieuw ontwerpen, veel producten tegelijk aanpassen of een uitgebreide training volgen valt buiten het pakket. Daarvoor spreken we vooraf een vaste prijs af."
       H.p "De ondersteuning is voor je webshop, niet voor je apparaten. E-mail instellen op je telefoon of computer, of problemen met printers en wifi vallen erbuiten."
       H.p "Apps en andere diensten van derden betaal je rechtstreeks aan de aanbieder."
 
@@ -98,10 +97,10 @@ basisKaart =
       H.small "per maand"
     H.p ! A.class_ "inbegrepen" $ "Iemand die met je meekijkt en kleine aanpassingen doet, op werkdagen."
     H.ul $ do
-      H.li "Twee korte hulpvragen per maand"
+      H.li "Twee hulpvragen per maand"
       H.li "Eén kleine aanpassing per maand, zoals een banner vervangen"
       H.li "Hulp bij urgente storingen van maandag tot en met vrijdag, van 09:00 tot 17:00, behalve op Nederlandse feestdagen"
-      H.li "Bij een urgente storing binnen acht werkuren een inhoudelijk antwoord"
+      H.li "Bij een urgente storing binnen vijf werkuren een inhoudelijk antwoord"
       H.li "Geen maximum aan storingsmeldingen"
 
 uitgebreidKaart :: Html
@@ -113,8 +112,8 @@ uitgebreidKaart =
       H.small "per maand"
     H.p ! A.class_ "inbegrepen" $ "Meer ruimte voor vragen en aanpassingen, met hulp bij storingen ook in de avond en het weekend."
     H.ul $ do
-      H.li "Vier korte hulpvragen per maand"
-      H.li "Twee kleine aanpassingen per maand"
+      H.li "Vijf hulpvragen per maand"
+      H.li "Drie kleine aanpassingen per maand"
       H.li "Hulp bij urgente storingen iedere dag van 07:00 tot 22:45, ook in het weekend en op feestdagen"
       H.li "Bij een urgente storing binnen drie uur onze beoordeling en een concreet plan per e-mail, volgens de tijden hieronder"
       H.li "Geen maximum aan storingsmeldingen"
