@@ -279,9 +279,14 @@ b2bKanaalCenten =
     75000
 
 
+-- Decision: kassa €500 (Jappie, 12 okt 2026), was €750 met installatie en
+-- reis op aanvraag. Het bedrag dekt onze garantie dat de kassa werkt op de
+-- apparatuur die we vooraf naliepen; zelf inrichten kost niets. Reiskosten
+-- hangen af van de afstand en gelden pas boven 30 minuten rijden van Kampen,
+-- dus geen vast bedrag in de rekenhulp maar een voorbehoud.
 pointOfSaleCenten : Int
 pointOfSaleCenten =
-    75000
+    50000
 
 
 cursusCenten : Int
@@ -1605,7 +1610,7 @@ prijsRegels model =
         ++ optioneleRegel (emailGekozen model) "E-mail-setup" emailSetupCenten
         ++ optioneleRegel model.verzendkoppeling "Verzendkoppeling (bijv. DHL)" verzendkoppelingCenten
         ++ optioneleRegel model.b2bKanaal "B2B-kanaal (zakelijke prijzen)" b2bKanaalCenten
-        ++ optioneleRegel model.pointOfSale "Kassa / point-of-sale" pointOfSaleCenten
+        ++ optioneleRegel model.pointOfSale "Kassa / point-of-sale, op locatie ingericht" pointOfSaleCenten
         ++ optioneleRegel model.cursus "Cursus Shopify (2 uur, 1-op-1)" cursusCenten
 
 
@@ -1734,13 +1739,13 @@ spaarpuntenNoot model =
         []
 
 
-{-| Bij point-of-sale komt de installatie op locatie: die en de reiskosten
-rekenen we los, op aanvraag, dus ze zitten niet in het getoonde totaal. -}
+{-| Bij point-of-sale legt de noot uit waarom de kassa geld kost terwijl
+zelf inrichten kan: de prijs dekt de garantie op al je apparatuur. -}
 pointOfSaleNoot : Bool -> List (Html Msg)
 pointOfSaleNoot pointOfSale =
     if pointOfSale then
         [ p [ Attr.class "calc-note" ]
-            [ text "Kassa/point-of-sale zetten we bij je op locatie op. Installatie en reiskosten rekenen we daar los bij, op aanvraag." ]
+            [ text "Kassa/point-of-sale zetten we bij je op locatie op. Ligt je winkel meer dan 30 minuten rijden van Kampen, dan kunnen we reiskosten rekenen. We lopen vooraf je kassa-apparatuur na, zodat je weet wat mee kan en wat vervangen moet. Daarna garanderen we dat de kassa op al die apparaten werkt. Liever zelf inrichten? Dan vink je dit onderdeel uit en betaal je ons er niets voor." ]
         ]
 
     else
@@ -2139,7 +2144,7 @@ staat los van het getoonde totaal. -}
 pointOfSaleReiskostenRegel : Model -> List String
 pointOfSaleReiskostenRegel model =
     if model.pointOfSale then
-        [ "(Kassa/point-of-sale: installatie op locatie en reiskosten komen hier los bij, op aanvraag.)" ]
+        [ "(Kassa/point-of-sale: ligt de winkel meer dan 30 minuten rijden van Kampen, dan kunnen er reiskosten bijkomen.)" ]
 
     else
         []
