@@ -9,6 +9,7 @@
 -- esther.org, bijlage 2 and 3. The €99 tier was never quoted; its volumes
 -- (two questions, one change) come from the werkdagpakket in jappiesoft
 -- strategy/webshopsupport-sla-concept.md.
+-- Jappie limited the €99 incident window to working hours on 12 October.
 --
 -- Decision: a module of its own instead of another page in
 -- 'WebwinkelTemplates', which is already far past the 1000-line limit.
@@ -46,6 +47,10 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
       H.p "Bij een storing onderzoeken we het probleem en werken we aan herstel van je bestaande winkel. Ligt het herstel bij een leverancier, dan zetten we de melding door en volgen we die op. Een hersteltermijn van een leverancier kunnen we niet garanderen."
 
     H.section ! A.class_ "audit" $ do
+      H.h2 "Reactietijd bij ondersteuning van €99"
+      H.p "Bij een urgente storing krijg je binnen acht werkuren een inhoudelijke reactie. We tellen alleen maandag tot en met vrijdag, van 09:00 tot 17:00 Nederlandse tijd, behalve op Nederlandse feestdagen. Buiten die uren staat de klok stil en hervatten we de storingshulp op de volgende werkdag. Een melding op vrijdag om 16:00 krijgt dus uiterlijk maandag om 16:00 antwoord, als maandag geen feestdag is. Dit is geen garantie dat de storing binnen die termijn is opgelost."
+
+    H.section ! A.class_ "audit" $ do
       H.h2 "De drie-uursafspraak bij uitgebreide ondersteuning"
       H.p "Meld je een urgente storing tussen 07:00 en 22:45, dan krijg je binnen drie uur per e-mail een beoordeling en een concreet plan voor de vervolgstappen. Die termijn loopt ook na 22:45 door: een melding om 22:00 krijgt uiterlijk om 01:00 antwoord. Meld je buiten dat tijdvak, dan begint de termijn om 07:00 en krijg je uiterlijk om 10:00 antwoord. Dit is geen garantie dat de storing binnen drie uur is opgelost."
       H.p $ H.preEscapedToHtml ("Halen we de drie uur niet, dan krijg je 25% van het maandbedrag terug: &euro;62,25 per gemiste termijn, met een maximum van &euro;249 per maand. Vervolgmeldingen over dezelfde storing tellen niet als een nieuwe storing." :: Text)
@@ -57,8 +62,9 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Opzeggen"
-      H.p $ H.preEscapedToHtml ("Betaal je per maand, dan zeg je op wanneer je wilt, met een opzegtermijn van &eacute;&eacute;n maand. Er is geen jaarverplichting." :: Text)
-      H.p $ H.preEscapedToHtml ("Betaal je het eerste jaar vooruit, dan loopt je ondersteuning twaalf maanden vanaf de livegang. Daarna loopt het abonnement per maand door, met een opzegtermijn van &eacute;&eacute;n maand. Stop je tijdens dat eerste jaar, dan krijg je het resterende deel niet terug. Je ondersteuning loopt dan door tot het einde van het jaar." :: Text)
+      H.p $ H.preEscapedToHtml ("Beide pakketten kun je per maand afnemen. Dan zeg je op wanneer je wilt, met een opzegtermijn van &eacute;&eacute;n maand. Er is geen jaarverplichting." :: Text)
+      H.p $ H.preEscapedToHtml ("Alleen als je bij je verhuizing kiest voor een vooruitbetaald jaar uitgebreide ondersteuning met verhuiskorting, loopt je ondersteuning eerst twaalf maanden vanaf de livegang. Daarna loopt het abonnement per maand door, met een opzegtermijn van &eacute;&eacute;n maand." :: Text)
+      H.p "Stop je vrijwillig tijdens dat eerste jaar, dan krijg je het resterende deel niet terug. Je ondersteuning blijft beschikbaar tot de afgesproken einddatum. Dit verandert niets aan de vergoeding voor gemiste reactietermijnen of je rechten als wij onze afspraken niet nakomen."
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Wat er niet onder valt"
@@ -83,7 +89,8 @@ basisKaart =
     H.ul $ do
       H.li "Twee korte hulpvragen per maand"
       H.li $ H.preEscapedToHtml ("&Eacute;&eacute;n kleine wijziging per maand, zoals een banner of een kleine aanpassing aan je thema" :: Text)
-      H.li "Hulp bij urgente storingen op werkdagen, van 09:00 tot 17:00"
+      H.li "Hulp bij urgente storingen van maandag tot en met vrijdag, van 09:00 tot 17:00, behalve op Nederlandse feestdagen"
+      H.li "Binnen acht werkuren een inhoudelijke reactie op een urgente storing"
       H.li "Geen maximum aan storingsmeldingen"
 
 uitgebreidKaart :: Html
