@@ -257,9 +257,9 @@ suite =
             \_ ->
                 Expect.equal 134900
                     (totaalCenten { initieelModel | domeinBijMijnwebwinkel = True })
-        , test "point-of-sale voegt 500 plus 300 reiskosten toe" <|
+        , test "point-of-sale voegt 500 toe (reiskosten buiten 30 minuten van Kampen apart)" <|
             \_ ->
-                Expect.equal 189900
+                Expect.equal 159900
                     (totaalCenten { initieelModel | pointOfSale = True })
         , test "cursus Shopify voegt 300 toe" <|
             \_ ->
