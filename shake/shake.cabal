@@ -13,6 +13,7 @@ executable shake-blog
     AssetHash
     Feed
     Metadata
+    OndersteuningPage
     PageChrome
     PenguinTemplates
     WebwinkelTemplates
@@ -49,6 +50,7 @@ test-suite unit
     ArticleSummary
     AssetHash
     Metadata
+    OndersteuningPage
     PageChrome
     PenguinTemplates
     Slug

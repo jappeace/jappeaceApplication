@@ -42,6 +42,7 @@ import ArticleSummary (summarize)
 import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzingen)
 import Feed (generateAtomFeed)
 import Metadata (parseMarkdownMeta, parseOrgMeta, parseDateField, parseTags, isDraft, resolveSlug)
+import OndersteuningPage (ondersteuningPage)
 import PenguinTemplates (WebwinkelverhuisUrl(..), penguinIndexPage, penguinIndexPageNl, penguinWordpressPage, penguinWordpressPageNl, penguinBlogIndexPage, penguinArticlePage)
 import PageChrome (WebwinkelSchedulingLinkFout(..), webwinkelSchedulingLinkFout)
 import WebwinkelTemplates
@@ -740,6 +741,7 @@ generateWebwinkelverhuisSite config articles gehashteAssets = do
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/waarom-lightspeed.html" lightspeedWaaromPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/over-ons.html" overOnsPage
   writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/contact.html" contactPage
+  writeWebwinkelHtmlFile gehashteAssets "_webwinkelverhuis-site/ondersteuning.html" ondersteuningPage
 
   -- Foutpagina: nginx serveert deze via error_page bij onbekende URL's.
   -- Bewust niet in webwinkelverhuisStaticPages en dus niet in de sitemap.

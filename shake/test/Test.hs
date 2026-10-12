@@ -32,6 +32,7 @@ import AssetHash (GehashteAssets(..), gehashteAssetNaam, herschrijfAssetVerwijzi
 import Data.Char (isHexDigit)
 import qualified Data.ByteString.Char8 as BSC
 import Metadata (parseOrgMeta, resolveSlug)
+import OndersteuningPage (ondersteuningPage)
 import PageChrome (WebwinkelSchedulingLinkFout(..), faqAnswerHtml, faqPageJsonLd, humanDateForLang, renderFaqItem, webwinkelSchedulingLinkFout)
 import Templates (renderTagPage, renderIndexPage)
 import Types (Article(..), Lang(..), PaginationInfo(..), defaultSiteConfig)
@@ -100,6 +101,7 @@ meetLinkPages =
   , ("lightspeedWaaromPage", lightspeedWaaromPage)
   , ("overOnsPage", overOnsPage)
   , ("contactPage", contactPage)
+  , ("ondersteuningPage", ondersteuningPage)
   ]
 
 -- | The penguin (wordpress service) pages with a scheduling button; they
