@@ -149,7 +149,7 @@ staffelSegmentenSuite =
             \_ ->
                 let
                     model =
-                        { initieelModel | productenInvoer = "5000", orderhistorie = True, bestellingenInvoer = "11504", klantaccounts = True, klantaccountsInvoer = "4850" }
+                        { initieelModel | productenInvoer = "5000", orderhistorie = True, bestellingenInvoer = "11504", klantaccounts = True, klantaccountsInvoer = "4850", pointOfSale = True }
                 in
                 Expect.equal (totaalCenten model)
                     (List.sum (List.map .centen (List.filter (\r -> r.niveau == Hoofdregel) (prijsRegels model))))
@@ -257,9 +257,9 @@ suite =
             \_ ->
                 Expect.equal 134900
                     (totaalCenten { initieelModel | domeinBijMijnwebwinkel = True })
-        , test "point-of-sale voegt 750 toe (excl. reiskosten op aanvraag)" <|
+        , test "point-of-sale voegt 500 plus 300 reiskosten toe" <|
             \_ ->
-                Expect.equal 184900
+                Expect.equal 189900
                     (totaalCenten { initieelModel | pointOfSale = True })
         , test "cursus Shopify voegt 300 toe" <|
             \_ ->
