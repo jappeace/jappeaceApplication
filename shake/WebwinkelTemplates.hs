@@ -992,8 +992,11 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td $ H.preEscapedToHtml ("B2B-kanaal (aparte prijzen en inlog voor zakelijke klanten)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;750" :: Text)
         H.tr $ do
-          H.td $ H.preEscapedToHtml ("Kassa / point-of-sale (Shopify POS in je fysieke winkel)" :: Text)
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;750" :: Text)
+          H.td $ H.preEscapedToHtml ("Kassa / point-of-sale (Shopify POS in je fysieke winkel), op locatie ingericht, met garantie dat hij op je apparatuur werkt" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;500" :: Text)
+        H.tr $ do
+          H.td "Reiskosten voor de kassa op locatie"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;300" :: Text)
         H.tr $ do
           H.td $ H.preEscapedToHtml ("Cursus Shopify (2 uur, 1-op-1, samen door je nieuwe shop)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;300" :: Text)
@@ -1004,7 +1007,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td "Catalogus-brede teksttransformaties"
           H.td ! A.class_ "price-cell" $ "op aanvraag"
       H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat je shop op een standaard Shopify-thema dat je zelf inricht. De vormgeving hoeft niet via ons: je kunt het zelf doen of een ontwerper naar keuze inhuren. Wil je het uit handen geven, dan benaderen wij je huidige uitstraling zo dicht mogelijk (&euro;749) of werken wij een nieuw ontwerp van onze ontwerppartner uit in je shop (&euro;999, het ontwerp zelf via een aparte offerte van de partner)." :: Text)
-      H.p ! A.class_ "engagement-note" $ "Kassa/point-of-sale zetten we bij je op locatie op. Installatie en reiskosten komen daar los bij, op aanvraag."
+      H.p ! A.class_ "engagement-note" $ "Kassa/point-of-sale zetten we bij je op locatie op. We lopen vooraf je kassa-apparatuur na, zodat je weet wat mee kan en wat vervangen moet. Daarna garanderen we dat de kassa op al die apparaten werkt. Liever zelf inrichten? Dan laat je dit onderdeel weg en betaal je ons er niets voor."
 
     H.section ! A.class_ "results" $ do
       H.h2 "Altijd inbegrepen"
