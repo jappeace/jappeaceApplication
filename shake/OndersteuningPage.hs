@@ -30,12 +30,13 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
   H.main $ do
     H.section ! A.class_ "hero" $ do
       H.h1 "Ondersteuning: iemand die je webshop kent"
-      H.p ! A.class_ "subtitle" $ "Je webshop doet ineens iets vreemds. Een klant kan niet afrekenen. Of je twijfelt of een instelling goed staat. Dan wil je iemand kunnen bereiken die je winkel kent en je verder helpt. Ook na de verhuizing staan we voor je klaar, op de tijden van jouw pakket."
+      H.p ! A.class_ "subtitle" $ "Je webshop loopt goed. Je wilt bezig zijn met je klanten en producten, niet met uitzoeken waarom een instelling ineens anders werkt. Met ondersteuning heb je iemand die je winkel kent en met je meekijkt als je twijfelt of iets misgaat."
 
     H.section ! A.class_ "audit" $ do
-      H.h2 "Je hoeft het niet alleen uit te zoeken"
-      H.p "Bij een storing hoef je niet eerst zelf de oorzaak te vinden. Je vertelt ons wat je merkt. Wij zoeken uit wat er aan de hand is en werken aan een oplossing. Moet Shopify of de maker van een app iets herstellen? Dan zetten wij de melding door en volgen die op."
-      H.p "Met een vast maandbedrag heb je een vertrouwd aanspreekpunt achter de hand. Je kiest hulp bij storingen op werkdagen, of ook in de avond en het weekend. In beide pakketten is daarnaast ruimte voor korte vragen en kleine aanpassingen."
+      H.h2 "Een vertrouwd aanspreekpunt, ook na de verhuizing"
+      H.p "Even twijfelen over een instelling hoort erbij. Je hoeft niet eerst de juiste technische woorden te kennen: vertel ons wat je wilt doen of wat je opvalt. We kennen je winkel en helpen je verder, binnen de afspraken van je pakket."
+      H.p "Voor een vast maandbedrag is er ruimte voor korte vragen en kleine aanpassingen. En als klanten niet meer kunnen bestellen, weet je bij wie je terechtkunt en wanneer je antwoord krijgt. Zo hoef je niet alles zelf uit te zoeken."
+      H.p "Regel je dit liever zelf? Dan heb je geen abonnement nodig. Ondersteuning is een keuze, geen verplicht onderdeel van je verhuizing."
 
     H.section ! A.class_ "prijs-sectie" $ do
       H.div ! A.class_ "prijs-kaarten" $ do
@@ -44,8 +45,14 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
       H.p ! A.class_ "engagement-note" $ "Alle prijzen zijn exclusief btw en gelden voor één webshop."
 
     H.section ! A.class_ "audit" $ do
-      H.h2 "Als klanten niet meer kunnen winkelen"
+      H.h2 "Voor je vragen en kleine aanpassingen"
+      H.p "Wil je weten hoe je een kortingscode instelt of een tekst aanpast? Een korte hulpvraag gaat over één concrete handeling in je winkel. Wil je dat wij iets aanpassen, zoals een banner vervangen of een eenvoudige app installeren? Bij een kleine aanpassing spreken we vooraf één concreet resultaat af en wanneer we het uitvoeren."
+      H.p "Het aantal inbegrepen vragen en kleine aanpassingen staat bij je pakket. We behandelen die in beide pakketten van maandag tot en met vrijdag, van 09:00 tot 17:00, behalve op Nederlandse feestdagen. Ongebruikte vragen en aanpassingen gaan niet mee naar de volgende maand."
+
+    H.section ! A.class_ "audit" $ do
+      H.h2 "En als er toch iets misgaat"
       H.p "Is je webshop onbereikbaar, of kunnen klanten niet meer bestellen of betalen? Dat is een urgente storing. We onderzoeken wat er misgaat en werken aan herstel van je bestaande winkel. Er is geen maximum aan het aantal storingen waarbij we helpen, binnen de tijden van je pakket. Die hulp gaat niet af van je ruimte voor vragen of kleine aanpassingen."
+      H.p "Je hoeft niet eerst zelf de oorzaak te vinden. Je vertelt ons wat je merkt, wij zoeken uit wat er aan de hand is. Moet Shopify of de maker van een app iets herstellen? Dan zetten wij de melding door en volgen die op."
       H.p "We kunnen niet beloven hoe snel een storing is opgelost, bijvoorbeeld als Shopify of een andere leverancier iets moet herstellen. Wel spreken we af wanneer je een eerste inhoudelijk antwoord van ons krijgt."
 
     H.section ! A.class_ "audit" $ do
@@ -58,11 +65,6 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
       H.p "Meld je een urgente storing tussen 07:00 en 22:45 Nederlandse tijd, dan krijg je binnen drie uur per e-mail onze beoordeling van het probleem en een concreet plan voor wat er daarna moet gebeuren. Dit geldt iedere dag, ook in het weekend en op feestdagen. Het betekent niet dat de storing binnen drie uur opgelost is."
       H.p "De drie uur lopen ook na 22:45 door: een melding om 22:00 krijgt uiterlijk om 01:00 antwoord. Meld je buiten de tijden van het pakket, dan begint de termijn om 07:00 en krijg je uiterlijk om 10:00 antwoord."
       H.p $ H.preEscapedToHtml ("Halen we de drie uur niet, dan krijg je 25% van het maandbedrag terug: &euro;62,25 per gemiste termijn, met een maximum van &euro;249 per maand. Vervolgmeldingen over dezelfde storing tellen niet als een nieuwe storing." :: Text)
-
-    H.section ! A.class_ "audit" $ do
-      H.h2 "Ook voor vragen en kleine aanpassingen"
-      H.p "Wil je weten hoe je een kortingscode instelt of een tekst aanpast? Een korte hulpvraag gaat over één concrete handeling in je winkel. Wil je dat wij iets aanpassen, zoals een banner vervangen of een eenvoudige app installeren? Bij een kleine aanpassing spreken we vooraf één concreet resultaat af en wanneer we het uitvoeren."
-      H.p "Het aantal inbegrepen vragen en kleine aanpassingen staat bij je pakket. We behandelen die in beide pakketten van maandag tot en met vrijdag, van 09:00 tot 17:00, behalve op Nederlandse feestdagen. Ongebruikte vragen en aanpassingen gaan niet mee naar de volgende maand."
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Korting op je verhuizing"
@@ -94,13 +96,13 @@ basisKaart =
     H.p ! A.class_ "prijs" $ do
       H.preEscapedToHtml ("&euro;99 " :: Text)
       H.small "per maand"
-    H.p ! A.class_ "inbegrepen" $ "Een vertrouwd aanspreekpunt als er iets misgaat, op werkdagen."
+    H.p ! A.class_ "inbegrepen" $ "Iemand die met je meekijkt en kleine aanpassingen doet, op werkdagen."
     H.ul $ do
+      H.li "Twee korte hulpvragen per maand"
+      H.li "Eén kleine aanpassing per maand, zoals een banner vervangen"
       H.li "Hulp bij urgente storingen van maandag tot en met vrijdag, van 09:00 tot 17:00, behalve op Nederlandse feestdagen"
       H.li "Bij een urgente storing binnen acht werkuren een inhoudelijk antwoord"
       H.li "Geen maximum aan storingsmeldingen"
-      H.li "Daarnaast twee korte hulpvragen per maand"
-      H.li "Eén kleine aanpassing per maand, zoals een banner vervangen"
 
 uitgebreidKaart :: Html
 uitgebreidKaart =
@@ -109,18 +111,18 @@ uitgebreidKaart =
     H.p ! A.class_ "prijs" $ do
       H.preEscapedToHtml ("&euro;249 " :: Text)
       H.small "per maand"
-    H.p ! A.class_ "inbegrepen" $ "Ook hulp bij storingen in de avond en het weekend, met een snellere reactie."
+    H.p ! A.class_ "inbegrepen" $ "Meer ruimte voor vragen en aanpassingen, met hulp bij storingen ook in de avond en het weekend."
     H.ul $ do
+      H.li "Vier korte hulpvragen per maand"
+      H.li "Twee kleine aanpassingen per maand"
       H.li "Hulp bij urgente storingen iedere dag van 07:00 tot 22:45, ook in het weekend en op feestdagen"
       H.li "Bij een urgente storing binnen drie uur onze beoordeling en een concreet plan per e-mail, volgens de tijden hieronder"
       H.li "Geen maximum aan storingsmeldingen"
-      H.li "Daarnaast vier korte hulpvragen per maand"
-      H.li "Twee kleine aanpassingen per maand"
 
 ondersteuningMeta :: PageMeta
 ondersteuningMeta = PageMeta
   { pageMetaTitle       = "Ondersteuning na je verhuizing \8212 Webwinkelverhuis"
-  , pageMetaDescription = "Iemand die je webshop kent en helpt als er iets misgaat. Ondersteuning na je verhuizing, vanaf \8364\&99 per maand. Kies hulp op werkdagen of ook in de avond en het weekend."
+  , pageMetaDescription = "Je webshop loopt goed. Met ondersteuning heb je iemand die je winkel kent, voor vragen, kleine aanpassingen en hulp bij storingen. Vanaf \8364\&99 per maand."
   , pageMetaLang        = "nl"
   , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/ondersteuning.html"
   , pageMetaOgImage     = Nothing
