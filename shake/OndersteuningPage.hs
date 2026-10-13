@@ -8,6 +8,9 @@
 -- Jappie's 12 October revisions set five working hours for €99 incidents
 -- and five questions plus three changes for €249, without a question-length
 -- limit. The €99 volumes remain proposals from webshopsupport-sla-concept.md.
+-- His 13 October decisions add the €39 and €79 extras, theme security fixes
+-- in both packages and a periodic check. The check frequencies (monthly for
+-- €249, quarterly for €99) are a proposal he has not yet confirmed.
 --
 -- Decision: a module of its own instead of another page in
 -- 'WebwinkelTemplates', which is already far past the 1000-line limit.
@@ -47,11 +50,15 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
       H.p "Wil je weten hoe je een kortingscode instelt of waarom een instelling anders werkt dan verwacht? Een hulpvraag gaat over één onderwerp in je webshop. Je vraag hoeft niet kort te zijn. Doorvragen over hetzelfde antwoord hoort bij diezelfde vraag."
       H.p "Een kleine aanpassing is één afgebakende wijziging in je bestaande webshop. Denk aan een app installeren en instellen, een banner vervangen of een kleine wijziging aan de indeling of opmaak van je thema. We spreken vooraf af wat het resultaat wordt en wanneer we het uitvoeren."
       H.p "Het aantal inbegrepen vragen en kleine aanpassingen staat bij je pakket. We behandelen die in beide pakketten van maandag tot en met vrijdag, van 09:00 tot 17:00, behalve op Nederlandse feestdagen. Ongebruikte vragen en aanpassingen gaan niet mee naar de volgende maand."
+      H.p $ H.preEscapedToHtml ("Heb je in een maand meer nodig? Een extra hulpvraag kost &euro;39 exclusief btw. Doorvragen over hetzelfde onderwerp hoort daar ook bij. Een extra kleine aanpassing kost &euro;79 exclusief btw. Extra kosten spreken we altijd vooraf met je af." :: Text)
 
     H.section ! A.class_ "audit" $ do
       H.h2 "En als er toch iets misgaat"
       H.p "Is je webshop onbereikbaar, of kunnen klanten niet meer bestellen of betalen? Dat is een urgente storing. We onderzoeken wat er misgaat en werken aan herstel van je bestaande winkel. Er is geen maximum aan het aantal storingen waarbij we helpen, binnen de tijden van je pakket. Die hulp gaat niet af van je ruimte voor vragen of kleine aanpassingen."
       H.p "Je hoeft niet eerst zelf de oorzaak te vinden. Je vertelt ons wat je merkt, wij zoeken uit wat er aan de hand is. Moet Shopify of de maker van een app iets herstellen? Dan zetten wij de melding door en volgen die op."
+      H.p $ H.preEscapedToHtml ("Je thema en apps krijgen regelmatig updates. Daarom controleren we zelf of je webshop daarna nog werkt. Bij uitgebreide ondersteuning doen we dat elke maand. Bij ondersteuning van &euro;99 doen we dat elk kwartaal. We lopen dan je homepage, een categoriepagina, een productpagina, de winkelwagen en de checkout tot aan de betaling door. Dit is een korte controle van de belangrijkste stappen, geen test van elke app of pagina." :: Text)
+      H.p "Zien we dat er iets kapot is, dan laten we je dat weten. Is je webshop daardoor onbereikbaar, of kunnen klanten niet bestellen of betalen? Dan pakken we het op als urgente storing. Anders telt het herstel als een kleine aanpassing."
+      H.p "Zit er een beveiligingsprobleem in een thema dat wij hebben geleverd? Dan lossen we dat in beide pakketten op. Daar zit geen maximum aan. Het gaat ook niet af van je vragen of kleine aanpassingen. Een preventieve beveiligingsaudit van je webshop hoort er niet bij."
       H.p "We kunnen niet beloven hoe snel een storing is opgelost, bijvoorbeeld als Shopify of een andere leverancier iets moet herstellen. Wel spreken we af wanneer je een eerste inhoudelijk antwoord van ons krijgt."
 
     H.section ! A.class_ "audit" $ do
@@ -102,6 +109,8 @@ basisKaart =
       H.li "Hulp bij urgente storingen van maandag tot en met vrijdag, van 09:00 tot 17:00, behalve op Nederlandse feestdagen"
       H.li "Bij een urgente storing binnen vijf werkuren een inhoudelijk antwoord"
       H.li "Geen maximum aan storingsmeldingen"
+      H.li "Elk kwartaal een controle of je webshop na updates nog werkt"
+      H.li "Beveiligingsproblemen in een thema dat wij leverden lossen we op, zonder maximum"
 
 uitgebreidKaart :: Html
 uitgebreidKaart =
@@ -117,6 +126,8 @@ uitgebreidKaart =
       H.li "Hulp bij urgente storingen iedere dag van 07:00 tot 22:45, ook in het weekend en op feestdagen"
       H.li "Bij een urgente storing binnen drie uur onze beoordeling en een concreet plan per e-mail, volgens de tijden hieronder"
       H.li "Geen maximum aan storingsmeldingen"
+      H.li "Elke maand een controle of je webshop na updates nog werkt"
+      H.li "Beveiligingsproblemen in een thema dat wij leverden lossen we op, zonder maximum"
 
 ondersteuningMeta :: PageMeta
 ondersteuningMeta = PageMeta

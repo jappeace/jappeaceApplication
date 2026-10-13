@@ -2549,7 +2549,7 @@ webwinkelverhuisStaticPages =
   , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/over-ons.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/contact.html", fromGregorian 2026 8 8)
-  , ("https://webwinkelverhuis.nl/ondersteuning.html", fromGregorian 2026 10 12)
+  , ("https://webwinkelverhuis.nl/ondersteuning.html", fromGregorian 2026 10 13)
   ]
 
 webwinkelStaticSitemapEntry :: (Text, Day) -> Text
