@@ -2537,7 +2537,7 @@ webwinkelverhuisSitemap articles = T.unlines $
 webwinkelverhuisStaticPages :: [(Text, Day)]
 webwinkelverhuisStaticPages =
   [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 23)
-  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 12)
+  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 14)
   , ("https://webwinkelverhuis.nl/offerte.html", fromGregorian 2026 9 4)
   , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 9 2)
