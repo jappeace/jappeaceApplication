@@ -9,8 +9,10 @@
 -- and five questions plus three changes for €249, without a question-length
 -- limit. The €99 volumes remain proposals from webshopsupport-sla-concept.md.
 -- His 13 October decisions add the €39 and €79 extras, theme security fixes
--- in both packages and a periodic check. The check frequencies (monthly for
--- €249, quarterly for €99) are a proposal he has not yet confirmed.
+-- in both packages and a periodic check, monthly for €249 and quarterly for
+-- €99 (confirmed 14 October). On 14 October he also made both packages
+-- answer an urgent incident with an assessment and plan, and included every
+-- technical shop change required by new legislation at no extra cost.
 --
 -- Decision: a module of its own instead of another page in
 -- 'WebwinkelTemplates', which is already far past the 1000-line limit.
@@ -59,11 +61,12 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
       H.p $ H.preEscapedToHtml ("Je thema en apps krijgen regelmatig updates. Daarom controleren we zelf of je webshop daarna nog werkt. Bij uitgebreide ondersteuning doen we dat elke maand. Bij ondersteuning van &euro;99 doen we dat elk kwartaal. We lopen dan je homepage, een categoriepagina, een productpagina, de winkelwagen en de checkout tot aan de betaling door. Dit is een korte controle van de belangrijkste stappen, geen test van elke app of pagina." :: Text)
       H.p "Zien we dat er iets kapot is, dan laten we je dat weten. Is je webshop daardoor onbereikbaar, of kunnen klanten niet bestellen of betalen? Dan pakken we het op als urgente storing. Anders telt het herstel als een kleine aanpassing."
       H.p "Zit er een beveiligingsprobleem in een thema dat wij hebben geleverd? Dan lossen we dat in beide pakketten op. Daar zit geen maximum aan. Het gaat ook niet af van je vragen of kleine aanpassingen. Een preventieve beveiligingsaudit van je webshop hoort er niet bij."
+      H.p "Komt er nieuwe wetgeving waardoor je webshop technisch aangepast moet worden? Dan voeren wij die aanpassingen in beide pakketten zonder extra kosten uit. Ze gaan ook niet af van je kleine aanpassingen. Welke regels voor jouw winkel gelden, bepaal je zelf of met je adviseur: wij geven geen juridisch advies."
       H.p "We kunnen niet beloven hoe snel een storing is opgelost, bijvoorbeeld als Shopify of een andere leverancier iets moet herstellen. Wel spreken we af wanneer je een eerste inhoudelijk antwoord van ons krijgt."
 
     H.section ! A.class_ "audit" $ do
-      H.h2 "Ondersteuning van €99: antwoord binnen vijf werkuren"
-      H.p "Bij een urgente storing krijg je binnen vijf werkuren een inhoudelijk antwoord. We tellen alleen maandag tot en met vrijdag, van 09:00 tot 17:00 Nederlandse tijd, behalve op Nederlandse feestdagen. Buiten die uren staat de klok stil en hervatten we de storingshulp op de volgende werkdag."
+      H.h2 "Ondersteuning van €99: antwoord en plan binnen vijf werkuren"
+      H.p "Bij een urgente storing krijg je binnen vijf werkuren per e-mail onze beoordeling van het probleem en een concreet plan. We tellen alleen maandag tot en met vrijdag, van 09:00 tot 17:00 Nederlandse tijd, behalve op Nederlandse feestdagen. Buiten die uren staat de klok stil en hervatten we de storingshulp op de volgende werkdag."
       H.p "Een melding op vrijdag om 16:00 krijgt dus uiterlijk maandag om 13:00 antwoord, als maandag geen feestdag is. Dit is een afspraak over ons antwoord, niet over wanneer de storing opgelost is."
 
     H.section ! A.class_ "audit" $ do
@@ -107,10 +110,11 @@ basisKaart =
       H.li "Twee hulpvragen per maand"
       H.li "Eén kleine aanpassing per maand, zoals een banner vervangen"
       H.li "Hulp bij urgente storingen van maandag tot en met vrijdag, van 09:00 tot 17:00, behalve op Nederlandse feestdagen"
-      H.li "Bij een urgente storing binnen vijf werkuren een inhoudelijk antwoord"
+      H.li "Bij een urgente storing binnen vijf werkuren onze beoordeling en een concreet plan per e-mail"
       H.li "Geen maximum aan storingsmeldingen"
       H.li "Elk kwartaal een controle of je webshop na updates nog werkt"
       H.li "Beveiligingsproblemen in een thema dat wij leverden lossen we op, zonder maximum"
+      H.li "Technische aanpassingen door nieuwe wetgeving zonder extra kosten"
 
 uitgebreidKaart :: Html
 uitgebreidKaart =
@@ -128,6 +132,7 @@ uitgebreidKaart =
       H.li "Geen maximum aan storingsmeldingen"
       H.li "Elke maand een controle of je webshop na updates nog werkt"
       H.li "Beveiligingsproblemen in een thema dat wij leverden lossen we op, zonder maximum"
+      H.li "Technische aanpassingen door nieuwe wetgeving zonder extra kosten"
 
 ondersteuningMeta :: PageMeta
 ondersteuningMeta = PageMeta
