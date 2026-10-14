@@ -112,6 +112,15 @@ staffelSegmentenSuite =
                 Expect.equal
                     [ ( Hoofdregel, 10000 ), ( Subregel, 0 ), ( Subregel, 10000 ) ]
                     (List.map (\r -> ( r.niveau, r.centen )) regels)
+        , test "bestelgeschiedenis 115.000: 8ct tot 11.000, 4ct tot 20.000, 2ct tot 40.000, daarboven 1ct" <|
+            \_ ->
+                Expect.equal
+                    [ { van = 1001, tot = 11000, tariefCenten = 8 }
+                    , { van = 11001, tot = 20000, tariefCenten = 4 }
+                    , { van = 20001, tot = 40000, tariefCenten = 2 }
+                    , { van = 40001, tot = 115000, tariefCenten = 1 }
+                    ]
+                    (itemStaffelSegmenten orderhistorieStaffel 115000)
         , test "bestelgeschiedenis 800: niets boven de inbegrepen items, geen stappen" <|
             \_ ->
                 Expect.equal [] (itemStaffelSegmenten orderhistorieStaffel 800)
@@ -316,6 +325,10 @@ suite =
             \_ ->
                 Expect.equal (109900 + 92016)
                     (totaalCenten { initieelModel | orderhistorie = True, bestellingenInvoer = "11504" })
+        , test "bestelgeschiedenis met 115.000 bestellingen = 2.410 (100 + 800 + 360 + 400 + 750; Kralenstulpje)" <|
+            \_ ->
+                Expect.equal (109900 + 241000)
+                    (totaalCenten { initieelModel | orderhistorie = True, bestellingenInvoer = "115000" })
         , test "bestelgeschiedenis met 800 bestellingen blijft op het vaste deel van 100" <|
             \_ ->
                 Expect.equal (109900 + 10000)

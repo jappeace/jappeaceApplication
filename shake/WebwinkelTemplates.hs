@@ -970,7 +970,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td $ H.preEscapedToHtml ("Spaarpunten meenemen bij je klantaccounts (je klanten houden hun gespaarde punten): de eerste 1.000 accounts met punten en de inrichting zitten in de &euro;100 van de klantaccounts, daarboven per account met punten; accounts zonder punten tellen niet mee" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,05 per account" :: Text)
         H.tr $ do
-          H.td $ H.preEscapedToHtml ("Bestelgeschiedenis meenemen: &euro;100 tot 1.000 bestellingen, daarna &euro;0,08 per bestelling, boven de 11.000 &euro;0,04" :: Text)
+          H.td $ H.preEscapedToHtml ("Bestelgeschiedenis meenemen: &euro;100 tot 1.000 bestellingen, daarna &euro;0,08 per bestelling, van 11.001 tot 20.000 &euro;0,04, van 20.001 tot 40.000 &euro;0,02 en daarboven &euro;0,01" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("vanaf &euro;100" :: Text)
         H.tr $ do
           H.td $ H.preEscapedToHtml ("Nieuwsbrief-aanmeldingen meenemen: &euro;100 tot 1.000 adressen, daarna &euro;0,05 per adres, boven de 6.000 &euro;0,03" :: Text)
@@ -2537,7 +2537,7 @@ webwinkelverhuisSitemap articles = T.unlines $
 webwinkelverhuisStaticPages :: [(Text, Day)]
 webwinkelverhuisStaticPages =
   [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 23)
-  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 12)
+  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 14)
   , ("https://webwinkelverhuis.nl/offerte.html", fromGregorian 2026 9 4)
   , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 9 2)

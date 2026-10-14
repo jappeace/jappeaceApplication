@@ -219,9 +219,15 @@ moduleInbegrepenItems =
     1000
 
 
+{-| Decision: sinds 14 okt 2026 (besluit Jappie, Kralenstulpje 119) daalt
+het tarief voor grote orderhistorie verder: €0,04 alleen tot 20.000, dan
+€0,02 tot 40.000 en daarboven €0,01. Daarvoor bleef het onbeperkt €0,04
+boven 11.000, wat bij 115.000 orders €5.060 gaf; nu €2.410. Bestaande
+klantafspraken veranderen niet (jappiesoft strategy/standaard-prijslijst.org).
+-}
 orderhistorieStaffel : ItemStaffel
 orderhistorieStaffel =
-    { treden = [ ( 10000, 8 ) ], bodemCenten = 4 }
+    { treden = [ ( 10000, 8 ), ( 9000, 4 ), ( 20000, 2 ) ], bodemCenten = 1 }
 
 
 klantaccountsStaffel : ItemStaffel
