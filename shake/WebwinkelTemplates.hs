@@ -221,11 +221,14 @@ webwinkelBaseWith ogType includeFeed meta content =
       -- verwerkersvoorwaarden van Google geaccepteerd. Wordt de config
       -- hieronder ooit rijker dan een kaal 'config'-aanroep, dan vervalt
       -- de grond onder deze keuze en moet hij opnieuw gemaakt worden.
+      -- The page's own head comes before Google Analytics so a page can
+      -- scrub its URL before gtag reads it (app.html drops Shopify's OAuth
+      -- code, see 'koppelcodeVerbergScript').
+      pageMetaExtraHead meta
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-GD4S885G6F" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-GD4S885G6F');" :: Text)
       H.title (toHtml (pageMetaTitle meta))
       webwinkelOrganizationJsonLd
-      pageMetaExtraHead meta
     H.body $ do
       H.header webwinkelTopNav
       content
@@ -816,6 +819,7 @@ appPage = webwinkelBaseTemplate appMeta $ do
       H.h1 "De migratie-app"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Je ziet deze pagina omdat de migratie-app van Webwinkelverhuis in je Shopify-winkel is ge&iuml;nstalleerd. Dat is precies de bedoeling: de app is het gereedschap waarmee wij je webshop naar Shopify overzetten." :: Text)
       H.a ! A.href "#meer" ! A.class_ "cta-button" $ "Wat we verder voor je kunnen doen"
+      koppelcodeRegel
 
     H.section ! A.class_ "for-who" ! A.id "what" $ do
       H.h2 "Wat de app doet"
@@ -871,6 +875,7 @@ appPage = webwinkelBaseTemplate appMeta $ do
           H.p $ H.preEscapedToHtml ("Een rondleiding door je nieuwe shop met beknopte handleiding, of een cursus Shopify van twee uur, &eacute;&eacute;n-op-&eacute;&eacute;n." :: Text)
       H.p "Alles tegen een vaste prijs per klus, geen uurtarief. Je weet vooraf waar je aan toe bent."
       H.a ! A.href uitbreidingMailto ! A.class_ "cta-button" $ "Bespreek je idee met ons"
+    H.script $ H.preEscapedToHtml koppelcodeToonScript
   where
     appMeta :: PageMeta
     appMeta = PageMeta
@@ -880,8 +885,63 @@ appPage = webwinkelBaseTemplate appMeta $ do
       , pageMetaCanonical   = Just "https://webwinkelverhuis.nl/app.html"
       , pageMetaOgImage     = Nothing
       , pageMetaSwitchUrl   = Nothing
-      , pageMetaExtraHead   = H.meta ! A.name "robots" ! A.content "noindex"
+      , pageMetaExtraHead   = do
+          H.meta ! A.name "robots" ! A.content "noindex"
+          H.script $ H.preEscapedToHtml koppelcodeVerbergScript
       }
+
+-- | The quiet line in the app page's hero that hands us the OAuth code.
+-- See Note [Koppelcode].
+koppelcodeRegel :: Html
+koppelcodeRegel =
+  H.p ! A.class_ "koppelcode" ! A.id "koppelcode" ! A.hidden "" $ do
+    "De app is verbonden met je winkel. "
+    H.button ! A.type_ "button" ! A.id "koppelcode-knop" $ "Toon koppelcode"
+    H.span ! A.id "koppelcode-uitleg" ! A.hidden "" $
+      "Deze code is eenmalig en alleen bedoeld voor Webwinkelverhuis."
+    H.input ! A.id "koppelcode-waarde" ! A.readonly "" ! A.hidden ""
+            ! customAttribute "aria-label" "Koppelcode"
+
+-- | Runs in the head, before Google Analytics: keeps the full redirect URL
+-- in @window.wwvKoppelUrl@ and removes its query from the address bar, so
+-- gtag never reports the code. See Note [Koppelcode].
+koppelcodeVerbergScript :: Text
+koppelcodeVerbergScript =
+  "(function(){if(/[?&]code=/.test(location.search)){"
+    <> "window.wwvKoppelUrl=location.href;"
+    <> "history.replaceState(null,'',location.pathname+location.hash);}})();"
+
+-- | Shows the koppelcode line when the head script kept a redirect URL; the
+-- button puts that URL in the read-only field. The value is set as a
+-- property, never as HTML.
+koppelcodeToonScript :: Text
+koppelcodeToonScript =
+  "(function(){var u=window.wwvKoppelUrl;if(!u){return;}"
+    <> "document.getElementById('koppelcode').hidden=false;"
+    <> "var knop=document.getElementById('koppelcode-knop');"
+    <> "knop.addEventListener('click',function(){"
+    <> "var veld=document.getElementById('koppelcode-waarde');"
+    <> "veld.value=u;veld.hidden=false;"
+    <> "document.getElementById('koppelcode-uitleg').hidden=false;"
+    <> "knop.hidden=true;veld.select();});})();"
+
+{- Note [Koppelcode]
+~~~~~~~~~~~~~~~~~~~~
+A client's own Shopify store (one not in our organisation, such as Asat's)
+refuses the client-credentials grant with shop_not_permitted, so the
+migration app gets its token through the authorization code grant. Its
+redirect URL is this page: after the merchant (or we, as collaborator)
+approve the app, Shopify sends the browser here with
+?code=..&hmac=..&shop=..&state=..&timestamp=.. . The script in the
+migration repo that exchanges the code needs that whole URL, to check the
+state and the hmac before it trades the code for a token.
+
+The page shows it only behind a small "Toon koppelcode" button, because
+the merchant sees this page too. The head script removes the query before
+Google Analytics loads, otherwise the code would end up in GA's page
+reports. The code alone is harmless (single use, and worthless without the
+app's client secret), but it has no business in analytics.
+-}
 
 -- | The full public price list on its own page. The homepage keeps a
 -- short teaser and links here; this page carries every line so a
