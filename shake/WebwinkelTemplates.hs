@@ -898,7 +898,7 @@ koppelcodeRegel =
     "De app is verbonden met je winkel. "
     H.button ! A.type_ "button" ! A.id "koppelcode-knop" $ "Toon koppelcode"
     H.span ! A.id "koppelcode-uitleg" ! A.hidden "" $
-      "Deze code is eenmalig en alleen bedoeld voor Webwinkelverhuis."
+      "Deze code is een minuut geldig en alleen bedoeld voor Webwinkelverhuis."
     H.input ! A.id "koppelcode-waarde" ! A.readonly "" ! A.hidden ""
             ! customAttribute "aria-label" "Koppelcode"
 
