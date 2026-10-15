@@ -890,7 +890,8 @@ appPage = webwinkelBaseTemplate appMeta $ do
           H.script $ H.preEscapedToHtml koppelcodeKopScript
       }
 
--- | The quiet line in the app page's hero that hands us the OAuth code.
+-- | The quiet line in the app page's hero that hands us Shopify's session
+-- token.
 -- See Note [Koppelcode].
 koppelcodeRegel :: Html
 koppelcodeRegel =
@@ -958,8 +959,9 @@ permanent token (token exchange).
 
 Timing must not matter (Jappie, 15 okt: he may get distracted between
 clicking and pasting). So inside the admin the page loads App Bridge and
-every click on the button asks shopify.idToken() for a fresh token, and the
-migration tool is built to ask again when a pasted token has expired. Every client store has
+every click on the button asks shopify.idToken() for a fresh token. The
+tool that trades it must ask for another paste when a token has expired,
+not exit. Every client store has
 its own app, so the App Bridge client id is read from the token's aud claim
 instead of being written into the page. Outside the admin App Bridge is not
 loaded; the button then shows the URL the page was opened with.
