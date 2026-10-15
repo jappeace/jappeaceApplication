@@ -1116,7 +1116,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
 
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Geldt deze prijs voor mij?"
-      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt je prijs vast. Geef je akkoord op je offerte, dan blijft die prijs staan en kun je tot een jaar later verhuizen. Wil je tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat je prijs zwart-op-wit."
+      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt je prijs vast. Wil je tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat je prijs zwart-op-wit."
       H.div ! A.class_ "cta-row" $ do
         H.a ! A.href offertePaginaLink ! A.class_ "cta-button" $ "Vraag een offerte aan"
         H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
