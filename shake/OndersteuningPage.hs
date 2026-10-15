@@ -58,7 +58,7 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
 
     H.section ! A.class_ "audit" $ do
       H.h2 "Fouten uit je verhuizing horen niet bij je pakket"
-      H.p "Is er bij je verhuizing iets niet goed overgezet, of werkt iets anders dan in je offerte staat? Dan herstellen we dat kosteloos, ook als je het pas na de livegang ontdekt. Dat valt onder de garantie op je verhuizing, niet onder je ondersteuning. Het gaat dus niet af van je hulpvragen of kleine aanpassingen."
+      H.p "Is er bij je verhuizing iets niet goed overgezet, of werkte iets bij de livegang al anders dan in je offerte staat? Dan herstellen we dat kosteloos, ook als je het pas na de livegang ontdekt. Dat valt onder de garantie op je verhuizing, niet onder je ondersteuning. Het gaat dus niet af van je hulpvragen of kleine aanpassingen."
       H.p "Je kunt zulke fouten tot twaalf maanden na de livegang melden, ook zonder ondersteuningspakket. Is er na de livegang iets gewijzigd door jou of door iemand anders? Dan telt het herstel daarvan als een gewone hulpvraag of kleine aanpassing uit je pakket."
 
     H.section ! A.class_ "audit" $ do
