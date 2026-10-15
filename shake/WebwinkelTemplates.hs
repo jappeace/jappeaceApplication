@@ -1450,7 +1450,7 @@ mijnwebwinkelFaq =
         H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
         "), zodat je geen bericht mist." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op. Dat kun je tot twaalf maanden na de livegang melden." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkt het anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Herstel na latere wijzigingen door jou, een ander, Shopify of een app valt daarbuiten." )
   , ( "Werkt het ook voor meertalige webshops?"
     , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en je nieuwe platform beide ondersteunen. Ook de vertaalde webadressen verhuizen mee." )
   , ( "Kan ik ook naar een ander platform dan Shopify migreren?"
@@ -1691,7 +1691,7 @@ ccvshopFaq =
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op. Dat kun je tot twaalf maanden na de livegang melden." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkt het anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Herstel na latere wijzigingen door jou, een ander, Shopify of een app valt daarbuiten." )
   , ( "Werkt het ook voor meertalige webshops?"
     , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en je doelplatform beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
@@ -1893,7 +1893,7 @@ lightspeedFaq =
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op. Dat kun je tot twaalf maanden na de livegang melden." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkt het anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Herstel na latere wijzigingen door jou, een ander, Shopify of een app valt daarbuiten." )
   , ( "Verlies ik mijn Google-posities?"
     , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al je links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Werkt het ook voor meertalige webshops?"
@@ -2069,7 +2069,7 @@ magentoFaq =
   , ( "Verlies ik mijn Google-posities?"
     , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al je links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren, en als er toch iets niet klopt, lossen we het gratis op. Dat kun je tot twaalf maanden na de livegang melden." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkt het anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Herstel na latere wijzigingen door jou, een ander, Shopify of een app valt daarbuiten." )
   , ( "Kunnen mijn klanten met hun oude wachtwoord inloggen?"
     , faqAnswerText "Nee, en wees op je hoede voor wie iets anders belooft: Shopify accepteert om veiligheidsredenen geen wachtwoorden van andere platformen. Wat wel kan, en wat wij doen: alle accounts verhuizen mee en je klanten zetten bij hun eerste bezoek in \233\233n stap een nieuw wachtwoord via een nette reset-flow. In de praktijk merken klanten daar nauwelijks iets van." )
   , ( "Werkt het ook voor meertalige shops en meerdere store views?"
