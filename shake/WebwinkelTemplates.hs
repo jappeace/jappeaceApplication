@@ -965,7 +965,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.h3 "Over de themakeuze"
         H.p "Kies je voor zelf inrichten, dan staat je shop na de migratie op een standaard Shopify-thema dat je zelf verzorgt of door een ontwerper naar keuze laat doen. Theming hoeft niet via ons; wij doen het ook en zijn er inmiddels aardig goed in. Probeer het gerust eerst zelf: je oude shop blijft gewoon draaien naast de nieuwe, dus je loopt geen risico. Kom je er niet uit, dan helpen we je alsnog."
         H.p $ H.preEscapedToHtml ("Bij uitstraling overzetten (&euro;749) benaderen we je huidige uitstraling zo dicht mogelijk; kleine aanpassingen op verzoek zitten erbij." :: Text)
-        H.p $ H.preEscapedToHtml ("Een volledig nieuw ontwerp maakt onze ontwerppartner; die stuurt daar een aparte offerte voor. Het uitwerken van dat ontwerp in je shop doen wij voor &euro;999." :: Text)
+        H.p $ H.preEscapedToHtml ("Een volledig nieuw ontwerp maakt onze ontwerppartner of een ontwerper naar keuze. Die stuurt daar een aparte offerte voor. Het uitwerken van dat ontwerp in je shop doen wij voor &euro;1.499." :: Text)
 
     H.section ! A.class_ "engagement" $ do
       H.h2 "De migratie"
@@ -1060,12 +1060,12 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
           H.td $ H.preEscapedToHtml ("Cursus Shopify (2 uur, 1-op-1, samen door je nieuwe shop)" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;300" :: Text)
         H.tr $ do
-          H.td $ H.preEscapedToHtml ("Volledig nieuw ontwerp uitwerken in je shop (het ontwerp zelf: aparte offerte van onze ontwerppartner)" :: Text)
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;999" :: Text)
+          H.td $ H.preEscapedToHtml ("Volledig nieuw ontwerp uitwerken in je shop (het ontwerp zelf: aparte offerte van onze ontwerppartner of een ontwerper naar keuze)" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1.499" :: Text)
         H.tr $ do
           H.td "Catalogus-brede teksttransformaties"
           H.td ! A.class_ "price-cell" $ "op aanvraag"
-      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat je shop op een standaard Shopify-thema dat je zelf inricht. De vormgeving hoeft niet via ons: je kunt het zelf doen of een ontwerper naar keuze inhuren. Wil je het uit handen geven, dan benaderen wij je huidige uitstraling zo dicht mogelijk (&euro;749) of werken wij een nieuw ontwerp van onze ontwerppartner uit in je shop (&euro;999, het ontwerp zelf via een aparte offerte van de partner)." :: Text)
+      H.p ! A.class_ "engagement-note" $ H.preEscapedToHtml ("Na de migratie staat je shop op een standaard Shopify-thema dat je zelf inricht. De vormgeving hoeft niet via ons: je kunt het zelf doen of een ontwerper naar keuze inhuren. Wil je het uit handen geven, dan benaderen wij je huidige uitstraling zo dicht mogelijk (&euro;749) of werken wij een nieuw ontwerp van onze ontwerppartner of een ontwerper naar keuze uit in je shop (&euro;1.499, het ontwerp zelf via een aparte offerte van de ontwerper)." :: Text)
       H.p ! A.class_ "engagement-note" $ "Kassa/point-of-sale zetten we bij je op locatie op. Ligt je winkel meer dan 30 minuten rijden van Kampen, dan kunnen we reiskosten rekenen. We lopen vooraf je kassa-apparatuur na, zodat je weet wat mee kan en wat vervangen moet. Daarna garanderen we dat de kassa op al die apparaten werkt. Liever zelf inrichten? Dan laat je dit onderdeel weg en betaal je ons er niets voor."
       H.p ! A.class_ "engagement-note" $ do
         H.preEscapedToHtml ("Je webshop loopt goed, maar je wilt niet alles zelf uitzoeken? Met ondersteuning heb je ook na de verhuizing iemand die je winkel kent, voor vragen, kleine aanpassingen en hulp bij storingen. Vanaf &euro;99 per maand, binnen de afspraken van je pakket. Regel je dit liever zelf, dan heb je geen abonnement nodig. " :: Text)
@@ -1079,10 +1079,11 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.li "SEO-redirects (301) voor elke oude URL, zodat je links en opgebouwde SEO meeverhuizen."
         H.li "Een testshop naast je draaiende winkel; DNS-overzet met zo min mogelijk downtime."
         H.li "Betaling pas na een succesvolle migratie."
+        H.li "Fouten uit de verhuizing herstellen we kosteloos, ook als je ze pas na de livegang ontdekt. Je meldt ze tot twaalf maanden na de livegang."
 
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Geldt deze prijs voor mij?"
-      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt je prijs vast. Wil je tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat je prijs zwart-op-wit."
+      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt je prijs vast. Geef je akkoord op je offerte, dan blijft die prijs staan en kun je tot een jaar later verhuizen. Wil je tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat je prijs zwart-op-wit."
       H.div ! A.class_ "cta-row" $ do
         H.a ! A.href offertePaginaLink ! A.class_ "cta-button" $ "Vraag een offerte aan"
         H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
@@ -2597,7 +2598,7 @@ webwinkelverhuisSitemap articles = T.unlines $
 webwinkelverhuisStaticPages :: [(Text, Day)]
 webwinkelverhuisStaticPages =
   [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 23)
-  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 14)
+  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 15)
   , ("https://webwinkelverhuis.nl/offerte.html", fromGregorian 2026 9 4)
   , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 9 2)
@@ -2609,7 +2610,7 @@ webwinkelverhuisStaticPages =
   , ("https://webwinkelverhuis.nl/waarom-lightspeed.html", fromGregorian 2026 8 23)
   , ("https://webwinkelverhuis.nl/over-ons.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/contact.html", fromGregorian 2026 8 8)
-  , ("https://webwinkelverhuis.nl/ondersteuning.html", fromGregorian 2026 10 14)
+  , ("https://webwinkelverhuis.nl/ondersteuning.html", fromGregorian 2026 10 15)
   ]
 
 webwinkelStaticSitemapEntry :: (Text, Day) -> Text

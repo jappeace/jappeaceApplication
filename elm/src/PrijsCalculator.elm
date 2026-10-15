@@ -177,11 +177,14 @@ themaOverzettenCenten =
 -- blijft buiten het totaal. Daarvoor stond het hele nieuwe ontwerp op
 -- "op aanvraag" en telde het als nul, wat de richtprijs te laag liet
 -- lezen voor precies de keuze die het meeste werk is.
+-- Sinds 8 okt 2026 is het uitwerken €1.499, voor elke ontwerper (Jappie:
+-- "it's a lot of extra work requiring my direct attention"; 15 okt: "it's
+-- the same price for us 1499"). De rekenhulp volgde pas op 15 okt.
 
 
 themaNieuwUitwerkenCenten : Int
 themaNieuwUitwerkenCenten =
-    99900
+    149900
 
 
 -- Decision: klantaccounts, orderhistorie, nieuwsbrief en voorraad zijn
@@ -1592,7 +1595,7 @@ themaRegels model =
             [ PrijsRegel "Uitstraling overzetten" themaOverzettenCenten Hoofdregel ]
 
         ThemaNieuw ->
-            [ PrijsRegel "Nieuw ontwerp uitwerken in je shop (het ontwerp zelf: aparte offerte van onze ontwerppartner)" themaNieuwUitwerkenCenten Hoofdregel ]
+            [ PrijsRegel "Nieuw ontwerp uitwerken in je shop (het ontwerp zelf: aparte offerte van onze ontwerppartner of een ontwerper naar keuze)" themaNieuwUitwerkenCenten Hoofdregel ]
 
 
 {-| De volledige lijst prijsregels voor de huidige keuzes. Eén bron voor zowel
@@ -1669,7 +1672,7 @@ themaNoot thema =
         ThemaNieuw ->
             [ p [ Attr.class "calc-note calc-note-nadruk" ]
                 [ strong [] [ text "Let op: het ontwerp zelf zit niet in dit totaal. " ]
-                , text "Een eigen ontwerp maakt onze ontwerppartner, die stuurt daar een aparte offerte voor. Wat wel in het totaal zit, is het uitwerken van dat ontwerp in je shop (\u{20AC}999)."
+                , text "Een eigen ontwerp maakt onze ontwerppartner of een ontwerper naar keuze, die stuurt daar een aparte offerte voor. Wat wel in het totaal zit, is het uitwerken van dat ontwerp in je shop (\u{20AC}1.499)."
                 ]
             ]
 

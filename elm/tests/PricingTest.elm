@@ -228,9 +228,9 @@ suite =
                             , domeinBijMijnwebwinkel = True
                         }
                     )
-        , test "nieuw ontwerp telt het uitwerken van 999 mee (het ontwerp zelf is de aparte offerte van de partner)" <|
+        , test "nieuw ontwerp telt het uitwerken van 1.499 mee (het ontwerp zelf is de aparte offerte van de ontwerper)" <|
             \_ ->
-                Expect.equal (109900 + 99900)
+                Expect.equal (109900 + 149900)
                     (totaalCenten { initieelModel | thema = ThemaNieuw })
         , test "onbekend bronplatform telt geen toeslag (op aanvraag)" <|
             \_ ->
