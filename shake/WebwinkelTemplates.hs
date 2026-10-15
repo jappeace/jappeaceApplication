@@ -1079,7 +1079,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.li "SEO-redirects (301) voor elke oude URL, zodat je links en opgebouwde SEO meeverhuizen."
         H.li "Een testshop naast je draaiende winkel; DNS-overzet met zo min mogelijk downtime."
         H.li "Betaling pas na een succesvolle migratie."
-        H.li "Fouten uit de verhuizing herstellen we kosteloos, ook als je ze pas na de livegang ontdekt. Je meldt ze tot twaalf maanden na de livegang."
+        H.li "Wat bij de livegang niet goed is overgezet of anders werkt dan in je offerte, herstellen we kosteloos, ook als je het pas later ontdekt. Je meldt het tot twaalf maanden na de livegang. Herstel na latere wijzigingen door jou, een ander, Shopify of een app valt erbuiten."
 
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Geldt deze prijs voor mij?"
