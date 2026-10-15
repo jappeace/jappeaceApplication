@@ -904,13 +904,16 @@ koppelcodeRegel =
 
 -- | Runs in the head, before Google Analytics. When Shopify opened the page
 -- with a session token it keeps that URL in @window.wwvKoppelUrl@, switches
--- Google Analytics off for this page view, and inside the admin loads App
--- Bridge for the app named in the token. See Note [Koppelcode].
+-- Google Analytics off for this page view, sends only the origin as referrer
+-- from here on, and inside the admin loads App Bridge for the app named in
+-- the token. See Note [Koppelcode].
 koppelcodeKopScript :: Text
 koppelcodeKopScript =
   "(function(){var q=location.search;if(!/[?&]id_token=/.test(q)){return;}"
     <> "window.wwvKoppelUrl=location.href;"
     <> "window['ga-disable-G-GD4S885G6F']=true;"
+    <> "var beleid=document.createElement('meta');beleid.name='referrer';beleid.content='origin';"
+    <> "document.head.appendChild(beleid);"
     <> "if(window.self===window.top){return;}"
     <> "var app;try{var t=new URLSearchParams(q).get('id_token').split('.')[1];"
     <> "app=JSON.parse(atob(t.replace(/-/g,'+').replace(/_/g,'/'))).aud;}catch(e){return;}"
@@ -949,21 +952,24 @@ refuses the client-credentials grant with shop_not_permitted. Our migration
 apps are embedded with this page as their App URL, so opening one in a
 store's admin loads it in an iframe with ?embedded=1&hmac=..&id_token=..
 &shop=.. . The id_token is a session token signed with the app's client
-secret, valid for about a minute; the migration tool's authorize-client-store
-command checks it and trades it for a permanent token (token exchange).
+secret, valid for about a minute; the migration tool
+(jappeace/mijn-webwinkel-migraine#700) checks it and trades it for a
+permanent token (token exchange).
 
 Timing must not matter (Jappie, 15 okt: he may get distracted between
 clicking and pasting). So inside the admin the page loads App Bridge and
-every click on the button asks shopify.idToken() for a fresh token; the
-command asks again when a pasted token has expired. Every client store has
+every click on the button asks shopify.idToken() for a fresh token, and the
+migration tool is built to ask again when a pasted token has expired. Every client store has
 its own app, so the App Bridge client id is read from the token's aud claim
 instead of being written into the page. Outside the admin App Bridge is not
 loaded; the button then shows the URL the page was opened with.
 
 The merchant sees this page too, so the code sits behind a small button.
 Google Analytics is switched off for a page view that carries a session
-token (Google's ga-disable flag, set before gtag loads), so the token never
-reaches GA's page reports; the gtag config itself stays as it is. The token
+token (Google's ga-disable flag, set before gtag loads), and that view sends
+only its origin as referrer: otherwise the next page on the site, where GA
+runs again, reports the whole URL with the token as page_referrer. The URL
+itself stays intact for App Bridge. The gtag config is unchanged. The token
 is worthless without the client secret, but it has no business in
 analytics.
 -}
