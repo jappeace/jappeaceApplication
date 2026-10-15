@@ -222,8 +222,8 @@ webwinkelBaseWith ogType includeFeed meta content =
       -- hieronder ooit rijker dan een kaal 'config'-aanroep, dan vervalt
       -- de grond onder deze keuze en moet hij opnieuw gemaakt worden.
       -- The page's own head comes before Google Analytics so a page can
-      -- scrub its URL before gtag reads it (app.html drops Shopify's OAuth
-      -- code, see 'koppelcodeVerbergScript').
+      -- scrub its URL before gtag reads it (app.html drops Shopify's
+      -- session token, see 'koppelcodeVerbergScript').
       pageMetaExtraHead meta
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-GD4S885G6F" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-GD4S885G6F');" :: Text)
@@ -902,16 +902,17 @@ koppelcodeRegel =
     H.input ! A.id "koppelcode-waarde" ! A.readonly "" ! A.hidden ""
             ! customAttribute "aria-label" "Koppelcode"
 
--- | Runs in the head, before Google Analytics: keeps the full redirect URL
--- in @window.wwvKoppelUrl@ and removes its query from the address bar, so
--- gtag never reports the code. See Note [Koppelcode].
+-- | Runs in the head, before Google Analytics: keeps the full URL Shopify
+-- opened the page with in @window.wwvKoppelUrl@ and removes its query from
+-- the address bar, so gtag never reports the session token. See
+-- Note [Koppelcode].
 koppelcodeVerbergScript :: Text
 koppelcodeVerbergScript =
-  "(function(){if(/[?&]code=/.test(location.search)){"
+  "(function(){if(/[?&]id_token=/.test(location.search)){"
     <> "window.wwvKoppelUrl=location.href;"
     <> "history.replaceState(null,'',location.pathname+location.hash);}})();"
 
--- | Shows the koppelcode line when the head script kept a redirect URL; the
+-- | Shows the koppelcode line when the head script kept Shopify's URL; the
 -- button puts that URL in the read-only field. The value is set as a
 -- property, never as HTML.
 koppelcodeToonScript :: Text
@@ -928,19 +929,19 @@ koppelcodeToonScript =
 {- Note [Koppelcode]
 ~~~~~~~~~~~~~~~~~~~~
 A client's own Shopify store (one not in our organisation, such as Asat's)
-refuses the client-credentials grant with shop_not_permitted, so the
-migration app gets its token through the authorization code grant. Its
-redirect URL is this page: after the merchant (or we, as collaborator)
-approve the app, Shopify sends the browser here with
-?code=..&hmac=..&shop=..&state=..&timestamp=.. . The script in the
-migration repo that exchanges the code needs that whole URL, to check the
-state and the hmac before it trades the code for a token.
+refuses the client-credentials grant with shop_not_permitted. The migration
+app is embedded with this page as its App URL, so opening the app in that
+store's admin loads it in an iframe with ?embedded=1&hmac=..&id_token=..
+&shop=.. . The id_token is a session token signed with the app's client
+secret, valid for about a minute; scripts/shopify-authorize.py in the
+migration repo checks it and trades it for a permanent token (token
+exchange). It needs the whole URL.
 
-The page shows it only behind a small "Toon koppelcode" button, because
-the merchant sees this page too. The head script removes the query before
-Google Analytics loads, otherwise the code would end up in GA's page
-reports. The code alone is harmless (single use, and worthless without the
-app's client secret), but it has no business in analytics.
+The page shows that URL only behind a small "Toon koppelcode" button,
+because the merchant sees this page too. The head script removes the query
+before Google Analytics loads, otherwise the token would end up in GA's page
+reports. It expires within a minute and is worthless without the client
+secret, but it has no business in analytics.
 -}
 
 -- | The full public price list on its own page. The homepage keeps a
