@@ -1112,11 +1112,11 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.li "SEO-redirects (301) voor elke oude URL, zodat je links en opgebouwde SEO meeverhuizen."
         H.li "Een testshop naast je draaiende winkel; DNS-overzet met zo min mogelijk downtime."
         H.li "Betaling pas na een succesvolle migratie."
-        H.li "Wat bij de livegang niet goed is overgezet of toen al anders werkte dan in je offerte, herstellen we kosteloos, ook als je het pas later ontdekt. Je meldt het tot twaalf maanden na de livegang. Herstel na latere wijzigingen door jou, een ander, Shopify of een app valt erbuiten."
+        H.li "Wat bij de livegang niet goed is overgezet of toen al anders werkte dan in je offerte, herstellen we kosteloos, ook als je het pas later ontdekt. Je meldt het tot twaalf maanden na de livegang. Fouten door latere wijzigingen van jou, een ander, Shopify of een app vallen erbuiten."
 
     H.section ! A.class_ "final-cta" $ do
       H.h2 "Geldt deze prijs voor mij?"
-      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt je prijs vast. Geef je akkoord op je offerte, dan blijft die prijs staan en kun je tot een jaar later verhuizen. Wil je tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat je prijs zwart-op-wit."
+      H.p "Deze prijzen kunnen we in de toekomst aanpassen, en de hier getoonde bedragen zijn een indicatie, geen garantie. Alleen een offerte legt je prijs vast. Wil je tegen deze prijzen verhuizen? Vraag nu een offerte aan, dan staat je prijs zwart-op-wit."
       H.div ! A.class_ "cta-row" $ do
         H.a ! A.href offertePaginaLink ! A.class_ "cta-button" $ "Vraag een offerte aan"
         H.a ! A.href webwinkelverhuisMeetLink ! A.class_ "cta-button-secondary" $ "Liever eerst sparren? Plan een gesprek"
@@ -1483,7 +1483,7 @@ mijnwebwinkelFaq =
         H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
         "), zodat je geen bericht mist." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkte iets toen al anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Herstel na latere wijzigingen door jou, een ander, Shopify of een app valt daarbuiten." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkte iets toen al anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Fouten door latere wijzigingen van jou, een ander, Shopify of een app vallen daarbuiten." )
   , ( "Werkt het ook voor meertalige webshops?"
     , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die MijnWebwinkel en je nieuwe platform beide ondersteunen. Ook de vertaalde webadressen verhuizen mee." )
   , ( "Kan ik ook naar een ander platform dan Shopify migreren?"
@@ -1724,7 +1724,7 @@ ccvshopFaq =
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkte iets toen al anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Herstel na latere wijzigingen door jou, een ander, Shopify of een app valt daarbuiten." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkte iets toen al anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Fouten door latere wijzigingen van jou, een ander, Shopify of een app vallen daarbuiten." )
   , ( "Werkt het ook voor meertalige webshops?"
     , faqAnswerText "Ja. Nederlands, Duits, Engels, Frans of een andere taal: het programma ondersteunt elke taalcombinatie die CCV Shop en je doelplatform beide ondersteunen." )
   , ( "Worden mijn klantaccounts overgezet?"
@@ -1926,7 +1926,7 @@ lightspeedFaq =
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja. Na de migratie wijs je je domein naar Shopify. Alle oude URLs worden automatisch doorgestuurd." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkte iets toen al anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Herstel na latere wijzigingen door jou, een ander, Shopify of een app valt daarbuiten." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkte iets toen al anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Fouten door latere wijzigingen van jou, een ander, Shopify of een app vallen daarbuiten." )
   , ( "Verlies ik mijn Google-posities?"
     , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al je links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Werkt het ook voor meertalige webshops?"
@@ -2102,7 +2102,7 @@ magentoFaq =
   , ( "Verlies ik mijn Google-posities?"
     , faqAnswerText "Elke oude URL krijgt automatisch een 301-redirect, zodat al je links en backlinks blijven werken en de opgebouwde SEO meeverhuist. Google kan na elke grote sitewijziging tijdelijk schommelen; het blijvende verlies uit de horrorverhalen komt door ontbrekende redirects, en dat dekken wij volledig af." )
   , ( "Wat als er iets niet klopt na de migratie?"
-    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkte iets toen al anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Herstel na latere wijzigingen door jou, een ander, Shopify of een app valt daarbuiten." )
+    , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkte iets toen al anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Fouten door latere wijzigingen van jou, een ander, Shopify of een app vallen daarbuiten." )
   , ( "Kunnen mijn klanten met hun oude wachtwoord inloggen?"
     , faqAnswerText "Nee, en wees op je hoede voor wie iets anders belooft: Shopify accepteert om veiligheidsredenen geen wachtwoorden van andere platformen. Wat wel kan, en wat wij doen: alle accounts verhuizen mee en je klanten zetten bij hun eerste bezoek in \233\233n stap een nieuw wachtwoord via een nette reset-flow. In de praktijk merken klanten daar nauwelijks iets van." )
   , ( "Werkt het ook voor meertalige shops en meerdere store views?"
