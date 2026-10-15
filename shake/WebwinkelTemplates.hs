@@ -222,8 +222,8 @@ webwinkelBaseWith ogType includeFeed meta content =
       -- hieronder ooit rijker dan een kaal 'config'-aanroep, dan vervalt
       -- de grond onder deze keuze en moet hij opnieuw gemaakt worden.
       -- The page's own head comes before Google Analytics so a page can
-      -- scrub its URL before gtag reads it (app.html drops Shopify's OAuth
-      -- code, see 'koppelcodeVerbergScript').
+      -- switch it off for a view before gtag loads (app.html does for a
+      -- view with Shopify's session token, see 'koppelcodeKopScript').
       pageMetaExtraHead meta
       H.script ! A.async "" ! A.src "https://www.googletagmanager.com/gtag/js?id=G-GD4S885G6F" $ mempty
       H.script $ H.preEscapedToHtml ("window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-GD4S885G6F');" :: Text)
@@ -887,10 +887,11 @@ appPage = webwinkelBaseTemplate appMeta $ do
       , pageMetaSwitchUrl   = Nothing
       , pageMetaExtraHead   = do
           H.meta ! A.name "robots" ! A.content "noindex"
-          H.script $ H.preEscapedToHtml koppelcodeVerbergScript
+          H.script $ H.preEscapedToHtml koppelcodeKopScript
       }
 
--- | The quiet line in the app page's hero that hands us the OAuth code.
+-- | The quiet line in the app page's hero that hands us Shopify's session
+-- token.
 -- See Note [Koppelcode].
 koppelcodeRegel :: Html
 koppelcodeRegel =
@@ -898,49 +899,81 @@ koppelcodeRegel =
     "De app is verbonden met je winkel. "
     H.button ! A.type_ "button" ! A.id "koppelcode-knop" $ "Toon koppelcode"
     H.span ! A.id "koppelcode-uitleg" ! A.hidden "" $
-      "Deze code is eenmalig en alleen bedoeld voor Webwinkelverhuis."
+      "Deze code is een minuut geldig en alleen bedoeld voor Webwinkelverhuis. Verlopen? Klik opnieuw."
     H.input ! A.id "koppelcode-waarde" ! A.readonly "" ! A.hidden ""
             ! customAttribute "aria-label" "Koppelcode"
 
--- | Runs in the head, before Google Analytics: keeps the full redirect URL
--- in @window.wwvKoppelUrl@ and removes its query from the address bar, so
--- gtag never reports the code. See Note [Koppelcode].
-koppelcodeVerbergScript :: Text
-koppelcodeVerbergScript =
-  "(function(){if(/[?&]code=/.test(location.search)){"
+-- | Runs in the head, before Google Analytics. When Shopify opened the page
+-- with a session token it keeps that URL in @window.wwvKoppelUrl@, switches
+-- Google Analytics off for this page view, sends only the origin as referrer
+-- from here on, and inside the admin loads App Bridge for the app named in
+-- the token. See Note [Koppelcode].
+koppelcodeKopScript :: Text
+koppelcodeKopScript =
+  "(function(){var q=location.search;if(!/[?&]id_token=/.test(q)){return;}"
     <> "window.wwvKoppelUrl=location.href;"
-    <> "history.replaceState(null,'',location.pathname+location.hash);}})();"
+    <> "window['ga-disable-G-GD4S885G6F']=true;"
+    <> "var beleid=document.createElement('meta');beleid.name='referrer';beleid.content='origin';"
+    <> "document.head.appendChild(beleid);"
+    <> "if(window.self===window.top){return;}"
+    <> "var app;try{var t=new URLSearchParams(q).get('id_token').split('.')[1];"
+    <> "app=JSON.parse(atob(t.replace(/-/g,'+').replace(/_/g,'/'))).aud;}catch(e){return;}"
+    <> "if(!/^[0-9a-f]{32}$/.test(app)){return;}"
+    <> "document.write('<meta name=\"shopify-api-key\" content=\"'+app+'\">'"
+    <> "+'<script src=\"https://cdn.shopify.com/shopifycloud/app-bridge.js\"><\\/script>');})();"
 
--- | Shows the koppelcode line when the head script kept a redirect URL; the
--- button puts that URL in the read-only field. The value is set as a
--- property, never as HTML.
+-- | Shows the koppelcode line when the head script kept Shopify's URL. Each
+-- click asks App Bridge for a fresh session token and puts the URL with that
+-- token in the read-only field, so the minute starts at the click. Without
+-- App Bridge, or when it gives no token within five seconds, it falls back
+-- to the URL the page was opened with. Values are set as properties, never
+-- as HTML.
 koppelcodeToonScript :: Text
 koppelcodeToonScript =
   "(function(){var u=window.wwvKoppelUrl;if(!u){return;}"
     <> "document.getElementById('koppelcode').hidden=false;"
     <> "var knop=document.getElementById('koppelcode-knop');"
-    <> "knop.addEventListener('click',function(){"
     <> "var veld=document.getElementById('koppelcode-waarde');"
-    <> "veld.value=u;veld.hidden=false;"
+    <> "function toon(waarde){veld.value=waarde;veld.hidden=false;"
     <> "document.getElementById('koppelcode-uitleg').hidden=false;"
-    <> "knop.hidden=true;veld.select();});})();"
+    <> "knop.textContent='Nieuwe koppelcode';veld.select();}"
+    <> "knop.addEventListener('click',function(){"
+    <> "if(!(window.shopify&&window.shopify.idToken)){toon(u);return;}"
+    <> "var klaar=false;"
+    <> "var reserve=setTimeout(function(){if(!klaar){klaar=true;toon(u);}},5000);"
+    <> "window.shopify.idToken().then(function(vers){if(klaar){return;}"
+    <> "klaar=true;clearTimeout(reserve);"
+    <> "var url=new URL(u);url.searchParams.set('id_token',vers);toon(url.href);"
+    <> "},function(){if(!klaar){klaar=true;clearTimeout(reserve);toon(u);}});});})();"
 
 {- Note [Koppelcode]
 ~~~~~~~~~~~~~~~~~~~~
 A client's own Shopify store (one not in our organisation, such as Asat's)
-refuses the client-credentials grant with shop_not_permitted, so the
-migration app gets its token through the authorization code grant. Its
-redirect URL is this page: after the merchant (or we, as collaborator)
-approve the app, Shopify sends the browser here with
-?code=..&hmac=..&shop=..&state=..&timestamp=.. . The script in the
-migration repo that exchanges the code needs that whole URL, to check the
-state and the hmac before it trades the code for a token.
+refuses the client-credentials grant with shop_not_permitted. Our migration
+apps are embedded with this page as their App URL, so opening one in a
+store's admin loads it in an iframe with ?embedded=1&hmac=..&id_token=..
+&shop=.. . The id_token is a session token signed with the app's client
+secret, valid for about a minute; the migration tool
+(jappeace/mijn-webwinkel-migraine#700) checks it and trades it for a
+permanent token (token exchange).
 
-The page shows it only behind a small "Toon koppelcode" button, because
-the merchant sees this page too. The head script removes the query before
-Google Analytics loads, otherwise the code would end up in GA's page
-reports. The code alone is harmless (single use, and worthless without the
-app's client secret), but it has no business in analytics.
+Timing must not matter (Jappie, 15 okt: he may get distracted between
+clicking and pasting). So inside the admin the page loads App Bridge and
+every click on the button asks shopify.idToken() for a fresh token. The
+tool that trades it must ask for another paste when a token has expired,
+not exit. Every client store has
+its own app, so the App Bridge client id is read from the token's aud claim
+instead of being written into the page. Outside the admin App Bridge is not
+loaded; the button then shows the URL the page was opened with.
+
+The merchant sees this page too, so the code sits behind a small button.
+Google Analytics is switched off for a page view that carries a session
+token (Google's ga-disable flag, set before gtag loads), and that view sends
+only its origin as referrer: otherwise the next page on the site, where GA
+runs again, reports the whole URL with the token as page_referrer. The URL
+itself stays intact for App Bridge. The gtag config is unchanged. The token
+is worthless without the client secret, but it has no business in
+analytics.
 -}
 
 -- | The full public price list on its own page. The homepage keeps a
