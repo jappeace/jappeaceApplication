@@ -13,6 +13,8 @@
 -- €99 (confirmed 14 October). On 14 October he also made both packages
 -- answer an urgent incident with an assessment and plan, and included every
 -- technical shop change required by new legislation at no extra cost.
+-- On 15 October he set the migration warranty at twelve months after go-live:
+-- migration errors are fixed free and never use up a package's allowance.
 --
 -- Decision: a module of its own instead of another page in
 -- 'WebwinkelTemplates', which is already far past the 1000-line limit.
@@ -53,6 +55,11 @@ ondersteuningPage = webwinkelBaseTemplate ondersteuningMeta $
       H.p "Een kleine aanpassing is één afgebakende wijziging in je bestaande webshop. Denk aan een app installeren en instellen, een banner vervangen of een kleine wijziging aan de indeling of opmaak van je thema. We spreken vooraf af wat het resultaat wordt en wanneer we het uitvoeren."
       H.p "Het aantal inbegrepen vragen en kleine aanpassingen staat bij je pakket. We behandelen die in beide pakketten van maandag tot en met vrijdag, van 09:00 tot 17:00, behalve op Nederlandse feestdagen. Ongebruikte vragen en aanpassingen gaan niet mee naar de volgende maand."
       H.p $ H.preEscapedToHtml ("Heb je in een maand meer nodig? Een extra hulpvraag kost &euro;39 exclusief btw. Doorvragen over hetzelfde onderwerp hoort daar ook bij. Een extra kleine aanpassing kost &euro;79 exclusief btw. Extra kosten spreken we altijd vooraf met je af." :: Text)
+
+    H.section ! A.class_ "audit" $ do
+      H.h2 "Fouten uit je verhuizing horen niet bij je pakket"
+      H.p "Is er bij je verhuizing iets niet goed overgezet, of werkte iets bij de livegang al anders dan in je offerte staat? Dan herstellen we dat kosteloos, ook als je het pas na de livegang ontdekt. Dat valt onder de garantie op je verhuizing, niet onder je ondersteuning. Het gaat dus niet af van je hulpvragen of kleine aanpassingen."
+      H.p "Je kunt zulke fouten tot twaalf maanden na de livegang melden, ook zonder ondersteuningspakket. Is er na de livegang iets gewijzigd door jou, door iemand anders of door een update van Shopify of een app? Dan telt het herstel daarvan als een gewone hulpvraag of kleine aanpassing uit je pakket, of als urgente storing als klanten niet meer kunnen bestellen of betalen."
 
     H.section ! A.class_ "audit" $ do
       H.h2 "En als er toch iets misgaat"
