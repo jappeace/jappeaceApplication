@@ -444,23 +444,42 @@ shopifyPrijspeil = "augustus 2026"
 shopifyPrijzenUrl :: H.AttributeValue
 shopifyPrijzenUrl = "https://www.shopify.com/nl/prijzen"
 
+-- | Welke productprijs de prijs-kaart noemt. Vanaf CCV Shop kosten de
+-- producten niets; zie de Decision bij productprijs in
+-- elm/src/PrijsCalculator.elm.
+data KaartProductprijs
+  = KaartProductstaffel
+  | KaartCcvZonderProductkosten
+
 -- | De gedeelde prijzen-sectie: de prijs-kaart uit het joepa-ontwerp, met de
 -- rekenhulp-knop als vervolgstap en de betaal-na-succes-garantie eronder.
-prijzen :: Html
-prijzen = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
+prijzen :: KaartProductprijs -> Html
+prijzen productprijs = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
   H.div ! A.class_ "prijs-kaart" $ do
     H.p ! A.class_ "wat" $ "Volledige migratie"
     H.p ! A.class_ "prijs" $ do
       H.preEscapedToHtml ("vanaf &euro;" <> migratieBasisprijsEuro <> " ")
       H.small "eenmalig"
-    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product." :: Text)
+    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. " <> kaartProductenZin productprijs)
     H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Klantaccounts (met hun spaarpunten), bestelgeschiedenis en nieuwsbrief-adressen neem je mee voor &euro;100 per onderdeel tot 1.000 stuks, daarboven per stuk. Extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
-    H.a ! A.href "/prijzen.html#rekenhulp" ! A.class_ "cta-button" $ "Bereken direct je prijs"
+    H.a ! A.href (kaartRekenhulpLink productprijs) ! A.class_ "cta-button" $ "Bereken direct je prijs"
     H.p ! A.class_ "garantie" $ do
       H.preEscapedToHtml vinkjeSvg
       " Je betaalt pas na een succesvolle migratie"
 
 
+
+kaartProductenZin :: KaartProductprijs -> Text
+kaartProductenZin productprijs = case productprijs of
+  KaartProductstaffel -> "Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product."
+  KaartCcvZonderProductkosten -> "Je producten zetten we vanaf CCV Shop over zonder kosten per product."
+
+-- | De CCV-variant vult de rekenhulp voor met CCV Shop, anders toont die de
+-- productstaffel van MijnWebwinkel.
+kaartRekenhulpLink :: KaartProductprijs -> H.AttributeValue
+kaartRekenhulpLink productprijs = case productprijs of
+  KaartProductstaffel -> "/prijzen.html#rekenhulp"
+  KaartCcvZonderProductkosten -> "/prijzen.html?bron=ccv#rekenhulp"
 
 webwinkelIndexPage :: Html
 webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
@@ -573,7 +592,7 @@ webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
     -- confidence. The offerte remains the binding guarantee, the
     -- disclaimer says so plainly so an updated price is never a broken
     -- promise.
-    prijzen
+    prijzen KaartProductstaffel
     H.section ! A.class_ "about" ! A.id "vragen" $ do
       H.h2 "Veelgestelde vragen"
       H.div ! A.class_ "faq" $ mapM_ renderFaqItemCollapsible homeFaq
@@ -1034,7 +1053,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
     -- standaard-prijslijst.org en elm/src/PrijsCalculator.elm.
     H.section ! A.class_ "engagement" $ do
       H.h2 "Al zelf begonnen? (CCV Shop, Lightspeed)"
-      H.p $ H.preEscapedToHtml ("Heb je de productexport van CCV Shop of Lightspeed al zelf in Shopify ge&iuml;mporteerd? Die export neemt je categorie&euml;n, productopties met meerprijs en pagina&apos;s niet mee, en zet je producten soms twee keer neer. Dan betaal je niet voor het overzetten van producten, maar alleen voor de afronding. Kies in de rekenhulp hierboven &bdquo;mijn producten staan al in Shopify&rdquo; om dit door te rekenen." :: Text)
+      H.p $ H.preEscapedToHtml ("Heb je de productexport van CCV Shop of Lightspeed al zelf in Shopify ge&iuml;mporteerd? Die export neemt je categorie&euml;n, productopties met meerprijs en pagina&apos;s niet mee, en zet je producten soms twee keer neer. Dan betaal je alleen voor de afronding. Kies in de rekenhulp hierboven &bdquo;mijn producten staan al in Shopify&rdquo; om dit door te rekenen." :: Text)
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
           H.td $ H.preEscapedToHtml ("Collecties en menu herstellen: de categorieboom van je oude shop, elk product in de juiste collecties, dubbele import opgeruimd" :: Text)
@@ -1433,7 +1452,7 @@ mijnwebwinkelMigrationPage = webwinkelBaseTemplate migrationMeta $
       ]
 
     -- Pricing
-    prijzen
+    prijzen KaartProductstaffel
 
     -- FAQ
     H.section ! A.class_ "about" $ do
@@ -1643,7 +1662,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       ]
 
     -- Pricing
-    prijzen
+    prijzen KaartCcvZonderProductkosten
     -- Open kaart bij de voorbeeldwinkels (winkelier-review 23 aug): beide
     -- cases zijn MWW-migraties; dat benoemen we in plaats van het te
     -- verstoppen, met de aanpak als brug.
@@ -1757,7 +1776,7 @@ ccvshopFaq =
   , ( "Kan ik de nieuwe shop straks zelf beheren?"
     , faqAnswerHtml $ do
         "Ja, daar is Shopify juist op gebouwd: producten toevoegen, prijzen wijzigen en een banner plaatsen doe je zonder technische kennis. Wil je een vliegende start, dan is er een cursus Shopify van twee uur, \233\233n-op-\233\233n door je eigen nieuwe shop (zie "
-        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        H.a ! A.href "/prijzen.html?bron=ccv#rekenhulp" $ "de rekenhulp"
         ")." )
   ]
 
@@ -1856,7 +1875,7 @@ lightspeedMigrationPage = webwinkelBaseTemplate lightspeedMeta $
       ]
 
     -- Pricing
-    prijzen
+    prijzen KaartProductstaffel
     -- Open kaart bij de voorbeeldwinkels (winkelier-review 23 aug): beide
     -- cases zijn MWW-migraties; dat benoemen we in plaats van het te
     -- verstoppen, met de aanpak als brug.
@@ -2045,7 +2064,7 @@ magentoMigrationPage = webwinkelBaseTemplate magentoMeta $
       ]
 
     -- Pricing
-    prijzen
+    prijzen KaartProductstaffel
 
     -- Why us
     waaromViaOnsSectie
@@ -2193,7 +2212,7 @@ zilvercmsMigrationPage = webwinkelBaseTemplate zilvercmsMeta $
       , HoeHetWerktStap "DNS-overzet" "Ben je er klaar voor? Dan wijzen we je domein op de nieuwe shop en ben je verhuisd. We houden de downtime zo klein mogelijk."
       ]
 
-    prijzen
+    prijzen KaartProductstaffel
 
     waaromViaOnsSectie
       (WaaromBeeld "/assets/beeld/stock-productfoto-raam.jpg"
