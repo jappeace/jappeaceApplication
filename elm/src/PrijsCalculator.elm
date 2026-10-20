@@ -42,7 +42,9 @@ strategy/standaard-prijslijst.org) en de tabel op /prijzen: een vaste basis
 van €999 voor de overhead van elke migratie, daarbovenop elke
 productvertaling (producten maal talen) vanaf de eerste in een aflopende
 staffel per vijfhonderd (€0,20, €0,15, €0,15, €0,10, daarna €0,10), plus
-€250 configuratie per extra taal. De modules die met de shop meegroeien
+€250 configuratie per extra taal. Vanaf CCV Shop vervalt die staffel: de
+producten kosten daar niets, de basis en de taalconfiguratie blijven. De
+modules die met de shop meegroeien
 (klantaccounts, orderhistorie, nieuwsbrief, voorraad) kosten €100 met de
 eerste 1.000 items inbegrepen en daarboven een aflopend tarief per item;
 de bezoeker vult daarvoor een schatting van het aantal in. Spaarpunten
@@ -941,9 +943,46 @@ extraProductVertalingen model =
     Basics.max 0 (productVertalingen model - inbegrepenProducten)
 
 
+-- Decision: vanaf CCV Shop kosten de producten niets (besluit Jappie 20
+-- okt 2026). Bij MijnWebwinkel concurreert de staffel met handmatig
+-- overtypen, bij CCV Shop met de geautomatiseerde CSV-export. Voorheen
+-- alleen €0 met het afrondingsvinkje (21 sep), maar ook wie nog niet
+-- importeerde, kan die export zelf draaien. Het besluit noemde Lightspeed niet.
+
+
+{-| Rekenen we het overzetten van de producten per product of niet? -}
+type Productprijs
+    = ProductenPerStaffel
+    | ProductenZonderKosten
+
+
+productprijs : BronPlatform -> Productprijs
+productprijs bron =
+    case bron of
+        BronCcvShop ->
+            ProductenZonderKosten
+
+        BronMijnwebwinkel ->
+            ProductenPerStaffel
+
+        BronLightspeed ->
+            ProductenPerStaffel
+
+        BronWoocommerce ->
+            ProductenPerStaffel
+
+        BronAnders ->
+            ProductenPerStaffel
+
+
 extraProductVertalingenCenten : Model -> Int
 extraProductVertalingenCenten model =
-    segmentenCenten (productStaffelSegmenten (productVertalingen model))
+    case productprijs model.bron of
+        ProductenPerStaffel ->
+            segmentenCenten (productStaffelSegmenten (productVertalingen model))
+
+        ProductenZonderKosten ->
+            0
 
 
 -- STAFFELSEGMENTEN
@@ -1510,7 +1549,9 @@ segmentRegel segment =
 
 {-| De productpost: een hoofdregel met het totaal en de telling, daaronder
 per staffelstap een subregel. Bij meer talen telt elk product per taal, dus
-dan heet de telling productvertalingen. Zonder producten geen regels. -}
+dan heet de telling productvertalingen. Zonder producten geen regels; zonder
+productkosten alleen de hoofdregel op nul, zodat de bezoeker ziet dat zijn
+producten wel meegaan. -}
 productRegels : Model -> List PrijsRegel
 productRegels model =
     let
@@ -1521,8 +1562,13 @@ productRegels model =
         []
 
     else
-        PrijsRegel (productLabel model vertalingen) (extraProductVertalingenCenten model) Hoofdregel
-            :: List.map segmentRegel (productStaffelSegmenten vertalingen)
+        case productprijs model.bron of
+            ProductenPerStaffel ->
+                PrijsRegel (productLabel model vertalingen) (extraProductVertalingenCenten model) Hoofdregel
+                    :: List.map segmentRegel (productStaffelSegmenten vertalingen)
+
+            ProductenZonderKosten ->
+                [ PrijsRegel (productLabel model vertalingen ++ ": geen kosten vanaf " ++ bronOmschrijving model.bron) 0 Hoofdregel ]
 
 
 productLabel : Model -> Int -> String
@@ -1696,7 +1742,7 @@ bronNoot bron =
 
         BronCcvShop ->
             [ p [ Attr.class "calc-note" ]
-                [ text "CCV Shop heeft een productexport, maar die neemt je categorieën, productopties en pagina's niet mee. Al zelf geïmporteerd? Vink dat hierboven aan, dan rekenen we alleen de afronding." ]
+                [ text "Vanaf CCV Shop rekenen we niets voor je producten, want die kun je met de CCV-export ook zelf overzetten. Je betaalt voor wat die export niet meeneemt: je categorieën, productopties en pagina's. Al zelf geïmporteerd? Vink dat hierboven aan, dan rekenen we alleen de afronding." ]
             ]
 
         BronLightspeed ->
@@ -1900,7 +1946,12 @@ productenHint model =
         "telt niet mee in de prijs: die producten staan er al"
 
     else
-        "een schatting is genoeg: bij de offerte tellen we het exacte aantal voor je na"
+        case productprijs model.bron of
+            ProductenPerStaffel ->
+                "een schatting is genoeg: bij de offerte tellen we het exacte aantal voor je na"
+
+            ProductenZonderKosten ->
+                "vanaf " ++ bronOmschrijving model.bron ++ " rekenen we niets per product"
 
 
 

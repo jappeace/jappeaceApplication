@@ -236,10 +236,28 @@ suite =
             \_ ->
                 Expect.equal 109900
                     (totaalCenten { initieelModel | bron = BronAnders })
-        , test "CCV-bron rekent geen toeslag (alleen eerste import is werk)" <|
+        , test "CCV-bron rekent niets per product: 5.000 producten kosten de basis van 999" <|
+            \_ ->
+                Expect.equal 99900
+                    (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop }))
+        , test "CCV-bron in 3 talen: alleen de taalconfiguratie telt, 999 + 2 x 250" <|
+            \_ ->
+                Expect.equal 149900
+                    (totaalCenten (metProducten 2400 3 { initieelModel | bron = BronCcvShop }))
+        , test "CCV-bron: voorraad blijft per product tellen, 999 + 100 + 4.000 x 5ct" <|
+            \_ ->
+                Expect.equal 129900
+                    (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop, voorraad = True }))
+        , test "CCV-bron: de productregel staat op 0 zonder staffelstappen eronder" <|
+            \_ ->
+                Expect.equal [ ( Hoofdregel, 99900 ), ( Hoofdregel, 0 ) ]
+                    (List.map (\regel -> ( regel.niveau, regel.centen ))
+                        (prijsRegels (metProducten 5000 1 { initieelModel | bron = BronCcvShop }))
+                    )
+        , test "Lightspeed-bron rekent de productstaffel wel: 500 producten = 1.099" <|
             \_ ->
                 Expect.equal 109900
-                    (totaalCenten { initieelModel | bron = BronCcvShop })
+                    (totaalCenten { initieelModel | bron = BronLightspeed })
         , test "reviews overzetten voegt 150 toe" <|
             \_ ->
                 Expect.equal 124900

@@ -1015,6 +1015,10 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.tr $ do
           H.td "Alles boven de 1.500: hoe groter je catalogus, hoe goedkoper per product"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,10 per product" :: Text)
+        -- Zie de Decision bij productprijs in elm/src/PrijsCalculator.elm.
+        H.tr $ do
+          H.td "Komt je shop van CCV Shop? Dan kosten je producten niets"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0" :: Text)
         H.tr $ do
           H.td "Extra taal: configuratie, per taal"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
@@ -1564,7 +1568,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- is in the b2b setup"), dan collecties, redirects en opties.
     H.section ! A.class_ "for-who" ! A.id "zelf-begonnen" $ do
       H.h2 "Al zelf begonnen? Wij maken het af"
-      H.p $ H.preEscapedToHtml ("CCV Shop heeft een productexport en Shopify importeert die. Veel winkeliers zetten hun producten daarom zelf over, en lopen dan vast op de rest. Dat is geen falen: de export neemt het gewoon niet mee. Je betaalt bij ons dan niet voor producten, maar alleen voor de afronding, per onderdeel." :: Text)
+      H.p $ H.preEscapedToHtml ("CCV Shop heeft een productexport en Shopify importeert die. Veel winkeliers zetten hun producten daarom zelf over, en lopen dan vast op de rest. Dat is geen falen: de export neemt het gewoon niet mee. Voor je producten betaal je vanaf CCV Shop bij ons niets, ook niet als wij ze overzetten. Ben je al begonnen, dan betaal je alleen voor de afronding, per onderdeel." :: Text)
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
@@ -1711,7 +1715,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
 ccvshopFaq :: [(FaqQuestion, FaqAnswer)]
 ccvshopFaq =
   [ ( "Ik heb mijn producten al zelf in Shopify gezet. Kunnen jullie de rest doen?"
-    , faqAnswerText "Ja, en dat komt vaak voor: de CCV-export en de Shopify-import zijn geen probleem, de rest wel. Je betaalt dan niet voor het overzetten van producten. Wij herstellen de collecties en het menu, zetten de 301-redirects en de SEO-velden, verhuizen je pagina's en nieuwsberichten en zetten productopties met meerprijs terug als varianten. Elk onderdeel heeft een vaste prijs, je kiest wat je nodig hebt. Je producten blijven staan waar ze staan." )
+    , faqAnswerText "Ja, en dat komt vaak voor: de CCV-export en de Shopify-import zijn geen probleem, de rest wel. Voor je producten betaal je vanaf CCV Shop niets. Wij herstellen de collecties en het menu, zetten de 301-redirects en de SEO-velden, verhuizen je pagina's en nieuwsberichten en zetten productopties met meerprijs terug als varianten. Elk onderdeel heeft een vaste prijs, je kiest wat je nodig hebt. Je producten blijven staan waar ze staan." )
   , ( "Wat neemt de CCV-export niet mee?"
     , faqAnswerText "De koppeling van producten aan categorieën, keuzes met meerprijs (zoals een grotere harde schijf erbij), je informatiepagina's en nieuwsberichten, en de doorverwijzingen van je oude adressen. Wie twee keer importeert, krijgt bovendien elk product dubbel. Meta-titels en -beschrijvingen komen soms mee en soms niet. Al die punten lezen wij rechtstreeks uit je CCV Shop." )
   , ( "Ik heb ook een groothandel-shop. Kan dat één shop worden met zakelijke prijzen?"
@@ -2631,11 +2635,11 @@ webwinkelverhuisSitemap articles = T.unlines $
 webwinkelverhuisStaticPages :: [(Text, Day)]
 webwinkelverhuisStaticPages =
   [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 23)
-  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 15)
+  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 20)
   , ("https://webwinkelverhuis.nl/offerte.html", fromGregorian 2026 9 4)
   , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 10 15)
-  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 10 15)
+  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 10 20)
   , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 10 15)
   , ("https://webwinkelverhuis.nl/migrate-magento.html", fromGregorian 2026 10 15)
   , ("https://webwinkelverhuis.nl/migrate-zilvercms.html", fromGregorian 2026 9 4)
