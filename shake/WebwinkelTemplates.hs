@@ -446,7 +446,7 @@ shopifyPrijzenUrl = "https://www.shopify.com/nl/prijzen"
 
 -- | Welke staffel de prijs-kaart noemt. Vanaf CCV Shop telt de staffel
 -- doorverwezen productlinks in plaats van producten; zie de Decision bij
--- linkStaffelTredenPerHonderd in elm/src/PrijsCalculator.elm.
+-- linkStaffelTredenCenten in elm/src/PrijsCalculator.elm.
 data KaartProductprijs
   = KaartProductstaffel
   | KaartCcvLinkstaffel
@@ -474,7 +474,7 @@ prijzen productprijs = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
 kaartInbegrepenTekst :: KaartProductprijs -> Text
 kaartInbegrepenTekst productprijs = case productprijs of
   KaartProductstaffel -> "De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product."
-  KaartCcvLinkstaffel -> "De vaste basis: categorie&euml;n en pagina&apos;s met hun redirects, standaardthema en de begeleiding. Per product rekenen we vanaf CCV Shop niets. Daarbovenop tellen de oude productlinks die we doorverwijzen, vanaf &euro;1,20 per 100 links, en hoe groter je catalogus, hoe goedkoper per link."
+  KaartCcvLinkstaffel -> "De vaste basis: categorie&euml;n en pagina&apos;s met hun redirects, standaardthema en de begeleiding. Per product rekenen we vanaf CCV Shop niets. Daarbovenop telt elke oude productlink die we doorverwijzen, vanaf 4 cent, en hoe groter je catalogus, hoe goedkoper per link."
 
 -- | De CCV-variant vult de rekenhulp voor met CCV Shop, anders toont die de
 -- productstaffel van MijnWebwinkel.
@@ -1036,16 +1036,19 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.tr $ do
           H.td "Alles boven de 1.500: hoe groter je catalogus, hoe goedkoper per product"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,10 per product" :: Text)
-        -- Zie de Decision bij linkStaffelTredenPerHonderd in elm/src/PrijsCalculator.elm.
+        -- Zie de Decision bij linkStaffelTredenCenten in elm/src/PrijsCalculator.elm.
         H.tr $ do
           H.td "Komt je shop van CCV Shop? Dan rekenen we niet per product maar per oude productlink die we doorverwijzen, de eerste vijfhonderd"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;1,20 per 100 links" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,04 per link" :: Text)
         H.tr $ do
           H.td "CCV Shop, van 501 tot 1.500 links"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,90 per 100 links" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,03 per link" :: Text)
         H.tr $ do
-          H.td "CCV Shop, alles boven de 1.500 links"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,60 per 100 links" :: Text)
+          H.td "CCV Shop, van 1.501 tot 2.000 links"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,02 per link" :: Text)
+        H.tr $ do
+          H.td "CCV Shop, alles boven de 2.000 links"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,01 per link" :: Text)
         H.tr $ do
           H.td "Extra taal: configuratie, per taal"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
@@ -1595,7 +1598,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- is in the b2b setup"), dan collecties, redirects en opties.
     H.section ! A.class_ "for-who" ! A.id "zelf-begonnen" $ do
       H.h2 "Al zelf begonnen? Wij maken het af"
-      H.p $ H.preEscapedToHtml ("CCV Shop heeft een productexport en Shopify importeert die. Veel winkeliers zetten hun producten daarom zelf over, en lopen dan vast op de rest. Dat is geen falen: de export neemt het gewoon niet mee. Zetten wij je producten over, dan betaal je vanaf CCV Shop niet per product, alleen hooguit &euro;1,20 per 100 oude productlinks die we doorverwijzen. Ben je al begonnen, dan betaal je alleen voor de afronding, per onderdeel." :: Text)
+      H.p $ H.preEscapedToHtml ("CCV Shop heeft een productexport en Shopify importeert die. Veel winkeliers zetten hun producten daarom zelf over, en lopen dan vast op de rest. Dat is geen falen: de export neemt het gewoon niet mee. Zetten wij je producten over, dan betaal je vanaf CCV Shop niet per product, alleen een paar cent per oude productlink die we doorverwijzen. Ben je al begonnen, dan betaal je alleen voor de afronding, per onderdeel." :: Text)
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"

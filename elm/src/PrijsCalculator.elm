@@ -7,7 +7,6 @@ port module PrijsCalculator exposing
     , PrijsRegel
     , Regelniveau(..)
     , StaffelSegment
-    , Tarief(..)
     , ThemaKeuze(..)
     , bronKeuzes
     , bronNaarWaarde
@@ -44,8 +43,8 @@ van €999 voor de overhead van elke migratie, daarbovenop elke
 productvertaling (producten maal talen) vanaf de eerste in een aflopende
 staffel per vijfhonderd (€0,20, €0,15, €0,15, €0,10, daarna €0,10), plus
 €250 configuratie per extra taal. Vanaf CCV Shop telt in plaats van elk
-product elke oude productlink die we doorverwijzen, per honderd links in
-treden van vijfhonderd (€1,20, €0,90, €0,90, €0,60, daarna €0,60). De
+product elke oude productlink die we doorverwijzen, in treden van
+vijfhonderd van €0,04, €0,03, €0,03, €0,02 en daarna €0,01. De
 modules die met de shop meegroeien
 (klantaccounts, orderhistorie, nieuwsbrief, voorraad) kosten €100 met de
 eerste 1.000 items inbegrepen en daarboven een aflopend tarief per item;
@@ -162,25 +161,26 @@ staffelBodemCenten =
 -- plaats van producten (besluit Jappie 21 okt 2026, jappiesoft
 -- pricing-business-model.org, sectie "linktypist"). De export zet de
 -- producten over; met de hand blijft per oude productlink het nieuwe adres
--- opzoeken, volgens Jappie zo'n 50 seconden. De concurrent is het
--- gemiddelde loon in een lagelonenland (Bangladesh, Sri Lanka: €0,62 tot
--- €1,00 per uur naar bron en werkweek, rond €0,90 in het midden), dus rond
--- 1,25 cent per link, en net als bij de productstaffel twee keer zo snel
--- na 1.500. Wij rekenen per trede net onder dat midden, per honderd links
--- omdat het onder de cent zakt. De redirects van productlinks gaan
--- vanaf CCV van de basis naar deze staffel; die van categorieën en
--- pagina's blijven in de basis. Afgewezen: producten gratis en de links in
--- de basis (PR #219, 20 okt), want dan groeit de prijs niet met de shop.
+-- opzoeken, zo'n 50 seconden. Concurrent is een geschoolde kracht in een
+-- lagelonenland, minstens $5 per uur want inhuren kost moeite (Jappie): zo'n
+-- 6 cent per link. Wij zitten daaronder met 4, 3, 2 en 1 cent; de treden
+-- dalen omdat hij onderweg sneller wordt. Afgewezen: het gemiddelde loon
+-- daar (€1,20 tot €0,60 per 100 links), want zo iemand huur je niet in.
+-- De redirects van productlinks gaan vanaf CCV dus van de basis naar deze
+-- staffel; die van categorieën en pagina's blijven in de basis.
+-- Alternatief overgewogen: producten gratis en de links in de basis
+-- (PR #219, 20 okt); afgewezen omdat de prijs dan niet meer met de omvang
+-- van de shop meegroeit.
 
 
-linkStaffelTredenPerHonderd : List Int
-linkStaffelTredenPerHonderd =
-    [ 120, 90, 90, 60 ]
+linkStaffelTredenCenten : List Int
+linkStaffelTredenCenten =
+    [ 4, 3, 3, 2 ]
 
 
-linkStaffelBodemPerHonderd : Int
-linkStaffelBodemPerHonderd =
-    60
+linkStaffelBodemCenten : Int
+linkStaffelBodemCenten =
+    1
 
 
 tredeGrootte : Int
@@ -974,7 +974,7 @@ extraProductVertalingen model =
 -- okt 2026). Bij MijnWebwinkel concurreert de staffel met handmatig
 -- overtypen, bij CCV Shop met de geautomatiseerde CSV-export, ook voor wie
 -- nog niet zelf importeerde. Sinds 21 okt telt daar de linkstaffel, zie
--- linkStaffelTredenPerHonderd. Het besluit noemde Lightspeed niet.
+-- linkStaffelTredenCenten. Het besluit noemde Lightspeed niet.
 
 
 {-| Wat de staffel van de productpost telt: overgezette producten, of vanaf
@@ -1030,37 +1030,30 @@ nooit uit elkaar kunnen lopen. -}
 type alias StaffelSegment =
     { van : Int
     , tot : Int
-    , tarief : Tarief
+    , tariefCenten : Int
     }
-
-
-{-| De linkstaffel vanaf CCV Shop zakt onder de cent per link, dus die
-rekent per honderd items; de andere staffels per item. -}
-type Tarief
-    = CentenPerItem Int
-    | CentenPerHonderdItems Int
 
 
 {-| Verdeel 'aantal' items, te beginnen bij itemnummer 'start', over de
 treden (omvang, tarief) en daarna de bodem. Lege treden en een aantal van
 nul geven geen segmenten. -}
-segmentenVanTreden : Int -> Int -> List ( Int, Tarief ) -> Tarief -> List StaffelSegment
-segmentenVanTreden start aantal treden bodem =
+segmentenVanTreden : Int -> Int -> List ( Int, Int ) -> Int -> List StaffelSegment
+segmentenVanTreden start aantal treden bodemCenten =
     if aantal <= 0 then
         []
 
     else
         case treden of
             [] ->
-                [ { van = start, tot = start + aantal - 1, tarief = bodem } ]
+                [ { van = start, tot = start + aantal - 1, tariefCenten = bodemCenten } ]
 
             ( omvang, tarief ) :: rest ->
                 let
                     inDezeTrede =
                         Basics.min aantal omvang
                 in
-                { van = start, tot = start + inDezeTrede - 1, tarief = tarief }
-                    :: segmentenVanTreden (start + inDezeTrede) (aantal - inDezeTrede) rest bodem
+                { van = start, tot = start + inDezeTrede - 1, tariefCenten = tarief }
+                    :: segmentenVanTreden (start + inDezeTrede) (aantal - inDezeTrede) rest bodemCenten
 
 
 {-| Twee opeenvolgende treden met hetzelfde tarief leest de bezoeker als
@@ -1069,7 +1062,7 @@ voegGelijkeSegmentenSamen : List StaffelSegment -> List StaffelSegment
 voegGelijkeSegmentenSamen segmenten =
     case segmenten of
         eerste :: tweede :: rest ->
-            if eerste.tarief == tweede.tarief then
+            if eerste.tariefCenten == tweede.tariefCenten then
                 voegGelijkeSegmentenSamen ({ eerste | tot = tweede.tot } :: rest)
 
             else
@@ -1084,17 +1077,9 @@ segmentAantal segment =
     segment.tot - segment.van + 1
 
 
-{-| Per honderd items ronden we af op hele centen, de helft naar boven. Volle
-treden van vijfhonderd delen precies, dus alleen de laatste trede kan een
-rest hebben. -}
 segmentCenten : StaffelSegment -> Int
 segmentCenten segment =
-    case segment.tarief of
-        CentenPerItem centen ->
-            segmentAantal segment * centen
-
-        CentenPerHonderdItems centen ->
-            (segmentAantal segment * centen + 50) // 100
+    segmentAantal segment * segment.tariefCenten
 
 
 segmentenCenten : List StaffelSegment -> Int
@@ -1104,30 +1089,24 @@ segmentenCenten segmenten =
 
 productStaffelSegmenten : Int -> List StaffelSegment
 productStaffelSegmenten vertalingen =
-    tredenVanVijfhonderdSegmenten
-        (List.map CentenPerItem staffelTredenCenten)
-        (CentenPerItem staffelBodemCenten)
-        vertalingen
+    tredenVanVijfhonderdSegmenten staffelTredenCenten staffelBodemCenten vertalingen
 
 
 linkStaffelSegmenten : Int -> List StaffelSegment
 linkStaffelSegmenten links =
-    tredenVanVijfhonderdSegmenten
-        (List.map CentenPerHonderdItems linkStaffelTredenPerHonderd)
-        (CentenPerHonderdItems linkStaffelBodemPerHonderd)
-        links
+    tredenVanVijfhonderdSegmenten linkStaffelTredenCenten linkStaffelBodemCenten links
 
 
 {-| Een staffel in treden van 'tredeGrootte' tegen de gegeven tarieven,
 daarna de bodem, met gelijke buurtreden samengevoegd. -}
-tredenVanVijfhonderdSegmenten : List Tarief -> Tarief -> Int -> List StaffelSegment
-tredenVanVijfhonderdSegmenten treden bodem aantal =
+tredenVanVijfhonderdSegmenten : List Int -> Int -> Int -> List StaffelSegment
+tredenVanVijfhonderdSegmenten tredenCenten bodemCenten aantal =
     voegGelijkeSegmentenSamen
         (segmentenVanTreden
             (inbegrepenProducten + 1)
             (Basics.max 0 (aantal - inbegrepenProducten))
-            (List.map (\tarief -> ( tredeGrootte, tarief )) treden)
-            bodem
+            (List.map (\tarief -> ( tredeGrootte, tarief )) tredenCenten)
+            bodemCenten
         )
 
 
@@ -1139,8 +1118,8 @@ itemStaffelSegmenten staffel aantal =
         (segmentenVanTreden
             (moduleInbegrepenItems + 1)
             (Basics.max 0 (aantal - moduleInbegrepenItems))
-            (List.map (\( omvang, centen ) -> ( omvang, CentenPerItem centen )) staffel.treden)
-            (CentenPerItem staffel.bodemCenten)
+            staffel.treden
+            staffel.bodemCenten
         )
 
 
@@ -1602,27 +1581,13 @@ segmentRegel segment =
             ++ " t/m "
             ++ voegDuizendtallenToe (String.fromInt segment.tot)
             ++ " ("
-            ++ segmentTariefTekst segment
+            ++ voegDuizendtallenToe (String.fromInt (segmentAantal segment))
+            ++ " \u{00D7} "
+            ++ formatteerEuro segment.tariefCenten
             ++ ")"
         )
         (segmentCenten segment)
         Subregel
-
-
-{-| "1.000 \u{00D7} \u{20AC}0,15", of per honderd "1.000 tegen \u{20AC}0,90 per 100",
-omdat "1.000 \u{00D7} \u{20AC}0,90" als 900 euro leest. -}
-segmentTariefTekst : StaffelSegment -> String
-segmentTariefTekst segment =
-    let
-        aantal =
-            voegDuizendtallenToe (String.fromInt (segmentAantal segment))
-    in
-    case segment.tarief of
-        CentenPerItem centen ->
-            aantal ++ " \u{00D7} " ++ formatteerEuro centen
-
-        CentenPerHonderdItems centen ->
-            aantal ++ " tegen " ++ formatteerEuro centen ++ " per 100"
 
 
 {-| De productpost: een hoofdregel met het totaal en de telling, daaronder
@@ -1827,7 +1792,7 @@ bronNoot bron =
 
         BronCcvShop ->
             [ p [ Attr.class "calc-note" ]
-                [ text "Vanaf CCV Shop rekenen we niet per product, want die kun je met de CCV-export ook zelf overzetten. We rekenen hooguit €1,20 per 100 oude productlinks die we naar het nieuwe adres doorverwijzen, en de basis dekt wat de export niet meeneemt: je categorieën, productopties en pagina's. Al zelf geïmporteerd? Vink dat hierboven aan, dan rekenen we alleen de afronding." ]
+                [ text "Vanaf CCV Shop rekenen we niet per product, want die kun je met de CCV-export ook zelf overzetten. We rekenen een paar cent per oude productlink die we naar het nieuwe adres doorverwijzen, en de basis dekt wat de export niet meeneemt: je categorieën, productopties en pagina's. Al zelf geïmporteerd? Vink dat hierboven aan, dan rekenen we alleen de afronding." ]
             ]
 
         BronLightspeed ->
