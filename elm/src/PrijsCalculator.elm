@@ -1995,7 +1995,7 @@ afrondingRedirectsUitleg bron =
             "Elke oude URL naar het nieuwe adres, meta-titels en -beschrijvingen aangevuld waar nodig. €350"
 
         PerProductlink ->
-            "Elke oude URL naar het nieuwe adres, meta-titels en -beschrijvingen aangevuld waar nodig. €350, plus je oude productlinks vanaf €0,20 per link"
+            "Je categorieën en pagina's naar het nieuwe adres, meta-titels en -beschrijvingen aangevuld waar nodig. €350, plus je oude productlinks vanaf €0,20 per link"
 
 
 productenHint : Model -> String
@@ -2009,7 +2009,11 @@ productenHint model =
                 "een schatting is genoeg: bij de offerte tellen we het exacte aantal voor je na"
 
         PerProductlink ->
-            "elk product heeft een link die we doorverwijzen; een schatting is genoeg, bij de offerte tellen we de links na"
+            if zelfImportActief model && not (productlinksInAfronding model) then
+                "telt nu niet mee: zonder de redirects verwijzen we geen productlinks door"
+
+            else
+                "elk product heeft een link die we doorverwijzen; een schatting is genoeg, bij de offerte tellen we de links na"
 
 
 
