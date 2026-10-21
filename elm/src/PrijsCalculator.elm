@@ -44,7 +44,7 @@ productvertaling (producten maal talen) vanaf de eerste in een aflopende
 staffel per vijfhonderd (€0,20, €0,15, €0,15, €0,10, daarna €0,10), plus
 €250 configuratie per extra taal. Vanaf CCV Shop telt in plaats van elk
 product elke oude productlink die we doorverwijzen, in treden van
-vijfhonderd van €0,04, €0,03, €0,03, €0,02 en daarna €0,01. De
+vijfhonderd van €0,06, €0,05, €0,04, €0,03, €0,02 en daarna €0,01. De
 modules die met de shop meegroeien
 (klantaccounts, orderhistorie, nieuwsbrief, voorraad) kosten €100 met de
 eerste 1.000 items inbegrepen en daarboven een aflopend tarief per item;
@@ -163,8 +163,9 @@ staffelBodemCenten =
 -- producten over; met de hand blijft per oude productlink het nieuwe adres
 -- opzoeken, zo'n 50 seconden. Concurrent is een geschoolde kracht in een
 -- lagelonenland, minstens $5 per uur want inhuren kost moeite (Jappie): zo'n
--- 6 cent per link. Wij zitten daaronder met 4, 3, 2 en 1 cent; de treden
--- dalen omdat hij onderweg sneller wordt. Afgewezen: het gemiddelde loon
+-- 6,2 cent per link. Wij beginnen net onder hem op 6 cent en gaan per 500
+-- links een cent omlaag tot 1 cent (Jappie), omdat hij onderweg sneller
+-- wordt. Afgewezen: 4, 3, 2 en 1 cent (te ver onder hem) en het gemiddelde loon
 -- daar (€1,20 tot €0,60 per 100 links), want zo iemand huur je niet in.
 -- De redirects van productlinks gaan vanaf CCV dus van de basis naar deze
 -- staffel; die van categorieën en pagina's blijven in de basis.
@@ -175,7 +176,7 @@ staffelBodemCenten =
 
 linkStaffelTredenCenten : List Int
 linkStaffelTredenCenten =
-    [ 4, 3, 3, 2 ]
+    [ 6, 5, 4, 3, 2 ]
 
 
 linkStaffelBodemCenten : Int

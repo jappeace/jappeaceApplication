@@ -474,7 +474,7 @@ prijzen productprijs = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
 kaartInbegrepenTekst :: KaartProductprijs -> Text
 kaartInbegrepenTekst productprijs = case productprijs of
   KaartProductstaffel -> "De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product."
-  KaartCcvLinkstaffel -> "De vaste basis: categorie&euml;n en pagina&apos;s met hun redirects, standaardthema en de begeleiding. Per product rekenen we vanaf CCV Shop niets. Daarbovenop telt elke oude productlink die we doorverwijzen, vanaf 4 cent, en hoe groter je catalogus, hoe goedkoper per link."
+  KaartCcvLinkstaffel -> "De vaste basis: categorie&euml;n en pagina&apos;s met hun redirects, standaardthema en de begeleiding. Per product rekenen we vanaf CCV Shop niets. Daarbovenop telt elke oude productlink die we doorverwijzen, vanaf 6 cent, en hoe groter je catalogus, hoe goedkoper per link."
 
 -- | De CCV-variant vult de rekenhulp voor met CCV Shop, anders toont die de
 -- productstaffel van MijnWebwinkel.
@@ -1039,15 +1039,12 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         -- Zie de Decision bij linkStaffelTredenCenten in elm/src/PrijsCalculator.elm.
         H.tr $ do
           H.td "Komt je shop van CCV Shop? Dan rekenen we niet per product maar per oude productlink die we doorverwijzen, de eerste vijfhonderd"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,04 per link" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,06 per link" :: Text)
         H.tr $ do
-          H.td "CCV Shop, van 501 tot 1.500 links"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,03 per link" :: Text)
+          H.td "CCV Shop, elke volgende vijfhonderd links een cent goedkoper per link"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,05 tot &euro;0,02 per link" :: Text)
         H.tr $ do
-          H.td "CCV Shop, van 1.501 tot 2.000 links"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,02 per link" :: Text)
-        H.tr $ do
-          H.td "CCV Shop, alles boven de 2.000 links"
+          H.td "CCV Shop, alles boven de 2.500 links"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,01 per link" :: Text)
         H.tr $ do
           H.td "Extra taal: configuratie, per taal"

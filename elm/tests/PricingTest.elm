@@ -236,21 +236,21 @@ suite =
             \_ ->
                 Expect.equal 109900
                     (totaalCenten { initieelModel | bron = BronAnders })
-        , test "CCV-bron telt per productlink: 5.000 links = 999 + 500 x 4ct + 1.000 x 3ct + 500 x 2ct + 3.000 x 1ct = 1.089" <|
+        , test "CCV-bron telt per productlink: 5.000 links = 999 + 500 x (6 + 5 + 4 + 3 + 2)ct + 2.500 x 1ct = 1.124" <|
             \_ ->
-                Expect.equal 108900
+                Expect.equal 112400
                     (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop }))
-        , test "CCV-bron in 3 talen: elke taal heeft eigen links, 7.200 links (112) + 2 x 250 = 1.611" <|
+        , test "CCV-bron in 3 talen: elke taal heeft eigen links, 7.200 links (147) + 2 x 250 = 1.646" <|
             \_ ->
-                Expect.equal 161100
+                Expect.equal 164600
                     (totaalCenten (metProducten 2400 3 { initieelModel | bron = BronCcvShop }))
-        , test "CCV-bron: voorraad blijft per product tellen, 1.089 + 100 + 4.000 x 5ct" <|
+        , test "CCV-bron: voorraad blijft per product tellen, 1.124 + 100 + 4.000 x 5ct" <|
             \_ ->
-                Expect.equal 138900
+                Expect.equal 142400
                     (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop, voorraad = True }))
         , test "CCV-bron: de linkstaffel staat per trede onder de productpost" <|
             \_ ->
-                Expect.equal [ ( Hoofdregel, 99900 ), ( Hoofdregel, 9000 ), ( Subregel, 2000 ), ( Subregel, 3000 ), ( Subregel, 1000 ), ( Subregel, 3000 ) ]
+                Expect.equal [ ( Hoofdregel, 99900 ), ( Hoofdregel, 12500 ), ( Subregel, 3000 ), ( Subregel, 2500 ), ( Subregel, 2000 ), ( Subregel, 1500 ), ( Subregel, 1000 ), ( Subregel, 2500 ) ]
                     (List.map (\regel -> ( regel.niveau, regel.centen ))
                         (prijsRegels (metProducten 5000 1 { initieelModel | bron = BronCcvShop }))
                     )
