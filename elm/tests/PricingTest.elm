@@ -14,6 +14,7 @@ import PrijsCalculator
         , DoelPlatform(..)
         , Model
         , Msg(..)
+        , Tarief(..)
         , ThemaKeuze(..)
         , heeftProductExport
         , initieelModel
@@ -69,39 +70,39 @@ staffelSegmentenSuite =
         [ test "5.000 producten: drie stappen, gelijke buurtreden samengevoegd (1-500 om 20, 501-1.500 om 15, 1.501-5.000 om 10)" <|
             \_ ->
                 Expect.equal
-                    [ { van = 1, tot = 500, tariefCenten = 20 }
-                    , { van = 501, tot = 1500, tariefCenten = 15 }
-                    , { van = 1501, tot = 5000, tariefCenten = 10 }
+                    [ { van = 1, tot = 500, tarief = CentenPerItem 20 }
+                    , { van = 501, tot = 1500, tarief = CentenPerItem 15 }
+                    , { van = 1501, tot = 5000, tarief = CentenPerItem 10 }
                     ]
                     (productStaffelSegmenten 5000)
         , test "1.170 producten eindigt midden in een trede: 1-500, 501-1.170" <|
             \_ ->
                 Expect.equal
-                    [ { van = 1, tot = 500, tariefCenten = 20 }
-                    , { van = 501, tot = 1170, tariefCenten = 15 }
+                    [ { van = 1, tot = 500, tarief = CentenPerItem 20 }
+                    , { van = 501, tot = 1170, tarief = CentenPerItem 15 }
                     ]
                     (productStaffelSegmenten 1170)
         , test "40 producten: één stap" <|
             \_ ->
-                Expect.equal [ { van = 1, tot = 40, tariefCenten = 20 } ] (productStaffelSegmenten 40)
+                Expect.equal [ { van = 1, tot = 40, tarief = CentenPerItem 20 } ] (productStaffelSegmenten 40)
         , test "0 producten: geen stappen" <|
             \_ ->
                 Expect.equal [] (productStaffelSegmenten 0)
         , test "de som van de stappen is het staffelbedrag: 5.000 producten = 600" <|
             \_ ->
                 Expect.equal 60000
-                    (List.sum (List.map (\seg -> (seg.tot - seg.van + 1) * seg.tariefCenten) (productStaffelSegmenten 5000)))
+                    (List.sum (List.map .centen (List.filter (\r -> r.niveau == Subregel) (prijsRegels (metProducten 5000 1 initieelModel)))))
         , test "bestelgeschiedenis 11.504: boven de inbegrepen 1.000 eerst 10.000 om 8ct, dan 504 om 4ct" <|
             \_ ->
                 Expect.equal
-                    [ { van = 1001, tot = 11000, tariefCenten = 8 }
-                    , { van = 11001, tot = 11504, tariefCenten = 4 }
+                    [ { van = 1001, tot = 11000, tarief = CentenPerItem 8 }
+                    , { van = 11001, tot = 11504, tarief = CentenPerItem 4 }
                     ]
                     (itemStaffelSegmenten orderhistorieStaffel 11504)
         , test "spaarpunten 20.000: één vlakke stap om 5ct boven de inbegrepen 1.000, geen lagere trede" <|
             \_ ->
                 Expect.equal
-                    [ { van = 1001, tot = 20000, tariefCenten = 5 } ]
+                    [ { van = 1001, tot = 20000, tarief = CentenPerItem 5 } ]
                     (itemStaffelSegmenten spaarpuntenStaffel 20000)
         , test "uitsplitsing spaarpunten 3.000 bij 4.850 accounts: hoofdregel 100 met de eerste 1.000 op nul en één stap eronder" <|
             \_ ->
@@ -115,10 +116,10 @@ staffelSegmentenSuite =
         , test "bestelgeschiedenis 115.000: 8ct tot 11.000, 4ct tot 20.000, 2ct tot 40.000, daarboven 1ct" <|
             \_ ->
                 Expect.equal
-                    [ { van = 1001, tot = 11000, tariefCenten = 8 }
-                    , { van = 11001, tot = 20000, tariefCenten = 4 }
-                    , { van = 20001, tot = 40000, tariefCenten = 2 }
-                    , { van = 40001, tot = 115000, tariefCenten = 1 }
+                    [ { van = 1001, tot = 11000, tarief = CentenPerItem 8 }
+                    , { van = 11001, tot = 20000, tarief = CentenPerItem 4 }
+                    , { van = 20001, tot = 40000, tarief = CentenPerItem 2 }
+                    , { van = 40001, tot = 115000, tarief = CentenPerItem 1 }
                     ]
                     (itemStaffelSegmenten orderhistorieStaffel 115000)
         , test "bestelgeschiedenis 800: niets boven de inbegrepen items, geen stappen" <|
@@ -236,21 +237,25 @@ suite =
             \_ ->
                 Expect.equal 109900
                     (totaalCenten { initieelModel | bron = BronAnders })
-        , test "CCV-bron telt per productlink: 5.000 links = 999 + 500 x 4ct + 1.000 x 3ct + 3.500 x 2ct = 1.119" <|
+        , test "CCV-bron telt per productlink: 5.000 links = 999 + 500 x 1,2ct + 1.000 x 0,9ct + 3.500 x 0,6ct = 1.035" <|
             \_ ->
-                Expect.equal 111900
+                Expect.equal 103500
                     (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop }))
-        , test "CCV-bron in 3 talen: elke taal heeft eigen links, 7.200 links (164) + 2 x 250 = 1.663" <|
+        , test "CCV-bron in 3 talen: elke taal heeft eigen links, 7.200 links (49,20) + 2 x 250 = 1.548,20" <|
             \_ ->
-                Expect.equal 166300
+                Expect.equal 154820
                     (totaalCenten (metProducten 2400 3 { initieelModel | bron = BronCcvShop }))
-        , test "CCV-bron: voorraad blijft per product tellen, 1.119 + 100 + 4.000 x 5ct" <|
+        , test "CCV-bron: 9.226 links, de laatste trede (7.726 x 0,6ct = 46,356) rondt af op 46,36, totaal 1.060,36" <|
             \_ ->
-                Expect.equal 141900
+                Expect.equal 106036
+                    (totaalCenten (metProducten 9226 1 { initieelModel | bron = BronCcvShop }))
+        , test "CCV-bron: voorraad blijft per product tellen, 1.035 + 100 + 4.000 x 5ct" <|
+            \_ ->
+                Expect.equal 133500
                     (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop, voorraad = True }))
         , test "CCV-bron: de linkstaffel staat per trede onder de productpost" <|
             \_ ->
-                Expect.equal [ ( Hoofdregel, 99900 ), ( Hoofdregel, 12000 ), ( Subregel, 2000 ), ( Subregel, 3000 ), ( Subregel, 7000 ) ]
+                Expect.equal [ ( Hoofdregel, 99900 ), ( Hoofdregel, 3600 ), ( Subregel, 600 ), ( Subregel, 900 ), ( Subregel, 2100 ) ]
                     (List.map (\regel -> ( regel.niveau, regel.centen ))
                         (prijsRegels (metProducten 5000 1 { initieelModel | bron = BronCcvShop }))
                     )
