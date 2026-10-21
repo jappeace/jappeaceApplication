@@ -164,6 +164,8 @@ staffelBodemCenten =
 -- oude productlink het nieuwe adres opzoeken en het paar invullen, ruwweg
 -- een minuut tegen vijf voor een product. Daarom dezelfde treden op een
 -- vijfde van het tarief; ze dalen omdat de typist onderweg sneller wordt.
+-- De redirects van productlinks gaan vanaf CCV dus van de basis naar deze
+-- staffel; die van categorieën en pagina's blijven in de basis.
 -- Alternatief overgewogen: producten gratis en de links in de basis
 -- (PR #219, 20 okt); afgewezen omdat de prijs dan niet meer met de omvang
 -- van de shop meegroeit.

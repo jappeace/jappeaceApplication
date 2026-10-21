@@ -460,7 +460,7 @@ prijzen productprijs = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
     H.p ! A.class_ "prijs" $ do
       H.preEscapedToHtml ("vanaf &euro;" <> migratieBasisprijsEuro <> " ")
       H.small "eenmalig"
-    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml ("De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. " <> kaartProductenZin productprijs)
+    H.p ! A.class_ "inbegrepen" $ H.preEscapedToHtml (kaartInbegrepenTekst productprijs)
     H.p ! A.class_ "meerprijs" $ H.preEscapedToHtml ("Klantaccounts (met hun spaarpunten), bestelgeschiedenis en nieuwsbrief-adressen neem je mee voor &euro;100 per onderdeel tot 1.000 stuks, daarboven per stuk. Extra talen en losse diensten (e-mail-setup, een cursus Shopify, en domeinverhuizing als je domein nog bij je huidige platform staat) hebben een vaste meerprijs." :: Text)
     H.a ! A.href (kaartRekenhulpLink productprijs) ! A.class_ "cta-button" $ "Bereken direct je prijs"
     H.p ! A.class_ "garantie" $ do
@@ -469,10 +469,12 @@ prijzen productprijs = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
 
 
 
-kaartProductenZin :: KaartProductprijs -> Text
-kaartProductenZin productprijs = case productprijs of
-  KaartProductstaffel -> "Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product."
-  KaartCcvLinkstaffel -> "Per product rekenen we vanaf CCV Shop niets. Daarbovenop telt elke oude productlink die we doorverwijzen, vanaf 4 cent, en hoe groter je catalogus, hoe goedkoper per link."
+-- | Vanaf CCV Shop horen de redirects van de productlinks bij de linkstaffel,
+-- dus de basis noemt daar alleen die van categorieën en pagina's.
+kaartInbegrepenTekst :: KaartProductprijs -> Text
+kaartInbegrepenTekst productprijs = case productprijs of
+  KaartProductstaffel -> "De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product."
+  KaartCcvLinkstaffel -> "De vaste basis: categorie&euml;n en pagina&apos;s met hun redirects, standaardthema en de begeleiding. Per product rekenen we vanaf CCV Shop niets. Daarbovenop telt elke oude productlink die we doorverwijzen, vanaf 4 cent, en hoe groter je catalogus, hoe goedkoper per link."
 
 -- | De CCV-variant vult de rekenhulp voor met CCV Shop, anders toont die de
 -- productstaffel van MijnWebwinkel.
