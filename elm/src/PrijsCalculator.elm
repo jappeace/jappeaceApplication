@@ -163,10 +163,11 @@ staffelBodemCenten =
 -- pricing-business-model.org, sectie "linktypist"). De export zet de
 -- producten over; met de hand blijft per oude productlink het nieuwe adres
 -- opzoeken, volgens Jappie zo'n 50 seconden. De concurrent is het
--- gemiddelde loon in een lagelonenland (Bangladesh, Sri Lanka: zo'n €0,90
--- per uur), dus 1,25 cent per link, en net als bij de productstaffel twee
--- keer zo snel na 1.500. Wij zitten er per trede net onder, per honderd
--- links omdat het onder de cent zakt. De redirects van productlinks gaan
+-- gemiddelde loon in een lagelonenland (Bangladesh, Sri Lanka: €0,62 tot
+-- €1,00 per uur naar bron en werkweek, rond €0,90 in het midden), dus rond
+-- 1,25 cent per link, en net als bij de productstaffel twee keer zo snel
+-- na 1.500. Wij rekenen per trede net onder dat midden, per honderd links
+-- omdat het onder de cent zakt. De redirects van productlinks gaan
 -- vanaf CCV van de basis naar deze staffel; die van categorieën en
 -- pagina's blijven in de basis. Afgewezen: producten gratis en de links in
 -- de basis (PR #219, 20 okt), want dan groeit de prijs niet met de shop.
