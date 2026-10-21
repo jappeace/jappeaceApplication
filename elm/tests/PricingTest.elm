@@ -236,21 +236,21 @@ suite =
             \_ ->
                 Expect.equal 109900
                     (totaalCenten { initieelModel | bron = BronAnders })
-        , test "CCV-bron rekent niets per product: 5.000 producten kosten de basis van 999" <|
+        , test "CCV-bron telt per productlink: 5.000 links = 999 + 500 x 4ct + 1.000 x 3ct + 3.500 x 2ct = 1.119" <|
             \_ ->
-                Expect.equal 99900
+                Expect.equal 111900
                     (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop }))
-        , test "CCV-bron in 3 talen: alleen de taalconfiguratie telt, 999 + 2 x 250" <|
+        , test "CCV-bron in 3 talen: elke taal heeft eigen links, 7.200 links (164) + 2 x 250 = 1.663" <|
             \_ ->
-                Expect.equal 149900
+                Expect.equal 166300
                     (totaalCenten (metProducten 2400 3 { initieelModel | bron = BronCcvShop }))
-        , test "CCV-bron: voorraad blijft per product tellen, 999 + 100 + 4.000 x 5ct" <|
+        , test "CCV-bron: voorraad blijft per product tellen, 1.119 + 100 + 4.000 x 5ct" <|
             \_ ->
-                Expect.equal 129900
+                Expect.equal 141900
                     (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop, voorraad = True }))
-        , test "CCV-bron: de productregel staat op 0 zonder staffelstappen eronder" <|
+        , test "CCV-bron: de linkstaffel staat per trede onder de productpost" <|
             \_ ->
-                Expect.equal [ ( Hoofdregel, 99900 ), ( Hoofdregel, 0 ) ]
+                Expect.equal [ ( Hoofdregel, 99900 ), ( Hoofdregel, 12000 ), ( Subregel, 2000 ), ( Subregel, 3000 ), ( Subregel, 7000 ) ]
                     (List.map (\regel -> ( regel.niveau, regel.centen ))
                         (prijsRegels (metProducten 5000 1 { initieelModel | bron = BronCcvShop }))
                     )

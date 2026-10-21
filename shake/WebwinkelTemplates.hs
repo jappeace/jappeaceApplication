@@ -444,12 +444,12 @@ shopifyPrijspeil = "augustus 2026"
 shopifyPrijzenUrl :: H.AttributeValue
 shopifyPrijzenUrl = "https://www.shopify.com/nl/prijzen"
 
--- | Welke productprijs de prijs-kaart noemt. Vanaf CCV Shop kosten de
--- producten niets; zie de Decision bij productprijs in
--- elm/src/PrijsCalculator.elm.
+-- | Welke staffel de prijs-kaart noemt. Vanaf CCV Shop telt de staffel
+-- doorverwezen productlinks in plaats van producten; zie de Decision bij
+-- linkStaffelTredenCenten in elm/src/PrijsCalculator.elm.
 data KaartProductprijs
   = KaartProductstaffel
-  | KaartCcvZonderProductkosten
+  | KaartCcvLinkstaffel
 
 -- | De gedeelde prijzen-sectie: de prijs-kaart uit het joepa-ontwerp, met de
 -- rekenhulp-knop als vervolgstap en de betaal-na-succes-garantie eronder.
@@ -472,14 +472,14 @@ prijzen productprijs = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
 kaartProductenZin :: KaartProductprijs -> Text
 kaartProductenZin productprijs = case productprijs of
   KaartProductstaffel -> "Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product."
-  KaartCcvZonderProductkosten -> "Je producten zetten we vanaf CCV Shop over zonder kosten per product."
+  KaartCcvLinkstaffel -> "Per product rekenen we vanaf CCV Shop niets. Daarbovenop telt elke oude productlink die we doorverwijzen, vanaf 4 cent, en hoe groter je catalogus, hoe goedkoper per link."
 
 -- | De CCV-variant vult de rekenhulp voor met CCV Shop, anders toont die de
 -- productstaffel van MijnWebwinkel.
 kaartRekenhulpLink :: KaartProductprijs -> H.AttributeValue
 kaartRekenhulpLink productprijs = case productprijs of
   KaartProductstaffel -> "/prijzen.html#rekenhulp"
-  KaartCcvZonderProductkosten -> "/prijzen.html?bron=ccv#rekenhulp"
+  KaartCcvLinkstaffel -> "/prijzen.html?bron=ccv#rekenhulp"
 
 webwinkelIndexPage :: Html
 webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
@@ -1034,10 +1034,16 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.tr $ do
           H.td "Alles boven de 1.500: hoe groter je catalogus, hoe goedkoper per product"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,10 per product" :: Text)
-        -- Zie de Decision bij productprijs in elm/src/PrijsCalculator.elm.
+        -- Zie de Decision bij linkStaffelTredenCenten in elm/src/PrijsCalculator.elm.
         H.tr $ do
-          H.td "Komt je shop van CCV Shop? Dan kosten je producten niets"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0" :: Text)
+          H.td "Komt je shop van CCV Shop? Dan rekenen we niet per product maar per oude productlink die we doorverwijzen, de eerste vijfhonderd"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,04 per link" :: Text)
+        H.tr $ do
+          H.td "CCV Shop, van 501 tot 1.500 links"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,03 per link" :: Text)
+        H.tr $ do
+          H.td "CCV Shop, alles boven de 1.500 links"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,02 per link" :: Text)
         H.tr $ do
           H.td "Extra taal: configuratie, per taal"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
@@ -1587,7 +1593,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- is in the b2b setup"), dan collecties, redirects en opties.
     H.section ! A.class_ "for-who" ! A.id "zelf-begonnen" $ do
       H.h2 "Al zelf begonnen? Wij maken het af"
-      H.p $ H.preEscapedToHtml ("CCV Shop heeft een productexport en Shopify importeert die. Veel winkeliers zetten hun producten daarom zelf over, en lopen dan vast op de rest. Dat is geen falen: de export neemt het gewoon niet mee. Voor je producten betaal je vanaf CCV Shop bij ons niets, ook niet als wij ze overzetten. Ben je al begonnen, dan betaal je alleen voor de afronding, per onderdeel." :: Text)
+      H.p $ H.preEscapedToHtml ("CCV Shop heeft een productexport en Shopify importeert die. Veel winkeliers zetten hun producten daarom zelf over, en lopen dan vast op de rest. Dat is geen falen: de export neemt het gewoon niet mee. Zetten wij je producten over, dan betaal je vanaf CCV Shop niet per product, alleen een paar cent per oude productlink die we doorverwijzen. Ben je al begonnen, dan betaal je alleen voor de afronding, per onderdeel." :: Text)
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
@@ -1662,7 +1668,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       ]
 
     -- Pricing
-    prijzen KaartCcvZonderProductkosten
+    prijzen KaartCcvLinkstaffel
     -- Open kaart bij de voorbeeldwinkels (winkelier-review 23 aug): beide
     -- cases zijn MWW-migraties; dat benoemen we in plaats van het te
     -- verstoppen, met de aanpak als brug.
@@ -2654,11 +2660,11 @@ webwinkelverhuisSitemap articles = T.unlines $
 webwinkelverhuisStaticPages :: [(Text, Day)]
 webwinkelverhuisStaticPages =
   [ ("https://webwinkelverhuis.nl/", fromGregorian 2026 8 23)
-  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 20)
+  , ("https://webwinkelverhuis.nl/prijzen.html", fromGregorian 2026 10 21)
   , ("https://webwinkelverhuis.nl/offerte.html", fromGregorian 2026 9 4)
   , ("https://webwinkelverhuis.nl/scan.html", fromGregorian 2026 8 8)
   , ("https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html", fromGregorian 2026 10 15)
-  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 10 20)
+  , ("https://webwinkelverhuis.nl/migrate-ccvshop.html", fromGregorian 2026 10 21)
   , ("https://webwinkelverhuis.nl/migrate-lightspeed.html", fromGregorian 2026 10 15)
   , ("https://webwinkelverhuis.nl/migrate-magento.html", fromGregorian 2026 10 15)
   , ("https://webwinkelverhuis.nl/migrate-zilvercms.html", fromGregorian 2026 9 4)
