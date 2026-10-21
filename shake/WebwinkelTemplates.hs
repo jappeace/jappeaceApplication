@@ -449,7 +449,7 @@ shopifyPrijzenUrl = "https://www.shopify.com/nl/prijzen"
 -- Productprijs in elm/src/PrijsCalculator.elm.
 data KaartProductprijs
   = KaartProductstaffel
-  | KaartCcvLinkstaffel
+  | KaartCcvProductlinks
 
 -- | De gedeelde prijzen-sectie: de prijs-kaart uit het joepa-ontwerp, met de
 -- rekenhulp-knop als vervolgstap en de betaal-na-succes-garantie eronder.
@@ -469,19 +469,19 @@ prijzen productprijs = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
 
 
 
--- | Vanaf CCV Shop horen de redirects van de productlinks bij de linkstaffel,
--- dus de basis noemt daar alleen die van categorieën en pagina's.
+-- | Vanaf CCV Shop rekenen we de redirects van de productlinks per link, dus
+-- de basis noemt daar alleen die van categorieën en pagina's.
 kaartInbegrepenTekst :: KaartProductprijs -> Text
 kaartInbegrepenTekst productprijs = case productprijs of
   KaartProductstaffel -> "De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product."
-  KaartCcvLinkstaffel -> "De vaste basis: categorie&euml;n en pagina&apos;s met hun redirects, standaardthema en de begeleiding. Daarbovenop telt elke oude productlink die we doorverwijzen, vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per link."
+  KaartCcvProductlinks -> "De vaste basis: categorie&euml;n en pagina&apos;s met hun redirects, standaardthema en de begeleiding. Daarbovenop telt elke oude productlink die we doorverwijzen, vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per link."
 
 -- | De CCV-variant vult de rekenhulp voor met CCV Shop, anders toont die de
 -- productstaffel van MijnWebwinkel.
 kaartRekenhulpLink :: KaartProductprijs -> H.AttributeValue
 kaartRekenhulpLink productprijs = case productprijs of
   KaartProductstaffel -> "/prijzen.html#rekenhulp"
-  KaartCcvLinkstaffel -> "/prijzen.html?bron=ccv#rekenhulp"
+  KaartCcvProductlinks -> "/prijzen.html?bron=ccv#rekenhulp"
 
 webwinkelIndexPage :: Html
 webwinkelIndexPage = webwinkelBaseTemplate indexMeta $
@@ -1667,7 +1667,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
       ]
 
     -- Pricing
-    prijzen KaartCcvLinkstaffel
+    prijzen KaartCcvProductlinks
     -- Open kaart bij de voorbeeldwinkels (winkelier-review 23 aug): beide
     -- cases zijn MWW-migraties; dat benoemen we in plaats van het te
     -- verstoppen, met de aanpak als brug.
