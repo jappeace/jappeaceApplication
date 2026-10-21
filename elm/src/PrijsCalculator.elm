@@ -42,7 +42,10 @@ strategy/standaard-prijslijst.org) en de tabel op /prijzen: een vaste basis
 van €999 voor de overhead van elke migratie, daarbovenop elke
 productvertaling (producten maal talen) vanaf de eerste in een aflopende
 staffel per vijfhonderd (€0,20, €0,15, €0,15, €0,10, daarna €0,10), plus
-€250 configuratie per extra taal. De modules die met de shop meegroeien
+€250 configuratie per extra taal. Vanaf CCV Shop heet die post het
+doorverwijzen van de oude productlinks, tegen dezelfde staffel, en telt hij
+ook als de winkelier de producten zelf importeerde. De modules die met de
+shop meegroeien
 (klantaccounts, orderhistorie, nieuwsbrief, voorraad) kosten €100 met de
 eerste 1.000 items inbegrepen en daarboven een aflopend tarief per item;
 de bezoeker vult daarvoor een schatting van het aantal in. Spaarpunten
@@ -314,9 +317,11 @@ cursusCenten =
 -- vervalt de productstaffel ("door jou gedaan") en wordt de basis van
 -- 999 uitgesplitst in drie regels die er precies op optellen
 -- (499 + 350 + 150), elk apart af te vinken zodat hij ook alleen de
--- collecties kan afnemen. Alternatief overwogen: de basis laten staan
--- en alleen de staffel op nul zetten; afgewezen omdat de winkelier dan
--- niet ziet dat hij precies het werk koopt waar hij op vastliep.
+-- collecties kan afnemen. Vanaf CCV Shop blijven de productlinks bij de
+-- redirects tellen (21 okt), zie de Decision bij 'Productprijs'.
+-- Alternatief overwogen: de basis laten staan en alleen de staffel op nul
+-- zetten; afgewezen omdat de winkelier dan niet ziet dat hij precies het
+-- werk koopt waar hij op vastliep.
 
 
 collectiesHerstellenCenten : Int
@@ -941,6 +946,45 @@ extraProductVertalingen model =
     Basics.max 0 (productVertalingen model - inbegrepenProducten)
 
 
+-- Decision: vanaf CCV Shop rekenen we de oude productlinks die we
+-- doorverwijzen, tegen de productstaffel en ook bij een eigen import
+-- (besluit Jappie 21 okt 2026, jappiesoft pricing-business-model.org, sectie
+-- "redirects"). Producten zet de CCV-export over, de redirects niet, dus die
+-- post ontloopt een zelfimporteur niet; en CCV-shops zijn meestal groter en
+-- beter bemand, dus CCV is niet goedkoper dan MijnWebwinkel. Afgewezen: een
+-- linkstaffel van 6 tot 1 cent tegen een geschoolde handwerker (50 seconden
+-- per link, minstens $5 per uur), want dan was Trailer and Tools €1.166 in
+-- plaats van €2.022 en betaalde een zelfimporteur vlak €999. Het besluit
+-- noemde Lightspeed niet.
+
+
+{-| Wat de productpost telt: overgezette producten, of vanaf CCV Shop de oude
+productlinks die we doorverwijzen (één per product per taal). Het tarief is
+in beide gevallen de productstaffel. -}
+type Productprijs
+    = PerProduct
+    | PerProductlink
+
+
+productprijs : BronPlatform -> Productprijs
+productprijs bron =
+    case bron of
+        BronCcvShop ->
+            PerProductlink
+
+        BronMijnwebwinkel ->
+            PerProduct
+
+        BronLightspeed ->
+            PerProduct
+
+        BronWoocommerce ->
+            PerProduct
+
+        BronAnders ->
+            PerProduct
+
+
 extraProductVertalingenCenten : Model -> Int
 extraProductVertalingenCenten model =
     segmentenCenten (productStaffelSegmenten (productVertalingen model))
@@ -1220,6 +1264,19 @@ indienAan aan centen =
         0
 
 
+{-| Vanaf CCV Shop horen de oude productlinks bij de redirects, ook als de
+winkelier de producten zelf importeerde; wie de redirects uitvinkt, laat ze
+allemaal liggen. Zie de Decision bij 'Productprijs'. -}
+productlinksInAfronding : Model -> Bool
+productlinksInAfronding model =
+    case productprijs model.bron of
+        PerProductlink ->
+            model.afrondingRedirects
+
+        PerProduct ->
+            False
+
+
 {-| De basis en de productstaffel, of bij een eigen import de
 afrondingsregels in plaats daarvan. -}
 basisEnProductenCenten : Model -> Int
@@ -1235,6 +1292,7 @@ afrondingCenten : Model -> Int
 afrondingCenten model =
     indienAan model.afrondingCollecties collectiesHerstellenCenten
         + indienAan model.afrondingRedirects redirectsSeoCenten
+        + indienAan (productlinksInAfronding model) (extraProductVertalingenCenten model)
         + indienAan model.afrondingPaginas paginasNieuwsCenten
         + indienAan model.productoptiesHerstellen productoptiesHerstellenCenten
         + indienAan model.tweedeDomeinRedirects tweedeDomeinRedirectsCenten
@@ -1521,8 +1579,22 @@ productRegels model =
         []
 
     else
-        PrijsRegel (productLabel model vertalingen) (extraProductVertalingenCenten model) Hoofdregel
+        PrijsRegel (productpostLabel model vertalingen) (extraProductVertalingenCenten model) Hoofdregel
             :: List.map segmentRegel (productStaffelSegmenten vertalingen)
+
+
+productpostLabel : Model -> Int -> String
+productpostLabel model vertalingen =
+    case productprijs model.bron of
+        PerProduct ->
+            productLabel model vertalingen
+
+        PerProductlink ->
+            if aantalTalen model > 1 then
+                "Oude productlinks doorverwijzen (" ++ voegDuizendtallenToe (String.fromInt (aantalProducten model)) ++ " producten \u{00D7} " ++ String.fromInt (aantalTalen model) ++ " talen = " ++ voegDuizendtallenToe (String.fromInt vertalingen) ++ " links)"
+
+            else
+                "Oude productlinks doorverwijzen (" ++ voegDuizendtallenToe (String.fromInt vertalingen) ++ ")"
 
 
 productLabel : Model -> Int -> String
@@ -1631,13 +1703,35 @@ basisEnProductRegels model =
     if zelfImportActief model then
         PrijsRegel "Producten overzetten: door jou gedaan" 0 Hoofdregel
             :: optioneleRegel model.afrondingCollecties "Collecties en menu herstellen (categorieboom, elk product toegewezen, dubbele import opgeruimd)" collectiesHerstellenCenten
-            ++ optioneleRegel model.afrondingRedirects "301-redirects van je oude shop, SEO-velden waar nodig" redirectsSeoCenten
+            ++ optioneleRegel model.afrondingRedirects (afrondingRedirectsLabel model.bron) redirectsSeoCenten
+            ++ afrondingProductlinkRegels model
             ++ optioneleRegel model.afrondingPaginas "Informatiepagina's en nieuwsberichten overzetten" paginasNieuwsCenten
             ++ optioneleRegel model.productoptiesHerstellen "Productopties met meerprijs herstellen" productoptiesHerstellenCenten
             ++ optioneleRegel model.tweedeDomeinRedirects "301-redirects van een tweede domein" tweedeDomeinRedirectsCenten
 
     else
         PrijsRegel "Basismigratie" basisMigratieCenten Hoofdregel :: productRegels model
+
+
+afrondingProductlinkRegels : Model -> List PrijsRegel
+afrondingProductlinkRegels model =
+    if productlinksInAfronding model then
+        productRegels model
+
+    else
+        []
+
+
+{-| Vanaf CCV Shop staan de productlinks als eigen post onder deze regel, dus
+die noemt alleen de rest van de oude adressen. -}
+afrondingRedirectsLabel : BronPlatform -> String
+afrondingRedirectsLabel bron =
+    case productprijs bron of
+        PerProduct ->
+            "301-redirects van je oude shop, SEO-velden waar nodig"
+
+        PerProductlink ->
+            "301-redirects van categorieën en pagina's, SEO-velden waar nodig"
 
 
 regelNaarHtml : PrijsRegel -> Html Msg
@@ -1696,7 +1790,7 @@ bronNoot bron =
 
         BronCcvShop ->
             [ p [ Attr.class "calc-note" ]
-                [ text "CCV Shop heeft een productexport, maar die neemt je categorieën, productopties en pagina's niet mee. Al zelf geïmporteerd? Vink dat hierboven aan, dan rekenen we alleen de afronding." ]
+                [ text "Vanaf CCV Shop rekenen we per oude productlink die we naar het nieuwe adres doorverwijzen, ook als je de producten al zelf hebt geïmporteerd. De basis dekt wat de export niet meeneemt: je categorieën, productopties en pagina's. Al zelf geïmporteerd? Vink dat hierboven aan, dan rekenen we de afronding en de productlinks." ]
             ]
 
         BronLightspeed ->
@@ -1862,7 +1956,7 @@ afrondingVelden model =
         [ details [ Attr.class "calc-check-group", Attr.attribute "open" "" ]
             [ summary [ Attr.class "calc-label" ] [ text "Wat moet er nog gebeuren?" ]
             , aanvinkVeld "Collecties en menu herstellen" "De categorieboom van je oude shop, elk product in de juiste collecties, dubbele import opgeruimd. €499" model.afrondingCollecties AfrondingCollectiesGewijzigd
-            , aanvinkVeld "301-redirects en SEO-velden" "Elke oude URL naar het nieuwe adres, meta-titels en -beschrijvingen aangevuld waar nodig. €350" model.afrondingRedirects AfrondingRedirectsGewijzigd
+            , aanvinkVeld "301-redirects en SEO-velden" (afrondingRedirectsUitleg model.bron) model.afrondingRedirects AfrondingRedirectsGewijzigd
             , aanvinkVeld "Informatiepagina's en nieuwsberichten" "Alle pagina's en berichten van je oude shop. €150" model.afrondingPaginas AfrondingPaginasGewijzigd
             , aanvinkVeld "Productopties met meerprijs herstellen" "Keuzes zoals een grotere harde schijf of extra batterijen komen terug als varianten. €250" model.productoptiesHerstellen ProductoptiesGewijzigd
             , aanvinkVeld "301-redirects van een tweede domein" "Bijvoorbeeld een aparte groothandelshop die in de nieuwe shop opgaat. €250" model.tweedeDomeinRedirects TweedeDomeinGewijzigd
@@ -1894,13 +1988,32 @@ spaarpuntenAantalVeld model =
         []
 
 
+afrondingRedirectsUitleg : BronPlatform -> String
+afrondingRedirectsUitleg bron =
+    case productprijs bron of
+        PerProduct ->
+            "Elke oude URL naar het nieuwe adres, meta-titels en -beschrijvingen aangevuld waar nodig. €350"
+
+        PerProductlink ->
+            "Je categorieën en pagina's naar het nieuwe adres, meta-titels en -beschrijvingen aangevuld waar nodig. €350, plus je oude productlinks vanaf €0,20 per link"
+
+
 productenHint : Model -> String
 productenHint model =
-    if zelfImportActief model then
-        "telt niet mee in de prijs: die producten staan er al"
+    case productprijs model.bron of
+        PerProduct ->
+            if zelfImportActief model then
+                "telt niet mee in de prijs: die producten staan er al"
 
-    else
-        "een schatting is genoeg: bij de offerte tellen we het exacte aantal voor je na"
+            else
+                "een schatting is genoeg: bij de offerte tellen we het exacte aantal voor je na"
+
+        PerProductlink ->
+            if zelfImportActief model && not (productlinksInAfronding model) then
+                "telt nu niet mee: zonder de redirects verwijzen we geen productlinks door"
+
+            else
+                "elk product heeft een link die we doorverwijzen; een schatting is genoeg, bij de offerte tellen we de links na"
 
 
 
