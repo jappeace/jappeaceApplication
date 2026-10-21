@@ -444,9 +444,9 @@ shopifyPrijspeil = "augustus 2026"
 shopifyPrijzenUrl :: H.AttributeValue
 shopifyPrijzenUrl = "https://www.shopify.com/nl/prijzen"
 
--- | Welke staffel de prijs-kaart noemt. Vanaf CCV Shop telt de staffel
--- doorverwezen productlinks in plaats van producten; zie de Decision bij
--- linkStaffelTredenCenten in elm/src/PrijsCalculator.elm.
+-- | Wat de prijs-kaart per stuk noemt. Vanaf CCV Shop telt dezelfde staffel
+-- de doorverwezen productlinks in plaats van producten; zie de Decision bij
+-- Productprijs in elm/src/PrijsCalculator.elm.
 data KaartProductprijs
   = KaartProductstaffel
   | KaartCcvLinkstaffel
@@ -474,7 +474,7 @@ prijzen productprijs = H.section ! A.class_ "prijs-sectie" ! A.id "prijzen" $
 kaartInbegrepenTekst :: KaartProductprijs -> Text
 kaartInbegrepenTekst productprijs = case productprijs of
   KaartProductstaffel -> "De vaste basis: categorie&euml;n, pagina&apos;s, SEO-redirects, standaardthema en de begeleiding. Daarbovenop elk product vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per product."
-  KaartCcvLinkstaffel -> "De vaste basis: categorie&euml;n en pagina&apos;s met hun redirects, standaardthema en de begeleiding. Per product rekenen we vanaf CCV Shop niets. Daarbovenop telt elke oude productlink die we doorverwijzen, vanaf 6 cent, en hoe groter je catalogus, hoe goedkoper per link."
+  KaartCcvLinkstaffel -> "De vaste basis: categorie&euml;n en pagina&apos;s met hun redirects, standaardthema en de begeleiding. Daarbovenop telt elke oude productlink die we doorverwijzen, vanaf 20 cent, en hoe groter je catalogus, hoe goedkoper per link."
 
 -- | De CCV-variant vult de rekenhulp voor met CCV Shop, anders toont die de
 -- productstaffel van MijnWebwinkel.
@@ -1036,16 +1036,10 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.tr $ do
           H.td "Alles boven de 1.500: hoe groter je catalogus, hoe goedkoper per product"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,10 per product" :: Text)
-        -- Zie de Decision bij linkStaffelTredenCenten in elm/src/PrijsCalculator.elm.
+        -- Zie de Decision bij Productprijs in elm/src/PrijsCalculator.elm.
         H.tr $ do
-          H.td "Komt je shop van CCV Shop? Dan rekenen we niet per product maar per oude productlink die we doorverwijzen, de eerste vijfhonderd"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,06 per link" :: Text)
-        H.tr $ do
-          H.td "CCV Shop, elke volgende vijfhonderd links een cent goedkoper per link"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,05 tot &euro;0,02 per link" :: Text)
-        H.tr $ do
-          H.td "CCV Shop, alles boven de 2.500 links"
-          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,01 per link" :: Text)
+          H.td "Komt je shop van CCV Shop? Dan telt dezelfde staffel niet je producten maar de oude productlinks die we doorverwijzen, ook als je de producten al zelf hebt overgezet"
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,20 tot &euro;0,10 per link" :: Text)
         H.tr $ do
           H.td "Extra taal: configuratie, per taal"
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;250" :: Text)
@@ -1061,7 +1055,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
     -- standaard-prijslijst.org en elm/src/PrijsCalculator.elm.
     H.section ! A.class_ "engagement" $ do
       H.h2 "Al zelf begonnen? (CCV Shop, Lightspeed)"
-      H.p $ H.preEscapedToHtml ("Heb je de productexport van CCV Shop of Lightspeed al zelf in Shopify ge&iuml;mporteerd? Die export neemt je categorie&euml;n, productopties met meerprijs en pagina&apos;s niet mee, en zet je producten soms twee keer neer. Dan betaal je alleen voor de afronding. Kies in de rekenhulp hierboven &bdquo;mijn producten staan al in Shopify&rdquo; om dit door te rekenen." :: Text)
+      H.p $ H.preEscapedToHtml ("Heb je de productexport van CCV Shop of Lightspeed al zelf in Shopify ge&iuml;mporteerd? Die export neemt je categorie&euml;n, productopties met meerprijs en pagina&apos;s niet mee, en zet je producten soms twee keer neer. Dan betaal je niet voor het overzetten van producten, maar voor de afronding, en vanaf CCV Shop voor de oude productlinks die we doorverwijzen. Kies in de rekenhulp hierboven &bdquo;mijn producten staan al in Shopify&rdquo; om dit door te rekenen." :: Text)
       H.table ! A.class_ "price-table" $ H.tbody $ do
         H.tr $ do
           H.td $ H.preEscapedToHtml ("Collecties en menu herstellen: de categorieboom van je oude shop, elk product in de juiste collecties, dubbele import opgeruimd" :: Text)
@@ -1069,6 +1063,9 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
         H.tr $ do
           H.td $ H.preEscapedToHtml ("301-redirects van je oude shop, met de SEO-velden (meta-titels en -beschrijvingen) waar nodig aangevuld" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;350" :: Text)
+        H.tr $ do
+          H.td $ H.preEscapedToHtml ("Vanaf CCV Shop: je oude productlinks doorverwijzen, tegen de staffel van hierboven" :: Text)
+          H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;0,20 tot &euro;0,10 per link" :: Text)
         H.tr $ do
           H.td $ H.preEscapedToHtml ("Informatiepagina&apos;s en nieuwsberichten overzetten" :: Text)
           H.td ! A.class_ "price-cell" $ H.preEscapedToHtml ("&euro;150" :: Text)
@@ -1595,7 +1592,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
     -- is in the b2b setup"), dan collecties, redirects en opties.
     H.section ! A.class_ "for-who" ! A.id "zelf-begonnen" $ do
       H.h2 "Al zelf begonnen? Wij maken het af"
-      H.p $ H.preEscapedToHtml ("CCV Shop heeft een productexport en Shopify importeert die. Veel winkeliers zetten hun producten daarom zelf over, en lopen dan vast op de rest. Dat is geen falen: de export neemt het gewoon niet mee. Zetten wij je producten over, dan betaal je vanaf CCV Shop niet per product, alleen een paar cent per oude productlink die we doorverwijzen. Ben je al begonnen, dan betaal je alleen voor de afronding, per onderdeel." :: Text)
+      H.p $ H.preEscapedToHtml ("CCV Shop heeft een productexport en Shopify importeert die. Veel winkeliers zetten hun producten daarom zelf over, en lopen dan vast op de rest. Dat is geen falen: de export neemt het gewoon niet mee. Vanaf CCV Shop rekenen we per oude productlink die we doorverwijzen, of je de producten nu zelf overzet of wij. Ben je al begonnen, dan betaal je verder alleen voor de afronding, per onderdeel." :: Text)
       H.ul ! A.class_ "card-grid" $ do
         H.li ! A.class_ "card" $ do
           H.img ! A.class_ "card-icon" ! A.src "/icoon-spaarpunten.svg"
@@ -1742,7 +1739,7 @@ ccvshopMigrationPage = webwinkelBaseTemplate ccvMeta $
 ccvshopFaq :: [(FaqQuestion, FaqAnswer)]
 ccvshopFaq =
   [ ( "Ik heb mijn producten al zelf in Shopify gezet. Kunnen jullie de rest doen?"
-    , faqAnswerText "Ja, en dat komt vaak voor: de CCV-export en de Shopify-import zijn geen probleem, de rest wel. Voor je producten betaal je vanaf CCV Shop niets. Wij herstellen de collecties en het menu, zetten de 301-redirects en de SEO-velden, verhuizen je pagina's en nieuwsberichten en zetten productopties met meerprijs terug als varianten. Elk onderdeel heeft een vaste prijs, je kiest wat je nodig hebt. Je producten blijven staan waar ze staan." )
+    , faqAnswerText "Ja, en dat komt vaak voor: de CCV-export en de Shopify-import zijn geen probleem, de rest wel. Je betaalt dan niet voor het overzetten van producten, wel voor het doorverwijzen van je oude productlinks. Wij herstellen de collecties en het menu, zetten de 301-redirects en de SEO-velden, verhuizen je pagina's en nieuwsberichten en zetten productopties met meerprijs terug als varianten. Elk onderdeel heeft een vaste prijs en de productlinks gaan per link; je kiest wat je nodig hebt. Je producten blijven staan waar ze staan." )
   , ( "Wat neemt de CCV-export niet mee?"
     , faqAnswerText "De koppeling van producten aan categorieën, keuzes met meerprijs (zoals een grotere harde schijf erbij), je informatiepagina's en nieuwsberichten, en de doorverwijzingen van je oude adressen. Wie twee keer importeert, krijgt bovendien elk product dubbel. Meta-titels en -beschrijvingen komen soms mee en soms niet. Al die punten lezen wij rechtstreeks uit je CCV Shop." )
   , ( "Ik heb ook een groothandel-shop. Kan dat één shop worden met zakelijke prijzen?"

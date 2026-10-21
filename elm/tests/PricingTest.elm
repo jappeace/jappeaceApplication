@@ -33,6 +33,12 @@ import PrijsCalculator
 import Test exposing (Test, describe, test)
 
 
+{-| (producten, talen) van klein tot groot, één in meer talen. -}
+voorbeeldCatalogi : List ( Int, Int )
+voorbeeldCatalogi =
+    [ ( 500, 1 ), ( 5000, 1 ), ( 9226, 1 ), ( 2400, 3 ) ]
+
+
 metProducten : Int -> Int -> Model -> Model
 metProducten producten talen model =
     { model
@@ -236,24 +242,15 @@ suite =
             \_ ->
                 Expect.equal 109900
                     (totaalCenten { initieelModel | bron = BronAnders })
-        , test "CCV-bron telt per productlink: 5.000 links = 999 + 500 x (6 + 5 + 4 + 3 + 2)ct + 2.500 x 1ct = 1.124" <|
+        , test "CCV-bron kost evenveel als MijnWebwinkel, ook in meer talen: de productlinks tellen tegen de productstaffel" <|
             \_ ->
-                Expect.equal 112400
-                    (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop }))
-        , test "CCV-bron in 3 talen: elke taal heeft eigen links, 7.200 links (147) + 2 x 250 = 1.646" <|
+                Expect.equalLists
+                    (List.map (\( producten, talen ) -> totaalCenten (metProducten producten talen initieelModel)) voorbeeldCatalogi)
+                    (List.map (\( producten, talen ) -> totaalCenten (metProducten producten talen { initieelModel | bron = BronCcvShop })) voorbeeldCatalogi)
+        , test "CCV-bron, Trailer and Tools: 9.226 links = 999 + 300 + 7.226 x 10ct = 2.021,60" <|
             \_ ->
-                Expect.equal 164600
-                    (totaalCenten (metProducten 2400 3 { initieelModel | bron = BronCcvShop }))
-        , test "CCV-bron: voorraad blijft per product tellen, 1.124 + 100 + 4.000 x 5ct" <|
-            \_ ->
-                Expect.equal 142400
-                    (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop, voorraad = True }))
-        , test "CCV-bron: de linkstaffel staat per trede onder de productpost" <|
-            \_ ->
-                Expect.equal [ ( Hoofdregel, 99900 ), ( Hoofdregel, 12500 ), ( Subregel, 3000 ), ( Subregel, 2500 ), ( Subregel, 2000 ), ( Subregel, 1500 ), ( Subregel, 1000 ), ( Subregel, 2500 ) ]
-                    (List.map (\regel -> ( regel.niveau, regel.centen ))
-                        (prijsRegels (metProducten 5000 1 { initieelModel | bron = BronCcvShop }))
-                    )
+                Expect.equal 202160
+                    (totaalCenten (metProducten 9226 1 { initieelModel | bron = BronCcvShop }))
         , test "Lightspeed-bron rekent de productstaffel wel: 500 producten = 1.099" <|
             \_ ->
                 Expect.equal 109900
@@ -386,8 +383,9 @@ suite =
 
 
 {-| Iemand die de producten al zelf uit CCV Shop in Shopify zette: de
-staffel vervalt, de basis wordt drie afrondingsregels die er precies op
-optellen, en elk vinkje haalt zijn regel uit het totaal. -}
+basis wordt drie afrondingsregels die er precies op optellen, de oude
+productlinks tellen bij de redirects, en elk vinkje haalt zijn regel uit
+het totaal. -}
 ccvZelf : Model
 ccvZelf =
     Tuple.first (update (ZelfGeimporteerdGewijzigd True) { initieelModel | bron = BronCcvShop, productenInvoer = "5000" })
@@ -396,29 +394,33 @@ ccvZelf =
 zelfImportSuite : Test
 zelfImportSuite =
     describe "PrijsCalculator: producten al zelf in Shopify (afrondingsroute)"
-        [ test "CCV met 5.000 producten, alles aangevinkt: 999, gelijk aan de basis, geen staffel" <|
+        [ test "CCV met 5.000 producten, alles aangevinkt: evenveel als wanneer wij de producten overzetten" <|
             \_ ->
-                Expect.equal 99900 (totaalCenten ccvZelf)
-        , test "de regels: producten door jou gedaan op 0, dan collecties 499, redirects 350, pagina's 150" <|
+                Expect.equal (totaalCenten (metProducten 5000 1 { initieelModel | bron = BronCcvShop })) (totaalCenten ccvZelf)
+        , test "de regels: producten door jou gedaan op 0, dan collecties 499, redirects 350, productlinks 600, pagina's 150" <|
             \_ ->
-                Expect.equal [ 0, 49900, 35000, 15000 ]
+                Expect.equal [ 0, 49900, 35000, 60000, 15000 ]
                     (List.map .centen (List.filter (\r -> r.niveau == Hoofdregel) (prijsRegels ccvZelf)))
-        , test "pagina's uitvinken haalt 150 van het totaal: 849" <|
+        , test "pagina's uitvinken haalt 150 van het totaal: 1.449" <|
             \_ ->
-                Expect.equal 84900 (totaalCenten (Tuple.first (update (AfrondingPaginasGewijzigd False) ccvZelf)))
-        , test "alleen collecties: 499" <|
+                Expect.equal 144900 (totaalCenten (Tuple.first (update (AfrondingPaginasGewijzigd False) ccvZelf)))
+        , test "alleen collecties: 499, zonder redirects tellen ook de productlinks niet" <|
             \_ ->
                 let
                     alleenCollecties =
                         { ccvZelf | afrondingRedirects = False, afrondingPaginas = False }
                 in
                 Expect.equal 49900 (totaalCenten alleenCollecties)
-        , test "productopties en tweede domein tellen erbij: 999 + 250 + 250" <|
+        , test "productopties en tweede domein tellen erbij: 1.599 + 250 + 250" <|
             \_ ->
-                Expect.equal 149900 (totaalCenten { ccvZelf | productoptiesHerstellen = True, tweedeDomeinRedirects = True })
-        , test "de meegroeiende modules en B2B blijven gewoon werken: B2B erbij is 1.749" <|
+                Expect.equal 209900 (totaalCenten { ccvZelf | productoptiesHerstellen = True, tweedeDomeinRedirects = True })
+        , test "de meegroeiende modules en B2B blijven gewoon werken: B2B erbij is 2.349" <|
             \_ ->
-                Expect.equal 174900 (totaalCenten (Tuple.first (update (B2bKanaalGewijzigd True) ccvZelf)))
+                Expect.equal 234900 (totaalCenten (Tuple.first (update (B2bKanaalGewijzigd True) ccvZelf)))
+        , test "Lightspeed met 5.000 producten, alles aangevinkt: 999, de producten tellen niet" <|
+            \_ ->
+                Expect.equal 99900
+                    (totaalCenten (Tuple.first (update (ZelfGeimporteerdGewijzigd True) { initieelModel | bron = BronLightspeed, productenInvoer = "5000" })))
         , test "aanvinken zet het thema terug op standaard, want dat heeft hij al" <|
             \_ ->
                 Expect.equal ThemaStandaard
