@@ -676,6 +676,17 @@ footer small a:hover { color: var(--wit); }
   color: var(--navy-diep); padding: 0; margin-bottom: 1.3rem;
 }
 .calc-inputs { display: grid; gap: 1.5rem; }
+/* Keuze Eenvoudig/Uitgebreid (Weergave in PrijsCalculator.elm). */
+.calc-weergave {
+  display: inline-flex; justify-self: start; gap: 0.2rem; padding: 0.2rem;
+  border: 1px solid var(--lijn); border-radius: 999px;
+}
+.calc-weergave-knop {
+  font-family: var(--kop); font-weight: 650; font-size: 0.95rem; color: var(--navy);
+  background: transparent; border: 0; border-radius: 999px;
+  padding: 0.45rem 1.1rem; cursor: pointer;
+}
+.calc-weergave-knop.actief { background: var(--navy); color: var(--wit); }
 .calc-field { display: flex; flex-direction: column; gap: 0.4rem; }
 .calc-label { font-weight: 650; font-family: var(--kop); color: var(--navy-diep); }
 .calc-hint { color: var(--grijs); font-size: 0.92rem; }
@@ -776,6 +787,12 @@ footer small a:hover { color: var(--wit); }
   display: flex; justify-content: space-between; gap: 1rem;
   margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--lijn);
   font-family: var(--kop); font-weight: 750; font-size: 1.25rem; color: var(--navy-diep);
+}
+.calc-inbegrepen { color: var(--grijs); font-size: 0.95rem; margin-top: 0.9rem; }
+.calc-meer { font-size: 0.95rem; margin-top: 0.6rem; }
+.calc-link-knop {
+  font: inherit; color: var(--navy); text-decoration: underline;
+  background: none; border: 0; padding: 0; cursor: pointer;
 }
 .calc-lockin { color: var(--grijs); font-size: 0.92rem; margin-top: 0.9rem; }
 .calc-contact { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1.2rem 1.5rem; }

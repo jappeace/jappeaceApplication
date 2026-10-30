@@ -8,6 +8,7 @@ port module PrijsCalculator exposing
     , Regelniveau(..)
     , StaffelSegment
     , ThemaKeuze(..)
+    , Weergave(..)
     , bronKeuzes
     , bronNaarWaarde
     , bronOmschrijving
@@ -15,6 +16,7 @@ port module PrijsCalculator exposing
     , doelNaarWaarde
     , doelOmschrijving
     , formulierGeldig
+    , getoondeKeuzes
     , heeftProductExport
     , initieelModel
     , invoerEventParams
@@ -381,8 +383,17 @@ type ThemaKeuze
     | ThemaNieuw
 
 
+{-| Eenvoudig vraagt alleen platform en productaantal en toont één bedrag;
+Uitgebreid is de volledige rekenhulp met modules, thema en uitsplitsing.
+See Note [Eenvoudige weergave]. -}
+type Weergave
+    = Eenvoudig
+    | Uitgebreid
+
+
 type alias Model =
-    { productenInvoer : String
+    { weergave : Weergave
+    , productenInvoer : String
     , talenInvoer : String
     , bron : BronPlatform
     , doel : DoelPlatform
@@ -420,7 +431,8 @@ type alias Model =
 
 initieelModel : Model
 initieelModel =
-    { productenInvoer = "500"
+    { weergave = Eenvoudig
+    , productenInvoer = "500"
     , talenInvoer = "1"
     , bron = BronMijnwebwinkel
     , doel = DoelShopify
@@ -484,6 +496,9 @@ pasQueryParameterToe parameter model =
         [ "zelf", "ja" ] ->
             zetZelfGeimporteerd True model
 
+        [ "weergave", "uitgebreid" ] ->
+            { model | weergave = Uitgebreid }
+
         _ ->
             model
 
@@ -492,7 +507,8 @@ pasQueryParameterToe parameter model =
 
 
 type Msg
-    = ProductenGewijzigd String
+    = WeergaveGewijzigd Weergave
+    | ProductenGewijzigd String
     | TalenGewijzigd String
     | BronGewijzigd String
     | DoelGewijzigd String
@@ -695,13 +711,19 @@ tot een persoon en dan vervalt de grond onder de bannerloze GA4-opzet (zie
 de Decision in shake/WebwinkelTemplates.hs). -}
 invoerEventParams : Model -> List ( String, Encode.Value )
 invoerEventParams model =
-    [ ( "value", Encode.int (totaalCenten model // 100) )
+    keuzeEventParams (getoondeKeuzes model)
+
+
+keuzeEventParams : Model -> List ( String, Encode.Value )
+keuzeEventParams keuzes =
+    [ ( "value", Encode.int (totaalCenten keuzes // 100) )
     , ( "currency", Encode.string "EUR" )
-    , ( "producten", Encode.int (aantalProducten model) )
-    , ( "talen", Encode.int (aantalTalen model) )
-    , ( "bron", Encode.string (bronOmschrijving model.bron) )
-    , ( "doel", Encode.string (doelOmschrijving model.doel) )
-    , ( "zelf_geimporteerd", Encode.bool (zelfImportActief model) )
+    , ( "producten", Encode.int (aantalProducten keuzes) )
+    , ( "talen", Encode.int (aantalTalen keuzes) )
+    , ( "bron", Encode.string (bronOmschrijving keuzes.bron) )
+    , ( "doel", Encode.string (doelOmschrijving keuzes.doel) )
+    , ( "zelf_geimporteerd", Encode.bool (zelfImportActief keuzes) )
+    , ( "weergave", Encode.string (weergaveNaarWaarde keuzes.weergave) )
     ]
 
 
@@ -724,7 +746,7 @@ herkend; "bron" en "doel" zijn custom parameters die in GA4 als custom dimension
 geregistreerd moeten worden voordat je erop kunt uitsplitsen. -}
 offerteAangevraagdEvent : Model -> Cmd Msg
 offerteAangevraagdEvent model =
-    gaEvent "offerte_aangevraagd" (offerteEventParams model)
+    gaEvent "offerte_aangevraagd" (offerteEventParams (getoondeKeuzes model))
 
 
 {-| De parameters van het offerte-event, als pure functie zodat dezelfde
@@ -744,6 +766,9 @@ offerteEventParams model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        WeergaveGewijzigd keuze ->
+            markeerInvoer { model | weergave = keuze }
+
         ProductenGewijzigd waarde ->
             meldGroteCatalogus (markeerInvoer { model | productenInvoer = waarde })
 
@@ -842,6 +867,58 @@ update msg model =
 
         GroteCatalogusContact ->
             ( model, gaEvent "grote_catalogus_contact" [] )
+
+
+{- Note [Eenvoudige weergave]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+De volledige rekenhulp las voor merchants als een lijst variabelen (PlayMoto,
+28 sep 2026: "erg veel variabelen, ik zou eerder een vaste prijs verwachten").
+Daarom opent hij in Eenvoudig: platform, productaantal en één bedrag met in
+woorden wat erin zit. Wie meer wil meenemen, schakelt naar Uitgebreid.
+
+Wat in Uitgebreid is aangevinkt, blijft in het model staan maar telt in
+Eenvoudig niet mee: prijs, offertemail en analytics rusten op
+'getoondeKeuzes'. Zo betaalt niemand voor een hokje dat hij niet meer ziet,
+en terugschakelen brengt de keuzes ongewijzigd terug.
+
+Decision: Eenvoudig is de standaard en Uitgebreid de opt-in. Alternatief was
+één formulier met nog meer ingeklapte groepen, maar dan blijven uitsplitsing en
+staffelregels zichtbaar, en juist die lazen als variabelen.
+-}
+
+
+{-| De keuzes waarop prijs, offertemail en analytics rusten. In Eenvoudig
+tellen alleen platform, doelplatform, productaantal en de eigen import; al het
+overige staat op de beginwaarde. See Note [Eenvoudige weergave]. -}
+getoondeKeuzes : Model -> Model
+getoondeKeuzes model =
+    case model.weergave of
+        Uitgebreid ->
+            model
+
+        Eenvoudig ->
+            { initieelModel
+                | bron = model.bron
+                , doel = model.doel
+                , productenInvoer = model.productenInvoer
+                , zelfGeimporteerd = model.zelfGeimporteerd
+                , naam = model.naam
+                , webshopDomein = model.webshopDomein
+                , emailInvoer = model.emailInvoer
+                , offertePoging = model.offertePoging
+                , analyticsEngaged = model.analyticsEngaged
+                , groteCatalogusGemeld = model.groteCatalogusGemeld
+            }
+
+
+weergaveNaarWaarde : Weergave -> String
+weergaveNaarWaarde weergave =
+    case weergave of
+        Eenvoudig ->
+            "eenvoudig"
+
+        Uitgebreid ->
+            "uitgebreid"
 
 
 -- PRIJSBEREKENING
@@ -1767,35 +1844,97 @@ pointOfSaleNoot pointOfSale =
 view : Model -> Html Msg
 view model =
     div [ Attr.class "prijs-calculator" ]
-        [ fieldset [ Attr.class "calc-inputs" ] <|
-            [ legend [] [ text "Je webshop" ]
-            , bronVeld model.bron
-            , doelVeld model.doel
-            ]
-                ++ zelfImportVelden model
-                ++ [ getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer (productenHint model) ProductenGewijzigd
-                   ]
-                ++ themaVelden model
-                ++ [ -- Decision: de aanvinkgroepen zitten in een natief
-              -- details/summary-element en staan standaard dicht.
-              -- Gekozen boven een eigen open/dicht-Msg in het model:
-              -- de browser regelt het klappen, er is geen state of
-              -- analytics-ruis bij, en aangevinkte hokjes blijven
-              -- gewoon meetellen als de groep weer dichtklapt (de
-              -- inputs blijven in de DOM). Aanleiding: de rekenhulp
-              -- oogde als een muur van opties, en wie alles aanvinkt
-              -- schrikt van het totaal (plotterenzo-les, 31 aug 2026).
-              details [ Attr.class "calc-check-group" ] <|
+        [ fieldset [ Attr.class "calc-inputs" ]
+            (legend [] [ text "Je webshop" ] :: weergaveKeuze model.weergave :: invoerVelden model)
+        , div [ Attr.class "calc-result" ] (resultaat model.weergave (getoondeKeuzes model))
+        ]
+
+
+{-| De actieve knop draagt aria-pressed, zodat een schermlezer hoort welke
+weergave aanstaat. -}
+weergaveKeuze : Weergave -> Html Msg
+weergaveKeuze huidige =
+    div
+        [ Attr.class "calc-weergave"
+        , Attr.attribute "role" "group"
+        , Attr.attribute "aria-label" "Weergave van de rekenhulp"
+        ]
+        [ weergaveKnop huidige Eenvoudig "Eenvoudig"
+        , weergaveKnop huidige Uitgebreid "Uitgebreid"
+        ]
+
+
+weergaveKnop : Weergave -> Weergave -> String -> Html Msg
+weergaveKnop huidige knop knopTekst =
+    button
+        [ Attr.type_ "button"
+        , Attr.classList [ ( "calc-weergave-knop", True ), ( "actief", huidige == knop ) ]
+        , Attr.attribute "aria-pressed" (ariaWaarde (huidige == knop))
+        , onClick (WeergaveGewijzigd knop)
+        ]
+        [ text knopTekst ]
+
+
+ariaWaarde : Bool -> String
+ariaWaarde waarde =
+    if waarde then
+        "true"
+
+    else
+        "false"
+
+
+invoerVelden : Model -> List (Html Msg)
+invoerVelden model =
+    case model.weergave of
+        Eenvoudig ->
+            eenvoudigeVelden model
+
+        Uitgebreid ->
+            uitgebreideVelden model
+
+
+{-| De vraag naar een eigen import blijft ook hier staan, omdat die bij CCV en
+Lightspeed de prijs het meest bepaalt; de afrondingsregels eronder horen bij
+Uitgebreid. -}
+eenvoudigeVelden : Model -> List (Html Msg)
+eenvoudigeVelden model =
+    bronVeld model.bron :: zelfImportVraag model ++ [ productenVeld model ]
+
+
+productenVeld : Model -> Html Msg
+productenVeld model =
+    getalVeld "Hoeveel producten heeft je webshop ongeveer?" model.productenInvoer (productenHint model) ProductenGewijzigd
+
+
+uitgebreideVelden : Model -> List (Html Msg)
+uitgebreideVelden model =
+    [ bronVeld model.bron
+    , doelVeld model.doel
+    ]
+        ++ zelfImportVelden model
+        ++ [ productenVeld model ]
+        ++ themaVelden model
+        ++ [ -- Decision: de aanvinkgroepen zitten in een natief
+             -- details/summary-element en staan standaard dicht.
+             -- Gekozen boven een eigen open/dicht-Msg in het model:
+             -- de browser regelt het klappen, er is geen state of
+             -- analytics-ruis bij, en aangevinkte hokjes blijven
+             -- gewoon meetellen als de groep weer dichtklapt (de
+             -- inputs blijven in de DOM). Aanleiding: de rekenhulp
+             -- oogde als een muur van opties, en wie alles aanvinkt
+             -- schrikt van het totaal (plotterenzo-les, 31 aug 2026).
+             details [ Attr.class "calc-check-group" ] <|
                 [ summary [ Attr.class "calc-label" ] [ text "Wat wil je meenemen naar de nieuwe shop?" ]
-                , aanvinkVeld "Klantaccounts" "Je klanten houden hun eigen inlog. \u{20AC}100 tot 1.000 accounts, daarboven per account" model.klantaccounts KlantaccountsGewijzigd
+                , aanvinkVeld "Klantaccounts" "Je klanten houden hun eigen inlog. €100 tot 1.000 accounts, daarboven per account" model.klantaccounts KlantaccountsGewijzigd
                 ]
                     ++ aantalVeld model.klantaccounts "Hoeveel klantaccounts ongeveer?" model.klantaccountsInvoer KlantaccountsAantalGewijzigd
                     ++ spaarpuntenVelden model
-                    ++ [ aanvinkVeld "Bestelgeschiedenis" "Alle eerdere bestellingen van je klanten. \u{20AC}100 tot 1.000 bestellingen, daarboven per bestelling" model.orderhistorie OrderhistorieGewijzigd ]
+                    ++ [ aanvinkVeld "Bestelgeschiedenis" "Alle eerdere bestellingen van je klanten. €100 tot 1.000 bestellingen, daarboven per bestelling" model.orderhistorie OrderhistorieGewijzigd ]
                     ++ aantalVeld model.orderhistorie "Hoeveel bestellingen staan er in je shop ongeveer?" model.bestellingenInvoer BestellingenGewijzigd
-                    ++ [ aanvinkVeld "Nieuwsbrief-aanmeldingen" "De adressenlijst van je nieuwsbrief. \u{20AC}100 tot 1.000 adressen, daarboven per adres" model.nieuwsbrief NieuwsbriefGewijzigd ]
+                    ++ [ aanvinkVeld "Nieuwsbrief-aanmeldingen" "De adressenlijst van je nieuwsbrief. €100 tot 1.000 adressen, daarboven per adres" model.nieuwsbrief NieuwsbriefGewijzigd ]
                     ++ aantalVeld model.nieuwsbrief "Hoeveel nieuwsbrief-adressen ongeveer?" model.abonneesInvoer AbonneesGewijzigd
-                    ++ [ aanvinkVeld "Voorraadaantallen" "De actuele voorraad per product. \u{20AC}100 tot 1.000 producten, daarboven per product" model.voorraad VoorraadGewijzigd
+                    ++ [ aanvinkVeld "Voorraadaantallen" "De actuele voorraad per product. €100 tot 1.000 producten, daarboven per product" model.voorraad VoorraadGewijzigd
                        , aanvinkVeld "Reviews / beoordelingen" "Je opgebouwde productbeoordelingen" model.reviews ReviewsGewijzigd
 
                        -- Decision: het talenveld staat sinds 29 sep 2026 in
@@ -1812,30 +1951,69 @@ view model =
                        , div [ Attr.class "calc-taalveld" ]
                             [ getalVeld "In hoeveel talen staat je webshop?" model.talenInvoer "1 taal zit in de basisprijs" TalenGewijzigd ]
                        ]
-            , details [ Attr.class "calc-check-group" ] <|
+           , details [ Attr.class "calc-check-group" ] <|
                 [ summary [ Attr.class "calc-label" ] [ text "Extra diensten en koppelingen" ] ]
                     ++ domeinEmailVelden model
                     ++ [ aanvinkVeld "Verzendkoppeling (bijv. DHL)" "Pakketten en labels rechtstreeks vanuit je shop" model.verzendkoppeling VerzendkoppelingGewijzigd
                        , aanvinkVeld "B2B-kanaal (zakelijke klanten)" "Aparte prijzen en inlog voor zakelijke klanten" model.b2bKanaal B2bKanaalGewijzigd
-                       , aanvinkVeld "Kassa / point-of-sale voor mijn fysieke winkel" "Verkopen in de winkel \u{00E9}n online met \u{00E9}\u{00E9}n systeem (Shopify POS)" model.pointOfSale PointOfSaleGewijzigd
+                       , aanvinkVeld "Kassa / point-of-sale voor mijn fysieke winkel" "Verkopen in de winkel én online met één systeem (Shopify POS)" model.pointOfSale PointOfSaleGewijzigd
                        , aanvinkVeld "Cursus Shopify (2 uur, 1-op-1)" "Samen door je nieuwe shop, zodat je hem daarna zelf beheert" model.cursus CursusGewijzigd
                        ]
-                   ]
-        , div [ Attr.class "calc-result" ] <|
-            if isGroteCatalogus model then
-                groteCatalogusPaneel model
+           ]
 
-            else
-                [ h3 [] [ text "Je prijs" ]
-                , uitsplitsing model
-                , p [ Attr.class "calc-total" ]
-                    [ span [] [ text "Totaal (excl. BTW)" ]
-                    , strong [] [ text (formatteerEuro (totaalCenten model)) ]
+
+resultaat : Weergave -> Model -> List (Html Msg)
+resultaat weergave keuzes =
+    if isGroteCatalogus keuzes then
+        groteCatalogusPaneel keuzes
+
+    else
+        prijsBlok weergave keuzes
+            ++ opAanvraagNoten keuzes
+            ++ [ lockInNoot, offerteFormulier keuzes, vrijblijvendNoot ]
+
+
+prijsBlok : Weergave -> Model -> List (Html Msg)
+prijsBlok weergave keuzes =
+    case weergave of
+        Eenvoudig ->
+            [ h3 [] [ text "Je prijs" ]
+            , totaalRegel keuzes
+            , p [ Attr.class "calc-inbegrepen" ] [ text (inbegrepenTekst keuzes) ]
+            , p [ Attr.class "calc-meer" ]
+                [ text "Wil je ook je klanten, bestellingen, domein of uitstraling meenemen? "
+                , button
+                    [ Attr.type_ "button"
+                    , Attr.class "calc-link-knop"
+                    , onClick (WeergaveGewijzigd Uitgebreid)
                     ]
+                    [ text "Reken het uitgebreid uit" ]
                 ]
-                    ++ opAanvraagNoten model
-                    ++ [ lockInNoot, offerteFormulier model, vrijblijvendNoot ]
+            ]
+
+        Uitgebreid ->
+            [ h3 [] [ text "Je prijs" ]
+            , uitsplitsing keuzes
+            , totaalRegel keuzes
+            ]
+
+
+totaalRegel : Model -> Html Msg
+totaalRegel keuzes =
+    p [ Attr.class "calc-total" ]
+        [ span [] [ text "Totaal (excl. BTW)" ]
+        , strong [] [ text (formatteerEuro (totaalCenten keuzes)) ]
         ]
+
+
+{-| Wat het eenvoudige bedrag dekt, in woorden in plaats van staffelregels. -}
+inbegrepenTekst : Model -> String
+inbegrepenTekst keuzes =
+    if zelfImportActief keuzes then
+        "Daarin zitten je categorie\u{00EB}n als collecties en menu, een doorverwijzing voor elke oude link, je pagina's, een testshop en de livegang."
+
+    else
+        "Daarin zitten al je producten met teksten en foto's, je categorie\u{00EB}n en pagina's, een doorverwijzing voor elke oude link, een testshop en de livegang."
 
 
 {-| De vraag "staan je producten al in Shopify?", alleen bij platforms met
@@ -1844,13 +2022,18 @@ aanstaat: drie regels die samen de basis vormen, standaard aangevinkt, plus
 twee losse posten. -}
 zelfImportVelden : Model -> List (Html Msg)
 zelfImportVelden model =
+    zelfImportVraag model ++ afrondingVelden model
+
+
+zelfImportVraag : Model -> List (Html Msg)
+zelfImportVraag model =
     if heeftProductExport model.bron then
-        aanvinkVeld
+        [ aanvinkVeld
             "Mijn producten staan al in Shopify"
             ("Heb je de export van " ++ bronOmschrijving model.bron ++ " al zelf geïmporteerd? Dan rekenen we alleen het werk dat die export laat liggen.")
             model.zelfGeimporteerd
             ZelfGeimporteerdGewijzigd
-            :: afrondingVelden model
+        ]
 
     else
         []

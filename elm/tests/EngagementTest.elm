@@ -82,10 +82,26 @@ suite =
                             , ( "bron", Encode.string "CCV Shop" )
                             , ( "doel", Encode.string "Shopify" )
                             , ( "zelf_geimporteerd", Encode.bool False )
+                            , ( "weergave", Encode.string "uitgebreid" )
                             ]
                         )
                     )
                     (Encode.encode 0 (Encode.object (invoerEventParams rollendVoorbeeldModel)))
+        , test "in Eenvoudig meldt het invoer-event de getoonde prijs, zonder verborgen keuzes" <|
+            \_ ->
+                Expect.equal
+                    (Encode.encode 0 (Encode.int 1099))
+                    (Encode.encode 0
+                        (Maybe.withDefault Encode.null
+                            (List.head
+                                (List.map Tuple.second
+                                    (List.filter (\( naam, _ ) -> naam == "value")
+                                        (invoerEventParams { initieelModel | klantaccounts = True, thema = PrijsCalculator.ThemaOverzetten })
+                                    )
+                                )
+                            )
+                        )
+                    )
         , test "het rollende invoer-event draagt nooit naam, domein of e-mail (herleidbaarheid)" <|
             \_ ->
                 Expect.equal []
@@ -102,10 +118,10 @@ suite =
 
 
 {-| Een model waarin de bezoeker heeft gespeeld: 2.500 producten, 3 talen,
-vanaf CCV. -}
+vanaf CCV, in Uitgebreid (alleen daar staat het talenveld). -}
 rollendVoorbeeldModel : PrijsCalculator.Model
 rollendVoorbeeldModel =
-    { initieelModel | productenInvoer = "2500", talenInvoer = "3", bron = PrijsCalculator.BronCcvShop }
+    { initieelModel | weergave = PrijsCalculator.Uitgebreid, productenInvoer = "2500", talenInvoer = "3", bron = PrijsCalculator.BronCcvShop }
 
 
 {-| Een model met ingevuld offerteformulier: precies de velden die nooit in

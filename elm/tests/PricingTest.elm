@@ -1,4 +1,4 @@
-module PricingTest exposing (groteCatalogusSuite, staffelSegmentenSuite, suite, zelfImportSuite)
+module PricingTest exposing (groteCatalogusSuite, staffelSegmentenSuite, suite, weergaveSuite, zelfImportSuite)
 
 {-| Test dat de prijsberekening van de calculator gelijk blijft aan de tabel op
 /prijzen (en dus aan standaard-prijslijst.org). Deze test faalt zodra de
@@ -15,6 +15,8 @@ import PrijsCalculator
         , Model
         , Msg(..)
         , ThemaKeuze(..)
+        , Weergave(..)
+        , getoondeKeuzes
         , heeftProductExport
         , initieelModel
         , isGroteCatalogus
@@ -435,3 +437,38 @@ zelfImportSuite =
             \_ ->
                 Expect.equal initieelModel (leesQuery "?utm_source=x&zelf=nee" initieelModel)
         ]
+
+
+{-| Een bezoeker die in Uitgebreid klantaccounts en het overzetten van zijn
+uitstraling aanvinkte en daarna naar Eenvoudig terugschakelde. -}
+terugNaarEenvoudig : Model
+terugNaarEenvoudig =
+    Tuple.first
+        (update (WeergaveGewijzigd Eenvoudig)
+            { initieelModel | weergave = Uitgebreid, klantaccounts = True, thema = ThemaOverzetten }
+        )
+
+
+weergaveSuite : Test
+weergaveSuite =
+    describe "PrijsCalculator: Eenvoudig toont alleen basis en producten, Uitgebreid alles"
+        [ test "in Eenvoudig tellen keuzes uit Uitgebreid niet mee: 500 producten is 1.099" <|
+            \_ ->
+                Expect.equal 109900 (totaalCenten (getoondeKeuzes terugNaarEenvoudig))
+        , test "terug naar Uitgebreid brengt de keuzes terug: 1.099 + 100 accounts + 749 uitstraling" <|
+            \_ ->
+                Expect.equal 194800
+                    (totaalCenten (getoondeKeuzes (Tuple.first (update (WeergaveGewijzigd Uitgebreid) terugNaarEenvoudig))))
+        , test "de eigen import telt in Eenvoudig mee, met alle afrondingsregels: 999" <|
+            \_ ->
+                Expect.equal 99900
+                    (totaalCenten (getoondeKeuzes { ccvZelf | afrondingPaginas = False }))
+        , test "in Uitgebreid telt een uitgevinkte afrondingsregel wel: 849" <|
+            \_ ->
+                Expect.equal 84900
+                    (totaalCenten (getoondeKeuzes { ccvZelf | weergave = Uitgebreid, afrondingPaginas = False }))
+        , test "een link met weergave=uitgebreid opent de volledige rekenhulp" <|
+            \_ ->
+                Expect.equal Uitgebreid (leesQuery "?bron=ccv&weergave=uitgebreid" initieelModel).weergave
+        ]
+
