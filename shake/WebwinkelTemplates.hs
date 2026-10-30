@@ -988,6 +988,7 @@ prijzenPage = webwinkelBaseTemplate prijzenMeta $
     H.section ! A.class_ "hero" $ do
       H.h1 "Prijzen"
       H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Vaste prijzen, vooraf afgesproken. Je betaalt pas na een succesvolle migratie. Hieronder zie je precies waar je aan toe bent." :: Text)
+      H.p ! A.class_ "subtitle" $ H.preEscapedToHtml ("Een gemiddelde webshopverhuizing kost tussen de &euro;2.000 en &euro;3.000." :: Text)
 
     H.section ! A.class_ "engagement" ! A.id "rekenhulp" $ do
       H.h2 "Bereken je richtprijs"
