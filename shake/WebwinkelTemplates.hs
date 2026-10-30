@@ -1473,14 +1473,14 @@ mijnwebwinkelFaq =
   , ( "Wat gebeurt er met bestellingen tijdens de verhuizing?"
     , faqAnswerHtml $ do
         "Je MijnWebwinkel-shop blijft gewoon open en verkoopt door terwijl wij de nieuwe shop opbouwen. Vlak voor de livegang zetten we de laatste stand over, zodat ook recente bestellingen en actuele voorraadaantallen meekomen. Bestelgeschiedenis en voorraad kies je als optie in "
-        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        H.a ! A.href "/prijzen.html?weergave=uitgebreid#rekenhulp" $ "de rekenhulp"
         "." )
   , ( "Kan ik mijn domeinnaam behouden?"
     , faqAnswerText "Ja, je webadres blijft gewoon van je. Bij de livegang wijzen we je domeinnaam op de nieuwe shop, en alle oude links worden automatisch doorgestuurd." )
   , ( "Wat gebeurt er met mijn e-mailadres?"
     , faqAnswerHtml $ do
         "Je e-mailadres blijft gewoon werken. Loopt je e-mail nu via MijnWebwinkel, dan zetten we je mailboxen en doorstuurregels over als losse dienst (e-mail-setup in "
-        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        H.a ! A.href "/prijzen.html?weergave=uitgebreid#rekenhulp" $ "de rekenhulp"
         "), zodat je geen bericht mist." )
   , ( "Wat als er iets niet klopt na de migratie?"
     , faqAnswerText "Die kans is klein: de migratie is volledig geautomatiseerd, en na afloop controleert het programma elke oude link en elk product. De verhuizingen van panzer-shop.nl en kruidje-roer-me-niet.nl staan online als voorbeeld. Maar fouten kunnen gebeuren. Is er bij de livegang iets niet goed overgezet, of werkte iets toen al anders dan in je offerte, dan lossen we het gratis op, ook als je het pas later ontdekt. Dat kun je tot twaalf maanden na de livegang melden. Fouten door latere wijzigingen van jou, een ander, Shopify of een app vallen daarbuiten." )
@@ -1503,7 +1503,7 @@ mijnwebwinkelFaq =
   , ( "Verhuizen mijn pagina's, reviews en kortingscodes ook?"
     , faqAnswerHtml $ do
         "Ja. Informatiepagina's zoals over-ons en verzendinformatie en je blog verhuizen standaard mee. Reviews neem je als optie mee in "
-        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        H.a ! A.href "/prijzen.html?weergave=uitgebreid#rekenhulp" $ "de rekenhulp"
         ", en ook kortingscodes en cadeaubonnen zetten we voor je over. Alles wat in je shop zit, kan mee." )
   , ( "Hoe werken de SEO-redirects precies?"
     , faqAnswerText "MijnWebwinkel bouwt zijn links op uit interne artikelnummers. We hebben uitgezocht hoe dat precies werkt, waardoor we voor elke oude link automatisch de juiste doorverwijzing (301-redirect) kunnen aanmaken, ook voor links met nummers erin." )
@@ -1512,7 +1512,7 @@ mijnwebwinkelFaq =
   , ( "Kan ik de nieuwe shop straks zelf beheren?"
     , faqAnswerHtml $ do
         "Ja, daar is Shopify juist op gebouwd: producten toevoegen, prijzen wijzigen en een banner plaatsen doe je zonder technische kennis. Wil je een vliegende start, dan is er een cursus Shopify van twee uur, \233\233n-op-\233\233n door je eigen nieuwe shop (zie "
-        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        H.a ! A.href "/prijzen.html?weergave=uitgebreid#rekenhulp" $ "de rekenhulp"
         ")." )
   ]
 
@@ -1753,7 +1753,7 @@ ccvshopFaq =
   , ( "Kan ik de nieuwe shop straks zelf beheren?"
     , faqAnswerHtml $ do
         "Ja, daar is Shopify juist op gebouwd: producten toevoegen, prijzen wijzigen en een banner plaatsen doe je zonder technische kennis. Wil je een vliegende start, dan is er een cursus Shopify van twee uur, \233\233n-op-\233\233n door je eigen nieuwe shop (zie "
-        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        H.a ! A.href "/prijzen.html?weergave=uitgebreid#rekenhulp" $ "de rekenhulp"
         ")." )
   ]
 
@@ -1944,7 +1944,7 @@ lightspeedFaq =
   , ( "Kan ik de nieuwe shop straks zelf beheren?"
     , faqAnswerHtml $ do
         "Ja, daar is Shopify juist op gebouwd: producten toevoegen, prijzen wijzigen en een banner plaatsen doe je zonder technische kennis. Wil je een vliegende start, dan is er een cursus Shopify van twee uur, \233\233n-op-\233\233n door je eigen nieuwe shop (zie "
-        H.a ! A.href "/prijzen.html#rekenhulp" $ "de rekenhulp"
+        H.a ! A.href "/prijzen.html?weergave=uitgebreid#rekenhulp" $ "de rekenhulp"
         ")." )
   , ( "Moet ik niet gewoon upgraden naar Lightspeed E-Series?"
     , faqAnswerText "Dat kan, maar weet waar je aan begint. Het offici\235le upgradeprogramma is alleen beschikbaar voor Noord-Amerikaanse winkels, dus als Nederlandse shop doe je die overstap sowieso op eigen kracht. Zelfs bij het offici\235le pad migreert je orderhistorie niet mee, moeten redirects en apps opnieuw, en gaan alleen twee specifieke thema's mee. E-Series is bovendien een ander product (het overgenomen Ecwid); Europese gebruikers melden er problemen mee rond verplichte e-facturatie. Als je toch opnieuw moet beginnen, kies dan zelf je platform." )

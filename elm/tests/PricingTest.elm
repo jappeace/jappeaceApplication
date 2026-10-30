@@ -467,6 +467,16 @@ weergaveSuite =
             \_ ->
                 Expect.equal 84900
                     (totaalCenten (getoondeKeuzes { ccvZelf | weergave = Uitgebreid, afrondingPaginas = False }))
+        , test "het doelplatform staat alleen in Uitgebreid en telt in Eenvoudig niet mee" <|
+            \_ ->
+                Expect.equal DoelShopify (getoondeKeuzes { initieelModel | doel = DoelWoocommerce }).doel
+        , test "een link die het doelplatform voorinvult opent Uitgebreid, zodat de keuze zichtbaar blijft" <|
+            \_ ->
+                Expect.equal ( Uitgebreid, DoelWoocommerce )
+                    (Tuple.pair
+                        (leesQuery "?doel=woocommerce" initieelModel).weergave
+                        (getoondeKeuzes (leesQuery "?doel=woocommerce" initieelModel)).doel
+                    )
         , test "een link met weergave=uitgebreid opent de volledige rekenhulp" <|
             \_ ->
                 Expect.equal Uitgebreid (leesQuery "?bron=ccv&weergave=uitgebreid" initieelModel).weergave

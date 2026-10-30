@@ -491,7 +491,7 @@ pasQueryParameterToe parameter model =
             { model | bron = leesBron waarde }
 
         [ "doel", waarde ] ->
-            { model | doel = leesDoel waarde }
+            { model | doel = leesDoel waarde, weergave = Uitgebreid }
 
         [ "zelf", "ja" ] ->
             zetZelfGeimporteerd True model
@@ -767,7 +767,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         WeergaveGewijzigd keuze ->
-            markeerInvoer { model | weergave = keuze }
+            meldGroteCatalogus (markeerInvoer { model | weergave = keuze })
 
         ProductenGewijzigd waarde ->
             meldGroteCatalogus (markeerInvoer { model | productenInvoer = waarde })
@@ -876,10 +876,12 @@ De volledige rekenhulp las voor merchants als een lijst variabelen (PlayMoto,
 Daarom opent hij in Eenvoudig: platform, productaantal en één bedrag met in
 woorden wat erin zit. Wie meer wil meenemen, schakelt naar Uitgebreid.
 
-Wat in Uitgebreid is aangevinkt, blijft in het model staan maar telt in
-Eenvoudig niet mee: prijs, offertemail en analytics rusten op
-'getoondeKeuzes'. Zo betaalt niemand voor een hokje dat hij niet meer ziet,
-en terugschakelen brengt de keuzes ongewijzigd terug.
+Wat alleen in Uitgebreid te zien is, blijft in het model staan maar telt in
+Eenvoudig niet mee: prijs, offertemail, notities en analytics (ook de
+grote-catalogusmelding) rusten op 'getoondeKeuzes'. Zo betaalt niemand voor
+een hokje dat hij niet meer ziet, en terugschakelen brengt de keuzes
+ongewijzigd terug. Een link die zo'n veld voorinvult (?doel=, ?weergave=)
+opent daarom Uitgebreid.
 
 Decision: Eenvoudig is de standaard en Uitgebreid de opt-in. Alternatief was
 één formulier met nog meer ingeklapte groepen, maar dan blijven uitsplitsing en
@@ -888,8 +890,9 @@ staffelregels zichtbaar, en juist die lazen als variabelen.
 
 
 {-| De keuzes waarop prijs, offertemail en analytics rusten. In Eenvoudig
-tellen alleen platform, doelplatform, productaantal en de eigen import; al het
-overige staat op de beginwaarde. See Note [Eenvoudige weergave]. -}
+tellen alleen het huidige platform, het productaantal en de eigen import; al
+het overige, ook het doelplatform, staat op de beginwaarde. See Note
+[Eenvoudige weergave]. -}
 getoondeKeuzes : Model -> Model
 getoondeKeuzes model =
     case model.weergave of
@@ -899,7 +902,6 @@ getoondeKeuzes model =
         Eenvoudig ->
             { initieelModel
                 | bron = model.bron
-                , doel = model.doel
                 , productenInvoer = model.productenInvoer
                 , zelfGeimporteerd = model.zelfGeimporteerd
                 , naam = model.naam
@@ -998,13 +1000,13 @@ grens passeert, zodat GA4 telt hoe vaak grote catalogi de rekenhulp raken:
 precies het verkeer dat anders stil zou wegklikken. -}
 meldGroteCatalogus : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 meldGroteCatalogus ( model, cmd ) =
-    if isGroteCatalogus model && not model.groteCatalogusGemeld then
+    if isGroteCatalogus (getoondeKeuzes model) && not model.groteCatalogusGemeld then
         ( { model | groteCatalogusGemeld = True }
         , Cmd.batch
             [ cmd
             , gaEvent "calculator_grote_catalogus"
                 [ ( "producten", Encode.int (aantalProducten model) )
-                , ( "talen", Encode.int (aantalTalen model) )
+                , ( "talen", Encode.int (aantalTalen (getoondeKeuzes model)) )
                 ]
             ]
         )
@@ -1981,7 +1983,7 @@ prijsBlok weergave keuzes =
             , totaalRegel keuzes
             , p [ Attr.class "calc-inbegrepen" ] [ text (inbegrepenTekst keuzes) ]
             , p [ Attr.class "calc-meer" ]
-                [ text "Wil je ook je klanten, bestellingen, domein of uitstraling meenemen? "
+                [ text "Meer nodig, zoals je klanten en bestellingen, je domein, reviews of een cursus? "
                 , button
                     [ Attr.type_ "button"
                     , Attr.class "calc-link-knop"

@@ -62,6 +62,26 @@ suite =
             \_ ->
                 Expect.equal False
                     (Tuple.first (update (ProductenGewijzigd "500") initieelModel)).groteCatalogusGemeld
+        , test "in Eenvoudig telt een verborgen talenaantal niet mee voor de melding" <|
+            \_ ->
+                Expect.equal False
+                    (Tuple.first
+                        (update (ProductenGewijzigd "40000")
+                            (Tuple.first
+                                (update (WeergaveGewijzigd PrijsCalculator.Eenvoudig)
+                                    { initieelModel | weergave = PrijsCalculator.Uitgebreid, talenInvoer = "3" }
+                                )
+                            )
+                        )
+                    ).groteCatalogusGemeld
+        , test "terug naar Uitgebreid met dat talenaantal meldt de grote catalogus alsnog" <|
+            \_ ->
+                Expect.equal True
+                    (Tuple.first
+                        (update (WeergaveGewijzigd PrijsCalculator.Uitgebreid)
+                            { initieelModel | productenInvoer = "40000", talenInvoer = "3" }
+                        )
+                    ).groteCatalogusGemeld
         , test "een al gemeld model meldt niet opnieuw (vlag blijft staan)" <|
             \_ ->
                 Expect.equal True
