@@ -81,12 +81,14 @@ bedrijf gekoppeld.
 
 Wachtwoorden gaan bij geen enkele verhuizing mee, maar de zakelijke
 inlog van Shopify werkt met een code per mail. Klanten hoeven dus
-niets opnieuw in te stellen. De uitnodiging om in te loggen ging pas
-uit op Appies teken. Toen Shopify halverwege de eerste ronde één
-adres weigerde, liepen we alle maildomeinen na. Bij negentien
-bedrijven bestaat het domein van het mailadres niet of ontvangt het
-geen mail. Die lijst ging naar Appie, zodat die klanten alsnog een
-uitnodiging krijgen zodra er een werkend adres is.
+niets opnieuw in te stellen. De uitnodiging om in te loggen ging in
+twee rondes: de eerste bij de verhuizing, zoals vooraf aan Appie
+aangekondigd, de tweede na zijn akkoord. Toen Shopify aan het begin
+van de eerste ronde één adres weigerde, liepen we alle maildomeinen
+na. In de eerste ronde bestond bij negentien bedrijven het domein van
+het mailadres niet of ontving het geen mail, in de tweede bij drie.
+Dat meldden we Appie, zodat die klanten alsnog een uitnodiging
+krijgen zodra er een werkend adres is.
 
 * Waar we zelf van leerden
 
