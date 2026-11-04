@@ -1,0 +1,261 @@
+#+TITLE: Klantverhaal: Asat van CCV en Lightspeed naar één Shopify-shop met B2B
+#+SLUG: klantverhaal-asat-van-ccv-en-lightspeed-naar-een-shopify-shop-met-b2b
+#+DATE: 2026-11-04
+#+CATEGORY: migratie
+#+TAGS: ccv shop, lightspeed, shopify, b2b, klantverhaal
+#+SUMMARY: Asat.nl voegde zijn CCV-webshop en Lightspeed-groothandel samen in één Shopify-shop op Basic. Nieuwe zakelijke klanten bestellen meteen, ook vóór goedkeuring.
+
+Asat.nl uit Roermond verkoopt satelliet-tv, mediaspelers,
+netwerkapparatuur en beveiliging, aan consumenten en aan bedrijven.
+Tot deze herfst waren dat twee winkels: asat.nl op CCV Shop voor
+consumenten en asatgroothandel.nl op Lightspeed voor de zakelijke
+klanten. Het Lightspeed-contract liep op 1 november af. Toen CCV op
+21 oktober alle webshops offline haalde (volgens CCV's eigen melding
+vanwege PHP-kwetsbaarheden), zette Appie de consumentenshop eerder
+dan gepland over. Op 29 oktober volgde de groothandel. Sindsdien is
+het één Shopify-shop op het Basic-abonnement, waarin een consument
+en een groothandelsklant naast elkaar bestellen, elk tegen hun eigen
+prijs.
+
+Appie Jaouani van Asat had de producten al zelf in Shopify gezet.
+Wij deden de rest: het zakelijke kanaal, ruim 450 zakelijke klanten
+als bedrijf, twee jaar bestellingen uit beide systemen en de
+doorverwijzingen van beide domeinen. Dit is hoe dat ging, met wat we
+onderweg leerden.
+
+* Aanmelden en meteen doorbestellen
+
+Eén wens van Appie bepaalde de hele inrichting: wie zich aanmeldt
+als zakelijke klant, moet intussen gewoon kunnen bestellen. Tegen
+consumentenprijzen inclusief btw, tot hij de aanvraag heeft bekeken.
+Pas na zijn goedkeuring ziet de klant de zakelijke prijzen en
+staffels exclusief btw. Een zakelijke klant die vandaag een kabel
+nodig heeft, hoort niet tot maandag te wachten.
+
+Shopify heeft een eigen aanvraagformulier voor bedrijfsaccounts,
+maar dat werkt andersom. Het maakt bij elke aanvraag meteen een
+bedrijf aan, en volgens
+[[https://help.shopify.com/en/manual/b2b/companies/company-account-requests][Shopify's eigen uitleg]]
+kan zo'n bedrijf standaard niet bestellen en geen zakelijke prijzen
+zien totdat je het goedkeurt. Met een Flow-sjabloon kun je elke
+aanvraag automatisch laten goedkeuren, maar dan bekijkt niemand
+haar. Appie wilde juist zelf kijken, en de aanvrager intussen laten
+bestellen.
+
+Daarom staat er op de pagina "Zakelijke klant worden" een gewoon
+formulier, zonder de bedrijfsvelden van Shopify. Het vraagt
+bedrijfsnaam, adres, land, btw-nummer en KvK-nummer en bewaart de
+antwoorden bij het klantprofiel. De aanvrager blijft een gewone
+klant en kan meteen afrekenen, tegen de prijs die elke bezoeker
+ziet.
+
+Goedkeuren is één label. Appie bekijkt de aanvraag bij de klant en
+zet het label =b2b-goedgekeurd=. Een workflow in Shopify Flow maakt
+dan het bedrijf aan, met vestiging, adres en btw-nummer uit het
+formulier, koppelt de klant als contactpersoon die mag bestellen en
+stuurt hem de mail waarmee hij inlogt. In onze test was dat binnen
+enkele seconden rond. Logt de klant daarna in, dan ziet hij de
+zakelijke prijzen.
+
+Is de aanvraag niet compleet, kiest de aanvrager een land waar de
+workflow geen bedrijf voor aanmaakt, of heeft de klant het formulier
+nooit ingevuld, dan maakt Flow geen bedrijf maar mailt het Appie.
+Die keurt de aanvraag dan met de hand goed. Een btw-vrijstelling en
+bestellen op rekening zet hij bij een nieuwe aanvraag zelf aan: dat
+zijn keuzes per klant die we niet aan een formulier overlaten.
+
+* De zakelijke klanten verhuizen mee
+
+Appies regel was helder: wie nu zakelijke prijzen krijgt, houdt die
+in Shopify. De zakelijke klanten uit Lightspeed werden daarom
+bedrijven in Shopify, met vestiging, contactpersoon en btw-nummer.
+Buitenlandse klanten zonder btw-nummer betalen gewoon btw. En wie
+Appie al zelf vanuit CCV in Shopify had gezet, herkenden we op
+e-mailadres: die klant werd contactpersoon van zijn bedrijf, geen
+tweede account.
+
+Eén klant had in Lightspeed 66 keer als gast besteld, voor een
+bedrijf dat al zakelijk klant was. Toen Appie hem wilde goedkeuren,
+hebben we hem via het btw-nummer op zijn bestellingen aan dat
+bedrijf gekoppeld.
+
+Wachtwoorden gaan bij geen enkele verhuizing mee, maar de zakelijke
+inlog van Shopify werkt met een code per mail. Klanten hoeven dus
+niets opnieuw in te stellen. De uitnodiging om in te loggen ging pas
+uit op Appies teken. Toen Shopify halverwege de eerste ronde één
+adres weigerde, liepen we alle maildomeinen na. Bij negentien
+bedrijven bestaat het domein van het mailadres niet of ontvangt het
+geen mail. Die lijst ging naar Appie, zodat die klanten alsnog een
+uitnodiging krijgen zodra er een werkend adres is.
+
+* Waar we zelf van leerden
+
+Op 15 oktober zetten we de klantgroep "B2B klanten" uit Lightspeed
+over: 184 bedrijven. Een dag na de livegang, toen de uitnodigingen
+weg waren, meldde Appie dat er bekende zakelijke klanten ontbraken.
+Dat klopte. Op zijn Lightspeed-groothandel kreeg kennelijk elke
+ingelogde klant de groothandelsprijzen, ook buiten die groep.
+Lightspeed houdt per account bij of het bevestigd is, los van de
+groep, en zo vonden we nog 690 bevestigde accounts. 303 daarvan
+hadden ooit besteld.
+
+Appie kreeg twee lijsten terug: de klanten met een bestelling, waar
+hij "nee" kon zetten bij wie niet zakelijk mee moest, en de accounts
+die nooit bestelden, waar hij "ja" kon zetten bij wie toch mee moest.
+Dezelfde dag dat hij akkoord gaf stonden de klanten met een
+bestelling als bedrijf in Shopify, met één bedrijf per btw-nummer:
+een tweede account met hetzelfde nummer werd contactpersoon van dat
+bedrijf. Daarna hebben we bij alle 463 bedrijven die wij overzetten,
+voor een vaste set producten nagelopen dat ze dezelfde zakelijke
+prijzen en staffels zien als de bestaande zakelijke klanten, en met
+een tijdelijk testbedrijf de zakelijke checkout doorlopen.
+
+Omdat het gewone klanten waren, konden ze in de tussentijd gewoon
+bestellen, alleen nog niet tegen hun zakelijke prijs. Bij een
+Lightspeed-groothandel kijken we voortaan eerst naar welke accounts
+de winkelier bevestigde, en pas daarna naar de klantgroepen.
+
+* Zakelijke prijzen op de producten die er al stonden
+
+Appie had zijn catalogus zelf opgebouwd: dubbele producten
+opgeruimd, collecties gemaakt, teksten aangepast. Alles opnieuw
+importeren zou dat werk overschrijven. Dus koppelden we de
+Lightspeed-artikelen aan zijn bestaande Shopify-producten, eerst
+automatisch waar een artikel eenduidig te herkennen was, daarna
+ruim honderd koppelingen met de hand. De groothandelsprijzen en
+staffels uit Lightspeed staan nu in één zakelijke prijslijst.
+
+Zakelijke prijzen die Appie zelf had ingesteld voor producten zonder
+Lightspeed-prijs, bleven staan. Artikelen zonder zeker
+Shopify-product kregen geen geraden prijs, maar gingen als lijst
+naar hem. En bij elf producten lag de zakelijke prijs hoger dan de
+consumentenprijs exclusief btw; die hebben we hem eerst voorgelegd.
+
+Op een Basic-abonnement hangt die prijslijst aan een zakelijke
+markt die voor elke bedrijfsvestiging geldt. Een bedrijf dat Flow
+aanmaakt, krijgt de zakelijke prijzen dus zonder extra stap.
+
+* Twee jaar bestellingen uit twee systemen
+
+De bestellingen van de afgelopen twee jaar staan in Shopify bij de
+klant die ze plaatste: 3.364 uit CCV, zonder de bol.com-bestellingen
+die niet mee hoefden, en 1.876 van de 1.878 uit Lightspeed. De twee
+die ontbreken, zijn van klanten die in Lightspeed onder de AVG
+verwijderd zijn; die horen er bewust niet in. Op de livedag kwamen
+de laatste Lightspeed-bestellingen van vóór de omzetting er nog bij.
+
+* Verzendkosten per klantsoort
+
+Consumenten betalen verzendkosten inclusief btw en verzenden gratis
+boven €50. Zakelijke klanten betalen een vast tarief per zone
+exclusief btw, ook bij een grote bestelling. Verschillende tarieven
+per klantsoort, met een gratis-grens die alleen voor consumenten
+geldt, vragen op Basic een app. Hier is dat ShipWith, $7,99 per
+maand.
+
+* Twee domeinen, één winkel
+
+asatgroothandel.nl stuurt nu door naar asat.nl. Het is in Shopify
+een doorstuurdomein en geen alias: een alias laat dezelfde winkel op
+twee adressen zien, en dan staat de hele catalogus dubbel online.
+
+Elk oud adres van de groothandel, ook de Engelse pagina's, verwijst
+naar de passende pagina in Appies eigen Shopify-catalogus. Bij
+asat.nl geldt dat voor elk oud adres dat Appie wilde houden;
+pagina's van producten die hij bewust had opgeruimd, mochten
+verdwijnen. De winkel telt nu 4.323 doorverwijzingen. Waar geen
+duidelijke bestemming was, koos Appie. Lege merkpagina's gaan
+bijvoorbeeld naar de zoekresultaten voor dat merk, als die passende
+producten geven, en anders naar de categorie.
+
+Op de livedag liepen we alle 1.616 oude groothandelsadressen na, met
+en zonder www, en ze kwamen allemaal op hun bestemming uit. Daarbij
+vonden we dat het adres zonder www bij de domeinprovider nog naar
+Lightspeed wees. Lightspeed stuurde bezoekers nog netjes door, maar
+dat zou stoppen op de dag dat de oude winkel werd opgeheven. Appie
+zette het om. Medio november volgt nog een controle van de
+404-fouten.
+
+* Voor de techneuten
+
+De goedkeuring draait op de Flow-trigger "Customer tags added". Die
+start bij elk label dat bij een klant bijkomt, ook bij een label dat
+de workflow zelf zet. De voorwaarde kijkt daarom naar de labels die
+net zijn toegevoegd en niet naar alle labels van de klant. Anders
+maakt elk later label bij een goedgekeurde klant een tweede bedrijf.
+
+De workflow zet zelf het label =send-b2b-welcome=, dat de
+uitnodigingsmail aanzet (zie hieronder). De actie "Add customer
+tags" werkt onder deze trigger niet, en
+[[https://help.shopify.com/en/manual/shopify-flow/reference/triggers/customer-tags-added][Shopify waarschuwt]]
+dat de workflow er eindeloos van gaat lopen. =tagsAdd= staat niet in
+de lijst van mutaties die Flow aanbiedt. Wij zetten het label daarom
+met "Send Admin API request" en =customerUpdate=. Die mutatie
+vervangt de hele labellijst, dus de Liquid geeft de bestaande labels
+mee.
+
+=companyCreate= weigert een lege bedrijfsnaam, maar accepteert lege
+adresvelden zonder foutmelding. Een verkeerde metaveldsleutel geeft
+dus een bedrijf zonder adres, dat de klant bij het afrekenen eerst
+moet aanvullen. Een adres als één regel neemt Shopify ook aan, maar
+dan blijven postcode en plaats leeg. Het formulier heeft daarom
+losse velden, en vóór het aanmaken controleert een voorwaarde of ze
+gevuld zijn.
+
+De uitnodigingsmail via de Admin API
+(=companyContactSendWelcomeEmail=) weigerde Shopify bij Asat met
+=ACCESS_DENIED=, ook met schrijfrechten op klanten. De Flow-actie
+"Send B2B access email" werkt op dezelfde Basic-winkel wel. De mail
+gaat via Shopify's sjabloon dat hem stuurt wanneer een contactpersoon
+een rol krijgt én de klant het label =send-b2b-welcome= heeft, en
+daarna het label weghaalt. Dat geldt voor nieuwe aanvragen en voor
+de overgezette bedrijven: bij die laatste zetten wij het label en
+kennen we de rol via de API opnieuw toe. Zonder die labelvoorwaarde
+stuurt elke rolwijziging een mail, ook halverwege een handmatige
+goedkeuring.
+
+En de vaste regel: elke stap eerst met een testklant, een testbedrijf
+en een wegwerpinbox, daarna alles weer opruimen.
+
+* Veelgestelde vragen
+
+*Kan een zakelijke klant in Shopify bestellen voordat ik hem goedkeur?*
+
+Met Shopify's eigen aanvraagformulier standaard niet: dat bedrijf
+kan pas bestellen na je goedkeuring, tenzij je elke aanvraag
+automatisch laat goedkeuren. Met een gewoon formulier blijft de
+aanvrager een gewone klant. Hij bestelt dan tegen consumentenprijzen
+tot je hem goedkeurt.
+
+*Heb ik Shopify Plus nodig om consumenten en groothandel in één shop te combineren?*
+
+Meestal niet. Asat draait op Basic, met één consumentenprijslijst en
+één zakelijke prijslijst met staffels. Plus heb je nodig als elke
+zakelijke klant een eigen prijsafspraak heeft.
+
+*Kan ik een B2B-aanvraag goedkeuren zonder zelf het bedrijf aan te maken?*
+
+Met Shopify Flow wel. Je zet één label bij de klant, en Flow maakt
+het bedrijf aan met adres en btw-nummer uit het aanmeldformulier en
+stuurt de inlogmail.
+
+*Gaan mijn zakelijke klanten uit Lightspeed mee, met hun bestellingen?*
+
+Ja, als bedrijf met vestiging, contactpersoon en btw-nummer, met
+hun bestellingen van de afgelopen twee jaar. Wachtwoorden gaan niet
+mee; de zakelijke inlog van Shopify werkt met een code per mail.
+
+*Ik heb mijn producten al zelf in Shopify gezet. Kunnen jullie de rest doen?*
+
+Ja. Zakelijke prijzen, bestellingen en doorverwijzingen koppelen we
+aan de producten die er al staan, zonder ze opnieuw te importeren.
+Op de
+[[https://webwinkelverhuis.nl/migrate-ccvshop.html#zelf-begonnen][CCV-pagina]]
+staat wat dat afmaken inhoudt.
+
+Draai je een webshop en een groothandel op twee systemen, en wil je
+ze samenvoegen zonder dat je zakelijke klanten iets merken?
+[[https://webwinkelverhuis.nl/offerte.html][Vraag een vrijblijvende doorrekening aan]]
+of
+[[https://meet.webwinkelverhuis.nl][plan een gesprek]].
+Je betaalt pas na een geslaagde migratie.
