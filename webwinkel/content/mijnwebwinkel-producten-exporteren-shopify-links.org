@@ -1,0 +1,60 @@
+#+TITLE: Producten uit MijnWebwinkel exporteren naar Shopify, zonder je links te verliezen
+#+DATE: 2026-11-12
+#+CATEGORY: migratie
+#+TAGS: mijnwebwinkel, shopify, producten, redirects, seo
+#+SUMMARY: Zet je producten over naar Shopify met bijpassende doorverwijzingen voor je oude productlinks. Probeer de exporter gratis met 20 producten, inclusief links.
+
+Je producten opnieuw invoeren is al genoeg werk. Daarna wil je niet ook nog
+voor elke oude productlink uitzoeken waar die in Shopify naartoe moet.
+Onze [[https://klanten.webwinkelverhuis.nl/exporter/registreren][exporter]] maakt twee bij elkaar passende importbestanden: één voor je
+producten en één voor de doorverwijzingen van je oude productlinks.
+
+Probeer het gratis met 20 producten, inclusief hun links.
+
+* Producten én hun oude adressen
+
+Het productbestand bevat titels, beschrijvingen, prijzen, varianten en foto's.
+De eerste categorie van een product wordt een collectie in Shopify.
+
+Het linkbestand verwijst de oude productadressen naar de juiste nieuwe
+productpagina. Ook adressen per categorie en variant gaan mee: in MijnWebwinkel
+kan hetzelfde product via meerdere adressen bereikbaar zijn. Zo hoef je die
+niet handmatig aan elkaar te koppelen en voorkom je doodlopende productlinks.
+Dat helpt bezoekers en zoekmachines hun weg te vinden, maar garandeert geen
+ongewijzigde [[https://webwinkelverhuis.nl/blog/waarom-de-meeste-mijnwebwinkel-migraties-hun-google-posities-verliezen.html][Google-posities]].
+
+* In drie stappen naar Shopify
+
+1. [[https://klanten.webwinkelverhuis.nl/exporter/registreren][Maak een account aan]] en vul je winkeladres in. De exporter leest je
+   openbare winkel; je MijnWebwinkel-inlog is niet nodig. Bij grote winkels kan
+   dat uren duren. Je kunt de pagina ondertussen sluiten.
+2. Kies producten of categorieën en download beide bestanden. Een product in
+   meerdere categorieën betaal je maar één keer. Onleesbare producten worden
+   gemeld, overgeslagen en niet berekend.
+3. Importeer eerst het productbestand bij Producten in Shopify. Importeer daarna
+   het linkbestand bij Content → Menu's → URL-omleidingen. De doorverwijzingen
+   werken zodra je domein naar Shopify wijst.
+
+Shopify accepteert productbestanden tot 15 MB. Is je bestand groter, exporteer
+dan minder producten per keer.
+
+Laden en kiezen is gratis. Je ziet de exportkosten voordat je akkoord geeft:
+4 punten per product en 1 punt voor de bijbehorende links. De 100 gratis
+welkomstpunten zijn dus genoeg voor 20 producten mét links. Meer punten koop
+je vanaf €5 (excl. btw) per 100; grotere pakketten zijn voordeliger per punt.
+
+* Zelf doen of laten verhuizen?
+
+Naast producten kun je met de exporter ook
+[[https://webwinkelverhuis.nl/blog/orderregels-uit-mijnwebwinkel-exporteren-voor-gerichte-marketing.html][orders met hun orderregels exporteren]], bijvoorbeeld voor gerichte marketing.
+Shopify heeft daarvoor geen ingebouwde CSV-import; orders overzetten kan wel,
+maar vraagt een andere aanpak. Voorraad en klantgegevens zitten niet in het
+Shopify-productbestand, en categorie- en informatiepaginalinks niet in het
+linkbestand.
+
+Liever minder risico bij je overstap? Bij onze
+[[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][begeleide verhuizing]] profiteer je van onze ervaring met webshopmigraties.
+Je hoeft niet zelf alle valkuilen te ontdekken. We kunnen bovendien je klanten,
+orderhistorie en de links van categorie- en informatiepagina's meenemen.
+
+Liever zelf aan de slag? [[https://klanten.webwinkelverhuis.nl/exporter/registreren][Exporteer je eerste 20 producten met links gratis.]]

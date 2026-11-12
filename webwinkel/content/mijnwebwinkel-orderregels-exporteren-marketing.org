@@ -1,0 +1,56 @@
+#+TITLE: Orderregels uit MijnWebwinkel exporteren voor gerichte marketing
+#+DATE: 2026-11-12
+#+CATEGORY: migratie
+#+TAGS: mijnwebwinkel, orders, export, e-mailmarketing
+#+SUMMARY: Bekijk wie welk product kocht en maak doelgroepen voor je volgende mailing. Exporteer je eerste 50 MijnWebwinkel-orders gratis naar Excel.
+
+Wie kocht vorig voorjaar tuinzaad? Met die klanten wil je contact opnemen als
+het zaaiseizoen begint. Maar de standaard orderexport van MijnWebwinkel bevatte
+bij onze meting in juni 2026 alleen ordertotalen, geen gekochte producten.
+Die moest je per order opzoeken.
+
+Onze [[https://klanten.webwinkelverhuis.nl/exporter/registreren][orderexporter]] zet de gekochte producten mét klant en datum in één
+bestand voor Excel. Je eerste 50 orders exporteer je gratis.
+
+* Van aankoop naar mailing
+
+Elke orderregel krijgt een rij met onder meer productnaam, artikelnummer,
+aantal, prijs en het e-mailadres van de klant. Filter bijvoorbeeld op tuinzaad
+en je hebt de kopers voor je volgende seizoensmailing. Ook order- en
+betaalstatus, kortingen, verzendkosten en adressen gaan mee.
+
+Verwijder dubbele e-mailadressen voordat je een selectie in je mailprogramma
+importeert. Houd rekening met geannuleerde, onbetaalde en terugbetaalde orders.
+Wil je uitgaven per klant optellen? Gebruik de regeltotalen, niet het
+ordertotaal: dat wordt op elke regel van dezelfde order herhaald.
+
+Een aankoop is niet automatisch toestemming voor marketing. Zonder toestemming
+mag je bestaande klanten alleen over je eigen vergelijkbare producten mailen
+als ze zich bij hun bestelling konden afmelden en dat in elke mail opnieuw
+kunnen. Sluit afgemelde klanten uit. Zie ook [[https://wetten.overheid.nl/BWBR0009950][artikel 11.7 van de Telecommunicatiewet]].
+Bewaar het exportbestand veilig en niet langer dan nodig.
+
+* Zo begin je
+
+1. [[https://klanten.webwinkelverhuis.nl/exporter/registreren][Maak een account aan]] en koppel je MijnWebwinkel-beheer. Je wachtwoord
+   wordt versleuteld bewaard tot je ontkoppelt.
+2. Kies een periode of alle orders. Tellen is gratis; je ziet de kosten voordat
+   je akkoord geeft.
+3. Download de export en open hem in Excel. Grote exports kunnen uren duren,
+   maar lopen door als je de pagina sluit. Het bestand blijft 30 dagen beschikbaar.
+
+Je krijgt 100 welkomstpunten: genoeg voor 50 orders, ongeacht het aantal
+orderregels. Daarna betaal je 2 punten per order. Punten koop je vanaf €5
+(excl. btw) voor 100 punten; grotere pakketten zijn voordeliger per punt.
+
+* Ook je winkel verhuizen?
+
+Je orderhistorie meenemen naar een ander webshopplatform? Met onze
+[[https://webwinkelverhuis.nl/migrate-mijnwebwinkel.html][begeleide verhuizing]] helpen we je overstappen. Onze ervaring met
+webshopmigraties helpt je fouten te voorkomen: je hoeft niet zelf alle
+valkuilen te ontdekken.
+
+Ga je naar Shopify en zet je liever zelf je producten over? Gebruik dan de
+[[https://webwinkelverhuis.nl/blog/producten-uit-mijnwebwinkel-exporteren-naar-shopify-zonder-je-links-te-verliezen.html][productexport met bijpassende doorverwijzingen]].
+
+[[https://klanten.webwinkelverhuis.nl/exporter/registreren][Maak een account aan en exporteer je eerste 50 orders gratis naar Excel.]]
