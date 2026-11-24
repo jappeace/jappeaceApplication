@@ -7,8 +7,9 @@
 # dossier) en, voor Panzer-ShopNL, wat Jappie op 23 nov 2026 van Kevin
 # wist. Winkeliers keuren hun eigen verhaal goed; wat deze post over hen
 # zegt, leggen we niet apart voor (Jappie, 24 nov 2026; jappiesoft
-# sales/klantverhaal-werkwijze.org, stap 2). Kevin is op 24 nov nog niet
-# om akkoord op zijn verhaal gevraagd.
+# sales/klantverhaal-werkwijze.org, stap 2). Geen nieuwsbrieffout bij
+# Panzer-ShopNL: Kevin vroeg op 24 nov die uit zijn verhaal te halen,
+# omdat Google het oppikt.
 # Letterlijke citaten alleen uit de goedgekeurde verhalen. Feiten over
 # Shopify zelf zijn nagelopen op Shopify's eigen uitleg. De elektronicagroothandel blijft anoniem, zoals in
 # zijn eigen klantverhaal.
@@ -102,8 +103,7 @@ extra transactiekosten op Basic.
 
 Bij de groothandel hadden wij 292 eerdere zakelijke bestellers als
 gewone klant overgezet. Die hebben we binnen enkele dagen alsnog als
-bedrijf ingericht. Bij Panzer-ShopNL schreven we bij de import ook
-slapende accounts in op de nieuwsbrief. Dat was onze fout.
+bedrijf ingericht.
 
 De winkels bleven tijdens de bouw doorverkopen op hun oude platform.
 Oude links kregen doorverwijzingen. De afzonderlijke klantverhalen

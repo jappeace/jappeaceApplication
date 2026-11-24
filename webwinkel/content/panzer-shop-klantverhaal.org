@@ -1,14 +1,18 @@
 #+TITLE: Klantverhaal: Panzer-ShopNL van MijnWebwinkel naar Shopify in drie talen
 #+DATE: 2026-08-01
-#+MODIFIED: 2026-08-08
+#+MODIFIED: 2026-11-24
 #+CATEGORY: migratie
 #+TAGS: mijnwebwinkel, shopify, klantverhaal
+# Decision: de winkel niet als militair omschrijven en de nieuwsbrieffout
+# bij de overstap niet noemen. Kevin vroeg dat op 24 nov 2026, omdat Google
+# en AI-overzichten het oppikken (jappiesoft projects/panzer-shop/emails.md).
 #+SUMMARY: Panzer-ShopNL verhuisde 2.400 producten, drie talen en 7.200 oude URLs van MijnWebwinkel naar Shopify. Het verhaal van die migratie, inclusief de hobbels.
 
-Panzer-ShopNL verkoopt militaire schaalmodellen en modelspoor:
-zo'n 2.400 producten, in drie talen (Duits, Engels en Nederlands),
-op drie domeinen. In juni 2026 verhuisde de winkel van MijnWebwinkel
-naar Shopify. Alle producten, vertalingen, klantaccounts,
+Panzer-ShopNL ([[https://panzer-shop.nl/][panzer-shop.nl]]) maakt vrachtwagens, auto's,
+figuren en militaire voertuigen in miniatuur, voor modelspoorbanen.
+In juni 2026 verhuisde de winkel van MijnWebwinkel naar Shopify:
+zo'n 2.400 producten, in drie talen (Duits, Engels en Nederlands), op
+drie domeinen. Alle producten, vertalingen, klantaccounts,
 spaarpunten en zo'n 7.200 oude URLs gingen mee. Dit is het verhaal
 van die migratie, inclusief de hobbels, want die waren er ook.
 
@@ -32,7 +36,7 @@ Kevin wilde al langer weg bij MijnWebwinkel. Sterker nog: er stond
 al zo'n drie jaar een Shopify-winkel klaar. Gemigreerd werd er
 nooit, en de reden is herkenbaar voor iedereen met een grotere
 shop: 2.400 producten keer drie talen met de hand overzetten is
-maanden werk als je dit met de hand doet.
+maanden werk.
 Daarnaast hoort de winkel gewoon door te draaien.
 
 Precies daar strandde het steeds. Niet op de wil, maar op de
@@ -110,53 +114,58 @@ als de overdracht echt loopt. En gaat het dan mis, dan is de winkel
 plat, voor iedereen. Precies daarom wil je dit laten doen door
 iemand die het vaker heeft gedaan.
 
-Ook hier ging niet alles in één keer vlekkeloos.
-Bij de verhuizing van het .nl-domein zette de
-oude registrar een paar uur een parkeerpagina neer, en op het
-.net-domein ontstond bij de cutover een redirect-loop die na
-zeventien minuten was opgelost.
-Dit zijn stressvolle tijden voor ons, maar we zitten er boven op!
-
-Eén echte fout kwam echt bij ons vandaan:
-Bij het overzetten van de
-klantaccounts werden alle klanten automatisch ingeschreven op de
-nieuwsbrief, inclusief een flinke berg slapende accounts van jaren
-terug. Dat was niet de bedoeling en daar hebben we Kevin ruiterlijk
-onze excuses voor aangeboden. Geheel los daarvan, en het staat er
-vast volledig buiten, zag Kevin op het moment van de overstap
-ineens opvallend veel nieuwe klanten binnenkomen. Dat zal aan zijn
-eigen keurige lanceercampagne op social media hebben gelegen.
+Ook hier was er downtime. Bij de verhuizing van het .nl-domein
+zette de oude registrar een paar uur een parkeerpagina neer,
+waardoor de winkel op dat domein niet bereikbaar was. Bij de
+daadwerkelijke DNS-omschakeling ontstond op het .net-domein een
+redirect-loop. Die onderbreking duurde zeventien minuten.
 
 Het punt is niet dat zulke momenten nooit voorkomen; elke migratie
 heeft er een paar. Het punt is wie er bovenop zit als het gebeurt.
-De spanning zat bij ons, de winkel bleef verkopen, en Kevin hoefde
-er niets voor te doen. Die zat er middenin het traject zelfs
+Kevin hoefde de technische problemen niet zelf op te lossen.
+Die zat er middenin het traject zelfs
 anderhalve week tussenuit, zonder laptop, terwijl de migratie
 gewoon doorliep.
 
 Op 20 juni gingen de domeinen om en op 22 juni was de winkel
-officieel live op Shopify. De uitstraling bleef vertrouwd: het
-Shopify-thema dat een ander bureau jaren eerder voor enkele
-duizenden euro's had gebouwd, bleef gewoon in gebruik. Dat bureau
-heeft Kevin inmiddels niet meer nodig, want de meeste aanpassingen
-doet hij nu zelf. Alleen bij de lastigere klusjes, zoals het
-wisselen tussen productvarianten, sprongen wij bij.
+officieel live op Shopify. Van het Shopify-thema dat een ander
+bureau jaren eerder had gebouwd, is
+inmiddels vrijwel niets meer over: bijna alles in de winkel heeft
+Kevin zelf gemaakt. Een bureau heeft hij daar niet voor nodig.
+Shopify is volgens hem niet moeilijker dan MijnWebwinkel, en wel veel
+flexibeler en uitgebreider. Alleen bij de lastigere klusjes, zoals
+het wisselen tussen productvarianten, sprongen wij bij.
 
-#+CAPTION: De nieuwe winkel op Shopify: vertrouwde uitstraling voor de klanten, met spaarprogramma en reviews gewoon op hun plek.
+#+CAPTION: De nieuwe winkel op Shopify, grotendeels door Kevin zelf gemaakt, met spaarprogramma en reviews op hun plek.
 [[https://webwinkelverhuis.nl/panzer-shop-shopify-na.png]]
 
 * Waar Kevin nu staat
 
 Elke oude link van Panzer-ShopNL werkt nog en de spaarpunten van de
-klanten staan in de nieuwe winkel. De winkel is sneller, de support
-is beter dan hij op MijnWebwinkel gewend was, en hij heeft toegang
-tot duizenden apps die er eerst niet waren. Vooral: de meeste
-aanpassingen doet hij nu zelf, zonder op iemand te hoeven wachten.
-De nieuwe winkel zette hij bovendien slim in als
-marketingmoment richting zijn community.
+klanten staan in de nieuwe winkel. Het grootste verschil voor Kevin
+zit in wat hij nu zelf kan doen. Via de koppeling met Claude past
+hij zijn winkel aan, wat hem naar eigen zeggen 2 tot 10 uur per week
+bespaart. Ook producten in bulk aanpassen gaat nu eenvoudig.
+Met de AI-assistent in Shopify heeft hij support nog geen enkele
+keer nodig gehad.
 
-En het programma dat dit deed is sindsdien alleen maar vaker
-gebruikt: elke nieuwe migratie voegt randgevallen toe die we daarna
+De betere analytics geven hem meer inzicht in zijn bedrijf.
+Met een flexibelere winkelindeling en betere opvolgmails via Shopify
+Messaging kan hij werken aan zijn conversiepercentage. De winkel
+laadt veel sneller en heeft hreflang-tags, die Google helpen de
+juiste taal- en landversie te herkennen. Voor Kevin hoort daar ook
+het vertrouwen bij in een platform dat wordt doorontwikkeld.
+
+Kevin schreef ons op 24 november 2026:
+
+#+begin_quote
+Een verdubbeling van omzet in November 2026 ten opzichte van 2025,
+voor een aanzienlijk deel veroorzaakt door de betere website en de
+opties die in Shopify zitten.
+#+end_quote
+
+De migratiesoftware gebruiken we inmiddels ook voor andere winkels.
+Elke nieuwe migratie voegt randgevallen toe die we daarna
 automatisch goed doen.
 
 Staat je winkel ook al jaren "bijna" op het punt te verhuizen? Zo
